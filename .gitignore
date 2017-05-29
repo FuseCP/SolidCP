@@ -49,20 +49,20 @@ msbuild.log
 
 bin/Debug
 bin/Release
-#bin
+bin
 *.vshost.*
 *.pdb
 *.vs10x
 *.user
 
 /SolidCP/msbuild.log
-#/SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
-#/SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
-#/SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
-#/SolidCP.Installer/Sources/SolidCP.Installer/updater.exe
-#/SolidCP/SolidCP-Auto-Upgrade.ps1
-#/SolidCP/Dev_CleanRelease.ps1
-#/SolidCP/CleanRelease_Marc_Dev.ps1
-#/SolidCP/CleanRelease_marc.ps1
-#/SolidCP/CleanRelease2.ps1
-#/SolidCP/CleanDebug.ps1
+/SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
+/SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
+/SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
+/SolidCP.Installer/Sources/SolidCP.Installer/updater.exe
+/SolidCP/SolidCP-Auto-Upgrade.ps1
+/SolidCP/Dev_CleanRelease.ps1
+/SolidCP/CleanRelease_Marc_Dev.ps1
+/SolidCP/CleanRelease_marc.ps1
+/SolidCP/CleanRelease2.ps1
+/SolidCP/CleanDebug.ps1
