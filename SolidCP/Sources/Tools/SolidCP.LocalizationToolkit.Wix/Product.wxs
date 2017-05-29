@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <?include Config.wxi?>
+
+  <?define VERSION="!(bind.FileVersion.LocalizationToolkit.exe)"?>
+
+  <Product
+    Id="*"
+    Name="SolidCP Localization Toolkit"
+    Language="1033"
+    Version="$(var.VERSION)"
+    Manufacturer="Outercurve Foundation"
+    UpgradeCode="17c6c960-0bc0-4ff4-be70-985679723ca5">
+
+    <Package
+      Description="SolidCP Localization Toolkit"
+      Manufacturer="Outercurve Foundation"
+      InstallerVersion="200"
+      Compressed="yes"
+      InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Feature Id="ProductFeature" Title="SolidCP Localization Toolkit" Level="1">
+      <ComponentRef Id="ProductFiles" />
+      <ComponentRef Id="Resources" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+
+    <UIRef Id="WixUI_Minimal" />
+    <UI />
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="bannrbmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="dlgbmp.bmp" />
+    
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="SolidCP Localization Toolkit" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="SolidCP" />
+      </Directory>
+    </Directory>
+  </Fragment>
+
+  <Fragment>
+    
+    <DirectoryRef Id="INSTALLFOLDER">
+      <!-- Binaries -->
+      <Component Id="ProductFiles" Guid="E9FE031C-8DAA-4085-AE96-89FFEFD1B62F">
+        <File Id="LocalizationToolkit.exe" Source="$(var.BUILDPATH)\LocalizationToolkit.exe" />
+        <File Id="DotNetZip" Source="$(var.BUILDPATH)\Ionic.Zip.Reduced.dll" />
+      </Component>
+      
+      <Directory Id="Data" Name="Data">
+        <Directory Id="US" Name="en-us">
+          <!-- Data -->
+          <Component Id="Resources">
+            <File Id="Resources.xml" Source="$(var.BUILDPATH)\Data\en-us\Resources.xml" />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+
+    <!-- Shortcut -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="436B1DD5-89FB-497C-AACE-76174B10998F">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+          Name="SolidCP Localization Toolkit"
+          Description="SolidCP Localization Toolkit"
+          Target="[INSTALLFOLDER]LocalizationToolkit.exe"
+          WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\SolidCP\SolidCP Localization Toolkit" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+  </Fragment>
+</Wix>

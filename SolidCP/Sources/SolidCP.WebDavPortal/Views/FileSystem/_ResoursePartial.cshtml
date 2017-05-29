@@ -1,0 +1,73 @@
+﻿@using System.Net.Mime
+@using SolidCP.WebDav.Core
+@using SolidCP.WebDav.Core.Client
+@using SolidCP.WebDav.Core.Config
+@using SolidCP.WebDavPortal.FileOperations
+@using Ninject;
+@using SolidCP.WebDavPortal.Helpers
+@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI
+@using SolidCP.WebDavPortal.UI.Routes
+@model IHierarchyItem
+  
+@{
+    string actualPath = Model.ItemType == ItemType.Folder ? "~/Content/Images/folder_100x100.png" : WebDavAppConfigManager.Instance.FileIcons[Path.GetExtension(Model.DisplayName.Trim('/'))];
+    string name = Model.DisplayName.Trim('/');
+    var _opener = new FileOpenerManager();
+    var opener = _opener[Path.GetExtension(Model.DisplayName)];
+    bool isTargetBlank;
+    string href = "/";
+    switch (opener)
+    {
+        case FileOpenerType.OfficeOnline:
+            isTargetBlank = !Request.Browser.IsMobileDevice;
+            var pathPart = Model.Href.AbsolutePath.Replace("/" + ScpContext.User.OrganizationId, "").TrimStart('/'); 
+            href = string.Concat(Url.RouteUrl(FileSystemRouteNames.EditOfficeOnline, new { org = ScpContext.User.OrganizationId, pathPart = "" }), pathPart);
+            break;
+        default:
+            isTargetBlank = false;
+            href = Model.Href.LocalPath; 
+            break;
+    }
+
+    var resource = Model as IResource;
+    
+    bool showStatistic = Model.ItemType == ItemType.Folder && Model.IsRootItem && resource != null;
+
+    var contentTypeProperty = Model.Properties.FirstOrDefault(x => x.Name.Name == "getcontenttype");
+
+    if (isTargetBlank == false && Model.ItemType != ItemType.Folder)
+    {
+        isTargetBlank = _opener.GetIsTargetBlank(Model) && !Request.Browser.IsMobileDevice;
+    }
+
+    int percent = 0;
+
+    if (showStatistic)
+    {
+        percent = (int)(resource.AllocatedSpace != 0 ? 100 * resource.ContentLength / resource.AllocatedSpace : 0);    
+    }
+}
+
+<div class="col-sm-2 element-container">
+    <div class="element">
+        <img class="icon-size" src="@Url.Content(actualPath)" />
+
+        <a href="@href" @Html.Raw(isTargetBlank ? "target=\"_blank\"" : string.Empty) class="file-link @(Model.ItemType == ItemType.Folder ? "processing-dialog" : "")" title="@name">
+            <p style="word-wrap: break-word;">@name</p>
+        </a>
+
+        @if (showStatistic)
+        {
+            <div class="progress web-dav-folder-progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100" style="width: @percent%;">
+                    <p class="progress-text">@percent%</p>
+                </div>
+            </div>
+            <p class="resource-subtext">@ViewDataHelper.BytesToSize(resource.ContentLength) / @ViewDataHelper.BytesToSize(resource.AllocatedSpace)</p>
+        }
+
+        <div class="selected-element-overlay">
+        </div>
+    </div>
+</div>

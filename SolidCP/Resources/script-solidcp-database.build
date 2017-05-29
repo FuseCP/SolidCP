@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+<project name="script" default="script">
+
+	<target name="script">
+
+        <!-- Generate SQL Scripts -->
+        <scriptdatabase	output="build-SolidCP-database.sql"
+			server="TFS01"
+			database="${database}">
+
+			<!-- Script defaults -->
+			<!--objects type="Roles" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+				</options>
+			</objects-->
+			
+			<!-- Script data types -->
+			<objects type="DataTypes" all="true">
+				<options>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+				</options>
+			</objects>
+			
+			<!-- Script tables -->
+			<objects type="Tables" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_DRI_Checks</option>
+					<option>SQLDMOScript_DRI_Defaults</option>
+					<option>SQLDMOScript_DRI_PrimaryKey</option>
+					<option>SQLDMOScript_DRI_UniqueKeys</option>
+					<option>SQLDMOScript_Permissions</option>
+					<option>SQLDMOScript_Indexes</option>
+					<option>SQLDMOScript_Triggers</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+					<option>SQLDMOScript2_Default</option>
+					<option>SQLDMOScript2_NoCollation</option>
+					<option>SQLDMOScript2_NoFG</option>
+				</options>
+			</objects>
+			
+			<!-- Script functions -->
+			<objects type="Functions" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+				</options>
+			</objects>
+			
+			<!-- Script views -->
+			<objects type="Views" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_Indexes</option>
+					<option>SQLDMOScript_Permissions</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+				</options>
+			</objects>
+			
+			<!-- Script stored procedures -->
+			<objects type="StoredProcedures" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_Permissions</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+				</options>
+			</objects>
+			
+			<!-- Script rules -->
+			<objects type="Rules" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+				</options>
+			</objects>
+			
+			<!-- Script defaults -->
+			<objects type="Defaults" all="true">
+				<options>
+					<option>SQLDMOScript_Drops</option>
+					<option>SQLDMOScript_PrimaryObject</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+				</options>
+			</objects>
+	
+			<!-- Script data -->
+			<data all="false" names="AuditLogSources,AuditLogTasks,Providers,Quotas,ResourceGroupDnsRecords,ResourceGroups,ScheduleTaskParameters,ScheduleTasks,ServiceDefaultProperties,ServiceItemTypes,SystemSettings,ecProductType,ecSupportedPlugins,ScheduleTaskViewConfiguration" />
+	
+			<!-- Script foreign keys -->
+			<objects type="Tables" all="true">
+				<options>
+					<option>SQLDMOScript_DRI_ForeignKeys</option>
+					<option>SQLDMOScript_OwnerQualify</option>
+					<option>SQLDMOScript2_NoCollation</option>
+				</options>
+			</objects>
+			
+		</scriptdatabase>
+    </target>
+
+</project>

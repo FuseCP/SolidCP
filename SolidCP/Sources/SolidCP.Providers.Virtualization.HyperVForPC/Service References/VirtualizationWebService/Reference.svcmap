@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="a97dfe4e-8b7a-49ac-81fd-82f062ccd022" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://vmserver3/VirtualizationWebService/" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="VirtualizationService.xsd" MetadataType="Schema" ID="7848aa01-d39d-4bce-866a-3df723ba7e42" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd1" />
+    <MetadataFile FileName="VirtualizationService.disco" MetadataType="Disco" ID="76625b81-c13d-4c4c-98e6-610669aa697b" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?disco" />
+    <MetadataFile FileName="VirtualizationProvisioningService.wsdl" MetadataType="Wsdl" ID="1157d06b-9bea-4493-88f4-a519ad2a10b7" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?wsdl" />
+    <MetadataFile FileName="VirtualizationService1.xsd" MetadataType="Schema" ID="10d6148a-a6d5-4652-9c50-53318b3eaebd" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd0" />
+    <MetadataFile FileName="VirtualizationService.wsdl" MetadataType="Wsdl" ID="fcd72774-1657-4fc1-8468-7062be937f73" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="VirtualizationService2.xsd" MetadataType="Schema" ID="92a5b9d8-f7f6-47a2-80cf-56ca53f37c65" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd2" />
+    <MetadataFile FileName="VirtualizationService3.xsd" MetadataType="Schema" ID="72e5a938-8a07-4fd1-be8e-e04471726841" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd3" />
+    <MetadataFile FileName="VirtualizationService1.wsdl" MetadataType="Wsdl" ID="08bfeafc-83d3-4a9e-922c-7ec762316638" SourceId="1" SourceUrl="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?wsdl=wsdl1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

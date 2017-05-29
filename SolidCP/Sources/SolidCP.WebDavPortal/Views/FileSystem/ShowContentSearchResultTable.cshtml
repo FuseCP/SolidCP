@@ -1,0 +1,29 @@
+﻿@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI.Routes
+@model SolidCP.WebDavPortal.Models.ModelForWebDav
+           
+
+@Html.Partial("_ShowContentTopMenu", Model)
+
+<div class="prevent-deselect container">
+    <table id="search-items-table" class="display table table-striped table-bordered noselect" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>@UI.File</th>
+                <th>@UI.Details</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            scp.fileBrowser.setSettings({ deletionUrl: "@Url.RouteUrl(FileSystemRouteNames.DeleteFiles)" });
+            scp.fileBrowser.initSearchDataTable('#search-items-table', '@Url.RouteUrl(FileSystemRouteNames.ShowContentDetails)', '@Model.SearchValue');
+        });
+    </script>
+    @Scripts.Render("~/bundles/appScripts-webdav")
+}
+

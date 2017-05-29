@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="chkAssignIPAutomatically.Text" xml:space="preserve">
+    <value>Automatically allocate "dedicated" IP addresses on space creation</value>
+  </data>
+  <data name="FilterDialogButton.AlternateText" xml:space="preserve">
+    <value>Click to modify the filter...</value>
+  </data>
+  <data name="chkGalleryAppsAlwaysIgnoreDependencies.Text" xml:space="preserve">
+    <value>Always ignore dependencies</value>
+  </data>
+  <data name="FilterDialogButton.Text" xml:space="preserve">
+    <value>Click to create a filter...</value>
+  </data>
+  <data name="GalleryFeedFilter.Text" xml:space="preserve">
+    <value>Gallery feed filter:</value>
+  </data>
+  <data name="lblADIntegration.Text" xml:space="preserve">
+    <value>Active Directory Integration:</value>
+  </data>
+  <data name="lblAsp11Pool.Text" xml:space="preserve">
+    <value>ASP.NET 1.1 Application Pool:</value>
+  </data>
+  <data name="lblAsp20Pool.Text" xml:space="preserve">
+    <value>ASP.NET 2.0 Application Pool:</value>
+  </data>
+  <data name="lblAspNet11Path.Text" xml:space="preserve">
+    <value>ASP.NET 1.1 Library Path:</value>
+  </data>
+  <data name="lblAspNet20Path.Text" xml:space="preserve">
+    <value>ASP.NET 2.0 Library Path:</value>
+  </data>
+  <data name="lblAspPath.Text" xml:space="preserve">
+    <value>ASP Library Path:</value>
+  </data>
+  <data name="lblColdFusionPath.Text" xml:space="preserve">
+    <value>ColdFusion Path:</value>
+  </data>
+  <data name="lblFlashRemotingDir.Text" xml:space="preserve">
+    <value>Flash Remoting Directory:</value>
+  </data>
+  <data name="lblGalleryFeed.Text" xml:space="preserve">
+    <value>Gallery feed URL:</value>
+  </data>
+  <data name="lblGroupName.Text" xml:space="preserve">
+    <value>Web Users Group Name:</value>
+  </data>
+  <data name="lblPasswordFilterPath.Text" xml:space="preserve">
+    <value>IISPassword Filter Path:</value>
+  </data>
+  <data name="lblPerlPath.Text" xml:space="preserve">
+    <value>Perl Executable Path:</value>
+  </data>
+  <data name="lblPhp4Path.Text" xml:space="preserve">
+    <value>PHP 4.x Executable Path:</value>
+  </data>
+  <data name="lblPhp5Path.Text" xml:space="preserve">
+    <value>PHP 5.x Executable Path:</value>
+  </data>
+  <data name="lblProtectedAccessFile.Text" xml:space="preserve">
+    <value>IISPassword Access File:</value>
+  </data>
+  <data name="lblProtectedFoldersFile.Text" xml:space="preserve">
+    <value>IISPassword Folders File:</value>
+  </data>
+  <data name="lblProtectedGroupsFile.Text" xml:space="preserve">
+    <value>IISPassword Groups File:</value>
+  </data>
+  <data name="lblProtectedUsersFile.Text" xml:space="preserve">
+    <value>IISPassword Users File:</value>
+  </data>
+  <data name="lblPythonPath.Text" xml:space="preserve">
+    <value>Python Executable Path:</value>
+  </data>
+  <data name="lblScriptsDirectory.Text" xml:space="preserve">
+    <value>Scripts Directory:</value>
+  </data>
+  <data name="lblSharedIP.Text" xml:space="preserve">
+    <value>Web Sites Shared IP Address:</value>
+  </data>
+  <data name="lblSharedSslSites.Text" xml:space="preserve">
+    <value>Shared SSL Web Sites:</value>
+  </data>
+  <data name="lblWebAppGallery.Text" xml:space="preserve">
+    <value>Web Appication Gallery</value>
+  </data>
+  <data name="lblWebFarms.Text" xml:space="preserve">
+    <value>Web Farms Support:</value>
+  </data>
+  <data name="lclGalleryFeedNote.Text" xml:space="preserve">
+    <value>You could overwrite default Web App Gallery ATOM feed located at Microsoft web site by your own to provide your own applications to your customers. Leave this field blank to use default feed.</value>
+  </data>
+  <data name="secAspNet.Text" xml:space="preserve">
+    <value>ASP.NET</value>
+  </data>
+  <data name="secIISpassword.Text" xml:space="preserve">
+    <value>IISPassword</value>
+  </data>
+  <data name="secOther.Text" xml:space="preserve">
+    <value>Other Settings</value>
+  </data>
+  <data name="secPools.Text" xml:space="preserve">
+    <value>Application Pools</value>
+  </data>
+  <data name="secServiceSettings.Text" xml:space="preserve">
+    <value>Web Service Settings</value>
+  </data>
+  <data name="secWebExtensions.Text" xml:space="preserve">
+    <value>Web Extensions</value>
+  </data>
+  <data name="lblAspNet40Path.Text" xml:space="preserve">
+    <value>ASP.NET 4.0 Library Path:</value>
+  </data>
+  <data name="lblAspNet40Pool.Text" xml:space="preserve">
+    <value>ASP.NET 4.0 Application Pool:</value>
+  </data>
+  <data name="ipAddress.SelectValueText" xml:space="preserve">
+    <value>&lt;All unassigned&gt;</value>
+  </data>
+  <data name="txtPublicSharedIP.Text" xml:space="preserve">
+    <value>Web Sites Public Shared Address:</value>
+  </data>
+  <data name="btnCancelText.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnchangefilterText.Text" xml:space="preserve">
+    <value>Change a filter</value>
+  </data>
+  <data name="btnokText.Text" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="btnResetText.Text" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+</root>

@@ -1,0 +1,26 @@
+Hello {$name+null},
+
+{if 1 !=0.2 +"str1"
+	&&""||'fff'}
+This is some text...
+{{/if}
+
+Best regards,
+Support team
+
+function setSelectionRange(textElem, selectionStart, selectionEnd) {
+if (textElem.setSelectionRange) { // FF
+// textElem.focus(); // needed?
+window.setTimeout(function(x,posL,posR){ // bug 265159
+return function(){x.setSelectionRange(posL,posR);};}
+(textElem,selectionStart,selectionEnd),100);
+} else if (textElem.createTextRange) { // IE
+var range = textElem.createTextRange();
+range.collapse(true);
+range.moveEnd('character', selectionEnd);
+range.moveStart('character', selectionStart);
+range.select();
+}
+}
+
+{/if}

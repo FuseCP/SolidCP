@@ -1,0 +1,1205 @@
+﻿<?xml version="1.0" encoding="utf-8"?><NewDataSet><xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"><xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true"><xs:complexType><xs:choice minOccurs="0" maxOccurs="unbounded"><xs:element name="Table"><xs:complexType><xs:sequence><xs:element name="UserID" type="xs:int" minOccurs="0" /><xs:element name="SettingsName" type="xs:string" minOccurs="0" /><xs:element name="PropertyName" type="xs:string" minOccurs="0" /><xs:element name="PropertyValue" type="xs:string" minOccurs="0" /></xs:sequence></xs:complexType></xs:element></xs:choice></xs:complexType></xs:element></xs:schema><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>CC</PropertyName><PropertyValue>support@HostingCompany.com</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>EnableLetter</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>From</PropertyName><PropertyValue>support@HostingCompany.com</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;Account Summary Information&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.3em; color: ##1F4978; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+&lt;div class="Header"&gt;
+	Hosting Account Information
+&lt;/div&gt;
+
+&lt;ad:if test="#Signup#"&gt;
+&lt;p&gt;
+Hello #user.FirstName#,
+&lt;/p&gt;
+
+&lt;p&gt;
+New user account has been created and below you can find its summary information.
+&lt;/p&gt;
+
+&lt;h1&gt;Control Panel URL&lt;/h1&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Control Panel URL&lt;/th&gt;
+            &lt;th&gt;Username&lt;/th&gt;
+            &lt;th&gt;Password&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;a href="http://panel.HostingCompany.com"&gt;http://panel.HostingCompany.com&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;#user.Username#&lt;/td&gt;
+            &lt;td&gt;#user.Password#&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+&lt;h1&gt;Hosting Spaces&lt;/h1&gt;
+&lt;p&gt;
+    The following hosting spaces have been created under your account:
+&lt;/p&gt;
+&lt;ad:foreach collection="#Spaces#" var="Space" index="i"&gt;
+&lt;h2&gt;#Space.PackageName#&lt;/h2&gt;
+&lt;table&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td class="Label"&gt;Hosting Plan:&lt;/td&gt;
+			&lt;td&gt;
+				&lt;ad:if test="#not(isnull(Plans[Space.PlanId]))#"&gt;#Plans[Space.PlanId].PlanName#&lt;ad:else&gt;System&lt;/ad:if&gt;
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;ad:if test="#not(isnull(Plans[Space.PlanId]))#"&gt;
+		&lt;tr&gt;
+			&lt;td class="Label"&gt;Purchase Date:&lt;/td&gt;
+			&lt;td&gt;
+				#Space.PurchaseDate#
+			&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td class="Label"&gt;Disk Space, MB:&lt;/td&gt;
+			&lt;td&gt;&lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Diskspace" /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td class="Label"&gt;Bandwidth, MB/Month:&lt;/td&gt;
+			&lt;td&gt;&lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Bandwidth" /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td class="Label"&gt;Maximum Number of Domains:&lt;/td&gt;
+			&lt;td&gt;&lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Domains" /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td class="Label"&gt;Maximum Number of Sub-Domains:&lt;/td&gt;
+			&lt;td&gt;&lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.SubDomains" /&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;/ad:if&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/ad:foreach&gt;
+
+&lt;ad:if test="#Signup#"&gt;
+&lt;p&gt;
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.AcmeHosting.com"&gt;www.AcmeHosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@AcmeHosting.com"&gt;support@AcmeHosting.com&lt;/a&gt;
+&lt;/p&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:template name="NumericQuota"&gt;
+	&lt;ad:if test="#space.Quotas.ContainsKey(quota)#"&gt;
+		&lt;ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#"&gt;#space.Quotas[quota].QuotaAllocatedValue#&lt;ad:else&gt;Unlimited&lt;/ad:if&gt;
+	&lt;ad:else&gt;
+		0
+	&lt;/ad:if&gt;
+&lt;/ad:template&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>Priority</PropertyName><PropertyValue>Normal</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>&lt;ad:if test="#Signup#"&gt;SolidCP  account has been created for&lt;ad:else&gt;SolidCP  account summary for&lt;/ad:if&gt; #user.FirstName# #user.LastName#</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>AccountSummaryLetter</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>=================================
+   Hosting Account Information
+=================================
+&lt;ad:if test="#Signup#"&gt;Hello #user.FirstName#,
+
+New user account has been created and below you can find its summary information.
+
+Control Panel URL: http://panel.AcmeHosting.com
+Username: #user.Username#
+Password: #user.Password#
+&lt;/ad:if&gt;
+
+Hosting Spaces
+==============
+The following hosting spaces have been created under your account:
+
+&lt;ad:foreach collection="#Spaces#" var="Space" index="i"&gt;
+=== #Space.PackageName# ===
+Hosting Plan: &lt;ad:if test="#not(isnull(Plans[Space.PlanId]))#"&gt;#Plans[Space.PlanId].PlanName#&lt;ad:else&gt;System&lt;/ad:if&gt;
+&lt;ad:if test="#not(isnull(Plans[Space.PlanId]))#"&gt;Purchase Date: #Space.PurchaseDate#
+Disk Space, MB: &lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Diskspace" /&gt;
+Bandwidth, MB/Month: &lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Bandwidth" /&gt;
+Maximum Number of Domains: &lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Domains" /&gt;
+Maximum Number of Sub-Domains: &lt;ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.SubDomains" /&gt;
+&lt;/ad:if&gt;
+&lt;/ad:foreach&gt;
+
+&lt;ad:if test="#Signup#"&gt;If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.AcmeHosting.com"&gt;
+E-Mail: support@AcmeHosting.com
+&lt;/ad:if&gt;&lt;ad:template name="NumericQuota"&gt;&lt;ad:if test="#space.Quotas.ContainsKey(quota)#"&gt;&lt;ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#"&gt;#space.Quotas[quota].QuotaAllocatedValue#&lt;ad:else&gt;Unlimited&lt;/ad:if&gt;&lt;ad:else&gt;0&lt;/ad:if&gt;&lt;/ad:template&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>DisplayPreferences</SettingsName><PropertyName>GridItems</PropertyName><PropertyValue>11</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>SolidCPPolicy</SettingsName><PropertyName>DemoMessage</PropertyName><PropertyValue>When user account is in demo mode the majority of operations are
+disabled, especially those ones that modify or delete records.
+You are welcome to ask your questions or place comments about
+this demo on  &lt;a href="http://forum.SolidCP.net"
+target="_blank"&gt;SolidCP  Support Forum&lt;/a&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>SolidCPPolicy</SettingsName><PropertyName>ForbiddenIP</PropertyName><PropertyValue></PropertyValue></Table><Table><UserID>1</UserID><SettingsName>SolidCPPolicy</SettingsName><PropertyName>PasswordPolicy</PropertyName><PropertyValue>True;6;20;0;1;0;True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>ExchangePolicy</SettingsName><PropertyName>MailboxPasswordPolicy</PropertyName><PropertyValue>True;8;20;0;2;0;True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>FtpPolicy</SettingsName><PropertyName>UserNamePolicy</PropertyName><PropertyValue>True;-;1;20;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>FtpPolicy</SettingsName><PropertyName>UserPasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MailPolicy</SettingsName><PropertyName>AccountNamePolicy</PropertyName><PropertyValue>True;;1;50;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MailPolicy</SettingsName><PropertyName>AccountPasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MailPolicy</SettingsName><PropertyName>CatchAllName</PropertyName><PropertyValue>mail</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MsSqlPolicy</SettingsName><PropertyName>DatabaseNamePolicy</PropertyName><PropertyValue>True;-;1;120;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MsSqlPolicy</SettingsName><PropertyName>UserNamePolicy</PropertyName><PropertyValue>True;-;1;120;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MsSqlPolicy</SettingsName><PropertyName>UserPasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MySqlPolicy</SettingsName><PropertyName>DatabaseNamePolicy</PropertyName><PropertyValue>True;;1;40;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MySqlPolicy</SettingsName><PropertyName>UserNamePolicy</PropertyName><PropertyValue>True;;1;16;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>MySqlPolicy</SettingsName><PropertyName>UserPasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>OsPolicy</SettingsName><PropertyName>DsnNamePolicy</PropertyName><PropertyValue>True;-;2;40;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>CC</PropertyName><PropertyValue>support@HostingCompany.com</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>EnableLetter</PropertyName><PropertyValue>True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>From</PropertyName><PropertyValue>support@HostingCompany.com</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;Hosting Space Summary Information&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.2em; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+
+&lt;div class="Header"&gt;
+	Hosting Space Information
+&lt;/div&gt;
+
+&lt;ad:if test="#Signup#"&gt;
+&lt;p&gt;
+Hello #user.FirstName#,
+&lt;/p&gt;
+
+&lt;p&gt;
+&amp;quot;#space.Package.PackageName#&amp;quot; hosting space has been created under your user account
+and below is the summary information for its resources.
+&lt;/p&gt;
+&lt;/ad:if&gt;
+
+&lt;ul&gt;
+    &lt;ad:if test="#Signup#"&gt;
+		&lt;li&gt;&lt;a href="##cp"&gt;Control Panel URL&lt;/a&gt;&lt;/li&gt;
+	&lt;/ad:if&gt;
+    &lt;li&gt;&lt;a href="##overview"&gt;Hosting Space Overview&lt;/a&gt;&lt;/li&gt;
+    &lt;ad:if test="#space.Groups.ContainsKey("Web")#"&gt;
+    &lt;li&gt;&lt;a href="##web"&gt;Web&lt;/a&gt;&lt;/li&gt;
+    &lt;ul&gt;
+        &lt;li&gt;&lt;a href="##weblimits"&gt;Limits&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="##dns"&gt;Name Servers&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="##sites"&gt;Web Sites&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="##tempurl"&gt;Temporary URL&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="##files"&gt;Files Location&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;/ad:if&gt;
+    &lt;ad:if test="#space.Groups.ContainsKey("FTP")#"&gt;
+		&lt;li&gt;&lt;a href="##ftp"&gt;FTP&lt;/a&gt;&lt;/li&gt;
+		&lt;ul&gt;
+			&lt;li&gt;&lt;a href="##ftplimits"&gt;Limits&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="##ftpserver"&gt;FTP Server&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="##ftpaccounts"&gt;FTP Accounts&lt;/a&gt;&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/ad:if&gt;
+    &lt;ad:if test="#space.Groups.ContainsKey("Mail")#"&gt;
+		&lt;li&gt;&lt;a href="##mail"&gt;Mail&lt;/a&gt;&lt;/li&gt;
+		&lt;ul&gt;
+			&lt;li&gt;&lt;a href="##maillimits"&gt;Limits&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="##smtp"&gt;SMTP/POP3 Server&lt;/a&gt;&lt;/li&gt;
+			&lt;li&gt;&lt;a href="##mailaccounts"&gt;Mail Accounts&lt;/a&gt;&lt;/li&gt;
+		&lt;/ul&gt;
+    &lt;/ad:if&gt;
+    &lt;li&gt;&lt;a href="##db"&gt;Databases&lt;/a&gt;&lt;/li&gt;
+    &lt;ul&gt;
+        &lt;ad:if test="#space.Groups.ContainsKey("MsSQL2000")#"&gt;&lt;li&gt;&lt;a href="##mssql2000"&gt;SQL Server 2000&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+        &lt;ad:if test="#space.Groups.ContainsKey("MsSQL2005")#"&gt;&lt;li&gt;&lt;a href="##mssql2005"&gt;SQL Server 2005&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+        &lt;ad:if test="#space.Groups.ContainsKey("MsSQL2008")#"&gt;&lt;li&gt;&lt;a href="##mssql2008"&gt;SQL Server 2008&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+        &lt;ad:if test="#space.Groups.ContainsKey("MsSQL2012")#"&gt;&lt;li&gt;&lt;a href="##mssql2012"&gt;SQL Server 2012&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+        &lt;ad:if test="#space.Groups.ContainsKey("MySQL4")#"&gt;&lt;li&gt;&lt;a href="##mysql4"&gt;My SQL 4.x&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+        &lt;ad:if test="#space.Groups.ContainsKey("MySQL5")#"&gt;&lt;li&gt;&lt;a href="##mysql5"&gt;My SQL 5.x&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+        &lt;li&gt;&lt;a href="##msaccess"&gt;Microsoft Access&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;ad:if test="#space.Groups.ContainsKey("Statistics")#"&gt;&lt;li&gt;&lt;a href="##stats"&gt;Statistics&lt;/a&gt;&lt;/li&gt;&lt;/ad:if&gt;
+&lt;/ul&gt;
+
+&lt;ad:if test="#Signup#"&gt;
+&lt;a name="cp"&gt;&lt;/a&gt;
+&lt;h1&gt;Control Panel URL&lt;/h1&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Control Panel URL&lt;/th&gt;
+            &lt;th&gt;Username&lt;/th&gt;
+            &lt;th&gt;Password&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;a href="http://panel.HostingCompany.com"&gt;http://panel.HostingCompany.com&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;#user.Username#&lt;/td&gt;
+            &lt;td&gt;#user.Password#&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+&lt;a name="overview"&gt;&lt;/a&gt;
+&lt;h1&gt;Hosting Space Overview&lt;/h1&gt;
+
+&lt;p&gt;
+    General hosting space limits:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Disk Space, MB:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="OS.Diskspace" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Bandwidth, MB/Month:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="OS.Bandwidth" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Domains:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="OS.Domains" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Sub-Domains:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="OS.SubDomains" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("Web")#"&gt;
+&lt;a name="web"&gt;&lt;/a&gt;
+&lt;h1&gt;Web&lt;/h1&gt;
+&lt;a name="weblimits"&gt;&lt;/a&gt;
+&lt;h2&gt;
+    Limits
+&lt;/h2&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Web Sites:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="Web.Sites" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Web Application Gallery:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.WebAppGallery" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Classic ASP:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.Asp" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;ASP.NET 1.1:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.AspNet11" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;ASP.NET 2.0:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.AspNet20" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;ASP.NET 4.0:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.AspNet40" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;PHP 4:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.Php4" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;PHP 5:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.Php5" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Perl:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.Perl" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;CGI-BIN:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:BooleanQuota quota="Web.CgiBin" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+
+&lt;a name="dns"&gt;&lt;/a&gt;
+&lt;h2&gt;Name Servers&lt;/h2&gt;
+&lt;p&gt;
+    In order to point your domain to the web site in this hosting space you should use the following Name Servers:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;ad:foreach collection="#NameServers#" var="NameServer" index="i"&gt;
+        &lt;tr&gt;
+            &lt;td class="Label"&gt;#NameServer#&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/ad:foreach&gt;
+&lt;/table&gt;
+&lt;p&gt;
+    You should change the name servers in domain registrar (Register.com, GoDaddy.com, etc.) control panel.
+    Please, study domain registrar's user manual for directions how to change name servers or contact your domain
+    registrar directly by e-mail or phone.
+&lt;/p&gt;
+&lt;p&gt;
+    Please note, the changes in domain registrar database do not reflect immediately and sometimes it requires from
+    12 to 48 hours till the end of DNS propagation.
+&lt;/p&gt;
+
+&lt;a name="sites"&gt;&lt;/a&gt;
+&lt;h2&gt;Web Sites&lt;/h2&gt;
+&lt;p&gt;
+    The following web sites have been created under hosting space:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;ad:foreach collection="#WebSites#" var="WebSite"&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;a href="http://#WebSite.Name#" target="_blank"&gt;http://#WebSite.Name#&lt;/a&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/ad:foreach&gt;
+&lt;/table&gt;
+&lt;p&gt;
+    * Please note, your web sites may not be accessible from 12 to 48 hours after you've changed name servers for their respective domains.
+&lt;/p&gt;
+
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;
+&lt;a name="tempurl"&gt;&lt;/a&gt;
+&lt;h2&gt;Temporary URL&lt;/h2&gt;
+&lt;p&gt;
+    You can access your web sites right now using their respective temporary URLs (instant aliases).
+    Temporary URL is a sub-domain of the form http://yourdomain.com.providerdomain.com where &amp;quot;yourdomain.com&amp;quot; is your
+    domain and &amp;quot;providerdomain.com&amp;quot; is the domain of your hosting provider.
+&lt;/p&gt;
+&lt;p&gt;
+    You can use the following Temporary URL for all your web sites:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;
+            http://YourDomain.com.&lt;b&gt;#InstantAlias#&lt;/b&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+&lt;a name="files"&gt;&lt;/a&gt;
+&lt;h2&gt;Files Location&lt;/h2&gt;
+&lt;p&gt;
+    Sometimes it is required to know the physical location of the hosting space folder (absolute path).
+    Hosting space folder is the folder where all hosting space files such as web sites content, web logs, data files, etc. are located.
+&lt;/p&gt;
+&lt;p&gt;
+    The root of your hosting space on our HDD is here:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;
+             #PackageRootFolder#
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;
+    By default the root folder of any web site within your hosting space is built as following (you can change it anytime from the control panel):
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;
+             #PackageRootFolder#\YourDomain.com\wwwroot
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+
+&lt;ad:if test="#space.Groups.ContainsKey("FTP")#"&gt;
+&lt;a name="ftp"&gt;&lt;/a&gt;
+&lt;h1&gt;FTP&lt;/h1&gt;
+
+&lt;a name="ftplimits"&gt;&lt;/a&gt;
+&lt;h2&gt;Limits&lt;/h2&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of FTP Accounts:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="FTP.Accounts" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+
+&lt;a name="ftpserver"&gt;&lt;/a&gt;
+&lt;h2&gt;FTP Server&lt;/h2&gt;
+&lt;p&gt;
+Your hosting space allows working with your files by FTP.
+You can use the following FTP server to access your space files remotely:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;&lt;a href="ftp://#FtpIP#"&gt;ftp://#FtpIP#&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;
+    Also, you can use the following domain names to access your FTP server:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;ftp://ftp.YourDomain.com&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;
+&lt;p&gt;
+    During DNS propagation period (when domain name servers have been changed), similar to web sites, FTP server can be access with Temporary URL too:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;ftp://ftp.YourDomain.com.&lt;b&gt;#InstantAlias#&lt;/b&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+&lt;a name="ftpaccounts"&gt;&lt;/a&gt;
+&lt;h2&gt;FTP Accounts&lt;/h2&gt;
+&lt;p&gt;
+    The following FTP accounts have been created under your hosting space and can be used to access FTP server:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Username&lt;/th&gt;
+            &lt;ad:if test="#Signup#"&gt;
+                &lt;th&gt;Password&lt;/th&gt;
+            &lt;/ad:if&gt;
+            &lt;th&gt;Folder&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;ad:foreach collection="#FtpAccounts#" var="FtpAcocunt" index="i"&gt;
+            &lt;tr&gt;
+                &lt;td&gt;#FtpAcocunt.Name#&lt;/td&gt;
+                &lt;ad:if test="#Signup#"&gt;
+                    &lt;td&gt;
+                        #FtpAcocunt.Password#
+                    &lt;/td&gt;
+                &lt;/ad:if&gt;
+                &lt;td&gt;#FtpAcocunt.Folder#&lt;/td&gt;
+            &lt;/tr&gt;
+        &lt;/ad:foreach&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+
+&lt;ad:if test="#space.Groups.ContainsKey("Mail")#"&gt;
+&lt;a name="mail"&gt;&lt;/a&gt;
+&lt;h1&gt;Mail&lt;/h1&gt;
+
+&lt;a name="maillimits"&gt;&lt;/a&gt;
+&lt;h2&gt;Limits&lt;/h2&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Mail Accounts:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="Mail.Accounts" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Mail Forwardings:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="Mail.Forwardings" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Mail Groups (Aliases):&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="Mail.Groups" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Mailing Lists:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="Mail.Lists" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;a name="smtp"&gt;&lt;/a&gt;
+&lt;h2&gt;SMTP/POP3 Server&lt;/h2&gt;
+&lt;p&gt;
+Below is the IP address of your POP3/SMTP/IMAP server. You can always access your mailbox(es)
+using this IP address instead of actual POP3/SMTP/IMAP servers name:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;
+			#MailRecords[0].ExternalIP#
+		&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+    Also, you can use the following domain names to access SMTP/POP3 server from your favourite e-mail client software:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;mail.YourDomain.com&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;
+&lt;p&gt;
+    During DNS propagation period (when domain name servers have been changed), similar to web sites, SMTP/POP3 server can be access with temporary domain too:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;mail.YourDomain.com.&lt;b&gt;#InstantAlias#&lt;/b&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+&lt;a name="mailaccounts"&gt;&lt;/a&gt;
+&lt;h2&gt;Mail Accounts&lt;/h2&gt;
+&lt;p&gt;
+	The following mail accounts have been created under your hosting space:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;thead&gt;
+		&lt;tr&gt;
+			&lt;th&gt;E-mail&lt;/th&gt;
+			&lt;th&gt;Username (for POP3/SMTP/IMAP/WebMail)&lt;/th&gt;
+			&lt;ad:if test="#Signup#"&gt;
+				&lt;th&gt;Password&lt;/th&gt;
+			&lt;/ad:if&gt;
+		&lt;/tr&gt;
+	&lt;/thead&gt;
+	&lt;tbody&gt;
+		&lt;ad:foreach collection="#MailAccounts#" var="MailAccount"&gt;
+			&lt;tr&gt;
+				&lt;td&gt;#MailAccount.Name#&lt;/td&gt;
+				&lt;td&gt;#MailAccount.Name#&lt;/td&gt;
+				&lt;ad:if test="#Signup#"&gt;
+					&lt;td&gt;
+						 #MailAccount.Password#
+					&lt;/td&gt;
+				&lt;/ad:if&gt;
+			&lt;/tr&gt;
+		&lt;/ad:foreach&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+&lt;a name="db"&gt;&lt;/a&gt;
+&lt;h1&gt;Databases&lt;/h1&gt;
+
+&lt;p&gt;
+	You can create databases and database users on "Space Home -&amp;gt; Databases" screen in the control panel.
+&lt;/p&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2000")#"&gt;
+&lt;a name="mssql2000"&gt;&lt;/a&gt;
+
+&lt;h2&gt;SQL Server 2000&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Databases:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2000.Databases" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Users:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2000.Users" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	In order to connect to SQL Server 2000 from Management Studio, Enterprise Manager, Query Analyzer
+	or other client software you can use the following SQL Server address:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#MsSQL2000Address#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2000Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2005")#"&gt;
+&lt;a name="mssql2005"&gt;&lt;/a&gt;
+
+&lt;h2&gt;SQL Server 2005&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Databases:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2005.Databases" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Users:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2005.Users" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	In order to connect to SQL Server 2005 from Management Studio, Enterprise Manager, Query Analyzer
+	or other client software you can use the following SQL Server address:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#MsSQL2005Address#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2005Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2008")#"&gt;
+&lt;a name="mssql2008"&gt;&lt;/a&gt;
+
+&lt;h2&gt;SQL Server 2008&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Databases:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2008.Databases" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Users:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2008.Users" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	In order to connect to SQL Server 2008 from Management Studio, Enterprise Manager, Query Analyzer
+	or other client software you can use the following SQL Server address:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#MsSQL2008Address#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2008Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2012")#"&gt;
+&lt;a name="mssql2012"&gt;&lt;/a&gt;
+
+&lt;h2&gt;SQL Server 2012&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Databases:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2012.Databases" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Users:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MsSQL2012.Users" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	In order to connect to SQL Server 2012 from Management Studio, Enterprise Manager, Query Analyzer
+	or other client software you can use the following SQL Server address:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#MsSQL2012Address#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2012Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MySQL4")#"&gt;
+&lt;a name="mysql4"&gt;&lt;/a&gt;
+&lt;h2&gt;MySQL 4.x&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Databases:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MySQL4.Databases" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Users:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MySQL4.Users" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	In order to connect to MySQL 4.x server you can use the following address:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#MySQL4Address#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+
+&lt;ad:if test="#space.Groups.ContainsKey("MySQL5")#"&gt;
+&lt;a name="mysql5"&gt;&lt;/a&gt;
+&lt;h2&gt;MySQL 5.x&lt;/h2&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Databases:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MySQL5.Databases" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Users:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="MySQL5.Users" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	In order to connect to MySQL 5.x server you can use the following address:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#MySQL5Address#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+
+
+&lt;a name="msaccess"&gt;&lt;/a&gt;
+&lt;h2&gt;Microsoft Access&lt;/h2&gt;
+&lt;p&gt;
+	Microsoft Access database are automatically allowed in any hosting plan. You can create/upload any number of Access
+	database from File Manager in control panel.
+&lt;/p&gt;
+
+
+&lt;ad:if test="#space.Groups.ContainsKey("Statistics")#"&gt;
+&lt;a name="stats"&gt;&lt;/a&gt;
+&lt;h1&gt;Web Statistics&lt;/h1&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Maximum Number of Statistics Sites:&lt;/td&gt;
+        &lt;td&gt;&lt;ad:NumericQuota quota="Stats.Sites" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+	You can view advanced statistics from your domain using URL of the following form:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td&gt;http://stats.YourDomain.com&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;
+&lt;p&gt;
+    During DNS propagation period (when domain name servers have been changed), you can access web site statistics with Temporary URL:
+&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td&gt;http://stats.YourDomain.com.&lt;b&gt;#InstantAlias#&lt;/b&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:if&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#Signup#"&gt;
+&lt;p&gt;
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.AcmeHosting.com"&gt;www.AcmeHosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@AcmeHosting.com"&gt;support@AcmeHosting.com&lt;/a&gt;
+&lt;/p&gt;
+&lt;/ad:if&gt;
+
+&lt;!-- Templates --&gt;
+&lt;ad:template name="MsSqlConnectionStrings"&gt;
+&lt;p&gt;
+	You may also use SQL Server address above in your application connection strings, for example:
+&lt;/p&gt;
+&lt;table&gt;
+	&lt;tr&gt;
+		&lt;td class="Label"&gt;Classic ASP (ADO Library)&lt;/td&gt;
+		&lt;td&gt;Provider=SQLOLEDB;Data source=&lt;b&gt;#server#&lt;/b&gt;;Initial catalog=databaseName;User Id=userName;Password=password;&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		&lt;td class="Label"&gt;ASP.NET (ADO.NET Library)&lt;/td&gt;
+		&lt;td&gt;Server=&lt;b&gt;#server#&lt;/b&gt;;Database=databaseName;Uid=userName;Password=password;&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/ad:template&gt;
+
+&lt;ad:template name="NumericQuota"&gt;
+	&lt;ad:if test="#space.Quotas.ContainsKey(quota)#"&gt;
+		&lt;ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#"&gt;#space.Quotas[quota].QuotaAllocatedValue#&lt;ad:else&gt;Unlimited&lt;/ad:if&gt;
+	&lt;ad:else&gt;
+		0
+	&lt;/ad:if&gt;
+&lt;/ad:template&gt;
+
+&lt;ad:template name="BooleanQuota"&gt;
+	&lt;ad:if test="#space.Quotas.ContainsKey(quota)#"&gt;
+		&lt;ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot 0#"&gt;Enabled&lt;ad:else&gt;Disabled&lt;/ad:if&gt;
+	&lt;ad:else&gt;
+		Disabled
+	&lt;/ad:if&gt;
+&lt;/ad:template&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>Priority</PropertyName><PropertyValue>Normal</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>"#space.Package.PackageName#" &lt;ad:if test="#Signup#"&gt;hosting space has been created for&lt;ad:else&gt;hosting space summary for&lt;/ad:if&gt; #user.FirstName# #user.LastName#</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PackageSummaryLetter</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>================================
+   Hosting Space Information
+================================
+
+&lt;ad:if test="#Signup#"&gt;
+Hello #user.FirstName#,
+
+"#space.Package.PackageName#" hosting space has been created under your user account
+and below is the summary information for its resources.
+&lt;/ad:if&gt;
+
+Control Panel
+=============
+Control Panel URL: http://panel.AcmeHosting.com
+Username: #user.Username#
+Password: #user.Password#
+
+
+Hosting Space Overview
+======================
+General hosting space limits:
+Disk Space, MB: &lt;ad:NumericQuota quota="OS.Diskspace" /&gt;
+Bandwidth, MB/Month: &lt;ad:NumericQuota quota="OS.Bandwidth" /&gt;
+Maximum Number of Domains: &lt;ad:NumericQuota quota="OS.Domains" /&gt;
+Maximum Number of Sub-Domains: &lt;ad:NumericQuota quota="OS.SubDomains" /&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("Web")#"&gt;Web
+======
+
+Limits
+------
+Maximum Number of Web Sites: &lt;ad:NumericQuota quota="Web.Sites" /&gt;
+Web Application Gallery: &lt;ad:BooleanQuota quota="Web.WebAppGallery" /&gt;
+Classic ASP: &lt;ad:BooleanQuota quota="Web.Asp" /&gt;
+ASP.NET 1.1: &lt;ad:BooleanQuota quota="Web.AspNet11" /&gt;
+ASP.NET 2.0: &lt;ad:BooleanQuota quota="Web.AspNet20" /&gt;
+ASP.NET 4.0: &lt;ad:BooleanQuota quota="Web.AspNet40" /&gt;
+PHP 4: &lt;ad:BooleanQuota quota="Web.Php4" /&gt;
+PHP 5: &lt;ad:BooleanQuota quota="Web.Php5" /&gt;
+Perl: &lt;ad:BooleanQuota quota="Web.Perl" /&gt;
+CGI-BIN: &lt;ad:BooleanQuota quota="Web.CgiBin" /&gt;
+
+Name Servers
+------------
+In order to point your domain to the web site in this hosting space you should use the following Name Servers:
+&lt;ad:foreach collection="#NameServers#" var="NameServer" index="i"&gt;
+   #NameServer#&lt;/ad:foreach&gt;
+
+You should change the name servers in domain registrar (Register.com, GoDaddy.com, etc.) control panel. Please, study domain registrar's user manual for directions how to change name servers or contact your domain registrar directly by e-mail or phone.
+
+Please note, the changes in domain registrar database do not reflect immediately and sometimes it requires from 12 to 48 hours till the end of DNS propagation.
+
+
+Web Sites
+---------
+The following web sites have been created under hosting space:
+&lt;ad:foreach collection="#WebSites#" var="WebSite"&gt;
+   http://#WebSite.Name#&lt;/ad:foreach&gt;
+
+* Please note, your web sites may not be accessible from 12 to 48 hours after you've changed name servers for their respective domains.
+
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;Temporary URL
+-------------
+You can access your web sites right now using their respective temporary URLs (instant aliases). Temporary URL is a sub-domain of the form http://yourdomain.com.providerdomain.com where &amp;quot;yourdomain.com&amp;quot; is your domain and &amp;quot;providerdomain.com&amp;quot; is the domain of your hosting provider.
+
+You can use the following Temporary URL for all your web sites:
+    
+    http://YourDomain.com.#InstantAlias#
+&lt;/ad:if&gt;
+
+
+Files Location
+--------------
+Sometimes it is required to know the physical location of the hosting space folder (absolute path).
+Hosting space folder is the folder where all hosting space files such as web sites content, web logs, data files, etc. are located.
+
+The root of your hosting space on our HDD is here:
+   
+   #PackageRootFolder#
+   
+By default the root folder of any web site within your hosting space is built as following (you can change it anytime from the control panel):
+   
+   #PackageRootFolder#\YourDomain.com\wwwroot
+
+&lt;/ad:if&gt;
+
+
+&lt;ad:if test="#space.Groups.ContainsKey("FTP")#"&gt;FTP
+=====
+
+Limits
+------
+Maximum Number of FTP Accounts: &lt;ad:NumericQuota quota="FTP.Accounts" /&gt;
+
+FTP Server
+----------
+Your hosting space allows working with your files by FTP.
+You can use the following FTP server to access your space files remotely:
+
+   ftp://#FtpIP#
+   
+Also, you can use the following domain names to access your FTP server:
+
+   ftp://ftp.YourDomain.com
+   
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;During DNS propagation period (when domain name servers have been changed), similar to web sites, FTP server can be access with Temporary URL too:
+    
+    ftp://ftp.YourDomain.com.#InstantAlias#
+&lt;/ad:if&gt;
+
+FTP Accounts
+------------
+The following FTP accounts have been created under your hosting space and can be used to access FTP server:
+
+&lt;ad:foreach collection="#FtpAccounts#" var="FtpAcocunt" index="i"&gt;Username: #FtpAcocunt.Name#
+&lt;ad:if test="#Signup#"&gt;Password: #FtpAcocunt.Password#
+&lt;/ad:if&gt;Folder: #FtpAcocunt.Folder#
+
+&lt;/ad:foreach&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("Mail")#"&gt;Mail
+========
+
+Limits
+------
+Maximum Number of Mail Accounts: &lt;ad:NumericQuota quota="Mail.Accounts" /&gt;
+Maximum Number of Mail Forwardings: &lt;ad:NumericQuota quota="Mail.Forwardings" /&gt;
+Maximum Number of Mail Groups (Aliases): &lt;ad:NumericQuota quota="Mail.Groups" /&gt;
+Maximum Number of Mailing Lists: &lt;ad:NumericQuota quota="Mail.Lists" /&gt;
+
+SMTP/POP3 Server
+----------------
+Below is the IP address of your POP3/SMTP/IMAP server. You can always access your mailbox(es) using this IP address instead of actual POP3/SMTP/IMAP servers name:
+   
+   #MailRecords[0].ExternalIP#
+
+Also, you can use the following domain names to access SMTP/POP3 server from your favourite e-mail client software:
+   
+   mail.YourDomain.com&lt;/td&gt;
+
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;During DNS propagation period (when domain name servers have been changed), similar to web sites, SMTP/POP3 server can be access with temporary domain too:
+
+   mail.YourDomain.com.#InstantAlias#
+&lt;/ad:if&gt;
+
+Mail Accounts
+-------------
+The following mail accounts have been created under your hosting space:
+&lt;ad:foreach collection="#MailAccounts#" var="MailAccount"&gt;E-mail: #MailAccount.Name#
+&lt;ad:if test="#Signup#"&gt;Password: #MailAccount.Password#&lt;/ad:if&gt;
+&lt;/ad:foreach&gt;
+&lt;/ad:if&gt;
+
+
+Databases
+=========
+You can create databases and database users on "Space Home -&amp;gt; Databases" screen in the control panel.
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2000")#"&gt;SQL Server 2000
+---------------
+Maximum Number of Databases: &lt;ad:NumericQuota quota="MsSQL2000.Databases" /&gt;
+Maximum Number of Users: &lt;ad:NumericQuota quota="MsSQL2000.Users" /&gt;
+
+In order to connect to SQL Server 2000 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+    
+    #MsSQL2000Address#&lt;/td&gt;
+
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2000Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2005")#"&gt;SQL Server 2005
+---------------
+Maximum Number of Databases: &lt;ad:NumericQuota quota="MsSQL2005.Databases" /&gt;
+Maximum Number of Users: &lt;ad:NumericQuota quota="MsSQL2005.Users" /&gt;
+
+In order to connect to SQL Server 2005 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+    
+    #MsSQL2005Address#&lt;/td&gt;
+
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2005Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2008")#"&gt;SQL Server 2008
+---------------
+Maximum Number of Databases: &lt;ad:NumericQuota quota="MsSQL2008.Databases" /&gt;
+Maximum Number of Users: &lt;ad:NumericQuota quota="MsSQL2008.Users" /&gt;
+
+In order to connect to SQL Server 2008 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+    
+    #MsSQL2008Address#&lt;/td&gt;
+
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2008Address#" /&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MsSQL2012")#"&gt;SQL Server 2012
+---------------
+Maximum Number of Databases: &lt;ad:NumericQuota quota="MsSQL2012.Databases" /&gt;
+Maximum Number of Users: &lt;ad:NumericQuota quota="MsSQL2012.Users" /&gt;
+
+In order to connect to SQL Server 2012 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+    
+    #MsSQL2012Address#&lt;/td&gt;
+
+&lt;ad:MsSqlConnectionStrings server="#MsSQL2012Address#" /&gt;
+&lt;/ad:if&gt;
+
+
+&lt;ad:if test="#space.Groups.ContainsKey("MySQL4")#"&gt;MySQL 4.x
+---------
+Maximum Number of Databases: &lt;ad:NumericQuota quota="MySQL4.Databases" /&gt;
+Maximum Number of Users: &lt;ad:NumericQuota quota="MySQL4.Users" /&gt;
+
+In order to connect to MySQL 4.x server you can use the following address:
+   
+   #MySQL4Address#&lt;/td&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#space.Groups.ContainsKey("MySQL5")#"&gt;MySQL 5.x
+---------
+Maximum Number of Databases: &lt;ad:NumericQuota quota="MySQL5.Databases" /&gt;
+Maximum Number of Users: &lt;ad:NumericQuota quota="MySQL5.Users" /&gt;
+
+In order to connect to MySQL 5.x server you can use the following address:
+   
+   #MySQL5Address#&lt;/td&gt;
+&lt;/ad:if&gt;
+
+Microsoft Access
+----------------
+Microsoft Access database are automatically allowed in any hosting plan. You can create/upload any number of Access database from File Manager in control panel.
+
+&lt;ad:if test="#space.Groups.ContainsKey("Statistics")#"&gt;Web Statistics
+==============
+Maximum Number of Statistics Sites: &lt;ad:NumericQuota quota="Stats.Sites" /&gt;
+
+You can view advanced statistics from your domain using URL of the following form:
+
+   http://stats.YourDomain.com
+&lt;ad:if test="#isnotempty(InstantAlias)#"&gt;
+During DNS propagation period (when domain name servers have been changed), you can access web site statistics with Temporary URL:
+
+   http://stats.YourDomain.com.#InstantAlias#
+&lt;/ad:if&gt;
+&lt;/ad:if&gt;
+
+&lt;ad:if test="#Signup#"&gt;If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.AcmeHosting.com"
+E-Mail: support@AcmeHosting.com
+&lt;/ad:if&gt;
+&lt;ad:template name="MsSqlConnectionStrings"&gt;You may also use SQL Server address above in your application connection strings, for example:
+
+Classic ASP (ADO Library): Provider=SQLOLEDB;Data source=#server#;Initial catalog=databaseName;User Id=userName;Password=password;
+ASP.NET (ADO.NET Library): Server=#server#;Database=databaseName;Uid=userName;Password=password;
+&lt;/ad:template&gt;
+&lt;ad:template name="NumericQuota"&gt;&lt;ad:if test="#space.Quotas.ContainsKey(quota)#"&gt;&lt;ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#"&gt;#space.Quotas[quota].QuotaAllocatedValue#&lt;ad:else&gt;Unlimited&lt;/ad:if&gt;&lt;ad:else&gt;0&lt;/ad:if&gt;&lt;/ad:template&gt;
+&lt;ad:template name="BooleanQuota"&gt;&lt;ad:if test="#space.Quotas.ContainsKey(quota)#"&gt;&lt;ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot 0#"&gt;Enabled&lt;ad:else&gt;Disabled&lt;/ad:if&gt;&lt;ad:else&gt;Disabled&lt;/ad:if&gt;&lt;/ad:template&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PasswordReminderLetter</SettingsName><PropertyName>CC</PropertyName><PropertyValue></PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PasswordReminderLetter</SettingsName><PropertyName>From</PropertyName><PropertyValue>support@HostingCompany.com</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PasswordReminderLetter</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;Account Summary Information&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.3em; color: ##1F4978; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+&lt;div class="Header"&gt;
+	Hosting Account Information
+&lt;/div&gt;
+
+&lt;p&gt;
+Hello #user.FirstName#,
+&lt;/p&gt;
+
+&lt;p&gt;
+Please, find below details of your control panel account.
+&lt;/p&gt;
+
+&lt;h1&gt;Control Panel URL&lt;/h1&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Control Panel URL&lt;/th&gt;
+            &lt;th&gt;Username&lt;/th&gt;
+            &lt;th&gt;Password&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;a href="http://panel.HostingCompany.com"&gt;http://panel.HostingCompany.com&lt;/a&gt;&lt;/td&gt;
+            &lt;td&gt;#user.Username#&lt;/td&gt;
+            &lt;td&gt;#user.Password#&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+
+&lt;p&gt;
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.AcmeHosting.com"&gt;www.AcmeHosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@AcmeHosting.com"&gt;support@AcmeHosting.com&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PasswordReminderLetter</SettingsName><PropertyName>Priority</PropertyName><PropertyValue>Normal</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PasswordReminderLetter</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>Password reminder for #user.FirstName# #user.LastName#</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>PasswordReminderLetter</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>=================================
+   Hosting Account Information
+=================================
+
+Hello #user.FirstName#,
+
+Please, find below details of your control panel account.
+
+Control Panel URL: http://panel.AcmeHosting.com
+Username: #user.Username#
+Password: #user.Password#
+
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.AcmeHosting.com"
+E-Mail: support@AcmeHosting.com</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>SharePointPolicy</SettingsName><PropertyName>GroupNamePolicy</PropertyName><PropertyValue>True;-;1;20;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>SharePointPolicy</SettingsName><PropertyName>UserNamePolicy</PropertyName><PropertyValue>True;-;1;20;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>SharePointPolicy</SettingsName><PropertyName>UserPasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>AddParkingPage</PropertyName><PropertyValue>True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>AddRandomDomainString</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>AnonymousAccountPolicy</PropertyName><PropertyValue>True;;5;20;;_web;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>AspInstalled</PropertyName><PropertyValue>True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>AspNetInstalled</PropertyName><PropertyValue>2</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>CgiBinInstalled</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>DefaultDocuments</PropertyName><PropertyValue>Default.htm,Default.asp,index.htm,Default.aspx</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableAnonymousAccess</PropertyName><PropertyValue>True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableBasicAuthentication</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableDedicatedPool</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableDirectoryBrowsing</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableParentPaths</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableWindowsAuthentication</PropertyName><PropertyValue>True</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>EnableWritePermissions</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>FrontPageAccountPolicy</PropertyName><PropertyValue>True;;1;20;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>FrontPagePasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>ParkingPageContent</PropertyName><PropertyValue>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;The web site is under construction&lt;/title&gt;
+&lt;style type="text/css"&gt;
+	BODY { color: #444444; background-color: #E5F2FF; font-family: verdana; margin: 0px; }
+	#PageOutline { text-align: center; margin-top: 300px; }
+	A { color: #0153A4; }
+	H1 { font-size: 16pt; margin-bottom: 4px; }
+	H2 { font-size: 14pt; margin-bottom: 4px; font-weight: normal; }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id="PageOutline"&gt;
+	&lt;h1&gt;This web site has just been created from &lt;a href="http://www.SolidCP.net"&gt;SolidCP &lt;/a&gt; and it is still under construction.&lt;/h1&gt;
+	&lt;h2&gt;The web site is hosted by &lt;a href="http://www.AcmeHosting.com"&gt;AcmeHosting&lt;/a&gt;.&lt;/h2&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>ParkingPageName</PropertyName><PropertyValue>default.aspx</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>PerlInstalled</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>PhpInstalled</PropertyName><PropertyValue></PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>PythonInstalled</PropertyName><PropertyValue>False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>SecuredGroupNamePolicy</PropertyName><PropertyValue>True;;1;20;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>SecuredUserNamePolicy</PropertyName><PropertyValue>True;;1;20;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>SecuredUserPasswordPolicy</PropertyName><PropertyValue>True;5;20;0;1;0;False</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>VirtDirNamePolicy</PropertyName><PropertyValue>True;-;3;50;;;</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>WebDataFolder</PropertyName><PropertyValue>\[DOMAIN_NAME]\data</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>WebLogsFolder</PropertyName><PropertyValue>\[DOMAIN_NAME]\logs</PropertyValue></Table><Table><UserID>1</UserID><SettingsName>WebPolicy</SettingsName><PropertyName>WebRootFolder</PropertyName><PropertyValue>\[DOMAIN_NAME]\wwwroot</PropertyValue></Table></NewDataSet>

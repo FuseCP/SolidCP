@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2005/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="DummyDataSource">
+      <rd:DataSourceID>d9f4ae83-0bcb-400c-aa2e-a2ddd1c3fc15</rd:DataSourceID>
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  <InteractiveHeight>11in</InteractiveHeight>
+  <ReportParameters>
+    <ReportParameter Name="HostingSpaceId">
+      <DataType>Integer</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>0</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>HostingSpaceId</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="HostingSpaceFullTree">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>\</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>HostingSpaceFullTree</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="UserHomePageUrl">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Default.aspx?pid=Home&amp;UserID="</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>UserHomePageUrl</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="SpaceHomePageUrl">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Default.aspx?pid=SpaceHome&amp;SpaceID="</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>SpaceHomePageUrl</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <rd:DrawGrid>true</rd:DrawGrid>
+  <InteractiveWidth>8.5in</InteractiveWidth>
+  <rd:GridSpacing>0.025in</rd:GridSpacing>
+  <rd:SnapToGrid>true</rd:SnapToGrid>
+  <RightMargin>1in</RightMargin>
+  <LeftMargin>1in</LeftMargin>
+  <BottomMargin>1in</BottomMargin>
+  <rd:ReportID>6b96c48d-769d-4afa-8dfc-97ed9c3b3da6</rd:ReportID>
+  <DataSets>
+    <DataSet Name="OverusageReport_HostingSpace">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="HostingSpaceName">
+          <DataField>HostingSpaceName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ChildSpaceQuantity">
+          <DataField>ChildSpaceQuantity</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="HostingPlanId">
+          <DataField>HostingPlanId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="HostingPlanName">
+          <DataField>HostingPlanName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="HostingSpaceFullTreeName">
+          <DataField>HostingSpaceFullTreeName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UserId">
+          <DataField>UserId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="UserName">
+          <DataField>UserName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UserEmail">
+          <DataField>UserEmail</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="HostingSpaceCreationDate">
+          <DataField>HostingSpaceCreationDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Status">
+          <DataField>Status</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Location">
+          <DataField>Location</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IsBandwidthOverused">
+          <DataField>IsBandwidthOverused</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="IsDiskspaceOverused">
+          <DataField>IsDiskspaceOverused</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+      </Fields>
+      <Filters>
+        <Filter>
+          <FilterExpression>=Fields!HostingSpaceId.Value</FilterExpression>
+          <Operator>Equal</Operator>
+          <FilterValues>
+            <FilterValue>=Parameters!HostingSpaceId.Value</FilterValue>
+          </FilterValues>
+        </Filter>
+      </Filters>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>HostingSpace</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="OverusageReport_OverusageDetails">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="ResourceGroupName">
+          <DataField>ResourceGroupName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Used">
+          <DataField>Used</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Allowed">
+          <DataField>Allowed</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="OverusageType">
+          <DataField>OverusageType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>OverusageDetails</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="OverusageReport_DiskspaceOverusage">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Allocated">
+          <DataField>Allocated</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Used">
+          <DataField>Used</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="Usage">
+          <DataField>Usage</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>DiskspaceOverusage</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <Code />
+  <Width>5.375in</Width>
+  <Body>
+    <ReportItems>
+      <Textbox Name="textbox6">
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <Top>3.475in</Top>
+        <Width>1.3in</Width>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>17</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.125in</Left>
+        <Height>0.275in</Height>
+        <Value>=CStr(Sum(Fields!Allocated.Value, "OverusageReport_DiskspaceOverusage")) + " MB"</Value>
+      </Textbox>
+      <Textbox Name="allocatedLabel">
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <Top>3.5in</Top>
+        <Width>0.95in</Width>
+        <Style>
+          <Color>#333333</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Right</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>16</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.2in</Height>
+        <Value rd:LocID="allocatedLabel">Allocated:</Value>
+      </Textbox>
+      <Textbox Name="textbox2">
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <Top>3.75in</Top>
+        <Width>1.3in</Width>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>15</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.125in</Left>
+        <Height>0.275in</Height>
+        <Value>=CStr(Sum(Fields!Used.Value, "OverusageReport_OverusageDetails")) + " MB"</Value>
+      </Textbox>
+      <Textbox Name="usedLabel">
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <Top>3.775in</Top>
+        <Width>0.95in</Width>
+        <Style>
+          <Color>#333333</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Right</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>14</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.2in</Height>
+        <Value rd:LocID="usedLabel">Used:</Value>
+      </Textbox>
+      <Textbox Name="totalOverusageLabel">
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <Top>4.075in</Top>
+        <Width>0.95in</Width>
+        <Style>
+          <Color>#333333</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextDecoration>Underline</TextDecoration>
+          <TextAlign>Right</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>13</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.2in</Height>
+        <Value rd:LocID="totalOverusageLabel">Total overusage:</Value>
+      </Textbox>
+      <Textbox Name="textbox8">
+        <Top>1.375in</Top>
+        <Width>1.15in</Width>
+        <Style>
+          <BackgroundColor>WhiteSmoke</BackgroundColor>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <FontWeight>700</FontWeight>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>12</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.175in</Height>
+        <Value rd:LocID="UserLabel">User:</Value>
+      </Textbox>
+      <Textbox Name="textbox3">
+        <Top>1.15in</Top>
+        <Width>1.15in</Width>
+        <Style>
+          <BackgroundColor>WhiteSmoke</BackgroundColor>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <FontWeight>700</FontWeight>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>11</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.175in</Height>
+        <Value rd:LocID="StatusLabel">Status:</Value>
+      </Textbox>
+      <Textbox Name="textbox10">
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <Top>4.05in</Top>
+        <Width>1.3in</Width>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>10</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.125in</Left>
+        <Height>0.275in</Height>
+        <Value>=CStr(Sum(Fields!Used.Value, "OverusageReport_OverusageDetails") - Sum(Fields!Allocated.Value, "OverusageReport_DiskspaceOverusage")) + " MB"</Value>
+      </Textbox>
+      <Chart Name="resourcesChart">
+        <Legend>
+          <Style>
+            <BorderStyle>
+              <Default>Solid</Default>
+            </BorderStyle>
+          </Style>
+          <Position>RightCenter</Position>
+        </Legend>
+        <CategoryAxis>
+          <Axis>
+            <Title>
+              <Caption>Resources</Caption>
+              <Style>
+                <Color>#333333</Color>
+                <FontFamily>Tahoma</FontFamily>
+                <FontSize>8pt</FontSize>
+                <FontWeight>700</FontWeight>
+              </Style>
+            </Title>
+            <Style>
+              <FontFamily>Tahoma</FontFamily>
+            </Style>
+            <MajorGridLines>
+              <Style>
+                <BorderStyle>
+                  <Default>Solid</Default>
+                </BorderStyle>
+              </Style>
+            </MajorGridLines>
+            <MinorGridLines>
+              <Style>
+                <BorderStyle>
+                  <Default>Solid</Default>
+                </BorderStyle>
+              </Style>
+            </MinorGridLines>
+            <MajorTickMarks>Outside</MajorTickMarks>
+            <Min>0</Min>
+            <Visible>true</Visible>
+          </Axis>
+        </CategoryAxis>
+        <NoRows>No data available.</NoRows>
+        <ZIndex>9</ZIndex>
+        <DataSetName>OverusageReport_OverusageDetails</DataSetName>
+        <Visibility>
+          <ToggleItem>diskspaceByResourcesLabel</ToggleItem>
+        </Visibility>
+        <PlotArea>
+          <Style>
+            <BackgroundColor>White</BackgroundColor>
+            <BorderStyle>
+              <Default>Solid</Default>
+            </BorderStyle>
+          </Style>
+        </PlotArea>
+        <ThreeDProperties>
+          <Rotation>30</Rotation>
+          <Inclination>30</Inclination>
+          <Shading>Simple</Shading>
+          <WallThickness>50</WallThickness>
+        </ThreeDProperties>
+        <PointWidth>0</PointWidth>
+        <SeriesGroupings>
+          <SeriesGrouping>
+            <StaticSeries>
+              <StaticMember>
+                <Label>DiskspaceUsage</Label>
+              </StaticMember>
+            </StaticSeries>
+          </SeriesGrouping>
+        </SeriesGroupings>
+        <Top>1.9in</Top>
+        <Subtype>Plain</Subtype>
+        <ValueAxis>
+          <Axis>
+            <Title>
+              <Caption>Diskspace, MB</Caption>
+              <Style>
+                <Color>#333333</Color>
+                <FontFamily>Tahoma</FontFamily>
+                <FontSize>8pt</FontSize>
+                <FontWeight>700</FontWeight>
+              </Style>
+            </Title>
+            <Style>
+              <FontFamily>Tahoma</FontFamily>
+            </Style>
+            <MajorGridLines>
+              <ShowGridLines>true</ShowGridLines>
+              <Style>
+                <BorderStyle>
+                  <Default>Solid</Default>
+                </BorderStyle>
+              </Style>
+            </MajorGridLines>
+            <MinorGridLines>
+              <Style>
+                <BorderStyle>
+                  <Default>Solid</Default>
+                </BorderStyle>
+              </Style>
+            </MinorGridLines>
+            <MajorTickMarks>Outside</MajorTickMarks>
+            <Min>0</Min>
+            <Margin>true</Margin>
+            <Visible>true</Visible>
+            <Scalar>true</Scalar>
+          </Axis>
+        </ValueAxis>
+        <Type>Bar</Type>
+        <Width>4in</Width>
+        <CategoryGroupings>
+          <CategoryGrouping>
+            <DynamicCategories>
+              <Grouping Name="resourceChart_ResourceGroupNameGroup">
+                <GroupExpressions>
+                  <GroupExpression>=Fields!ResourceGroupName.Value</GroupExpression>
+                </GroupExpressions>
+                <Filters>
+                  <Filter>
+                    <FilterExpression>=Fields!HostingSpaceId.Value</FilterExpression>
+                    <Operator>Equal</Operator>
+                    <FilterValues>
+                      <FilterValue>=Parameters!HostingSpaceId.Value</FilterValue>
+                    </FilterValues>
+                  </Filter>
+                  <Filter>
+                    <FilterExpression>=Fields!OverusageType.Value</FilterExpression>
+                    <Operator>Equal</Operator>
+                    <FilterValues>
+                      <FilterValue>="Diskspace"</FilterValue>
+                    </FilterValues>
+                  </Filter>
+                </Filters>
+              </Grouping>
+              <Sorting>
+                <SortBy>
+                  <SortExpression>=Fields!Used.Value</SortExpression>
+                  <Direction>Ascending</Direction>
+                </SortBy>
+              </Sorting>
+              <Label />
+            </DynamicCategories>
+          </CategoryGrouping>
+        </CategoryGroupings>
+        <Palette>Default</Palette>
+        <ChartData>
+          <ChartSeries>
+            <DataPoints>
+              <DataPoint>
+                <DataValues>
+                  <DataValue>
+                    <Value>=Fields!Used.Value</Value>
+                  </DataValue>
+                </DataValues>
+                <DataLabel>
+                  <Style>
+                    <Color>DarkGreen</Color>
+                    <FontFamily>Tahoma</FontFamily>
+                    <FontSize>8pt</FontSize>
+                    <FontWeight>700</FontWeight>
+                  </Style>
+                  <Value>=Fields!Used.Value</Value>
+                  <Visible>true</Visible>
+                </DataLabel>
+                <Style>
+                  <BackgroundColor>White</BackgroundColor>
+                  <BackgroundGradientEndColor>DarkGreen</BackgroundGradientEndColor>
+                  <BackgroundGradientType>TopBottom</BackgroundGradientType>
+                  <BorderColor>
+                    <Default>#999999</Default>
+                  </BorderColor>
+                  <BorderStyle>
+                    <Default>Solid</Default>
+                  </BorderStyle>
+                </Style>
+                <Marker>
+                  <Size>6pt</Size>
+                </Marker>
+              </DataPoint>
+            </DataPoints>
+          </ChartSeries>
+        </ChartData>
+        <Style>
+          <BackgroundColor>White</BackgroundColor>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <PaddingLeft>13pt</PaddingLeft>
+          <PaddingRight>5pt</PaddingRight>
+        </Style>
+        <Title />
+        <Height>1.5in</Height>
+        <Left>0.15in</Left>
+      </Chart>
+      <Textbox Name="diskspaceByResourcesLabel">
+        <Top>1.625in</Top>
+        <Width>3.225in</Width>
+        <ToggleImage>
+          <InitialState>true</InitialState>
+        </ToggleImage>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontWeight>700</FontWeight>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>8</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.25in</Height>
+        <Value rd:LocID="DiskspaceOverusageByResourcesLabel">Diskspace overusage by Resources</Value>
+      </Textbox>
+      <Textbox Name="textbox1">
+        <Top>0.925in</Top>
+        <Width>1.8in</Width>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>7</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.3in</Left>
+        <Height>0.175in</Height>
+        <Value>=FormatDateTime(First(Fields!HostingSpaceCreationDate.Value, "OverusageReport_HostingSpace"), 1)</Value>
+      </Textbox>
+      <Textbox Name="textbox4">
+        <Top>0.925in</Top>
+        <Width>1.15in</Width>
+        <Style>
+          <BackgroundColor>WhiteSmoke</BackgroundColor>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <FontWeight>700</FontWeight>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>6</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.175in</Height>
+        <Value rd:LocID="CreationDateLabel">Creation Date:</Value>
+      </Textbox>
+      <Textbox Name="locationLabelData">
+        <Top>0.7in</Top>
+        <Width>1.8in</Width>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>5</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.3in</Left>
+        <Height>0.2in</Height>
+        <Value>=First(Fields!Location.Value, "OverusageReport_HostingSpace")</Value>
+      </Textbox>
+      <Textbox Name="textbox9">
+        <Top>1.15in</Top>
+        <Width>1.8in</Width>
+        <Style>
+          <Color>=IIf(First(Fields!Status.Value, "OverusageReport_HostingSpace") = "Active", "#339933", "#999999")</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>4</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.3in</Left>
+        <Height>0.175in</Height>
+        <Value>=First(Fields!Status.Value, "OverusageReport_HostingSpace")</Value>
+      </Textbox>
+      <Textbox Name="locationLabel">
+        <Top>0.7in</Top>
+        <Width>1.15in</Width>
+        <Style>
+          <BackgroundColor>WhiteSmoke</BackgroundColor>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <FontWeight>700</FontWeight>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>3</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.2in</Height>
+        <Value rd:LocID="LocationLabel">Location (Server):</Value>
+      </Textbox>
+      <Textbox Name="usernameLabel">
+        <ToolTip rd:LocID="UsernameLink">Click to open this User home page.</ToolTip>
+        <Top>1.375in</Top>
+        <Action>
+          <Hyperlink>="javascript:void window.open('" + Parameters!UserHomePageUrl.Value + CStr(First(Fields!UserId.Value, "OverusageReport_HostingSpace")) + "','_blank');"</Hyperlink>
+        </Action>
+        <Width>2.8in</Width>
+        <Style>
+          <Color>#1f4978</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextDecoration>Underline</TextDecoration>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>2</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>1.3in</Left>
+        <Height>0.175in</Height>
+        <Value>=First(Fields!UserName.Value, "OverusageReport_HostingSpace")</Value>
+      </Textbox>
+      <Textbox Name="hostingSpaceUrl">
+        <Top>0.45in</Top>
+        <Action>
+          <Hyperlink>="javascript:void window.open('" + Parameters!SpaceHomePageUrl.Value + CStr(First(Fields!HostingSpaceId.Value, "OverusageReport_HostingSpace")) + "','_blank');"</Hyperlink>
+        </Action>
+        <Width>2.925in</Width>
+        <Style>
+          <Color>#1f4978</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextDecoration>Underline</TextDecoration>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>1</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.2in</Height>
+        <Value rd:LocID="HostingSpaceLinkLabel">Click here to navigate this hosting space home page.</Value>
+      </Textbox>
+      <Textbox Name="titleLabel">
+        <Top>0.125in</Top>
+        <Width>5.1in</Width>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>14pt</FontSize>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.325in</Height>
+        <Value>=First(Fields!HostingSpaceName.Value, "OverusageReport_HostingSpace")</Value>
+      </Textbox>
+    </ReportItems>
+    <Height>4.4in</Height>
+  </Body>
+  <Language>en-US</Language>
+  <PageFooter>
+    <PrintOnFirstPage>true</PrintOnFirstPage>
+    <ReportItems>
+      <Textbox Name="dateLabel">
+        <Top>0.125in</Top>
+        <Width>2.025in</Width>
+        <Style>
+          <Color>#333333</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Value>=FormatDateTime(Today,1)</Value>
+      </Textbox>
+    </ReportItems>
+    <Height>0.375in</Height>
+    <PrintOnLastPage>true</PrintOnLastPage>
+  </PageFooter>
+  <TopMargin>1in</TopMargin>
+</Report>

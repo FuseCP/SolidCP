@@ -1,0 +1,2727 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="MonitoringService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <scp:Policy>
+            <sp:ProtectionToken>
+              <scp:Policy>
+                <sp:SecureConversationToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                  <scp:Policy>
+                    <sp:RequireDerivedKeys />
+                    <sp:BootstrapPolicy>
+                      <scp:Policy>
+                        <sp:SignedParts>
+                          <sp:Body />
+                          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+                        </sp:SignedParts>
+                        <sp:EncryptedParts>
+                          <sp:Body />
+                        </sp:EncryptedParts>
+                        <sp:SymmetricBinding>
+                          <scp:Policy>
+                            <sp:ProtectionToken>
+                              <scp:Policy>
+                                <sp:SpnegoContextToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                                  <scp:Policy>
+                                    <sp:RequireDerivedKeys />
+                                  </scp:Policy>
+                                </sp:SpnegoContextToken>
+                              </scp:Policy>
+                            </sp:ProtectionToken>
+                            <sp:AlgorithmSuite>
+                              <scp:Policy>
+                                <sp:Basic256 />
+                              </scp:Policy>
+                            </sp:AlgorithmSuite>
+                            <sp:Layout>
+                              <scp:Policy>
+                                <sp:Strict />
+                              </scp:Policy>
+                            </sp:Layout>
+                            <sp:IncludeTimestamp />
+                            <sp:EncryptSignature />
+                            <sp:OnlySignEntireHeadersAndBody />
+                          </scp:Policy>
+                        </sp:SymmetricBinding>
+                        <sp:Wss11>
+                          <scp:Policy />
+                        </sp:Wss11>
+                        <sp:Trust10>
+                          <scp:Policy>
+                            <sp:MustSupportIssuedTokens />
+                            <sp:RequireClientEntropy />
+                            <sp:RequireServerEntropy />
+                          </scp:Policy>
+                        </sp:Trust10>
+                      </scp:Policy>
+                    </sp:BootstrapPolicy>
+                  </scp:Policy>
+                </sp:SecureConversationToken>
+              </scp:Policy>
+            </sp:ProtectionToken>
+            <sp:AlgorithmSuite>
+              <scp:Policy>
+                <sp:Basic256 />
+              </scp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <scp:Policy>
+                <sp:Strict />
+              </scp:Policy>
+            </sp:Layout>
+            <sp:IncludeTimestamp />
+            <sp:EncryptSignature />
+            <sp:OnlySignEntireHeadersAndBody />
+          </scp:Policy>
+        </sp:SymmetricBinding>
+        <sp:Wss11 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <scp:Policy />
+        </sp:Wss11>
+        <sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <scp:Policy>
+            <sp:MustSupportIssuedTokens />
+            <sp:RequireClientEntropy />
+            <sp:RequireServerEntropy />
+          </scp:Policy>
+        </sp:Trust10>
+        <wsaw:UsingAddressing />
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetPerformanceCounterCategories_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetPerformanceCounterCategories_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetServices_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetServices_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSCOMHost_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSCOMHost_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSystemAlertsByDeviceName_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSystemAlertsByDeviceName_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringState_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringState_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringDevice_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringDevice_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVCollectedCounters_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVCollectedCounters_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestCPUUtilization_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestCPUUtilization_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestStorageUsage_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVGuestStorageUsage_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVVirtualNetwork_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetAllHyperVVirtualNetwork_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSingleVMHyperVCPUCounters_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSingleVMHyperVCPUCounters_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSingleVMHyperVVirtualNetwork_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSingleVMHyperVVirtualNetwork_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_ExecuteMonitoringTask_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_ExecuteMonitoringTask_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_ExecuteTask_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_ExecuteTask_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValues_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValues_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValuesById_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValuesById_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoredObjects_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoredObjects_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringAlertsByObjectDisplayName_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringAlertsByObjectDisplayName_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoredObjectByDisplayName_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoredObjectByDisplayName_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoredApplicationComponents_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoredApplicationComponents_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringTemplates_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringTemplates_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetManagementPacks_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetManagementPacks_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetManagementPack_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetManagementPack_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_DeleteManagementPack_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_DeleteManagementPack_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetManagementPackStringResource_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetManagementPackStringResource_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_UpdateManagementPackStringResource_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_UpdateManagementPackStringResource_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateWebUrlMonitor_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateWebUrlMonitor_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateTcpPortMonitor_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateTcpPortMonitor_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitors_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitors_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitorInfo_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitorInfo_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitorHealthState_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitorHealthState_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetApplicationHealthState_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetApplicationHealthState_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetApplicationComponentHealthState_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetApplicationComponentHealthState_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringStateHierarchy_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_GetMonitoringStateHierarchy_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateManagementPack_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateManagementPack_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_UpdateManagementPack_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_UpdateManagementPack_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateMonitorOverride_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateMonitorOverride_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateNTServiceUnitMonitor_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreateNTServiceUnitMonitor_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreatePerformanceCollectionRule_Input_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <scp:Policy wsu:Id="WSHttpBinding_IMonitoringService_CreatePerformanceCollectionRule_output_policy">
+    <scp:ExactlyOne>
+      <scp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </scp:All>
+    </scp:ExactlyOne>
+  </scp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Diagnostics" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Monitoring" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common.Internal" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd9" namespace="http://schemas.datacontract.org/2004/07/System" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd10" namespace="http://schemas.datacontract.org/2004/07/System.Reflection" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IMonitoringService_GetPerformanceCounterCategories_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPerformanceCounterCategories" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetPerformanceCounterCategories_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPerformanceCounterCategoriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetServices_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetServices" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetServices_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetServicesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSCOMHost_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSCOMHost" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSCOMHost_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSCOMHostResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSystemAlertsByDeviceName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSystemAlertsByDeviceName" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSystemAlertsByDeviceName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSystemAlertsByDeviceNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringState_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringState" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringDevice_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringDevice" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringDevice_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringDeviceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVCollectedCounters_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVCollectedCounters" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVCollectedCounters_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVCollectedCountersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestCPUUtilization_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestCPUUtilization" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestCPUUtilization_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestCPUUtilizationResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestLegacyNetworkAdapter" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestLegacyNetworkAdapterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestMemoryPagesAllocated" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestMemoryPagesAllocatedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestStorageUsage_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestStorageUsage" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVGuestStorageUsage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVGuestStorageUsageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVVirtualNetwork_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVVirtualNetwork" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetAllHyperVVirtualNetwork_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllHyperVVirtualNetworkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSingleVMHyperVCPUCounters_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleVMHyperVCPUCounters" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSingleVMHyperVCPUCounters_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleVMHyperVCPUCountersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSingleVMHyperVVirtualNetwork_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleVMHyperVVirtualNetwork" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSingleVMHyperVVirtualNetwork_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleVMHyperVVirtualNetworkResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleVMHyperVGuestMemoryPagesAllocated" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSingleVMHyperVGuestMemoryPagesAllocatedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_ExecuteMonitoringTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExecuteMonitoringTask" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_ExecuteMonitoringTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExecuteMonitoringTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_ExecuteTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:ExecuteTask" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_ExecuteTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ExecuteTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringPerformanceValues_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringPerformanceValues" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringPerformanceValues_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringPerformanceValuesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringPerformanceValuesById_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringPerformanceValuesById" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringPerformanceValuesById_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringPerformanceValuesByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoredObjects_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoredObjects" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoredObjects_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoredObjectsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringAlertsByObjectDisplayName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringAlertsByObjectDisplayName" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringAlertsByObjectDisplayName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringAlertsByObjectDisplayNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoredObjectByDisplayName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoredObjectByDisplayName" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoredObjectByDisplayName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoredObjectByDisplayNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoredApplicationComponents_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoredApplicationComponents" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoredApplicationComponents_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoredApplicationComponentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringTemplates_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringTemplates" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringTemplates_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringTemplatesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetManagementPacks_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetManagementPacks" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetManagementPacks_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetManagementPacksResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetManagementPack_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetManagementPack" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetManagementPack_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetManagementPackResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_DeleteManagementPack_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteManagementPack" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_DeleteManagementPack_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteManagementPackResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetManagementPackStringResource_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetManagementPackStringResource" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetManagementPackStringResource_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetManagementPackStringResourceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_UpdateManagementPackStringResource_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateManagementPackStringResource" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_UpdateManagementPackStringResource_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateManagementPackStringResourceResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateWebUrlMonitor_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateWebUrlMonitor" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateWebUrlMonitor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateWebUrlMonitorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateTcpPortMonitor_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateTcpPortMonitor" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateTcpPortMonitor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateTcpPortMonitorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitors_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitors" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitors_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitorsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitorInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitorInfo" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitorInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitorInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitorHealthState_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitorHealthState" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitorHealthState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitorHealthStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetApplicationHealthState_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetApplicationHealthState" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetApplicationHealthState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetApplicationHealthStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetApplicationComponentHealthState_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetApplicationComponentHealthState" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetApplicationComponentHealthState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetApplicationComponentHealthStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringStateHierarchy_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringStateHierarchy" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_GetMonitoringStateHierarchy_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMonitoringStateHierarchyResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateManagementPack_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateManagementPack" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateManagementPack_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateManagementPackResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_UpdateManagementPack_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateManagementPack" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_UpdateManagementPack_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateManagementPackResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateAverageThresholdPerformanceCounterMonitor" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateAverageThresholdPerformanceCounterMonitorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateDoubleThresholdPerformanceCounterMonitor" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateDoubleThresholdPerformanceCounterMonitorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateMonitorOverride_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateMonitorOverride" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateMonitorOverride_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateMonitorOverrideResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateNTServiceUnitMonitor_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateNTServiceUnitMonitor" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreateNTServiceUnitMonitor_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateNTServiceUnitMonitorResponse" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreatePerformanceCollectionRule_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePerformanceCollectionRule" />
+  </wsdl:message>
+  <wsdl:message name="IMonitoringService_CreatePerformanceCollectionRule_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreatePerformanceCollectionRuleResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IMonitoringService">
+    <wsdl:operation name="GetPerformanceCounterCategories">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetPerformanceCounterCategories" message="tns:IMonitoringService_GetPerformanceCounterCategories_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetPerformanceCounterCategoriesResponse" message="tns:IMonitoringService_GetPerformanceCounterCategories_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetServices">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetServices" message="tns:IMonitoringService_GetServices_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetServicesResponse" message="tns:IMonitoringService_GetServices_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSCOMHost">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetSCOMHost" message="tns:IMonitoringService_GetSCOMHost_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetSCOMHostResponse" message="tns:IMonitoringService_GetSCOMHost_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAlertsByDeviceName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetSystemAlertsByDeviceName" message="tns:IMonitoringService_GetSystemAlertsByDeviceName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetSystemAlertsByDeviceNameResponse" message="tns:IMonitoringService_GetSystemAlertsByDeviceName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringState">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringState" message="tns:IMonitoringService_GetMonitoringState_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringStateResponse" message="tns:IMonitoringService_GetMonitoringState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringDevice">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringDevice" message="tns:IMonitoringService_GetMonitoringDevice_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringDeviceResponse" message="tns:IMonitoringService_GetMonitoringDevice_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVCollectedCounters">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVCollectedCounters" message="tns:IMonitoringService_GetAllHyperVCollectedCounters_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVCollectedCountersResponse" message="tns:IMonitoringService_GetAllHyperVCollectedCounters_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestCPUUtilization">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestCPUUtilization" message="tns:IMonitoringService_GetAllHyperVGuestCPUUtilization_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestCPUUtilizationResponse" message="tns:IMonitoringService_GetAllHyperVGuestCPUUtilization_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestLegacyNetworkAdapter">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestLegacyNetworkAdapter" message="tns:IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestLegacyNetworkAdapterResponse" message="tns:IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestMemoryPagesAllocated">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestMemoryPagesAllocated" message="tns:IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestMemoryPagesAllocatedResponse" message="tns:IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestStorageUsage">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestStorageUsage" message="tns:IMonitoringService_GetAllHyperVGuestStorageUsage_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVGuestStorageUsageResponse" message="tns:IMonitoringService_GetAllHyperVGuestStorageUsage_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVVirtualNetwork">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVVirtualNetwork" message="tns:IMonitoringService_GetAllHyperVVirtualNetwork_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetAllHyperVVirtualNetworkResponse" message="tns:IMonitoringService_GetAllHyperVVirtualNetwork_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleVMHyperVCPUCounters">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetSingleVMHyperVCPUCounters" message="tns:IMonitoringService_GetSingleVMHyperVCPUCounters_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetSingleVMHyperVCPUCountersResponse" message="tns:IMonitoringService_GetSingleVMHyperVCPUCounters_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleVMHyperVVirtualNetwork">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetSingleVMHyperVVirtualNetwork" message="tns:IMonitoringService_GetSingleVMHyperVVirtualNetwork_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetSingleVMHyperVVirtualNetworkResponse" message="tns:IMonitoringService_GetSingleVMHyperVVirtualNetwork_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleVMHyperVGuestMemoryPagesAllocated">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetSingleVMHyperVGuestMemoryPagesAllocated" message="tns:IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetSingleVMHyperVGuestMemoryPagesAllocatedResponse" message="tns:IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteMonitoringTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/ExecuteMonitoringTask" message="tns:IMonitoringService_ExecuteMonitoringTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/ExecuteMonitoringTaskResponse" message="tns:IMonitoringService_ExecuteMonitoringTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteTask">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/ExecuteTask" message="tns:IMonitoringService_ExecuteTask_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/ExecuteTaskResponse" message="tns:IMonitoringService_ExecuteTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringPerformanceValues">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringPerformanceValues" message="tns:IMonitoringService_GetMonitoringPerformanceValues_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringPerformanceValuesResponse" message="tns:IMonitoringService_GetMonitoringPerformanceValues_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringPerformanceValuesById">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringPerformanceValuesById" message="tns:IMonitoringService_GetMonitoringPerformanceValuesById_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringPerformanceValuesByIdResponse" message="tns:IMonitoringService_GetMonitoringPerformanceValuesById_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoredObjects">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoredObjects" message="tns:IMonitoringService_GetMonitoredObjects_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoredObjectsResponse" message="tns:IMonitoringService_GetMonitoredObjects_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringAlertsByObjectDisplayName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringAlertsByObjectDisplayName" message="tns:IMonitoringService_GetMonitoringAlertsByObjectDisplayName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringAlertsByObjectDisplayNameResponse" message="tns:IMonitoringService_GetMonitoringAlertsByObjectDisplayName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoredObjectByDisplayName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoredObjectByDisplayName" message="tns:IMonitoringService_GetMonitoredObjectByDisplayName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoredObjectByDisplayNameResponse" message="tns:IMonitoringService_GetMonitoredObjectByDisplayName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoredApplicationComponents">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoredApplicationComponents" message="tns:IMonitoringService_GetMonitoredApplicationComponents_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoredApplicationComponentsResponse" message="tns:IMonitoringService_GetMonitoredApplicationComponents_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringTemplates">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringTemplates" message="tns:IMonitoringService_GetMonitoringTemplates_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringTemplatesResponse" message="tns:IMonitoringService_GetMonitoringTemplates_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetManagementPacks">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetManagementPacks" message="tns:IMonitoringService_GetManagementPacks_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetManagementPacksResponse" message="tns:IMonitoringService_GetManagementPacks_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetManagementPack">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetManagementPack" message="tns:IMonitoringService_GetManagementPack_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetManagementPackResponse" message="tns:IMonitoringService_GetManagementPack_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteManagementPack">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/DeleteManagementPack" message="tns:IMonitoringService_DeleteManagementPack_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/DeleteManagementPackResponse" message="tns:IMonitoringService_DeleteManagementPack_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetManagementPackStringResource">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetManagementPackStringResource" message="tns:IMonitoringService_GetManagementPackStringResource_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetManagementPackStringResourceResponse" message="tns:IMonitoringService_GetManagementPackStringResource_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateManagementPackStringResource">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/UpdateManagementPackStringResource" message="tns:IMonitoringService_UpdateManagementPackStringResource_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/UpdateManagementPackStringResourceResponse" message="tns:IMonitoringService_UpdateManagementPackStringResource_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateWebUrlMonitor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateWebUrlMonitor" message="tns:IMonitoringService_CreateWebUrlMonitor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateWebUrlMonitorResponse" message="tns:IMonitoringService_CreateWebUrlMonitor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateTcpPortMonitor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateTcpPortMonitor" message="tns:IMonitoringService_CreateTcpPortMonitor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateTcpPortMonitorResponse" message="tns:IMonitoringService_CreateTcpPortMonitor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitors">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitors" message="tns:IMonitoringService_GetMonitors_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitorsResponse" message="tns:IMonitoringService_GetMonitors_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitorInfo">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitorInfo" message="tns:IMonitoringService_GetMonitorInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitorInfoResponse" message="tns:IMonitoringService_GetMonitorInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitorHealthState">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitorHealthState" message="tns:IMonitoringService_GetMonitorHealthState_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitorHealthStateResponse" message="tns:IMonitoringService_GetMonitorHealthState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationHealthState">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetApplicationHealthState" message="tns:IMonitoringService_GetApplicationHealthState_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetApplicationHealthStateResponse" message="tns:IMonitoringService_GetApplicationHealthState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationComponentHealthState">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetApplicationComponentHealthState" message="tns:IMonitoringService_GetApplicationComponentHealthState_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetApplicationComponentHealthStateResponse" message="tns:IMonitoringService_GetApplicationComponentHealthState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringStateHierarchy">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringStateHierarchy" message="tns:IMonitoringService_GetMonitoringStateHierarchy_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/GetMonitoringStateHierarchyResponse" message="tns:IMonitoringService_GetMonitoringStateHierarchy_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateManagementPack">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateManagementPack" message="tns:IMonitoringService_CreateManagementPack_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateManagementPackResponse" message="tns:IMonitoringService_CreateManagementPack_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateManagementPack">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/UpdateManagementPack" message="tns:IMonitoringService_UpdateManagementPack_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/UpdateManagementPackResponse" message="tns:IMonitoringService_UpdateManagementPack_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateAverageThresholdPerformanceCounterMonitor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateAverageThresholdPerformanceCounterMonitor" message="tns:IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateAverageThresholdPerformanceCounterMonitorResponse" message="tns:IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateDoubleThresholdPerformanceCounterMonitor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateDoubleThresholdPerformanceCounterMonitor" message="tns:IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateDoubleThresholdPerformanceCounterMonitorResponse" message="tns:IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateMonitorOverride">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateMonitorOverride" message="tns:IMonitoringService_CreateMonitorOverride_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateMonitorOverrideResponse" message="tns:IMonitoringService_CreateMonitorOverride_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateNTServiceUnitMonitor">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreateNTServiceUnitMonitor" message="tns:IMonitoringService_CreateNTServiceUnitMonitor_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreateNTServiceUnitMonitorResponse" message="tns:IMonitoringService_CreateNTServiceUnitMonitor_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreatePerformanceCollectionRule">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMonitoringService/CreatePerformanceCollectionRule" message="tns:IMonitoringService_CreatePerformanceCollectionRule_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMonitoringService/CreatePerformanceCollectionRuleResponse" message="tns:IMonitoringService_CreatePerformanceCollectionRule_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WSHttpBinding_IMonitoringService" type="tns:IMonitoringService">
+    <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetPerformanceCounterCategories">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetPerformanceCounterCategories" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetPerformanceCounterCategories_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetPerformanceCounterCategories_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServices">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetServices" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetServices_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetServices_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSCOMHost">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetSCOMHost" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSCOMHost_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSCOMHost_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSystemAlertsByDeviceName">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetSystemAlertsByDeviceName" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSystemAlertsByDeviceName_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSystemAlertsByDeviceName_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringState">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringState" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringState_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringState_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringDevice">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringDevice" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringDevice_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringDevice_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVCollectedCounters">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetAllHyperVCollectedCounters" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVCollectedCounters_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVCollectedCounters_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestCPUUtilization">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetAllHyperVGuestCPUUtilization" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestCPUUtilization_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestCPUUtilization_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestLegacyNetworkAdapter">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetAllHyperVGuestLegacyNetworkAdapter" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestLegacyNetworkAdapter_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestMemoryPagesAllocated">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetAllHyperVGuestMemoryPagesAllocated" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestMemoryPagesAllocated_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVGuestStorageUsage">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetAllHyperVGuestStorageUsage" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestStorageUsage_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVGuestStorageUsage_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllHyperVVirtualNetwork">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetAllHyperVVirtualNetwork" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVVirtualNetwork_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetAllHyperVVirtualNetwork_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleVMHyperVCPUCounters">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetSingleVMHyperVCPUCounters" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSingleVMHyperVCPUCounters_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSingleVMHyperVCPUCounters_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleVMHyperVVirtualNetwork">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetSingleVMHyperVVirtualNetwork" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSingleVMHyperVVirtualNetwork_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSingleVMHyperVVirtualNetwork_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSingleVMHyperVGuestMemoryPagesAllocated">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetSingleVMHyperVGuestMemoryPagesAllocated" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetSingleVMHyperVGuestMemoryPagesAllocated_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteMonitoringTask">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/ExecuteMonitoringTask" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_ExecuteMonitoringTask_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_ExecuteMonitoringTask_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ExecuteTask">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/ExecuteTask" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_ExecuteTask_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_ExecuteTask_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringPerformanceValues">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringPerformanceValues" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValues_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValues_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringPerformanceValuesById">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringPerformanceValuesById" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValuesById_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringPerformanceValuesById_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoredObjects">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoredObjects" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoredObjects_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoredObjects_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringAlertsByObjectDisplayName">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringAlertsByObjectDisplayName" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringAlertsByObjectDisplayName_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringAlertsByObjectDisplayName_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoredObjectByDisplayName">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoredObjectByDisplayName" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoredObjectByDisplayName_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoredObjectByDisplayName_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoredApplicationComponents">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoredApplicationComponents" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoredApplicationComponents_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoredApplicationComponents_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringTemplates">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringTemplates" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringTemplates_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringTemplates_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetManagementPacks">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetManagementPacks" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetManagementPacks_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetManagementPacks_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetManagementPack">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetManagementPack" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetManagementPack_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetManagementPack_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteManagementPack">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/DeleteManagementPack" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_DeleteManagementPack_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_DeleteManagementPack_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetManagementPackStringResource">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetManagementPackStringResource" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetManagementPackStringResource_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetManagementPackStringResource_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateManagementPackStringResource">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/UpdateManagementPackStringResource" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_UpdateManagementPackStringResource_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_UpdateManagementPackStringResource_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateWebUrlMonitor">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateWebUrlMonitor" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateWebUrlMonitor_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateWebUrlMonitor_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTcpPortMonitor">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateTcpPortMonitor" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateTcpPortMonitor_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateTcpPortMonitor_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitors">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitors" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitors_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitors_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitorInfo">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitorInfo" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitorInfo_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitorInfo_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitorHealthState">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitorHealthState" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitorHealthState_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitorHealthState_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationHealthState">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetApplicationHealthState" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetApplicationHealthState_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetApplicationHealthState_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetApplicationComponentHealthState">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetApplicationComponentHealthState" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetApplicationComponentHealthState_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetApplicationComponentHealthState_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMonitoringStateHierarchy">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/GetMonitoringStateHierarchy" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringStateHierarchy_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_GetMonitoringStateHierarchy_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateManagementPack">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateManagementPack" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateManagementPack_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateManagementPack_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateManagementPack">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/UpdateManagementPack" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_UpdateManagementPack_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_UpdateManagementPack_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateAverageThresholdPerformanceCounterMonitor">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateAverageThresholdPerformanceCounterMonitor" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateAverageThresholdPerformanceCounterMonitor_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateDoubleThresholdPerformanceCounterMonitor">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateDoubleThresholdPerformanceCounterMonitor" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateDoubleThresholdPerformanceCounterMonitor_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateMonitorOverride">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateMonitorOverride" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateMonitorOverride_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateMonitorOverride_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateNTServiceUnitMonitor">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreateNTServiceUnitMonitor" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateNTServiceUnitMonitor_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreateNTServiceUnitMonitor_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreatePerformanceCollectionRule">
+      <soap12:operation soapAction="http://tempuri.org/IMonitoringService/CreatePerformanceCollectionRule" style="document" />
+      <wsdl:input>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreatePerformanceCollectionRule_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <scp:PolicyReference URI="#WSHttpBinding_IMonitoringService_CreatePerformanceCollectionRule_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MonitoringService">
+    <wsdl:port name="WSHttpBinding_IMonitoringService" binding="tns:WSHttpBinding_IMonitoringService">
+      <soap12:address location="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Spn>host/vmserver3.sweetsoft.com.ua</Spn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

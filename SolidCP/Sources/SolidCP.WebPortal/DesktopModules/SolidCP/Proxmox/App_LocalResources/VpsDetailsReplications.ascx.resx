@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnPause.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Pausing VM replication...');</value>
+  </data>
+  <data name="btnResume.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Resuming VM replication...');</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>Replication</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="btnDetailInfo.Text" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="btnPause.Text" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="btnResume.Text" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="btnUpdate.Text" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="chbEnable.Text" xml:space="preserve">
+    <value>Enable replication</value>
+  </data>
+  <data name="chbVSS.Text" xml:space="preserve">
+    <value>Volume Shadow Copy Service (VSS) snapshot frequency (in hours):</value>
+  </data>
+  <data name="ddlFrequency15minutes.Text" xml:space="preserve">
+    <value>15 minutes</value>
+  </data>
+  <data name="ddlFrequency30seconds.Text" xml:space="preserve">
+    <value>30 seconds</value>
+  </data>
+  <data name="ddlFrequency5minutes.Text" xml:space="preserve">
+    <value>5 minutes</value>
+  </data>
+  <data name="locAverageLatency.Text" xml:space="preserve">
+    <value>Average latency:</value>
+  </data>
+  <data name="locAverageSize.Text" xml:space="preserve">
+    <value>Average size:</value>
+  </data>
+  <data name="locCeritficate.Text" xml:space="preserve">
+    <value>SSL ceritficate:</value>
+  </data>
+  <data name="locDetails.Text" xml:space="preserve">
+    <value>Replication details</value>
+  </data>
+  <data name="locDetailsHealth.Text" xml:space="preserve">
+    <value>Replication Health:</value>
+  </data>
+  <data name="locDetailsMode.Text" xml:space="preserve">
+    <value>Replication Mode:</value>
+  </data>
+  <data name="locDetailsPrimary.Text" xml:space="preserve">
+    <value>Current Primary Server:</value>
+  </data>
+  <data name="locDetailsReplica.Text" xml:space="preserve">
+    <value>Current Replica Server:</value>
+  </data>
+  <data name="locDetailsState.Text" xml:space="preserve">
+    <value>Replication State:</value>
+  </data>
+  <data name="locErrorsEncountered.Text" xml:space="preserve">
+    <value>Errors encountered:</value>
+  </data>
+  <data name="locFrequency.Text" xml:space="preserve">
+    <value>Replication Frequency</value>
+  </data>
+  <data name="locFromTime.Text" xml:space="preserve">
+    <value>From time:</value>
+  </data>
+  <data name="locHealth.Text" xml:space="preserve">
+    <value>Health:</value>
+  </data>
+  <data name="locLastSynchronized.Text" xml:space="preserve">
+    <value>Last synchronized at:</value>
+  </data>
+  <data name="locLastSyncro.Text" xml:space="preserve">
+    <value>Last synchronized at:</value>
+  </data>
+  <data name="locMaximumSize.Text" xml:space="preserve">
+    <value>Maximum size:</value>
+  </data>
+  <data name="locPrimaryServer.Text" xml:space="preserve">
+    <value>Primary Server:</value>
+  </data>
+  <data name="locRecoveryPoints.Text" xml:space="preserve">
+    <value>Additional Recovery Points:</value>
+  </data>
+  <data name="locRecoveryPointsAdditional.Text" xml:space="preserve">
+    <value>Coverage provided by additional recovery points (in hours):</value>
+  </data>
+  <data name="locReplicaServer.Text" xml:space="preserve">
+    <value>Replica Server:</value>
+  </data>
+  <data name="locSizeData.Text" xml:space="preserve">
+    <value>Size of data yet to be replicated:</value>
+  </data>
+  <data name="locSuccessfulReplicationCycles.Text" xml:space="preserve">
+    <value>Successful replication cycles:</value>
+  </data>
+  <data name="locToTime.Text" xml:space="preserve">
+    <value>To time:</value>
+  </data>
+  <data name="locVHDs.Text" xml:space="preserve">
+    <value>Choose Replication VHDs:</value>
+  </data>
+  <data name="radRecoveryPointsAdditional.Text" xml:space="preserve">
+    <value>Create additional hourly recovery points</value>
+  </data>
+  <data name="radRecoveryPointsLast.Text" xml:space="preserve">
+    <value>Maintain only the latest recovery point</value>
+  </data>
+  <data name="secPendingReplication.Text" xml:space="preserve">
+    <value>Pending replication:</value>
+  </data>
+  <data name="secReplication.Text" xml:space="preserve">
+    <value>Replication Configuration</value>
+  </data>
+  <data name="secReplicationDetails.Text" xml:space="preserve">
+    <value>Health</value>
+  </data>
+  <data name="secStatisticPanel.Text" xml:space="preserve">
+    <value>Statistic for past </value>
+  </data>
+  <data name="valCeritficateRequire.ErrorMessage" xml:space="preserve">
+    <value>SSL certificate is required</value>
+  </data>
+  <data name="valRecoveryPointsAdditionalRange.ErrorMessage" xml:space="preserve">
+    <value>chbVSS</value>
+  </data>
+  <data name="valRecoveryPointsAdditionalRequire.ErrorMessage" xml:space="preserve">
+    <value>Additional recovery points cannot be empty</value>
+  </data>
+  <data name="valRecoveryPointsVSSRange.ErrorMessage" xml:space="preserve">
+    <value>VSS snapshot frequency range is 1-12</value>
+  </data>
+  <data name="valRecoveryPointsVSSRequire.ErrorMessage" xml:space="preserve">
+    <value>VSS snapshot frequency cannot be empty</value>
+  </data>
+  <data name="valVHDs.ErrorMessage" xml:space="preserve">
+    <value>Please select at least one VHD</value>
+  </data>
+  <data name="btnUpdate.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Updating VM replication...');</value>
+  </data>
+</root>

@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd9" namespace="http://schemas.datacontract.org/2004/07/System" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:simpleType name="HealthState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Uninitialized" />
+      <xs:enumeration value="Success" />
+      <xs:enumeration value="Warning" />
+      <xs:enumeration value="Error" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="HealthState" nillable="true" type="tns:HealthState" />
+  <xs:complexType name="ManagementPackMonitorAlertSettings">
+    <xs:sequence>
+      <xs:element name="__AlertMessage" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackStringResourcee8V_PxXid" />
+      <xs:element name="__AlertOnState" type="tns:HealthState" />
+      <xs:element name="__AlertParameter1" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter10" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter2" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter3" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter4" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter5" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter6" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter7" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter8" nillable="true" type="xs:string" />
+      <xs:element name="__AlertParameter9" nillable="true" type="xs:string" />
+      <xs:element name="__AlertPriority" type="tns:ManagementPackWorkflowPriority" />
+      <xs:element name="__AlertSeverity" type="tns:ManagementPackAlertSeverity" />
+      <xs:element name="__AutoResolve" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackMonitorAlertSettings" nillable="true" type="tns:ManagementPackMonitorAlertSettings" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackStringResourcee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackStringResource" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q1:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackStringResourcee8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackStringResourcee8V_PxXid" />
+  <xs:complexType name="ManagementPackReference">
+    <xs:sequence>
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_keytoken" nillable="true" type="xs:string" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/System" name="_version" nillable="true" type="q2:Version" />
+      <xs:element name="_versiondependentid" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackReference" nillable="true" type="tns:ManagementPackReference" />
+  <xs:simpleType name="ManagementPackWorkflowPriority">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Low" />
+      <xs:enumeration value="Normal" />
+      <xs:enumeration value="High" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ManagementPackWorkflowPriority" nillable="true" type="tns:ManagementPackWorkflowPriority" />
+  <xs:simpleType name="ManagementPackAlertSeverity">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Information" />
+      <xs:enumeration value="Warning" />
+      <xs:enumeration value="Error" />
+      <xs:enumeration value="MatchMonitorHealth" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ManagementPackAlertSeverity" nillable="true" type="tns:ManagementPackAlertSeverity" />
+  <xs:simpleType name="ManagementPackCategoryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PerformanceCollection" />
+      <xs:enumeration value="Operations" />
+      <xs:enumeration value="EventCollection" />
+      <xs:enumeration value="StateCollection" />
+      <xs:enumeration value="SoftwareAndUpdates" />
+      <xs:enumeration value="Alert" />
+      <xs:enumeration value="System" />
+      <xs:enumeration value="Custom" />
+      <xs:enumeration value="AvailabilityHealth" />
+      <xs:enumeration value="PerformanceHealth" />
+      <xs:enumeration value="ConfigurationHealth" />
+      <xs:enumeration value="SecurityHealth" />
+      <xs:enumeration value="Discovery" />
+      <xs:enumeration value="Notification" />
+      <xs:enumeration value="DSIntegration" />
+      <xs:enumeration value="ConnectorFramework" />
+      <xs:enumeration value="ExceptionMonitoring" />
+      <xs:enumeration value="Maintenance" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ManagementPackCategoryType" nillable="true" type="tns:ManagementPackCategoryType" />
+  <xs:complexType name="ManagementPackUnitMonitor">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackMonitor">
+        <xs:sequence>
+          <xs:element name="__Configuration" nillable="true" type="xs:string" />
+          <xs:element name="__ConfirmDelivery" type="xs:boolean" />
+          <xs:element name="__OperationalStateCollection" nillable="true" type="tns:ManagementPackSubElementCollectionOfManagementPackUnitMonitorOperationalStatee8V_PxXid" />
+          <xs:element name="__TypeID" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackUnitMonitorTypee8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackUnitMonitor" nillable="true" type="tns:ManagementPackUnitMonitor" />
+  <xs:complexType name="ManagementPackMonitor">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackAccessibleElement">
+        <xs:sequence>
+          <xs:element name="__AlertSettings" nillable="true" type="tns:ManagementPackMonitorAlertSettings" />
+          <xs:element name="__Category" type="tns:ManagementPackCategoryType" />
+          <xs:element name="__Enabled" type="tns:ManagementPackMonitoringLevel" />
+          <xs:element name="__ParentMonitorID" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackAggregateMonitore8V_PxXid" />
+          <xs:element name="__Priority" type="tns:ManagementPackWorkflowPriority" />
+          <xs:element name="__Remotable" type="xs:boolean" />
+          <xs:element name="__RunAs" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackSecureReferencee8V_PxXid" />
+          <xs:element name="__Target" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackClasse8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackMonitor" nillable="true" type="tns:ManagementPackMonitor" />
+  <xs:complexType name="ManagementPackAccessibleElement">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackElement">
+        <xs:sequence>
+          <xs:element name="_accessibility" type="tns:ManagementPackAccessibility" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackAccessibleElement" nillable="true" type="tns:ManagementPackAccessibleElement" />
+  <xs:complexType name="ManagementPackElement">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackItem">
+        <xs:sequence>
+          <xs:element name="_comment" nillable="true" type="xs:string" />
+          <xs:element name="_description" nillable="true" type="xs:string" />
+          <xs:element name="_displayname" nillable="true" type="xs:string" />
+          <xs:element name="_displaystringupdated" type="xs:boolean" />
+          <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q3:Type" />
+          <xs:element name="_id" type="ser:guid" />
+          <xs:element name="_languagecode" nillable="true" type="xs:string" />
+          <xs:element name="_mpid" type="ser:guid" />
+          <xs:element name="_name" nillable="true" type="xs:string" />
+          <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="_subelements" nillable="true" type="q4:ArrayOfKeyValueOfstringManagementPackSubElement70zWZvWI" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackElement" nillable="true" type="tns:ManagementPackElement" />
+  <xs:complexType name="ManagementPackItem">
+    <xs:sequence>
+      <xs:element name="_lastmodified" type="xs:dateTime" />
+      <xs:element name="_memberstatus" type="tns:ManagementPackElementStatus" />
+      <xs:element name="_timecreated" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackItem" nillable="true" type="tns:ManagementPackItem" />
+  <xs:simpleType name="ManagementPackElementStatus">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unchanged" />
+      <xs:enumeration value="PendingUpdate" />
+      <xs:enumeration value="PendingAdd" />
+      <xs:enumeration value="PendingDelete" />
+      <xs:enumeration value="DiscardChanges" />
+      <xs:enumeration value="Invalid" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ManagementPackElementStatus" nillable="true" type="tns:ManagementPackElementStatus" />
+  <xs:complexType name="ManagementPackSubElement">
+    <xs:sequence>
+      <xs:element name="_description" nillable="true" type="xs:string" />
+      <xs:element name="_displayname" nillable="true" type="xs:string" />
+      <xs:element name="_displaystringupdated" type="xs:boolean" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_languagecode" nillable="true" type="xs:string" />
+      <xs:element name="_mpElement" nillable="true" type="tns:ManagementPackElement" />
+      <xs:element name="_mpelementid" type="ser:guid" />
+      <xs:element name="_subElementName" nillable="true" type="xs:string" />
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/System" name="_subElementType" nillable="true" type="q5:Type" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackSubElement" nillable="true" type="tns:ManagementPackSubElement" />
+  <xs:simpleType name="ManagementPackAccessibility">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Public" />
+      <xs:enumeration value="Internal" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ManagementPackAccessibility" nillable="true" type="tns:ManagementPackAccessibility" />
+  <xs:simpleType name="ManagementPackMonitoringLevel">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="false" />
+      <xs:enumeration value="onAdvancedMonitoring" />
+      <xs:enumeration value="onStandardMonitoring" />
+      <xs:enumeration value="onEssentialMonitoring" />
+      <xs:enumeration value="true" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="ManagementPackMonitoringLevel" nillable="true" type="tns:ManagementPackMonitoringLevel" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackAggregateMonitore8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackAggregateMonitor" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q6:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackAggregateMonitore8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackAggregateMonitore8V_PxXid" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackSecureReferencee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackSecureReference" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q7:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackSecureReferencee8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackSecureReferencee8V_PxXid" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackClasse8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackClass" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q8:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackClasse8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackClasse8V_PxXid" />
+  <xs:complexType name="ManagementPackSubElementCollectionOfManagementPackUnitMonitorOperationalStatee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackSubElementCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackUnitMonitorOperationalState" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="_list" nillable="true" type="tns:ArrayOfManagementPackUnitMonitorOperationalState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackSubElementCollectionOfManagementPackUnitMonitorOperationalStatee8V_PxXid" nillable="true" type="tns:ManagementPackSubElementCollectionOfManagementPackUnitMonitorOperationalStatee8V_PxXid" />
+  <xs:complexType name="ArrayOfManagementPackUnitMonitorOperationalState">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ManagementPackUnitMonitorOperationalState" nillable="true" type="tns:ManagementPackUnitMonitorOperationalState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfManagementPackUnitMonitorOperationalState" nillable="true" type="tns:ArrayOfManagementPackUnitMonitorOperationalState" />
+  <xs:complexType name="ManagementPackUnitMonitorOperationalState">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackSubElement">
+        <xs:sequence>
+          <xs:element name="__HealthState" type="tns:HealthState" />
+          <xs:element name="__MonitorTypeStateID" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackUnitMonitorOperationalState" nillable="true" type="tns:ManagementPackUnitMonitorOperationalState" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackUnitMonitorTypee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackUnitMonitorType" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q9:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackUnitMonitorTypee8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackUnitMonitorTypee8V_PxXid" />
+  <xs:complexType name="ManagementPackRule">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackElement">
+        <xs:sequence>
+          <xs:element name="__Category" type="tns:ManagementPackCategoryType" />
+          <xs:element name="__ConditionDetection" nillable="true" type="tns:ManagementPackConditionDetectionModule" />
+          <xs:element name="__ConfirmDelivery" type="xs:boolean" />
+          <xs:element name="__DataSourceCollection" nillable="true" type="tns:ManagementPackSubElementCollectionOfManagementPackDataSourceModulee8V_PxXid" />
+          <xs:element name="__DiscardLevel" type="xs:int" />
+          <xs:element name="__Enabled" type="tns:ManagementPackMonitoringLevel" />
+          <xs:element name="__Priority" type="tns:ManagementPackWorkflowPriority" />
+          <xs:element name="__Remotable" type="xs:boolean" />
+          <xs:element name="__Target" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackClasse8V_PxXid" />
+          <xs:element name="__WriteActionCollection" nillable="true" type="tns:ManagementPackSubElementCollectionOfManagementPackWriteActionModulee8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackRule" nillable="true" type="tns:ManagementPackRule" />
+  <xs:complexType name="ManagementPackConditionDetectionModule">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackModule">
+        <xs:sequence>
+          <xs:element name="__TypeID" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackConditionDetectionModuleTypee8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackConditionDetectionModule" nillable="true" type="tns:ManagementPackConditionDetectionModule" />
+  <xs:complexType name="ManagementPackModule">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackSubElement">
+        <xs:sequence>
+          <xs:element name="__Configuration" nillable="true" type="xs:string" />
+          <xs:element name="__RunAs" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackSecureReferencee8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackModule" nillable="true" type="tns:ManagementPackModule" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackConditionDetectionModuleTypee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackConditionDetectionModuleType" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q10:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackConditionDetectionModuleTypee8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackConditionDetectionModuleTypee8V_PxXid" />
+  <xs:complexType name="ManagementPackSubElementCollectionOfManagementPackDataSourceModulee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackSubElementCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackDataSourceModule" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="_list" nillable="true" type="tns:ArrayOfManagementPackDataSourceModule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackSubElementCollectionOfManagementPackDataSourceModulee8V_PxXid" nillable="true" type="tns:ManagementPackSubElementCollectionOfManagementPackDataSourceModulee8V_PxXid" />
+  <xs:complexType name="ArrayOfManagementPackDataSourceModule">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ManagementPackDataSourceModule" nillable="true" type="tns:ManagementPackDataSourceModule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfManagementPackDataSourceModule" nillable="true" type="tns:ArrayOfManagementPackDataSourceModule" />
+  <xs:complexType name="ManagementPackDataSourceModule">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackModule">
+        <xs:sequence>
+          <xs:element name="__TypeID" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackDataSourceModuleTypee8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackDataSourceModule" nillable="true" type="tns:ManagementPackDataSourceModule" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackDataSourceModuleTypee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackDataSourceModuleType" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q11:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackDataSourceModuleTypee8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackDataSourceModuleTypee8V_PxXid" />
+  <xs:complexType name="ManagementPackSubElementCollectionOfManagementPackWriteActionModulee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackSubElementCollectionOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackWriteActionModule" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="_list" nillable="true" type="tns:ArrayOfManagementPackWriteActionModule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackSubElementCollectionOfManagementPackWriteActionModulee8V_PxXid" nillable="true" type="tns:ManagementPackSubElementCollectionOfManagementPackWriteActionModulee8V_PxXid" />
+  <xs:complexType name="ArrayOfManagementPackWriteActionModule">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ManagementPackWriteActionModule" nillable="true" type="tns:ManagementPackWriteActionModule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfManagementPackWriteActionModule" nillable="true" type="tns:ArrayOfManagementPackWriteActionModule" />
+  <xs:complexType name="ManagementPackWriteActionModule">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ManagementPackModule">
+        <xs:sequence>
+          <xs:element name="__Target" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackClasse8V_PxXid" />
+          <xs:element name="__TypeID" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackWriteActionModuleTypee8V_PxXid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ManagementPackWriteActionModule" nillable="true" type="tns:ManagementPackWriteActionModule" />
+  <xs:complexType name="ManagementPackElementReferenceOfManagementPackWriteActionModuleTypee8V_PxXid">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ManagementPackElementReferenceOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="ManagementPackWriteActionModuleType" Namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/System" name="_elementType" nillable="true" type="q12:Type" />
+      <xs:element name="_id" type="ser:guid" />
+      <xs:element name="_mpref" nillable="true" type="tns:ManagementPackReference" />
+      <xs:element name="_name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ManagementPackElementReferenceOfManagementPackWriteActionModuleTypee8V_PxXid" nillable="true" type="tns:ManagementPackElementReferenceOfManagementPackWriteActionModuleTypee8V_PxXid" />
+</xs:schema>

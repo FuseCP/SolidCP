@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLENTERPRISESERVERFOLDER">
+            <Directory Id="dir6CE36061E3999438B9BA89FF4216AA69" Name="bin" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="EnterpriseServerFiles">
+            <Component Id="cmp34CE7A099A3FFEC525D7D093AB8987C4" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{683E5CFE-7B24-415D-BAD9-592C3241A408}">
+                <File Id="fil80AE381498E108347A00C8973B487F16" KeyPath="yes" Source="!(wix.BUILDESPATH)\Default.aspx" />
+            </Component>
+            <Component Id="cmp5F82B874C6149AF14117B5FC53138BB8" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{9548FD4B-3AA4-4869-8A98-E630EAEEE259}">
+                <File Id="filD907747C258169B5049506CB949E8EA0" KeyPath="yes" Source="!(wix.BUILDESPATH)\esApplicationsInstaller.asmx" />
+            </Component>
+            <Component Id="cmp47069226C95CF9260198DF80078E21F6" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{DC01D7C2-3C66-4FEE-954C-0C18CC20F4E4}">
+                <File Id="filE38C974C9EBDAD325273293427A6C90C" KeyPath="yes" Source="!(wix.BUILDESPATH)\esAuditLog.asmx" />
+            </Component>
+            <Component Id="cmpC2F032B70996ED1F661DF917CA81D18F" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{5AC67CE6-8366-4257-9E7F-CA8E4BE29CE9}">
+                <File Id="fil3C8572176F57424027BB9E0E96855C4C" KeyPath="yes" Source="!(wix.BUILDESPATH)\esAuthentication.asmx" />
+            </Component>
+            <Component Id="cmp26B353E79A99A6CF2A62018CF6B59CEC" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{3A20FB5C-A6F2-4CD3-8CB6-B184F0EBC15C}">
+                <File Id="filD30DB2DFE7DF8B06136D1196A4589AF7" KeyPath="yes" Source="!(wix.BUILDESPATH)\esBackup.asmx" />
+            </Component>
+            <Component Id="cmpC91CD289AA32691FAEBF3C9E87E251E8" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{EBB6B679-9D88-45E7-9FE2-D2914590D5E0}">
+                <File Id="filE112A538E36085463D02CE6979E64E30" KeyPath="yes" Source="!(wix.BUILDESPATH)\esBlackBerry.asmx" />
+            </Component>
+            <Component Id="cmp333AEEAB6A016D3FB8C8A79ECCBA341D" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{FED577EA-F646-4F7A-AFA9-BD6CA62E8AF7}">
+                <File Id="filC92E41395B2B7A0A20B4989539566F87" KeyPath="yes" Source="!(wix.BUILDESPATH)\esComments.asmx" />
+            </Component>
+            <Component Id="cmpB5952233E952EEE0CE009858FAF527A9" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{7A03AE32-AA28-48B2-AB85-6DCD2D7CB916}">
+                <File Id="fil88A7DA2BCBADC6864DA96A5C6AB09B8E" KeyPath="yes" Source="!(wix.BUILDESPATH)\esCRM.asmx" />
+            </Component>
+            <Component Id="cmp63CDFBF38C138DC641515D217460A992" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{E21BA5A2-F44F-425A-9BC8-7A04598CC092}">
+                <File Id="fil802190B1995D1F28AE1B62C3E0E61993" KeyPath="yes" Source="!(wix.BUILDESPATH)\esDatabaseServers.asmx" />
+            </Component>
+            <Component Id="cmp5A826D79B822277BCA6491E801E6F378" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{18796664-7DCE-4D75-A419-502049373197}">
+                <File Id="fil7AF44BB1C7286026B6ECBC9B2BFC71A5" KeyPath="yes" Source="!(wix.BUILDESPATH)\esEnterpriseStorage.asmx" />
+            </Component>
+            <Component Id="cmp371A1092F7AA3AB0D504D443865A34CC" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{1D825E98-560D-4C60-B7AC-E8AC5E965821}">
+                <File Id="fil54C39A6242DB0530FE5FF7F6D4557894" KeyPath="yes" Source="!(wix.BUILDESPATH)\esExchangeServer.asmx" />
+            </Component>
+            <Component Id="cmp1C3F1C3FA07FBCD9AF84334F3CE994A8" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{B8DD9296-F201-4E24-9CD2-B1A67BD339E8}">
+                <File Id="fil87594B4F289DB1415FD1817B44892E79" KeyPath="yes" Source="!(wix.BUILDESPATH)\esFiles.asmx" />
+            </Component>
+            <Component Id="cmpDFE044BE1BEFFDE4692056EE2809335A" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{D453BA36-10FC-4327-A028-C80C2D66DC1F}">
+                <File Id="fil60F58288D33D0A54534196F3306860FB" KeyPath="yes" Source="!(wix.BUILDESPATH)\esFtpServers.asmx" />
+            </Component>
+            <Component Id="cmp9475DC4C250B01885E0633772CB4ABA0" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{FBF56673-1B96-46C0-92FD-7B54E66BFBEF}">
+                <File Id="fil3D10FC6381F8F0C678FDA8ED4534C494" KeyPath="yes" Source="!(wix.BUILDESPATH)\esHeliconZoo.asmx" />
+            </Component>
+            <Component Id="cmpA254ACD457311C636E120F83F46DAF00" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{F9131DA3-D2A2-4DB6-8B59-8A2DFC899C78}">
+                <File Id="filBAF5EE71D3576C1E3D009B85D1155951" KeyPath="yes" Source="!(wix.BUILDESPATH)\esHostedSharePointServers.asmx" />
+            </Component>
+            <Component Id="cmp962E569B8657F226C08917314DCAE797" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{798E71D3-9218-4049-A44A-0F905A12C159}">
+                <File Id="fil1F756288A3DCC2BBE19E4F5C5B8F27B3" KeyPath="yes" Source="!(wix.BUILDESPATH)\esHostedSharePointServersEnt.asmx" />
+            </Component>
+            <Component Id="cmp054543F483FF5F6F43D2985746F9EC23" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{5F4DE1EE-2121-4905-96A8-604FFFC137C2}">
+                <File Id="filF07A7ABA84439092DC56A75CD5AEBD93" KeyPath="yes" Source="!(wix.BUILDESPATH)\esImport.asmx" />
+            </Component>
+            <Component Id="cmp2A87CEC92AB93D101BB1035064B12552" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{4ECF2BFB-7FC0-4F8D-84E9-0A96087D7F69}">
+                <File Id="filBB7841946881D194671A3D3A6964C0F8" KeyPath="yes" Source="!(wix.BUILDESPATH)\esLync.asmx" />
+            </Component>
+            <Component Id="cmp9DF80261245D898DCEDE3671500A4941" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{E0F2B0A8-3FDC-40BD-A73E-462A559C0ED4}">
+                <File Id="filF84E64CD412B775188940BD65D9E8197" KeyPath="yes" Source="!(wix.BUILDESPATH)\esMailServers.asmx" />
+            </Component>
+            <Component Id="cmpEAE4870E86F8713D5B8F8E5B3E7DB73B" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{55DCBF43-A8A2-469C-BA67-4EA43F88116F}">
+                <File Id="filBF4851FF41796A5DB1C58EB163B22937" KeyPath="yes" Source="!(wix.BUILDESPATH)\esOCS.asmx" />
+            </Component>
+            <Component Id="cmpAA37203E63674A11256B7370B250DE91" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{F12ADA42-7309-4357-988B-144270CEBAAF}">
+                <File Id="fil1BB4D1E77135B38D8871FAEF4351B6D5" KeyPath="yes" Source="!(wix.BUILDESPATH)\esOperatingSystems.asmx" />
+            </Component>
+            <Component Id="cmpB7A039B3F4DEA52C1009F25934BA0E6C" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{32271023-8F4B-4AC3-99FC-C512AD13342F}">
+                <File Id="fil866896064798796D52BCEFFD15B4E237" KeyPath="yes" Source="!(wix.BUILDESPATH)\esOrganizations.asmx" />
+            </Component>
+            <Component Id="cmpE91E638D4549C6A9636A0106DF8E5DE9" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{FB0A247D-5578-47F6-A9FD-584DFDFF1153}">
+                <File Id="filF60E166BC58C55454820C604DECF88BD" KeyPath="yes" Source="!(wix.BUILDESPATH)\esPackages.asmx" />
+            </Component>
+            <Component Id="cmp751C3E687B67A09CB073745B237E0525" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{BC13AB78-1474-4B5D-83E5-EB53299D30D3}">
+                <File Id="fil67F9CD9371F0FA79E9D1A86DDA3EB6CF" KeyPath="yes" Source="!(wix.BUILDESPATH)\esRemoteDesktopServices.asmx" />
+            </Component>
+            <Component Id="cmp4B34B1C2D8BD54FCC7871B7A0DD3C025" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{783490C6-6489-4C15-9BCF-46F4B39D9CEA}">
+                <File Id="filC29A77C5FC2388D356F5CE180A7710E0" KeyPath="yes" Source="!(wix.BUILDESPATH)\esScheduler.asmx" />
+            </Component>
+            <Component Id="cmpDD09481E4089E210F98110D5BCEC173D" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{08BC1668-6B00-44DD-8A5B-31AED557ABC3}">
+                <File Id="fil954DB99705E4D0ABAF80FD05C5EBBACC" KeyPath="yes" Source="!(wix.BUILDESPATH)\esServers.asmx" />
+            </Component>
+            <Component Id="cmp7DDBF347BAD790F5A6491BD93977B5A8" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{2DFD6181-6553-4311-ADA2-3859EE3C00C5}">
+                <File Id="fil294F18B0EE6C058B02A2A412373E19BA" KeyPath="yes" Source="!(wix.BUILDESPATH)\esSfB.asmx" />
+            </Component>
+            <Component Id="cmp14F81E356F8B049145E1E0B1FB10FC70" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{42DCAF82-38C1-4657-983C-15D06A808EB8}">
+                <File Id="filB05AB0D12B12B0E56BA166FDB3609835" KeyPath="yes" Source="!(wix.BUILDESPATH)\esSharePointServers.asmx" />
+            </Component>
+            <Component Id="cmp0E482EC02E8F8D743392159B0815AD57" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{E844CF11-8ED5-49A7-8F2A-11FF6E2BF04A}">
+                <File Id="filECEC6942F4FB30FCC9B596F417D41EC2" KeyPath="yes" Source="!(wix.BUILDESPATH)\esStatisticsServers.asmx" />
+            </Component>
+            <Component Id="cmpA78D7A9742E0363E9CD849C149CE4536" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{18046167-6AD5-4196-965E-7B0BC17B7676}">
+                <File Id="filB4E0BA83819E38C175E4BAC0F6F02949" KeyPath="yes" Source="!(wix.BUILDESPATH)\esStorageSpaces.asmx" />
+            </Component>
+            <Component Id="cmp2901A918840EBD1C1DABB2F79D2B10A3" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{F7E364BE-5D69-4E69-B853-E258C2BF97EC}">
+                <File Id="fil0C5C856EEF2531CC7371B44D635D05F3" KeyPath="yes" Source="!(wix.BUILDESPATH)\esSystem.asmx" />
+            </Component>
+            <Component Id="cmpA867FFA1FE49F609535DFC6052D78AD9" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{605F430C-AE7B-4717-BEAF-591AB0B09014}">
+                <File Id="filBA3E42C0E57584136ED9BB83E054D6F7" KeyPath="yes" Source="!(wix.BUILDESPATH)\esTasks.asmx" />
+            </Component>
+            <Component Id="cmp94E44DB8E3E22CCBDD39A2B83D31FBC2" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{43D072CF-3109-4005-A3E5-1AB7834664A0}">
+                <File Id="fil6D665D8C141914B22EF8EAA3ED524BA8" KeyPath="yes" Source="!(wix.BUILDESPATH)\esUsers.asmx" />
+            </Component>
+            <Component Id="cmp9475D484AF38750120079E95AA52905D" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{496ECB1C-9D81-4511-89A2-20DA75DE73F3}">
+                <File Id="fil586A826180831A7C07A44E4505C1A5D1" KeyPath="yes" Source="!(wix.BUILDESPATH)\esVirtualizationServer.asmx" />
+            </Component>
+            <Component Id="cmp2C2D9724BCBD0E36D3CA5319FD2B1854" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{AEED28B5-47D2-4A03-87C9-45255165BF96}">
+                <File Id="filFF247587B4EFAE2AE58A370C002EF1AC" KeyPath="yes" Source="!(wix.BUILDESPATH)\esVirtualizationServer2012.asmx" />
+            </Component>
+            <Component Id="cmpAF29F51A2E960C073CFDBA75F5733CDB" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{24ECDBA9-B77F-4A7A-A644-6ABBFD3E7E5F}">
+                <File Id="fil6A7E497383471C6AEFA4638C27AFEFEB" KeyPath="yes" Source="!(wix.BUILDESPATH)\esVirtualizationServerForPrivateCloud.asmx" />
+            </Component>
+            <Component Id="cmpE164C5218E2534965D65C709AFCB5041" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{17C4E706-A907-4C3C-9991-E4F3888E97ED}">
+                <File Id="filC382504C2B694C526BAC449795BD9384" KeyPath="yes" Source="!(wix.BUILDESPATH)\esWebApplicationGallery.asmx" />
+            </Component>
+            <Component Id="cmp478ACC3817BFDF9B67438D472E16F215" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{AE1959EC-10A4-4F5A-90A8-C1006DC85F76}">
+                <File Id="fil439FDF6888F9C591E5CC0FA4B191F9E5" KeyPath="yes" Source="!(wix.BUILDESPATH)\esWebServers.asmx" />
+            </Component>
+            <Component Id="cmp429BF038970E0CFC25D8BCE860D50A57" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{D5ACA951-B5E1-411F-B89C-533C17D8CC61}">
+                <File Id="filFEBBDFA9B318C2E9E751B025648C1A7B" KeyPath="yes" Source="!(wix.BUILDESPATH)\Global.asax" />
+            </Component>
+            <Component Id="cmp62A54F046CE9140B2AE9722C0257BADC" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{327B40AE-71C2-44C1-B35E-DA22F892CB89}">
+                <File Id="filC434D7C34EA5A1746435264846757BD1" KeyPath="yes" Source="!(wix.BUILDESPATH)\SystemEventHandlers.config" />
+            </Component>
+            <Component Id="cmpD4509F6500AF198A6674B31013523FEA" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{A449413B-B7D9-4AA5-B6D5-4C39EE8016C4}">
+                <File Id="fil16FEF1499BCAD707280DB872E1BAD8EC" KeyPath="yes" Source="!(wix.BUILDESPATH)\TaskEventHandlers.config" />
+            </Component>
+            <Component Id="cmp4C41BDA96CC60A0A93AD86B466B9990C" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{5B207AEE-668B-4B74-9821-AF4EAEDD972B}">
+                <File Id="filF4F297556BE1C365666A0114C75988AA" KeyPath="yes" Source="!(wix.BUILDESPATH)\Web.config" />
+            </Component>
+            <Component Id="cmp0CD3D55E3FCC2CA93F26C9E2A8015B03" Directory="INSTALLENTERPRISESERVERFOLDER" Guid="{45C5D0C4-D0F1-428A-B817-C4DC575933BB}">
+                <File Id="filA732E6A7C01B18DA027C222AF4E53864" KeyPath="yes" Source="!(wix.BUILDESPATH)\WsePolicyCache.Config" />
+            </Component>
+            <Component Id="cmp8C46E0D4BA876D11A93A309526C80AE5" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{7C13E1BA-80D3-4732-A279-17B76FA2F159}">
+                <File Id="fil56774CBC059C0521F770230987131089" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\Ionic.Zip.Reduced.dll" />
+            </Component>
+            <Component Id="cmpABC7BC49B2C2DF1518B4AB0AEB6B824E" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{30745B75-EF16-4BA8-B5D4-E2C861CFAA42}">
+                <File Id="fil421A00E17FE73E07BC534ED295BC9739" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\IPAddressRange.dll" />
+            </Component>
+            <Component Id="cmpDE18943F32A1687F2E9D92E2A1A129C3" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{CCE4B067-BAE6-4B51-8ED2-4D1D26E95574}">
+                <File Id="fil1F4B9DC588EA21FE3995D0C10DF6CE32" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\Microsoft.Web.Services3.dll" />
+            </Component>
+            <Component Id="cmp9276A496BD0854A37145FB71DB95F974" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{C29FCFE2-3CEE-49FE-93FA-E2B4D08916D5}">
+                <File Id="filAE0F06EEECF8167A48DDB21E7D83B9A1" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\RestSharp.dll" />
+            </Component>
+            <Component Id="cmpD7D14A3D650289856200114FC18A95A5" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{A5B92150-8B44-4F94-96A6-EAA96F6BE469}">
+                <File Id="fil2831CE7AEB6701AE834685EE2EAC29CC" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.Common.Utils.dll" />
+            </Component>
+            <Component Id="cmp891FCB096F999CDF9643478432CA78B5" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{2AC29D83-DD39-41AD-855F-2E8F3D30EB46}">
+                <File Id="filB11D8A66D050CDD202D6F1B79F4E2A0E" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.EnterpriseServer.Base.dll" />
+            </Component>
+            <Component Id="cmp87C3409399440EAF858CD2E930A005C3" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{55573255-A5D4-416B-9C5C-CFF48E21FF38}">
+                <File Id="fil98832ABFEB9E275E2D8E45D4F70AC357" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.EnterpriseServer.Code.dll" />
+            </Component>
+            <Component Id="cmp5DA550530F24F69A68418D31A1471E90" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{2D2FCD00-2999-4D06-AF68-EFCFB58EAB05}">
+                <File Id="filF7E5D68674F09DA0A80126E8AF73A90C" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.EnterpriseServer.dll" />
+            </Component>
+            <Component Id="cmp7318B2012C8217B4A61242C2A95D5E26" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{11985C3B-3E66-44DF-8BDF-B526E86DA4EE}">
+                <File Id="fil9D280CC9C52EF36327CE56DD32B72F75" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.EnterpriseServer.dll.config" />
+            </Component>
+            <Component Id="cmp844C48EC31A9C822CE0D491F9E31248E" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{1A99AB49-B963-4656-85BD-375A2358AE0E}">
+                <File Id="filE132F0C4ED246C14360FBDEA5B6FAC9B" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.Providers.Base.dll" />
+            </Component>
+            <Component Id="cmpFD117CB88A559F23ED42885434F1B318" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{18548C57-A7CF-4DFD-BE33-E3E82A384D04}">
+                <File Id="filB97868F2CDEAC99A6903B4A9D7ADD19D" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.Server.Client.dll" />
+            </Component>
+            <Component Id="cmp2501F2442D1BA881A32EC88F898D3479" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{73762EE0-C29A-42C6-9E25-480F31AEE4F8}">
+                <File Id="fil418B096CC3EE913ADF96AF53324D94A5" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\SolidCP.Templates.dll" />
+            </Component>
+            <Component Id="cmpE64EFE1D071F0FA5AC5C2E1AF28DDE29" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{AA8C12EB-BDB7-4FB6-97DC-3BFDAFB2E536}">
+                <File Id="fil8D082E3F519A6F0B6D7F5E73C5ADA9F4" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\Twilio.Api.dll" />
+            </Component>
+            <Component Id="cmpDEDB0888D3DFB986812A862B5017E95C" Directory="dir6CE36061E3999438B9BA89FF4216AA69" Guid="{94D5EA27-19E8-4A99-9386-675E8EA2535D}">
+                <File Id="fil518311B26B2075F8BEA15D2AD6898BD0" KeyPath="yes" Source="!(wix.BUILDESPATH)\bin\WhoisClient.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

@@ -1,0 +1,1318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2005/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSources>
+    <DataSource Name="DummyDataSource">
+      <rd:DataSourceID>e78a4510-b71d-4222-8894-0a9073a7dfbc</rd:DataSourceID>
+      <ConnectionProperties>
+        <DataProvider>SQL</DataProvider>
+        <ConnectString />
+      </ConnectionProperties>
+    </DataSource>
+  </DataSources>
+  <InteractiveHeight>11in</InteractiveHeight>
+  <Description>Overusage report</Description>
+  <ReportParameters>
+    <ReportParameter Name="UserHyperlinkString">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Default.aspx?pid=Home&amp;UserID="</Value>
+        </Values>
+      </DefaultValue>
+      <Prompt>UserHyperlinkString</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="SpaceHyperLink">
+      <DataType>String</DataType>
+      <DefaultValue>
+        <Values>
+          <Value>="Default.aspx?pid=SpaceHome&amp;SpaceID="</Value>
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>SpaceHyperLink</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="BandwidthStartDate">
+      <DataType>DateTime</DataType>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>BandwidthStartDate</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="BandwidthEndDate">
+      <DataType>DateTime</DataType>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>BandwidthEndDate</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <rd:DrawGrid>true</rd:DrawGrid>
+  <InteractiveWidth>8.5in</InteractiveWidth>
+  <rd:GridSpacing>0.025in</rd:GridSpacing>
+  <rd:SnapToGrid>true</rd:SnapToGrid>
+  <rd:ReportID>fa8c9ff2-dc49-4e31-b9f2-6eb2b77f9c2e</rd:ReportID>
+  <EmbeddedImages>
+    <EmbeddedImage Name="flashlight_24">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAB90RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgOLVo0ngAAAOvSURBVEiJ7ZVdbFRVEMd/55x796u7dyvdLRQKYWmDUPwgVCyJ1kRIDF+GoMGoiUZfUHyQ8OCDxITEKIgmor5pE1R84dEPIjZBeTGKQi0hQYi1lQpLod22u91ud+/uvXd8kDSxQAgkJJo4ybzNzO/MzD9zlIhwO03f1ur/A/4VAOtWE9tfOlGfnhVeK8KWfMkfzU2ws3//8tzMOHUzMm174Xi0eU5sjW3UUwrW+b7cUa4FjBc9CiX3NL5qP/dph3vDDpyDAzHn+5H7V83WG1a1mNVDo17+0K/24ML5zlqjgqZyNaBYCShUhCAICHwQXV0mUnsa+Pi6gG37i4+c/HN464LiVKcr0caeSx5nR3zW3Kl58QGXz3qhbGxqXoAnioZwjckpwQuFEN9D/PJDMwHTS173xsCBnmPfdTePdT/eYX5obIv0YQU1KRCSAycVJ4bg2Xvz5Es+k8ZmZeMlXltxlkSiTE1K+P4Ega5dnDkNC2D9O0Nb89neZ55sPUO6oR47FCIWmZT+sUE+PNWsVDLON+dsMs4EnfMKHC3OpT+I03U6S8F3CSojKOX/YuKp92cCNKDOX84+1578jUQiKa5EMWEHqy6tHn1wkdq13uC5LjFH823WoTWWwzI+I0GC4+WFFEvFQIX0rgVdW+47/97Dw1d1sPEr5kdMqTkdqZAbFxWPQ10sSjweJzWvlceaKxweuMjhCz5DkqDkVnAYpzAxiuVXf9JOclt2z+rea4kFwDr6O5W76yK1lkwr0ViUVCrNnDlNxON1jOcLZPOXWb3U4etsGS8cIVcWwsGE62teH9m3eff1Ck+PqLSD4csq/sdArkLNrRBPJHCS
+DtFojEgkTOPsJlqbZ4kVCkTbirynsMKxnSN7N+xWSqG0CStjYspYSWWslDJWWhnjKKXVtIou+NGDg8l7aL9rscxumksoHMaybZyEQzrVIIUaUtVKRe0q1ancj6e+2HNIabMIbZah1BJQS4DFwKK/XWVQKjKtIu/U2U+6Ey07Nvp1bZuckEz6RhmjsY0G2+Lz/rImbKQ62vfukX3bu4Ao2kQAAXzAA6aAClBGZAqRCgAigojAy0czmQ/OnOvqGZbxYknEc6VU9eTtY2NS/2p336zNrzwBZIAVaLMcbZaiTRPaJFA6xJWzM9P/cYvU+rdSoZWdb3ZkGjbNrw+nBkcnJ4793POl/9Hze4FxlLZQagqRMiKuSBDcaMlXEa8A62jbvhBomH6Asa8ZeyO/qWt6K/bf/9H+AthmyjJ/CkrjAAAAAElFTkSuQmCC</ImageData>
+    </EmbeddedImage>
+    <EmbeddedImage Name="grid_header">
+      <MIMEType>image/gif</MIMEType>
+      <ImageData>R0lGODlhAQAWAKIAAPHy9PLz9fP09vT19/X2+Pb3+ff4+v///ywAAAAAAQAWAAAIFQAPCBw40ICBAggJEBggQEAAAAACAgA7</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <DataSets>
+    <DataSet Name="OverusageReport_BandwidthOverusage">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Allocated">
+          <DataField>Allocated</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Used">
+          <DataField>Used</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Usage">
+          <DataField>Usage</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>BandwidthOverusage</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="OverusageReport_DiskspaceOverusage">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Allocated">
+          <DataField>Allocated</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Used">
+          <DataField>Used</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Usage">
+          <DataField>Usage</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>DiskspaceOverusage</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="OverusageReport_OverusageDetails">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ResourceGroupName">
+          <DataField>ResourceGroupName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Used">
+          <DataField>Used</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Allowed">
+          <DataField>Allowed</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>OverusageDetails</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="OverusageReport_HostingSpace">
+      <Fields>
+        <Field Name="HostingSpaceId">
+          <DataField>HostingSpaceId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="HostingSpaceName">
+          <DataField>HostingSpaceName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="ChildSpaceQuantity">
+          <DataField>ChildSpaceQuantity</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="HostingPlanId">
+          <DataField>HostingPlanId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="HostingPlanName">
+          <DataField>HostingPlanName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="HostingSpaceFullTreeName">
+          <DataField>HostingSpaceFullTreeName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UserId">
+          <DataField>UserId</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="UserName">
+          <DataField>UserName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="UserEmail">
+          <DataField>UserEmail</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="HostingSpaceCreationDate">
+          <DataField>HostingSpaceCreationDate</DataField>
+          <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Status">
+          <DataField>Status</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Location">
+          <DataField>Location</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="IsBandwidthOverused">
+          <DataField>IsBandwidthOverused</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="IsDiskspaceOverused">
+          <DataField>IsDiskspaceOverused</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="DiskspaceUsed">
+          <DataField>DiskspaceUsed</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="DiskspaceAllotted">
+          <DataField>DiskspaceAllotted</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="BandwidthUsed">
+          <DataField>BandwidthUsed</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+        <Field Name="BandwidthAllotted">
+          <DataField>BandwidthAllotted</DataField>
+          <rd:TypeName>System.Int64</rd:TypeName>
+        </Field>
+      </Fields>
+      <Query>
+        <DataSourceName>DummyDataSource</DataSourceName>
+        <CommandText />
+        <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
+      </Query>
+      <rd:DataSetInfo>
+        <rd:DataSetName>OverusageReport</rd:DataSetName>
+        <rd:TableName>HostingSpace</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <Author>SolidCP Team</Author>
+  <Code>Function GetDiskspaceOverusedValue (SpaceId As Object) As String
+	Return String.Empty
+End Function</Code>
+  <Width>9.575in</Width>
+  <Body>
+    <ReportItems>
+      <Textbox Name="textbox17">
+        <Visibility>
+          <ToggleItem>bandwidthLabel</ToggleItem>
+        </Visibility>
+        <Top>1.45in</Top>
+        <Width>6.15in</Width>
+        <Style>
+          <Color>#333333</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>4</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.35in</Left>
+        <Height>0.25in</Height>
+        <Value>=FormatDateTime(Parameters!BandwidthStartDate.Value,1) + "  -  " + FormatDateTime(Parameters!BandwidthEndDate.Value,1)</Value>
+      </Textbox>
+      <Table Name="tableBandwidth">
+        <NoRows>="Nobody overused his bandwidth at the moment."</NoRows>
+        <ZIndex>3</ZIndex>
+        <DataSetName>OverusageReport_HostingSpace</DataSetName>
+        <Visibility>
+          <ToggleItem>bandwidthLabel</ToggleItem>
+        </Visibility>
+        <Filters>
+          <Filter>
+            <FilterExpression>=Fields!IsBandwidthOverused.Value</FilterExpression>
+            <Operator>Equal</Operator>
+            <FilterValues>
+              <FilterValue>=true</FilterValue>
+            </FilterValues>
+          </Filter>
+        </Filters>
+        <Top>1.725in</Top>
+        <Width>7.525in</Width>
+        <Details>
+          <TableRows>
+            <TableRow>
+              <TableCells>
+                <TableCell>
+                  <ReportItems>
+                    <Image Name="image1">
+                      <Sizing>FitProportional</Sizing>
+                      <ToolTip rd:LocID="ZoomTooltip">Click to go to detailed overusage report.</ToolTip>
+                      <Action>
+                        <Drillthrough>
+                          <ReportName>HostingSpaceBandwidthOverusageDetails</ReportName>
+                          <Parameters>
+                            <Parameter Name="HostingSpaceId">
+                              <Value>=Fields!HostingSpaceId.Value</Value>
+                            </Parameter>
+                            <Parameter Name="HostingSpaceFullTree">
+                              <Value>=Fields!HostingSpaceFullTreeName.Value</Value>
+                            </Parameter>
+                            <Parameter Name="BandwidthStartDate">
+                              <Value>=Parameters!BandwidthStartDate.Value</Value>
+                            </Parameter>
+                            <Parameter Name="BandwidthEndDate">
+                              <Value>=Parameters!BandwidthEndDate.Value</Value>
+                            </Parameter>
+                          </Parameters>
+                        </Drillthrough>
+                      </Action>
+                      <MIMEType>image/png</MIMEType>
+                      <Source>Embedded</Source>
+                      <Style>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <PaddingLeft>5pt</PaddingLeft>
+                      </Style>
+                      <ZIndex>5</ZIndex>
+                      <Value>flashlight_24</Value>
+                    </Image>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox6">
+                      <Style>
+                        <Color>=IIf(Fields!ChildSpaceQuantity.Value &gt; 0, "#1f4978", "333333")</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextDecoration>=IIf(Fields!ChildSpaceQuantity.Value &gt; 0, "Underline", "None")</TextDecoration>
+                        <TextAlign>Left</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>4</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=Fields!HostingSpaceFullTreeName.Value + " \ " +  Fields!HostingSpaceName.Value</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox7">
+                      <Style>
+                        <Color>=IIF(Fields!Status.Value &lt;&gt; "Active", "#333333", "#339933")</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Left</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>3</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=Fields!Status.Value</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox8">
+                      <Style>
+                        <Color>DarkOrange</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Right</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>2</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=CStr(Fields!BandwidthUsed.Value - Fields!BandwidthAllotted.Value) + " (" + CStr(Round(Fields!BandwidthUsed.Value/Fields!BandwidthAllotted.Value * 100, 2) - 100) + "%)"</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox9">
+                      <Style>
+                        <Color>#333333</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Left</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>1</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=CStr(Fields!BandwidthAllotted.Value) + "/" + CStr(Fields!BandwidthUsed.Value)</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="UserName_1">
+                      <rd:DefaultName>UserName_1</rd:DefaultName>
+                      <ToolTip rd:LocID="UsernameLinkTooltip">="Click to locate the '" + Fields!UserName.Value + "' user homepage."</ToolTip>
+                      <Action>
+                        <Hyperlink>="javascript:void window.open('" + Parameters!UserHyperlinkString.Value + CStr(Fields!UserId.Value) + "','_blank');"</Hyperlink>
+                      </Action>
+                      <Style>
+                        <Color>#1f4978</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextDecoration>Underline</TextDecoration>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <CanGrow>true</CanGrow>
+                      <Value>=Fields!UserName.Value</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+              </TableCells>
+              <Height>0.25in</Height>
+            </TableRow>
+          </TableRows>
+          <Sorting>
+            <SortBy>
+              <SortExpression>=Fields!HostingSpaceFullTreeName.Value</SortExpression>
+              <Direction>Ascending</Direction>
+            </SortBy>
+            <SortBy>
+              <SortExpression>=Fields!HostingSpaceName.Value</SortExpression>
+              <Direction>Ascending</Direction>
+            </SortBy>
+            <SortBy>
+              <SortExpression>=Fields!Status.Value</SortExpression>
+              <Direction>Descending</Direction>
+            </SortBy>
+          </Sorting>
+        </Details>
+        <Style>
+          <Color>#333333</Color>
+          <BackgroundColor>White</BackgroundColor>
+          <BorderColor>
+            <Default>#cccccc</Default>
+          </BorderColor>
+          <BorderStyle>
+            <Left>Solid</Left>
+            <Right>Solid</Right>
+            <Top>Solid</Top>
+            <Bottom>Solid</Bottom>
+          </BorderStyle>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <VerticalAlign>Middle</VerticalAlign>
+          <PaddingLeft>5pt</PaddingLeft>
+          <PaddingRight>5pt</PaddingRight>
+        </Style>
+        <Header>
+          <TableRows>
+            <TableRow>
+              <TableCells>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox10">
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextAlign>Left</TextAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>11</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value />
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox11">
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>10</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <UserSort>
+                        <SortExpression>=Fields!HostingSpaceName.Value</SortExpression>
+                        <SortTarget>tblDiskspace</SortTarget>
+                      </UserSort>
+                      <Value rd:LocID="HostingSpaceHeader">Hosting Space</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox12">
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>9</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <UserSort>
+                        <SortExpression>=Fields!Status.Value</SortExpression>
+                        <SortTarget>tableBandwidth</SortTarget>
+                      </UserSort>
+                      <Value rd:LocID="StatusHeader">Status</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox13">
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <TextAlign>Right</TextAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>8</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <UserSort>
+                        <SortExpression>=Sum(Fields!Usage.Value, "OverusageReport_BandwidthOverusage")</SortExpression>
+                        <SortTarget>tableBandwidth</SortTarget>
+                      </UserSort>
+                      <Value rd:LocID="OverusageHeader">Overusage, MB</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox14">
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>7</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value rd:LocID="UsedAllocatedHeader">Allocated / Used, MB</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox16">
+                      <rd:DefaultName>textbox16</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>6</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value rd:LocID="UsernameHeader">User Name</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+              </TableCells>
+              <Height>0.2in</Height>
+            </TableRow>
+          </TableRows>
+        </Header>
+        <TableColumns>
+          <TableColumn>
+            <Width>0.35in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>2.475in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>0.675in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1.275in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1.375in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1.375in</Width>
+          </TableColumn>
+        </TableColumns>
+        <Height>0.45in</Height>
+        <Left>0.35in</Left>
+      </Table>
+      <Textbox Name="bandwidthLabel">
+        <Top>1.05in</Top>
+        <Width>4.525in</Width>
+        <ToggleImage>
+          <InitialState>true</InitialState>
+        </ToggleImage>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>14pt</FontSize>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <ZIndex>2</ZIndex>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.375in</Height>
+        <Value rd:LocID="BandwidthLabel">Bandwidth Overusage Report (current month)</Value>
+      </Textbox>
+      <Table Name="tblDiskspace">
+        <NoRows>="Nobody overused his disk space at the moment."</NoRows>
+        <ZIndex>1</ZIndex>
+        <DataSetName>OverusageReport_HostingSpace</DataSetName>
+        <Visibility>
+          <ToggleItem>diskspaceLabel</ToggleItem>
+        </Visibility>
+        <Filters>
+          <Filter>
+            <FilterExpression>=Fields!IsDiskspaceOverused.Value</FilterExpression>
+            <Operator>Equal</Operator>
+            <FilterValues>
+              <FilterValue>=true</FilterValue>
+            </FilterValues>
+          </Filter>
+        </Filters>
+        <Top>0.375in</Top>
+        <Width>7.525in</Width>
+        <Details>
+          <TableRows>
+            <TableRow>
+              <TableCells>
+                <TableCell>
+                  <ReportItems>
+                    <Image Name="imgSpaceZoom">
+                      <Sizing>FitProportional</Sizing>
+                      <ToolTip rd:LocID="ZoomTooltip">Click to go to detailed overusage report.</ToolTip>
+                      <Action>
+                        <Drillthrough>
+                          <ReportName>HostingSpaceDiskspaceOverusageDetails</ReportName>
+                          <Parameters>
+                            <Parameter Name="HostingSpaceId">
+                              <Value>=Fields!HostingSpaceId.Value</Value>
+                            </Parameter>
+                            <Parameter Name="HostingSpaceFullTree">
+                              <Value>=Fields!HostingSpaceFullTreeName.Value</Value>
+                            </Parameter>
+                          </Parameters>
+                        </Drillthrough>
+                      </Action>
+                      <MIMEType>image/png</MIMEType>
+                      <Source>Embedded</Source>
+                      <Style>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <PaddingLeft>5pt</PaddingLeft>
+                      </Style>
+                      <ZIndex>5</ZIndex>
+                      <Value>flashlight_24</Value>
+                    </Image>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="HostingSpaceName">
+                      <rd:DefaultName>HostingSpaceName</rd:DefaultName>
+                      <Style>
+                        <Color>=IIf(Fields!ChildSpaceQuantity.Value &gt; 0, "#1f4978", "333333")</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextDecoration>=IIf(Fields!ChildSpaceQuantity.Value &gt; 0, "Underline", "None")</TextDecoration>
+                        <TextAlign>Left</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>4</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=Fields!HostingSpaceFullTreeName.Value + " \ " +  Fields!HostingSpaceName.Value</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="Status">
+                      <rd:DefaultName>Status</rd:DefaultName>
+                      <Style>
+                        <Color>=IIF(Fields!Status.Value &lt;&gt; "Active", "#333333", "#339933")</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Left</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>3</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=Fields!Status.Value</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="Usage">
+                      <rd:DefaultName>Usage</rd:DefaultName>
+                      <Style>
+                        <Color>DarkOrange</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Right</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>2</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=CStr(Fields!DiskspaceUsed.Value - Fields!DiskspaceAllotted.Value) + " (" + CStr(Round(Fields!DiskspaceUsed.Value/Fields!DiskspaceAllotted.Value * 100, 2) - 100) + "%)"</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="Allocated">
+                      <rd:DefaultName>Allocated</rd:DefaultName>
+                      <Style>
+                        <Color>#333333</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextAlign>Left</TextAlign>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>1</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value>=CStr(Fields!DiskspaceAllotted.Value) + "/" + CStr(Fields!DiskspaceUsed.Value)</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="UserName">
+                      <rd:DefaultName>UserName</rd:DefaultName>
+                      <ToolTip rd:LocID="UsernameLinkTooltip">="Click to locate user home page."</ToolTip>
+                      <Action>
+                        <Hyperlink>="javascript:void window.open('" + Parameters!UserHyperlinkString.Value + CStr(Fields!UserId.Value) + "','_blank');"</Hyperlink>
+                      </Action>
+                      <Style>
+                        <Color>#1f4978</Color>
+                        <BackgroundColor>=IIf((RowNumber(Nothing) mod 2 ) &lt;&gt; 0, "Transparent", "#f7f6f3")</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Right>Solid</Right>
+                        </BorderStyle>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <TextDecoration>Underline</TextDecoration>
+                        <VerticalAlign>Middle</VerticalAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>2pt</PaddingTop>
+                        <PaddingBottom>2pt</PaddingBottom>
+                      </Style>
+                      <CanGrow>true</CanGrow>
+                      <Value>=Fields!UserName.Value</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+              </TableCells>
+              <Height>0.25in</Height>
+            </TableRow>
+          </TableRows>
+          <Sorting>
+            <SortBy>
+              <SortExpression>=Fields!HostingSpaceFullTreeName.Value</SortExpression>
+              <Direction>Ascending</Direction>
+            </SortBy>
+            <SortBy>
+              <SortExpression>=Fields!HostingSpaceName.Value</SortExpression>
+              <Direction>Ascending</Direction>
+            </SortBy>
+            <SortBy>
+              <SortExpression>=Fields!Status.Value</SortExpression>
+              <Direction>Descending</Direction>
+            </SortBy>
+          </Sorting>
+        </Details>
+        <Style>
+          <Color>#333333</Color>
+          <BackgroundColor>White</BackgroundColor>
+          <BorderColor>
+            <Default>#cccccc</Default>
+          </BorderColor>
+          <BorderStyle>
+            <Left>Solid</Left>
+            <Right>Solid</Right>
+            <Top>Solid</Top>
+            <Bottom>Solid</Bottom>
+          </BorderStyle>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <VerticalAlign>Middle</VerticalAlign>
+          <PaddingLeft>5pt</PaddingLeft>
+          <PaddingRight>5pt</PaddingRight>
+        </Style>
+        <Header>
+          <TableRows>
+            <TableRow>
+              <TableCells>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox2">
+                      <rd:DefaultName>textbox2</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextAlign>Left</TextAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>11</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value />
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox3">
+                      <rd:DefaultName>textbox3</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>10</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value rd:LocID="HostingSpaceHeader">Hosting Space</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox4">
+                      <rd:DefaultName>textbox4</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>9</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <UserSort>
+                        <SortExpression>=Fields!Status.Value</SortExpression>
+                        <SortTarget>tblDiskspace</SortTarget>
+                      </UserSort>
+                      <Value rd:LocID="StatusHeader">Status</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox5">
+                      <rd:DefaultName>textbox5</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <TextAlign>Right</TextAlign>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>8</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <UserSort>
+                        <SortExpression>=Sum(Fields!Usage.Value, "OverusageReport_DiskspaceOverusage")</SortExpression>
+                        <SortTarget>tblDiskspace</SortTarget>
+                      </UserSort>
+                      <Value rd:LocID="OverusageHeader">Overusage, MB</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox1">
+                      <rd:DefaultName>textbox1</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>7</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <Value rd:LocID="UsedAllocatedHeader">Allocated / Used, MB</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+                <TableCell>
+                  <ReportItems>
+                    <Textbox Name="textbox15">
+                      <rd:DefaultName>textbox15</rd:DefaultName>
+                      <Style>
+                        <BackgroundColor>WhiteSmoke</BackgroundColor>
+                        <BorderColor>
+                          <Default>#cccccc</Default>
+                        </BorderColor>
+                        <BorderStyle>
+                          <Left>Solid</Left>
+                          <Right>Solid</Right>
+                          <Top>Solid</Top>
+                          <Bottom>Solid</Bottom>
+                        </BorderStyle>
+                        <BackgroundImage>
+                          <Source>External</Source>
+                          <Value>../images/grid_header.gif</Value>
+                          <BackgroundRepeat>RepeatX</BackgroundRepeat>
+                        </BackgroundImage>
+                        <FontFamily>Tahoma</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>700</FontWeight>
+                        <TextDecoration>Underline</TextDecoration>
+                        <PaddingLeft>5pt</PaddingLeft>
+                        <PaddingRight>5pt</PaddingRight>
+                        <PaddingTop>4pt</PaddingTop>
+                        <PaddingBottom>4pt</PaddingBottom>
+                      </Style>
+                      <ZIndex>6</ZIndex>
+                      <CanGrow>true</CanGrow>
+                      <UserSort>
+                        <SortExpression>=Fields!UserName.Value</SortExpression>
+                        <SortTarget>tblDiskspace</SortTarget>
+                      </UserSort>
+                      <Value rd:LocID="UsernameHeader">User Name</Value>
+                    </Textbox>
+                  </ReportItems>
+                </TableCell>
+              </TableCells>
+              <Height>0.2in</Height>
+            </TableRow>
+          </TableRows>
+        </Header>
+        <TableColumns>
+          <TableColumn>
+            <Width>0.35in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>2.475in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>0.675in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1.275in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1.375in</Width>
+          </TableColumn>
+          <TableColumn>
+            <Width>1.375in</Width>
+          </TableColumn>
+        </TableColumns>
+        <Height>0.45in</Height>
+        <Left>0.35in</Left>
+      </Table>
+      <Textbox Name="diskspaceLabel">
+        <Width>4.525in</Width>
+        <ToggleImage>
+          <InitialState>true</InitialState>
+        </ToggleImage>
+        <Style>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>14pt</FontSize>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.375in</Height>
+        <Value rd:LocID="DiskspaceLabel">Diskspace Overusage Report</Value>
+      </Textbox>
+    </ReportItems>
+    <Height>2.225in</Height>
+    <Style>
+      <BorderColor>
+        <Default>White</Default>
+      </BorderColor>
+    </Style>
+  </Body>
+  <Language>en-US</Language>
+  <PageFooter>
+    <PrintOnFirstPage>true</PrintOnFirstPage>
+    <ReportItems>
+      <Textbox Name="dateLabel">
+        <Top>0.4in</Top>
+        <Width>2.025in</Width>
+        <Style>
+          <Color>#333333</Color>
+          <FontFamily>Tahoma</FontFamily>
+          <FontSize>8pt</FontSize>
+          <TextAlign>Left</TextAlign>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+        <CanGrow>true</CanGrow>
+        <Left>0.15in</Left>
+        <Height>0.25in</Height>
+        <Value>=FormatDateTime(Today,1)</Value>
+      </Textbox>
+    </ReportItems>
+    <Height>0.675in</Height>
+    <PrintOnLastPage>true</PrintOnLastPage>
+  </PageFooter>
+</Report>

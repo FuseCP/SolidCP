@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="HeaderBackupSettings.Text" xml:space="preserve">
+    <value>Backup- / Wiederherstellungs-Einstellungen</value>
+  </data>
+  <data name="HeaderCloudStorageSettings.Text" xml:space="preserve">
+    <value>Cloud Storage Portal-Einstellungen</value>
+  </data>
+  <data name="HeaderFileManagerSettings.Text" xml:space="preserve">
+    <value>Dateimanager:</value>
+  </data>
+  <data name="HeaderIpRestrictionSettings.Text" xml:space="preserve">
+    <value>Einstellungen zur Portal-IP-Adressen-Einschränkung</value>
+  </data>
+  <data name="HeaderNew.Text" xml:space="preserve">
+    <value>FREI</value>
+  </data>
+  <data name="HeaderNew2.Text" xml:space="preserve">
+    <value>FREI</value>
+  </data>
+  <data name="HeaderNew3.Text" xml:space="preserve">
+    <value>FREI</value>
+  </data>
+  <data name="HeaderOrganizationPasswordResetlSettings.Text" xml:space="preserve">
+    <value>Modul zum Zurücksetzen von Organisationspasswörtern</value>
+  </data>
+  <data name="HeaderOwaSettings.Text" xml:space="preserve">
+    <value>Office Web App-Einstellungen</value>
+  </data>
+  <data name="HeaderRdsSettings.Text" xml:space="preserve">
+    <value>RDS-Einstellungen</value>
+  </data>
+  <data name="HeaderSmtpSettings.Text" xml:space="preserve">
+    <value>SMTP-Server-Einstellungen</value>
+  </data>
+  <data name="HeaderTwilioSettings.Text" xml:space="preserve">
+    <value>Twilio SMS-Einstellungen</value>
+  </data>
+  <data name="HeaderWpiCustomFeeds.Text" xml:space="preserve">
+    <value>Web Platform Installation-Einstellungen</value>
+  </data>
+  <data name="SettingbtnSaveSettings.Text" xml:space="preserve">
+    <value>&amp;lt;span class='fa fa-floppy-o' aria-hidden='true'&amp;gt;&amp;nbsp;&amp;lt;/span&amp;gt;&amp;nbsp;Einstellungen speichern</value>
+  </data>
+  <data name="SettinglblWpiAddCustomFeeds.Text" xml:space="preserve">
+    <value>Benutzerspezifischen Feed hinzufügen</value>
+  </data>
+  <data name="SettinglblBackupFolderPath.Text" xml:space="preserve">
+    <value>Pfad des Sicherungsordners:</value>
+  </data>
+  <data name="SettinglblEnableOwa.Text" xml:space="preserve">
+    <value>OWA:</value>
+  </data>
+  <data name="SettinglblEnablePasswordReset.Text" xml:space="preserve">
+    <value>"Passwort zurücksetzen"-Link:</value>
+  </data>
+  <data name="SettinglblFileManagerEditableExtensions.Text" xml:space="preserve">
+    <value>Editierbare Erweiterungen:</value>
+  </data>
+  <data name="SettinglblIpAddressRestriction.Text" xml:space="preserve">
+    <value>IP-Adressen:</value>
+  </data>
+  <data name="SettinglblOwaUrl.Text" xml:space="preserve">
+    <value>OWA-URL:</value>
+  </data>
+  <data name="SettinglblPasswordResetLinkLifeSpan.Text" xml:space="preserve">
+    <value>Lebensdauer des "Zurücksetzen"-Links:</value>
+  </data>
+  <data name="SettinglblRdsController.Text" xml:space="preserve">
+    <value>Haupt-RDS-Controller:</value>
+  </data>
+  <data name="SettinglblSmtpEnableSSL.Text" xml:space="preserve">
+    <value>SMTP-SSL:</value>
+  </data>
+  <data name="SettinglblSmtpPort.Text" xml:space="preserve">
+    <value>SMTP-Port:</value>
+  </data>
+  <data name="SettinglblSmtpServer.Text" xml:space="preserve">
+    <value>SMTP-Server:</value>
+  </data>
+  <data name="SettinglblSmtpUser.Text" xml:space="preserve">
+    <value>SMTP-Benutzer:</value>
+  </data>
+  <data name="SettinglblSmtpUserPassword.Text" xml:space="preserve">
+    <value>SMTP-Passwort</value>
+  </data>
+  <data name="SettinglblTwilioAccountSid.Text" xml:space="preserve">
+    <value>Konto-SID:</value>
+  </data>
+  <data name="SettinglblTwilioAuthToken.Text" xml:space="preserve">
+    <value>AuthToken:</value>
+  </data>
+  <data name="SettinglblTwilioPhoneFrom.Text" xml:space="preserve">
+    <value>Telefonnummer:</value>
+  </data>
+  <data name="SettinglblWebdavPortalUrl.Text" xml:space="preserve">
+    <value>WebDAV Portal-URL:</value>
+  </data>
+  <data name="SettinglblWpiMainFeedUrl.Text" xml:space="preserve">
+    <value>Haupt-Feed-URL:</value>
+  </data>
+  <data name="SettinglitFileManagerEditableExtensions.Text" xml:space="preserve">
+    <value>(Eine (1) Erweiterung pro Zeile)</value>
+  </data>
+  <data name="SettingNoteFileManagerEditableExtensions.Text" xml:space="preserve">
+    <value>Hierbei handelt es sich um Erweiterungen, die im Dateimanager editiert werden können. Dateierweiterungen sagen dem System, um welchen Typ es sich handelt. Beispiel (.txt = Textdatei, .sql = Datenbank-Skript-Datei).</value>
+  </data>
+  <data name="SettingNoteTwilioAccount.Text" xml:space="preserve">
+    <value>Telefonnummer ist die Twilio-Nummer, die zum Versenden von SMS benutzt werden soll. Es kann jede Nummer benutzt werden, die Sie besitzen, solange diese als verifizierte Caller-ID im Twilio-Konto eingetragen ist.</value>
+  </data>
+  <data name="SettingPlcBackupFolderPath.placeholder" xml:space="preserve">
+    <value>C:\Backups</value>
+  </data>
+  <data name="SettingPlcOwaUrl.placeholder" xml:space="preserve">
+    <value>OWA-URL</value>
+  </data>
+  <data name="SettingPlcRdsController.placeholder" xml:space="preserve">
+    <value>Bitte wählen Sie Ihren Haupt-RDS-Controller aus.</value>
+  </data>
+  <data name="SettingPlcSmtpPort.placeholder" xml:space="preserve">
+    <value>587</value>
+  </data>
+  <data name="SettingPlcSmtpServer.placeholder" xml:space="preserve">
+    <value>mail.ihredomain.de</value>
+  </data>
+  <data name="SettingPlcSmtpUser.placeholder" xml:space="preserve">
+    <value>Benutzername oder IhreEmail@ihredomain.de</value>
+  </data>
+  <data name="SettingPlcSmtpUserPassword.placeholder" xml:space="preserve">
+    <value>Passwort</value>
+  </data>
+  <data name="SettingPlcWebdavPortalUrl.placeholder" xml:space="preserve">
+    <value>localhost:9004</value>
+  </data>
+  <data name="SettingchkEnableOwa.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="SettingchkEnablePasswordReset.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="SettingchkSmtpEnableSSL.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="SettingNotePasswordResetLinkLifeSpan.Text" xml:space="preserve">
+    <value>Passwort-Lebensdauer ist in Stunden gesetzt.</value>
+  </data>
+  <data name="SettingPlcPasswordResetLinkLifeSpan.placeholder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="SettingPlcTwilioPhoneFrom.placeholder" xml:space="preserve">
+    <value>0123 4567-89</value>
+  </data>
+  <data name="SettingTwilioURL.Text" xml:space="preserve">
+    <value>Besuchen Sie &amp;lt;a  href='https://www.twilio.com'/&amp;gt;https://www.twilio.com&amp;lt;/a&amp;gt; um weitere Informationen zu Twilio zu erhalten.</value>
+  </data>
+</root>

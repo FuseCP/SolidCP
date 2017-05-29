@@ -1,0 +1,79 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+	<Import Project="build.xml" />
+	
+	<PropertyGroup>
+		<TestDatabase>SolidCP</TestDatabase>
+		<TestDatabaseFolder>$(BuildFolder)\Database</TestDatabaseFolder>
+		<TestDbLogin>SolidCP</TestDbLogin>
+		<TestDbPassword>Password12</TestDbPassword>
+		<TestServerAdminPassword>1234</TestServerAdminPassword>
+		<TestServerAdminEncryptedPassword>HcWzSyyxfo0751w/TwWUjQ==</TestServerAdminEncryptedPassword>
+		<TestServerPassword>Password12</TestServerPassword>
+		<TestCryptoKey>1234567890</TestCryptoKey>
+		<EnterpriseUrl>http://127.0.0.1:9002</EnterpriseUrl>
+	</PropertyGroup>	
+
+	<Target Name="ConfigTest" DependsOnTargets="Build">
+		<XmlUpdate XmlFileName="$(ServerInstall)\web.config" Xpath="//configuration/SolidCP.server/security/password/@value" Value="$(TestServerPassword)" />
+		<XmlUpdate XmlFileName="$(EnterpriseServerInstall)\web.config" Xpath="//configuration/connectionStrings/add/@connectionString" Value="Server=(local)\SQLExpress;Database=$(TestDatabase);uid=$(TestDbLogin);pwd=$(TestDbPassword);"  />
+		<XmlUpdate XmlFileName="$(EnterpriseServerInstall)\web.config" Xpath="//configuration/appSettings/add[@key=%22SolidCP.CryptoKey%22]/@value" Value="$(TestCryptoKey)"  />
+		<XmlUpdate XmlFileName="$(PortalInstall)\App_Data\SiteSettings.config" Xpath="//SiteSettings/EnterpriseServer" Value="$(EnterpriseUrl)"  />
+	</Target>
+	
+	<Target Name="CreateIISWebsites" DependsOnTargets="ConfigTest">
+		<Exec Command="powershell . &quot;.\Tools\SetupTestWebsites.ps1&quot;" />
+	</Target>
+
+	<Target Name="StartWebsite" DependsOnTargets="CreateIISWebsites">
+		<Exec Command="powershell . &quot;.\Tools\StartWebsite.ps1&quot;" />
+	</Target>
+
+	<Target Name="BuildTest" DependsOnTargets="CreateIISWebsites">
+	</Target>
+	
+	<Target Name="Test" DependsOnTargets="BuildTest;StartWebsite">
+	</Target>
+	
+	<Target Name="UpdateTestDB">
+		<MakeDir Directories="$(TestDatabaseFolder)"/>
+
+		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(TestDatabaseFolder)" />
+
+		<!-- Update variables in files -->
+		<FileUpdate Files="$(TestDatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(TestDatabase)" />
+		<FileUpdate Files="$(TestDatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(TestDatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+
+		<Exec Command="$(SqlCmd) -i $(TestDatabaseFolder)\update_db.sql" />
+		
+		<Delete Files="$(TestDatabaseFolder)\install_db.sql" />
+		<Delete Files="$(TestDatabaseFolder)\update_db.sql" />
+	</Target>
+
+	<Target Name="CreateTestDB">
+		<MakeDir Directories="$(TestDatabaseFolder)"/>
+
+		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(TestDatabase)') IS NOT NULL DROP LOGIN $(TestDbLogin)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(TestDatabase)') IS NOT NULL DROP DATABASE $(TestDatabase)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(TestDatabase)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;CREATE LOGIN $(TestDbLogin) WITH PASSWORD='$(TestDbPassword)', DEFAULT_DATABASE=$(TestDatabase);USE $(TestDatabase);EXEC sp_changedbowner '$(TestDbLogin)';&quot;" />
+		
+		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(TestDatabaseFolder)" />
+		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(TestDatabaseFolder)" />
+
+		<!-- Update variables in files -->
+		<FileUpdate Files="$(TestDatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(TestDatabase)" />
+		<FileUpdate Files="$(TestDatabaseFolder)\install_db.sql" Regex="N'serveradmin', N''" ReplacementText="N'serveradmin', N'$(TestServerAdminEncryptedPassword)'" />
+		<FileUpdate Files="$(TestDatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(TestDatabase)" />
+		<FileUpdate Files="$(TestDatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(TestDatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+
+		<Exec Command="$(SqlCmd) -i $(TestDatabaseFolder)\install_db.sql" />
+		<Exec Command="$(SqlCmd) -i $(TestDatabaseFolder)\update_db.sql" />
+		
+		<Delete Files="$(TestDatabaseFolder)\install_db.sql" />
+		<Delete Files="$(TestDatabaseFolder)\update_db.sql" />
+	</Target>
+
+</Project>

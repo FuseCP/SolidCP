@@ -1,0 +1,106 @@
+﻿## just a comment...
+
+A = #a#
+B = #b#
+D = #d#
+
+*** isdefined ***
+#isdefined("c")#
+<ad:if test="#isdefined("a") and IsDefined("b")#">
+	A and B are defined
+</ad:if>
+
+*** ifdefined ***
+#ifdefined("a", "a IS defined")#
+#ifdefined("c", "c IS NOT defined")#
+#ifdefined("d", (3+2)/5)#
+
+*** equals ***
+A equals B: #equals(a, b)#
+D equals A: #equals(d, a)#
+
+*** notequals ***
+A notequals B: #notequals(a, b)#
+D notequals A: #notequals(d, a)#
+
+*** iseven ***
+A is even: #iseven(a)#
+B is even: #iseven(b)#
+
+*** isodd ***
+A is odd: #isodd(a)#
+B is odd: #isodd(b)#
+
+*** isempty ***
+str1 is empty: #isempty(str1)#
+str2 is empty: #isempty(str2)#
+str3 is empty: #isempty(str3)#
+
+*** isnumber ***
+A is number: #isnumber(A)#
+str1 is number: #isnumber(str1)#
+
+*** toupper ***
+str1: #ToUpper(str1)#
+str2: #ToUpper(str2)#
+str3: #ToUpper(str3)#
+
+*** tolower ***
+str1: #ToLower(str1)#
+str2: #ToLower(str2)#
+str3: #ToLower(str3)#
+
+*** len ***
+str1: #len(str1)#
+str2: #len(str2)#
+str3: #len(str3)#
+
+*** isnull ***
+a: #isnull(a)#
+str1: #isnull(str1)#
+str3: #isnull(str3)#
+
+*** not ***
+not(isnull(a)): #not(isnull(a))#
+not(isempty(str2)): #not(isempty(str2))#
+
+*** iif ***
+#iif(a == b, "a = b", "a != b")#
+#iif(a == d, "a = d", "a != d")#
+#iif(a % 2 is 0, "even", "odd")#
+
+*** format ***
+format(a, "0.00"): #format(a, "0.00")#
+format(b, "C"): #format(b, "C")#
+
+*** Trim ***
+trim("  hello   "): #trim("  hello   ")#
+trim(str1): #trim(str1)#
+
+*** Compare ***
+compare(a,b): #compare(a,b)#
+compare(a,d): #compare(a,d)#
+compare(b,d): #compare(b,d)#
+
+*** CompareNoCase ***
+CompareNoCase(str1, "hello, world"): #CompareNoCase(str1, "hello, world")#
+
+*** StripNewLines ***
+StripNewLines(str1) : #StripNewLines(str1)#
+
+*** TypeOf **
+typeof(a): #typeof(a)#
+typeof(str1): #typeof(str1)#
+
+*** cint ***
+cint("1"): #typeof(cint("1"))#
+
+*** cdouble ***
+cdouble("1.222"): #typeof(cdouble("1.222"))#
+
+*** cdate ***
+cdate("2010-10-12"): #cdate("2010-10-12")#
+
+*** ToList ***
+tolist(arr, null, ", "): #tolist(arr, null, ", ")#
+tolist(customersDict.Values, "Name", ", "): #tolist(customersDict.Values, "Name", ", ")#

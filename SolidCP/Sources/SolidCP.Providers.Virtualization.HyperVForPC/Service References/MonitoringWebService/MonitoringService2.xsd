@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Monitoring" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Monitoring" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd8" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common.Internal" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common" />
+  <xs:complexType name="ArrayOfMonitoringObject">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MonitoringObject" nillable="true" type="tns:MonitoringObject" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMonitoringObject" nillable="true" type="tns:ArrayOfMonitoringObject" />
+  <xs:complexType name="MonitoringObject">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:PartialMonitoringObject">
+        <xs:sequence>
+          <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="propertyValuesByColumnName" nillable="true" type="q1:ArrayOfKeyValueOfstringanyType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="MonitoringObject" nillable="true" type="tns:MonitoringObject" />
+  <xs:complexType name="PartialMonitoringObject">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:PartialMonitoringObjectBase">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common.Internal" name="generatedWrapper" nillable="true" type="q2:MonitoringObjectGenerated" />
+          <xs:element name="leastDerivedNonAbstractMonitoringClassId" type="ser:guid" />
+          <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="monitoringClassIds" nillable="true" type="q3:ArrayOfguid" />
+          <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="sourceEntityIds" nillable="true" type="q4:ArrayOfguid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PartialMonitoringObject" nillable="true" type="tns:PartialMonitoringObject" />
+  <xs:complexType name="PartialMonitoringObjectBase">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common" base="q5:MonitoringBaseWithId">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PartialMonitoringObjectBase" nillable="true" type="tns:PartialMonitoringObjectBase" />
+</xs:schema>

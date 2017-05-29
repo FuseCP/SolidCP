@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D435AB26-3AE1-4AAA-B423-50372B2C16F3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SolidCP.Providers.EnterpriseStorage.Windows2012</RootNamespace>
+    <AssemblyName>SolidCP.Providers.EnterpriseStorage.Windows2012</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\SolidCP.Server\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\SolidCP.Server\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684C932A-6C75-46AC-A327-F3689D89EB42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj">
+      <Project>{899b3048-46be-4c4d-9d41-0043c8b0d11e}</Project>
+      <Name>SolidCP.Providers.OS.Windows2003</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj">
+      <Project>{27130bbb-76fa-411e-8b4d-51cd4dc821af}</Project>
+      <Name>SolidCP.Providers.OS.Windows2012</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj">
+      <Project>{9be0317d-e42e-4ff6-9a87-8c801f046ea1}</Project>
+      <Name>SolidCP.Providers.Web.IIs60</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj">
+      <Project>{1b9dce85-c664-49fc-b6e1-86c63cab88d1}</Project>
+      <Name>SolidCP.Providers.Web.IIs70</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj">
+      <Project>{6e348968-461d-45a1-b235-4f552947b9f1}</Project>
+      <Name>SolidCP.Providers.Web.IIs80</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Web.WebDav\SolidCP.Providers.Web.WebDav.csproj">
+      <Project>{ce2df3d7-d6ff-48fa-b2ea-7b836fcbf698}</Project>
+      <Name>SolidCP.Providers.Web.WebDav</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj">
+      <Project>{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}</Project>
+      <Name>SolidCP.Server.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SyncShareService.cs" />
+    <Compile Include="Windows2012.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

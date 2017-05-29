@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnFinish.Text" xml:space="preserve">
+    <value>Erstellen</value>
+  </data>
+  <data name="btnNext.Text" xml:space="preserve">
+    <value>Weiter &gt;</value>
+  </data>
+  <data name="btnPrevious.Text" xml:space="preserve">
+    <value>&lt; Zurück</value>
+  </data>
+  <data name="FormComments.Text" xml:space="preserve">
+    <value>&lt;p&gt;&lt;b&gt;Willkommen zum VM-Anlage-Assistenten!&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Der Assistent erlaubt es Parameter für neue VM wie Hostname, Betriebssystemvorlage, Administratorkennwort, externe und private (- falls im Hostingplan erlaubt) Netzwerkparameter anzugeben.&lt;/p&gt;&lt;p&gt;Wenn eine E-Mailadresse bei "Sende Zusammenfassungs-Bericht an" angegeben ist, werden VM-Zusammenfassunsginfos nach Fertigstellung des Bereitstellungsprozesses an diese E-Mail versendet.&lt;/p&gt;&lt;p&gt;Nach dem Anklicken des "Anlegen"-Knopfes im letzten Schritt des Assistenten wird der Bereitstellungsprozess einer neuen VM gestartet. Der Prozess ist asynchron, daher ist es nicht notwendig auf dessen Fertigstellung zu warten.&lt;/p&gt;</value>
+  </data>
+  <data name="stepConfig.Title" xml:space="preserve">
+    <value>Konfiguration</value>
+  </data>
+  <data name="stepExternalNetwork.Title" xml:space="preserve">
+    <value>Externes Netzwerk</value>
+  </data>
+  <data name="stepName.Title" xml:space="preserve">
+    <value>Name &amp; OS</value>
+  </data>
+  <data name="stepPrivateNetwork.Title" xml:space="preserve">
+    <value>Privates Netzwerk</value>
+  </data>
+  <data name="stepSummary.Title" xml:space="preserve">
+    <value>Zusammenfassung</value>
+  </data>
+  <data name="DomainValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen Domänennamen ein</value>
+  </data>
+  <data name="ExternalAddressesValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die Anzahl der externen IP-Adressen ein</value>
+  </data>
+  <data name="HostnameValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen Hostnamen ein</value>
+  </data>
+  <data name="PrivateAddressesValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die Anzahl der privaten IP-Adressen ein</value>
+  </data>
+  <data name="RequireHddValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die Größe des Festplattenlaufwerks ein</value>
+  </data>
+  <data name="RequireRamValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die RAM-Größe für die Zuweisung zum neuen VPS ein</value>
+  </data>
+  <data name="SnapshotsValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die maximale Anzahl an Snapshots ein</value>
+  </data>
+  <data name="SummaryEmailValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie eine E-Mail-Adresse für den Versand der Kontenübersicht ein</value>
+  </data>
+  <data name="chkBootFromCd.Text" xml:space="preserve">
+    <value>Von CD starten</value>
+  </data>
+  <data name="chkDvdInstalled.Text" xml:space="preserve">
+    <value>DVD-Laufwerk installiert</value>
+  </data>
+  <data name="chkExternalNetworkEnabled.Text" xml:space="preserve">
+    <value>Externes Netzwerk aktiviert</value>
+  </data>
+  <data name="chkNumLock.Text" xml:space="preserve">
+    <value>"Num Lock" aktiviert</value>
+  </data>
+  <data name="chkPauseResume.Text" xml:space="preserve">
+    <value>Anhalten, Fortsetzen</value>
+  </data>
+  <data name="chkPrivateNetworkEnabled.Text" xml:space="preserve">
+    <value>Privates Netzwerk aktiviert</value>
+  </data>
+  <data name="chkReboot.Text" xml:space="preserve">
+    <value>Neustarten</value>
+  </data>
+  <data name="chkReinstall.Text" xml:space="preserve">
+    <value>Neu installieren</value>
+  </data>
+  <data name="chkReset.Text" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="chkSendSummary.Text" xml:space="preserve">
+    <value>Zusammenfassungs-E-Mail versenden an:</value>
+  </data>
+  <data name="chkStartShutdown.Text" xml:space="preserve">
+    <value>Starten, Ausschalten und Herunterfahren</value>
+  </data>
+  <data name="lblCpu.Text" xml:space="preserve">
+    <value>CPU:</value>
+  </data>
+  <data name="lblHdd.Text" xml:space="preserve">
+    <value>HDD:</value>
+  </data>
+  <data name="lblRam.Text" xml:space="preserve">
+    <value>RAM:</value>
+  </data>
+  <data name="locAdminPassword.Text" xml:space="preserve">
+    <value>Administrator-Passwort:</value>
+  </data>
+  <data name="locBootFromCd.Text" xml:space="preserve">
+    <value>Von CD starten:</value>
+  </data>
+  <data name="locConfigStepTitle.Text" xml:space="preserve">
+    <value>Konfiguration</value>
+  </data>
+  <data name="locCores.Text" xml:space="preserve">
+    <value>Kerne</value>
+  </data>
+  <data name="locCpu.Text" xml:space="preserve">
+    <value>CPU-Kerne:</value>
+  </data>
+  <data name="locDvdInstalled.Text" xml:space="preserve">
+    <value>DVD-Laufwerk installiert:</value>
+  </data>
+  <data name="locExternalAddresses.Text" xml:space="preserve">
+    <value>Anzahl an IP-Adressen:</value>
+  </data>
+  <data name="locExternalAddressesList.Text" xml:space="preserve">
+    <value>IP-Adressliste:</value>
+  </data>
+  <data name="locExternalAddressesNumber.Text" xml:space="preserve">
+    <value>Anzahl an IP-Adressen:</value>
+  </data>
+  <data name="locExternalNetwork.Text" xml:space="preserve">
+    <value>Externes Netzwerk</value>
+  </data>
+  <data name="locExternalNetworkEnabled.Text" xml:space="preserve">
+    <value>Externes Netzwerk aktiviert:</value>
+  </data>
+  <data name="locGB.Text" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="locHdd.Text" xml:space="preserve">
+    <value>Festplattengröße [GB]:</value>
+  </data>
+  <data name="locHoldCtrl.Text" xml:space="preserve">
+    <value>* STRG-Taste gedrückt halten, um mehrere Adressen auszuwählen</value>
+  </data>
+  <data name="locHostname.Text" xml:space="preserve">
+    <value>Hostname:</value>
+  </data>
+  <data name="locMB.Text" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="locNameStepTitle.Text" xml:space="preserve">
+    <value>Name und Betriebssystem</value>
+  </data>
+  <data name="locNumLock.Text" xml:space="preserve">
+    <value>"Num Lock" aktiviert:</value>
+  </data>
+  <data name="locOnePerLine.Text" xml:space="preserve">
+    <value>* Eine IP-Adresse pro Zeile eingeben</value>
+  </data>
+  <data name="locOperatingSystem.Text" xml:space="preserve">
+    <value>Betriebssystem:</value>
+  </data>
+  <data name="locPauseResumeAllowed.Text" xml:space="preserve">
+    <value>Anhalten, Fortsetzen erlaubt:</value>
+  </data>
+  <data name="locPrivateAddresses.Text" xml:space="preserve">
+    <value>Anzahl an IP-Adressen:</value>
+  </data>
+  <data name="locPrivateAddressesList.Text" xml:space="preserve">
+    <value>IP-Adressliste:</value>
+  </data>
+  <data name="locPrivateAddressesNumber.Text" xml:space="preserve">
+    <value>Anzahl an IP-Adressen:</value>
+  </data>
+  <data name="locPrivateNetwork.Text" xml:space="preserve">
+    <value>Privates Netzwerk</value>
+  </data>
+  <data name="locPrivateNetworkEnabled.Text" xml:space="preserve">
+    <value>Privates Netzwerk aktiviert:</value>
+  </data>
+  <data name="locPrivateNetworkFormat.Text" xml:space="preserve">
+    <value>Netzwerkadressen-Format:</value>
+  </data>
+  <data name="locPrivateSubnetMask.Text" xml:space="preserve">
+    <value>Subnetzmaske:</value>
+  </data>
+  <data name="locRam.Text" xml:space="preserve">
+    <value>RAM [MB]:</value>
+  </data>
+  <data name="locRebootAllowed.Text" xml:space="preserve">
+    <value>Neustart erlaubt:</value>
+  </data>
+  <data name="locReinstallAllowed.Text" xml:space="preserve">
+    <value>Neu-Installation erlaubt:</value>
+  </data>
+  <data name="locResetAllowed.Text" xml:space="preserve">
+    <value>Zurücksetzen erlaubt:</value>
+  </data>
+  <data name="locSnapshots.Text" xml:space="preserve">
+    <value>Anzahl an Snapshots:</value>
+  </data>
+  <data name="locStartShutdownAllowed.Text" xml:space="preserve">
+    <value>Starten, Ausschalten und Herunterfahren erlaubt:</value>
+  </data>
+  <data name="locSummary.Text" xml:space="preserve">
+    <value>Zusammenfassung</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>Neuen VPS erstellen</value>
+  </data>
+  <data name="radioExternalRandom.Text" xml:space="preserve">
+    <value>Zufällige IP-Adressen aus dem Pool wählen</value>
+  </data>
+  <data name="radioExternalSelected.Text" xml:space="preserve">
+    <value>IP-Adresse aus Liste auswählen</value>
+  </data>
+  <data name="radioPrivateRandom.Text" xml:space="preserve">
+    <value>Zufällig nächsten verfügbaren IP-Adressen zu dem Adressformat wählen</value>
+  </data>
+  <data name="radioPrivateSelected.Text" xml:space="preserve">
+    <value>spezifische IP-Adressen zuweisen</value>
+  </data>
+  <data name="secActions.Text" xml:space="preserve">
+    <value>Erlaubte Aktionen</value>
+  </data>
+  <data name="secBios.Text" xml:space="preserve">
+    <value>BIOS</value>
+  </data>
+  <data name="secDvd.Text" xml:space="preserve">
+    <value>DVD</value>
+  </data>
+  <data name="secResources.Text" xml:space="preserve">
+    <value>Ressourcen</value>
+  </data>
+  <data name="secSnapshots.Text" xml:space="preserve">
+    <value>Snapshots</value>
+  </data>
+  <data name="OperatingSystemValidator.ErrorMessage" xml:space="preserve">
+    <value>Betriebssystemvorlage auswählen</value>
+  </data>
+  <data name="SelectOsTemplate.Text" xml:space="preserve">
+    <value>&lt;Betriebssystemvorlage auswählen&gt;</value>
+  </data>
+  <data name="btnFinish.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Virtueller Server wird erstellt...');</value>
+  </data>
+  <data name="litMaxExternalAddresses.Text" xml:space="preserve">
+    <value>({0} max)</value>
+  </data>
+  <data name="litMaxPrivateAddresses.Text" xml:space="preserve">
+    <value>({0} max)</value>
+  </data>
+  <data name="locNotEnoughExternalAddresses.Text" xml:space="preserve">
+    <value>Der Pool verfügbarer externer IP-Adressen ist leer. Alle IP-Adressen, die dem derzeitigen Hosting-Bereich zugewiesen sind, sind vorhandenen virtuellen Servern zugeordnet. Mehr externe IP-Adressen können vom Host zugewiesen werden.</value>
+  </data>
+  <data name="valCorrectHostname.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen gültigen Hostnamen ein (z.B. "vps01")</value>
+  </data>
+  <data name="valNewDomainFormat.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen gültigen Domänennamen ein (z.B. "meinedomain.de")</value>
+  </data>
+  <data name="locGeneration.Text" xml:space="preserve">
+    <value>Generation:</value>
+  </data>
+  <data name="btnFinishText.Text" xml:space="preserve">
+    <value>Fertigstellen</value>
+  </data>
+  <data name="btnNextText.Text" xml:space="preserve">
+    <value>Weiter &gt;</value>
+  </data>
+  <data name="btnPreviousText.Text" xml:space="preserve">
+    <value>&lt; Zurück</value>
+  </data>
+</root>

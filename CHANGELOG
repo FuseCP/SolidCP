@@ -1,0 +1,162 @@
+Version 1.2.1:
+- Proxmox - With thanks to Centron GmbH
+- Guacamole for VPS2012 - With thanks to Centron GmbH
+- Enter key can be used in the global search field now
+- Fixed errors while clicking on search reasults from Hosted Exchange (distribution lists, ressource mailbox, etc.)
+- Fixed Enterprise Solution Report selection in scheduled tasks
+- Fixed Database Usage Notifications selection in scheduled tasks
+- Fixed wrong active menu item, if you click on Configuration - Servers
+- Fixed Scheduled Tasks menu for serveradmin is now language independent
+- Fixed Scheduled Tasks pages - Start button on last item and second page items started the wrong tasks
+- Fixed reload of domain view after detaching a domain as serveradmin
+- Ecommerce scheduled tasks hidden by changing to RoleID 0 (doesn't match even serveradmin), because Ecommerce module is currently not implemented
+- Many bugfixes and enhancements for Windows event log viewer in Servers -> Settings. Now the event log can also be read from localized Windows systems.
+- Bugfix and design enhancements for Remote Desktop Sessions in Servers -> Settings.
+- Serv-U transformed to x64 - This will now require a 64bit app pool.
+- Removed website list changes
+- Removed several lingering files
+- Removed Lets Encypt
+- Removed MSPControl files found in source.
+
+Version 1.2.0:
+- Fixed several form fields
+- Fixed Exchange 2013/2016 Public folders with multiple users and the same display name
+- Updates most service icons
+- Fix for collate in GetDnsRecordsTotal Procedure
+- Fixed MS DNS 2012+ provider module for windows 2016 (bypass microsoft bug)
+- Fixed shared ip display for users
+- Updated UI for Hosting Plan Quotas and Space Quotas 
+- Fix for when changing the name of the Exchange Disclaimer
+- Fixed RDS User Session buttons
+- Updated FTP page formatting
+- Updated most exchange pages over to bootstrap for better formatting
+- Updated the formatting on Servers and Virtual Servers pages in configuration
+- Fixed PowerShell Installation Script for quicker installs on Server 2016
+- Updated PowerShell Auto Upgrade Script to remove old files that are no longer in use
+- Fixed search boxes on various pages for both style and function
+- Added additional drive restrictions to RDS Collections to match AD GPO options
+- Fixed form autocomplete in the password related screens
+- Added LetsEncrypt support
+- Updated websites and domains list with status
+- Added SSL status to website list
+- Added Spam Experts (expirimental)
+- Fix for HyperV reset button
+- Fixed Exchange contacts edit page
+- Fixed most form text fields (150 - 200 - normal) to bootstrap
+- Fixed up policy pages
+- Fixed up IP address pages
+- Fixed up Phone number pages
+- Fixed up hosting plan and Addons pages
+- Added Mailcleaner support for all other mail providers
+- Fixed Dialog box width
+- Added dialog box to several slow functions in SolidCP
+- Fixed AD Password Policy
+- Fix for Edit RDS Server page error when clicking update
+- Added WYSIWYG editors for Exchange Disclaimers and a default template
+- Fix for SimpleDNS primary NS
+- Fix for RDS Drive mappings for multple Users
+- Added German language to the SolidCP base
+- Added IIS Virtual Directory support (not just virtual apps)
+
+
+Version 1.1.2:
+- Fixed Dialogues on all pages
+- Stylized all popups /dialogues
+- Fixed VPS buttons (start/stop/ etc)
+- Fixed VPS buttons (move/ delete/ import/ etc)
+- Fixed mariaDB quota issue
+- Stylized Organization pages
+- Made Organization user photo available on all Org user pages
+- Fixed file editor widht / height
+- Added scroll to popup windows
+- Fixed Exchange Distribution list pages
+- Fixed Exchange forwarding to shared mailbox
+- Fixed Exchange Shared mailbox search/select able
+- Changed Exchange mailbox url to the General information tab
+- Fixed Mailbox menu showing when in Exchange mailbox general information tab.
+- Fixed Select all / unselect all
+- Fixed Exchange disclaimer update issue
+- Fixed Country selection for CSR generation
+- Fixed Website Pointers not saving to database
+- Fixed Mailcleaner quotas key.
+- MariaDB / MSSQL 2016 quota fix
+- Fixed Exchange mobile pages
+- Fixed Exchange Policies Delete button
+- Fixed all RDS pages
+- Fixed HyperV HDD resize
+- Fixed HyperV CPU vCore calculation
+- Fixed Windows 2016 DNS issue
+- Fixed Hyper-v pages
+- Fixed Exchange Disclaimer pages
+
+Version 1.1.1:
+- Fixed Exchange Calendar permissions for All languages
+- Fixed Exchange Contact permissions for all languages
+- Quite a few button fixes
+- Small design layout fixes (email pages/ password fields/ account pages)
+- Bandwidth fix
+- Portal build fixes
+- Menu fixes (missing entries)
+
+Version 1.1.0:
+- Added Microsoft SQL 2016 support
+- Added mailcleaner domain creation on space creation
+- Added mailcleaner domain removal on space removal
+- Added silent installer support for WebDavPortal 
+- Added Server deployment powershell script 
+- Fixed Active Directory domains in 2012+ provider
+- Fixed Organization menu always showing
+- Fixed Organization menu erroring for users
+- Added MS Access 2010 (64bit) odbc support
+- Added MS Excel 2010 (64bit) odbc support
+- Added Coldfusion 2016 support
+- Fixed Exchange 2013 / 2016 contacts creation
+- Added new large design changes
+- Added Design mobile functionalities
+- Fixed sharepoint 2016 Enterprise database query
+- Fixed MariaDB db upgrade query
+- Fixed Exchange 2013 - 2016 Retention policy
+- Added Web Compression to the Web Policy
+- Added visual password validation
+- Added show password
+- Improved WHMCS module
+- Added SimpleDNS 6.x support
+- Fixed PowerDNS Master/Slave
+
+Version 1.0.3:
+- Added Mailcleaner support for Microsoft Exchange
+- Fixed favicons for all devices (Portal / Cloud Storage Portal)
+- Skype for Business 2015 bug fixes
+- Lync 2013 isolation fix
+- Added WHMCS Configurable options
+- Centered login on all devices
+
+Version 1.0.2 Beta:
+- Added Microsoft Exchange 2016 support
+- Added Microsoft Sharepoint 2016 support (foundation + enterprise)
+- Added Skype for Business 2015 support
+- Added Administration IP Restrictive login support
+- Added Microsoft windows 2016 support
+- Added IIS 10 support
+- Added MS FTP 10 support
+- Added Automatic update support through portal (Files only)
+- Fixed database scripts
+- Fixed Search for large SolidCP deployments
+- Fixed RDS Tabs
+- Fixed Lync simple url
+- Fixed Cloud storage permissions
+- Fixed Cloud storage tabs
+
+Version 1.0.1:
+- Fixed Website Import bug
+- Fixed Dedicated application pool bug
+- Fixed AD Settings: auth none capability
+- Added MySQL 5.7 support
+- Added MariaDB (10.1) support
+- Added Responsive theme
+- Fixed several layout issues
+- Fixed Hosting Spaces menu
+- Fixed Hosted Org menu
+- Fixed Email address issue for users
+- Fixed Global Mailbox plans
+- Fixed Global Retention policies

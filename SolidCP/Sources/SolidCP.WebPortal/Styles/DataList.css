@@ -1,0 +1,52 @@
+﻿.foo {} /* W3C CSS validator likes CSS files to start with a class rather than a comment. Soooooo.... */
+
+/* This style sheet is intended to contain RARELY CHANGED rules used when the DataList control adapter is enabled. */
+/* Empty rules are provided merely as a convenience for your future use or experimentation. */
+
+.AspNet-DataList
+{
+}
+
+.AspNet-DataList table
+{
+}
+
+.AspNet-DataList table caption
+{
+}
+
+.AspNet-DataList table thead
+{
+}
+
+.AspNet-DataList table thead tr
+{
+}
+
+.AspNet-DataList table thead tr th
+{
+}
+
+.AspNet-DataList table tfoot
+{
+}
+
+.AspNet-DataList table tfoot tr
+{
+}
+
+.AspNet-DataList table tfoot tr td
+{
+}
+
+.AspNet-DataList table tbody
+{
+}
+
+.AspNet-DataList table tbody tr
+{
+}
+
+.AspNet-DataList table tbody tr td
+{
+}

@@ -1,0 +1,1064 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+    <?include Config.Wxi?>
+    <Product Id="*" Name="$(var.NAME)" Language="1033" Version="$(var.VERSION)" Manufacturer="$(var.MANUFACTURER)"
+             UpgradeCode="F59D3AED-C1B8-46B4-AFE2-A97F3B7DFB5E">
+        <Package  InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Description="$(var.NAME) $(var.VERSION)" Comments="$(var.DESCRIPTION)" />
+        <Media Id="1" EmbedCab="yes" Cabinet="SolidCP_cab" />
+        <!-- Use WIX_UPGRADE_DETECTED -->
+        <MajorUpgrade DowngradeErrorMessage="A later version of [ProductName] is already installed."  AllowSameVersionUpgrades="yes" />
+        <Feature Id ="SolidCP" Title="Website Panel" Level="1" ConfigurableDirectory="SCP_INSTALL_DIR" AllowAdvertise="no" Display="expand"
+                 Description="$(var.DESCRIPTION)">
+            <ComponentGroupRef Id="SolidCPFiles" />
+            <Feature Id="ServerFeature" Title="$(var.ServerTitle)" Level="1" ConfigurableDirectory="PI_SERVER_INSTALL_DIR" AllowAdvertise="no"
+                     Description="$(var.ServerDescription)">
+                <ComponentGroupRef Id="ServerFiles" />
+            </Feature>
+            <Feature Id="EnterpriseServerFeature" Title="$(var.EServerTitle)" Level="1" ConfigurableDirectory="PI_ESERVER_INSTALL_DIR" AllowAdvertise="no"
+                     Description="$(var.ServerDescription)">
+                <ComponentGroupRef Id="EnterpriseServerFiles" />
+                <ComponentGroupRef Id="DatabaseInstallation"/>
+            </Feature>
+            <Feature Id="PortalFeature" Title="$(var.PortalTitle)" Level="1" ConfigurableDirectory="PI_PORTAL_INSTALL_DIR" AllowAdvertise="no"
+                     Description="$(var.PortalDescription)">
+                <ComponentGroupRef Id="PortalFiles" />
+            </Feature>
+            <Feature Id="SchedulerServiceFeature" Title="$(var.SchedulerTitle)" Level="1" ConfigurableDirectory="PI_SCHEDULER_INSTALL_DIR" AllowAdvertise="no" Description="$(var.SchedulerDescription)">
+                <ComponentGroupRef Id="SchedulerServiceFiles" />
+            </Feature>
+            <Feature Id ="WebDavPortalFeature" Title="WebDAV Portal" Level="100" ConfigurableDirectory="PI_WEBDAVPORTAL_INSTALL_DIR" AllowAdvertise ="no"
+                     Description="SolidCP WebDAV Portal">
+                <ComponentGroupRef Id="WebDavPortalFiles"/>
+            </Feature>
+        </Feature>
+        <!--Destinations.-->
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="SCP_INSTALL_DIR" Name="SolidCP">
+                <Directory Id="PI_SERVER_INSTALL_DIR" Name="Server" />
+                <Directory Id="PI_ESERVER_INSTALL_DIR" Name="Enterprise Server" />
+                <Directory Id="PI_PORTAL_INSTALL_DIR" Name="Portal" />
+                <Directory Id="PI_SCHEDULER_INSTALL_DIR" Name="SchedulerService" />
+                <Directory Id="PI_WEBDAVPORTAL_INSTALL_DIR" Name="WebDavPortal"/>
+            </Directory>
+        </Directory>
+        <EnsureTable Id="ComboBox"/>
+        <EnsureTable Id="ListView"/>
+        <UI Id="CustomInstaller">
+            <UIRef Id="WixUI_Mondo" />
+            <DialogRef Id="CustomVerifyReadyDlg"/>
+            <TextStyle Id="DlgTitleFont" FaceName="Tahoma" Size="8" Bold="yes" />
+            <Dialog Id="SWebDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify SolidCP Server web settings." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Web Settings" />
+                <Control Type="Text" Id="IPaddressLabel" Width="73" Height="15" X="38" Y="79" Text="IP address:" />
+                <Control Type="ComboBox" Id="SERVER_IP_COMBO" Width="214" Height="15" X="34" Y="98" Property="PI_SERVER_IP">
+                    <ComboBox Property="PI_SERVER_IP" />
+                </Control>
+                <Control Type="Text" Id="PortLabel" Width="73" Height="15" X="259" Y="79" Text="Port:" />
+                <Control Type="Edit" Id="PortEdit" Width="46" Height="15" X="259" Y="98" Property="PI_SERVER_PORT">
+                </Control>
+                <Control Type="Text" Id="HostnameLabel" Width="73" Height="15" X="38" Y="124" Text="Host name:" />
+                <Control Type="Edit" Id="HostnameEdit" Width="266" Height="15" X="34" Y="142" Property="PI_SERVER_HOST">
+                </Control>
+                <Control Type="Text" Id="HintLabel" Width="190" Height="16" X="41" Y="165" Text="Example: www.contoso.com or panel.contoso.com" />
+                <Control Type="Text" Id="IntroLabel" Width="321" Height="30" X="26" Y="191" Text="Make sure the specified host name is pointed to this web site; otherwise you might not be able to access the application." />
+                <Control Type="GroupBox" Id="WebSiteSettingsGroup" Width="330" Height="124" X="22" Y="60" Text="Web Site Settings" />
+            </Dialog>
+            <Dialog Id="SUserAccountDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify SolidCP Server security settings." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Security Settings" />
+                <Control Type="ComboBox" Property="PI_SERVER_CREATENEWACCOUNT" Id="ServerCreateNewAccountCombo" Width="163" Height="16" X="142" Y="90" ComboList="yes" Sorted="yes">
+                  <ComboBox Property="PI_SERVER_CREATENEWACCOUNT">
+                    <ListItem Text="Create new account" Value="1"/>
+                    <ListItem Text="Choose existing account" Value="2"/>
+                  </ComboBox>
+                </Control>
+                <Control Type="CheckBox" Id="ServerCreateADAccountChekBox" Property="PI_SERVER_CREATEADACCOUNT" Width="163" Height="15" X="142" Y="110"
+                         CheckBoxValue="1" Text="Create Active directory account">
+                  <Condition Action="show">PI_SERVER_CREATENEWACCOUNT=1</Condition>
+                  <Condition Action="hide">PI_SERVER_CREATENEWACCOUNT=2</Condition>
+                </Control>
+                <Control Type="Text" Id="DomainLabel" Width="73" Height="15" X="58" Y="130" Text="Domain:" />
+                <Control Type="ComboBox" Id="ServerDomainCombo" Width="163" Height="15" X="142" Y="130" Property="PI_SERVER_DOMAIN">
+                  <ComboBox Property="PI_SERVER_DOMAIN" />
+                  <Condition Action="enable">PI_SERVER_CREATEADACCOUNT=1</Condition>
+                  <Condition Action="disable">NOT(PI_SERVER_CREATEADACCOUNT=1)</Condition>
+                </Control>
+                <Control Type="Text" Id="UserLabel" Width="73" Height="15" X="58" Y="150" Text="User Name:" />
+                <Control Type="Edit" Id="LoginEdit" X="142" Y="150" Width="163" Height="15" Property="PI_SERVER_LOGIN" />
+                <Control Type="Text" Id="PasswordLabel" Width="73" Height="15" X="58" Y="170" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="170" Property="PI_SERVER_PASSWORD" Password="yes" />
+                <Control Type="Text" Id="ConfirmPasswordLabel" Width="73" Height="15" X="58" Y="190" Text="Confirm Password:" />
+                <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="190" Property="PI_SERVER_PASSWORD_CONFIRM" Password="yes" />
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="30" X="15" Y="52" Text="Please specify a new Windows user account for the web site anonymous access and application pool identity." />
+                <Control Type="PushButton" Id="SelectUserButton" X="305" Y="150" Width="15" Height="15" Text="...">
+                  <Condition Action="show">PI_SERVER_CREATENEWACCOUNT=2</Condition>
+                  <Condition Action="hide">PI_SERVER_CREATENEWACCOUNT=1</Condition>
+                </Control>
+            </Dialog>
+            <Dialog Id="ServerPasswordDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify a new password for this server." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Set Server Password" />
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="52" Y="110" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="110" Property="SERVER_ACCESS_PASSWORD" Password="yes" />
+                <Control Type="Text" Id="ConfirmPasswordLabel" Width="72" Height="17" X="52" Y="136" Text="Confirm password:" />
+                <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="136" Property="SERVER_ACCESS_PASSWORD_CONFIRM" Password="yes" />
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="27" X="15" Y="52" Text="Please, specify a password which will be used to access this Server from the Enterprise Server component. Click Next to continue." />
+            </Dialog>
+            <Dialog Id="ESWebDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify SolidCP Enterprise Server web settings." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Web Settings" />
+                <Control Type="Text" Id="IPaddressLabel" Width="73" Height="15" X="38" Y="79" Text="IP address:" />
+                <Control Type="ComboBox" Id="ESERVER_IP_COMBO" Width="214" Height="15" X="34" Y="98" Property="PI_ESERVER_IP">
+                    <ComboBox Property="PI_ESERVER_IP" />
+                </Control>
+                <Control Type="Text" Id="PortLabel" Width="73" Height="15" X="259" Y="79" Text="Port:" />
+                <Control Type="Edit" Id="PortEdit" Width="46" Height="15" X="259" Y="98" Property="PI_ESERVER_PORT" />
+                <Control Type="Text" Id="HostnameLabel" Width="73" Height="15" X="38" Y="124" Text="Host name:" />
+                <Control Type="Edit" Id="HostnameEdit" Width="266" Height="15" X="34" Y="142" Property="PI_ESERVER_HOST" />
+                <Control Type="Text" Id="HintLabel" Width="190" Height="16" X="41" Y="165" Text="Example: www.contoso.com or panel.contoso.com" />
+                <Control Type="Text" Id="IntroLabel" Width="321" Height="30" X="26" Y="191" Text="Make sure the specified host name is pointed to this web site; otherwise you might not be able to access the application." />
+                <Control Type="GroupBox" Id="WebSiteSettingsGroup" Width="330" Height="124" X="22" Y="60" Text="Web Site Settings" />
+            </Dialog>
+            <Dialog Id="ESUserAccountDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify SolidCP Enterprise Server security settings." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Security Settings" />
+                <Control Type="ComboBox" Property="PI_ESERVER_CREATENEWACCOUNT" Id="EServerCreateNewAccountCombo" Width="163" Height="16" X="142" Y="90" ComboList="yes" Sorted="yes">
+                  <ComboBox Property="PI_ESERVER_CREATENEWACCOUNT">
+                    <ListItem Text="Create new account" Value="1"/>
+                    <ListItem Text="Choose existing account" Value="2"/>
+                  </ComboBox>
+                </Control>
+                <Control Type="CheckBox" Id="EServerCreateADAccountChekBox" Property="PI_ESERVER_CREATEADACCOUNT" Width="163" Height="15" X="142" Y="110"
+                         CheckBoxValue="1" Text="Create Active directory account">
+                  <Condition Action="show">PI_ESERVER_CREATENEWACCOUNT=1</Condition>
+                  <Condition Action="hide">PI_ESERVER_CREATENEWACCOUNT=2</Condition>
+                </Control>
+                <Control Type="Text" Id="DomainLabel" Width="73" Height="15" X="58" Y="130" Text="Domain:" />
+                <Control Type="ComboBox" Id="EServerDomainCombo" Width="163" Height="15" X="142" Y="130" Property="PI_ESERVER_DOMAIN">
+                  <ComboBox Property="PI_ESERVER_DOMAIN" />
+                  <Condition Action="enable">PI_ESERVER_CREATEADACCOUNT=1</Condition>
+                  <Condition Action="disable">NOT(PI_ESERVER_CREATEADACCOUNT=1)</Condition>
+                </Control>
+                <Control Type="Text" Id="UserLabel" Width="73" Height="15" X="58" Y="150" Text="User Name:" />
+                <Control Type="Edit" Id="LoginEdit" Width="163" Height="15" X="142" Y="150" Property="PI_ESERVER_LOGIN"/>
+                <Control Type="Text" Id="PasswordLabel" Width="73" Height="15" X="58" Y="170" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="170" Property="PI_ESERVER_PASSWORD" Password="yes"/>
+                <Control Type="Text" Id="ConfirmPasswordLabel" Width="73" Height="15" X="58" Y="190" Text="Confirm Password:" />
+                <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="190" Property="PI_ESERVER_PASSWORD_CONFIRM" Password="yes"/>
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="30" X="15" Y="52" Text="Please specify a new Windows user account for the web site anonymous access and application pool identity." />
+                <Control Type="PushButton" Id="SelectUserButton" X="305" Y="150" Width="15" Height="15" Text="...">
+                  <Condition Action="show">PI_ESERVER_CREATENEWACCOUNT=2</Condition>
+                  <Condition Action="hide">PI_ESERVER_CREATENEWACCOUNT=1</Condition>
+                </Control>
+            </Dialog>
+            <Dialog Id="ServerAdminPasswordDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify a new password for the serveradmin account." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Set Administrator Password" />
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="52" Y="90" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="90" Property="SERVERADMIN_PASSWORD" Password="yes"/>
+                <Control Type="Text" Id="ConfirmPasswordLabel" Width="72" Height="17" X="52" Y="116" Text="Confirm password:" />
+                <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="116" Property="SERVERADMIN_PASSWORD_CONFIRM" Password="yes"/>
+            </Dialog>
+            <Dialog Id="DatabaseConnectionDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                    <Condition Action="disable">DB_CONN_CORRECT="0"</Condition>
+                    <Condition Action="enable">DB_CONN_CORRECT="1"</Condition>
+                </Control>
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Configure SolidCP database connection string" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Database connection string" />
+                <Control Type="Text" Id="ServerLabel" Width="50" Height="17" X="75" Y="68" Text="SQL Server:" />
+                <Control Type="ComboBox" Id="SqlServerCombo" Width="163" Height="15" X="142" Y="68" Property="DB_SERVER">
+                    <ComboBox Property="DB_SERVER">
+                        <ListItem Text="(local)" Value="localhost\SQLExpress"/>
+                    </ComboBox>
+                </Control>
+                <Control Type="Text" Id="AuthenticationLabel" Width="70" Height="17" X="62" Y="94" Text="Authentication:" />
+                <Control Type="ComboBox" Id="DB_AUTH_COMBO" Width="163" Height="16" X="142" Y="94" Property="DB_AUTH" ComboList="yes">
+                    <ComboBox Property="DB_AUTH">
+                        <ListItem Text="Windows Authentication" Value="Windows Authentication" />
+                        <ListItem Text="SQL Server Authentication" Value="SQL Server Authentication" />
+                    </ComboBox>
+                </Control>
+                <Control Type="Text" Id="LoginLabel" Width="50" Height="17" X="71" Y="120" Text="Login Name:" />
+                <Control Type="Edit" Id="LoginEdit" Width="163" Height="15" X="142" Y="120" Property="DB_LOGIN">
+                    <Condition Action="disable">DB_AUTH = "Windows Authentication"</Condition>
+                    <Condition Action="enable">NOT(DB_AUTH = "Windows Authentication")</Condition>
+                </Control>
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="80" Y="146" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="146" Property="DB_PASSWORD" Hidden="no" Password="yes">
+                    <Condition Action="disable">DB_AUTH = "Windows Authentication"</Condition>
+                    <Condition Action="enable">NOT(DB_AUTH = "Windows Authentication")</Condition>
+                </Control>
+                <Control Type="Text" Id="DatabaseLabel" Width="50" Height="17" X="80" Y="172" Text="Database:" />
+                <Control Type="Edit" Id="DB_DATABASE_EDIT" Width="163" Height="15" X="142" Y="172" Property="DB_DATABASE">
+                    <Condition Action="disable">DB_CONN_CORRECT="0"</Condition>
+                    <Condition Action="enable">DB_CONN_CORRECT="1"</Condition>
+                </Control>
+                <Control Type="PushButton" Id="SelectDbButton" X="305" Y="172" Width="15" Height="15" Text="...">
+                    <Condition Action="disable">DB_CONN_CORRECT="0"</Condition>
+                    <Condition Action="enable">DB_CONN_CORRECT="1"</Condition>
+                </Control>
+                <Control Type="PushButton" Id ="CheckConnButton" X="150" Y="200" Width="74" Height="17" Text="Test connection" />
+            </Dialog>
+            <Dialog Id="SqlConnectionDlg" Width="250" Height="85" Title="Sql Connection" NoMinimize="yes">
+                <Control Id="Ok" Type="PushButton" X="184" Y="60" Width="56" Height="17" Text="Ok" Default="yes" Cancel="yes"/>
+                <Control Id="Text" Type="Text" X="8" Y="8" Width="221" Height="30">
+                    <Text>[DB_CONN_MSG]</Text>
+                </Control>
+            </Dialog>
+            <Dialog Id="SelectDbDlg" Width="135" Height="55" Title="Select database" NoMinimize="yes">
+                <Control Type="ComboBox" Id ="DB_SELECT_COMBO" X="5" Y="10" Width="125" Height="17" ComboList="yes" Property="DB_SELECT">
+                    <ComboBox Property="DB_SELECT" />
+                </Control>
+                <Control Id="Ok" Type="PushButton" X="5" Y="30" Width="60" Height="17" Text="Ok" Default="no" Cancel="yes"/>
+                <Control Id="Cancel" Type="PushButton" X="70" Y="30" Width="60" Height="17" Text="Cancecl" Default="yes" Cancel="yes"/>
+            </Dialog>
+            <Dialog Id="PWebDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify SolidCP Portal web settings." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Web Settings" />
+                <Control Type="Text" Id="IPaddressLabel" Width="73" Height="15" X="38" Y="79" Text="IP address:" />
+                <Control Type="ComboBox" Id="PORTAL_IP_COMBO" Width="214" Height="15" X="34" Y="98" Property="PI_PORTAL_IP">
+                    <ComboBox Property="PI_PORTAL_IP" />
+                </Control>
+                <Control Type="Text" Id="PortLabel" Width="73" Height="15" X="259" Y="79" Text="Port:" />
+                <Control Type="Edit" Id="PortEdit" Width="46" Height="15" X="259" Y="98" Property="PI_PORTAL_PORT" />
+                <Control Type="Text" Id="HostnameLabel" Width="73" Height="15" X="38" Y="124" Text="Host name:" />
+                <Control Type="Edit" Id="HostnameEdit" Width="266" Height="15" X="34" Y="142" Property="PI_PORTAL_HOST" />
+                <Control Type="Text" Id="HintLabel" Width="190" Height="16" X="41" Y="165" Text="Example: www.contoso.com or panel.contoso.com" />
+                <Control Type="Text" Id="IntroLabel" Width="321" Height="30" X="26" Y="191" Text="Make sure the specified host name is pointed to this web site; otherwise you might not be able to access the application." />
+                <Control Type="GroupBox" Id="WebSiteSettingsGroup" Width="330" Height="124" X="22" Y="60" Text="Web Site Settings" />
+            </Dialog>
+            <Dialog Id="PUserAccountDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify SolidCP Portal security settings." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Security Settings" />
+                <Control Type="ComboBox" Property="PI_PORTAL_CREATENEWACCOUNT" Id="PortalCreateNewAccountCombo" Width="163" Height="16" X="142" Y="90" ComboList="yes" Sorted="yes">
+                  <ComboBox Property="PI_PORTAL_CREATENEWACCOUNT">
+                    <ListItem Text="Create new account" Value="1"/>
+                    <ListItem Text="Choose existing account" Value="2"/>
+                  </ComboBox>
+                </Control>
+                <Control Type="CheckBox" Id="PortalCreateADAccountChekBox" Property="PI_PORTAL_CREATEADACCOUNT" Width="163" Height="15" X="142" Y="110"
+                         CheckBoxValue="1" Text="Create Active directory account">
+                  <Condition Action="show">PI_PORTAL_CREATENEWACCOUNT=1</Condition>
+                  <Condition Action="hide">PI_PORTAL_CREATENEWACCOUNT=2</Condition>
+                </Control>              
+                  <Control Type="Text" Id="DomainLabel" Width="73" Height="15" X="58" Y="130" Text="Domain:" />
+                  <Control Type="ComboBox" Id="PortalDomainCombo" Width="163" Height="15" X="142" Y="130" Property="PI_PORTAL_DOMAIN">
+                      <ComboBox Property="PI_PORTAL_DOMAIN" />
+                      <Condition Action="enable">PI_PORTAL_CREATEADACCOUNT=1</Condition>
+                      <Condition Action="disable">NOT(PI_PORTAL_CREATEADACCOUNT=1)</Condition>
+                  </Control>
+                  <Control Type="Text" Id="UserLabel" Width="73" Height="15" X="58" Y="150" Text="User Name:" />
+                  <Control Type="Edit" Id="LoginEdit" Width="163" Height="15" X="142" Y="150" Property="PI_PORTAL_LOGIN"/>
+                  <Control Type="Text" Id="PasswordLabel" Width="73" Height="15" X="58" Y="170" Text="Password:" />
+                  <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="170" Property="PI_PORTAL_PASSWORD" Password="yes"/>
+                  <Control Type="Text" Id="ConfirmPasswordLabel" Width="73" Height="15" X="58" Y="190" Text="Confirm Password:" />
+                  <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="190" Property="PI_PORTAL_PASSWORD_CONFIRM" Password="yes"/>
+                  <Control Type="Text" Id="IntroLabel" Width="341" Height="30" X="15" Y="52" Text="Please specify a new Windows user account for the web site anonymous access and application pool identity." />
+                  <Control Type="PushButton" Id="SelectUserButton" X="305" Y="150" Width="15" Height="15" Text="...">
+                    <Condition Action="show">PI_PORTAL_CREATENEWACCOUNT=2</Condition>
+                    <Condition Action="hide">PI_PORTAL_CREATENEWACCOUNT=1</Condition>
+                  </Control>
+              </Dialog>
+            <Dialog Id="ESUrlDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Enter the Enterprise Server URL" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Enterprise Server URL" />
+                <Control Type="Text" Id="UrlLabel" Width="88" Height="17" X="50" Y="110" Text="Enterprise Server URL:" />
+                <Control Type="Edit" Id="ESUrlEdit" Width="163" Height="15" X="142" Y="110" Property="PI_ESERVER_URL" />
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="27" X="15" Y="52" Text="Please, specify URL which will be used to access the Enterprise Server from the Portal. Click Next to continue." />
+            </Dialog>
+            <Dialog Id="FinishDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Setup complete" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Click Finish to exit the wizard." />
+                <Control Type="ScrollableText" Id="Log" Width="360" Height="174" X="4" Y="52" Property="INSTLOG" />
+            </Dialog>
+            <Dialog Id="PrereqCheckDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Prerequisites check" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Software requirements and system state checks" />
+                <Control Id="ReqGroupBox" Type="GroupBox" X="4" Y="49" Width="180" Height="175" Property="REQGROUP" Text="Requirements"/>
+                <Control Id="LogGroupBox" Type="GroupBox" X="186" Y="49" Width="180" Height="175" Property="LOGGROUP" Text="Check log"/>
+                <Control Id="ReqLogText" Type="Text" X="190" Y="60" Width="173" Height="159" Sunken="yes" Disabled="no" Property="REQLOG" Text="[PI_PREREQ_LOG]"/>
+                <Control Id="ReqCheckView" Type="ListView" X="9" Y="60" Width="173" Height="159" Property="REQCHECKLIST" Sunken="no" Disabled="no" IconSize="16">
+                    <ListView Property="REQCHECKLIST">
+                    </ListView>
+                </Control>
+            </Dialog>
+            <Dialog Id="ValidateDlg" Width="250" Height="85" Title="[ProductName] Setup" NoMinimize="yes">
+                <Control Id="Ok" Type="PushButton" X="184" Y="60" Width="56" Height="17" Text="Ok" Default="yes" Cancel="yes"/>
+                <Control Id="Text" Type="Text" X="8" Y="8" Width="221" Height="30">
+                    <Text>[VALIDATE_MSG]</Text>
+                </Control>
+            </Dialog>
+            <Dialog Id="ChoosePreinstallDlg" Width="370" Height="270" Title="[ProductName] select prerequisites" NoMinimize="yes">
+                <!--Default controls-->
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Select prerequisites to install" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Choose missing web components" />
+                <!---->
+                <Control Id="InstallIisChck" Type="CheckBox" X="145" Y="90" Width="202" Height="17" Text="Install IIS" Property="PI_PREREQ_IIS_INSTALL" CheckBoxValue="[PI_PREREQ_IIS_INSTALL]">
+                    <Condition Action="hide"><![CDATA[PI_PREREQ_IIS=1]]></Condition>
+                    <Condition Action="show"><![CDATA[PI_PREREQ_IIS=0]]></Condition>
+                </Control>
+                <Control Id="InstallAspNetChck" Type="CheckBox" X="145" Y="117" Width="202" Height="17" Text="Install ASP.NET" Property="PI_PREREQ_ASPNET_INSTALL" CheckBoxValue="[PI_PREREQ_ASPNET_INSTALL]">
+                    <Condition Action="hide"><![CDATA[PI_PREREQ_ASPNET=1]]></Condition>
+                    <Condition Action="show"><![CDATA[PI_PREREQ_ASPNET=0]]></Condition>
+                </Control>
+                <Control Id="InstallNetFxChck" Type="CheckBox" X="145" Y="134" Width="202" Height="17" Text="Install .NET Framework (2.0, 3.0, 3.5)" Property="PI_PREREQ_NETFX_INSTALL" CheckBoxValue="[PI_PREREQ_NETFX_INSTALL]">
+                    <Condition Action="hide"><![CDATA[NOT (NETFRAMEWORK20="#0" OR NETFRAMEWORK35="#0")]]></Condition>
+                    <Condition Action="show"><![CDATA[NETFRAMEWORK20="#0" OR NETFRAMEWORK35="#0"]]></Condition>
+                </Control>
+            </Dialog>
+            <!--Dialogues in maintenance mode.-->
+            <Dialog Id="ServerPasswordDlg_Mtn" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify a new password for this server." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Set Server Password" />
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="52" Y="110" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="110" Property="SERVER_ACCESS_PASSWORD" Password="yes" />
+                <Control Type="Text" Id="ConfirmPasswordLabel" Width="72" Height="17" X="52" Y="136" Text="Confirm password:" />
+                <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="136" Property="SERVER_ACCESS_PASSWORD_CONFIRM" Password="yes" />
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="27" X="15" Y="52" Text="Please, specify a password which will be used to access this Server from the Enterprise Server component. Click Next to continue." />
+            </Dialog>
+            <Dialog Id="ServerAdminPasswordDlg_Mtn" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Specify a new password for the serveradmin account." />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Set Administrator Password" />
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="52" Y="90" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="90" Property="SERVERADMIN_PASSWORD" Password="yes"/>
+                <Control Type="Text" Id="ConfirmPasswordLabel" Width="72" Height="17" X="52" Y="116" Text="Confirm password:" />
+                <Control Type="Edit" Id="ConfirmPasswordEdit" Width="163" Height="15" X="142" Y="116" Property="SERVERADMIN_PASSWORD_CONFIRM" Password="yes"/>
+            </Dialog>
+            <Dialog Id="ESUrlDlg_Mtn" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Enter the Enterprise Server URL" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Enterprise Server URL" />
+                <Control Type="Text" Id="UrlLabel" Width="88" Height="17" X="50" Y="110" Text="Enterprise Server URL:" />
+                <Control Type="Edit" Id="ESUrlEdit" Width="163" Height="15" X="142" Y="110" Property="PI_ESERVER_URL" />
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="27" X="15" Y="52" Text="Please, specify URL which will be used to access the Enterprise Server from the Portal. Click Next to continue." />
+            </Dialog>
+            <Dialog Id="ComponentToChangeDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next" />
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Select [ProductName]'s component to change settings" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Component to change" />
+                <Control Id="ServerCheck" Type="CheckBox" X="55" Y="110" Width="202" Height="17" CheckBoxValue="1" Property="PI_SERVER_ALLOW_CHANGE" Text="Change settings for Servers component">
+                    <Condition Action="hide"><![CDATA[NOT (&ServerFeature=-1 AND !ServerFeature=3)]]></Condition>
+                    <Condition Action="show"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3]]></Condition>
+                </Control>
+                <Control Id="EServerCheck" Type="CheckBox" X="55" Y="127" Width="202" Height="17" CheckBoxValue="1" Property="PI_ESERVER_ALLOW_CHANGE" Text="Change settings for Enterprise Server component">
+                    <Condition Action="hide"><![CDATA[NOT (&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3)]]></Condition>
+                    <Condition Action="show"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3]]></Condition>
+                </Control>
+                <Control Id="PortalCheck" Type="CheckBox" X="55" Y="144" Width="202" Height="17" CheckBoxValue="1" Property="PI_PORTAL_ALLOW_CHANGE" Text="Change settings for Portal component">
+                    <Condition Action="hide"><![CDATA[NOT (&PortalFeature=-1 AND !PortalFeature=3)]]></Condition>
+                    <Condition Action="show"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3]]></Condition>
+                </Control>
+                <Control Type="Text" Id="IntroLabel" Width="341" Height="27" X="15" Y="52" Text="Please note that dialogues for selected components will be shown after dialogues of newly installed components if any." />
+            </Dialog>
+            <Dialog Id="SchedulerDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                    <Condition Action="disable">DB_CONN_CORRECT="0"</Condition>
+                    <Condition Action="enable">DB_CONN_CORRECT="1"</Condition>
+                </Control>
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Configure SolidCP database connection string" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Database connection string" />
+                <Control Type="Text" Id="CryptoKeyLabel" Width="50" Height="17" X="75" Y="68" Text="Crypto key:" />
+                <Control Type="Edit" Id="CryptoKeyEdit" Width="163" Height="15" X="142" Y="68" Property="PI_SCHEDULER_CRYPTO_KEY" />
+                <Control Type="Text" Id="ServerLabel" Width="50" Height="17" X="75" Y="94" Text="SQL Server:" />
+                <Control Type="Edit" Id="SqlServerEdit" Width="163" Height="15" X="142" Y="94" Property="PI_SCHEDULER_DB_SERVER" />
+                <Control Type="Text" Id="LoginLabel" Width="50" Height="17" X="71" Y="120" Text="Login Name:" />
+                <Control Type="Edit" Id="LoginEdit" Width="163" Height="15" X="142" Y="120" Property="PI_SCHEDULER_DB_LOGIN" />
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="80" Y="146" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="15" X="142" Y="146" Property="PI_SCHEDULER_DB_PASSWORD" Hidden="no" Password="yes" />
+                <Control Type="Text" Id="DatabaseLabel" Width="50" Height="17" X="80" Y="172" Text="Database:" />
+                <Control Type="Edit" Id="DatabaseEdit" Width="163" Height="15" X="142" Y="172" Property="PI_SCHEDULER_DB_DATABASE" />
+                <Control Type="PushButton" Id ="CheckConnButton" X="150" Y="200" Width="74" Height="17" Text="Test connection" />
+            </Dialog>
+            <!--All events and actions in one place-->
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="PrereqCheckDlg" Order="2">1</Publish>
+            <!--LicenseAgreementDlg-->
+            <!--<Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="PrereqCheckDlg" Order="3">LicenseAccepted = "1"</Publish>-->
+            <!--PrereqCheckDlg-->
+            <Publish Dialog="PrereqCheckDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <Publish Dialog="PrereqCheckDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="1">1</Publish>
+            <Publish Dialog="PrereqCheckDlg" Control="Next" Event="NewDialog" Value="ChoosePreinstallDlg" Order="2"><![CDATA[PI_PREREQ_IIS=0 OR PI_PREREQ_ASPNET=0]]></Publish>
+            <Publish Dialog="PrereqCheckDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <!--ChoosePreinstallDlg-->
+            <Publish Dialog="ChoosePreinstallDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <Publish Dialog="ChoosePreinstallDlg" Control="Back" Event="NewDialog" Value="PrereqCheckDlg" Order="1">1</Publish>
+            <Publish Dialog="ChoosePreinstallDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <!--CustomizeDlg-->
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="5"><![CDATA[(&ServerFeature=-1 AND !ServerFeature=3) OR (&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3) OR (&PortalFeature=-1 AND !PortalFeature=3) OR (&SchedulerServiceFeature=-1 AND !SchedulerServiceFeature=3) OR (&WebDavPortalFeature=-1 AND !WebDavPortalFeature=3)]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="ChoosePreinstallDlg" Order="4"><![CDATA[PI_PREREQ_IIS=0 OR PI_PREREQ_ASPNET=0]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="PrereqCheckDlg" Order="3">1</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="ComponentToChangeDlg" Order="16">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="SWebDlg" Order="15"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER=0]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="ESWebDlg" Order="14"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER=0]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="PWebDlg" Order="13"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL=0]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="SchedulerDlg" Order="12"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER=0 AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="7">1</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Property="PI_ALLOW_CHANGE" Value="1" Order="2"><![CDATA[(&ServerFeature=-1 AND !ServerFeature=3) OR (&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3) OR (&PortalFeature=-1 AND !PortalFeature=3)]]></Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="DoAction" Value="CA_RecapListUI" Order="1">1</Publish>
+            <!--ComponentToChangeDlg-->
+            <Publish Dialog="ComponentToChangeDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="SWebDlg" Order="15"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER=0]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="ESWebDlg" Order="14"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER=0]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="PWebDlg" Order="13"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL=0]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="SchedulerDlg" Order="12"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER=0 AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="11"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="10"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="9"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND PI_PORTAL_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ComponentToChangeDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="7">1</Publish>
+            <!--SWebDlg-->
+            <Publish Dialog="SWebDlg" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="SWebDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="SWebDlg" Control="Next" Event="NewDialog" Value="SUserAccountDlg">1</Publish>
+            <Publish Dialog="SWebDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--SUserAccountDlg-->
+            <Publish Dialog="SUserAccountDlg" Control="Back" Event="NewDialog" Value="SWebDlg">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="Next" Event="NewDialog" Value="ServerPasswordDlg" Order="3">VALIDATE_OK="1"</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK="0"</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="Next" Event="DoAction" Value="CA_ServerValidateADUI" Order="1">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!-- AD User.-->
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Event="DoAction" Value="CA_DirectoryObjectPicker" Order="2">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_TYPES" Value="DSOP_SCOPE_TYPE_TARGET_COMPUTER|DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN" Order="1">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_FLAGS" Value="DSOP_SCOPE_FLAG_STARTING_SCOPE|DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_FILTER_FLAGS" Value="DSOP_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="DSOP_DOWNLEVEL_SCOPE_FILTER_FLAGS" Value="DSOP_DOWNLEVEL_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="PI_SERVER_LOGIN" Value="[DSOP_UPN]" Order="3"><![CDATA[DSOP_UPN <> ""]]></Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="PI_SERVER_LOGIN" Value="[DSOP_NAME]" Order="3"><![CDATA[DSOP_NAME <> "" AND DSOP_UPN = ""]]></Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Event="DoAction" Value="CA_ServerNormalizeLoginUI" Order="4">1</Publish>
+            <Publish Dialog="SUserAccountDlg" Control="SelectUserButton" Property="PI_SERVER_LOGIN" Value="[PI_SERVER_LOGIN]" Order="5">1</Publish>
+            <!--ServerPasswordDlg-->
+            <Publish Dialog="ServerPasswordDlg" Control="Back" Event="NewDialog" Value="SUserAccountDlg" Order="1">1</Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="NewDialog" Value="ESWebDlg" Order="8"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER=0 AND VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="NewDialog" Value="PWebDlg" Order="7"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL=0 AND VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="NewDialog" Value="SchedulerDlg" Order="6"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER=0 AND VALIDATE_OK = "1" AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="5"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="4"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND PI_PORTAL_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="3"><![CDATA[VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2"><![CDATA[VALIDATE_OK = "0"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Next" Event="DoAction" Value="CA_ServerAccessValidateUI" Order="1">1</Publish>
+            <Publish Dialog="ServerPasswordDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--ESWebDlg-->
+            <Publish Dialog="ESWebDlg" Control="Back" Event="NewDialog" Value="ServerPasswordDlg" Order="3"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER=0]]></Publish>
+            <Publish Dialog="ESWebDlg" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="ESWebDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="ESWebDlg" Control="Next" Event="NewDialog" Value="ESUserAccountDlg" Order="2">1</Publish>
+            <Publish Dialog="ESWebDlg" Control="Next" Event="DoAction" Value="CA_SetEServerUrlUI" Order="1">1</Publish>
+            <Publish Dialog="ESWebDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--ESUserAccountDlg-->
+            <Publish Dialog="ESUserAccountDlg" Control="Back" Event="NewDialog" Value="ESWebDlg">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg" Order="3">VALIDATE_OK="1"</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK="0"</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="Next" Event="DoAction" Value="CA_EServerValidateADUI" Order="1">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!-- AD User.-->
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Event="DoAction" Value="CA_DirectoryObjectPicker" Order="2">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_TYPES" Value="DSOP_SCOPE_TYPE_TARGET_COMPUTER|DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN" Order="1">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_FLAGS" Value="DSOP_SCOPE_FLAG_STARTING_SCOPE|DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_FILTER_FLAGS" Value="DSOP_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="DSOP_DOWNLEVEL_SCOPE_FILTER_FLAGS" Value="DSOP_DOWNLEVEL_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="PI_ESERVER_LOGIN" Value="[DSOP_UPN]" Order="3"><![CDATA[DSOP_UPN <> ""]]></Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="PI_ESERVER_LOGIN" Value="[DSOP_NAME]" Order="3"><![CDATA[DSOP_NAME <> "" AND DSOP_UPN = ""]]></Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Event="DoAction" Value="CA_EServerNormalizeLoginUI" Order="4">1</Publish>
+            <Publish Dialog="ESUserAccountDlg" Control="SelectUserButton" Property="PI_ESERVER_LOGIN" Value="[PI_ESERVER_LOGIN]" Order="5">1</Publish>            
+            <!--ServerAdminPasswordDlg-->
+            <Publish Dialog="ServerAdminPasswordDlg" Control="Back" Event="NewDialog" Value="ESUserAccountDlg" Order="1">1</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg" Control="Next" Event="NewDialog" Value="DatabaseConnectionDlg" Order="3"><![CDATA[VALIDATE_OK="1"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK="0"</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg" Control="Next" Event="DoAction" Value="CA_ServerAdminValidateUI" Order="1">1</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--DatabaseConnectionDlg-->
+            <Publish Dialog="DatabaseConnectionDlg" Control="Back" Event="NewDialog" Value="ServerAdminPasswordDlg" Order="1">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="NewDialog" Value="PWebDlg" Order="10"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL=0 AND DB_CONN_CORRECT="1" AND VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="9"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1" AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="8"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1" AND PI_PORTAL_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="7">DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1"</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="DoAction" Value="CA_GetDbSkip" Order="6">DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1"</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK = "0"</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Next" Event="DoAction" Value="CA_DatabaseConnectionValidateUI" Order="1">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="CheckConnButton" Event="SpawnDialog" Value="SqlConnectionDlg" Order="4">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="CheckConnButton" Property="DB_CONN_CORRECT" Value="[DB_CONN_CORRECT]" Order="3">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="CheckConnButton" Event ="DoAction" Value="CA_DbListUI" Order="2">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="CheckConnButton" Event="DoAction" Value="CA_CheckConnectionUI" Order="1">1</Publish>
+            <Publish Dialog="DatabaseConnectionDlg" Control="SelectDbButton" Event="SpawnDialog" Value="SelectDbDlg" Order="1">1</Publish>
+            <!--ConnectionWarningDlg-->
+            <Publish Dialog="SqlConnectionDlg" Control="Ok" Event="EndDialog" Value="Return">1</Publish>
+            <!--SelectDbDlg-->
+            <Publish Dialog="SelectDbDlg" Control="Ok" Event="EndDialog" Value="Return" Order="2">1</Publish>
+            <Publish Dialog="SelectDbDlg" Control="Ok" Property="DB_DATABASE" Value="[DB_SELECT]" Order="1">1</Publish>
+            <Publish Dialog="SelectDbDlg" Control="Cancel" Event="EndDialog" Value="Return">1</Publish>
+            <!--PWebDlg-->
+            <Publish Dialog="PWebDlg" Control="Back" Event="NewDialog" Value="DatabaseConnectionDlg" Order="4"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="PWebDlg" Control="Back" Event="NewDialog" Value="ServerPasswordDlg" Order="3"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER="0"]]></Publish>
+            <Publish Dialog="PWebDlg" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="PWebDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="PWebDlg" Control="Next" Event="NewDialog" Value="PUserAccountDlg">1</Publish>
+            <Publish Dialog="PWebDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--PUserAccountDlg-->
+            <Publish Dialog="PUserAccountDlg" Control="Back" Event="NewDialog" Value="PWebDlg">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Next" Event="NewDialog" Value="ESUrlDlg" Order="6"><![CDATA[NOT &EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0" AND VALIDATE_OK="1"]]></Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Next" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="5"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="4"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="3"><![CDATA[VALIDATE_OK="1"]]></Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK="0"</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Next" Event="DoAction" Value="CA_PortalValidateADUI" Order="1">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!-- AD User.-->
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Event="DoAction" Value="CA_DirectoryObjectPicker" Order="2">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_TYPES" Value="DSOP_SCOPE_TYPE_TARGET_COMPUTER|DSOP_SCOPE_TYPE_ENTERPRISE_DOMAIN" Order="1">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_FLAGS" Value="DSOP_SCOPE_FLAG_STARTING_SCOPE|DSOP_SCOPE_FLAG_DEFAULT_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="DSOP_SCOPE_FILTER_FLAGS" Value="DSOP_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="DSOP_DOWNLEVEL_SCOPE_FILTER_FLAGS" Value="DSOP_DOWNLEVEL_FILTER_USERS" Order="1">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="PI_PORTAL_LOGIN" Value="[DSOP_UPN]" Order="3"><![CDATA[DSOP_UPN <> ""]]></Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="PI_PORTAL_LOGIN" Value="[DSOP_NAME]" Order="3"><![CDATA[DSOP_NAME <> "" AND DSOP_UPN = ""]]></Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Event="DoAction" Value="CA_PortalNormalizeLoginUI" Order="4">1</Publish>
+            <Publish Dialog="PUserAccountDlg" Control="SelectUserButton" Property="PI_PORTAL_LOGIN" Value="[PI_PORTAL_LOGIN]" Order="5">1</Publish>            
+            <!--ESUrlDlg-->
+            <Publish Dialog="ESUrlDlg" Control="Back" Event="NewDialog" Value="PUserAccountDlg" Order="1"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0"]]></Publish>
+            <Publish Dialog="ESUrlDlg" Control="Next" Event="NewDialog" Value="SchedulerDlg" Order="4"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER="0" AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="ESUrlDlg" Control="Next" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="3"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ESUrlDlg" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="2"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ESUrlDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="1">1</Publish>
+            <Publish Dialog="ESUrlDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--SchedulerDlg-->
+            <Publish Dialog="SchedulerDlg" Control="Back" Event="NewDialog" Value="ESUrlDlg" Order="5"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0" AND NOT &EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="SchedulerDlg" Control="Back" Event="NewDialog" Value="DatabaseConnectionDlg" Order="4"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="SchedulerDlg" Control="Back" Event="NewDialog" Value="ServerPasswordDlg" Order="3"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER="0"]]></Publish>
+            <Publish Dialog="SchedulerDlg" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="SchedulerDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="SchedulerDlg" Control="Next" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="9"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1" AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="SchedulerDlg" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="4"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1" AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="SchedulerDlg" Control="Next" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="8"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1" AND PI_PORTAL_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="SchedulerDlg" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="7">DB_CONN_CORRECT = "1" AND VALIDATE_OK = "1"</Publish>
+            <Publish Dialog="SchedulerDlg" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK = "0"</Publish>
+            <Publish Dialog="SchedulerDlg" Control="Next" Event="DoAction" Value="CA_DatabaseConnectionValidateUI" Order="1">1</Publish>
+            <Publish Dialog="SchedulerDlg" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <Publish Dialog="SchedulerDlg" Control="CheckConnButton" Event="SpawnDialog" Value="SqlConnectionDlg" Order="3">1</Publish>
+            <Publish Dialog="SchedulerDlg" Control="CheckConnButton" Property="DB_CONN_CORRECT" Value="[DB_CONN_CORRECT]" Order="2">1</Publish>
+            <Publish Dialog="SchedulerDlg" Control="CheckConnButton" Event="DoAction" Value="CA_CheckConnectionSchedulerUI" Order="1">1</Publish>
+            <!--Maintenance dialogues.-->
+            <!--ServerPasswordDlg_Mtn-->
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="SchedulerDlg" Order="6"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER="0" AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="ESUrlDlg" Order="5"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0" AND NOT &EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="PUserAccountDlg" Order="4"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="DatabaseConnectionDlg" Order="3"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Next" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="5"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Next" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="4"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="3"><![CDATA[VALIDATE_OK = "1"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2"><![CDATA[VALIDATE_OK = "0"]]></Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Next" Event="DoAction" Value="CA_ServerAccessValidateMtnUI" Order="1">1</Publish>
+            <Publish Dialog="ServerPasswordDlg_Mtn" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--ServerAdminPasswordDlg_Mtn-->
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="7"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="SchedulerDlg" Order="6"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER="0" AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="ESUrlDlg" Order="5"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0" AND NOT &EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="PUserAccountDlg" Order="4"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="ServerPasswordDlg" Order="3"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER="0"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Next" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="3"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND VALIDATE_OK="1"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="3"><![CDATA[VALIDATE_OK="1"]]></Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Next" Event="SpawnDialog" Value="ValidateDlg" Order="2">VALIDATE_OK="0"</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Next" Event="DoAction" Value="CA_ServerAdminValidateUI" Order="1">1</Publish>
+            <Publish Dialog="ServerAdminPasswordDlg_Mtn" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--ESUrlDlg_Mtn-->
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="7"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="6"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="SchedulerDlg" Order="5"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER="0" AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="DatabaseConnectionDlg" Order="4"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="ServerPasswordDlg" Order="3"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER="0"]]></Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="2">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Next" Event="NewDialog" Value="CustomVerifyReadyDlg" Order="1">1</Publish>
+            <Publish Dialog="ESUrlDlg_Mtn" Control="Cancel" Event="SpawnDialog" Value="CancelDlg">1</Publish>
+            <!--CustomVerifyReadyDlg-->
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="ESUrlDlg_Mtn" Order="22"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND PI_PORTAL_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="ServerPasswordDlg_Mtn" Order="21"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="ServerAdminPasswordDlg_Mtn" Order="20"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="SchedulerDlg" Order="19"><![CDATA[&SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER="0" AND NOT(&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="ESUrlDlg" Order="18"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL="0" AND NOT &EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="PUserAccountDlg" Order="17"><![CDATA[&PortalFeature=3 AND COMPFOUND_PORTAL=0 AND &EnterpriseServerFeature=3  AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="DatabaseConnectionDlg" Order="16"><![CDATA[&EnterpriseServerFeature=3 AND COMPFOUND_ESERVER="0"]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="ServerPasswordDlg" Order="15"><![CDATA[&ServerFeature=3 AND COMPFOUND_SERVER=0]]></Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="ComponentToChangeDlg" Order="14">PI_ALLOW_CHANGE="1"</Publish>
+            <Publish Dialog="CustomVerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">1</Publish>
+            <!--FinishDlg-->
+            <Publish Dialog="FinishDlg" Control="Next" Event="NewDialog" Value="FinishDlg">1</Publish>
+            <!--ValidateDlg-->
+            <Publish Dialog="ValidateDlg" Control="Ok" Event="EndDialog" Value="Return">1</Publish>
+            <!--ExitDialog-->
+            <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1</Publish>
+        </UI>
+        <Icon Id="SolidCP.ico" SourceFile="$(var.ICONLOGO)" />
+        <Binary Id="Assembly_CA" SourceFile="bin\SolidCP.WIXInstaller.CA.dll" />
+        <Binary Id="MsiExt.ActiveDirectory" SourceFile="..\..\..\tools\msiext\CustomActions\ActiveDirectory.dll" />
+        <Binary Id="bannrbmp" SourceFile="bannrbmp.bmp" />
+        <Binary Id="passmark" SourceFile="passmark.ico" />
+        <Binary Id="failmark" SourceFile="failmark.ico" />
+        <Binary Id="InstallDB" SourceFile="$(var.PROJECTPATH)\Deploy\$(var.BUILD)\Database\wix_install_db.sql" />
+        <Binary Id="UpdateDB" SourceFile="$(var.PROJECTPATH)\Deploy\$(var.BUILD)\Database\wix_update_db.sql" />
+        <WixVariable Id="WixUIBannerBmp" Value="bannrbmp.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="dlgbmp.bmp" />
+        <!--<WixVariable Id="WixUILicenseRtf" Value="License.rtf" />-->
+        <WixVariable Id="BUILDESPATH" Value = "$(var.PROJECTPATH)\Build\$(var.BUILD)\EnterpriseServer" />
+        <WixVariable Id="BUILDSPATH" Value = "$(var.PROJECTPATH)\Build\$(var.BUILD)\Server" />
+        <WixVariable Id="BUILDPPATH" Value = "$(var.PROJECTPATH)\Build\$(var.BUILD)\Portal" />
+        <WixVariable Id="BUILDSRVPATH" Value = "$(var.PROJECTPATH)\Build\$(var.BUILD)\SchedulerService" />
+        <WixVariable Id="BUILDWDPPATH" Value = "$(var.PROJECTPATH)\Build\$(var.BUILD)\WebDavPortal" />
+        <!---->
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Open installation log file." />
+        <Property Id="WixShellExecTarget" Value="[TempFolder]\SCPInstallation.log.txt" />
+        <!--Add/Remove props. Public properties should be always in CAPS.-->
+        <Property Id="ARPPRODUCTICON" Value="SolidCP.ico" />
+        <!--UI props.-->
+        <Property Id="BannerBitmap">bannrbmp</Property>
+        <!--SQL props.-->
+        <Property Id="DB_SERVER" Secure="yes" Value="localhost\SQLExpress" />
+        <Property Id="DB_CONN" Secure="yes" />
+        <Property Id="DB_DATABASE" Secure="yes" Value="SolidCP" />
+        <Property Id="DB_AUTH" Secure="yes" Value="Windows Authentication" />
+        <Property Id="DB_LOGIN" Secure="yes" />
+        <Property Id="DB_PASSWORD" Secure="yes" />
+        <Property Id="DB_CONN_CORRECT" Secure="yes" Value="0" />
+        <Property Id="DB_CONN_MSG" Secure="yes" />
+        <Property Id="DB_SELECT" Secure="yes" />
+        <Property Id="DB_SKIP_CREATE" Secure="yes" Value="0" />
+        <!--Prerequisities props.-->
+        <!--Possible values: Passed(y), Fail(n).-->
+        <Property Id="PI_PREREQ_OS" Secure="yes" Value="0" />
+        <Property Id="PI_PREREQ_OS_TITLE" Value="Operating System" />
+        <Property Id="PI_PREREQ_ASPNET" Secure="yes" Value="0"/>
+        <Property Id="PI_PREREQ_ASPNET_TITLE" Value="Microsoft ASP.NET"/>
+        <Property Id="PI_PREREQ_IIS" Secure="yes" Value="0" />
+        <Property Id="PI_PREREQ_IIS_TITLE" Value="Web Server (IIS)" />
+        <Property Id="PI_PREREQ_IIS_INSTALL" Secure="yes" Value="0" />
+        <Property Id="PI_PREREQ_ASPNET_INSTALL" Secure="yes" Value="0"/>
+        <!--.NET Framework-->
+        <PropertyRef Id="NETFRAMEWORK20"/>
+        <Property Id="NETFRAMEWORK20_TITLE" Value="Micrsoft .NET Framework 2.0"/>
+        <PropertyRef Id="NETFRAMEWORK35"/>
+        <Property Id="NETFRAMEWORK35_TITLE" Value="Micrsoft .NET Framework 3.5"/>
+        <PropertyRef Id="NETFRAMEWORK40FULL"/>
+        <Property Id="NETFRAMEWORK40FULL_TITLE" Value="Micrsoft .NET Framework 4.0"/>
+        <Property Id="PI_PREREQ_NETFX_INSTALL" Secure="yes" Value="0" />
+        <!--IP, PORT, HOSTNAME for each component. Default values.-->
+        <Property Id="PI_SERVER_IP" Secure="yes" Value="127.0.0.1" />
+        <Property Id="PI_SERVER_PORT" Secure="yes" Value="9003" />
+        <Property Id="PI_SERVER_HOST" Secure="yes" />
+        <Property Id="PI_SERVER_LOGIN" Secure="yes" />
+        <Property Id="PI_SERVER_PASSWORD" Secure="yes" />
+        <Property Id="PI_SERVER_PASSWORD_CONFIRM" Secure="yes" />
+        <Property Id="PI_SERVER_DOMAIN" Secure="yes" />
+
+        <Property Id="PI_ESERVER_IP" Secure="yes" Value="127.0.0.1" />
+        <Property Id="PI_ESERVER_PORT" Secure="yes" Value="9002" />
+        <Property Id="PI_ESERVER_HOST" Secure="yes" />
+        <Property Id="PI_ESERVER_LOGIN" Secure="yes" />
+        <Property Id="PI_ESERVER_PASSWORD" Secure="yes" />
+        <Property Id="PI_ESERVER_PASSWORD_CONFIRM" Secure="yes" />
+        <Property Id="PI_ESERVER_DOMAIN" Secure="yes" />
+        <Property Id="PI_ESERVER_URL" Secure="yes" />
+        <Property Id="PI_ESERVER_CONN_STR" Secure="yes" />
+        <Property Id="PI_ESERVER_CRYPTO_KEY" Secure="yes" />
+
+        <Property Id="PI_PORTAL_IP" Secure="yes" Value="127.0.0.1" />
+        <Property Id="PI_PORTAL_PORT" Secure="yes" Value="9001" />
+        <Property Id="PI_PORTAL_HOST" Secure="yes" />
+        <Property Id="PI_PORTAL_LOGIN" Secure="yes" />
+        <Property Id="PI_PORTAL_PASSWORD" Secure="yes" />
+        <Property Id="PI_PORTAL_PASSWORD_CONFIRM" Secure="yes" />
+        <Property Id="PI_PORTAL_DOMAIN" Secure="yes" />
+
+        <Property Id="PI_WEBDAVPORTAL_IP" Secure="yes" Value="127.0.0.1" />
+        <Property Id="PI_WEBDAVPORTAL_PORT" Secure="yes" Value="9004" />
+        <Property Id="PI_WEBDAVPORTAL_HOST" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_LOGIN" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_PASSWORD" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_PASSWORD_CONFIRM" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_DOMAIN" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_URL" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_CONN_STR" Secure="yes" />
+        <Property Id="PI_WEBDAVPORTAL_CRYPTO_KEY" Secure="yes" />
+
+        <Property Id="PI_SERVER_CREATENEWACCOUNT" Secure="yes" Value="1" />
+        <Property Id="PI_ESERVER_CREATENEWACCOUNT" Secure="yes" Value="1" />
+        <Property Id="PI_PORTAL_CREATENEWACCOUNT" Secure="yes" Value="1" />
+        <Property Id="PI_SERVER_CREATEADACCOUNT" Secure="yes" Value="1" />
+        <Property Id="PI_ESERVER_CREATEADACCOUNT" Secure="yes" Value="1" />
+        <Property Id="PI_PORTAL_CREATEADACCOUNT" Secure="yes" Value="1" />
+
+        <Property Id="PI_SCHEDULER_CRYPTO_KEY" Secure="yes" />
+        <Property Id="PI_SCHEDULER_DB_SERVER" Secure="yes" />
+        <Property Id="PI_SCHEDULER_DB_LOGIN" Secure="yes" />
+        <Property Id="PI_SCHEDULER_DB_PASSWORD" Secure="yes" />
+        <Property Id="PI_SCHEDULER_DB_DATABASE" Secure="yes" />
+        <!---->
+        <Property Id="CUSTOM_INSTALL_TEXT" Secure="yes" />
+        <Property Id="PI_PREREQ_LOG" Secure="yes" />
+        <!---->
+        <Property Id="SERVER_ACCESS_PASSWORD" Secure="yes" />
+        <Property Id="SERVER_ACCESS_PASSWORD_CONFIRM" Secure="yes" />
+        <!---->
+        <Property Id="SERVERADMIN_PASSWORD" Secure="yes" />
+        <Property Id="SERVERADMIN_PASSWORD_CONFIRM" Secure="yes" />
+        <!---->
+        <Property Id="VALIDATE_OK" Secure="yes" Value="0" />
+        <Property Id="VALIDATE_MSG" Secure="yes" />
+        <Property Id="SCP_BASE" Secure="yes">
+            <RegistrySearch Id='Search_SCP_BASE' Root='HKLM' Key='SOFTWARE\[ProductName]' Name='Base' Type='raw' />
+        </Property>
+        <Property Id="PI_ALLOW_CHANGE" Secure="yes" Value="0" />
+        <!--Was found an existing installation (configuration) on local pc. COMPFOUND stands for COMPonent FOUND.-->
+        <Property Id="COMPFOUND_SERVER" Secure="yes" Value="0" />
+        <Property Id="COMPFOUND_ESERVER" Secure="yes" Value="0" />
+        <Property Id="COMPFOUND_PORTAL" Secure="yes" Value="0" />
+        <Property Id="COMPFOUND_WEBDAVPORTAL" Secure="yes" Value="0" />
+        <Property Id="COMPFOUND_SCHEDULER" Secure="yes" Value="0" />
+        <Property Id="COMPFOUND_SERVER_ID" Secure="yes" />
+        <Property Id="COMPFOUND_ESERVER_ID" Secure="yes" />
+        <Property Id="COMPFOUND_PORTAL_ID" Secure="yes" />
+        <Property Id="COMPFOUND_WEBDAVPORTAL_ID" Secure="yes" />
+        <Property Id="COMPFOUND_SCHEDULER_ID" Secure="yes" />
+        <Property Id="COMPFOUND_SERVER_MAIN_CFG" Secure="yes" />
+        <Property Id="COMPFOUND_ESERVER_MAIN_CFG" Secure="yes" />
+        <Property Id="COMPFOUND_PORTAL_MAIN_CFG" Secure="yes" />
+        <Property Id="COMPFOUND_WEBDAVPORTAL_MAIN_CFG" Secure="yes" />
+        <Property Id="COMPFOUND_SCHEDULER_MAIN_CFG" Secure="yes" />
+        <!--CustomActions.-->
+        <CustomAction Id="CA_CheckConnectionUI" BinaryKey="Assembly_CA" DllEntry="CheckConnectionUI" />
+        <CustomAction Id="CA_CheckConnectionSchedulerUI" BinaryKey="Assembly_CA" DllEntry="CheckConnectionSchedulerUI" />
+        <CustomAction Id="CA_PrereqCheck" BinaryKey="Assembly_CA" DllEntry="PrereqCheck" />
+        <CustomAction Id="CA_PrereqCheckUI" BinaryKey="Assembly_CA" DllEntry="PrereqCheckUI" />
+        <CustomAction Id="CA_FillIpListUI" BinaryKey="Assembly_CA" DllEntry="FillIpListUI" />
+        <CustomAction Id="CA_DbListUI" BinaryKey="Assembly_CA" DllEntry="DbListUI" />
+        <CustomAction Id="CA_FillDomainListUI" BinaryKey="Assembly_CA" DllEntry="FillDomainListUI" />
+        <CustomAction Id="CA_ServerAccessValidateUI" BinaryKey="Assembly_CA" DllEntry="ServerAccessValidateUI" />
+        <CustomAction Id="CA_ServerAccessValidateMtnUI" BinaryKey="Assembly_CA" DllEntry="ServerAccessValidateMtnUI" />
+        <CustomAction Id="CA_ServerValidateADUI" BinaryKey="Assembly_CA" DllEntry="ServerValidateADUI" />
+        <CustomAction Id="CA_EServerValidateADUI" BinaryKey="Assembly_CA" DllEntry="EServerValidateADUI" />
+        <CustomAction Id="CA_PortalValidateADUI" BinaryKey="Assembly_CA" DllEntry="PortalValidateADUI" />
+        <CustomAction Id="CA_ServerAdminValidateUI" BinaryKey="Assembly_CA" DllEntry="ServerAdminValidateUI" />
+        <CustomAction Id="CA_DatabaseConnectionValidateUI" BinaryKey="Assembly_CA" DllEntry="DatabaseConnectionValidateUI" />
+        <CustomAction Id="CA_RecapListUI" BinaryKey="Assembly_CA" DllEntry="RecapListUI" />
+        <CustomAction Id="CA_SqlServerListUI" BinaryKey="Assembly_CA" DllEntry="SqlServerListUI" />
+        <CustomAction Id="CA_DirectoryObjectPicker" BinaryKey="MsiExt.ActiveDirectory" DllEntry="DirectoryObjectPicker" />
+        <CustomAction Id="CA_SetEServerUrlUI" BinaryKey ="Assembly_CA" DllEntry="SetEServerUrlUI" />
+        <CustomAction Id="CA_ServerNormalizeLoginUI" BinaryKey ="Assembly_CA" DllEntry="ServerNormalizeLoginUI" />
+        <CustomAction Id="CA_EServerNormalizeLoginUI" BinaryKey ="Assembly_CA" DllEntry="EServerNormalizeLoginUI" />
+        <CustomAction Id="CA_PortalNormalizeLoginUI" BinaryKey ="Assembly_CA" DllEntry="PortalNormalizeLoginUI" />
+        <CustomAction Id="CA_InstallWebFeatures" BinaryKey="Assembly_CA" DllEntry="InstallWebFeatures" />
+        <CustomAction Id="CA_InstallWebFeaturesDeferred" BinaryKey="Assembly_CA" DllEntry="InstallWebFeatures" Impersonate="yes"  Execute="deferred" />
+        <CustomAction Id="CA_PropertyInstallWebFeaturesDeferred" Property="CA_InstallWebFeaturesDeferred" Value="PI_PREREQ_IIS_INSTALL=[PI_PREREQ_IIS_INSTALL];PI_PREREQ_ASPNET_INSTALL=[PI_PREREQ_ASPNET_INSTALL];PI_PREREQ_NETFX_INSTALL=[PI_PREREQ_NETFX_INSTALL]" />
+        <CustomAction Id="CA_GetDbSkip" BinaryKey="Assembly_CA" DllEntry="GetDbSkip" />
+        <!--Run corresponding install scripts.-->
+        <!-- Prepare and backup when upgrading from old to new installer type.
+             Yes, session variables and custom action data are identical almost for corresponding SolidCP components in prepare and install scripts.
+             Prepare scripts must be run before normal installation process and file copying.-->
+        <CustomAction Id="CA_PropertyOnServerPrepare" Property="CA_OnServerPrepare" Value="ApplicationName=$(var.NAME);ComponentName=$(var.ServerTitle);ComponentCode=server;ComponentDescription=$(var.ServerDescription);Version=$(var.VERSION);InstallationFolder=[PI_SERVER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_SERVER_IP];WebSitePort=[PI_SERVER_PORT];WebSiteDomain=[PI_SERVER_HOST];UserDomain=[PI_SERVER_DOMAIN];UserAccount=[PI_SERVER_LOGIN];UserPassword=[PI_SERVER_PASSWORD];NewUserAccount=[PI_SERVER_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_SERVER_ID];MainConfig=[COMPFOUND_SERVER_MAIN_CFG]" />
+        <CustomAction Id="CA_OnServerPrepare" BinaryKey="Assembly_CA" DllEntry="OnServerPrepare" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyOnEServerPrepare" Property="CA_OnEServerPrepare" Value="ApplicationName=$(var.NAME);ComponentName=$(var.EServerTitle);ComponentCode=enterprise server;ComponentDescription=$(var.EServerDescription);Version=$(var.VERSION);InstallationFolder=[PI_ESERVER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_ESERVER_IP];WebSitePort=[PI_ESERVER_PORT];WebSiteDomain=[PI_ESERVER_HOST];UserDomain=[PI_ESERVER_DOMAIN];UserAccount=[PI_ESERVER_LOGIN];UserPassword=[PI_ESERVER_PASSWORD];NewUserAccount=[PI_ESERVER_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_ESERVER_ID];MainConfig=[COMPFOUND_ESERVER_MAIN_CFG]" />
+        <CustomAction Id="CA_OnEServerPrepare" BinaryKey="Assembly_CA" DllEntry="OnEServerPrepare" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyOnPortalPrepare" Property="CA_OnPortalPrepare" Value="ApplicationName=$(var.NAME);ComponentName=$(var.PortalTitle);ComponentCode=portal;ComponentDescription=$(var.PortalDescription);Version=$(var.VERSION);InstallationFolder=[PI_PORTAL_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_PORTAL_IP];WebSitePort=[PI_PORTAL_PORT];WebSiteDomain=[PI_PORTAL_HOST];UserDomain=[PI_PORTAL_DOMAIN];UserAccount=[PI_PORTAL_LOGIN];UserPassword=[PI_PORTAL_PASSWORD];NewUserAccount=[PI_PORTAL_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_PORTAL_ID];MainConfig=[COMPFOUND_PORTAL_MAIN_CFG]" />
+        <CustomAction Id="CA_OnPortalPrepare" BinaryKey="Assembly_CA" DllEntry="OnPortalPrepare" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyOnSchedulerPrepare" Property="CA_OnSchedulerPrepare" Value ="ApplicationName=$(var.NAME);ComponentName=$(var.SchedulerTitle);ComponentCode=scheduler service;ComponentDescription=$(var.SchedulerDescription);Version=$(var.VERSION);InstallationFolder=[PI_SCHEDULER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];CryptoKey=[PI_SCHEDULER_CRYPTO_KEY];DatabaseServer=[PI_SCHEDULER_DB_SERVER];DatabaseName=[PI_SCHEDULER_DB_DATABASE];DatabaseUser=[PI_SCHEDULER_DB_LOGIN];DatabaseUserPassword=[PI_SCHEDULER_DB_PASSWORD];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_SCHEDULER_ID];MainConfig=[COMPFOUND_SCHEDULER_MAIN_CFG]" />
+        <CustomAction Id="CA_OnSchedulerPrepare" BinaryKey="Assembly_CA" DllEntry="OnSchedulerPrepare" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <!--Install scripts.-->
+        <!--SCPA.-->
+        <CustomAction Id="CA_OnScpaProperty" Property="CA_OnScpa" Value="InstallerFolder=[SCP_INSTALL_DIR];ServerAdminPassword=[SERVERADMIN_PASSWORD];ServerPassword=[SERVER_ACCESS_PASSWORD]" />
+        <CustomAction Id="CA_OnScpa" BinaryKey="Assembly_CA" DllEntry="OnScpa" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <!--Server.-->
+        <CustomAction Id="CA_PropertyOnServerInstall" Property="CA_OnServerInstall" Value="ApplicationName=$(var.NAME);ComponentName=$(var.ServerTitle);ComponentCode=server;ComponentDescription=$(var.ServerDescription);Version=$(var.VERSION);InstallationFolder=[PI_SERVER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_SERVER_IP];WebSitePort=[PI_SERVER_PORT];WebSiteDomain=[PI_SERVER_HOST];UserDomain=[PI_SERVER_DOMAIN];UserAccount=[PI_SERVER_LOGIN];UserPassword=[PI_SERVER_PASSWORD];NewUserAccount=[PI_SERVER_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_SERVER_ID]" />
+        <CustomAction Id="CA_OnServerInstall" BinaryKey ="Assembly_CA" DllEntry="OnServerInstall" Impersonate="yes" Execute="deferred" HideTarget="no"/>
+        <!--EServer.-->
+        <CustomAction Id="CA_PropertyOnEServerInstall" Property="CA_OnEServerInstall" Value="ApplicationName=$(var.NAME);ComponentName=$(var.EServerTitle);ComponentCode=enterprise server;ComponentDescription=$(var.EServerDescription);Version=$(var.VERSION);InstallationFolder=[PI_ESERVER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_ESERVER_IP];WebSitePort=[PI_ESERVER_PORT];WebSiteDomain=[PI_ESERVER_HOST];UserDomain=[PI_ESERVER_DOMAIN];UserAccount=[PI_ESERVER_LOGIN];UserPassword=[PI_ESERVER_PASSWORD];NewUserAccount=[PI_ESERVER_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_ESERVER_ID]" />
+        <CustomAction Id="CA_OnEServerInstall" BinaryKey ="Assembly_CA" DllEntry="OnEServerInstall" Impersonate="yes" Execute="deferred" HideTarget="no"/>
+        <!--Portal.-->
+        <CustomAction Id="CA_PropertyOnPortalInstall" Property="CA_OnPortalInstall" Value="ApplicationName=$(var.NAME);ComponentName=$(var.PortalTitle);ComponentCode=portal;ComponentDescription=$(var.PortalDescription);Version=$(var.VERSION);InstallationFolder=[PI_PORTAL_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_PORTAL_IP];WebSitePort=[PI_PORTAL_PORT];WebSiteDomain=[PI_PORTAL_HOST];UserDomain=[PI_PORTAL_DOMAIN];UserAccount=[PI_PORTAL_LOGIN];UserPassword=[PI_PORTAL_PASSWORD];NewUserAccount=[PI_PORTAL_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_PORTAL_ID]" />
+        <CustomAction Id="CA_OnPortalInstall" BinaryKey ="Assembly_CA" DllEntry="OnPortalInstall" Impersonate="yes" Execute="deferred" HideTarget="no"/>
+        <!--Scheduler.-->
+        <CustomAction Id="CA_PropertyOnSchedulerInstall" Property="CA_OnSchedulerInstall" Value ="ApplicationName=$(var.NAME);ComponentName=$(var.SchedulerTitle);ComponentCode=scheduler service;ComponentDescription=$(var.SchedulerDescription);Version=$(var.VERSION);InstallationFolder=[PI_SCHEDULER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];CryptoKey=[PI_SCHEDULER_CRYPTO_KEY];DatabaseServer=[PI_SCHEDULER_DB_SERVER];DatabaseName=[PI_SCHEDULER_DB_DATABASE];DatabaseUser=[PI_SCHEDULER_DB_LOGIN];DatabaseUserPassword=[PI_SCHEDULER_DB_PASSWORD];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_SCHEDULER_ID]" />
+        <CustomAction Id="CA_OnSchedulerInstall" BinaryKey="Assembly_CA" DllEntry="OnSchedulerInstall" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <!--Run corresponding uninstall scripts.-->
+        <CustomAction Id="CA_PropertyOnServerRemove" Property="CA_OnServerRemove" Value="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=server;BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE]" />
+        <CustomAction Id="CA_OnServerRemove" BinaryKey="Assembly_CA" DllEntry="OnServerRemove" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyOnEServerRemove" Property="CA_OnEServerRemove" Value="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=enterprise server;BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE]" />
+        <CustomAction Id="CA_OnEServerRemove" BinaryKey="Assembly_CA" DllEntry="OnEServerRemove" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyOnPortalRemove" Property="CA_OnPortalRemove" Value="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=portal;BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE]" />
+        <CustomAction Id="CA_OnPortalRemove" BinaryKey="Assembly_CA" DllEntry="OnPortalRemove" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyOnSchedulerRemove" Property="CA_OnSchedulerRemove" Value ="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=scheduler service;BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE]" />
+        <CustomAction Id="CA_OnSchedulerRemove" BinaryKey="Assembly_CA" DllEntry="OnSchedulerRemove" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <!--Maintenance mode.-->
+        <CustomAction Id="CA_PropertyMaintenanceServer" Property="CA_MaintenanceServer" Value="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=server;BaseDirectory=[SCP_INSTALL_DIR];ServerPassword=[SERVER_ACCESS_PASSWORD]" />
+        <CustomAction Id="CA_MaintenanceServer" BinaryKey="Assembly_CA" DllEntry="MaintenanceServer" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyMaintenanceEServer" Property="CA_MaintenanceEServer" Value="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=enterprise server;BaseDirectory=[SCP_INSTALL_DIR];ServerAdminPassword=[SERVERADMIN_PASSWORD];" />
+        <CustomAction Id="CA_MaintenanceEServer" BinaryKey="Assembly_CA" DllEntry="MaintenanceEServer" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <CustomAction Id="CA_PropertyMaintenancePortal" Property="CA_MaintenancePortal" Value="InstallerFolder=[SCP_INSTALL_DIR];ComponentCode=portal;BaseDirectory=[SCP_INSTALL_DIR];EnterpriseServerUrl=[PI_ESERVER_URL]" />
+        <CustomAction Id="CA_MaintenancePortal" BinaryKey="Assembly_CA" DllEntry="MaintenancePortal" Impersonate="yes" Execute="deferred" HideTarget="no" />
+        <!--Rollback.-->
+        <CustomAction Id="CA_OnServerInstall_RollbackProperty" Property="CA_OnServerInstall_Rollback" Value="ApplicationName=$(var.NAME);ComponentName=$(var.ServerTitle);ComponentCode=server;ComponentDescription=$(var.ServerDescription);Version=$(var.VERSION);InstallationFolder=[PI_SERVER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_SERVER_IP];WebSitePort=[PI_SERVER_PORT];WebSiteDomain=[PI_SERVER_HOST];UserDomain=[PI_SERVER_DOMAIN];UserAccount=[PI_SERVER_LOGIN];UserPassword=[PI_SERVER_PASSWORD];NewUserAccount=[PI_SERVER_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_SERVER_ID]" />
+        <CustomAction Id="CA_OnEServerInstall_RollbackProperty" Property="CA_OnEServerInstall_Rollback" Value="ApplicationName=$(var.NAME);ComponentName=$(var.EServerTitle);ComponentCode=enterprise server;ComponentDescription=$(var.EServerDescription);Version=$(var.VERSION);InstallationFolder=[PI_ESERVER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_ESERVER_IP];WebSitePort=[PI_ESERVER_PORT];WebSiteDomain=[PI_ESERVER_HOST];UserDomain=[PI_ESERVER_DOMAIN];UserAccount=[PI_ESERVER_LOGIN];UserPassword=[PI_ESERVER_PASSWORD];NewUserAccount=[PI_ESERVER_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_ESERVER_ID]" />
+        <CustomAction Id="CA_OnPortalInstall_RollbackProperty" Property="CA_OnPortalInstall_Rollback" Value="ApplicationName=$(var.NAME);ComponentName=$(var.PortalTitle);ComponentCode=portal;ComponentDescription=$(var.PortalDescription);Version=$(var.VERSION);InstallationFolder=[PI_PORTAL_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];WebSiteIP=[PI_PORTAL_IP];WebSitePort=[PI_PORTAL_PORT];WebSiteDomain=[PI_PORTAL_HOST];UserDomain=[PI_PORTAL_DOMAIN];UserAccount=[PI_PORTAL_LOGIN];UserPassword=[PI_PORTAL_PASSWORD];NewUserAccount=[PI_PORTAL_CREATENEWACCOUNT];ServerPassword=[SERVER_ACCESS_PASSWORD];EnterpriseServerUrl=[PI_ESERVER_URL];ServerAdminPassword=[SERVERADMIN_PASSWORD];DatabaseServer=[DB_SERVER];DatabaseName=[DB_DATABASE];DbServerAdmin=[DB_LOGIN];DbServerAdminPassword=[DB_PASSWORD];DbAuth=[DB_AUTH];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_PORTAL_ID]" />
+        <CustomAction Id="CA_OnSchedulerInstall_RollbackProperty" Property="CA_OnSchedulerInstall_Rollback" Value ="ApplicationName=$(var.NAME);ComponentName=$(var.SchedulerTitle);ComponentCode=scheduler service;ComponentDescription=$(var.SchedulerDescription);Version=$(var.VERSION);InstallationFolder=[PI_SCHEDULER_INSTALL_DIR];InstallerFolder=[SCP_INSTALL_DIR];Installer=Microsoft Windows Installer;InstallerType=MSI;InstallerPath=[OriginalDatabase];IISVersion=[];SetupXml=[];CryptoKey=[PI_SCHEDULER_CRYPTO_KEY];DatabaseServer=[PI_SCHEDULER_DB_SERVER];DatabaseName=[PI_SCHEDULER_DB_DATABASE];DatabaseUser=[PI_SCHEDULER_DB_LOGIN];DatabaseUserPassword=[PI_SCHEDULER_DB_PASSWORD];BaseDirectory=[SCP_INSTALL_DIR];MODE_UP=[WIX_UPGRADE_DETECTED];MODE_RUP=[UPGRADINGPRODUCTCODE];ComponentId=[COMPFOUND_SCHEDULER_ID]" />
+        <CustomAction Id="CA_OnServerInstall_Rollback" BinaryKey="Assembly_CA" DllEntry="InstallRollback" Impersonate="yes" Execute="rollback" HideTarget="no" />
+        <CustomAction Id="CA_OnEServerInstall_Rollback" BinaryKey="Assembly_CA" DllEntry="InstallRollback" Impersonate="yes" Execute="rollback" HideTarget="no" />
+        <CustomAction Id="CA_OnPortalInstall_Rollback" BinaryKey="Assembly_CA" DllEntry="InstallRollback" Impersonate="yes" Execute="rollback" HideTarget="no" />
+        <CustomAction Id="CA_OnSchedulerInstall_Rollback" BinaryKey="Assembly_CA" DllEntry="SchedulerInstallRollback" Impersonate="yes" Execute="rollback" HideTarget="no" />
+        <!---->
+        <CustomAction Id="CA_PreFillSettings" BinaryKey="Assembly_CA" DllEntry="PreFillSettings" />
+        <!---->
+        <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+        <!---->
+        <CustomAction Id="CA_NeedNetFx" Error="The [ProductName] package requires Microsoft .NET 4.0 Full. Please install it and try again." />
+        <CustomAction Id="CA_DisableUpdate" Error="Previous version was found, please do uninstall first." />
+        <!---->
+        <SetProperty Id="SCP_INSTALL_DIR" After="AppSearch" Value="[SCP_BASE]">SCP_BASE</SetProperty>
+        <SetProperty Id="ARPINSTALLLOCATION" Value="[SCP_INSTALL_DIR]" After="InstallValidate" Sequence="execute" />
+        <SetProperty Id="PI_ESERVER_URL" Value="http://[PI_ESERVER_IP]:[PI_ESERVER_PORT]/" Before="CostInitialize" />
+        <SetProperty Id="REINSTALLMODE" Value="amus" After="CostInitialize">1</SetProperty>
+        <SetProperty Id="PI_PREREQ_IIS_INSTALL" After="CA_PrereqCheck" Value="1" Sequence="ui"><![CDATA[PI_PREREQ_IIS=0]]></SetProperty>
+        <SetProperty Id="PI_PREREQ_ASPNET_INSTALL" After="CA_PrereqCheck" Value="1" Sequence="ui"><![CDATA[PI_PREREQ_ASPNET=0]]></SetProperty>
+        <SetProperty Id="PI_PREREQ_NETFX_INSTALL" After="CA_PrereqCheck" Value="1" Sequence="ui"><![CDATA[NETFRAMEWORK20="#0" OR NETFRAMEWORK35="#0"]]></SetProperty>
+        <!--At the 'first time' installation of product we're setting 'C' drive as root. See 'ROOTDRIVE' reference at msdn.-->
+        <SetProperty Id="ROOTDRIVE" After="AppSearch" Value="C:\">NOT Installed</SetProperty>
+        <!---->
+        <SetProperty Id="SKIPINSTALLSQLDATA" Before="InstallValidate" Value="1" Sequence="execute"><![CDATA[NOT (&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></SetProperty>
+        <SetProperty Id="SKIPUNINSTALLSQLDATA" Before="InstallValidate" Value="1" Sequence="execute"><![CDATA[NOT (&EnterpriseServerFeature=3 OR !EnterpriseServerFeature=3)]]></SetProperty>
+        <!--Exe sequence.-->
+        <InstallExecuteSequence>
+            <Custom Action="CA_NeedNetFx" Before="LaunchConditions"><![CDATA[NETFRAMEWORK40FULL="#0"]]></Custom>
+            <Custom Action="CA_DisableUpdate" Before="LaunchConditions"><![CDATA[WIX_UPGRADE_DETECTED OR UPGRADINGPRODUCTCODE]]></Custom>
+            <!--Preinstall.-->
+            <!--Preparation when "old to new installer update". Also disabled in Maintenance mode.-->
+            <Custom Action="CA_PropertyOnServerPrepare" Before="RemoveFiles"><![CDATA[&ServerFeature=3 AND NOT !ServerFeature=3 AND COMPFOUND_SERVER=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_OnServerPrepare" After="CA_PropertyOnServerPrepare"><![CDATA[&ServerFeature=3 AND NOT !ServerFeature=3 AND COMPFOUND_SERVER=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_PropertyOnEServerPrepare" Before="RemoveFiles"><![CDATA[&EnterpriseServerFeature=3 AND NOT !EnterpriseServerFeature=3 AND COMPFOUND_ESERVER=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_OnEServerPrepare" After="CA_PropertyOnEServerPrepare"><![CDATA[&EnterpriseServerFeature=3 AND NOT !EnterpriseServerFeature=3 AND COMPFOUND_ESERVER=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_PropertyOnPortalPrepare" Before="RemoveFiles"><![CDATA[&PortalFeature=3 AND NOT !PortalFeature=3 AND COMPFOUND_PORTAL=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_OnPortalPrepare" After="CA_PropertyOnPortalPrepare"><![CDATA[&PortalFeature=3 AND NOT !PortalFeature=3 AND COMPFOUND_PORTAL=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_PropertyOnSchedulerPrepare" Before="RemoveDuplicateFiles"><![CDATA[&SchedulerServiceFeature=3 AND NOT !SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_OnSchedulerPrepare" After="CA_PropertyOnSchedulerPrepare"><![CDATA[&SchedulerServiceFeature=3 AND NOT !SchedulerServiceFeature=3 AND COMPFOUND_SCHEDULER=1 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE]]></Custom>
+            <!--First Install. [Installed] property not used here because we distinguish per feature basis.-->
+            <Custom Action="CA_PropertyOnServerInstall" After="InstallValidate"><![CDATA[(&ServerFeature=3) AND NOT(!ServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnServerInstall" After="InstallFiles"><![CDATA[(&ServerFeature=3) AND NOT(!ServerFeature=3)]]></Custom>
+            <Custom Action="CA_PropertyOnEServerInstall" After="InstallValidate"><![CDATA[(&EnterpriseServerFeature=3) AND NOT(!EnterpriseServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnEServerInstall" After="InstallODBC"><![CDATA[(&EnterpriseServerFeature=3) AND NOT(!EnterpriseServerFeature=3)]]></Custom> <!--After install odbc-->
+            <Custom Action="CA_PropertyOnPortalInstall" After="InstallValidate"><![CDATA[(&PortalFeature=3) AND NOT(!PortalFeature=3)]]></Custom>
+            <Custom Action="CA_OnPortalInstall" After="InstallFiles"><![CDATA[(&PortalFeature=3) AND NOT(!PortalFeature=3)]]></Custom>
+            <Custom Action="CA_PropertyOnSchedulerInstall" After="InstallValidate"><![CDATA[(&SchedulerServiceFeature=3) AND NOT(!SchedulerServiceFeature=3)]]></Custom>
+            <Custom Action="CA_OnSchedulerInstall" After="RegisterTypeLibraries"><![CDATA[(&SchedulerServiceFeature=3) AND NOT(!SchedulerServiceFeature=3)]]></Custom> <!--After install odbc and enterprise server.-->
+            <Custom Action="CA_OnScpaProperty" After="InstallValidate"><![CDATA[&ServerFeature=3 AND NOT !ServerFeature=3 AND &EnterpriseServerFeature=3 AND NOT !EnterpriseServerFeature=3 AND &PortalFeature=3 AND NOT !PortalFeature=3 AND &SchedulerServiceFeature=3 AND NOT !SchedulerServiceFeature=3 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE AND NOT COMPFOUND_SERVER=1 AND NOT COMPFOUND_ESERVER=1 AND NOT COMPFOUND_PORTAL=1 AND NOT COMPFOUND_SCHEDULER=1 AND DB_SKIP_CREATE=0]]></Custom>
+            <Custom Action="CA_OnScpa" After="SelfRegModules"><![CDATA[&ServerFeature=3 AND NOT !ServerFeature=3 AND &EnterpriseServerFeature=3 AND NOT !EnterpriseServerFeature=3 AND &PortalFeature=3 AND NOT !PortalFeature=3 AND &SchedulerServiceFeature=3 AND NOT !SchedulerServiceFeature=3 AND NOT WIX_UPGRADE_DETECTED AND NOT UPGRADINGPRODUCTCODE AND NOT COMPFOUND_SERVER=1 AND NOT COMPFOUND_ESERVER=1 AND NOT COMPFOUND_PORTAL=1 AND NOT COMPFOUND_SCHEDULER=1 AND DB_SKIP_CREATE=0]]></Custom>
+            <!--Complete Remove.-->
+            <Custom Action="CA_PropertyOnServerRemove" After="InstallInitialize"><![CDATA[(&ServerFeature=2) AND (!ServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnServerRemove" After="CA_PropertyOnServerRemove"><![CDATA[(&ServerFeature=2) AND (!ServerFeature=3)]]></Custom>
+            <Custom Action="CA_PropertyOnEServerRemove" After="InstallInitialize"><![CDATA[(&EnterpriseServerFeature=2) AND (!EnterpriseServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnEServerRemove" Before="StopServices"><![CDATA[(&EnterpriseServerFeature=2) AND (!EnterpriseServerFeature=3)]]></Custom>
+            <Custom Action="CA_PropertyOnPortalRemove" After="InstallInitialize"><![CDATA[(&PortalFeature=2) AND (!PortalFeature=3)]]></Custom>
+            <Custom Action="CA_OnPortalRemove" After="CA_PropertyOnPortalRemove"><![CDATA[(&PortalFeature=2) AND (!PortalFeature=3)]]></Custom>
+            <Custom Action="CA_PropertyOnSchedulerRemove" After="InstallInitialize"><![CDATA[(&SchedulerServiceFeature=2) AND (!SchedulerServiceFeature=3)]]></Custom>
+            <Custom Action="CA_OnSchedulerRemove" After="CA_PropertyOnSchedulerRemove"><![CDATA[(&SchedulerServiceFeature=2) AND (!SchedulerServiceFeature=3)]]></Custom>
+            <!--Maintenance.-->
+            <Custom Action="CA_PropertyMaintenanceServer" After="InstallInitialize"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Custom>
+            <Custom Action="CA_MaintenanceServer" After="CA_PropertyMaintenanceServer"><![CDATA[&ServerFeature=-1 AND !ServerFeature=3 AND PI_SERVER_ALLOW_CHANGE="1"]]></Custom>
+            <Custom Action="CA_PropertyMaintenanceEServer" After="InstallInitialize"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Custom>
+            <Custom Action="CA_MaintenanceEServer" After="CA_PropertyMaintenanceEServer"><![CDATA[&EnterpriseServerFeature=-1 AND !EnterpriseServerFeature=3 AND PI_ESERVER_ALLOW_CHANGE="1"]]></Custom>
+            <Custom Action="CA_PropertyMaintenancePortal" After="InstallInitialize"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND PI_PORTAL_ALLOW_CHANGE="1"]]></Custom>
+            <Custom Action="CA_MaintenancePortal" After="CA_PropertyMaintenancePortal"><![CDATA[&PortalFeature=-1 AND !PortalFeature=3 AND PI_PORTAL_ALLOW_CHANGE="1"]]></Custom>
+            <!---->
+            <Custom Action="CA_PropertyInstallWebFeaturesDeferred" After="InstallValidate"><![CDATA[NOT REMOVE AND (PI_PREREQ_IIS_INSTALL=1 OR PI_PREREQ_ASPNET_INSTALL=1 OR PI_PREREQ_NETFX_INSTALL=1)]]></Custom>
+            <Custom Action="CA_InstallWebFeatures" After="InstallInitialize"><![CDATA[NOT REMOVE AND (PI_PREREQ_IIS_INSTALL=1 OR PI_PREREQ_ASPNET_INSTALL=1 OR PI_PREREQ_NETFX_INSTALL=1)]]></Custom>
+            <Custom Action="CA_InstallWebFeaturesDeferred" After="CA_InstallWebFeatures"><![CDATA[NOT REMOVE AND (PI_PREREQ_IIS_INSTALL=1 OR PI_PREREQ_ASPNET_INSTALL=1 OR PI_PREREQ_NETFX_INSTALL=1)]]></Custom>
+            <!--Rollback.-->
+            <Custom Action="CA_OnServerInstall_RollbackProperty" Before="InstallValidate"><![CDATA[(&ServerFeature=3) AND NOT(!ServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnServerInstall_Rollback" Before="CA_OnServerInstall"><![CDATA[(&ServerFeature=3) AND NOT(!ServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnEServerInstall_RollbackProperty" Before="InstallValidate"><![CDATA[(&EnterpriseServerFeature=3) AND NOT(!EnterpriseServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnEServerInstall_Rollback" Before="CA_OnEServerInstall"><![CDATA[(&EnterpriseServerFeature=3) AND NOT(!EnterpriseServerFeature=3)]]></Custom>
+            <Custom Action="CA_OnPortalInstall_RollbackProperty" Before="InstallValidate"><![CDATA[(&PortalFeature=3) AND NOT(!PortalFeature=3)]]></Custom>
+            <Custom Action="CA_OnPortalInstall_Rollback" Before="CA_OnPortalInstall"><![CDATA[(&PortalFeature=3) AND NOT(!PortalFeature=3)]]></Custom>
+            <Custom Action="CA_OnSchedulerInstall_RollbackProperty" Before="InstallValidate"><![CDATA[(&SchedulerServiceFeature=3) AND NOT(!SchedulerServiceFeature=3)]]></Custom>
+            <Custom Action="CA_OnSchedulerInstall_Rollback" Before="CA_OnSchedulerInstall"><![CDATA[(&SchedulerServiceFeature=3) AND NOT(!SchedulerServiceFeature=3)]]></Custom>
+        </InstallExecuteSequence>
+        <InstallUISequence>
+            <Custom Action="CA_NeedNetFx" Before="LaunchConditions"><![CDATA[NETFRAMEWORK40FULL="#0"]]></Custom>
+            <Custom Action="CA_DisableUpdate" Before="LaunchConditions"><![CDATA[WIX_UPGRADE_DETECTED OR UPGRADINGPRODUCTCODE]]></Custom>
+            <Custom Action="CA_PrereqCheck" After ="CostInitialize" />
+            <Custom Action="CA_PrereqCheckUI" After ="CA_PrereqCheck" />
+            <Custom Action="CA_FillIpListUI" After="CA_PrereqCheck" />
+            <Custom Action="CA_FillDomainListUI" After="CA_PrereqCheck" />
+            <Custom Action="CA_SqlServerListUI" After="CA_PrereqCheck" />
+            <Custom Action="CA_PreFillSettings" After="CA_PrereqCheck" />
+        </InstallUISequence>
+    </Product>
+    <Fragment>
+        <sql:SqlDatabase Id="SqlDatabaseUpdateWin" Server="[DB_SERVER]" Database="[DB_DATABASE]" />
+        <util:User Id="SqlUpdateUser" Name="[DB_LOGIN]" Password="[DB_PASSWORD]" />  
+        <sql:SqlDatabase Id="SqlDatabaseUpdateSql" Server="[DB_SERVER]" Database="[DB_DATABASE]" User="SqlUpdateUser" />   
+        <ComponentGroup Id="DatabaseInstallation">
+            <ComponentRef Id="InstallDatabaseSql"/>
+            <ComponentRef Id="InstallDatabaseWin"/>
+            <ComponentRef Id="UpdateDatabaseSql"/>
+            <ComponentRef Id="UpdateDatabaseWin"/>
+        </ComponentGroup>
+        <DirectoryRef Id="PI_ESERVER_INSTALL_DIR">
+            <Component Id="InstallDatabaseSql" Guid="{81FB6008-A445-464F-8A0E-2EE076027FF3}">
+                <CreateFolder />
+                <Condition>(NOT Installed AND NOT WIX_UPGRADE_DETECTED) AND NOT(DB_AUTH = "Windows Authentication") AND (COMPFOUND_ESERVER="0") AND DB_SKIP_CREATE="0"</Condition>
+                <util:User Id="SqlUser" Name="[DB_LOGIN]" Password="[DB_PASSWORD]" CreateUser="no" />
+                <sql:SqlDatabase Id="SqlDatabaseInstallSql" ConfirmOverwrite="no" ContinueOnError="no" CreateOnInstall="yes" CreateOnReinstall="no" CreateOnUninstall="no"
+                                 DropOnInstall="no" DropOnReinstall="no" DropOnUninstall="no"
+                                 Server="[DB_SERVER]"
+                                 Database="[DB_DATABASE]"
+                                 User="SqlUser">
+                    <sql:SqlScript Id="SqlInstallScriptSql" ExecuteOnInstall="yes" ExecuteOnReinstall="no" ExecuteOnUninstall="no"
+                                   ContinueOnError="no" BinaryKey="InstallDB" Sequence="1" />
+                </sql:SqlDatabase>
+            </Component>
+            <Component Id="UpdateDatabaseSql" Guid="{089C02F9-D598-435E-8DA9-FC8AED00495C}">
+                <Condition>NOT (Remove="ALL") AND NOT(DB_AUTH = "Windows Authentication")</Condition>
+                <CreateFolder />
+                <sql:SqlScript Id="SqlUpdateScriptSql" ExecuteOnInstall="yes" ExecuteOnReinstall="yes" ExecuteOnUninstall="no"
+                                   ContinueOnError="no" BinaryKey="UpdateDB" Sequence="2" SqlDb="SqlDatabaseUpdateSql" />
+            </Component>
+            <Component Id="InstallDatabaseWin" Guid="{C50FC58C-3EF3-452D-BA9B-C9513B4D941A}">
+                <CreateFolder />
+                <Condition>(NOT Installed AND NOT WIX_UPGRADE_DETECTED) AND (DB_AUTH = "Windows Authentication") AND (COMPFOUND_ESERVER="0") AND DB_SKIP_CREATE="0"</Condition>
+                <sql:SqlDatabase Id="SqlDatabaseInstallWin" ConfirmOverwrite="no" ContinueOnError="no" CreateOnInstall="yes" CreateOnReinstall="no" CreateOnUninstall="no"
+                                 DropOnInstall="no" DropOnReinstall="no" DropOnUninstall="no"
+                                 Server="[DB_SERVER]"
+                                 Database="[DB_DATABASE]">
+                    <sql:SqlScript Id="SqlInstallScriptWin" ExecuteOnInstall="yes" ExecuteOnReinstall="no" ExecuteOnUninstall="no"
+                                   ContinueOnError="no" BinaryKey="InstallDB" Sequence="10" />
+                </sql:SqlDatabase>
+            </Component>
+            <Component Id="UpdateDatabaseWin" Guid="{A2770B5C-DA46-4125-950F-73A640EB312B}">
+                <Condition>NOT (Remove="ALL") AND (DB_AUTH = "Windows Authentication")</Condition>
+                <CreateFolder />
+                <sql:SqlScript Id="SqlUpdateScriptWin" ExecuteOnInstall="yes" ExecuteOnReinstall="yes" ExecuteOnUninstall="no"
+                                   ContinueOnError="no" BinaryKey="UpdateDB"  Sequence="11" SqlDb="SqlDatabaseUpdateWin" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="SolidCPFiles">
+            <Component Id ="comp_SolidCP_config" Directory="SCP_INSTALL_DIR" Guid="{28CD1ADB-562C-4E38-A3B6-325D3A2718B1}">
+                <File Id="file_SolidCP_config" KeyPath="yes" Source="SolidCP.config" />
+            </Component>
+            <Component Id="comp_SolidCP_reg_locator" Directory="SCP_INSTALL_DIR" Guid="{CC35E1B5-3E29-4AD1-991C-2904E4DCB099}">
+                <RegistryValue Root='HKLM' Key='SOFTWARE\[ProductName]'
+                                           Name='Base' Value='[SCP_INSTALL_DIR]'
+                                           Type='string' />
+
+                <RemoveFolder Id='CleanUpSCP' On='uninstall'/>
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

@@ -1,0 +1,1031 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+	<PropertyGroup>
+		<Version>$(Version)</Version>
+		<FileVersion>$(BUILD_NUMBER)</FileVersion>
+		<VersionLabel>$(BUILD_NUMBER)</VersionLabel>
+		<ReleaseDate>2017-05-27</ReleaseDate>
+		<BuildConfiguration></BuildConfiguration>
+		<RootFolder>..</RootFolder>
+		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>
+
+		<SetupTrunkFolder>$(RootFolder)\SolidCP.Installer</SetupTrunkFolder>
+		<SetupBuildFolder>$(SetupTrunkFolder)\Build\$(BuildConfiguration)</SetupBuildFolder>
+		<MSBuildCommunityTasksPath>$(RootFolder)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+
+		<BuildFolder>$(TrunkFolder)\Build\$(BuildConfiguration)</BuildFolder>
+		<DeployFolder>$(TrunkFolder)\Deploy\$(BuildConfiguration)</DeployFolder>
+
+		<PreviousBuildFolder>$(RootFolder)\..\prev\$(BuildConfiguration)</PreviousBuildFolder>
+
+		<DiffCmd>$(TrunkFolder)\Tools\Diff.exe</DiffCmd>
+		<!-- Lets keep all tools we need for the build together in a well-known place to avoid BUILD HELL -->
+		<SqlCmd Condition="Exists('$(RootFolder)\tools\sqlcmd\sqlcmd.exe')">"$(RootFolder)\tools\sqlcmd\sqlcmd.exe" -S (local)\SQLEXPRESS -E</SqlCmd>
+		<MSDeployPath Condition="Exists('$(RootFolder)\tools\webdeploy\msdeploy.exe')">"$(RootFolder)\tools\webdeploy\msdeploy.exe"</MSDeployPath>
+		<ZipCmd>"$(RootFolder)\tools\7-Zip\7z.exe"</ZipCmd>
+
+		<DataBaseName>SolidCP_build</DataBaseName>
+		<MSDeployConnectionString>server=(local)\SQLEXPRESS;database=$(DataBaseName);Integrated Security=true;</MSDeployConnectionString>
+
+		<PortalSrc>$(TrunkFolder)\Sources\SolidCP.WebPortal</PortalSrc>
+		<WebDavPortalSrc>$(TrunkFolder)\Sources\SolidCP.WebDavPortal</WebDavPortalSrc>
+		<ServerSrc>$(TrunkFolder)\Sources\SolidCP.Server</ServerSrc>
+		<Serveraspv2Src>$(TrunkFolder)\Sources\SolidCP.Server.asp2.0</Serveraspv2Src>
+		<EnterpriseServerSrc>$(TrunkFolder)\Sources\SolidCP.EnterpriseServer</EnterpriseServerSrc>
+		<SchedulerServiceSrc>$(TrunkFolder)\Sources\SolidCP.SchedulerService\bin</SchedulerServiceSrc>
+		<ImportCsvSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk\bin\$(BuildConfiguration)</ImportCsvSrc>
+		<HyperVUtilsSrc>$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils\bin\$(BuildConfiguration)</HyperVUtilsSrc>
+		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)</VMConfigSrc>
+		<ImportEnterpriseSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise\bin\$(BuildConfiguration)</ImportEnterpriseSrc>
+		<AWStatsViewerSrc>$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer</AWStatsViewerSrc>
+		<SCPTransportAgentSrc>$(TrunkFolder)\Sources\Tools\SCPTransportAgent</SCPTransportAgentSrc>
+		<SolidCP-Configuration-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolSrc>
+		<MSPtoSCPSrc>$(TrunkFolder)\Sources\Tools\MSPtoSCP</MSPtoSCPSrc>
+		<SolidCP-Auto-Upgrade-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolSrc>
+		<FixDefaultPublicFolderMailboxSrc>$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox\bin\$(BuildConfiguration)</FixDefaultPublicFolderMailboxSrc>
+
+		<ServerBuild>$(BuildFolder)\Server</ServerBuild>
+		<Serveraspv2Build>$(BuildFolder)\Server.asp2.0</Serveraspv2Build>
+		<EnterpriseServerBuild>$(BuildFolder)\EnterpriseServer</EnterpriseServerBuild>
+		<SchedulerServiceBuild>$(BuildFolder)\SchedulerService</SchedulerServiceBuild>
+		<PortalBuild>$(BuildFolder)\Portal</PortalBuild>
+		<WebDavPortalBuild>$(BuildFolder)\WebDavPortal</WebDavPortalBuild>
+		<ImportCsvBuild>$(BuildFolder)\Import.CsvBulk</ImportCsvBuild>
+		<HyperVUtilsBuild>$(BuildFolder)\HyperVUtils</HyperVUtilsBuild>
+		<VMConfigBuild>$(BuildFolder)\VMConfig</VMConfigBuild>
+		<ImportEnterpriseBuild>$(BuildFolder)\Import.Enterprise</ImportEnterpriseBuild>
+		<AWStatsViewerBuild>$(BuildFolder)\AWStats.Viewer</AWStatsViewerBuild>
+		<SCPTransportAgentBuild>$(BuildFolder)\SCPTransportAgent</SCPTransportAgentBuild>
+		<LocalizationToolkitBuild>$(BuildFolder)\LocalizationToolkit</LocalizationToolkitBuild>
+		<InstallerBuild>$(BuildFolder)\Installer</InstallerBuild>
+		<FixDefaultPublicFolderMailboxBuild>$(BuildFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxBuild>
+        <WiXInstallerBuild>$(BuildFolder)\WiXInstaller</WiXInstallerBuild>
+
+		<ftphost></ftphost>
+		<ftpUsername></ftpUsername>
+		<ftpPassword></ftpPassword>
+
+
+</PropertyGroup>
+
+	<PropertyGroup Label="WebPlatformFeed">
+		<!-- URI where to locate the installer's distributive online -->
+		<InstallerRemoteUri>http://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
+	</PropertyGroup>
+
+	<Target Name="RestorePackages">
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+	</Target>
+
+	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2016 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+	</Target>
+
+	<Target Name="GenerateBuildVersionFiles" DependsOnTargets="GenerateBuildVersionFilesInstaller">
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2016 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2016 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+	</Target>
+
+	<Target Name="CompileSources" DependsOnTargets="GenerateBuildVersionFiles">
+		<!-- SolidCP -->
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln;$(TrunkFolder)\Sources\SolidCP.Server.asp2.0.sln;$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln;$(TrunkFolder)\Sources\SolidCP.WebPortal.sln;$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!-- Tools -->
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" Properties="Configuration=$(BuildConfiguration)" />
+    <MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" Properties="Configuration=$(BuildConfiguration)" />
+  </Target>
+
+	<Target Name="PrepareBuilds" DependsOnTargets="CompileSources">
+		<!-- Remove build output folders in reversed order (e.q. root folder removed last) -->
+		<RemoveDir Directories="$(ServerBuild)"/>
+		<RemoveDir Directories="$(Serveraspv2Build)"/>
+		<RemoveDir Directories="$(EnterpriseServerBuild)"/>
+		<RemoveDir Directories="$(SchedulerServiceBuild)"/>
+		<RemoveDir Directories="$(PortalBuild)"/>
+		<RemoveDir Directories="$(WebDavPortalBuild)"/>
+		<RemoveDir Directories="$(ImportCsvBuild)"/>
+		<RemoveDir Directories="$(ImportEnterpriseBuild)"/>
+		<RemoveDir Directories="$(VMConfigBuild)"/>
+		<RemoveDir Directories="$(HyperVUtilsBuild)"/>
+		<RemoveDir Directories="$(AWStatsViewerBuild)"/>
+		<RemoveDir Directories="$(SCPTransportAgentBuild)"/>
+		<RemoveDir Directories="$(LocalizationToolkitBuild)"/>
+		<RemoveDir Directories="$(InstallerBuild)"/>
+		<RemoveDir Directories="$(BuildFolder)"/>
+    <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
+
+    <MakeDir Directories="$(BuildFolder)"/>
+		<MakeDir Directories="$(ServerBuild)"/>
+		<MakeDir Directories="$(Serveraspv2Build)"/>
+		<MakeDir Directories="$(EnterpriseServerBuild)"/>
+		<MakeDir Directories="$(SchedulerServiceBuild)"/>
+		<MakeDir Directories="$(PortalBuild)"/>
+		<MakeDir Directories="$(WebDavPortalBuild)"/>
+		<MakeDir Directories="$(HyperVUtilsBuild)"/>
+		<MakeDir Directories="$(VmConfigBuild)"/>
+		<MakeDir Directories="$(ImportCsvBuild)"/>
+		<MakeDir Directories="$(ImportEnterpriseBuild)"/>
+		<MakeDir Directories="$(AWStatsViewerBuild)"/>
+		<MakeDir Directories="$(SCPTransportAgentBuild)"/>
+		<MakeDir Directories="$(LocalizationToolkitBuild)"/>
+		<MakeDir Directories="$(InstallerBuild)"/>
+    <MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
+  </Target>
+
+	<Target Name="CreateServerBuild" DependsOnTargets="PrepareBuilds">
+		<ItemGroup>
+			<ServerBuildExclude Include="$(ServerSrc)\**\.svn\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin\*.xml" />
+			<ServerBuildExclude Include="$(ServerSrc)\obj\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\Release\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\Debug\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\App_Cache\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\Images\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\LogParser\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.user" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.suo" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.cs" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.csproj" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.vb" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.vbproj" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Administration.*"/>
+			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Management.*"/>
+			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Exchange.*"/>
+			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Crm.*"/>
+			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.SqlServer.BatchParser.dll"/>
+			<ServerBuildFiles Include="$(ServerSrc)\**\*.*" Exclude="@(ServerBuildExclude)"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(ServerBuildFiles)" DestinationFolder="$(ServerBuild)\%(RecursiveDir)" />
+	</Target>
+	<Target Name="CreateServercopyaspv2Build" DependsOnTargets="CreateServerBuild">
+		<ItemGroup>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\.svn\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\*.xml" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\obj\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\Release\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\Debug\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\App_Cache\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\Images\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\LogParser\**" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.user" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.suo" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.cs" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.csproj" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.vb" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\*.vbproj" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Administration.*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Management.*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.Exchange.*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.Crm.*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.SqlServer.BatchParser.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.Database.MariaDB.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.EnterpriseStorage.Windows2012.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.StorageSpaces.Windows2012.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.Web.IIs80.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Crm*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Dns*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Exchange*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Filters*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\HyperV*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Ice*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\IIs*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Lync*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SfB*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Sharepoint*\*"/>
+			<Servercopyaspv2BuildFiles Include="$(ServerSrc)\**\*.*" Exclude="@(Servercopyaspv2BuildExclude)"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(Servercopyaspv2BuildFiles)" DestinationFolder="$(Serveraspv2Build)\%(RecursiveDir)" />
+	</Target>
+	<Target Name="CreateServeraspv2Build" DependsOnTargets="CreateServercopyaspv2Build">
+		<ItemGroup>
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\.svn\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\*.xml" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\obj\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\Release\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\Debug\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\App_Cache\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\Images\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\LogParser\**" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<Serveaspv2rBuildExclude Include="$(Serveraspv2Src)\**\*.user" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\*.suo" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\*.cs" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\*.csproj" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\*.vb" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\*.vbproj" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\Microsoft.Web.Administration.*"/>
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\Microsoft.Web.Management.*"/>
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\Microsoft.Exchange.*"/>
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\Microsoft.Crm.*"/>
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\Microsoft.SqlServer.BatchParser.dll"/>
+			<Serveraspv2BuildFiles Include="$(Serveraspv2Src)\**\*.*" Exclude="@(Serveraspv2BuildExclude)"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(Serveraspv2BuildFiles)" DestinationFolder="$(Serveraspv2Build)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateEnterpriseServerBuild" DependsOnTargets="CreateServeraspv2Build">
+		<ItemGroup>
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\.svn\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\obj\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\*.xml" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Release\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Debug\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Images\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.user" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.csproj" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.metacsproj" />
+			<EnterpriseServerBuildFiles Include="$(EnterpriseServerSrc)\**\*.*" Exclude="@(EnterpriseServerBuildExclude)"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(EnterpriseServerBuildFiles)" DestinationFolder="$(EnterpriseServerBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreatePortalBuild" DependsOnTargets="CreateEnterpriseServerBuild">
+		<ItemGroup>
+			<PortalBuildExclude Include="$(PortalSrc)\**\.svn\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\obj\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\bin\*.xml" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\Release\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\Debug\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.user" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.suo" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.cs" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.csproj" />
+			<PortalBuildExclude Include="$(PortalSrc)\Code\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\bin\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\scripts\**" />
+			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\web.config" />
+			<PortalBuildFiles Include="$(PortalSrc)\**\*.*" Exclude="@(PortalBuildExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(PortalBuildFiles)" DestinationFolder="$(PortalBuild)\%(RecursiveDir)" />
+	</Target>
+
+		<Target Name="CreateSchedulerBuild" DependsOnTargets="CreatePortalBuild">
+		<ItemGroup>
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\.svn\**" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\obj\**" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\bin\*.xml" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\Release\**" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\Debug\**" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.user" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.suo" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.cs" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.csproj" />
+			<SchedulerServiceBuildFiles Include="$(SchedulerServiceSrc)\**\*.*" Exclude="@(SchBuildExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SchedulerServiceBuildFiles)" DestinationFolder="$(SchedulerServiceBuild)\%(RecursiveDir)" />
+	</Target>
+
+
+	<Target Name="CreateWebDavPortalBuild" DependsOnTargets="CreateSchedulerBuild">
+		<ItemGroup>
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\.svn\**" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\obj\**" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\bin\*.xml" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\Release\**" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\Debug\**" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.user" />
+			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
+			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
+			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.csproj" />
+			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.sln" />
+			<WebDavPortalBuildFiles Include="$(WebDavPortalSrc)\**\*.*" Exclude="@(WebDavPortalBuildExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WebDavPortalBuildFiles)" DestinationFolder="$(WebDavPortalBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateImportCsvBuild" DependsOnTargets="CreateWebDavPortalBuild">
+		<ItemGroup>
+			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.vshost.*" />
+			<ImportCsvBuildFiles Include="$(ImportCsvSrc)\**\*.*" Exclude="@(ImportCsvExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ImportCsvBuildFiles)" DestinationFolder="$(ImportCsvBuild)\%(RecursiveDir)" />
+	</Target>
+
+  <Target Name="CreateHyperVUtilsBuild" DependsOnTargets="CreateImportCsvBuild">
+		<ItemGroup>
+			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.vshost.*" />
+			<HyperVUtilsBuildFiles Include="$(HyperVUtilsSrc)\**\*.*" Exclude="@(HyperVUtilsExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(HyperVUtilsBuildFiles)" DestinationFolder="$(HyperVUtilsBuild)\%(RecursiveDir)" />
+	</Target>
+
+  <Target Name="CreateVMConfigBuild" DependsOnTargets="CreateHyperVUtilsBuild">
+		<ItemGroup>
+			<VMConfigExclude Include="$(VMConfigSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<VMConfigExclude Include="$(VMConfigSrc)\**\*.vshost.*" />
+			<VMConfigBuildFiles Include="$(VMConfigSrc)\**\*.*" Exclude="@(VMConfigExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(VMConfigBuildFiles)" DestinationFolder="$(VMConfigBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateImportEnterpriseBuild" DependsOnTargets="CreateVMConfigBuild">
+		<ItemGroup>
+			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.vshost.*" />
+			<ImportEnterpriseBuildFiles Include="$(ImportEnterpriseSrc)\**\*.*" Exclude="@(ImportEnterpriseExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ImportEnterpriseBuildFiles)" DestinationFolder="$(ImportEnterpriseBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateAWStatsViewerBuild" DependsOnTargets="CreateImportEnterpriseBuild">
+		<ItemGroup>
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\.svn\**" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\obj\**" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\bin\*.xml" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\Release\**" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\Debug\**" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.user" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.suo" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.cs" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.csproj" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\Code\**" />
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\*.publish.xml" />
+			<AWStatsViewerBuildFiles Include="$(AWStatsViewerSrc)\**\*.*" Exclude="@(AWStatsViewerBuildExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(AWStatsViewerBuildFiles)" DestinationFolder="$(AWStatsViewerBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateSCPTransportAgentBuild" DependsOnTargets="CreateAWStatsViewerBuild">
+		<ItemGroup>
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\.svn\**" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\obj\**" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\bin\*.xml" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.cache" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\microsoft.*" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\app.config" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.txt" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.user" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.suo" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.cs" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.csproj" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\Code\**" />
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\*.publish.xml" />
+				<SCPTransportAgentBuildFiles Include="$(SCPTransportAgentSrc)\**\*.*" Exclude="@(SCPTransportAgentBuildExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SCPTransportAgentBuildFiles)" DestinationFolder="$(SCPTransportAgentBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateLocalizationToolkitBuild" DependsOnTargets="CreateSCPTransportAgentBuild">
+		<!-- compile toolkit -->
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\SolidCP.LocalizationToolkit.csproj" Properties="Configuration=$(BuildConfiguration)">
+			<Output
+                TaskParameter="TargetOutputs"
+                ItemName="LocalizationToolkitExe" />
+		</MSBuild>
+
+		<!-- generate default resources -->
+		<Exec Command="@(LocalizationToolkitExe) -L $(PortalSrc)"/>
+
+		<!-- build MSI package -->
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit.Wix\SolidCP.LocalizationToolkit.Wix.wixproj" Properties="Configuration=$(BuildConfiguration);DefineSolutionProperties=false">
+			<Output
+                TaskParameter="TargetOutputs"
+                ItemName="LocalizationToolkitMsi" />
+		</MSBuild>
+		<Copy SourceFiles="@(LocalizationToolkitMsi)" DestinationFolder="$(LocalizationToolkitBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
+
+		<PropertyGroup>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Installer</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)\bin\$(BuildConfiguration)</InstallerProjectBin>
+		</PropertyGroup>
+
+		<!-- compile Installer -->
+		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.csproj" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!-- copy installer binaries for upgrade -->
+		<ItemGroup>
+			<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\*.exe" />
+		</ItemGroup>
+		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
+
+		<!-- Compile updater.exe -->
+		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!-- build MSI package -->
+
+	</Target>
+
+  <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
+    <ItemGroup>
+      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
+      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.vshost.*" />
+      <FixDefaultPublicFolderMailboxBuildFiles Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.*" Exclude="@(FixDefaultPublicFolderMailboxExclude)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(FixDefaultPublicFolderMailboxBuildFiles)" DestinationFolder="$(FixDefaultPublicFolderMailboxBuild)\%(RecursiveDir)" />
+  </Target>
+
+    <Target Name="WiXCreateRedistFileListBuild" DependsOnTargets="CreateFixDefaultPublicFolderMailboxBuild" >
+        <RemoveDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
+        <MakeDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
+        <Exec Command='"$(WIX)bin\heat.exe" dir $(EnterpriseServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\EnterpriseServerFiles.wxs -gg -sreg -srd -var wix.BUILDESPATH -cg EnterpriseServerFiles -dr PI_ESERVER_INSTALL_DIR' />
+        <Exec Command='"$(WIX)bin\heat.exe" dir $(Serveraspv2Build) -o $(WiXInstallerBuild)\ComponentsFiles\Serveraspv2Files.wxs -gg -sreg -srd -var wix.BUILDSPATH -cg Serveraspv2Files -dr PI_SERVER_ASPV2_INSTALL_DIR' />
+        <Exec Command='"$(WIX)bin\heat.exe" dir $(ServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\ServerFiles.wxs -gg -sreg -srd -var wix.BUILDSPATH -cg ServerFiles -dr PI_SERVER_INSTALL_DIR' />
+        <Exec Command='"$(WIX)bin\heat.exe" dir $(PortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\PortalFiles.wxs -gg -sreg -srd -var wix.BUILDPPATH -cg PortalFiles -dr PI_PORTAL_INSTALL_DIR' />
+        <Exec Command='"$(WIX)bin\heat.exe" dir $(WebDavPortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\WebDavPortalFiles.wxs -gg -sreg -srd -var wix.BUILDWDPPATH -cg WebDavPortalFiles -dr PI_WEBDAVPORTAL_INSTALL_DIR' />
+
+		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\Setup.WIX\Setup.Wix.wixproj" Properties="Configuration=$(BuildConfiguration);DefineSolutionProperties=false">
+			<Output
+                TaskParameter="TargetOutputs"
+                ItemName="SolidCPInstallerMsi" />
+		</MSBuild>
+
+		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.SchedulerServiceInstaller\SolidCP.SchedulerServiceInstaller.csproj" Properties="Configuration=$(BuildConfiguration);DefineSolutionProperties=false"/>
+
+		<Copy SourceFiles="@(SolidCPInstallerMsi)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />
+		</Target>
+
+    <Target Name="Build" DependsOnTargets="WiXCreateRedistFileListBuild">
+		<!-- Do nothing -->
+	</Target>
+
+  <!-- Create full distributives -->
+	<PropertyGroup>
+		<InstallFolder>$(DeployFolder)\Install</InstallFolder>
+		<ServerInstall>$(InstallFolder)\Server</ServerInstall>
+		<Serveraspv2Install>$(InstallFolder)\Server.asp2.0</Serveraspv2Install>
+		<EnterpriseServerInstall>$(InstallFolder)\EnterpriseServer</EnterpriseServerInstall>
+		<SchedulerServiceInstall>$(InstallFolder)\SchedulerService</SchedulerServiceInstall>
+		<PortalInstall>$(InstallFolder)\Portal</PortalInstall>
+		<WebDavPortalInstall>$(InstallFolder)\WebDavPortal</WebDavPortalInstall>
+		<StandaloneInstall>$(InstallFolder)\StandaloneServerSetup</StandaloneInstall>
+
+		<!-- Tools -->
+		<ToolsFolder>$(DeployFolder)\Tools</ToolsFolder>
+		<ImportCsvInstall>$(ToolsFolder)\Import.CsvBulk</ImportCsvInstall>
+		<HyperVUtilsInstall>$(ToolsFolder)\HyperVUtils</HyperVUtilsInstall>
+		<VMConfigInstall>$(ToolsFolder)\VMconfig</VMConfigInstall>
+		<ImportEnterpriseInstall>$(ToolsFolder)\Import.Enterprise</ImportEnterpriseInstall>
+		<AWStatsViewerInstall>$(ToolsFolder)\AWStats.Viewer</AWStatsViewerInstall>
+		<SCPTransportAgentInstall>$(ToolsFolder)\SCPTransportAgent</SCPTransportAgentInstall>
+		<SolidCP-Configuration-ToolInstall>$(ToolsFolder)\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolInstall>
+		<MSPtoSCPInstall>$(ToolsFolder)\MSPtoSCP</MSPtoSCPInstall>
+		<SolidCP-Auto-Upgrade-ToolInstall>$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolInstall>
+    <FixDefaultPublicFolderMailboxInstall>$(ToolsFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxInstall>
+  </PropertyGroup>
+
+	<Target Name="PrepareInstalls" DependsOnTargets="Build">
+		<Delete Files="$(InstallFolder)\**\*.*"/>
+		<RemoveDir Directories="$(InstallFolder)"/>
+		<MakeDir Directories="$(InstallFolder)"/>
+
+		<Delete Files="$(ToolsFolder)\**\*.*"/>
+		<RemoveDir Directories="$(ToolsFolder)"/>
+		<MakeDir Directories="$(ToolsFolder)"/>
+	</Target>
+
+	<Target Name="CreateServerInstall" DependsOnTargets="PrepareInstalls">
+		<ItemGroup>
+			<ServerDeployExclude Include="$(ServerBuild)\bin\SDNSAPI.dll" />
+			<ServerDeployExclude Include="$(ServerBuild)\bin\MySql.Data.dll"/>
+			<ServerDeployFiles Include="$(ServerBuild)\**\*.*" Exclude="@(ServerDeployExclude)" />
+		</ItemGroup>
+		<RemoveDir Directories="$(ServerInstall)"/>
+		<MakeDir Directories="$(ServerInstall)"/>
+		<Copy SourceFiles="@(ServerDeployFiles)" DestinationFolder="$(ServerInstall)\%(RecursiveDir)" />
+		<XmlUpdate XmlFileName="$(ServerInstall)\web.config" Xpath="//configuration/SolidCP.server/security/password/@value" Value="${installer.server.password}" />
+	</Target>
+
+	<Target Name="CreateServeraspv2Install" DependsOnTargets="CreateServerInstall">
+		<ItemGroup>
+			<Serveraspv2DeployExclude Include="$(Serveraspv2Build)\bin\SDNSAPI.dll" />
+			<Serveraspv2DeployExclude Include="$(Serveraspv2Build)\bin\MySql.Data.dll"/>
+			<Serveraspv2DeployFiles Include="$(Serveraspv2Build)\**\*.*" Exclude="@(Serveraspv2DeployExclude)" />
+		</ItemGroup>
+		<RemoveDir Directories="$(Serveraspv2Install)"/>
+		<MakeDir Directories="$(Serveraspv2Install)"/>
+		<Copy SourceFiles="@(Serveraspv2DeployFiles)" DestinationFolder="$(Serveraspv2Install)\%(RecursiveDir)" />
+		<XmlUpdate XmlFileName="$(Serveraspv2Install)\web.config" Xpath="//configuration/SolidCP.server/security/password/@value" Value="${installer.server.password}" />
+	</Target>
+
+	<Target Name="CreateEnterpriseServerInstall" DependsOnTargets="CreateServeraspv2Install">
+		<ItemGroup>
+			<EnterpriseServerDeployExclude Include="$(EnterpriseServerBuild)\bin\OrderBoxDomainsLib.DLL" />
+			<EnterpriseServerDeployExclude Include="$(EnterpriseServerBuild)\bin\OrderBoxCoreLib.DLL" />
+			<EnterpriseServerDeployFiles Include="$(EnterpriseServerBuild)\**\*.*" Exclude="@(EnterpriseServerDeployExclude)" />
+			<SchedulerServiceDeployExclude Include="$(SchedulerServiceBuild)\bin\SolidCP.SchedulerService.exe.config" />
+			<SchedulerServiceDeployFiles Include="$(SchedulerServiceBuild)\**\*.*" Exclude="@(SchedulerServiceDeployExclude)" />
+		</ItemGroup>
+		<RemoveDir Directories="$(EnterpriseServerInstall)"/>
+		<MakeDir Directories="$(EnterpriseServerInstall)"/>
+		<Copy SourceFiles="@(EnterpriseServerDeployFiles)" DestinationFolder="$(EnterpriseServerInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(SchedulerServiceDeployFiles)" DestinationFolder="$(EnterpriseServerInstall)\%(RecursiveDir)\bin" />
+		<XmlUpdate XmlFileName="$(EnterpriseServerInstall)\web.config" Xpath="//configuration/connectionStrings/add/@connectionString" Value="${installer.connectionstring}"  />
+		<XmlUpdate XmlFileName="$(EnterpriseServerInstall)\web.config" Xpath="//configuration/appSettings/add[@key=%22SolidCP.CryptoKey%22]/@value" Value="${installer.cryptokey}"  />
+	</Target>
+
+	<Target Name="CreatePortalInstall" DependsOnTargets="CreateEnterpriseServerInstall">
+		<ItemGroup>
+			<PortalDeployFiles Include="$(PortalBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(PortalInstall)"/>
+		<MakeDir Directories="$(PortalInstall)"/>
+		<Copy SourceFiles="@(PortalDeployFiles)" DestinationFolder="$(PortalInstall)\%(RecursiveDir)" />
+		<XmlUpdate XmlFileName="$(PortalInstall)\App_Data\SiteSettings.config" Xpath="//SiteSettings/EnterpriseServer" Value="http://127.0.0.1:9002"  />
+	</Target>
+
+	<Target Name="CreateWebDavPortalInstall" DependsOnTargets="CreatePortalInstall">
+		<ItemGroup>
+      <WebDavPortalDeployFiles Include="$(WebDavPortalBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(WebDavPortalInstall)"/>
+		<MakeDir Directories="$(WebDavPortalInstall)"/>
+		<Copy SourceFiles="@(WebDavPortalDeployFiles)" DestinationFolder="$(WebDavPortalInstall)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateImportCsvInstall" DependsOnTargets="CreateWebDavPortalInstall">
+		<ItemGroup>
+			<ImportCsvDeployFiles Include="$(ImportCsvBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(ImportCsvInstall)"/>
+		<MakeDir Directories="$(ImportCsvInstall)"/>
+		<Copy SourceFiles="@(ImportCsvDeployFiles)" DestinationFolder="$(ImportCsvInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(ImportCsvInstall)" />
+	</Target>
+
+  <Target Name="CreateHyperVUtilsCsvInstall" DependsOnTargets="CreateImportCsvInstall">
+		<ItemGroup>
+			<HyperVUtilsDeployFiles Include="$(HyperVUtilsBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(HyperVUtilsInstall)"/>
+		<MakeDir Directories="$(HyperVUtilsInstall)"/>
+		<Copy SourceFiles="@(HyperVUtilsDeployFiles)" DestinationFolder="$(HyperVUtilsInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(HyperVUtilsInstall)" />
+	</Target>
+
+  <Target Name="CreateVMConfigInstall" DependsOnTargets="CreateHyperVUtilsCsvInstall">
+		<ItemGroup>
+			<VMConfigDeployFiles Include="$(VMConfigBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(VMConfigInstall)"/>
+		<MakeDir Directories="$(VMConfigInstall)"/>
+		<Copy SourceFiles="@(VMConfigDeployFiles)" DestinationFolder="$(VMConfigInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(VMConfigInstall)" />
+	</Target>
+
+	<Target Name="CreateImportEnterpriseInstall" DependsOnTargets="CreateVMConfigInstall">
+		<ItemGroup>
+			<ImportEnterpriseDeployFiles Include="$(ImportEnterpriseBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(ImportEnterpriseInstall)"/>
+		<MakeDir Directories="$(ImportEnterpriseInstall)"/>
+		<Copy SourceFiles="@(ImportEnterpriseDeployFiles)" DestinationFolder="$(ImportEnterpriseInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(ImportEnterpriseInstall)" />
+	</Target>
+
+	<Target Name="CreateSCPTransportAgentInstall" DependsOnTargets="CreateImportEnterpriseInstall">
+		<ItemGroup>
+			<SCPTransportAgentDeployFiles Include="$(SCPTransportAgentBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(SCPTransportAgentInstall)"/>
+		<MakeDir Directories="$(SCPTransportAgentInstall)"/>
+		<Copy SourceFiles="@(SCPTransportAgentDeployFiles)" DestinationFolder="$(SCPTransportAgentInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(SCPTransportAgentInstall)" />
+	</Target>
+
+	<Target Name="CreateAWStatsViewerInstall" DependsOnTargets="CreateSCPTransportAgentInstall">
+		<ItemGroup>
+			<AWStatsViewerDeployFiles Include="$(AWStatsViewerBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(AWStatsViewerInstall)"/>
+		<MakeDir Directories="$(AWStatsViewerInstall)"/>
+		<Copy SourceFiles="@(AWStatsViewerDeployFiles)" DestinationFolder="$(AWStatsViewerInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(AWStatsViewerInstall)" />
+	</Target>
+
+	<Target Name="CreateLocalizationToolkitInstall" DependsOnTargets="CreateAWStatsViewerInstall">
+		<ItemGroup>
+			<LocalizationToolkitDeployFiles Include="$(LocalizationToolkitBuild)\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(LocalizationToolkitDeployFiles)" DestinationFolder="$(ToolsFolder)\%(RecursiveDir)" />
+	</Target>
+
+  <Target Name="CreateFixDefaultPublicFolderMailboxInstall" DependsOnTargets="CreateLocalizationToolkitInstall">
+    <ItemGroup>
+      <FixDefaultPublicFolderMailboxDeployFiles Include="$(FixDefaultPublicFolderMailboxBuild)\**\*.*" />
+    </ItemGroup>
+    <RemoveDir Directories="$(FixDefaultPublicFolderMailboxInstall)"/>
+    <MakeDir Directories="$(FixDefaultPublicFolderMailboxInstall)"/>
+    <Copy SourceFiles="@(FixDefaultPublicFolderMailboxDeployFiles)" DestinationFolder="$(FixDefaultPublicFolderMailboxInstall)\%(RecursiveDir)" />
+    <Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(FixDefaultPublicFolderMailboxInstall)" />
+  </Target>
+
+  	<Target Name="CreateSolidCP-Configuration-ToolInstall" DependsOnTargets="CreateFixDefaultPublicFolderMailboxInstall">
+		<ItemGroup>
+			<SolidCP-Configuration-ToolFiles Include="$(SolidCP-Configuration-ToolSrc)\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(SolidCP-Configuration-ToolInstall)"/>
+		<MakeDir Directories="$(SolidCP-Configuration-ToolInstall)"/>
+		<Copy SourceFiles="@(SolidCP-Configuration-ToolFiles)" DestinationFolder="$(SolidCP-Configuration-ToolInstall)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(SolidCP-Configuration-ToolInstall)" />
+	</Target>
+	
+  	<Target Name="MSPtoSCPInstall" DependsOnTargets="CreateSolidCP-Configuration-ToolInstall">
+		<ItemGroup>
+			<MSPtoSCPFiles Include="$(MSPtoSCPSrc)\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(MSPtoSCPInstall)"/>
+		<MakeDir Directories="$(MSPtoSCPInstall)"/>
+		<Copy SourceFiles="@(MSPtoSCPFiles)" DestinationFolder="$(MSPtoSCPInstall)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(MSPtoSCPInstall)" />
+	</Target>
+	
+  	<Target Name="SolidCP-Auto-Upgrade-ToolInstall" DependsOnTargets="MSPtoSCPInstall">
+		<ItemGroup>
+			<SolidCP-Auto-Upgrade-ToolFiles Include="$(SolidCP-Auto-Upgrade-ToolSrc)\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(SolidCP-Auto-Upgrade-ToolInstall)"/>
+		<MakeDir Directories="$(SolidCP-Auto-Upgrade-ToolInstall)"/>
+		<Copy SourceFiles="@(SolidCP-Auto-Upgrade-ToolFiles)" DestinationFolder="$(SolidCP-Auto-Upgrade-ToolInstall)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(SolidCP-Auto-Upgrade-ToolInstall)" />
+	</Target>
+
+  <!-- Create update from previous version -->
+	<PropertyGroup>
+		<UpdateFolder>$(DeployFolder)\Update</UpdateFolder>
+		<ServerUpdate>$(UpdateFolder)\Server</ServerUpdate>
+		<Serveraspv2Update>$(UpdateFolder)\Server.asp2.0</Serveraspv2Update>
+		<EnterpriseServerUpdate>$(UpdateFolder)\EnterpriseServer</EnterpriseServerUpdate>
+		<PortalUpdate>$(UpdateFolder)\Portal</PortalUpdate>
+		<WebDavPortalUpdate>$(UpdateFolder)\WebDavPortal</WebDavPortalUpdate>
+	</PropertyGroup>
+
+	<Target Name="PrepareUpdates" DependsOnTargets="SolidCP-Auto-Upgrade-ToolInstall">
+		<RemoveDir Directories="$(UpdateFolder)"/>
+		<MakeDir Directories="$(UpdateFolder)"/>
+
+		<RemoveDir Directories="$(ServerUpdate)"/>
+		<MakeDir Directories="$(ServerUpdate)"/>
+
+		<RemoveDir Directories="$(Serveraspv2Update)"/>
+		<MakeDir Directories="$(Serveraspv2Update)"/>
+
+		<RemoveDir Directories="$(EnterpriseServerUpdate)"/>
+		<MakeDir Directories="$(EnterpriseServerUpdate)"/>
+
+		<RemoveDir Directories="$(PortalUpdate)"/>
+		<MakeDir Directories="$(PortalUpdate)"/>
+		
+		<RemoveDir Directories="$(WebDavPortalUpdate)"/>
+		<MakeDir Directories="$(WebDavPortalUpdate)"/>
+	</Target>
+
+	<Target Name="CreateServerUpdate" DependsOnTargets="PrepareUpdates">
+		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\Server%22 %22$(ServerInstall)%22  %22$(ServerUpdate)%22 /ex:web.config"/>
+	</Target>
+
+	<Target Name="CreateServeraspv2Update" DependsOnTargets="CreateServerUpdate">
+		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\Server.asp2.0%22 %22$(Serveraspv2Install)%22  %22$(Serveraspv2Update)%22 /ex:web.config"/>
+	</Target>
+
+	<Target Name="CreateEnterpriseServerUpdate" DependsOnTargets="CreateServeraspv2Update" >
+		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\EnterpriseServer%22 %22$(EnterpriseServerInstall)%22 %22$(EnterpriseServerUpdate)%22 /ex:web.config"/>
+		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+		<!-- Update variables in the file -->
+		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(EnterpriseServerUpdate)\Setup\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+
+		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(UpdateFolder)" />
+		<!-- Update variables in the file -->
+		<FileUpdate Files="$(UpdateFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(UpdateFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+	</Target>
+
+	<Target Name="CreatePortalUpdate" DependsOnTargets="CreateEnterpriseServerUpdate" >
+		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\Portal%22 %22$(PortalInstall)%22  %22$(PortalUpdate)%22 /ex:web.config,web6.config" />
+	</Target>
+	
+	<Target Name="CreateWebDavPortalUpdate" DependsOnTargets="CreatePortalUpdate" >
+		<Exec Command="$(DiffCmd) %22$(PreviousBuildFolder)\WebDavPortal%22 %22$(WebDavPortalInstall)%22  %22$(WebDavPortalUpdate)%22 /ex:web.config,Web.Debug.config,Web.Release.config,SolidCP.WebDavPortal.sln"/>
+	</Target>
+
+	<!-- Create Enterprise Server database and script it -->
+	<PropertyGroup>
+		<DatabaseFolder>$(DeployFolder)\Database</DatabaseFolder>
+	</PropertyGroup>
+
+  <Target Name="CreateEnterpriseServerDatabase" DependsOnTargets="CreateWebDavPortalUpdate">
+		<MakeDir Directories="$(DatabaseFolder)"/>
+
+		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName)&quot;" />
+
+		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />
+		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
+
+		<!-- Update variables in files -->
+		<FileUpdate Files="$(DatabaseFolder)\install_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${install.database}" ReplacementText="$(DataBaseName)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.version}" ReplacementText="$(FileVersion)" />
+		<FileUpdate Files="$(DatabaseFolder)\update_db.sql" Regex="\${release.date}" ReplacementText="$(ReleaseDate)" />
+
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\install_db.sql" />
+		<Exec Command="$(SqlCmd) -i $(DatabaseFolder)\update_db.sql" />
+
+		<Delete Files="$(DatabaseFolder)\install_db.sql" />
+		<Delete Files="$(DatabaseFolder)\update_db.sql" />
+	</Target>
+
+	<Target Name="ScriptEnterpriseServerDatabase" DependsOnTargets="CreateEnterpriseServerDatabase">
+		<ConvertToAbsolutePath Paths="$(DatabaseFolder)">
+			<Output TaskParameter="AbsolutePaths" PropertyName="DatabaseFolderAbsolute"/>
+		</ConvertToAbsolutePath>
+
+		<Exec Command="$(MSDeployPath) -verb:sync -source:dbFullSql=&quot;$(MSDeployConnectionString)&quot; -dest:dbFullSql=&quot;$(DatabaseFolderAbsolute)\install_db_temp.sql&quot;"/>
+		<Exec Command="copy $(TrunkFolder)\Resources\database_header.sql+$(DatabaseFolder)\install_db_temp.sql $(DatabaseFolder)\install_db.sql" />
+
+		<MakeDir Directories="$(EnterpriseServerInstall)\Setup"/>
+
+		<Copy SourceFiles="$(DatabaseFolder)\install_db.sql" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+
+
+		<Delete Files="$(DatabaseFolder)\install_db_temp.sql" />
+	</Target>
+
+	<!-- Compile and deploy Setup.dll -->
+	<Target Name="CreateSetupDLL" DependsOnTargets="ScriptEnterpriseServerDatabase">
+		<!-- Compile Setup.dll -->
+		<MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.Installer.sln"  Properties="Configuration=$(BuildConfiguration)" />
+
+		<!-- Copy Setup.dll -->
+		<MakeDir Directories="$(ServerInstall)\Setup"/>
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(ServerInstall)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerInstall)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(ServerUpdate)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerUpdate)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+
+		<MakeDir Directories="$(Serveraspv2Install)\Setup"/>
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(Serveraspv2Install)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(Serveraspv2Install)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(Serveraspv2Update)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(Serveraspv2Update)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerInstall)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerUpdate)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+
+		<MakeDir Directories="$(PortalInstall)\Setup"/>
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(PortalInstall)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalInstall)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(PortalUpdate)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalUpdate)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+
+		<MakeDir Directories="$(WebDavPortalInstall)\Setup"/>
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(WebDavPortalInstall)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalInstall)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(WebDavPortalUpdate)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalUpdate)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+
+		<RemoveDir Directories="$(StandaloneInstall)"/>
+		<MakeDir Directories="$(StandaloneInstall)"/>
+		<MakeDir Directories="$(StandaloneInstall)\Setup"/>
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(StandaloneInstall)\Setup" />
+		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(StandaloneInstall)\Setup" Condition="'$(BuildConfiguration)' == 'Debug'" />
+	</Target>
+
+    <UsingTask TaskName="RegExpReplace" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+        <ParameterGroup>
+          <Path ParameterType="System.String" Required="true" />
+          <Pattern ParameterType="System.String" Required="true" />
+          <Replacement ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Using Namespace="System.Text.RegularExpressions"/>
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
+                    var Text = File.ReadAllText(Path);
+                    var RegExp = new Regex(Pattern);
+                    Text = RegExp.Replace(Text, Replacement);
+                    File.WriteAllText(Path, Text);
+                ]]>
+            </Code>
+        </Task>
+  </UsingTask>
+
+  <Target Name='Demo' >
+    <TokenReplace Path="C:\Project\Target.config" Token="$MyToken$" Replacement="MyValue"/>
+  </Target>
+
+	<Target Name="CreateStandaloneBootstrapper" DependsOnTargets="CreateSetupDLL">
+        <MSBuild Projects='$(RootFolder)\SolidCP.Installer\Sources\Setup.WIXBootstrapper\Setup.WIXBootstrapper.csproj' Properties='Configuration=$(BuildConfiguration)' Targets='Build'>
+           <Output TaskParameter="TargetOutputs" ItemName="StandaloneBootstrapper" />
+        </MSBuild>
+		<Copy SourceFiles="@(StandaloneBootstrapper)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />
+	</Target>
+
+	<!-- Deploy -->
+	<Target Name="Deploy" DependsOnTargets="CreateStandaloneBootstrapper" >
+		<ItemGroup>
+			<PortalInstallFiles Include="$(PortalInstall)\**\*.*" />
+      <WebDavPortalInstallFiles Include="$(WebDavPortalInstall)\**\*.*" />
+			<EnterpriseServerInstallFiles Include="$(EnterpriseServerInstall)\**\*.*" />
+			<ServerInstallFiles Include="$(ServerInstall)\**\*.*" />
+			<Serveraspv2InstallFiles Include="$(Serveraspv2Install)\**\*.*" />
+
+			<!--
+			<ImportCsvInstallFiles Include="$(ImportCsvInstall)\**\*.*" />
+			<HyperVUtilsInstallFiles Include="$(HyperVUtilsInstall)\**\*.*" />
+			<VMConfigInstallFiles Include="$(VMConfigInstall)\**\*.*" />
+			<ImportEnterpriseInstallFiles Include="$(ImportEnterpriseInstall)\**\*.*" />
+			<AWStatsViewerInstallFiles Include="$(AWStatsViewerInstall)\**\*.*" />
+			<SCPTransportAgentInstallFiles Include="$(SCPTransportAgentInstall)\**\*.*" />
+			-->
+		</ItemGroup>
+
+		<!-- Assemble "Standalone" package -->
+		<Copy SourceFiles="@(PortalInstallFiles)" DestinationFolder="$(StandaloneInstall)\Portal\%(RecursiveDir)" />
+		<Copy SourceFiles="@(WebDavPortalInstallFiles)" DestinationFolder="$(StandaloneInstall)\WebDavPortal\%(RecursiveDir)" />
+		<Copy SourceFiles="@(EnterpriseServerInstallFiles)" DestinationFolder="$(StandaloneInstall)\Enterprise Server\%(RecursiveDir)" />
+		<Copy SourceFiles="@(ServerInstallFiles)" DestinationFolder="$(StandaloneInstall)\Server\%(RecursiveDir)" />
+		<Copy SourceFiles="@(Serveraspv2InstallFiles)" DestinationFolder="$(StandaloneInstall)\Serveraspv2\%(RecursiveDir)" />
+
+
+		<!-- zip full distributives
+		<ItemGroup>
+			<StandaloneInstallFiles Include="$(StandaloneInstall)\**\*.*" />
+		</ItemGroup>
+		-->
+
+		<!--
+		<Zip Files="@(PortalInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Portal-$(Version).zip" WorkingDirectory="$(PortalInstall)" />
+		<Zip Files="@(WebDavPortalInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Web-Dav-Portal-$(Version).zip" WorkingDirectory="$(WebDavPortalInstall)" />
+		<Zip Files="@(EnterpriseServerInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-EnterpriseServer-$(Version).zip" WorkingDirectory="$(EnterpriseServerInstall)" />
+		<Zip Files="@(ServerInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Server-$(Version).zip" WorkingDirectory="$(ServerInstall)" />
+		<Zip Files="@(StandaloneInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-StandaloneServerSetup-$(Version).zip" WorkingDirectory="$(StandaloneInstall)" />
+		-->
+
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Portal.zip&quot; &quot;$(PortalInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Web-Dav-Portal.zip&quot; &quot;$(WebDavPortalInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer.zip&quot; &quot;$(EnterpriseServerInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server.zip&quot; &quot;$(ServerInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-asp-v2.zip&quot; &quot;$(Serveraspv2Install)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-StandaloneServerSetup.zip&quot; &quot;$(StandaloneInstall)\*&quot;" />
+
+
+		<!-- zip updates
+		<ItemGroup>
+			<PortalUpdateFiles Include="$(PortalUpdate)\**\*.*" />
+			<EnterpriseServerUpdateFiles Include="$(EnterpriseServerUpdate)\**\*.*" />
+			<ServerUpdateFiles Include="$(ServerUpdate)\**\*.*" />
+			<ManualUpdateFiles Include="$(UpdateFolder)\**\*.*" />
+			<InstallerUpdateFiles Include="$(InstallerBuild)\**\*.*" />
+		</ItemGroup>
+
+
+		<Zip Files="@(PortalUpdateFiles)" ZipFileName="$(DeployFolder)\SolidCP-Portal-$(Version)-Update.zip" WorkingDirectory="$(PortalUpdate)" />
+		<Zip Files="@(EnterpriseServerUpdateFiles)" ZipFileName="$(DeployFolder)\SolidCP-EnterpriseServer-$(Version)-Update.zip" WorkingDirectory="$(EnterpriseServerUpdate)" />
+		<Zip Files="@(ServerUpdateFiles)" ZipFileName="$(DeployFolder)\SolidCP-Server-$(Version)-Update.zip" WorkingDirectory="$(ServerUpdate)" />
+		<Zip Files="@(ManualUpdateFiles)" ZipFileName="$(DeployFolder)\Manual-Update.zip" WorkingDirectory="$(UpdateFolder)" />
+		<Zip Files="@(InstallerUpdateFiles)" ZipFileName="$(DeployFolder)\SolidCP-Installer-$(Version)-Update.zip" WorkingDirectory="$(InstallerBuild)" />
+		-->
+
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Portal-Update.zip&quot; &quot;$(PortalUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-WebDavPortal-Update.zip&quot; &quot;$(WebDavPortalUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip&quot; &quot;$(EnterpriseServerUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-asp-v2-Update.zip&quot; &quot;$(Serveraspv2Update)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update.zip&quot; &quot;$(InstallerBuild)\*&quot;" />
+
+		<!-- zip tools
+		<Zip Files="@(ImportCsvInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-CsvBulk-$(Version).zip" WorkingDirectory="$(ImportCsvInstall)" />
+		<Zip Files="@(HyperVUtilsInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-HyperVUtils-$(Version).zip" WorkingDirectory="$(HyperVUtilsInstall)" />
+		<Zip Files="@(VMConfigInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-VMConfig-$(Version).zip" WorkingDirectory="$(VMConfigInstall)" />
+		<Zip Files="@(ImportEnterpriseInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" WorkingDirectory="$(ImportEnterpriseInstall)" />
+		<Zip Files="@(AWStatsViewerInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-AWStatsViewer-$(Version).zip" WorkingDirectory="$(AWStatsViewerInstall)" />
+		<Zip Files="@(SCPTransportAgentInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-SCPTransportAgent-$(Version).zip" WorkingDirectory="$(SCPTransportAgentInstall)" />
+		-->
+
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Import-CsvBulk.zip&quot; &quot;$(ImportCsvInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-HyperVUtils.zip&quot; &quot;$(HyperVUtilsInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-VMConfig.zip&quot; &quot;$(VMConfigInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Import-Enterprise.zip&quot; &quot;$(ImportEnterpriseInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-AWStatsViewer.zip&quot; &quot;$(AWStatsViewerInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-SCPTransportAgent.zip&quot; &quot;$(SCPTransportAgentInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip&quot; &quot;$(FixDefaultPublicFolderMailboxInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Configuration-Tool.zip&quot; &quot;$(SolidCP-Configuration-ToolInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
+
+  </Target>
+
+  <Target Name="uploadwebpi" DependsOnTargets="BuildWebPlatformInstallerFeed">
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPFeed-$(Version).xml" LocalFile="$(DeployFolder)\SolidCPFeed.xml" />
+  </Target>
+
+  <!-- This task depends on FTP upload task and will be run afterwards -->
+  <Target Name="BuildWebPlatformInstallerFeed" DependsOnTargets="uploadtoftp">
+    <ItemGroup>
+      <!-- This will generate path to a temporary file that will be used by WebDownload task below to download the installer's distributive locally -->
+      <InstallerFilePath Include="$([System.IO.Path]::GetTempFileName())" />
+    </ItemGroup>
+    <PropertyGroup>
+      <GetFileSizeScript>
+        <![CDATA[
+          public static string ScriptMain() {
+            System.Int32 KB = 1024;
+            System.IO.FileInfo fileInfo = new System.IO.FileInfo(@"%(InstallerFilePath.FullPath)");
+            return System.Convert.ToString(fileInfo.Length / KB);
+          }
+        ]]>
+      </GetFileSizeScript>
+      <ComputeChecksumScript>
+        <![CDATA[
+          public static string ScriptMain() {
+            System.String checksumStr = "";
+            using(System.IO.FileStream stream = System.IO.File.OpenRead(@"%(InstallerFilePath.FullPath)"))
+            {
+                System.Security.Cryptography.SHA1Managed sha = new System.Security.Cryptography.SHA1Managed();
+                System.Byte[] checksum = sha.ComputeHash(stream);
+                checksumStr = System.BitConverter.ToString(checksum).Replace("-", System.String.Empty);
+            }
+            return checksumStr;
+          }
+        ]]>
+      </ComputeChecksumScript>
+    </PropertyGroup>
+    <WebDownload FileUri="$(InstallerRemoteUri)" FileName="%(InstallerFilePath.FullPath)" />
+    <Script Language="C#" Code="$(ComputeChecksumScript)">
+      <Output TaskParameter="ReturnValue" PropertyName="InstallerFileChecksum" />
+    </Script>
+    <Script Language="C#" Code="$(GetFileSizeScript)">
+      <Output TaskParameter="ReturnValue" PropertyName="InstallerFileSize" />
+    </Script>
+    <Delete Files="%(InstallerFilePath.FullPath)" />
+    <ItemGroup>
+      <Tokens Include="ProductVersion">
+        <ReplacementValue>$(Version)</ReplacementValue>
+      </Tokens>
+      <Tokens Include="ProductTitle">
+        <ReplacementValue>SolidCP $(Version)</ReplacementValue>
+      </Tokens>
+      <Tokens Include="ReleaseDate">
+        <ReplacementValue>$(ReleaseDate)T00:00:00Z</ReplacementValue>
+      </Tokens>
+      <Tokens Include="InstallerFileSize">
+        <ReplacementValue>$(InstallerFileSize)</ReplacementValue>
+      </Tokens>
+      <Tokens Include="InstallerFileSHA1">
+        <ReplacementValue>$(InstallerFileChecksum)</ReplacementValue>
+      </Tokens>
+      <Tokens Include="InstallerFileUrl">
+        <ReplacementValue>$(InstallerRemoteUri)</ReplacementValue>
+      </Tokens>
+    </ItemGroup>
+    <TemplateFile Template="$(TrunkFolder)\SolidCPFeedTemplate.xml" OutputFilename="$(DeployFolder)\SolidCPFeed.xml" Tokens="@(Tokens)" />
+  </Target>
+
+<Target Name="upload-sp-update">
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update-sp.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />
+</Target>
+  <Target Name="uploadtoftp">
+
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Portal.zip" LocalFile="$(DeployFolder)\SolidCP-Portal.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Web-Dav-Portal.zip" LocalFile="$(DeployFolder)\SolidCP-Web-Dav-Portal.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-EnterpriseServer.zip" LocalFile="$(DeployFolder)\SolidCP-EnterpriseServer.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server.zip" LocalFile="$(DeployFolder)\SolidCP-Server.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-asp-v2.zip" LocalFile="$(DeployFolder)\SolidCP-Server-asp-v2.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-StandaloneServerSetup.zip" LocalFile="$(DeployFolder)\SolidCP-StandaloneServerSetup.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Portal-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Portal-Update.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-EnterpriseServer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Server-Update.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-asp-v2-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Server-aspv2-Update.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Installer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Installer-Update.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-CsvBulk.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-CsvBulk.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-AWStatsViewer.zip" LocalFile="$(ToolsFolder)\SolidCP-AWStatsViewer.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+          <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />
+      <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-FixDefaultPublicFolderMailbox.zip" LocalFile="$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip" />
+
+  </Target>
+
+  <Import Project="$(RootFolder)\tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+
+</Project>

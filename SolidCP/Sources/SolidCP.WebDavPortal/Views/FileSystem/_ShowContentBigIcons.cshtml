@@ -1,0 +1,18 @@
+﻿@using SolidCP.WebDav.Core.Client
+@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI.Routes
+@model SolidCP.WebDavPortal.Models.ModelForWebDav
+
+<div class="container">
+
+
+    <div class="row" id="resourcesDiv">
+        @if (Model != null)
+        {
+            foreach (IHierarchyItem element in Model.Items)
+            {
+                @Html.Partial("_ResoursePartial", element)
+            }
+        }
+    </div>
+</div>

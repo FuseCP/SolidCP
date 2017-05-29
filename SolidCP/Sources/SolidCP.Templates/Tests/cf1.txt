@@ -1,0 +1,10 @@
+﻿#hello.world# this is a static text and #var#
+escape: ##eeff55; #test.# a <ad:if test="#var1 == 2#">
+	branch 1
+<ad:elseif test="#method1(a, b + 3)#">
+	branch 3
+</ad:if>
+
+<<<ad:foreach collection="#collection is "test"#" var="cust" index="i">
+#i#: #cust.lastname#, #cust.firstname#
+</ad:foreach>

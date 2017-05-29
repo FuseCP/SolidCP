@@ -1,0 +1,433 @@
+<?xml version="1.0"?>
+<sqlcm xmlns="http://www.microsoft.com/sqlserver/management/sqlcm.xsd">
+  <_locDefinition>
+    <_locDefault _loc="locNone"/>
+    <_locTag _loc="locNone" _locAttrData="locDescr">item</_locTag>
+  </_locDefinition>
+
+  <descriptions>
+
+
+
+
+    <!-- SERVICES -->
+
+    <!-- SQLCM - Services - service type - service instance -->
+    <sheet location="property_description" name="Service">
+      <page name="General">
+        <item name="DisplayName" locDescr="Name of service." />
+        <item name="HostName" locDescr="Host on which service resides." />
+        <item name="SQLServiceType" locDescr="Service type." />
+        <item name="State" locDescr="The current state of this service." />
+        <item name="StartMode" locDescr="The start mode of this service." />
+        <item name="LogOnUsingLocalAccount" locDescr="True if service is using LocalSystem account to log on." />
+        <item name="StartName" locDescr="Account name under which service runs." />
+        <item name="OldPassword" locDescr="Old password used for the account under which service runs." />
+        <item name="PasswordForLogin" locDescr="Password for the account under which service runs." />
+        <item name="VerifyPassword" locDescr="Verify (retype) the new password." />
+        <item name="ErrorControl" locDescr="If this service fails to start, this property specifies the severity of the error." />
+        <item name="BinaryPath" locDescr="Path to the executable file for this service." />
+        <item name="ProcessID" locDescr="Process ID used by operating system to identify the service process." />
+        <item name="ExitCode" locDescr="The Win32 error code defining problems in starting or stopping the service." />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Services - service instance -->
+    <sheet location="property_description" name="Service" key="SQL Server">
+      <page name="Advanced">
+        <item name="VERSION" locDescr="Version of SQL Server instance" />
+        <item name="SPLEVEL" locDescr="Service Pack level applied on this SQL Server instance." />
+        <item name="CLUSTERED" locDescr="Indicates whether SQL Server is part of a cluster or not." />
+        <item name="INSTALLPATH" locDescr="Path where SQL Server was installed" />
+        <item name="DATAPATH" locDescr="Path to default data folder" />
+        <item name="LANGUAGE" locDescr="Language" />
+        <item name="FILEVERSION" locDescr="Version number of the SQL Server executable file." />
+        <item name="VSNAME" locDescr="Virtual server name (if Clustered = yes)." />
+        <item name="REGROOT" locDescr="Registry root for selected SQL Server instance" />
+        <item name="SKU" locDescr="Stock Keeping Unit number of the installed edition" />
+        <item name="INSTANCEID" locDescr="ID of SQL Server instance" />
+        <item name="STARTUPPARAMETERS" locDescr="Parameters used by SQL Server at service startup" />
+        <item name="SQLSTATES" locDescr="SQL states" />
+        <item name="ERRORREPORTING" locDescr="Enable Error Reporting" />
+        <item name="DUMPDIR" locDescr="Folder used for dumping error information" />
+        <item name="SQMREPORTING" locDescr="Enable Customer Feedback reporting." />
+        <item name="SKUNAME" locDescr="Stock Keeping Unit name of the installed edition" />
+		<item name="ISWOW64" locDescr="Indicates whether this 32-bit service is running on a 64-bit operating system." />
+		<item name="BROWSER" locDescr="Indicates whether the SQL Browser service is listening." />
+      </page>
+    </sheet>
+
+    <!-- ... localized names -->
+    <sheet location="property_name" name="Service" key="SQL Server">
+      <page name="Advanced">
+        <item name="VERSION" locDescr="Version" />
+        <item name="SPLEVEL" locDescr="Service Pack Level" />
+        <item name="CLUSTERED" locDescr="Clustered" />
+        <item name="INSTALLPATH" locDescr="Install Path" />
+        <item name="DATAPATH" locDescr="Data Path" />
+        <item name="LANGUAGE" locDescr="Language" />
+        <item name="FILEVERSION" locDescr="File Version" />
+        <item name="VSNAME" locDescr="Virtual Server Name" />
+        <item name="REGROOT" locDescr="Registry Root" />
+        <item name="SKU" locDescr="Stock Keeping Unit ID" />
+        <item name="INSTANCEID" locDescr="Instance ID" />
+        <item name="STARTUPPARAMETERS" locDescr="Startup Parameters" />
+        <item name="SQLSTATES" locDescr="SQL States" />
+        <item name="ERRORREPORTING" locDescr="Error Reporting" />
+        <item name="DUMPDIR" locDescr="Dump Directory" />
+        <item name="SQMREPORTING" locDescr="Customer Feedback Reporting" />
+        <item name="SKUNAME" locDescr="Stock Keeping Unit Name" />
+		<item name="ISWOW64" locDescr="Running under 64 bit OS" />
+		<item name="BROWSER" locDescr="Active" />
+      </page>
+    </sheet>
+
+
+
+
+    <!-- SERVER NETWORK CONFIGURATION -->
+
+    <!-- SQLCM - Server Network Configuration - Server Instance Protocols -->
+    <sheet location="property_description" name="Server Instance Network Configuration">
+      <page name="Flags">
+        <item name="ForceEncryption" locDescr="Turn on or off encryption for selected server instance" />
+		<item name="HideInstance" locDescr="Prevents the SQL Server Browser service from exposing this instance of the Database Engine to client computers" />
+      </page>
+      <page name="Certificate">
+        <item name="Friendly Name" locDescr="Friendly name for certificate" />
+        <item name="Issued By" locDescr="Who issued the certificate" />
+        <item name="Issued To" locDescr="To whom certificate was issued" />
+        <item name="Expiration Date" locDescr="Date when certificate expires" />
+      </page>
+    </sheet>
+
+      <sheet location="property_name" name="Server Instance Network Configuration">
+          <page name="Flags">
+              <item name="ForceEncryption" locDescr="Force Encryption" />
+              <item name="HideInstance" locDescr="Hide Instance" />
+          </page>
+          <page name="Certificate">
+              <item name="Friendly Name" locDescr="Friendly Name" />
+              <item name="Issued By" locDescr="Issued By" />
+              <item name="Issued To" locDescr="Issued To" />
+              <item name="Expiration Date" locDescr="Expiration Date" />
+          </page>
+      </sheet>
+      
+    <!-- SQLCM - Server Network Configuration - Server Instance Protocols - "sm" protocol -->
+    <sheet location="property_description" name="Server Protocol" key="sm">
+      <page name="General">
+        <item name="Enabled" locDescr="Enable or disable Shared Memory protocol for this server instance" />
+      </page>
+    </sheet>
+
+    <!-- ... localized names -->
+    <sheet location="property_name" name="Server Protocol" key="sm">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="Shared Memory" />
+      </page>
+      <page name="General">
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Server Network Configuration - Server Instance Protocols - "np" protocol -->
+    <sheet location="property_description" name="Server Protocol" key="np">
+      <page name="General">
+        <item name="PipeName" locDescr="Name of pipe" />
+        <item name="Enabled" locDescr="Enable or disable Named Pipes protocol for this server instance" />
+        <item name="LocalAccessOnly" locDescr="Enforce only local access for this named pipe" />
+      </page>
+    </sheet>
+
+    <!-- ... localized names -->
+    <sheet location="property_name" name="Server Protocol" key="np">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="Named Pipes" />
+      </page>
+      <page name="General">
+        <item name="PipeName" locDescr="Pipe Name" />
+        <item name="Enabled" locDescr="Enabled" />
+        <item name="LocalAccessOnly" locDescr="Local Access Only" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Server Network Configuration - Server Instance Protocols - "tcp" protocol -->
+    <sheet location="property_description" name="Server Protocol" key="tcp">
+      <page name="General">
+        <item name="KeepAlive" locDescr="How often TCP verifies that an idle connection is still intact" />
+        <item name="Enabled" locDescr="Enable or disable TCP/IP protocol for this server instance" />
+        <item name="ListenOnAllIPs" locDescr="Listen on all IPs" />
+        <item name="NoDelay" locDescr="No delay" />
+      </page>
+    </sheet>
+
+    <!-- ... localized names -->
+    <sheet location="property_name" name="Server Protocol" key="tcp">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="TCP/IP" />
+      </page>
+      <page name="General">
+        <item name="KeepAlive" locDescr="Keep Alive" />
+        <item name="Enabled" locDescr="Enabled" />
+        <item name="ListenOnAllIPs" locDescr="Listen All" />
+        <item name="NoDelay" locDescr="No Delay" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Server Network Configuration - Server Instance Protocols - "via" protocol -->
+    <sheet location="property_description" name="Server Protocol" key="via">
+      <page name="General">
+        <item name="DefaultServerPort" locDescr="Default server port" />
+        <item name="ListenInfo" locDescr="Listen info" />
+        <item name="VendorName" locDescr="Name of vendor" />
+        <item name="Enabled" locDescr="Enable or disable Virtual Interface Architecture protocol for this server instance" />
+      </page>
+    </sheet>
+
+    <!-- ... localized names -->
+    <sheet location="property_name" name="Server Protocol" key="via">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="VIA" />
+      </page>
+      <page name="General">
+        <item name="DefaultServerPort" locDescr="Default Port" />
+        <item name="ListenInfo" locDescr="Listen Info" />
+        <item name="VendorName" locDescr="Vendor" />
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Server Network Configuration - Server Instance Protocols - "tcp" protocol - IP-s -->
+    <sheet location="property_description" name="IP Address" key="tcp">
+      <page name="General">
+        <item name="TcpPort" locDescr="TCP port" />
+        <item name="TcpDynamicPorts" locDescr="Blank, if dynamic ports are not enabled. To use dynamic ports, set to 0." />
+        <item name="IpAddress" locDescr="IP address" />
+        <item name="Active" locDescr="Indicates whether the selected IP Address is active." />
+        <item name="Enabled" locDescr="Enable or disable the IP address" />
+      </page>
+    </sheet>
+
+    <!-- ... localized name -->
+    <sheet location="property_name" name="IP Address" key="tcp">
+      <page name="General">
+        <item name="TcpPort" locDescr="TCP Port" />
+        <item name="TcpDynamicPorts" locDescr="TCP Dynamic Ports" />
+        <item name="IpAddress" locDescr="IP Address" />
+        <item name="Active" locDescr="Active" />
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+
+
+
+    <!-- CLIENT NETWORK CONFIGURATION -->
+
+    <!-- SQLCM - Client Network Configuration -->
+    <sheet location="property_description" name="Client Network Configuration">
+      <page name="Library">
+        <item name="ANSItoOEM" locDescr="ANSI to OEM property can be used to specify if ANSI to OEM conversion is allowed" />
+        <item name="Date" locDescr="Creation date for DBLib available on client machine" />
+        <item name="FileName" locDescr="Name of DBLib file" />
+        <item name="UseInternationalSettings" locDescr="Turn on/off international settings" />
+        <item name="Size" locDescr="DBLib libary size" />
+      </page>
+    </sheet>
+
+    <sheet location="property_description" name="Client Network Configuration">
+      <page name="Flags">
+        <item name="Force protocol encryption" locDescr="Request a Secure Sockets Layer connection" />
+		<item name="Trust Server Certificate" locDescr="Skip server certificate validation" />
+      </page>
+    </sheet>
+	<sheet location="property_name" name="Client Network Configuration">
+		<page name="Flags">
+			<item name="Force protocol encryption" locDescr="Force Protocol Encryption" />
+			<item name="Trust Server Certificate" locDescr="Trust Server Certificate" />
+		</page>
+	</sheet>
+
+    <!-- SQLCM - Client Network Configuration - Client Protocols -->
+    <!--
+		<sheet location="property_description" name="Client Protocols">
+			<page name="Order">
+				<item name="sm" locDescr="Protocol used by client to communicate with local server via Shared Memory. Shared Memory is used only for client/server connections on the same computer. If enabled this protocol is always first." />
+				<item name="tcp" locDescr="Protocol used by client to comunicate with a server via TCP/IP. TCP/IP Sockets is a non-authenticated protocol. This means that connections are not authenticated, and connections and access levels are determined only by the user name and password provided during the connection. TCP/IP Sockets requires more administration than Named Pipes, since each user access permission must be defined at the SQL Server. TCP/IP Sockets is a good choice for network protocol if your application does not require SQL Server's integrated security. Microsoft recommands using integrated security whenever possible." />
+				<item name="np" locDescr="Protocol used by client to communicate with a server via Named Pipes. Named Pipes is an authenticated protocol. This means that any time a user attempts to open a connection to the SQL Server via Named Pipes, the Windows NT authentication process occurs. Named Pipes is required to support SQL Server's integrated security option. It's also worth noting that Named Pipes connects very fast much faster than the other protocols. Named Pipes is an excellent choice for network protocol if your application intends to use SQL Server's integrated security and does not need other protocols for remote connections." />
+				<item name="via" locDescr="Protocol used by client to communicate with a server via Virtual Interface Architecture." />
+			</page>
+		</sheet>
+		-->
+    <sheet location="property_description" name="Client Protocols">
+      <page name="Order">
+        <item name="sm" locDescr="Protocol used by client to communicate with local server via Shared Memory. If enabled this protocol is always first." />
+        <item name="tcp" locDescr="Protocol used by client to comunicate with a server via TCP/IP. TCP/IP Sockets is a non-authenticated protocol." />
+        <item name="np" locDescr="Protocol used by client to communicate with a server via Named Pipes. Named Pipes is an authenticated protocol." />
+        <item name="via" locDescr="Protocol used by client to communicate with a server via Virtual Interface Architecture." />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Client Network Configuration - Client Protocols - "tcp" protocol -->
+    <sheet location="property_description" name="Client Protocol" key="tcp">
+      <page name="General">
+        <item name="Default Port" locDescr="Default port on which connection will be made" />
+        <item name="KEEPALIVE (in milliseconds)" locDescr="How often TCP verifies that an idle connection is still intact" />
+        <item name="KEEPALIVEINTERVAL (in milliseconds)" locDescr="The retry interval for unresponsive TCP KEEPALIVE transmissions" />
+        <item name="Enabled" locDescr="Enable or disable TCP/IP protocol for this client" />
+      </page>
+    </sheet>
+
+    <!-- ... localized name -->
+    <sheet location="property_name" name="Client Protocol" key="tcp">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="TCP/IP" />
+      </page>
+      <page name="General">
+        <item name="Default Port" locDescr="Default Port" />
+        <item name="KEEPALIVE (in milliseconds)" locDescr="Keep Alive" />
+        <item name="KEEPALIVEINTERVAL (in milliseconds)" locDescr="Keep Alive Interval" />
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Client Network Configuration - Client Protocols - "np" protocol -->
+    <sheet location="property_description" name="Client Protocol" key="np">
+      <page name="General">
+        <item name="Default Pipe" locDescr="Default pipe used for communication" />
+        <item name="Enabled" locDescr="Enable or disable Named Pipe protocol for this client" />
+      </page>
+    </sheet>
+
+    <!-- ... localized name -->
+    <sheet location="property_name" name="Client Protocol" key="np">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="Named Pipes" />
+      </page>
+      <page name="General">
+        <item name="Default Pipe" locDescr="Default Pipe" />
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Client Network Configuration - Client Protocols - "via" protocol -->
+    <sheet location="property_description" name="Client Protocol" key="via">
+      <page name="General">
+        <item name="Default Server Port" locDescr="Default server name" />
+        <item name="Vendor Name" locDescr="Name of vendor providing the support for VIA protocol" />
+        <item name="Vendor DLL" locDescr="Name of library containing implementation for VIA protocol" />
+        <item name="Default Client NIC" locDescr="Default client Network Interface Card" />
+        <item name="Enabled" locDescr="Enable or disable Virtual Interface Architecture protocol for this client" />
+      </page>
+    </sheet>
+
+    <!-- ... localized name -->
+    <sheet location="property_name" name="Client Protocol" key="via">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="VIA" />
+      </page>
+      <page name="General">
+        <item name="Default Server Port" locDescr="Default Server" />
+        <item name="Vendor Name" locDescr="Vendor" />
+        <item name="Vendor DLL" locDescr="Vendor Library" />
+        <item name="Default Client NIC" locDescr="Default NIC" />
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Client Network Configuration - Client Protocols - "sm" protocol -->
+    <sheet location="property_description" name="Client Protocol" key="sm">
+      <page name="General">
+        <item name="Enabled" locDescr="Enable or disable Shared Memory protocol for this client" />
+      </page>
+    </sheet>
+
+    <!-- ... localized name -->
+    <sheet location="property_name" name="Client Protocol" key="sm">
+      <page name="Right Pane List">
+        <item name="Name" locDescr="Shared Memory" />
+      </page>
+      <page name="General">
+        <item name="Enabled" locDescr="Enabled" />
+      </page>
+    </sheet>
+
+
+    <!-- SQLCM - Client Network Configuration - Aliases - new alias -->
+    <sheet location="property_description" name="New Alias">
+      <page name="New Alias">
+        <item name="AliasName" locDescr="Name of the new alias that will be created" />
+        <item name="ServerName" locDescr="Name of server to which the alias will point" />
+        <item name="ProtocolName" locDescr="Name of the protocol that will be used for this alias" />
+        <item name="ConnectionString" locDescr="Connection string associated with the new alias" />
+        <item name="Encrypted" locDescr="Tells us if connection made via this new alias will use encryption" />
+        <item name="Shared Memory" locDescr="Shared Memory protocol does not require any connection parameters" />
+        <item name="Named Pipes" locDescr="Name of pipe should match pipe name used by SQL Server instance" />
+        <item name="TCP/IP" locDescr="Port number used by the new alias to connect to SQL Server" />
+        <item name="VIA" locDescr="VIA settings used by the new alias to connect to SQL Server" />
+        <item name="Unknown" locDescr="Connection info used by the new alias for the specified protocol" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Client Network Configuration - Aliases - alias properties -->
+    <sheet location="property_description" name="Alias">
+      <page name="Alias">
+        <item name="AliasName" locDescr="Name of the existing alias" />
+        <item name="ServerName" locDescr="Name of server to which the alias points" />
+        <item name="ProtocolName" locDescr="Name of the protocol used by the alias" />
+        <item name="ConnectionString" locDescr="Connection string associated with the alias" />
+        <item name="Encrypted" locDescr="Tells us if connection made via this alias uses encryption" />
+        <item name="Shared Memory" locDescr="Shared Memory protocol does not require any connection parameters" />
+        <item name="Named Pipes" locDescr="Name of pipe used by the alias to connect to SQL Server" />
+        <item name="TCP/IP" locDescr="Port number used by the alias to connect to SQL Server" />
+        <item name="VIA" locDescr="VIA settings used by the alias to connect to SQL Server" />
+        <item name="Unknown" locDescr="Connection info used by the alias for the specified protocol" />
+      </page>
+    </sheet>
+
+
+
+
+    <!-- REPORT SERVER CONFIGURATION -->
+
+    <!-- SQLCM - Report Server Configuration - report manager instance -->
+    <sheet location="property_description" name="Report Manager Instance">
+      <page name="Report Manager">
+        <item name="InstanceName" locDescr="Name of instance" />
+        <item name="VirtualRoot" locDescr="Virtual root used for reports" />
+        <item name="PathName" locDescr="Local path to application files"/>
+        <item name="URLToReportServer" locDescr="URL pointing to the Report Server" />
+        <item name="URLToReportServerWebService" locDescr="URL pointing to the Report Server Web Service" />
+      </page>
+    </sheet>
+
+    <!-- SQLCM - Report Server Configuration - report manager instance -->
+    <!-- SQLCM - Services - Report Server - service instance -->
+    <sheet location="property_description" name="Report Manager Instance">
+      <page name="Report Service">
+        <item name="InstanceName" locDescr="Instance name" />
+        <item name="PathName" locDescr="Path to executable" />
+        <item name="VirtualRoot" locDescr="Compleate URL describing virtual root" />
+        <item name="InstanceID" locDescr="Unique identifier for a specific report service" />
+        <item name="DatabaseServerName" locDescr="Machine name Report Server Database is running on" />
+        <item name="DatabaseName" locDescr="Instance name of Report Server Database" />
+        <item name="Impersonate" locDescr="Impersonate Windows user when connecting to Report Server Database" />
+        <item name="ImpersonateDomain" locDescr="Domain for the user used to impersonate when connectiong to Report Server Database" />
+        <item name="ImpersonateUserName" locDescr="User used to impersonate when connectiong to Report Server Database" />
+        <item name="ImpersonatePassword" locDescr="Password for the user used to impersonate when connectiong to Report Server Database" />
+        <item name="DatabaseIntegratedSecurity" locDescr="Database integrated security" />
+        <item name="DatabaseLogonName" locDescr="User name to use when service logs into the Report Server Database" />
+        <item name="DatabaseLogonPassword" locDescr="Password fot the Database Logon account" />
+        <item name="DatabaseLoginTimeout" locDescr="The number of seconds to wait before returning from a failed Report Server Database login attempt.  A value of 0 allows for an infinite wait." />
+        <item name="DatabaseQueryTimeout" locDescr="The number of seconds that must elapse before the Report Server assumes the command failed or took too much time to perform (times out)." />
+        <item name="UnattendedExecutionLogonDomain" locDescr="Domain of the user the report server uses to impersonate when running reports unattended." />
+        <item name="UnattendedExecutionLogonName" locDescr="The user name the report server uses to impersonate when running reports unattended." />
+        <item name="UnattendedExecutionLogonPassword" locDescr="The password to use in conjunction with the logon name the report server uses to impersonate when running reports unattended." />
+      </page>
+    </sheet>
+
+
+
+  </descriptions>
+</sqlcm>

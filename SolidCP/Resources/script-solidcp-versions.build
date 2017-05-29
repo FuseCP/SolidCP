@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<project name="script" default="script">
+
+	<target name="script">
+
+        <!-- Generate SQL Scripts -->
+        <scriptdatabase	output="build-SolidCP-versions.sql"
+			server="TFS01"
+			database="${database}">
+	
+			<!-- Script data -->
+			<data all="false" names="Versions" />
+			
+		</scriptdatabase>
+    </target>
+
+</project>

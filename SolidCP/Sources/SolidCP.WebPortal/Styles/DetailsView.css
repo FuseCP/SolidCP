@@ -1,0 +1,17 @@
+﻿.foo {} /* W3C CSS validator likes CSS files to start with a class rather than a comment. Soooooo.... */
+
+/* This style sheet is intended to contain RARELY CHANGED rules used when the DetailsView control adapter is enabled. */
+
+div.AspNet-DetailsView-Data ul
+{
+    margin: 0;
+    padding: 0;
+}
+
+div.AspNet-DetailsView-Data li
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    position: relative;
+}

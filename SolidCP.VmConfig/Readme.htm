@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>SolidCP - Readme</title>
+</head>
+<body>
+ 
+    <h1>
+        SolidCP VmConfig - Readme</h1>
+    <p>
+        SolidCP Virtual Machine Configuration Service (SolidCP VmConfig) is a Windows 
+        Service that runs in guest operating system and performs the following 
+        functions:</p>
+    <ul>
+        <li>Executes provisioning modules 
+        to configure guest operating system</li>
+        <li>Gathers real-time statistics 
+        (RAM, HDD) that is displayed on SolidCP user interface (UI).</li>
+    </ul>
+    <p>
+        The current version of SolidCP VmConfig includes the following provisioning modules:</p>
+    <ul>
+        <li>Change computer name</li>
+        <li>Change administrator password</li>
+        <li>Change network adapter 
+        configuration</li>
+    </ul>
+    <p>
+        SolidCP VmConfig service communicates with host Hyper-V machine through 
+        “Hyper-V Data Exchange” integration component, so make sure its service is up 
+        and running in the guest OS.</p>
+ 
+    <h2>
+        License</h2>
+    <p>
+        SolidCP VmConfig is released under Creative Commons share-alike license. Please see LICENSE.txt file in the 
+        root folder of this project.</p>
+ 
+    <h2>
+        Project Structure</h2>
+    <p>
+        The project has the following folders structure:</p>
+    <ul>
+        <li><strong>\Trunk</strong> - project version currently in development<ul>
+            <li><strong>\Sources</strong> - project source codes. Each solution project is 
+                placed in its own sub-folder. All solution files are placed in the root of this 
+                folder.<ul>
+                    <li>Solution1.sln</li>
+                    <li>Solution2.sln</li>
+                    <li>ProjectName.build - MS Build file for the entire project</li>
+                </ul>
+            </li>
+            <li><strong>\Docs</strong> - project documentation</li>
+            </ul>
+        </li>
+        <ul>
+            <li><strong>\Build</strong> - folder containing solution assemblies that 
+                are referenced from other projects</li>
+        </ul>
+        <li><strong>\Releases</strong> - contains all project releases</li>
+        <li><strong>\Branches</strong> - contains project branches for proof-of-concepts, 
+            new development, bug fixing, etc.</li>
+        <li><strong>LICENSE.txt</strong> - project license</li>
+        <li><strong>Readme.htm</strong> - the file you are reading right now</li>
+        <li><strong>ReleaseNotes.htm</strong> - project release notes</li>
+    </ul>
+    <h2>
+        Build How-To</h2>
+    <p>
+        Open SolidCP.VmConfig solution in Visual Studio 2010 and build it.</p>
+    
+</body>
+</html>

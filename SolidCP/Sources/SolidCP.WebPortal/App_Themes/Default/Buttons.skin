@@ -1,0 +1,45 @@
+<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+<asp:ImageButton SkinID="SearchButton" runat="server" ImageUrl="Images/search_button.png" ImageAlign="AbsMiddle" Width="21" Height="22"></asp:ImageButton>
+
+<asp:ImageButton SkinID="EditFile" runat="server" ImageUrl="Images/edit_doc.gif" hspace="1" ImageAlign="AbsMiddle"></asp:ImageButton>
+<asp:ImageButton SkinID="EditPermissions" runat="server" ImageUrl="Images/lock_16.gif" hspace="1" ImageAlign="AbsMiddle"></asp:ImageButton>
+<asp:ImageButton SkinID="RenameFile" runat="server" ImageUrl="Images/rename.gif" hspace="1" ImageAlign="AbsMiddle"></asp:ImageButton>
+<asp:ImageButton SkinID="DeleteSmall" runat="server" ImageUrl="Images/delete_16.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
+<asp:ImageButton SkinID="ExchangeDelete" runat="server" ImageUrl="Images/Exchange/delete.gif" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
+<asp:ImageButton SkinID="EditSmall" runat="server" ImageUrl="Images/pencil_16.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
+
+<asp:ImageButton SkinID="Pause" runat="server" ImageUrl="Images/pause_32.png" ImageAlign="AbsMiddle" Width="32" Height="32" />
+<asp:ImageButton SkinID="Start" runat="server" ImageUrl="Images/play_32.png" ImageAlign="AbsMiddle" Width="32" Height="32"/>
+<asp:ImageButton SkinID="Stop" runat="server" ImageUrl="Images/stop_32.png" ImageAlign="AbsMiddle" Width="32" Height="32"/>
+<asp:ImageButton SkinID="Continue" runat="server" ImageUrl="Images/forward_32.png" ImageAlign="AbsMiddle" Width="32" Height="32"/>
+
+<asp:ImageButton SkinID="PauseMedium" runat="server" ImageUrl="Images/pause_24.png" ImageAlign="AbsMiddle" Width="24" Height="24"/>
+<asp:ImageButton SkinID="StartMedium" runat="server" ImageUrl="Images/play_24.png" ImageAlign="AbsMiddle" Width="24" Height="24"/>
+<asp:ImageButton SkinID="StopMedium" runat="server" ImageUrl="Images/stop_24.png" ImageAlign="AbsMiddle" Width="24" Height="24"/>
+<asp:ImageButton SkinID="ContinueMedium" runat="server" ImageUrl="Images/play_24.png" ImageAlign="AbsMiddle" Width="24" Height="24"/>
+<asp:ImageButton SkinID="RecycleMedium" runat="server" ImageUrl="Images/restart_24.png" ImageAlign="AbsMiddle" Width="24" Height="24"/>
+<asp:ImageButton SkinID="ApplyMedium" runat="server" ImageUrl="Images/apply_24.png" ImageAlign="AbsMiddle" Width="24" Height="24"/>
+
+<asp:ImageButton SkinID="PauseSmall" runat="server" ImageUrl="Images/pause_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
+<asp:ImageButton SkinID="StartSmall" runat="server" ImageUrl="Images/play_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
+<asp:ImageButton SkinID="StopSmall" runat="server" ImageUrl="Images/stop_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
+<asp:ImageButton SkinID="ContinueSmall" runat="server" ImageUrl="Images/play_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
+<asp:ImageButton SkinID="ApplySmall" runat="server" ImageUrl="Images/apply_16.png" ImageAlign="AbsMiddle" Width="16" Height="16"/>
+
+
+<asp:ImageButton SkinID="VpsDelete" runat="server" ImageUrl="Images/VPS/delete.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
+<asp:ImageButton SkinID="VpsDelete2012" runat="server" ImageUrl="Images/VPS2012/delete.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>

@@ -1,0 +1,234 @@
+﻿@using SolidCP.WebDavPortal.Constants
+@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI.Routes
+@model SolidCP.WebDavPortal.Models.Account.UserProfile
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    var passwordExpriationText = string.Empty;
+
+    if (Model.PasswordExpirationDateTime == DateTime.MaxValue)
+    {
+        passwordExpriationText = string.Format(UI.PasswordNeverExpiresFormat, Html.RouteLink(UI.Here.ToLowerInvariant(), AccountRouteNames.PasswordChange));
+    }
+    else
+    {
+        passwordExpriationText = string.Format(UI.PasswordExpirationFormat, Model.PasswordExpirationDateTime.ToString(Formats.DateFormatWithTime), Html.RouteLink(UI.Here.ToLowerInvariant(), AccountRouteNames.PasswordChange));
+    }
+}
+
+<div class="container row">
+    @using (Html.BeginRouteForm(AccountRouteNames.UserProfile, FormMethod.Post, new { @class = "form-horizontal user-profile bs-val-styles", id = "user-profile-form" }))
+    {
+        @Html.HiddenFor(x => x.PasswordExpirationDateTime)
+        @Html.HiddenFor(x => x.PrimaryEmailAddress)
+        @Html.AntiForgeryToken()
+        
+        if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+        {
+            <div class="alert alert-danger">
+                <a class="close" data-dismiss="alert">&times;</a>
+                @Html.ValidationSummary(false)
+            </div>
+        }
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading-general-information">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#general-information" aria-expanded="true" aria-controls="general-information">
+                            @UI.GeneralInformation
+                        </a>
+                    </h4>
+                </div>
+                <div id="general-information" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-general-information">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x=>x.PrimaryEmailAddress)" class="col-sm-2 control-label">@UI.LoginName</label>
+                            <div class="col-sm-10 login-name">
+                                <label>@Html.Raw(Model.PrimaryEmailAddress)</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x=>x.DisplayName)" class="col-sm-2 control-label">@UI.DisplayName</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.DisplayName, new { @class = "form-control", placeholder = UI.DisplayName })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x=>x.FirstName)" class="col-sm-2 control-label">@UI.FirstName</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = UI.FirstName })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Initials)" class="col-sm-2 control-label">@UI.Initials</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.Initials, new { @class = "form-control", placeholder = UI.Initials })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.LastName)" class="col-sm-2 control-label">@UI.LastName</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = UI.LastName })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Notes)" class="col-sm-2 control-label">@UI.Notes</label>
+                            <div class="col-sm-10">
+                                @Html.TextAreaFor(x => x.Notes, new { @class = "form-control", placeholder = UI.Notes })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">@UI.Password</label>
+                            <div class="col-sm-10 password-information">
+                                <label>@Html.Raw(passwordExpriationText)</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x=>x.ExternalEmail)" class="col-sm-2 control-label">@UI.ExternalEmail</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.ExternalEmail, new { @class = "form-control", placeholder = UI.ExternalEmail })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading-contact-information">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" href="#contact-information" aria-expanded="false" aria-controls="contact-information">
+                            @UI.ContactInformation
+                        </a>
+                    </h4>
+                </div>
+                <div id="contact-information" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-contact-information">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.BusinessPhone)" class="col-sm-2 control-label">@UI.BusinessPhone</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.BusinessPhone, new { @class = "form-control", placeholder = UI.BusinessPhone })
+                                @Html.ValidationMessageFor(x => x.BusinessPhone)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Fax)" class="col-sm-2 control-label">@UI.Fax</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.Fax, new { @class = "form-control", placeholder = UI.Fax })
+                                @Html.ValidationMessageFor(x => x.Fax)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.HomePhone)" class="col-sm-2 control-label">@UI.HomePhone</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.HomePhone, new { @class = "form-control", placeholder = UI.HomePhone })
+                                @Html.ValidationMessageFor(x => x.HomePhone)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.MobilePhone)" class="col-sm-2 control-label">@UI.MobilePhone</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.MobilePhone, new { @class = "form-control", placeholder = UI.MobilePhone })
+                                @Html.ValidationMessageFor(x=>x.MobilePhone)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Pager)" class="col-sm-2 control-label">@UI.Pager</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.Pager, new { @class = "form-control", placeholder = UI.Pager })
+                                @Html.ValidationMessageFor(x => x.Pager)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.WebPage)" class="col-sm-2 control-label">@UI.WebPage</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.WebPage, new { @class = "form-control", placeholder = UI.WebPage })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="heading-address-information">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" href="#address-information" aria-expanded="false" aria-controls="address-information">
+                            @UI.AddressInformation
+                        </a>
+                    </h4>
+                </div>
+                <div id="address-information" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-address-information">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Address)" class="col-sm-2 control-label">@UI.Address</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.Address, new { @class = "form-control", placeholder = UI.Address })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.City)" class="col-sm-2 control-label">@UI.City</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.City, new { @class = "form-control", placeholder = UI.City })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.State)" class="col-sm-2 control-label">@UI.State</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.State, new { @class = "form-control", placeholder = UI.State })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Zip)" class="col-sm-2 control-label">@UI.Zip</label>
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(x => x.Zip, new { @class = "form-control", placeholder = UI.Zip })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="@Html.IdFor(x => x.Country)" class="col-sm-2 control-label">@UI.Country</label>
+                            <div class="col-sm-10">
+                                @Html.EditorFor(x => x.Country)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-12">
+                <button type="submit" class="btn btn-default pull-right">@UI.SaveChanges</button>
+            </div>
+        </div>
+    }
+</div>
+
+    @section scripts{
+        <script>
+            $(document).ready(function () {
+                var validator = $("#user-profile-form").data('validator');
+                validator.settings.ignore = "";
+            });
+        </script>
+    }

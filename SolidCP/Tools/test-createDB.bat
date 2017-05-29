@@ -1,0 +1,1 @@
+%windir%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe ..\test.xml /target:CreateTestDB /property:BuildConfiguration=Debug /v:n /fileLogger /m

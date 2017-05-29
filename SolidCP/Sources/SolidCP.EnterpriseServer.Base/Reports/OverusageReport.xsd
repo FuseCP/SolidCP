@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="OverusageReport" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="OverusageReport" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="OverusageReport" msprop:Generator_DataSetName="OverusageReport">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="HostingSpace" msprop:Generator_UserTableName="HostingSpace" msprop:Generator_RowDeletedName="HostingSpaceRowDeleted" msprop:Generator_RowChangedName="HostingSpaceRowChanged" msprop:Generator_RowClassName="HostingSpaceRow" msprop:Generator_RowChangingName="HostingSpaceRowChanging" msprop:Generator_RowEvArgName="HostingSpaceRowChangeEvent" msprop:Generator_RowEvHandlerName="HostingSpaceRowChangeEventHandler" msprop:Generator_TableClassName="HostingSpaceDataTable" msprop:Generator_TableVarName="tableHostingSpace" msprop:Generator_RowDeletingName="HostingSpaceRowDeleting" msprop:Generator_TablePropName="HostingSpace">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HostingSpaceId" msprop:Generator_UserColumnName="HostingSpaceId" msprop:Generator_ColumnPropNameInRow="HostingSpaceId" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceId" msprop:Generator_ColumnPropNameInTable="HostingSpaceIdColumn" type="xs:long" />
+              <xs:element name="HostingSpaceName" msprop:Generator_UserColumnName="HostingSpaceName" msprop:Generator_ColumnPropNameInRow="HostingSpaceName" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceName" msprop:Generator_ColumnPropNameInTable="HostingSpaceNameColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="ChildSpaceQuantity" msprop:Generator_UserColumnName="ChildSpaceQuantity" msprop:Generator_ColumnPropNameInRow="ChildSpaceQuantity" msprop:Generator_ColumnVarNameInTable="columnChildSpaceQuantity" msprop:Generator_ColumnPropNameInTable="ChildSpaceQuantityColumn" type="xs:int" minOccurs="0" />
+              <xs:element name="HostingPlanId" msprop:Generator_UserColumnName="HostingPlanId" msprop:Generator_ColumnPropNameInRow="HostingPlanId" msprop:Generator_ColumnVarNameInTable="columnHostingPlanId" msprop:Generator_ColumnPropNameInTable="HostingPlanIdColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="HostingPlanName" msprop:Generator_UserColumnName="HostingPlanName" msprop:Generator_ColumnPropNameInRow="HostingPlanName" msprop:Generator_ColumnVarNameInTable="columnHostingPlanName" msprop:Generator_ColumnPropNameInTable="HostingPlanNameColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="HostingSpaceFullTreeName" msprop:Generator_UserColumnName="HostingSpaceFullTreeName" msprop:Generator_ColumnPropNameInRow="HostingSpaceFullTreeName" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceFullTreeName" msprop:Generator_ColumnPropNameInTable="HostingSpaceFullTreeNameColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="UserId" msprop:Generator_UserColumnName="UserId" msprop:Generator_ColumnPropNameInRow="UserId" msprop:Generator_ColumnVarNameInTable="columnUserId" msprop:Generator_ColumnPropNameInTable="UserIdColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="UserName" msprop:Generator_UserColumnName="UserName" msprop:Generator_ColumnPropNameInRow="UserName" msprop:Generator_ColumnVarNameInTable="columnUserName" msprop:Generator_ColumnPropNameInTable="UserNameColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="UserEmail" msprop:Generator_UserColumnName="UserEmail" msprop:Generator_ColumnPropNameInRow="UserEmail" msprop:Generator_ColumnVarNameInTable="columnUserEmail" msprop:Generator_ColumnPropNameInTable="UserEmailColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="HostingSpaceCreationDate" msprop:Generator_UserColumnName="HostingSpaceCreationDate" msprop:Generator_ColumnPropNameInRow="HostingSpaceCreationDate" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceCreationDate" msprop:Generator_ColumnPropNameInTable="HostingSpaceCreationDateColumn" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Status" msprop:Generator_UserColumnName="Status" msprop:Generator_ColumnPropNameInRow="Status" msprop:Generator_ColumnVarNameInTable="columnStatus" msprop:Generator_ColumnPropNameInTable="StatusColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="Location" msprop:Generator_UserColumnName="Location" msprop:Generator_ColumnPropNameInRow="Location" msprop:Generator_ColumnVarNameInTable="columnLocation" msprop:Generator_ColumnPropNameInTable="LocationColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="IsBandwidthOverused" msprop:Generator_UserColumnName="IsBandwidthOverused" msprop:Generator_ColumnPropNameInRow="IsBandwidthOverused" msprop:Generator_ColumnVarNameInTable="columnIsBandwidthOverused" msprop:Generator_ColumnPropNameInTable="IsBandwidthOverusedColumn" type="xs:boolean" minOccurs="0" />
+              <xs:element name="IsDiskspaceOverused" msprop:Generator_UserColumnName="IsDiskspaceOverused" msprop:Generator_ColumnPropNameInRow="IsDiskspaceOverused" msprop:Generator_ColumnVarNameInTable="columnIsDiskspaceOverused" msprop:Generator_ColumnPropNameInTable="IsDiskspaceOverusedColumn" type="xs:boolean" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="BandwidthOverusage" msprop:Generator_UserTableName="BandwidthOverusage" msprop:Generator_RowDeletedName="BandwidthOverusageRowDeleted" msprop:Generator_RowChangedName="BandwidthOverusageRowChanged" msprop:Generator_RowClassName="BandwidthOverusageRow" msprop:Generator_RowChangingName="BandwidthOverusageRowChanging" msprop:Generator_RowEvArgName="BandwidthOverusageRowChangeEvent" msprop:Generator_RowEvHandlerName="BandwidthOverusageRowChangeEventHandler" msprop:Generator_TableClassName="BandwidthOverusageDataTable" msprop:Generator_TableVarName="tableBandwidthOverusage" msprop:Generator_RowDeletingName="BandwidthOverusageRowDeleting" msprop:Generator_TablePropName="BandwidthOverusage">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HostingSpaceId" msprop:Generator_UserColumnName="HostingSpaceId" msprop:Generator_ColumnPropNameInRow="HostingSpaceId" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceId" msprop:Generator_ColumnPropNameInTable="HostingSpaceIdColumn" type="xs:long" />
+              <xs:element name="Allocated" msprop:Generator_UserColumnName="Allocated" msprop:Generator_ColumnPropNameInRow="Allocated" msprop:Generator_ColumnVarNameInTable="columnAllocated" msprop:Generator_ColumnPropNameInTable="AllocatedColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="Used" msprop:Generator_UserColumnName="Used" msprop:Generator_ColumnPropNameInRow="Used" msprop:Generator_ColumnVarNameInTable="columnUsed" msprop:Generator_ColumnPropNameInTable="UsedColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="Usage" msprop:Generator_UserColumnName="Usage" msprop:Generator_ColumnPropNameInRow="Usage" msprop:Generator_ColumnVarNameInTable="columnUsage" msprop:Generator_ColumnPropNameInTable="UsageColumn" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="DiskspaceOverusage" msprop:Generator_UserTableName="DiskspaceOverusage" msprop:Generator_RowDeletedName="DiskspaceOverusageRowDeleted" msprop:Generator_RowChangedName="DiskspaceOverusageRowChanged" msprop:Generator_RowClassName="DiskspaceOverusageRow" msprop:Generator_RowChangingName="DiskspaceOverusageRowChanging" msprop:Generator_RowEvArgName="DiskspaceOverusageRowChangeEvent" msprop:Generator_RowEvHandlerName="DiskspaceOverusageRowChangeEventHandler" msprop:Generator_TableClassName="DiskspaceOverusageDataTable" msprop:Generator_TableVarName="tableDiskspaceOverusage" msprop:Generator_RowDeletingName="DiskspaceOverusageRowDeleting" msprop:Generator_TablePropName="DiskspaceOverusage">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HostingSpaceId" msprop:Generator_UserColumnName="HostingSpaceId" msprop:Generator_ColumnPropNameInRow="HostingSpaceId" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceId" msprop:Generator_ColumnPropNameInTable="HostingSpaceIdColumn" type="xs:long" />
+              <xs:element name="Allocated" msprop:Generator_UserColumnName="Allocated" msprop:Generator_ColumnPropNameInRow="Allocated" msprop:Generator_ColumnVarNameInTable="columnAllocated" msprop:Generator_ColumnPropNameInTable="AllocatedColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="Used" msprop:Generator_UserColumnName="Used" msprop:Generator_ColumnPropNameInRow="Used" msprop:Generator_ColumnVarNameInTable="columnUsed" msprop:Generator_ColumnPropNameInTable="UsedColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="Usage" msprop:Generator_UserColumnName="Usage" msprop:Generator_ColumnPropNameInRow="Usage" msprop:Generator_ColumnVarNameInTable="columnUsage" msprop:Generator_ColumnPropNameInTable="UsageColumn" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="OverusageDetails" msprop:Generator_UserTableName="OverusageDetails" msprop:Generator_RowDeletedName="OverusageDetailsRowDeleted" msprop:Generator_RowChangedName="OverusageDetailsRowChanged" msprop:Generator_RowClassName="OverusageDetailsRow" msprop:Generator_RowChangingName="OverusageDetailsRowChanging" msprop:Generator_RowEvArgName="OverusageDetailsRowChangeEvent" msprop:Generator_RowEvHandlerName="OverusageDetailsRowChangeEventHandler" msprop:Generator_TableClassName="OverusageDetailsDataTable" msprop:Generator_TableVarName="tableOverusageDetails" msprop:Generator_RowDeletingName="OverusageDetailsRowDeleting" msprop:Generator_TablePropName="OverusageDetails">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HostingSpaceId" msprop:Generator_UserColumnName="HostingSpaceId" msprop:Generator_ColumnPropNameInRow="HostingSpaceId" msprop:Generator_ColumnVarNameInTable="columnHostingSpaceId" msprop:Generator_ColumnPropNameInTable="HostingSpaceIdColumn" type="xs:long" />
+              <xs:element name="ResourceGroupName" msprop:Generator_UserColumnName="ResourceGroupName" msprop:Generator_ColumnPropNameInRow="ResourceGroupName" msprop:Generator_ColumnVarNameInTable="columnResourceGroupName" msprop:Generator_ColumnPropNameInTable="ResourceGroupNameColumn" type="xs:string" />
+              <xs:element name="Used" msprop:Generator_UserColumnName="Used" msprop:Generator_ColumnPropNameInRow="Used" msprop:Generator_ColumnVarNameInTable="columnUsed" msprop:Generator_ColumnPropNameInTable="UsedColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="Allowed" msprop:Generator_UserColumnName="Allowed" msprop:Generator_ColumnPropNameInRow="Allowed" msprop:Generator_ColumnVarNameInTable="columnAllowed" msprop:Generator_ColumnPropNameInTable="AllowedColumn" type="xs:long" minOccurs="0" />
+              <xs:element name="OverusageType" msprop:Generator_UserColumnName="OverusageType" msprop:Generator_ColumnPropNameInRow="OverusageType" msprop:Generator_ColumnVarNameInTable="columnOverusageType" msprop:Generator_ColumnPropNameInTable="OverusageTypeColumn" type="xs:string" />
+              <xs:element name="AdditionalField" msprop:Generator_UserColumnName="AdditionalField" msprop:Generator_ColumnPropNameInRow="AdditionalField" msprop:Generator_ColumnVarNameInTable="columnAdditionalField" msprop:Generator_ColumnPropNameInTable="AdditionalFieldColumn" type="xs:long" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:HostingSpace" />
+      <xs:field xpath="mstns:HostingSpaceId" />
+    </xs:unique>
+    <xs:unique name="BandwidthOverusage_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:BandwidthOverusage" />
+      <xs:field xpath="mstns:HostingSpaceId" />
+    </xs:unique>
+    <xs:unique name="DiskspaceOverusage_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:DiskspaceOverusage" />
+      <xs:field xpath="mstns:HostingSpaceId" />
+    </xs:unique>
+    <xs:unique name="OverusageDetails_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:OverusageDetails" />
+      <xs:field xpath="mstns:ResourceGroupName" />
+      <xs:field xpath="mstns:HostingSpaceId" />
+      <xs:field xpath="mstns:OverusageType" />
+    </xs:unique>
+  </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="HostingSpace_BandwidthOverusage" msdata:parent="HostingSpace" msdata:child="BandwidthOverusage" msdata:parentkey="HostingSpaceId" msdata:childkey="HostingSpaceId" msprop:Generator_UserRelationName="HostingSpace_BandwidthOverusage" msprop:Generator_RelationVarName="relationHostingSpace_BandwidthOverusage" msprop:Generator_UserChildTable="BandwidthOverusage" msprop:Generator_UserParentTable="HostingSpace" msprop:Generator_ParentPropName="HostingSpaceRow" msprop:Generator_ChildPropName="GetBandwidthOverusageRows" />
+      <msdata:Relationship name="HostingSpace_DiskspaceOverusage" msdata:parent="HostingSpace" msdata:child="DiskspaceOverusage" msdata:parentkey="HostingSpaceId" msdata:childkey="HostingSpaceId" msprop:Generator_UserRelationName="HostingSpace_DiskspaceOverusage" msprop:Generator_RelationVarName="relationHostingSpace_DiskspaceOverusage" msprop:Generator_UserChildTable="DiskspaceOverusage" msprop:Generator_UserParentTable="HostingSpace" msprop:Generator_ParentPropName="HostingSpaceRow" msprop:Generator_ChildPropName="GetDiskspaceOverusageRows" />
+      <msdata:Relationship name="BandwidthOverusage_OverusageDetails" msdata:parent="BandwidthOverusage" msdata:child="OverusageDetails" msdata:parentkey="HostingSpaceId" msdata:childkey="HostingSpaceId" msprop:Generator_UserRelationName="BandwidthOverusage_OverusageDetails" msprop:Generator_RelationVarName="relationBandwidthOverusage_OverusageDetails" msprop:Generator_UserChildTable="OverusageDetails" msprop:Generator_UserParentTable="BandwidthOverusage" msprop:Generator_ParentPropName="BandwidthOverusageRow" msprop:Generator_ChildPropName="GetOverusageDetailsRows" />
+      <msdata:Relationship name="DiskspaceOverusage_OverusageDetails" msdata:parent="DiskspaceOverusage" msdata:child="OverusageDetails" msdata:parentkey="HostingSpaceId" msdata:childkey="HostingSpaceId" msprop:Generator_UserRelationName="DiskspaceOverusage_OverusageDetails" msprop:Generator_RelationVarName="relationDiskspaceOverusage_OverusageDetails" msprop:Generator_UserChildTable="OverusageDetails" msprop:Generator_UserParentTable="DiskspaceOverusage" msprop:Generator_ParentPropName="DiskspaceOverusageRow" msprop:Generator_ChildPropName="GetOverusageDetailsRows" />
+    </xs:appinfo>
+  </xs:annotation>
+</xs:schema>

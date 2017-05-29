@@ -1,0 +1,51 @@
+<%--
+Default skin template. The following skins are provided as examples only.
+
+1. Named control skin. The SkinId should be uniquely defined because
+   duplicate SkinId's per control type are not allowed in the same theme.
+
+<asp:GridView runat="server" SkinId="gridviewSkin" BackColor="White" >
+   <AlternatingRowStyle BackColor="Blue" />
+</asp:GridView>
+
+2. Default skin. The SkinId is not defined. Only one default 
+   control skin per control type is allowed in the same theme.
+
+<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+--%>
+<asp:Image runat="server" SkinID="Logo" ImageUrl="images/logo.png" />
+<asp:Image runat="server" SkinID="LogoBig" ImageUrl="images/logo_big.png" />
+<asp:Image runat="server" SkinID="PathSeparatorWhite" ImageUrl="images/path_sep_white.gif" ImageAlign="AbsMiddle" style="padding-left: 4px;padding-right: 3px;" />
+<asp:Image runat="server" SkinID="Notes" ImageUrl="images/notes_16.png" BorderStyle="None" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="Folder48" ImageUrl="images/folder_48.png" BorderStyle="None" ImageAlign="AbsMiddle" Width="48" Height="48" />
+
+<asp:Image runat="server" SkinID="FM_Upload" ImageUrl="images/FileOperations/document_up_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_CreateFile" ImageUrl="images/FileOperations/document_add_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_CreateFolder" ImageUrl="images/FileOperations/folder_add_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_CreateAccessDB" ImageUrl="images/FileOperations/access_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_Zip" ImageUrl="images/FileOperations/compress_video_add_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_Unzip" ImageUrl="images/FileOperations/compress_video_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_Copy" ImageUrl="images/FileOperations/copy_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_Move" ImageUrl="images/FileOperations/copy_next_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_Delete" ImageUrl="images/FileOperations/document_close_24.png" style="padding-right:4px;" BorderStyle="None" ImageAlign="AbsMiddle" Width="24" Height="24" />
+<asp:Image runat="server" SkinID="FM_Separator" ImageUrl="images/empty_grey.gif" Height="26" Width="1" style="padding-left:4px;" BorderStyle="None" ImageAlign="AbsMiddle" />
+
+<asp:Image runat="server" SkinID="MediumAjaxIndicator" ImageUrl="images/indicator_medium.gif" ImageAlign="AbsMiddle" />
+<asp:Image runat="server" SkinID="AjaxIndicator" ImageUrl="images/indicator.gif" ImageAlign="AbsMiddle" />
+
+<asp:Image runat="server" SkinID="ViewSmall" ImageUrl="images/flashlight_24.png" ImageAlign="AbsMiddle" Width="24" Height="24" />
+
+<asp:Image runat="server" SkinID="EditSmall" ImageUrl="Images/pencil_16.png" ImageAlign="AbsMiddle" BorderWidth="0" Width="16" Height="16" />
+
+<asp:Image runat="server" SkinID="Admin16" ImageUrl="images/admin_16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="User16" ImageUrl="images/user_16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="Operator16" ImageUrl="images/operator_16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="Space16" ImageUrl="images/sphere_16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+
+<asp:Image runat="server" SkinID="OptionEnabled" ImageUrl="images/Exchange/checkbox.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="OptionDisabled" ImageUrl="images/VPS/delete.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="OptionDisabled2012" ImageUrl="images/VPS2012/delete.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+
+<asp:Image runat="server" SkinID="Vps16" ImageUrl="images/VPS/server.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="Vps2012_16" ImageUrl="images/VPS2012/server.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
+<asp:Image runat="server" SkinID="Rdc16" ImageUrl="images/VPS/rdc16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />

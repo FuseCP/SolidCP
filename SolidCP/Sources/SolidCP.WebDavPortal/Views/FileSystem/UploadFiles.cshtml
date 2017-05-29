@@ -1,0 +1,125 @@
+﻿@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI.Routes
+@model SolidCP.WebDavPortal.Models.ModelForWebDav
+           
+<div class="file-upload-menu">
+    @Html.Partial("_ShowContentTopMenu", Model)
+</div>
+
+
+@using(Html.BeginRouteForm(FileSystemRouteNames.UploadFile, FormMethod.Post, new { id="file-upload-form", enctype="multipart/form-data"}))
+{
+    
+<div class="row fileupload-buttonbar">
+    <div class="col-lg-12">
+        <div id="drag-and-drop-area" class="drag-and-drop-area">
+            <span class="info-block">
+                <i class="glyphicon glyphicon-upload upload-block-icon"></i>
+                <span class="upload-block-text">
+                    @UI.SelectFilesToUpload
+                </span>
+                <span class="upload-block-description">
+                    @UI.OrDragAndDropFilesHere
+                </span>
+            </span>
+            <div class="upload-block">
+                <input id="file-input" type="file" tabindex="0" multiple>
+            </div>
+        </div>
+    </div>
+    <!-- The global file processing state -->
+    <span class="fileupload-process"></span>
+    <!-- The global progress state -->
+    <div class="col-lg-12 fileupload-progress fileupload-global-process fade">
+        <!-- The global progress bar -->
+        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-success" style="width: 0%;"></div>
+        </div>
+        <!-- The extended global progress state -->
+        <div>
+            <div class="progress-extended">&nbsp;</div>
+            <div class="cancel-all">
+                <button type="reset" class="btn btn-default cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>@UI.CancelAll</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- The table listing the files available for upload/download -->
+<table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
+}
+
+<!-- The template to display files available for upload -->
+<script id="template-upload" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td class="column-name">
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td class="column-progress">
+            <div>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <div class="progress-bar progress-bar-success" style="width:0%;">
+                    </div>
+                </div>
+                <p class="size"></p>
+            </div>
+        </td>
+        <td class="column-actions">
+            <div class="file-actions">
+                {% if (!i && !o.options.autoUpload) { %}
+                <span class="start" title="@UI.Upload" disabled>
+                    <i class="glyphicon glyphicon-upload"></i>
+                </span>
+                {% } %}
+                {% if (!i) { %}
+                <span class="cancel" title="@UI.Cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                </span>
+                {% } %}
+            </div>
+        </td>
+    </tr>
+    {% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+    {% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td class="column-name">
+            <p class="name">
+                {% if (file.url) { %}
+                <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                {% } else { %}
+                <span>{%=file.name%}</span>
+                {% } %}
+            </p>
+            {% if (file.error) { %}
+            <div><span class="label label-danger">@UI.Error</span> {%=file.error%}</div>
+            {% } %}
+        </td>
+        <td class="column-progress">
+            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+        </td>
+        <td class="column-actions">
+            <div class="file-actions">
+                <span class="cancel" title="@UI.Close">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </span>
+            </div>
+        </td>
+    </tr>
+    {% } %}
+</script>
+
+
+@section scripts{
+    @Scripts.Render("~/bundles/file-upload")
+
+<script type="text/javascript">
+    scp.fileBrowser.initFileUpload('#file-upload-form', '@Url.RouteUrl(FileSystemRouteNames.UploadFile)');
+</script>
+}

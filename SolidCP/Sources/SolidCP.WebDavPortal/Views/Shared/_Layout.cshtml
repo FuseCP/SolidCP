@@ -1,0 +1,112 @@
+﻿@using System.Web.Script.Serialization
+@using Ninject
+@using SolidCP.WebDav.Core
+@using SolidCP.WebDav.Core.Config
+@using SolidCP.WebDavPortal.Controllers
+@using SolidCP.WebDavPortal.DependencyInjection
+@using SolidCP.WebDavPortal.Models
+@using SolidCP.WebDavPortal.Models.Common
+@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI.Routes;
+    
+
+@{
+    var messages = TempData[BaseController.MessagesKey] as List<Message> ?? new List<Message>();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>@(ViewBag.Title ?? WebDavAppConfigManager.Instance.ApplicationName)</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top prevent-deselect">
+        <div class="container top-container">
+            <div class="navbar-header">
+                @if (ScpContext.User != null)
+                {
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                }
+                <a href="/">
+                    <img class="header-logo processing-dialog" src="@Url.Content("~/Content/Images/logo.png")" />
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                @{
+                    if (ScpContext.User != null)
+                    {
+                        <a id="logout" class="nav navbar-text navbar-right" href="@Url.RouteUrl(AccountRouteNames.Logout)" title="@UI.LogOut"><i class="glyphicon glyphicon-log-out"></i></a>
+                        <a id="user-profile" class="nav navbar-text navbar-right" href="@Url.RouteUrl(AccountRouteNames.UserProfile)" title="@UI.Profile">@ScpContext.User.Login</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <div id="message-area" class="container row prevent-deselect"> </div>
+
+        @RenderBody()
+    </div>
+    
+    <div class="prevent-deselect">
+        @Html.Partial("_ProcessDialog", null)
+        @Html.Partial("_ConfirmDialog")
+
+        @RenderSection("popups", required: false)
+    </div>
+    
+    <div class="manual-scripts">
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+        @Scripts.Render("~/bundles/appScripts")
+    </div>
+
+    @if (ScpContext.User != null)
+    {
+        @Scripts.Render("~/bundles/authScripts")
+        
+        <script>
+            $(document).ready(function () {
+                StartAuthExpirationCheckTimer("@WebDavAppConfigManager.Instance.AuthTimeoutCookieName", "@FormsAuthentication.FormsCookieName", "@Url.RouteUrl(AccountRouteNames.Logout)");
+            });
+        </script>
+    }
+
+
+    <script>
+        $(document).ready(function () {
+            scp.messages.showMessages(@Html.Raw(Json.Encode(messages)));
+        });
+    </script>
+    
+     @RenderSection("scripts", required: false)
+</body>
+</html>

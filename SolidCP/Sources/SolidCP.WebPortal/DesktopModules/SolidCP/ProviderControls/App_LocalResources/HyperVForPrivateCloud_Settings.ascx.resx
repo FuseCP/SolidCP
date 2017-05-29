@@ -1,0 +1,461 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="chkVpsFolderIncludesUsername.Text" xml:space="preserve">
+    <value>User name</value>
+  </data>
+  <data name="ComparePasswordsValidator.ErrorMessage" xml:space="preserve">
+    <value>Both reseller account passwords should match</value>
+  </data>
+  <data name="DefaultGatewayValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter default gateway IP</value>
+  </data>
+  <data name="DvdLibraryPathValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter DVD library folder</value>
+  </data>
+  <data name="ExportedVpsPathValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter path for storing exported VPS</value>
+  </data>
+  <data name="HostnamePatternValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter host name pattern</value>
+  </data>
+  <data name="locAlternateNameServer.Text" xml:space="preserve">
+    <value>Alternate Name Server:</value>
+  </data>
+  <data name="locDefaultGateway.Text" xml:space="preserve">
+    <value>Default Gateway:</value>
+  </data>
+  <data name="locDiskType.Text" xml:space="preserve">
+    <value>Disk Type:</value>
+  </data>
+  <data name="locSCPResellerAccount.Text" xml:space="preserve">
+    <value>SolidCP Reseller Account</value>
+  </data>
+  <data name="locDvdIsoPath.Text" xml:space="preserve">
+    <value>DVD Library path:</value>
+  </data>
+  <data name="locExistingPassword.Text" xml:space="preserve">
+    <value>Existing password:</value>
+  </data>
+  <data name="locExportedVpsPath.Text" xml:space="preserve">
+    <value>Exported VPS path:</value>
+  </data>
+  <data name="locExternalNetwork.Text" xml:space="preserve">
+    <value>External Network</value>
+  </data>
+  <data name="locExternalNetworkName.Text" xml:space="preserve">
+    <value>Connect to Network:</value>
+  </data>
+  <data name="locGeneralSettings.Text" xml:space="preserve">
+    <value>General Settings</value>
+  </data>
+  <data name="locHostname.Text" xml:space="preserve">
+    <value>VPS Host name</value>
+  </data>
+  <data name="locHostnamePattern.Text" xml:space="preserve">
+    <value>Host name pattern:</value>
+  </data>
+  <data name="locIPFormat.Text" xml:space="preserve">
+    <value>IP Addresses Format:</value>
+  </data>
+  <data name="locMediaLibrary.Text" xml:space="preserve">
+    <value>DVD Media Library</value>
+  </data>
+  <data name="locNetworkAdapter.Text" xml:space="preserve">
+    <value>Network Adapter</value>
+  </data>
+  <data name="locOSTemplatesPath.Text" xml:space="preserve">
+    <value>OS Templates path:</value>
+  </data>
+  <data name="locPatternText.Text" xml:space="preserve">
+    <value>When user is not allowed to specify their custom host name the system will generate the host name for new VPS based on this pattern.&lt;br/&gt;&lt;br/&gt;
+The following substitution variables can be used in the pattern:&lt;br/&gt;
+[USERNAME], [USER_ID], [SPACE_ID]</value>
+  </data>
+  <data name="locPreferredNameServer.Text" xml:space="preserve">
+    <value>Preferred Name Server:</value>
+  </data>
+  <data name="locPrivateNetwork.Text" xml:space="preserve">
+    <value>Private Network</value>
+  </data>
+  <data name="locResellerAccountText.Text" xml:space="preserve">
+    <value>For automatic provisioning of SolidCP control panel inside VPS please enter SolidCP reseller account details below:</value>
+  </data>
+  <data name="locResellerConfirmPassword.Text" xml:space="preserve">
+    <value>Confirm password:</value>
+  </data>
+  <data name="locResellerPassword.Text" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="locResellerUsername.Text" xml:space="preserve">
+    <value>Username:</value>
+  </data>
+  <data name="locSeconds.Text" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="locStartAction.Text" xml:space="preserve">
+    <value>Automatic Start Action</value>
+  </data>
+  <data name="locStartOptionsText.Text" xml:space="preserve">
+    <value>What do you want VPS to do when the physical computer starts?</value>
+  </data>
+  <data name="locStartupDelay.Text" xml:space="preserve">
+    <value>Startup delay:</value>
+  </data>
+  <data name="locStartupDelayText.Text" xml:space="preserve">
+    <value>Specify a startup delay to reduce resource contention between virtual machines.</value>
+  </data>
+  <data name="locStopAction.Text" xml:space="preserve">
+    <value>Automatic Stop Action</value>
+  </data>
+  <data name="locStopActionText.Text" xml:space="preserve">
+    <value>What do you want VPS to do when the physical shuts down?</value>
+  </data>
+  <data name="locSubnetMask.Text" xml:space="preserve">
+    <value>Subnet Mask:</value>
+  </data>
+  <data name="locVhd.Text" xml:space="preserve">
+    <value>Virtual Hard Drive</value>
+  </data>
+  <data name="locVpsFolderIncludes.Text" xml:space="preserve">
+    <value>VM folder includes:</value>
+  </data>
+  <data name="locVpsRootFolder.Text" xml:space="preserve">
+    <value>VM root folder:</value>
+  </data>
+  <data name="ddlPrivateNetworkFormat10.Text" xml:space="preserve">
+    <value>10.0.0.1/8</value>
+  </data>
+  <data name="ddlPrivateNetworkFormat172.Text" xml:space="preserve">
+    <value>172.16.0.1/12</value>
+  </data>
+  <data name="ddlPrivateNetworkFormat192.Text" xml:space="preserve">
+    <value>192.168.0.1/16</value>
+  </data>
+  <data name="radioStartActionAlwaysStart.Text" xml:space="preserve">
+    <value>Always start VPS automatically</value>
+  </data>
+  <data name="radioStartActionNothing.Text" xml:space="preserve">
+    <value>Nothing</value>
+  </data>
+  <data name="radioStartActionStart.Text" xml:space="preserve">
+    <value>Automatically start if it was running when the service stopped</value>
+  </data>
+  <data name="radioStopActionSave.Text" xml:space="preserve">
+    <value>Save VM state</value>
+  </data>
+  <data name="radioStopActionShutDown.Text" xml:space="preserve">
+    <value>Shut down VM operating system</value>
+  </data>
+  <data name="radioStopActionTurnOff.Text" xml:space="preserve">
+    <value>Turn off VM</value>
+  </data>
+  <data name="radioVirtualDiskTypeDynamic.Text" xml:space="preserve">
+    <value>Dynamically expanding</value>
+  </data>
+  <data name="radioVirtualDiskTypeFixed.Text" xml:space="preserve">
+    <value>Fixed size</value>
+  </data>
+  <data name="radioVpsFolderIncludesID.Text" xml:space="preserve">
+    <value>VM identifier, for example "843FA-A0B2-34404"</value>
+  </data>
+  <data name="radioVpsFolderIncludesName.Text" xml:space="preserve">
+    <value>VM host name, for example "vps1.domain.com"</value>
+  </data>
+  <data name="RootFolderValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter VM root folder</value>
+  </data>
+  <data name="StartupDelayValidator.ErrorMessage" xml:space="preserve">
+    <value>Startup delay could not be blank</value>
+  </data>
+  <data name="SubnetMaskValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter subnet mask</value>
+  </data>
+  <data name="TemplatesPathValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter OS templates folder</value>
+  </data>
+  <data name="CpuLimitValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter processor limit per VPS</value>
+  </data>
+  <data name="CpuReserveValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter processor reserve per VPS</value>
+  </data>
+  <data name="CpuWeightValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter relative processor weight per VPS</value>
+  </data>
+  <data name="locCpuLimit.Text" xml:space="preserve">
+    <value>Virtual machine limit:</value>
+  </data>
+  <data name="locCpuReserve.Text" xml:space="preserve">
+    <value>Virtual machine reserve:</value>
+  </data>
+  <data name="locCpuWeight.Text" xml:space="preserve">
+    <value>Relative weight:</value>
+  </data>
+  <data name="locFolderVariables.Text" xml:space="preserve">
+    <value>The following variables are supported: [VPS_HOSTNAME], [USERNAME], [USER_ID], [SPACE_ID]</value>
+  </data>
+  <data name="locProcessorSettings.Text" xml:space="preserve">
+    <value>Processor Resource Settings</value>
+  </data>
+  <data name="btnConnect.Text" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="ErrorReadingNetworksList.Text" xml:space="preserve">
+    <value>&lt;Cannot read networks list&gt;</value>
+  </data>
+  <data name="locErrorReadingNetworksList.Text" xml:space="preserve">
+    <value>&lt;br/&gt;&lt;b&gt;Unable to connect to Hyper-V server&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Possible reasons:&lt;ol&gt;&lt;li&gt;You are going to manage remote Hyper-V server (either Server Core or Hyper-V Server 2008 machine) where SolidCP Server is not installed. Type the correct server name at the top of this form and then click "Connect" button.&lt;/li&gt;&lt;li&gt;SolidCP Server has insufficient permissions to connect remote Hyper-V server. Please refer administrator guide for client and server setup instructions.&lt;/li&gt;&lt;li&gt;Lost connectivity with SolidCP Server installed on Hyper-V virtualization server. Check connectivity and open service properties page once again.&lt;/li&gt;&lt;/ol&gt;</value>
+  </data>
+  <data name="locHyperVServer.Text" xml:space="preserve">
+    <value>Hosts</value>
+  </data>
+  <data name="locServerName.Text" xml:space="preserve">
+    <value>Server name:</value>
+  </data>
+  <data name="radioServerLocal.Text" xml:space="preserve">
+    <value>&lt;b&gt;Local&lt;/b&gt; - Hyper-V role is installed on this server</value>
+  </data>
+  <data name="radioServerRemote.Text" xml:space="preserve">
+    <value>&lt;b&gt;Remote&lt;/b&gt; - Remote Windows 2008 Server Core or Hyper-V Server 2008</value>
+  </data>
+  <data name="ServerNameValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter server name</value>
+  </data>
+  <data name="ddlManagementNetworks.Text" xml:space="preserve">
+    <value>&lt;Do not connect VPS to Management Network&gt;</value>
+  </data>
+  <data name="locManagementNetwork.Text" xml:space="preserve">
+    <value>Management Network</value>
+  </data>
+  <data name="locManagementNetworkName.Text" xml:space="preserve">
+    <value>Connect to Network:</value>
+  </data>
+  <data name="ddlManageNicConfigDhcp.Text" xml:space="preserve">
+    <value>DHCP</value>
+  </data>
+  <data name="ddlManageNicConfigPool.Text" xml:space="preserve">
+    <value>IP Addresses Pool</value>
+  </data>
+  <data name="ddlPrivateNetworkFormatCustom.Text" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="locManageNicConfig.Text" xml:space="preserve">
+    <value>Network Card Configuration:</value>
+  </data>
+  <data name="locPrivCustomFormat.Text" xml:space="preserve">
+    <value>IP Address / CIDR:</value>
+  </data>
+  <data name="privateSubnetMaskValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter subnet mask in CIDR format</value>
+  </data>
+  <data name="chkAssignIPAutomatically.Text" xml:space="preserve">
+    <value>Automatically assign IP addresses to the space on creation</value>
+  </data>
+  <data name="lblCoreSvcEndpoint.Text" xml:space="preserve">
+    <value>Core Svc Endpoint</value>
+  </data>
+  <data name="lblSCCMEndPoint.Text" xml:space="preserve">
+    <value>SCCM Endpoint</value>
+  </data>
+  <data name="lblSCCMServer.Text" xml:space="preserve">
+    <value>SCCM Server</value>
+  </data>
+  <data name="lblSCDPMEndPoint.Text" xml:space="preserve">
+    <value>SCDPM Endpoint</value>
+  </data>
+  <data name="lblSCDPMServer.Text" xml:space="preserve">
+    <value>SCDPM Server</value>
+  </data>
+  <data name="lblSCOMServer.Text" xml:space="preserve">
+    <value>Server URL:</value>
+  </data>
+  <data name="lblSCVMMServer.Text" xml:space="preserve">
+    <value>Server URL:</value>
+  </data>
+  <data name="lblStorageEndPoint.Text" xml:space="preserve">
+    <value>Storage Endpoint</value>
+  </data>
+  <data name="locHyperVCloud.Text" xml:space="preserve">
+    <value>Hyper-V Cloud</value>
+  </data>
+  <data name="HostsValidator.ErrorMess" xml:space="preserve">
+    <value>Please select Host</value>
+  </data>
+  <data name="listHosts.Text" xml:space="preserve">
+    <value>Select Host Name</value>
+  </data>
+  <data name="locHost.Text" xml:space="preserve">
+    <value>Hosts:</value>
+  </data>
+  <data name="ExternalNetworkValidator.ErrorMessage" xml:space="preserve">
+    <value>Please choice the external virtual network name</value>
+  </data>
+  <data name="locPrivateNetworkName.Text" xml:space="preserve">
+    <value>Connect to Network:</value>
+  </data>
+  <data name="PrivateNetworkValidator.ErrorMessage" xml:space="preserve">
+    <value>Please choice the private virtual network name</value>
+  </data>
+  <data name="lblSCOMPrincipalName.Text" xml:space="preserve">
+    <value>Principal Name:</value>
+  </data>
+  <data name="lblSCVMMPrincipalName.Text" xml:space="preserve">
+    <value>Principal Name:</value>
+  </data>
+  <data name="lblVPServer.Text" xml:space="preserve">
+    <value>Server URL</value>
+  </data>
+  <data name="locSCOMServer.Text" xml:space="preserve">
+    <value>SCOM Server Connection options</value>
+  </data>
+  <data name="locSCVMMServer.Text" xml:space="preserve">
+    <value>SCVMM Server Connection options</value>
+  </data>
+  <data name="locVPServer.Text" xml:space="preserve">
+    <value>Virtualization Provisioning Server Connection options</value>
+  </data>
+  <data name="locConnectTypeName.Text" xml:space="preserve">
+    <value>Select Server type:</value>
+  </data>
+  <data name="radioServerCloud.Text" xml:space="preserve">
+    <value>Cluster</value>
+  </data>
+  <data name="radioServerHost.Text" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="LibraryPathValidator.ErrorMessage" xml:space="preserve">
+    <value>Library path is empty.</value>
+  </data>
+  <data name="locLibraryPath.Text" xml:space="preserve">
+    <value>Library path:</value>
+  </data>
+  <data name="locMonitoringServerName.Text" xml:space="preserve">
+    <value>Monitoring server:</value>
+  </data>
+  <data name="MonitoringServerNameValidator.ErrorMessage" xml:space="preserve">
+    <value>Please enter monitoring server name</value>
+  </data>
+  <data name="btnSCOMServer.ToolTip" xml:space="preserve">
+    <value>Click the button to validate connectivity to a Dynamic Data Center Toolkit endpoint that provides API for System Center Operations Manager 2007</value>
+  </data>
+  <data name="btnSCVMMServer.ToolTip" xml:space="preserve">
+    <value>Click the button to validate connectivity to a Dynamic Data Center Toolkit endpoint that provides API for System Center Virtual Machine Manager 2008 R2</value>
+  </data>
+</root>

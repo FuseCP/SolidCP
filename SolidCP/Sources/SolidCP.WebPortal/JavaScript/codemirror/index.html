@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<style type="text/css">
+.CodeMirror {
+    height: 800px !important;
+    font-family: Consolas !important;
+    font-size: 15px;
+}
+</style>
+<body>
+<textarea id='code'>
+# Helicon Ape
+
+# mod_rewrite rules
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [NC,L]
+
+RewriteRule .*\.png$ crm.png [L]
+Header set CacheControl max-age=13,public
+
+RewriteRule (.*)\.png$ $1.png [L]
+
+
+&lt;Location index.php&gt;
+ExpiresByType "text/html; charset=UTF-8" A30
+CacheEnable mem 
+CacheVaryByHeaders Original-Url 
+&lt;/Location&gt;
+
+# expiration
+ExpiresActive On
+ExpiresByType image/jpeg "access plus 1 days"
+ExpiresByType image/gif "access plus 1 days"
+ExpiresByType text/css   "access plus 1 days"
+ExpiresByType application/x-javascript  "access plus 1 days"
+
+# gzipping
+mod_gzip_on yes
+mod_gzip_item_include Mime ^text/.*
+
+&lt;Files index.php&gt;
+ExpiresByType "text/html; charset=UTF-8" A30
+CacheEnable mem 
+CacheVaryByHeaders Original-Url 
+&lt;/Files&gt;
+
+Header set Server "Apache/2.2.9 (Unix)"
+</textarea>
+</body>
+<script src="codemirror.js"></script>
+<link rel="stylesheet" href="codemirror.css">
+<link rel="stylesheet" href="show-hint.css">
+<link rel="stylesheet" href="simple-hint.css">
+<script src="show-hint.js"></script>
+<script src="htaccess.js"></script>
+<script type="text/javascript">
+CodeMirror.commands.autocomplete = function(cm) {
+    CodeMirror.showHint(cm, CodeMirror.htaccessHint);
+}
+var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
+    lineNumbers: true,
+    extraKeys: {"Ctrl-Space": "autocomplete"}
+});
+</script>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common.Internal" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Common.Internal" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="MonitoringObjectGenerated">
+    <xs:sequence>
+      <xs:element name="availabilityLastModified" nillable="true" type="xs:dateTime" />
+      <xs:element name="displayName" nillable="true" type="xs:string" />
+      <xs:element name="fullName" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" name="healthState" type="q1:HealthState" />
+      <xs:element name="id" type="ser:guid" />
+      <xs:element name="inMaintenanceMode" nillable="true" type="xs:boolean" />
+      <xs:element name="isAvailable" nillable="true" type="xs:boolean" />
+      <xs:element name="isDeleted" type="xs:boolean" />
+      <xs:element name="isManaged" type="xs:boolean" />
+      <xs:element name="lastModified" type="xs:dateTime" />
+      <xs:element name="maintenanceModeLastModified" nillable="true" type="xs:dateTime" />
+      <xs:element name="monitoringClassId" type="ser:guid" />
+      <xs:element name="name" nillable="true" type="xs:string" />
+      <xs:element name="path" nillable="true" type="xs:string" />
+      <xs:element name="sourceEntityId" nillable="true" type="ser:guid" />
+      <xs:element name="stateLastModified" nillable="true" type="xs:dateTime" />
+      <xs:element name="typedManagedEntityId" type="ser:guid" />
+      <xs:element name="typedMonitoringObjectIsDeleted" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MonitoringObjectGenerated" nillable="true" type="tns:MonitoringObjectGenerated" />
+</xs:schema>

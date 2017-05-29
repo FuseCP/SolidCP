@@ -1,0 +1,12 @@
+Hello {$2+a},
+{if ff}
+
+{if -a.b[2+2].d[0]-2/3 #}
+This is some text...
+{/if}
+
+{/idf1 }
+
+{rest}
+Best regards,
+Support team

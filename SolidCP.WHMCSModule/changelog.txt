@@ -1,0 +1,28 @@
+v. 1.1.2 - 05 Dec. 2016
+Changelog
+- Compatible with WHMCS v7 and PHP 7 (WHMCS < 6 and PHP < 5.3.7 are NOT supported anymore)
+- Transition to new DB framework in WHMCS due to deprecated old database connections
+- Fixed adding addons in Admin panel
+- German module language added in admin area
+- Small bug fixes
+
+Todo for next release:
+- Add the possibility to remove Addons from SolidCP automatically if they are removed/terminated in WHMCS (working workaroung: Click on "Change package" in WHMCS admin manually)
+- Add an option for creating an Organization automatically on order
+- Add external IP address types to Addons and Configurable Options (right now only ext. IP for webservers is supported)
+
+v. 1.1.0
+Changelog
+- Total redesign of the SolidCP WHMCS module -> all in one module instead of three seperate modules.
+- Ajax based configuration in Admin Panel -> "Addons" -> "SolidCP Module"
+- Added tooltips in module settings configuration 
+- Added a migration assistant from previous SolidCP module versions due to the big changes.
+- Module will automatically detect, if a migration is needed and deny to work until the migration is done (check is triggered only in Admin Panel).
+- Module will automatically detect, if a first configuration is needed after installation/migration and deny to work until the first "Settings" were saved.
+- Improved connection settings to SolidCP, added "Test connection" button to Servers configuration.
+- Moved port configuration from every single product page to server configuration.
+- Added WHMCS localization support for Admin Panel and ClientArea
+- Added Smarty templates for admin configuration pages
+- Added Mailcleaner support via API. A domain will be added to Mailcleaner on product/service order if it's enabled in product configuration page.
+- Module deactivation won't remove the database tables by default, can be enabled in "Settings"
+- Fixed password change for SolidCP account from WHMCS -> won't break the "One-Click-Button" anymore.

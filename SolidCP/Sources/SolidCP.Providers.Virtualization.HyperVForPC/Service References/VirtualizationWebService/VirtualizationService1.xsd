@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" elementFormDefault="qualified" targetNamespace="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd2" namespace="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" />
+  <xs:element name="CreateVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="request" nillable="true" type="q1:VirtualMachineProvisioningRequest" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CreateVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MountVirtualHardDisk">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="virtualDiskPath" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MountVirtualHardDiskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="MountVirtualHardDiskResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UnmountVirtualHardDisk">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="virtualDiskPath" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UnmountVirtualHardDiskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="UnmountVirtualHardDiskResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DefineVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="request" nillable="true" type="q2:VirtualMachineProvisioningRequest" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DefineVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DefineVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="RemoveVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="StartVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TurnoffVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TurnoffVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="TurnoffVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PauseVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PauseVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="PauseVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResumeVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResumeVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ResumeVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SnapshotVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SnapshotVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SnapshotVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SaveVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResetVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ResetVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ShutdownVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ShutdownVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ShutdownVirtualSystemResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemMemorySetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q3="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="setting" nillable="true" type="q3:MemorySettingInfo" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemMemorySettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ChangeVirtualSystemMemorySettingResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemProcessorSetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q4="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="setting" nillable="true" type="q4:ProcessorSettingInfo" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemProcessorSettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ChangeVirtualSystemProcessorSettingResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemSetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q5="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="setting" nillable="true" type="q5:VirtualComputerSystemSettingInfo" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemSettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ChangeVirtualSystemSettingResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystems">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="GetVirtualSystemsResult" nillable="true" type="q6:ArrayOfVirtualComputerSystemInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" minOccurs="0" name="GetVirtualSystemResult" nillable="true" type="q7:VirtualComputerSystemInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemThumbnailImage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="imgWidth" type="xs:int" />
+        <xs:element minOccurs="0" name="imgHeight" type="xs:int" />
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="domain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemThumbnailImageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetVirtualSystemThumbnailImageResult" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

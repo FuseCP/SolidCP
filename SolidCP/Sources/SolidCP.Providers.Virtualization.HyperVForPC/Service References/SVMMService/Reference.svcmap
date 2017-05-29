@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="6f422e79-a800-4ea3-b6e9-a0ab7c28b7c3" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="VirtualMachineManagementService.xsd" MetadataType="Schema" ID="ab9abee8-d91a-4653-96c2-4601fe491581" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd4" />
+    <MetadataFile FileName="VirtualMachineManagementService1.xsd" MetadataType="Schema" ID="d5c09801-eb26-429f-993d-d670dbc9beeb" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd6" />
+    <MetadataFile FileName="VirtualMachineManagementService.wsdl" MetadataType="Wsdl" ID="3d81f930-8541-474b-a168-223d9916db9a" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?wsdl" />
+    <MetadataFile FileName="VirtualMachineManagementService2.xsd" MetadataType="Schema" ID="8449a596-d2ef-442f-aae8-168422905b82" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd1" />
+    <MetadataFile FileName="VirtualMachineManagementService3.xsd" MetadataType="Schema" ID="b1d87806-20ef-4d9a-9fab-d33ea549caff" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd0" />
+    <MetadataFile FileName="VirtualMachineManagementService4.xsd" MetadataType="Schema" ID="00ae921a-4ad6-4e86-a500-0ca27beb340f" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd3" />
+    <MetadataFile FileName="VirtualMachineManagementService5.xsd" MetadataType="Schema" ID="f89de65b-2d1b-4d6e-aad4-7cfe757f38c2" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd2" />
+    <MetadataFile FileName="VirtualMachineManagementService6.xsd" MetadataType="Schema" ID="fe2c362a-87e4-49a4-8eea-1e031a019e7a" SourceId="1" SourceUrl="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd5" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,28 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9409302A-156B-44AF-B0B7-45D2AF13B6EE}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\LICENSE.txt = ..\..\LICENSE.txt
+		..\Readme.htm = ..\Readme.htm
+		..\ReleaseNotes.htm = ..\ReleaseNotes.htm
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebSite", "SolidCP.WebSite\SolidCP.WebSite.csproj", "{168FBFB5-D770-43DE-82F0-089D0F1FD4D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{168FBFB5-D770-43DE-82F0-089D0F1FD4D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{168FBFB5-D770-43DE-82F0-089D0F1FD4D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{168FBFB5-D770-43DE-82F0-089D0F1FD4D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{168FBFB5-D770-43DE-82F0-089D0F1FD4D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

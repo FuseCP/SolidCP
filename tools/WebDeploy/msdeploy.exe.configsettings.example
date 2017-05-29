@@ -1,0 +1,105 @@
+<configuration>
+  <providerFactories>
+    <providerFactory name="archiveDir" enabled="true" />
+    <providerFactory name="package" enabled="true" />
+    <providerFactory name="regKey" enabled="true" />
+    <providerFactory name="regValue" enabled="true" />
+    <providerFactory name="gacAssembly" enabled="true" />
+    <providerFactory name="comObject32" enabled="true" />
+    <providerFactory name="comObject64" enabled="true" />
+    <providerFactory name="metaKey" enabled="true" />
+    <providerFactory name="readOnlyMetaKey" enabled="true" />
+    <providerFactory name="systemInfo" enabled="true" />
+    <providerFactory name="appHostConfig" enabled="true" />
+    <providerFactory name="appPoolConfig" enabled="true" />
+    <providerFactory name="cert" enabled="true" />
+    <providerFactory name="httpCert" enabled="true" />
+    <providerFactory name="rootWebConfig32" enabled="true" />
+    <providerFactory name="machineConfig32" enabled="true" />
+    <providerFactory name="rootWebConfig64" enabled="true" />
+    <providerFactory name="machineConfig64" enabled="true" />
+    <providerFactory name="configSection" enabled="true" />
+    <providerFactory name="manifest" enabled="true" />
+    <providerFactory name="serverRegSettings" enabled="true" />
+    <providerFactory name="dbFullsql" enabled="true" />
+    <providerFactory name="appHostSchema" enabled="true" />
+    <providerFactory name="webServer" enabled="true" />
+    <providerFactory name="webServer60" enabled="true" />
+    <providerFactory name="urlScanConfig" enabled="true" />
+    <providerFactory name="fcgiExtConfig" enabled="true" />
+  </providerFactories>
+  <rules>
+    <rule name="AboFilter" enabled="true" />
+    <rule name="AnonymousUser" enabled="true" />
+    <rule name="AppRootNormalize" enabled="true" />
+    <rule name="ClassicAppPoolProtectRule" enabled="true" />
+    <rule name="CreateApplicationRule" enabled="true" />
+    <rule name="CrossPlatformRule" enabled="true" />
+    <rule name="DependencyCheckAppPoolExists" enabled="true" />
+    <rule name="DependencyCheckInUse" enabled="true" />
+    <rule name="DependencyCheckFailOnError" enabled="true" />
+    <rule name="DependencyCheckFailOnWarning" enabled="false" /> <!-- this rule is not enabled by default -->
+    <rule name="DoNotDeleteRule" enabled="false" /> <!-- this rule is not enabled by default -->
+    <rule name="EnvironmentVariableNormalize" enabled="true" />
+    <rule name="IgnoreFileLastWriteTime" enabled="true" />
+    <rule name="IISConfigFrom64To32" enabled="true" />
+    <rule name="MetakeyToIIS6" enabled="true" />
+    <rule name="Parameterization" enabled="true" allowOverride="false" /> <!-- this rule is not allowed to be turned off by the client -->
+    <rule name="SchemaSection" enabled="true" >
+      <!-- Example allowing a schema file to be sync'd
+        <schemaList>
+           <add  name="mySchema.xml" />
+        </schemaList>
+       -->
+     <!-- Example 
+            1) overriding built in exception for serviceModel
+               section definition so the rule will block sync'ing it.
+            2) adding an exception for mySchemaDefinition section so
+               the rule will not block sync'ing it. 
+        <sectionList>
+           <delete name="system.serviceModel"/>
+           <add    name="mySchemaDefinition"/>
+        </sectionList>
+       -->
+    </rule>
+    <rule name="SkipNewerFilesRule" enabled="false" /> <!-- this rule is not enabled by default -->
+    <rule name="SkipUNC" enabled="true" />
+    <rule name="SyncGeneral" enabled="true" />
+    <rule name="SyncXP" enabled="true" />
+    <rule name="UrlScanSkipIncompat" enabled="true" />
+    <rule name="XpIsapis" enabled="true" />
+  <!-- Example Replace Rule entry 
+    <rule name="MyReplace" type="Microsoft.Web.Deployment.DeploymentReplaceRuleHandler" objectName="site" targetAttributeName="ServerAutoStart" replace="false" />
+   -->
+  <!-- Example Skip Rule entry  
+    <rule name="MySkip" type="Microsoft.Web.Deployment.DeploymentSkipRuleHandler" objectName="filePath" skipAction="Delete" absolutePath="foo.txt"/> 
+   -->
+  </rules>
+  <methods>
+    <method name="GetSystemInfo" enabled="true" />
+    <method name="GetDependencies" enabled="true" />
+  </methods>
+  <linkExtensions>
+    <linkExtension name="ContentExtension" enabled="true" />
+    <linkExtension name="CertificateExtension" enabled="true" />
+    <linkExtension name="FrameworkConfigExtension" enabled="true" />
+    <linkExtension name="HttpCertConfigExtension" enabled="true" />
+  </linkExtensions>
+  <skipDirectives>
+   <!-- Example SkipDirective entries
+    <skipDirective name="AnyMSDeployDirectory">
+      <skip objectName="dirPath" keyAttribute="microsoft web deploy"/>
+    </skipDirective>
+    <skipDirective name="MSDeployDirectory">
+      <skip objectName="dirPath" absolutePath="C:\\Program Files\\IIS\\Microsoft Web Deploy"/>
+    </skipDirective>
+    <skipDirective name="AnyMSDeployRegKey">
+      <skip objectName="regKey"/>
+      <skip attributeName="attributes.path" attributeValue="MSDeploy"/>
+    </skipDirective>
+    <skipDirective name="MSDeployRegKey">
+      <skip objectName="regKey" absolutePath="HKEY_LOCAL_MACHINE\\Software\\Microsoft\\IIS Extensions\\MSDeploy"/>
+    </skipDirective>
+   -->
+  </skipDirectives>
+</configuration>

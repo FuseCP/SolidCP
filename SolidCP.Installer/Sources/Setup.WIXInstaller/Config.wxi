@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+    <?define PROJECTPATH = "..\..\..\SolidCP"?>
+    <?define NAME="SolidCP"?>
+    <?define DESCRIPTION="SolidCP is a complete portal for Cloud Computing Companies and IT Providers to automate the provisioning of a full suite of services on Windows servers."?>
+    <?define ServerTitle="Server"?>
+    <?define ServerDescription="SolidCP Server is a set of services running on the remote server to be controlled. Server application should be reachable from Enterprise Server one."?>
+    <?define EServerTitle="Enterprise Server"?>
+    <?define EServerDescription="Enterprise Server is the heart of SolidCP system. It includes all business logic of the application. Enterprise Server should have access to Server and be accessible from Portal applications."?>
+    <?define PortalTitle="Portal"?>
+    <?define PortalDescription="SolidCP Portal is a control panel itself with user interface which allows managing user accounts, hosting spaces, web sites, FTP accounts, files, etc."?>
+    <?define SchedulerTitle="Scheduler Service"?>
+    <?define SchedulerDescription="SolidCP Scheduler Service"?>
+    <?define VERSION="$(var.Version)"?>
+    <?define MANUFACTURER="SolidCP"?>
+    <?define LICENCE="..\..\..\SolidCP.Installer\Sources\Setup.WIXInstaller\License.rtf"?>
+    <?define ICONLOGO="..\..\..\SolidCP.Installer\Sources\Setup.WIXInstaller\SolidCP.ico"?>
+</Include>

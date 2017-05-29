@@ -1,0 +1,601 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SolidCP.WebDavPortal</RootNamespace>
+    <AssemblyName>SolidCP.WebDavPortal</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CobaltCore">
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.CobaltCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Services3">
+      <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common">
+      <HintPath>..\packages\Ninject.Web.Common.3.2.3.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DataVisualization" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebDAV">
+      <HintPath>..\packages\WebDAV.dll.1.0.0.0\lib\WebDAV.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="SolidCP.EnterpriseServer.Base">
+      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="SolidCP.EnterpriseServer.Client">
+      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="SolidCP.Providers.Base">
+      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="SolidCP.Server.Utils, Version=2.1.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Bin\SolidCP.Server.Utils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Configurations\ActionSelectors\OwaActionSelector.cs" />
+    <Compile Include="Configurations\Constraints\OrganizationRouteConstraint.cs" />
+    <Compile Include="Configurations\ControllerConfigurations\OwaControllerConfiguration.cs" />
+    <Compile Include="Constants\Formats.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FileSystemController.cs" />
+    <Compile Include="Controllers\Api\OwaController.cs" />
+    <Compile Include="CustomAttributes\FormValueRequiredAttribute.cs" />
+    <Compile Include="CustomAttributes\LdapAuthorizationAttribute.cs" />
+    <Compile Include="CustomAttributes\PhoneNumberAttribute.cs" />
+    <Compile Include="CustomAttributes\OrganizationPasswordPolicyAttribute.cs" />
+    <Compile Include="CustomAttributes\UniqueAdPhoneNumberAttribute.cs" />
+    <Compile Include="DependencyInjection\NinjectDependecyResolver.cs" />
+    <Compile Include="DependencyInjection\PortalDependencies.cs" />
+    <Compile Include="DependencyInjection\Providers\HttpSessionStateProvider.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Extensions\UriExtensions.cs" />
+    <Compile Include="Extensions\UrlHelperExtensions.cs" />
+    <Compile Include="FileOperations\FileOpenerManager.cs" />
+    <Compile Include="FileOperations\FileOpenerType.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\DataTableHelper.cs" />
+    <Compile Include="Helpers\ViewDataHelper.cs" />
+    <Compile Include="HttpHandlers\AccessTokenHandler.cs" />
+    <Compile Include="HttpHandlers\FileTransferRequestHandler.cs" />
+    <Compile Include="Mapping\AutoMapperPortalConfiguration.cs" />
+    <Compile Include="Mapping\Profiles\Account\UserProfileProfile.cs" />
+    <Compile Include="Mapping\Profiles\Webdav\ResourceTableItemProfile.cs" />
+    <Compile Include="ModelBinders\DataTables\JqueryDataTableModelBinder.cs" />
+    <Compile Include="Models\AccountModel.cs" />
+    <Compile Include="Models\Account\Enums\PincodeSendMethod.cs" />
+    <Compile Include="Models\Account\PasswordChangeModel.cs" />
+    <Compile Include="Models\Account\PasswordResetLoginModel.cs" />
+    <Compile Include="Models\Account\PasswordResetFinalStepModel.cs" />
+    <Compile Include="Models\Account\PasswordResetPincodeSendOptionsModel.cs" />
+    <Compile Include="Models\Account\PasswordResetPincodeModel.cs" />
+    <Compile Include="Models\Account\UserProfile.cs" />
+    <Compile Include="Models\Common\AjaxModel.cs" />
+    <Compile Include="Models\Common\DataTable\JqueryDataTableBaseEntity.cs" />
+    <Compile Include="Models\Common\DataTable\JqueryDataTablesResponse.cs" />
+    <Compile Include="Models\Common\DataTable\JqueryDataTableColumn.cs" />
+    <Compile Include="Models\Common\DataTable\JqueryDataTableOrder.cs" />
+    <Compile Include="Models\Common\DataTable\JqueryDataTableRequest.cs" />
+    <Compile Include="Models\Common\DataTable\JqueryDataTableSearch.cs" />
+    <Compile Include="Models\Common\EditorTemplates\PasswordEditor.cs" />
+    <Compile Include="Models\Common\Enums\MessageType.cs" />
+    <Compile Include="Models\Common\Message.cs" />
+    <Compile Include="Models\DirectoryIdentity.cs" />
+    <Compile Include="Models\ErrorModel.cs" />
+    <Compile Include="Models\FileSystem\DeleteFilesModel.cs" />
+    <Compile Include="Models\FileSystem\ResourceTableItemModel.cs" />
+    <Compile Include="Models\FileSystem\UploadFileResult.cs" />
+    <Compile Include="Models\ModelForWebDav.cs" />
+    <Compile Include="Models\OfficeOnlineModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\UI.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UI.resx</DependentUpon>
+    </Compile>
+    <Compile Include="App_Start\Routes\AccountRouteNames.cs" />
+    <Compile Include="App_Start\Routes\FileSystemRouteNames.cs" />
+    <Compile Include="App_Start\Routes\OwaRouteNames.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="android-chrome-144x144.png" />
+    <Content Include="android-chrome-192x192.png" />
+    <Content Include="android-chrome-36x36.png" />
+    <Content Include="android-chrome-48x48.png" />
+    <Content Include="android-chrome-72x72.png" />
+    <Content Include="android-chrome-96x96.png" />
+    <Content Include="apple-touch-icon-114x114.png" />
+    <Content Include="apple-touch-icon-120x120.png" />
+    <Content Include="apple-touch-icon-144x144.png" />
+    <Content Include="apple-touch-icon-152x152.png" />
+    <Content Include="apple-touch-icon-180x180.png" />
+    <Content Include="apple-touch-icon-57x57.png" />
+    <Content Include="apple-touch-icon-60x60.png" />
+    <Content Include="apple-touch-icon-72x72.png" />
+    <Content Include="apple-touch-icon-76x76.png" />
+    <Content Include="apple-touch-icon-precomposed.png" />
+    <Content Include="apple-touch-icon.png" />
+    <Content Include="browserconfig.xml" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.autoFill.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.autoFill.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.bootstrap.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.colReorder.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.colReorder.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.colVis.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.colvis.jqueryui.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.colVis.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.fixedColumns.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.fixedColumns.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.fixedHeader.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.fixedHeader.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.foundation.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.jqueryui.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.keyTable.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.keyTable.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.responsive.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.scroller.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.scroller.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.tableTools.css" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.tableTools.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\jquery.dataTables.css" />
+    <Content Include="Content\DataTables-1.10.4\css\jquery.dataTables.min.css" />
+    <Content Include="Content\DataTables-1.10.4\css\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\DataTables-1.10.4\images\background.png" />
+    <Content Include="Content\DataTables-1.10.4\images\back_disabled.png" />
+    <Content Include="Content\DataTables-1.10.4\images\back_enabled.png" />
+    <Content Include="Content\DataTables-1.10.4\images\back_enabled_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\collection.png" />
+    <Content Include="Content\DataTables-1.10.4\images\collection_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\copy.png" />
+    <Content Include="Content\DataTables-1.10.4\images\copy_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\csv.png" />
+    <Content Include="Content\DataTables-1.10.4\images\csv_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\details_close.png" />
+    <Content Include="Content\DataTables-1.10.4\images\details_open.png" />
+    <Content Include="Content\DataTables-1.10.4\images\filler.png" />
+    <Content Include="Content\DataTables-1.10.4\images\forward_disabled.png" />
+    <Content Include="Content\DataTables-1.10.4\images\forward_enabled.png" />
+    <Content Include="Content\DataTables-1.10.4\images\forward_enabled_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\insert.png" />
+    <Content Include="Content\DataTables-1.10.4\images\loading-background.png" />
+    <Content Include="Content\DataTables-1.10.4\images\pdf.png" />
+    <Content Include="Content\DataTables-1.10.4\images\pdf_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\print.png" />
+    <Content Include="Content\DataTables-1.10.4\images\print_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\images\sort_asc.png" />
+    <Content Include="Content\DataTables-1.10.4\images\sort_asc_disabled.png" />
+    <Content Include="Content\DataTables-1.10.4\images\sort_both.png" />
+    <Content Include="Content\DataTables-1.10.4\images\sort_desc.png" />
+    <Content Include="Content\DataTables-1.10.4\images\sort_desc_disabled.png" />
+    <Content Include="Content\DataTables-1.10.4\images\xls.png" />
+    <Content Include="Content\DataTables-1.10.4\images\xls_hover.png" />
+    <Content Include="Content\DataTables-1.10.4\swf\copy_csv_xls.swf" />
+    <Content Include="Content\DataTables-1.10.4\swf\copy_csv_xls_pdf.swf" />
+    <Content Include="Content\Images\avi-icon.png" />
+    <Content Include="Content\Images\bigLoader.gif" />
+    <Content Include="Content\Images\coreldraw-icon.png" />
+    <Content Include="Content\Images\csv-icon.png" />
+    <Content Include="Content\Images\excel-icon.png" />
+    <Content Include="Content\Images\folder_100x100.png" />
+    <Content Include="Content\Images\indicator_medium.gif" />
+    <Content Include="Content\Images\jpg-icon.png" />
+    <Content Include="Content\Images\mp3-icon.png" />
+    <Content Include="Content\Images\other-icon.png" />
+    <Content Include="Content\Images\pdf-icon.png" />
+    <Content Include="Content\Images\png-icon.png" />
+    <Content Include="Content\Images\ppt-icon.png" />
+    <Content Include="Content\Images\rar-icon.png" />
+    <Content Include="Content\Images\txt-icon.png" />
+    <Content Include="Content\Images\word-icon.png" />
+    <Content Include="Content\Images\zip-icon.png" />
+    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload-noscript.css" />
+    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload-ui-noscript.css" />
+    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload-ui.css" />
+    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload.css" />
+    <Content Include="Content\jQuery.FileUpload\img\loading.gif" />
+    <Content Include="Content\jQuery.FileUpload\img\progressbar.gif" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.menu.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.spinner.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\jquery.ui.tooltip.css" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.menu.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.spinner.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
+    <Content Include="favicon-16x16.png" />
+    <Content Include="favicon-32x32.ico" />
+    <Content Include="favicon-32x32.png" />
+    <Content Include="favicon-96x96.png" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.responsive.scss" />
+    <Content Include="Content\DataTables-1.10.4\css\dataTables.jqueryui.scss" />
+    <Content Include="Content\OwaFiles\Empty.docx" />
+    <Content Include="Content\OwaFiles\Empty.pptx" />
+    <Content Include="manifest.json" />
+    <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="mstile-144x144.png" />
+    <Content Include="mstile-150x150.png" />
+    <Content Include="mstile-310x150.png" />
+    <Content Include="mstile-310x310.png" />
+    <Content Include="mstile-70x70.png" />
+    <Content Include="safari-pinned-tab.svg" />
+    <Content Include="Scripts\appScripts\authentication.js" />
+    <Content Include="Scripts\appScripts\dialogs.js" />
+    <Content Include="Scripts\appScripts\fileBrowsing.js" />
+    <Content Include="Scripts\appScripts\messages.js" />
+    <Content Include="Scripts\appScripts\recalculateResourseHeight.js" />
+    <Content Include="Scripts\appScripts\uploadingData2.js" />
+    <Content Include="Scripts\appScripts\validation\passwordeditor.unobtrusive.js" />
+    <Content Include="Scripts\appScripts\scp-webdav.js" />
+    <Content Include="Scripts\appScripts\scp.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.autoFill.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.autoFill.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.bootstrap.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.colReorder.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.colReorder.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.colVis.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.colVis.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.fixedColumns.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.fixedColumns.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.fixedHeader.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.fixedHeader.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.foundation.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.jqueryui.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.keyTable.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.keyTable.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.responsive.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.responsive.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.scroller.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.scroller.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.tableTools.js" />
+    <Content Include="Scripts\DataTables-1.10.4\dataTables.tableTools.min.js" />
+    <Content Include="Scripts\DataTables-1.10.4\jquery.dataTables.js" />
+    <Content Include="Scripts\DataTables-1.10.4\jquery.dataTables.min.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-ui-1.9.0.js" />
+    <Content Include="Scripts\jquery-ui-1.9.0.min.js" />
+    <Content Include="Scripts\jquery.cookie.js" />
+    <Content Include="Scripts\jQuery.FileUpload\cors\jquery.postmessage-transport.js" />
+    <Content Include="Scripts\jQuery.FileUpload\cors\jquery.xdr-transport.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-angular.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-audio.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-image.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-jquery-ui.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-process.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-ui.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-validate.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-video.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload.js" />
+    <Content Include="Scripts\jQuery.FileUpload\jquery.iframe-transport.js" />
+    <Content Include="Scripts\jQuery.FileUpload\tmpl.min.js" />
+    <Content Include="Scripts\jquery.ui.widget.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\npm.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.js" />
+    <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
+    <Content Include="Views\FileSystem\ShowContent.cshtml" />
+    <Content Include="Views\FileSystem\ShowOfficeDocument.cshtml" />
+    <Content Include="Views\FileSystem\_ResourseCollectionPartial.cshtml" />
+    <Content Include="Views\FileSystem\_ResoursePartial.cshtml" />
+    <Content Include="Views\Shared\_ProcessDialog.cshtml" />
+    <Content Include="Views\Shared\_ConfirmDialog.cshtml" />
+    <Content Include="Views\FileSystem\_ShowContentTable.cshtml" />
+    <Content Include="Views\FileSystem\_ShowContentTopMenu.cshtml" />
+    <Content Include="Views\FileSystem\_ShowContentBigIcons.cshtml" />
+    <Content Include="Views\FileSystem\UploadFiles.cshtml" />
+    <Content Include="Views\FileSystem\ShowContentSearchResultTable.cshtml" />
+    <Content Include="Views\Account\UserProfile.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\CountrySelector.cshtml" />
+    <Content Include="Views\Account\PasswordChange.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\PasswordEditor.cshtml" />
+    <Content Include="Views\Account\PasswordResetLogin.cshtml" />
+    <Content Include="Views\Account\PasswordResetEmailSent.cshtml" />
+    <Content Include="Views\Account\PasswordResetPincode.cshtml" />
+    <Content Include="Views\Account\PasswordResetFinalStep.cshtml" />
+    <Content Include="Views\Account\PasswordSuccessfullyChanged.cshtml" />
+    <Content Include="Views\Account\PasswordResetPincodeSendOptions.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\FileSystem\Enums\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Owa\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CPCC\CPCC.csproj">
+      <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
+      <Name>CPCC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.WebDav.Core\SolidCP.WebDav.Core.csproj">
+      <Project>{BA147805-9EF1-45F2-BF32-A5825D4E950D}</Project>
+      <Name>SolidCP.WebDav.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Messages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\UI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UI.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>3289</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:9005/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="chkPasswordEnabled.Text" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="chkReplyToList.Text" xml:space="preserve">
+    <value>Reply To List</value>
+  </data>
+  <data name="chkSubjectPrefixEnabled.Text" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="ctxValDomain.Text" xml:space="preserve">
+    <value>Moderator should be within mail domain where Mail List is located</value>
+  </data>
+  <data name="ddlPostingModeItem.Anyone" xml:space="preserve">
+    <value>Anyone</value>
+  </data>
+  <data name="ddlPostingModeItem.MembersOnly" xml:space="preserve">
+    <value>Subscribers Only</value>
+  </data>
+  <data name="ddlPostingModeItem.ModeratorOnly" xml:space="preserve">
+    <value>Moderator Only</value>
+  </data>
+  <data name="ddlPostingModeItem.Password" xml:space="preserve">
+    <value>Password Protected Posting</value>
+  </data>
+  <data name="ddlReplyToItem.List" xml:space="preserve">
+    <value>List</value>
+  </data>
+  <data name="ddlReplyToItem.Moderator" xml:space="preserve">
+    <value>Moderator</value>
+  </data>
+  <data name="ddlReplyToItem.Sender" xml:space="preserve">
+    <value>Sender</value>
+  </data>
+  <data name="lblDescription.Text" xml:space="preserve">
+    <value>List Description:</value>
+  </data>
+  <data name="lblListOptions.Text" xml:space="preserve">
+    <value>List Options:</value>
+  </data>
+  <data name="lblMaxMessageSize.Text" xml:space="preserve">
+    <value>Max Message Size, KB:</value>
+  </data>
+  <data name="lblMaxRecipients.Text" xml:space="preserve">
+    <value>Max Recipients per Message:</value>
+  </data>
+  <data name="lblMembers.Text" xml:space="preserve">
+    <value>Mailing List Members:</value>
+  </data>
+  <data name="lblModerationEnabled.Text" xml:space="preserve">
+    <value>Moderation is Enabled:</value>
+  </data>
+  <data name="lblModeratorAddress.Text" xml:space="preserve">
+    <value>List Moderator:</value>
+  </data>
+  <data name="lblPostingMode.Text" xml:space="preserve">
+    <value>Who Can Post:</value>
+  </data>
+  <data name="lblPostingPassword.Text" xml:space="preserve">
+    <value>List Password:</value>
+  </data>
+  <data name="lblReplyTo.Text" xml:space="preserve">
+    <value>Subscribers Reply To:</value>
+  </data>
+  <data name="lblSubjectPrefix.Text" xml:space="preserve">
+    <value>Subject Prefix:</value>
+  </data>
+  <data name="Text.SelectModerator" xml:space="preserve">
+    <value>&lt;Choose a moderator&gt;</value>
+  </data>
+  <data name="AdditionalOptions.Text" xml:space="preserve">
+    <value>List Additional Options</value>
+  </data>
+  <data name="lbAllowUnsubscribe.Text" xml:space="preserve">
+    <value>Enable Unsubscribe from Subject:</value>
+  </data>
+  <data name="lbDigestMode.Text" xml:space="preserve">
+    <value>Enable Digest Mode:</value>
+  </data>
+  <data name="lbDisableListcommand.Text" xml:space="preserve">
+    <value>Enable LIST Command:</value>
+  </data>
+  <data name="lbDisableSubscribecommand.Text" xml:space="preserve">
+    <value>Enable SUBSCRIBE Command:</value>
+  </data>
+  <data name="lblListFromAddress.Text" xml:space="preserve">
+    <value>List From Address:</value>
+  </data>
+  <data name="lblListReplyToAddress.Text" xml:space="preserve">
+    <value>List Reply To Address:</value>
+  </data>
+  <data name="lblListToAddress.Text" xml:space="preserve">
+    <value>List To Address:</value>
+  </data>
+  <data name="lbSendSubscribe.Text" xml:space="preserve">
+    <value>Send Subscribe Email:</value>
+  </data>
+  <data name="lbSendUnsubscribe.Text" xml:space="preserve">
+    <value>Send Unsubscribe Email:</value>
+  </data>
+</root>

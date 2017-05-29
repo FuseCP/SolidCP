@@ -1,0 +1,545 @@
+﻿<?xml version="1.0" encoding="utf-8"?><NewDataSet><xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"><xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true"><xs:complexType><xs:choice minOccurs="0" maxOccurs="unbounded"><xs:element name="Table"><xs:complexType><xs:sequence><xs:element name="SettingsName" type="xs:string" minOccurs="0" /><xs:element name="PropertyName" type="xs:string" minOccurs="0" /><xs:element name="PropertyValue" type="xs:string" minOccurs="0" /></xs:sequence></xs:complexType></xs:element></xs:choice></xs:complexType></xs:element></xs:schema><Table><SettingsName>ActivateServicesTemplate</SettingsName><PropertyName>CC</PropertyName><PropertyValue>info@acmehosting.com</PropertyValue></Table><Table><SettingsName>ActivateServicesTemplate</SettingsName><PropertyName>From</PropertyName><PropertyValue>support@acmehosting.com</PropertyValue></Table><Table><SettingsName>ActivateServicesTemplate</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;Activated Service Summary Information&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.2em; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+
+&lt;div class="Header"&gt;
+	Activated Service Information
+&lt;/div&gt;
+
+&lt;p&gt;Hello #customer["FirstName"]#,&lt;/p&gt;
+
+&lt;p&gt;"#service.ServiceName#" service has been activated under your user account
+and below is the summary information.&lt;/p&gt;
+&lt;a name="overview"&gt;&lt;/a&gt;
+&lt;h1&gt;Service Overview&lt;/h1&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Service Name:&lt;/td&gt;
+        &lt;td&gt;#service.ServiceName#&lt;/td&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Created:&lt;/td&gt;
+        &lt;td&gt;#service.Created#&lt;/td&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Setup fee:&lt;/td&gt;
+        &lt;td&gt;#service.Currency#&amp;nbsp;#format(service.SetupFee, "0.00")#&lt;/td&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Recurring fee:&lt;/td&gt;
+        &lt;td&gt;#service.Currency#&amp;nbsp;#format(service.RecurringFee, "0.00")#&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+If you have any questions regarding your hosting account, feel free to contact our sales department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.acmehosting.com"&gt;www.acmehosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@acmehosting.com"&gt;support@acmehosting.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><SettingsName>ActivateServicesTemplate</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>Activate Service Notification</PropertyValue></Table><Table><SettingsName>ActivateServicesTemplate</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>
+================================
+   Activated Service Information
+================================
+
+Hello #Customer["FirstName"]#,
+
+"#service.ServiceName#" service has been activated under your user account
+and below is the summary information.
+
+Service Overview
+=============
+Service Name: #service.ServiceName#
+Created: #service.Created#
+Setup fee: #service.Currency# #format(service.SetupFee, "0.00")#
+Recurring fee: #service.Currency# #format(service.RecurringFee, "0.00")#
+
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.acmehosting.com
+E-Mail: support@acmehosting.com</PropertyValue></Table><Table><SettingsName>CancelServicesTemplate</SettingsName><PropertyName>CC</PropertyName><PropertyValue>sales@acmehosting.com</PropertyValue></Table><Table><SettingsName>CancelServicesTemplate</SettingsName><PropertyName>From</PropertyName><PropertyValue>support@acmehosting.com</PropertyValue></Table><Table><SettingsName>CancelServicesTemplate</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;Cancel Service Summary Information&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.2em; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+
+&lt;div class="Header"&gt;
+	Cancelled Service Information
+&lt;/div&gt;
+
+&lt;p&gt;Hello #customer["FirstName"]#,&lt;/p&gt;
+
+&lt;p&gt;"#service.ServiceName#" service has been cancelled under your user account
+and below is the summary information.&lt;/p&gt;
+&lt;h1&gt;Service Overview&lt;/h1&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Service Name:&lt;/td&gt;
+        &lt;td&gt;#service.ServiceName#&lt;/td&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Created:&lt;/td&gt;
+        &lt;td&gt;#service.Created#&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+If you have any questions regarding your hosting account, feel free to contact our sales department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.acmehosting.com"&gt;www.acmehosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@acmehosting.com"&gt;support@acmehosting.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><SettingsName>CancelServicesTemplate</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>Cancel Service Notificaton</PropertyValue></Table><Table><SettingsName>CancelServicesTemplate</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>
+================================
+   Cancelled Service Information
+================================
+
+Hello #Customer["FirstName"]#,
+
+"#service.ServiceName#" service has been cancelled under your user account
+and below is the summary information.
+
+Service Overview
+=============
+Service Name: #service.ServiceName#
+Created: #service.Created#
+
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.acmehosting.com
+E-Mail: support@acmehosting.com</PropertyValue></Table><Table><SettingsName>EmitInvoiceTemplate</SettingsName><PropertyName>CC</PropertyName><PropertyValue>info@acmehosting.com</PropertyValue></Table><Table><SettingsName>EmitInvoiceTemplate</SettingsName><PropertyName>From</PropertyName><PropertyValue>sales@acmehosting.com</PropertyValue></Table><Table><SettingsName>EmitInvoiceTemplate</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>&lt;style type="text/css"&gt;
+	.Summary { background-color: ##ffffff; padding: 5px; }
+	.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+	.Summary A { color: ##0153A4; }
+	.Summary { font-family: Tahoma; font-size: 9pt; }
+	.Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+	.Summary H2 { font-size: 1.2em; } 
+	.Summary TABLE { border: solid 1px ##e5e5e5; }
+	.Summary TH,
+	.Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+	.Summary TD { padding: 8px; font-size: 9pt; }
+	.Summary UL LI { font-size: 1.1em; font-weight: bold; }
+	.Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+	.Centered { text-align: center; }
+	.AlignRight { text-align: right; }
+	.Width12Percent { width: 12%; }
+&lt;/style&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+
+&lt;div class="Header"&gt;
+	Invoice Summary Information
+&lt;/div&gt;
+
+&lt;p&gt;Hello #Customer["FirstName"]#,&lt;/p&gt;
+
+&lt;p&gt;We've created this invoice for services you ordered. You can find this invoice details under your user account 
+and below is the summary information.&lt;/p&gt;
+
+&lt;ad:if test="#isdefined("IsEmail") and isdefined("ExtraArgs")#"&gt;
+	&lt;ad:if test="#not(isnull(ExtraArgs["InvoiceDirectURL"]))#"&gt;
+	&lt;p&gt;You may use the following link to pay for invoice later &lt;a href="#ExtraArgs["InvoiceDirectURL"]#"&gt;#ExtraArgs["InvoiceDirectURL"]#&lt;/a&gt;.&lt;/p&gt;
+	&lt;/ad:if&gt;
+&lt;/ad:if&gt;
+
+&lt;h1&gt;Invoice Overview&lt;/h1&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Invoice ##:&lt;/td&gt;
+&lt;ad:if test="#isnull(Invoice.InvoiceNumber)#"&gt;
+        &lt;td&gt;#Invoice.InvoiceId#&lt;/td&gt;
+&lt;ad:else&gt;
+        &lt;td&gt;#Invoice.InvoiceNumber#&lt;/td&gt;
+&lt;/ad:if&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Terms:&lt;/td&gt;
+        &lt;td&gt;Due Upon Receipt&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Invoice Date:&lt;/td&gt;
+        &lt;td&gt;#Invoice.Created.ToShortDateString()#&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;h1&gt;Invoice Items&lt;/h1&gt;
+&lt;table width="100%"&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Description&lt;/td&gt;
+	&lt;td class="Label Centered"&gt;Type&lt;/td&gt;
+        &lt;td class="Label Centered"&gt;Qty&lt;/td&gt;
+		&lt;td class="Label Centered"&gt;Unit Price&lt;/td&gt;
+		&lt;td class="Label Centered"&gt;Total&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;ad:foreach collection="#InvoiceLines#" var="Line" index="i"&gt;
+	&lt;tr&gt;
+		&lt;td&gt;#Line.ItemName#&lt;ad:ShowBillingPeriod Item="#Line#" /&gt;&lt;/td&gt;
+		&lt;td class="Centered Width12Percent"&gt;#Line.TypeName#&lt;/td&gt;
+		&lt;td class="Centered Width12Percent"&gt;#Line.Quantity#&lt;/td&gt;
+		&lt;td class="Centered Width12Percent"&gt;#Invoice.Currency#&amp;nbsp;#Line.UnitPrice.ToString("C")#&lt;/td&gt;
+		&lt;td class="Centered Width12Percent"&gt;#Invoice.Currency#&amp;nbsp;#Line.Total.ToString("C")#&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;/ad:foreach&gt;
+	&lt;tr&gt;
+		&lt;td colspan="4" class="AlignRight"&gt;Sub Total&amp;nbsp;&lt;/td&gt;
+		&lt;td class="Centered"&gt;#Invoice.Currency#&amp;nbsp;#Invoice.SubTotal.ToString("C")#&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;ad:if test="#isnull(Tax)#"&gt;
+	&lt;tr&gt;
+		&lt;td colspan="4" class="AlignRight"&gt;Taxes&amp;nbsp;#format(0.00, "#.##")#%&lt;/td&gt;
+		&lt;td class="Centered" nowrap="nowrap"&gt;#Invoice.Currency#&amp;nbsp;#format(0.00, "C")#&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;ad:elseif test="#equals(Tax.TypeId, 1)#"&gt;
+	&lt;tr&gt;
+		&lt;td colspan="4" class="AlignRight"&gt;#Tax.Description#&lt;/td&gt;
+		&lt;td class="Centered" nowrap="nowrap"&gt;#Invoice.Currency#&amp;nbsp;#Tax.Amount.ToString("C")#&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;ad:elseif test="#equals(Tax.TypeId, 2)#"&gt;
+	&lt;tr&gt;
+		&lt;td colspan="4" class="AlignRight"&gt;#Tax.Description#&amp;nbsp;#Tax.Amount.ToString("#.##")#%&lt;/td&gt;
+		&lt;td class="Centered" nowrap="nowrap"&gt;#Invoice.Currency#&amp;nbsp;#Invoice.TaxAmount.ToString("C")#&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;ad:elseif test="#equals(Tax.TypeId, 3)#"&gt;
+	&lt;tr&gt;
+		&lt;td colspan="4" class="AlignRight"&gt;#Tax.Description#&amp;nbsp;#Tax.Amount.ToString("#.##")#%&lt;/td&gt;
+		&lt;td class="Centered" nowrap="nowrap"&gt;#Invoice.Currency#&amp;nbsp;#Invoice.TaxAmount.ToString("C")#&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;/ad:if&gt;
+	&lt;tr&gt;
+		&lt;td colspan="4" class="AlignRight"&gt;Total&amp;nbsp;&lt;/td&gt;
+		&lt;td class="Centered"&gt;#Invoice.Currency#&amp;nbsp;#Invoice.Total.ToString("C")#&lt;/td&gt;
+	&lt;/tr&gt;
+&lt;/table&gt;
+&lt;p&gt;
+If you have any questions regarding your hosting account or this invoice, feel free to contact our sales department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;Some notes regarding invoice or how to apply your enquiries...&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.acmehosting.com"&gt;www.acmehosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@acmehosting.com"&gt;support@acmehosting.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;ad:template name="ShowBillingPeriod"&gt;
+	&lt;ad:if test="#InvoiceServices.ContainsKey(Item.ServiceId)#"&gt;
+		&lt;ad:set name="Service" value="#InvoiceServices[Item.ServiceId]#" /&gt;
+		&lt;ad:if test="#isnotempty(Service.BillingPeriod)#"&gt;&amp;nbsp;(&lt;b&gt;#Service.PeriodLength#&amp;nbsp;#Service.BillingPeriod#&lt;/b&gt;)&lt;/ad:if&gt;
+	&lt;/ad:if&gt;
+&lt;/ad:template&gt;</PropertyValue></Table><Table><SettingsName>EmitInvoiceTemplate</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>Invoice Summary Information</PropertyValue></Table><Table><SettingsName>EmitInvoiceTemplate</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>================================
+   Invoice Summary Information
+================================
+
+Hello #Customer["FirstName"]#,
+
+We've created this invoice for services you ordered. You can find this invoice details under your user account 
+and below is the summary information.
+
+&lt;ad:if test="#isdefined("IsEmail") and isdefined("ExtraArgs")#"&gt;
+	&lt;ad:if test="#not(isnull(ExtraArgs["InvoiceDirectURL"]))#"&gt;
+You may copy and paste the following link to the browser in order to pay for invoice later #ExtraArgs["InvoiceDirectURL"]#.
+	&lt;/ad:if&gt;
+&lt;/ad:if&gt;
+
+Invoice Overview
+=============
+Invoice ##: &lt;ad:if test="#isnull(Invoice.InvoiceNumber)#"&gt;#Invoice.InvoiceId#&lt;ad:else&gt;#Invoice.InvoiceNumber#&lt;/ad:if&gt;
+Terms: Due Upon Receipt
+Invoice Date: #Invoice.Created.ToShortDateString()#
+Invoice SubTotal: #Invoice.Currency# #Invoice.SubTotal.ToString("C")#
+&lt;ad:if test="#isnull(Tax)#"&gt;
+Taxes&amp;nbsp;#format(0.00, "#.##")#%: #Invoice.Currency#&amp;nbsp;#format(0.00, "C")#
+&lt;ad:elseif test="#equals(Tax.TypeId, 1)#"&gt;
+#Tax.Description#: #Invoice.Currency#&amp;nbsp;#Tax.Amount.ToString("C")#
+&lt;ad:elseif test="#equals(Tax.TypeId, 2)#"&gt;
+#Tax.Description#&amp;nbsp;#Tax.Amount.ToString("#.##")#%: #Invoice.Currency#&amp;nbsp;#Invoice.TaxAmount.ToString("C")#
+&lt;ad:elseif test="#equals(Tax.TypeId, 3)#"&gt;
+#Tax.Description#&amp;nbsp;#Tax.Amount.ToString("#.##")#%: #Invoice.Currency#&amp;nbsp;#Invoice.TaxAmount.ToString("C")#
+&lt;/ad:if&gt;
+Invoice Total: #Invoice.Currency# #Invoice.Total.ToString("C")#
+
+
+Invoice Items
+=============
+&lt;ad:foreach collection="#InvoiceLines#" var="Line" index="i"&gt;
+#Line.ItemName#&lt;ad:ShowBillingPeriod Item="#Line#" /&gt;
+	Type: #Line.TypeName#
+	Quantity: #Line.Quantity#
+	Unit Price: #Invoice.Currency#&amp;nbsp;#Line.UnitPrice.ToString("C")#
+	Total: #Invoice.Currency#&amp;nbsp;#Line.Total.ToString("C")#
+&lt;/ad:foreach&gt;
+
+
+If you have any questions regarding your hosting account, feel free to contact our sales department at any time.
+
+Some notes regarding invoice or how to apply your enquiries...
+
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.acmehosting.com
+E-Mail: support@acmehosting.com
+
+&lt;ad:template name="ShowBillingPeriod"&gt;
+	&lt;ad:if test="#InvoiceServices.ContainsKey(Item.ServiceId)#"&gt;
+		&lt;ad:set name="Service" value="#InvoiceServices[Item.ServiceId]#" /&gt;
+		&lt;ad:if test="#isnotempty(Service.BillingPeriod)#"&gt; (#Service.PeriodLength# #Service.BillingPeriod#)&lt;/ad:if&gt;
+	&lt;/ad:if&gt;
+&lt;/ad:template&gt;</PropertyValue></Table><Table><SettingsName>PaymentReceivedTemplate</SettingsName><PropertyName>CC</PropertyName><PropertyValue>info@acmehosting.com</PropertyValue></Table><Table><SettingsName>PaymentReceivedTemplate</SettingsName><PropertyName>From</PropertyName><PropertyValue>sales@acmehosting.com</PropertyValue></Table><Table><SettingsName>PaymentReceivedTemplate</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+	&lt;title&gt;Received Payment Summary Information&lt;/title&gt;
+	&lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.2em; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;div class="Summary"&gt;
+		&lt;a name="top"&gt;&lt;/a&gt;
+		&lt;div class="Header"&gt;
+			Received Payment Information
+		&lt;/div&gt;
+		&lt;p&gt;
+			Hello #Customer["FirstName"]#,&lt;/p&gt;
+		&lt;p&gt;
+			We've received your payment successfully. You can find this payment details under
+			your user account and below is the summary information.&lt;/p&gt;
+		&lt;h1&gt;
+			Payment Overview&lt;/h1&gt;
+		&lt;table&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Payment ##:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.paymentid#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Invoice ##:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.invoiceid#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Transaction ID ##:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.transactionid#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Created:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.created#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Payment Method:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.methodname#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Payment Status:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.status.ToString()#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+			&lt;tr&gt;
+				&lt;td class="Label"&gt;
+					Payment Total:
+				&lt;/td&gt;
+				&lt;td&gt;
+					#payment.currency# #format(payment.total, "C")#
+				&lt;/td&gt;
+			&lt;/tr&gt;
+		&lt;/table&gt;
+		&lt;p&gt;
+			If you have any questions regarding your hosting account, feel free to contact our
+			sales department at any time.
+		&lt;/p&gt;
+		&lt;p&gt;
+			Best regards,&lt;br /&gt;
+			ACME Hosting Inc.&lt;br /&gt;
+			Web Site: &lt;a href="http://www.acmehosting.com"&gt;www.acmehosting.com&lt;/a&gt;&lt;br /&gt;
+			E-Mail: &lt;a href="mailto:support@acmehosting.com"&gt;support@acmehosting.com&lt;/a&gt;&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</PropertyValue></Table><Table><SettingsName>PaymentReceivedTemplate</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>Payment Received Notification</PropertyValue></Table><Table><SettingsName>PaymentReceivedTemplate</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>================================ Received Payment Information ================================
+Hello #Customer["FirstName"]#,
+
+We've received your payment successfully. You can find this payment details under your user account and below is the summary information.
+
+Payment Overview
+=============
+Payment ##: #payment.paymentid#
+Invoice ##: #payment.invoiceid#
+Transaction ID ##: #payment.transactionid#
+Created: #payment.created#
+Payment Method: #payment.methodname#
+Payment Status: #payment.status.ToString()#
+Payment Total: #payment.currency# #format(payment.total, "C")#
+
+If you have any questions regarding your hosting account, feel free to contact our sales department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.acmehosting.com
+E-Mail: support@acmehosting.com</PropertyValue></Table><Table><SettingsName>SignupSettings</SettingsName><PropertyName>NewbieStatus</PropertyName><PropertyValue>4</PropertyValue></Table><Table><SettingsName>SignupSettings</SettingsName><PropertyName>RegDomainMode</PropertyName><PropertyValue>OPT_DOM_AVAIL</PropertyValue></Table><Table><SettingsName>SignupSettings</SettingsName><PropertyName>SendRegistrationEmail</PropertyName><PropertyValue>true</PropertyValue></Table><Table><SettingsName>SuspendServicesTemplate</SettingsName><PropertyName>CC</PropertyName><PropertyValue>sales@acmehosting.com</PropertyValue></Table><Table><SettingsName>SuspendServicesTemplate</SettingsName><PropertyName>From</PropertyName><PropertyValue>support@acmehosting.com</PropertyValue></Table><Table><SettingsName>SuspendServicesTemplate</SettingsName><PropertyName>HtmlBody</PropertyName><PropertyValue>
+&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+&lt;head&gt;
+    &lt;title&gt;Suspend Service Summary Information&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.2em; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="Summary"&gt;
+
+&lt;a name="top"&gt;&lt;/a&gt;
+
+&lt;div class="Header"&gt;
+	Suspended Service Information
+&lt;/div&gt;
+
+&lt;p&gt;Hello #Customer["FirstName"]#,&lt;/p&gt;
+
+&lt;p&gt;"#service.ServiceName#" service has been suspended under your user account
+and below is the summary information.&lt;/p&gt;
+&lt;h1&gt;Service Overview&lt;/h1&gt;
+
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td class="Label"&gt;Service Name:&lt;/td&gt;
+        &lt;td&gt;#service.ServiceName#&lt;/td&gt;
+    &lt;/tr&gt;
+	&lt;tr&gt;
+        &lt;td class="Label"&gt;Created:&lt;/td&gt;
+        &lt;td&gt;#service.Created#&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;
+If you have any questions regarding your hosting account, feel free to contact our sales department at any time.
+&lt;/p&gt;
+
+&lt;p&gt;
+Best regards,&lt;br /&gt;
+ACME Hosting Inc.&lt;br /&gt;
+Web Site: &lt;a href="http://www.acmehosting.com"&gt;www.acmehosting.com&lt;/a&gt;&lt;br /&gt;
+E-Mail: &lt;a href="mailto:support@acmehosting.com"&gt;support@acmehosting.com&lt;/a&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</PropertyValue></Table><Table><SettingsName>SuspendServicesTemplate</SettingsName><PropertyName>Subject</PropertyName><PropertyValue>Suspend Service Notification</PropertyValue></Table><Table><SettingsName>SuspendServicesTemplate</SettingsName><PropertyName>TextBody</PropertyName><PropertyValue>
+================================
+   Suspended Service Information
+================================
+
+Hello #Customer["FirstName"]#,
+
+"#service.ServiceName#" service has been suspended under your user account
+and below is the summary information.
+
+Service Overview
+=============
+Service Name: #service.ServiceName#
+Created: #service.Created#
+
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+ACME Hosting Inc.
+Web Site: http://www.acmehosting.com
+E-Mail: support@acmehosting.com</PropertyValue></Table><Table><SettingsName>SystemSettings</SettingsName><PropertyName>BaseCurrency</PropertyName><PropertyValue>USD</PropertyValue></Table><Table><SettingsName>SystemSettings</SettingsName><PropertyName>InvoiceGracePeriod</PropertyName><PropertyValue>2</PropertyValue></Table><Table><SettingsName>SystemSettings</SettingsName><PropertyName>ServiceSuspendThreshold</PropertyName><PropertyValue>3</PropertyValue></Table><Table><SettingsName>SystemSettings</SettingsName><PropertyName>SvcCancelThreshold</PropertyName><PropertyValue>3</PropertyValue></Table><Table><SettingsName>SystemSettings</SettingsName><PropertyName>SvcInvoiceThreshold</PropertyName><PropertyValue>7</PropertyValue></Table></NewDataSet>

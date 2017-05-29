@@ -1,0 +1,939 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ModuleTitle.User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="ModuleTitle.HostingSpace" xml:space="preserve">
+    <value>Hosting Space</value>
+  </data>
+  <data name="ModuleTitle.MyWeb" xml:space="preserve">
+    <value>My Web</value>
+  </data>
+  <data name="ModuleTitle.AccountCreationComplete" xml:space="preserve">
+    <value>Account Creation Complete</value>
+  </data>
+  <data name="ModuleTitle.AccountCreationWizard" xml:space="preserve">
+    <value>Account Creation Wizard</value>
+  </data>
+  <data name="ModuleTitle.AccountSettings" xml:space="preserve">
+    <value>Account Settings</value>
+  </data>
+  <data name="ModuleTitle.AccountsSynchronizationComplete" xml:space="preserve">
+    <value>Accounts Synchronization Complete</value>
+  </data>
+  <data name="ModuleTitle.AccountSummaryLetter" xml:space="preserve">
+    <value>Account Summary Letter</value>
+  </data>
+  <data name="ModuleTitle.AddDomain" xml:space="preserve">
+    <value>Add Domain</value>
+  </data>
+  <data name="ModuleTitle.AddIPAddress" xml:space="preserve">
+    <value>Add IP Address</value>
+  </data>
+  <data name="ModuleTitle.AddMailDomainPointer" xml:space="preserve">
+    <value>Add Mail Domain Pointer</value>
+  </data>
+  <data name="ModuleTitle.AddNewDomain" xml:space="preserve">
+    <value>Add New Domain</value>
+  </data>
+  <data name="ModuleTitle.AddNewService" xml:space="preserve">
+    <value>Add New Service</value>
+  </data>
+  <data name="ModuleTitle.AddNewVirtualServer" xml:space="preserve">
+    <value>Add New Virtual Server</value>
+  </data>
+  <data name="ModuleTitle.AddServer" xml:space="preserve">
+    <value>Add Server</value>
+  </data>
+  <data name="ModuleTitle.AddSharedSSLFolder" xml:space="preserve">
+    <value>Add Shared SSL Folder</value>
+  </data>
+  <data name="ModuleTitle.AddAppVirtualDirectory" xml:space="preserve">
+    <value>Add Virtual Directory</value>
+  </data>
+  <data name="ModuleTitle.AddVirtualServerServices" xml:space="preserve">
+    <value>Add Virtual Server Services</value>
+  </data>
+  <data name="ModuleTitle.AddWebSite" xml:space="preserve">
+    <value>Add Web Site</value>
+  </data>
+  <data name="ModuleTitle.AddWebSiteDomainPointer" xml:space="preserve">
+    <value>Add Web Site Domain Pointer</value>
+  </data>
+  <data name="ModuleTitle.AdvancedStatistics" xml:space="preserve">
+    <value>Advanced Web Statistics</value>
+  </data>
+  <data name="ModuleTitle.AdvancedStatisticsInstallation" xml:space="preserve">
+    <value>Advanced Statistics Installation</value>
+  </data>
+  <data name="ModuleTitle.ApplicationsInstaller" xml:space="preserve">
+    <value>Applications Installer</value>
+  </data>
+  <data name="ModuleTitle.WebApplicationsGallery" xml:space="preserve">
+    <value>Web Application Gallery</value>
+  </data>
+  <data name="ModuleTitle.AuditLog" xml:space="preserve">
+    <value>Audit Log</value>
+  </data>
+  <data name="ModuleTitle.BackupSharePointSite" xml:space="preserve">
+    <value>Backup SharePoint Site</value>
+  </data>
+  <data name="ModuleTitle.BackupSQLDatabase" xml:space="preserve">
+    <value>Backup SQL Database</value>
+  </data>
+  <data name="ModuleTitle.BandwidthReport" xml:space="preserve">
+    <value>Bandwidth Report</value>
+  </data>
+  <data name="ModuleTitle.CustomerSpaces" xml:space="preserve">
+    <value>Customer Spaces</value>
+  </data>
+  <data name="ModuleTitle.CustomizeSpaceGlobalDNSRecords" xml:space="preserve">
+    <value>Customize Space Global DNS Records</value>
+  </data>
+  <data name="ModuleTitle.DeleteHostingSpace" xml:space="preserve">
+    <value>Delete Hosting Space</value>
+  </data>
+  <data name="ModuleTitle.DeleteUserAccount" xml:space="preserve">
+    <value>Delete User Account</value>
+  </data>
+  <data name="ModuleTitle.DiskspaceReport" xml:space="preserve">
+    <value>Disk Space Report</value>
+  </data>
+  <data name="ModuleTitle.OverusageReport" xml:space="preserve">
+    <value>Overusage Report</value>
+  </data>
+  <data name="ModuleTitle.DiskSpaceSummary" xml:space="preserve">
+    <value>Disk Space Summary</value>
+  </data>
+  <data name="ModuleTitle.SCPSQLDatabasesSettings" xml:space="preserve">
+    <value>SolidCP SQL Databases Settings</value>
+  </data>
+  <data name="ModuleTitle.SCPSQLUserSettings" xml:space="preserve">
+    <value>SolidCP SQL User Settings</value>
+  </data>
+  <data name="ModuleTitle.DNSZoneRecords" xml:space="preserve">
+    <value>DNS Zone Records</value>
+  </data>
+  <data name="ModuleTitle.Domains" xml:space="preserve">
+    <value>Domains</value>
+  </data>
+  <data name="ModuleTitle.SolidCPEnterpriseServerSettings" xml:space="preserve">
+    <value>SolidCP Enterprise Server Settings</value>
+  </data>
+  <data name="ModuleTitle.EditAccountSettings" xml:space="preserve">
+    <value>Edit Account Settings</value>
+  </data>
+  <data name="ModuleTitle.EditDomain" xml:space="preserve">
+    <value>Edit Domain</value>
+  </data>
+  <data name="ModuleTitle.EditHostingAddOn" xml:space="preserve">
+    <value>Edit Hosting Add-On</value>
+  </data>
+  <data name="ModuleTitle.EditHostingPlan" xml:space="preserve">
+    <value>Edit Hosting Plan</value>
+  </data>
+  <data name="ModuleTitle.EditHostingSpace" xml:space="preserve">
+    <value>Edit Hosting Space</value>
+  </data>
+  <data name="ModuleTitle.EditIconProperties" xml:space="preserve">
+    <value>Edit Icon Properties</value>
+  </data>
+  <data name="ModuleTitle.EditIPAddress" xml:space="preserve">
+    <value>Edit IP Address</value>
+  </data>
+  <data name="ModuleTitle.EditPeerAccount" xml:space="preserve">
+    <value>Edit Peer Account</value>
+  </data>
+  <data name="ModuleTitle.EditUserDetails" xml:space="preserve">
+    <value>Edit User Details</value>
+  </data>
+  <data name="ModuleTitle.EditVirtualServer" xml:space="preserve">
+    <value>Edit Virtual Server</value>
+  </data>
+  <data name="ModuleTitle.EnterpriseServer" xml:space="preserve">
+    <value>Enterprise Server</value>
+  </data>
+  <data name="ModuleTitle.FileManager" xml:space="preserve">
+    <value>File Manager</value>
+  </data>
+  <data name="ModuleTitle.FTPAccountProperties" xml:space="preserve">
+    <value>FTP Account Properties</value>
+  </data>
+  <data name="ModuleTitle.FtpAccounts" xml:space="preserve">
+    <value>FTP Accounts</value>
+  </data>
+  <data name="ModuleTitle.HostingAccountSettings" xml:space="preserve">
+    <value>Hosting Account Settings</value>
+  </data>
+  <data name="ModuleTitle.HostingAddons" xml:space="preserve">
+    <value>Hosting Add-Ons</value>
+  </data>
+  <data name="ModuleTitle.HostingPlans" xml:space="preserve">
+    <value>Hosting Plans</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceAddOn" xml:space="preserve">
+    <value>Hosting Space Add-On</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceBandwidthDetails" xml:space="preserve">
+    <value>Hosting Space Bandwidth Details</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceDetails" xml:space="preserve">
+    <value>Hosting Space Details</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceDiskSpaceDetails" xml:space="preserve">
+    <value>Hosting Space Disk Space Details</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceFiles" xml:space="preserve">
+    <value>Hosting Space Files</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceSettings" xml:space="preserve">
+    <value>Hosting Space Settings</value>
+  </data>
+  <data name="ModuleTitle.HostingSpaceSummaryLetter" xml:space="preserve">
+    <value>Hosting Space Summary Information</value>
+  </data>
+  <data name="ModuleTitle.Icons" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="ModuleTitle.IconsPadSettings" xml:space="preserve">
+    <value>Icons Pad Settings</value>
+  </data>
+  <data name="ModuleTitle.InstalledSharePointWebPartPackages" xml:space="preserve">
+    <value>Installed SharePoint Web Part Packages</value>
+  </data>
+  <data name="ModuleTitle.InstallSharePointWebPartsPackage" xml:space="preserve">
+    <value>Install SharePoint Web Parts Package</value>
+  </data>
+  <data name="ModuleTitle.InstallWebApplication" xml:space="preserve">
+    <value>Install Web Application</value>
+  </data>
+  <data name="ModuleTitle.DownloadWebApplication" xml:space="preserve">
+    <value>Download Web Application</value>
+  </data>
+  <data name="ModuleTitle.WebApplicationParameters" xml:space="preserve">
+    <value>Web Application Parameters</value>
+  </data>
+  <data name="ModuleTitle.IPAddresses" xml:space="preserve">
+    <value>IP Addresses</value>
+  </data>
+  <data name="ModuleTitle.IPAddressesManager" xml:space="preserve">
+    <value>IP Addresses Manager</value>
+  </data>
+  <data name="ModuleTitle.SignIn" xml:space="preserve">
+    <value>Sign In to Control Panel</value>
+  </data>
+  <data name="ModuleTitle.MailAccountProperties" xml:space="preserve">
+    <value>Mail Account Properties</value>
+  </data>
+  <data name="ModuleTitle.MailAccounts" xml:space="preserve">
+    <value>Mail Accounts</value>
+  </data>
+  <data name="ModuleTitle.MailDomainProperties" xml:space="preserve">
+    <value>Mail Domain Properties</value>
+  </data>
+  <data name="ModuleTitle.MailDomains" xml:space="preserve">
+    <value>Mail Domains</value>
+  </data>
+  <data name="ModuleTitle.MailForwardingProperties" xml:space="preserve">
+    <value>Mail Alias Properties</value>
+  </data>
+  <data name="ModuleTitle.MailForwardings" xml:space="preserve">
+    <value>Mail Aliases</value>
+  </data>
+  <data name="ModuleTitle.MailGroupProperties" xml:space="preserve">
+    <value>Mail Group Properties</value>
+  </data>
+  <data name="ModuleTitle.MailGroups" xml:space="preserve">
+    <value>Mail Groups</value>
+  </data>
+  <data name="ModuleTitle.MailListProperties" xml:space="preserve">
+    <value>Mail List Properties</value>
+  </data>
+  <data name="ModuleTitle.MailLists" xml:space="preserve">
+    <value>Mail Lists</value>
+  </data>
+  <data name="ModuleTitle.ManageServerSystemProcesses" xml:space="preserve">
+    <value>Manage Server System Processes</value>
+  </data>
+  <data name="ModuleTitle.ManageTerminalConnections" xml:space="preserve">
+    <value>Manage Remote Desktop Connections</value>
+  </data>
+  <data name="ModuleTitle.ManageWindowsServices" xml:space="preserve">
+    <value>Manage Windows Services</value>
+  </data>
+  <data name="ModuleTitle.ManagePlatformInstaller" xml:space="preserve">
+    <value>Manage Web Platform Installer</value>
+  </data>
+  <data name="ModuleTitle.MyDatabases" xml:space="preserve">
+    <value>My Databases</value>
+  </data>
+  <data name="ModuleTitle.MyExtras" xml:space="preserve">
+    <value>My Extras</value>
+  </data>
+  <data name="ModuleTitle.MyHostingSpaces" xml:space="preserve">
+    <value>My Hosting Spaces</value>
+  </data>
+  <data name="ModuleTitle.MyMail" xml:space="preserve">
+    <value>My Mail</value>
+  </data>
+  <data name="ModuleTitle.MyPeers" xml:space="preserve">
+    <value>My Peers</value>
+  </data>
+  <data name="ModuleTitle.MySpaces" xml:space="preserve">
+    <value>My Spaces</value>
+  </data>
+  <data name="ModuleTitle.MySql4Databases" xml:space="preserve">
+    <value>MySQL 4 Databases</value>
+  </data>
+  <data name="ModuleTitle.MySql4Users" xml:space="preserve">
+    <value>MySQL 4 Users</value>
+  </data>
+  <data name="ModuleTitle.MySql5Databases" xml:space="preserve">
+    <value>MySQL 5 Databases</value>
+  </data>
+  <data name="ModuleTitle.MySql5Users" xml:space="preserve">
+    <value>MySQL 5 Users</value>
+  </data>
+  <data name="ModuleTitle.MariaDBDatabases" xml:space="preserve">
+    <value>MariaDB Databases</value>
+  </data>
+  <data name="ModuleTitle.MariaDBUsers" xml:space="preserve">
+    <value>MariaDB Users</value>
+  </data>
+  <data name="ModuleTitle.MyUsers" xml:space="preserve">
+    <value>My Users</value>
+  </data>
+  <data name="ModuleTitle.ODBC" xml:space="preserve">
+    <value>ODBC Data Sources</value>
+  </data>
+  <data name="ModuleTitle.ODBCDSNProperties" xml:space="preserve">
+    <value>ODBC DSN Properties</value>
+  </data>
+  <data name="ModuleTitle.ODBCDSNs" xml:space="preserve">
+    <value>ODBC DSNs</value>
+  </data>
+  <data name="ModuleTitle.PasswordReminder" xml:space="preserve">
+    <value>Password Reminder</value>
+  </data>
+  <data name="ModuleTitle.PeerAccounts" xml:space="preserve">
+    <value>Peer Accounts</value>
+  </data>
+  <data name="ModuleTitle.RebootServer" xml:space="preserve">
+    <value>Reboot Server</value>
+  </data>
+  <data name="ModuleTitle.RestoreSharePointSite" xml:space="preserve">
+    <value>Restore SharePoint Site</value>
+  </data>
+  <data name="ModuleTitle.RestoreSQLDatabase" xml:space="preserve">
+    <value>Restore SQL Database</value>
+  </data>
+  <data name="ModuleTitle.ScheduledTaskProperties" xml:space="preserve">
+    <value>Scheduled Task Properties</value>
+  </data>
+  <data name="ModuleTitle.ScheduledTasks" xml:space="preserve">
+    <value>Scheduled Tasks</value>
+  </data>
+  <data name="ModuleTitle.SecuredFolderProperties" xml:space="preserve">
+    <value>Secured Folder Properties</value>
+  </data>
+  <data name="ModuleTitle.SecureGroupProperties" xml:space="preserve">
+    <value>Secure Group Properties</value>
+  </data>
+  <data name="ModuleTitle.SecureUserProperties" xml:space="preserve">
+    <value>Secure User Properties</value>
+  </data>
+  <data name="ModuleTitle.HeliconApeFolderProperties" xml:space="preserve">
+    <value>Edit .htaccess</value>
+  </data>
+  <data name="ModuleTitle.HeliconApeFolderAuthProperties" xml:space="preserve">
+    <value>.htaccess Secure Properties</value>
+  </data>
+  <data name="ModuleTitle.HeliconApeGroupProperties" xml:space="preserve">
+    <value>Helicon Ape Group Properties</value>
+  </data>
+  <data name="ModuleTitle.HeliconApeUserProperties" xml:space="preserve">
+    <value>Helicon Ape User Properties</value>
+  </data>
+  <data name="ModuleTitle.SelectUsertoWorkFor" xml:space="preserve">
+    <value>Select User to Work For</value>
+  </data>
+  <data name="ModuleTitle.ServerEventViewer" xml:space="preserve">
+    <value>Server Event Viewer</value>
+  </data>
+  <data name="ModuleTitle.ServerProperties" xml:space="preserve">
+    <value>Server Properties</value>
+  </data>
+  <data name="ModuleTitle.Servers" xml:space="preserve">
+    <value>Servers</value>
+  </data>
+  <data name="ModuleTitle.ServiceProperties" xml:space="preserve">
+    <value>Service Properties</value>
+  </data>
+  <data name="ModuleTitle.SharedSSL" xml:space="preserve">
+    <value>Shared SSL Folders</value>
+  </data>
+  <data name="ModuleTitle.SharedSSLFolderProperties" xml:space="preserve">
+    <value>Shared SSL Folder Properties</value>
+  </data>
+  <data name="ModuleTitle.SharedSSLFolders" xml:space="preserve">
+    <value>Shared SSL Folders</value>
+  </data>
+  <data name="ModuleTitle.SharePointGroup" xml:space="preserve">
+    <value>SharePoint Group</value>
+  </data>
+  <data name="ModuleTitle.SharePointGroups" xml:space="preserve">
+    <value>SharePoint Groups</value>
+  </data>
+  <data name="ModuleTitle.SharePointSite" xml:space="preserve">
+    <value>SharePoint Site</value>
+  </data>
+  <data name="ModuleTitle.SharePointSites" xml:space="preserve">
+    <value>SharePoint Sites</value>
+  </data>
+  <data name="ModuleTitle.SharePointUserProperties" xml:space="preserve">
+    <value>SharePoint User Properties</value>
+  </data>
+  <data name="ModuleTitle.SharePointUsers" xml:space="preserve">
+    <value>SharePoint Users</value>
+  </data>
+  <data name="ModuleTitle.Sql2000Databases" xml:space="preserve">
+    <value>SQL Server 2000 Databases</value>
+  </data>
+  <data name="ModuleTitle.Sql2000Users" xml:space="preserve">
+    <value>SQL Server 2000 Logins</value>
+  </data>
+  <data name="ModuleTitle.Sql2005Databases" xml:space="preserve">
+    <value>SQL Server 2005 Databases</value>
+  </data>
+  <data name="ModuleTitle.Sql2005Users" xml:space="preserve">
+    <value>SQL Server 2005 Logins</value>
+  </data>
+  <data name="ModuleTitle.Sql2008Databases" xml:space="preserve">
+    <value>SQL Server 2008 Databases</value>
+  </data>
+  <data name="ModuleTitle.Sql2008Users" xml:space="preserve">
+    <value>SQL Server 2008 Logins</value>
+  </data>
+  <data name="ModuleTitle.Sql2012Databases" xml:space="preserve">
+    <value>SQL Server 2012 Databases</value>
+  </data>
+  <data name="ModuleTitle.Sql2012Users" xml:space="preserve">
+    <value>SQL Server 2012 Logins</value>
+  </data>
+  <data name="ModuleTitle.Sql2014Databases" xml:space="preserve">
+    <value>SQL Server 2014 Databases</value>
+  </data>
+  <data name="ModuleTitle.Sql2014Users" xml:space="preserve">
+    <value>SQL Server 2014 Logins</value>
+  </data>
+  <data name="ModuleTitle.Sql2016Databases" xml:space="preserve">
+    <value>SQL Server 2016 Databases</value>
+  </data>
+  <data name="ModuleTitle.Sql2016Users" xml:space="preserve">
+    <value>SQL Server 2016 Logins</value>
+  </data>
+  <data name="ModuleTitle.SQLDatabaseProperties" xml:space="preserve">
+    <value>SQL Database Properties</value>
+  </data>
+  <data name="ModuleTitle.SQLDatabases" xml:space="preserve">
+    <value>SQL Databases</value>
+  </data>
+  <data name="ModuleTitle.SQLUserProperties" xml:space="preserve">
+    <value>SQL User Properties</value>
+  </data>
+  <data name="ModuleTitle.SQLUsers" xml:space="preserve">
+    <value>SQL Users</value>
+  </data>
+  <data name="ModuleTitle.SynchronizeDotNetNukeSolidCPUserAccounts" xml:space="preserve">
+    <value>Synchronize DotNetNuke - SolidCP User Accounts</value>
+  </data>
+  <data name="ModuleTitle.UserAccountProperties" xml:space="preserve">
+    <value>User Account Properties</value>
+  </data>
+  <data name="ModuleTitle.UserHostingSpaces" xml:space="preserve">
+    <value>User Hosting Spaces</value>
+  </data>
+  <data name="ModuleTitle.Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="ModuleTitle.UsersWizard" xml:space="preserve">
+    <value>User Creation Wizard</value>
+  </data>
+  <data name="ModuleTitle.AppVirtualDirectoryProperties" xml:space="preserve">
+    <value>Virtual Directory Properties</value>
+  </data>
+  <data name="ModuleTitle.VirtualServers" xml:space="preserve">
+    <value>Virtual Servers</value>
+  </data>
+  <data name="ModuleTitle.WebApplicationsInstaller" xml:space="preserve">
+    <value>Web Applications Installer</value>
+  </data>
+  <data name="ModuleTitle.WebSiteProperties" xml:space="preserve">
+    <value>Web Site Properties</value>
+  </data>
+  <data name="ModuleTitle.WebSites" xml:space="preserve">
+    <value>Web Sites</value>
+  </data>
+  <data name="ModuleTitle.WorkFor" xml:space="preserve">
+    <value>Work For</value>
+  </data>
+  <data name="ModuleTitle.InstallationComplete" xml:space="preserve">
+    <value>Installation Complete</value>
+  </data>
+  <data name="ModuleTitle.UserNotes" xml:space="preserve">
+    <value>User Account Notes</value>
+  </data>
+  <data name="ModuleTitle.UserSpaces" xml:space="preserve">
+    <value>Hosting Spaces</value>
+  </data>
+  <data name="ModuleTitle.UserCustomersSummary" xml:space="preserve">
+    <value>Customers</value>
+  </data>
+  <data name="ModuleTitle.UserDeleteUserAccount" xml:space="preserve">
+    <value>Delete User Account</value>
+  </data>
+  <data name="ModuleTitle.UserDetails" xml:space="preserve">
+    <value>User Details</value>
+  </data>
+  <data name="ModuleTitle.UserMenu" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="ModuleTitle.UserResellerSettings" xml:space="preserve">
+    <value>Reseller Settings</value>
+  </data>
+  <data name="ModuleTitle.UserTools" xml:space="preserve">
+    <value>User Tools</value>
+  </data>
+  <data name="ModuleTitle.SpaceDetails" xml:space="preserve">
+    <value>Space Details</value>
+  </data>
+  <data name="ModuleTitle.SpaceMenu" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="ModuleTitle.SpaceNestedSpacesSummary" xml:space="preserve">
+    <value>Nested Spaces</value>
+  </data>
+  <data name="ModuleTitle.SpaceNotes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="ModuleTitle.SpaceQuotas" xml:space="preserve">
+    <value>Space Quotas</value>
+  </data>
+  <data name="ModuleTitle.CreateNewOrganization" xml:space="preserve">
+    <value>Create New Organization</value>
+  </data>
+  <data name="ModuleTitle.SpaceSettings" xml:space="preserve">
+    <value>Reseller Settings</value>
+  </data>
+  <data name="ModuleTitle.SpaceTools" xml:space="preserve">
+    <value>Space Tools</value>
+  </data>
+  <data name="ModuleTitle.LoggedUserDetails" xml:space="preserve">
+    <value>My Account Details</value>
+  </data>
+  <data name="ModuleTitle.UserAccountChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ModuleTitle.UserAccountEditDetails" xml:space="preserve">
+    <value>User Account Details</value>
+  </data>
+  <data name="ModuleTitle.UserAccountSummaryLetter" xml:space="preserve">
+    <value>User Account Summary</value>
+  </data>
+  <data name="ModuleTitle.SpaceSummaryLetter" xml:space="preserve">
+    <value>Hosting Space Summary Information</value>
+  </data>
+  <data name="ModuleTitle.BackupSpace" xml:space="preserve">
+    <value>Backup Hosting Space</value>
+  </data>
+  <data name="ModuleTitle.BackupUser" xml:space="preserve">
+    <value>Backup User Account Spaces</value>
+  </data>
+  <data name="ModuleTitle.ImportSpaceResources" xml:space="preserve">
+    <value>Import Hosting Space Resources</value>
+  </data>
+  <data name="ModuleTitle.RestoreSpace" xml:space="preserve">
+    <value>Restore Hosting Space</value>
+  </data>
+  <data name="ModuleTitle.RestoreUser" xml:space="preserve">
+    <value>Restore User Account Spaces</value>
+  </data>
+  <data name="ModuleTitle.BackupServer" xml:space="preserve">
+    <value>Backup Server</value>
+  </data>
+  <data name="ModuleTitle.RestoreServer" xml:space="preserve">
+    <value>Restore Server</value>
+  </data>
+  <data name="ModuleTitle.NestedSpaces" xml:space="preserve">
+    <value>Nested Hosting Spaces</value>
+  </data>
+  <data name="ModuleTitle.SpaceDeleteSpace" xml:space="preserve">
+    <value>Delete Space</value>
+  </data>
+  <data name="ModuleTitle.SpaceEditAddon" xml:space="preserve">
+    <value>Add/Edit Space Add-On</value>
+  </data>
+  <data name="ModuleTitle.SpaceEditDetails" xml:space="preserve">
+    <value>Space Details</value>
+  </data>
+  <data name="ModuleTitle.SpaceEditDnsRecords" xml:space="preserve">
+    <value>Space DNS Records</value>
+  </data>
+  <data name="ModuleTitle.SpaceSettingsEditor" xml:space="preserve">
+    <value>Edit Space Settings</value>
+  </data>
+  <data name="ModuleTitle.SpaceViewQuotas" xml:space="preserve">
+    <value>Space Resource Quotas</value>
+  </data>
+  <data name="ModuleTitle.UserAccountMailTemplateSettings" xml:space="preserve">
+    <value>User Account Mail Templates</value>
+  </data>
+  <data name="ModuleTitle.UserAccountPolicySettings" xml:space="preserve">
+    <value>User Account Policies</value>
+  </data>
+  <data name="ModuleTitle.UserAccountSettingsEditor" xml:space="preserve">
+    <value>User Account Settings</value>
+  </data>
+  <data name="ModuleTitle.UserCreateSpace" xml:space="preserve">
+    <value>Create Hosting Space</value>
+  </data>
+  <data name="ModuleTitle.UserCreateUserAccount" xml:space="preserve">
+    <value>Create User Account</value>
+  </data>
+  <data name="ModuleTitle.UserCustomers" xml:space="preserve">
+    <value>Customer User Accounts</value>
+  </data>
+  <data name="ModuleTitle.UserPeers" xml:space="preserve">
+    <value>Peer Accounts</value>
+  </data>
+  <data name="ModuleTitle.SystemSettings" xml:space="preserve">
+    <value>System Settings</value>
+  </data>
+  <data name="ModuleTitle.SearchSpaces" xml:space="preserve">
+    <value>Search Hosting Spaces</value>
+  </data>
+  <data name="ModuleTitle.SearchObject" xml:space="preserve">
+    <value>Search Objects</value>
+  </data>
+  <data name="ModuleTitle.SearchUsers" xml:space="preserve">
+    <value>Search User Accounts</value>
+  </data>
+  <data name="ModuleTitle.TasksTaskDetails" xml:space="preserve">
+    <value>Task Details</value>
+  </data>
+  <data name="ModuleTitle.Tasks" xml:space="preserve">
+    <value>Tasks</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointSiteCollection" xml:space="preserve">
+    <value>SharePoint Site Collection</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointSiteCollections" xml:space="preserve">
+    <value>Hosted SharePoint Site Collections</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointBackupSiteCollection" xml:space="preserve">
+    <value>Backup Site Collection</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointRestoreSiteCollection" xml:space="preserve">
+    <value>Restore Site Collection</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointEnterpriseSiteCollection" xml:space="preserve">
+    <value>SharePoint Enterprise Site Collection</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointEnterpriseSiteCollections" xml:space="preserve">
+    <value>Hosted SharePoint Enterprise Site Collections</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointEnterpriseBackupSiteCollection" xml:space="preserve">
+    <value>Backup Site Collection</value>
+  </data>
+  <data name="ModuleTitle.HostedSharePointEnterpriseRestoreSiteCollection" xml:space="preserve">
+    <value>Restore Site Collection</value>
+  </data>
+  <data name="ModuleTitle.WebSiteIPAddresses" xml:space="preserve">
+    <value>Web Site IP Addresses</value>
+  </data>
+  <data name="ModuleTitle.WebSitesAllocateIPAddresses" xml:space="preserve">
+    <value>Allocate Web Site IP Addresses</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeAddOrganizationDomain" xml:space="preserve">
+    <value>Add Organization Domain</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeCreateOrganization" xml:space="preserve">
+    <value>Create New Exchange 2010 Organization</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeDeleteOrganization" xml:space="preserve">
+    <value>Delete Organization</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeOrganizationDetails" xml:space="preserve">
+    <value>Organization Details</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeUpdateOrganizationCatchAll" xml:space="preserve">
+    <value>Update Organization Catch-All</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeUpdateOrganizationQuotas" xml:space="preserve">
+    <value>Update Organization Quotas</value>
+  </data>
+  <data name="ModuleTitle.HostedExchangeUpdateOrganizationServicePlan" xml:space="preserve">
+    <value>Update Organization Service Plan</value>
+  </data>
+  <data name="ModuleTitle.SystemCenterServerAddresses" xml:space="preserve">
+    <value>System Center Server Addresses</value>
+  </data>
+  <data name="ModuleTitle.UserAccountVLanCreate" xml:space="preserve">
+    <value>Add VLan to user</value>
+  </data>
+  <data name="ModuleTitle.SetupControlPanelAccounts" xml:space="preserve">
+    <value>Setup SolidCP Accounts</value>
+  </data>
+  <data name="ModuleTitle.ApplyEnableHardQuotaFeature" xml:space="preserve">
+    <value>System Hard Quota</value>
+  </data>
+  <data name="ModuleTitle.HeliconZoo" xml:space="preserve">
+    <value>Helicon Zoo</value>
+  </data>
+  <data name="ModuleTitle.LyncPhoneNumbers" xml:space="preserve">
+    <value>Phone Numbers</value>
+  </data>
+  <data name="ModuleTitle.SfBPhoneNumbers" xml:space="preserve">
+    <value>Phone Numbers</value>
+  </data>
+  <data name="ModuleTitle.AddPhoneNumber" xml:space="preserve">
+    <value>Add Phone Numbers</value>
+  </data>
+  <data name="ModuleTitle.EditPhoneNumber" xml:space="preserve">
+    <value>Edit Phone numbers</value>
+  </data>
+  <data name="ModuleTitle.PhoneNumbers" xml:space="preserve">
+    <value>Phone Numbers</value>
+  </data>
+  <data name="ModuleTitle.UserOrganization" xml:space="preserve">
+    <value>Hosted Organization</value>
+  </data>
+  <data name="ModuleTitle.RDSServers" xml:space="preserve">
+    <value>RDS Servers</value>
+  </data>
+  <data name="ModuleTitle.RDSServersAddserver" xml:space="preserve">
+    <value>Add New RDS Server</value>
+  </data>
+  <data name="ModuleTitle.RDSServersEditServer" xml:space="preserve">
+    <value>Edit RDS Server</value>
+  </data>
+  <data name="ModuleTitle.VirtualPrivateServersProxmox" xml:space="preserve">
+    <value>Virtual Private Servers</value>
+  </data>
+  <data name="ModuleTitle.VirtualPrivateServers2012" xml:space="preserve">
+    <value>Virtual Private Servers</value>
+  </data>
+  <data name="ModuleTitle.VdcCreateServer" xml:space="preserve">
+    <value>Create New VPS</value>
+  </data>
+  <data name="ModuleTitle.VdcImportServer" xml:space="preserve">
+    <value>Import VPS</value>
+  </data>
+  <data name="ModuleTitle.VdcExternalNetwork" xml:space="preserve">
+    <value>External Network</value>
+  </data>
+  <data name="ModuleTitle.VdcManagementNetwork" xml:space="preserve">
+    <value>Management Network</value>
+  </data>
+  <data name="ModuleTitle.VdcAddExternalAddress" xml:space="preserve">
+    <value>Allocate IP Addresses</value>
+  </data>
+  <data name="ModuleTitle.VdcPrivateNetwork" xml:space="preserve">
+    <value>Private Network</value>
+  </data>
+  <data name="ModuleTitle.VdcPermissions" xml:space="preserve">
+    <value>User Permissions</value>
+  </data>
+  <data name="ModuleTitle.VdcAuditLog" xml:space="preserve">
+    <value>Audit Log</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsGeneral" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsConfiguration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsEditConfiguration" xml:space="preserve">
+    <value>Edit Configuration</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsDvd" xml:space="preserve">
+    <value>DVD</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsInsertDvd" xml:space="preserve">
+    <value>DVD</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsSnapshots" xml:space="preserve">
+    <value>Snapshots</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailReplications" xml:space="preserve">
+    <value>Replication</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsNetwork" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsAddExternalAddress" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsAddPrivateAddress" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsNetworking" xml:space="preserve">
+    <value>Permissions</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsTools" xml:space="preserve">
+    <value>Tools</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsAuditLog" xml:space="preserve">
+    <value>Audit Log</value>
+  </data>
+  <data name="ModuleTitle.VpsDetailsHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="ModuleTitle.VpsToolsDeleteServer" xml:space="preserve">
+    <value>Delete Server</value>
+  </data>
+  <data name="ModuleTitle.VpsMoveServer" xml:space="preserve">
+    <value>Move VPS</value>
+  </data>
+  <data name="ModuleTitle.VpsToolsReinstallServer" xml:space="preserve">
+    <value>Re-install Server</value>
+  </data>
+  <data name="ModuleTitle.SpaceStorages" xml:space="preserve">
+    <value>Storage Spaces</value>
+  </data>
+  <data name="ModuleTitle.AddSpaceStorageLevel" xml:space="preserve">
+    <value>Add Storage Space Level</value>
+  </data>
+  <data name="ModuleTitle.EditSpaceStorageLevel" xml:space="preserve">
+    <value>Edit Space Storage Level</value>
+  </data>
+  <data name="ModuleTitle.SpaceStorageLevels" xml:space="preserve">
+    <value>Storage Space Levels</value>
+  </data>
+  <data name="ModuleTitle.AddStorageSpace" xml:space="preserve">
+    <value>Add Storage Space</value>
+  </data>
+  <data name="ModuleTitle.EditStorageSpace" xml:space="preserve">
+    <value>Edit Storage Space</value>
+  </data>
+  <data name="ModuleTitle.AutoUpdateServers" xml:space="preserve">
+    <value>Auto Update Servers</value>
+  </data>
+</root>

@@ -1,0 +1,49 @@
+﻿#isdefined("c")#
+<ad:if test="#isdefined("a") and IsDefined("b")#">
+	A and B are defined
+</ad:if>
+
+ID: #a#
+
+First name: #b#   Last name: #str#
+
+<ad:if test="#not(a is 2)#">
+	a = 2
+<ad:else>
+	b = 2
+</ad:if>
+
+<ad:set name="var1" value="#b#" />
+<ad:set name="var2" value="  hello, world" />
+
+Total: #arr[1]#
+
+<ad:foreach collection="#arr#" var="item" index="i">
+	<p><ad:ShowBillingPeriod tmp="#item#">#i+10#</ad:ShowBillingPeriod></p>
+</ad:foreach>
+
+<ad:for from="0" to="#arr.Length - 1#" index="j">
+	#j# = #arr[j].ToString()#
+</ad:for>
+
+<ad:for index="k" from="0" to="10">
+	#k.ToString("0.00")#
+</ad:for>
+
+<ad:for from="0" to="#customer.OrderNumbers.Length - 1#" index="j">
+	#j# = #customer.OrderNumbers[j].ToString()#
+</ad:for>
+
+#integersDict[101]#
+#integersDict[102]#
+
+Customer 1: #customersDict["customer1"].OrderNumbers.Length#
+Customer 2: #customersDict["customer2"].OrderNumbers.Length#
+
+<ad:foreach collection="#customersList#" var="cust">
+customer: #cust.name#
+</ad:foreach>
+
+#customersList[1].name#
+
+<ad:template name="ShowBillingPeriod">#innerText#: <b>#tmp#</b></ad:template>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/System.Net" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/System.Net" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/System.Net.Sockets" />
+  <xs:import schemaLocation="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:complexType name="ArrayOfIPAddress">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="IPAddress" nillable="true" type="tns:IPAddress" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfIPAddress" nillable="true" type="tns:ArrayOfIPAddress" />
+  <xs:complexType name="IPAddress">
+    <xs:sequence>
+      <xs:element name="m_Address" type="xs:long" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Net.Sockets" name="m_Family" type="q1:AddressFamily" />
+      <xs:element name="m_HashCode" type="xs:int" />
+      <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="m_Numbers" nillable="true" type="q2:ArrayOfunsignedShort" />
+      <xs:element name="m_ScopeId" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="IPAddress" nillable="true" type="tns:IPAddress" />
+</xs:schema>

@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AdditionalOptions.Text" xml:space="preserve">
+    <value>Zusätzliche Optionen der Liste</value>
+  </data>
+  <data name="chkCommandInSubject.Text" xml:space="preserve">
+    <value>Befehle im Betreff erlauben</value>
+  </data>
+  <data name="chkDigestMailingList.Text" xml:space="preserve">
+    <value>Übersicht-Mailinglist</value>
+  </data>
+  <data name="chkEnableLists.Text" xml:space="preserve">
+    <value>Lists-Befehl aktivieren</value>
+  </data>
+  <data name="chkEnableReview.Text" xml:space="preserve">
+    <value>Review-Befehl aktivieren</value>
+  </data>
+  <data name="chkEnableSubscribe.Text" xml:space="preserve">
+    <value>Join (Subscribe)-Befehl aktivieren</value>
+  </data>
+  <data name="chkEnableUnsubscribe.Text" xml:space="preserve">
+    <value>Leave (Unsubscribe)-Befehl aktivieren</value>
+  </data>
+  <data name="chkEnableVacation.Text" xml:space="preserve">
+    <value>Vacation/No vacation-Befehl aktivieren</value>
+  </data>
+  <data name="chkEnableWhich.Text" xml:space="preserve">
+    <value>Which-Befehl aktivieren</value>
+  </data>
+  <data name="chkModerated.Text" xml:space="preserve">
+    <value>Moderierter Listenserver:</value>
+  </data>
+  <data name="chkPasswordEnabled.Text" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="chkReplyToList.Text" xml:space="preserve">
+    <value>Antworten an Liste</value>
+  </data>
+  <data name="chkSendSubscribe.Text" xml:space="preserve">
+    <value>Besitzer beim Beitreten benachrichtigen</value>
+  </data>
+  <data name="chkSendToSender.Text" xml:space="preserve">
+    <value>An Absender senden</value>
+  </data>
+  <data name="chkSendUnSubscribe.Text" xml:space="preserve">
+    <value>Besitzer beim Verlassen benachrichtigen</value>
+  </data>
+  <data name="chkSetRecipientToToHeader.Text" xml:space="preserve">
+    <value>Empfänger im An-Feld setzen</value>
+  </data>
+  <data name="chkSubjectPrefixEnabled.Text" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="chkSuppressCommandResponses.Text" xml:space="preserve">
+    <value>Unterdrücke Befehlsantworten</value>
+  </data>
+  <data name="ConfirmSubscriptionNone.Text" xml:space="preserve">
+    <value>Keine Bestätigung</value>
+  </data>
+  <data name="ConfirmSubscriptionOwner.Text" xml:space="preserve">
+    <value>Vom Besitzer bestätigt</value>
+  </data>
+  <data name="ConfirmSubscriptionUser.Text" xml:space="preserve">
+    <value>Vom Benutzer bestätigt</value>
+  </data>
+  <data name="ctxValDomain.Text" xml:space="preserve">
+    <value>Moderatur muss in der Maildomäne der Mailingliste sein</value>
+  </data>
+  <data name="ddlPostingModeAnyone.Text" xml:space="preserve">
+    <value>Jeder</value>
+  </data>
+  <data name="ddlPostingModeMembers.Text" xml:space="preserve">
+    <value>Nur Mitglieder</value>
+  </data>
+  <data name="ddlReplyToItem.List" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="ddlReplyToItem.Moderator" xml:space="preserve">
+    <value>Moderator</value>
+  </data>
+  <data name="ddlReplyToItem.Sender" xml:space="preserve">
+    <value>Absender</value>
+  </data>
+  <data name="DefaultRightsDigestReceive.Text" xml:space="preserve">
+    <value>Übersicht und Empfang</value>
+  </data>
+  <data name="DefaultRightsDigestReceivePost.Text" xml:space="preserve">
+    <value>Übersicht, Empfang und Versand</value>
+  </data>
+  <data name="DefaultRightsPost.Text" xml:space="preserve">
+    <value>Nur Versand</value>
+  </data>
+  <data name="DefaultRightsReceive.Text" xml:space="preserve">
+    <value>Nur Empfang</value>
+  </data>
+  <data name="DefaultRightsReceivePost.Text" xml:space="preserve">
+    <value>Empfang und Versand</value>
+  </data>
+  <data name="HeaderActionNoChange.Text" xml:space="preserve">
+    <value>Keine Änderung</value>
+  </data>
+  <data name="HeaderActionSetToSender.Text" xml:space="preserve">
+    <value>Auf Absender setzen</value>
+  </data>
+  <data name="HeaderActionSetToValue.Text" xml:space="preserve">
+    <value>Auf Wert setzen</value>
+  </data>
+  <data name="lbAllowUnsubscribe.Text" xml:space="preserve">
+    <value>Abmelden über Betreff aktivieren:</value>
+  </data>
+  <data name="lbDigestMode.Text" xml:space="preserve">
+    <value>Übersichtsmodus aktivieren:</value>
+  </data>
+  <data name="lbDisableListcommand.Text" xml:space="preserve">
+    <value>LIST Befehl aktivieren:</value>
+  </data>
+  <data name="lbDisableSubscribecommand.Text" xml:space="preserve">
+    <value>SUBSCRIBE Befehl aktivieren</value>
+  </data>
+  <data name="lblCommandPassword.Text" xml:space="preserve">
+    <value>Befehl Passwort:</value>
+  </data>
+  <data name="lblConfirmSubscription.Text" xml:space="preserve">
+    <value>Abonnement</value>
+  </data>
+  <data name="lblDefaultRights.Text" xml:space="preserve">
+    <value>Standard-Rechte:</value>
+  </data>
+  <data name="lblDescription.Text" xml:space="preserve">
+    <value>Listenbeschreibung:</value>
+  </data>
+  <data name="lblFromHeader.Text" xml:space="preserve">
+    <value>Von Feld:</value>
+  </data>
+  <data name="lblFromHeaderValue.Text" xml:space="preserve">
+    <value>Von Feld-Wert:</value>
+  </data>
+  <data name="lblListFromAddress.Text" xml:space="preserve">
+    <value>Von Adresse der Liste:</value>
+  </data>
+  <data name="lblListOptions.Text" xml:space="preserve">
+    <value>Listenoptionen:</value>
+  </data>
+  <data name="lblListReplyToAddress.Text" xml:space="preserve">
+    <value>Antworten an Adresse der Liste:</value>
+  </data>
+  <data name="lblListToAddress.Text" xml:space="preserve">
+    <value>An Adresse der Liste:</value>
+  </data>
+  <data name="lblMaxMembers.Text" xml:space="preserve">
+    <value>Max. gezählte Mitglieder:</value>
+  </data>
+  <data name="lblMaxMessageSize.Text" xml:space="preserve">
+    <value>Max. Nachrichtengröße [KB]:</value>
+  </data>
+  <data name="lblMaxMessagesPerMinute.Text" xml:space="preserve">
+    <value>Max. # an Nachrichten zum Versenden in 1 Minute:</value>
+  </data>
+  <data name="lblMaxRecipients.Text" xml:space="preserve">
+    <value>Max. Empfänger pro Nachricht:</value>
+  </data>
+  <data name="lblMembers.Text" xml:space="preserve">
+    <value>Mailing-Listen-Mitglieder:</value>
+  </data>
+  <data name="lblMembersSource.Text" xml:space="preserve">
+    <value>Miglieder-Quelle:</value>
+  </data>
+  <data name="lblModerationEnabled.Text" xml:space="preserve">
+    <value>Moderation ist aktiviert:</value>
+  </data>
+  <data name="lblModeratorAddress.Text" xml:space="preserve">
+    <value>Listenmoderator:</value>
+  </data>
+  <data name="lblOriginator.Text" xml:space="preserve">
+    <value>Urheber:</value>
+  </data>
+  <data name="lblPasswordProtection.Text" xml:space="preserve">
+    <value>Passwortschutz:</value>
+  </data>
+  <data name="lblPostingMode.Text" xml:space="preserve">
+    <value>Posting-Modus:</value>
+  </data>
+  <data name="lblPostingPassword.Text" xml:space="preserve">
+    <value>Posting-Passwort:</value>
+  </data>
+  <data name="lblReplyTo.Text" xml:space="preserve">
+    <value>Abonnenten Antworten an:</value>
+  </data>
+  <data name="lblReplyToHeader.Text" xml:space="preserve">
+    <value>Antworten an - Header:</value>
+  </data>
+  <data name="lblReplyToHeaderValue.Text" xml:space="preserve">
+    <value>Antworten an - Headerwert:</value>
+  </data>
+  <data name="lblSubjectPrefix.Text" xml:space="preserve">
+    <value>Betreff-Prefix:</value>
+  </data>
+  <data name="lbSendSubscribe.Text" xml:space="preserve">
+    <value>Anmeldungs-E-Mail versenden:</value>
+  </data>
+  <data name="lbSendUnsubscribe.Text" xml:space="preserve">
+    <value>Abmeldungs-E-Mail versenden:</value>
+  </data>
+  <data name="OriginatorBlank.Text" xml:space="preserve">
+    <value>Leer</value>
+  </data>
+  <data name="OriginatorOwner.Text" xml:space="preserve">
+    <value>Besitzer</value>
+  </data>
+  <data name="OriginatorSender.Text" xml:space="preserve">
+    <value>Absender</value>
+  </data>
+  <data name="PasswordProtectionClientModerated.Text" xml:space="preserve">
+    <value>Kundenmoderiert</value>
+  </data>
+  <data name="PasswordProtectionNoProtection.Text" xml:space="preserve">
+    <value>Nicht passwortgeschützt</value>
+  </data>
+  <data name="PasswordProtectionServerModerated.Text" xml:space="preserve">
+    <value>Server ist moderiert</value>
+  </data>
+  <data name="Text.SelectModerator" xml:space="preserve">
+    <value>&lt;Wählen Sie einen Moderator aus&gt;</value>
+  </data>
+  <data name="ddlMembersSourceAllDomainAdmins.Text" xml:space="preserve">
+    <value>Alle Domänen-Administratoren</value>
+  </data>
+  <data name="ddlMembersSourceAllDomainUsers.Text" xml:space="preserve">
+    <value>Alle Domänen-Benutzer</value>
+  </data>
+  <data name="ddlMembersSourceInFile.Text" xml:space="preserve">
+    <value>Aus Mitgliederliste auf dieser Seite</value>
+  </data>
+  <data name="lblZeroIsUnlimited.Text" xml:space="preserve">
+    <value>0 bedeutet unbegrenzt</value>
+  </data>
+  <data name="Message.Text" xml:space="preserve">
+    <value>Nachricht</value>
+  </data>
+  <data name="Options.Text" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="Security.Text" xml:space="preserve">
+    <value>Sicherheit</value>
+  </data>
+  <data name="txtMaxMembersValidator.ErrorMessage" xml:space="preserve">
+    <value>Wert muss Null oder größer sein</value>
+  </data>
+  <data name="txtMaxMessageSizeValidator.ErrorMessage" xml:space="preserve">
+    <value>Wert muss Null oder größer sein</value>
+  </data>
+  <data name="txtMaxMessagesPerMinuteValidator.ErrorMessage" xml:space="preserve">
+    <value>Wert muss Null oder größer sein</value>
+  </data>
+</root>

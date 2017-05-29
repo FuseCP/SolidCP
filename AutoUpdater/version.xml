@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<downloadURL>http://autoupdate.solidcp.com/downloads/</downloadURL>
+	<versions>
+		<version>
+			<version-nr>SolidCP 1.0</version-nr>
+			<file>SolidCP-Server-1.0.zip</file>
+		</version>
+		<version>
+			<version-nr>SolidCP 1.0.1</version-nr>
+			<file>SolidCP-Server-1.0.1.zip</file>
+		</version>
+		<version>
+			<version-nr>SolidCP 1.0.2</version-nr>
+			<file>SolidCP-Server-1.0.2.zip</file>
+		</version>
+		<version>
+			<version-nr>SolidCP 1.0.3</version-nr>
+			<file>SolidCP-Server-1.0.3.zip</file>
+		</version>
+	</versions>
+</root>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" elementFormDefault="qualified" targetNamespace="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="VirtualMachineProvisioningRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AdminPassword" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ComputerName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DestinationPath" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Dns" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Gateway" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IPAddress" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MemorySize" type="xs:long" />
+      <xs:element minOccurs="0" name="Notes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OSProductKey" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Subnetmask" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TemplateVirtualImage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VirtualMachineName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VirtualSwitchName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VirtualMachineProvisioningRequest" nillable="true" type="tns:VirtualMachineProvisioningRequest" />
+  <xs:complexType name="MemorySettingInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AllocatedRAM" type="xs:long" />
+      <xs:element minOccurs="0" name="DeviceType" type="tns:VirtualDeviceTypeInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MemorySettingInfo" nillable="true" type="tns:MemorySettingInfo" />
+  <xs:simpleType name="VirtualDeviceTypeInfo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown" />
+      <xs:enumeration value="Memory" />
+      <xs:enumeration value="Processor" />
+      <xs:enumeration value="EthernetPortEmulated" />
+      <xs:enumeration value="EthernetPortSynthetic" />
+      <xs:enumeration value="SerialController" />
+      <xs:enumeration value="SerialPort" />
+      <xs:enumeration value="IDEController" />
+      <xs:enumeration value="SCSISyntheticController" />
+      <xs:enumeration value="DisketteController" />
+      <xs:enumeration value="DisketteSyntheticDrive" />
+      <xs:enumeration value="HardDiskSyntheticDirve" />
+      <xs:enumeration value="HardDiskPhysicalDrive" />
+      <xs:enumeration value="DVDSyntheticDrive" />
+      <xs:enumeration value="TimeSync" />
+      <xs:enumeration value="Heartbeat" />
+      <xs:enumeration value="DataExchange" />
+      <xs:enumeration value="Shutdown" />
+      <xs:enumeration value="VSSIntegration" />
+      <xs:enumeration value="HardDisk" />
+      <xs:enumeration value="ISODisk" />
+      <xs:enumeration value="FloppyDisk" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="VirtualDeviceTypeInfo" nillable="true" type="tns:VirtualDeviceTypeInfo" />
+  <xs:complexType name="ProcessorSettingInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DeviceType" type="tns:VirtualDeviceTypeInfo" />
+      <xs:element minOccurs="0" name="Limit" type="xs:int" />
+      <xs:element minOccurs="0" name="ProcessorPerSocket" type="xs:int" />
+      <xs:element minOccurs="0" name="Reservation" type="xs:int" />
+      <xs:element minOccurs="0" name="SocketCount" type="xs:int" />
+      <xs:element minOccurs="0" name="VirtualQuantity" type="xs:int" />
+      <xs:element minOccurs="0" name="Weight" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProcessorSettingInfo" nillable="true" type="tns:ProcessorSettingInfo" />
+  <xs:complexType name="VirtualComputerSystemSettingInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BiosNumLock" type="xs:boolean" />
+      <xs:element minOccurs="0" name="BootOrder" nillable="true" type="tns:ArrayOfBootDeviceTypeInfo" />
+      <xs:element minOccurs="0" name="CreationTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="InstanceId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Notes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ParentSnapshot" nillable="true" type="tns:VirtualComputerSystemSettingInfo" />
+      <xs:element minOccurs="0" name="SettingType" nillable="true" type="tns:VirtualComputerSystemSettingInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VirtualComputerSystemSettingInfo" nillable="true" type="tns:VirtualComputerSystemSettingInfo" />
+  <xs:complexType name="ArrayOfBootDeviceTypeInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="BootDeviceTypeInfo" type="tns:BootDeviceTypeInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfBootDeviceTypeInfo" nillable="true" type="tns:ArrayOfBootDeviceTypeInfo" />
+  <xs:simpleType name="BootDeviceTypeInfo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Floppy" />
+      <xs:enumeration value="CDROM" />
+      <xs:enumeration value="IDEHardDrive" />
+      <xs:enumeration value="PXEBoot" />
+      <xs:enumeration value="SCSIHardDrive" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="BootDeviceTypeInfo" nillable="true" type="tns:BootDeviceTypeInfo" />
+  <xs:complexType name="ArrayOfVirtualComputerSystemInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VirtualComputerSystemInfo" nillable="true" type="tns:VirtualComputerSystemInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfVirtualComputerSystemInfo" nillable="true" type="tns:ArrayOfVirtualComputerSystemInfo" />
+  <xs:complexType name="VirtualComputerSystemInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BiosNumLock" type="xs:boolean" />
+      <xs:element minOccurs="0" name="BootOrder" nillable="true" type="tns:ArrayOfBootDeviceTypeInfo" />
+      <xs:element minOccurs="0" name="CreationTime" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="HealthState" type="tns:VirtualSystemHealthStateInfo" />
+      <xs:element minOccurs="0" name="HostServerName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="InstanceId" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MemorySetting" nillable="true" type="tns:MemorySettingInfo" />
+      <xs:element minOccurs="0" name="MemoryUsage" type="xs:long" />
+      <xs:element minOccurs="0" name="Notes" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ProcessorLoad" type="xs:int" />
+      <xs:element minOccurs="0" name="ProcessorSetting" nillable="true" type="tns:ProcessorSettingInfo" />
+      <xs:element minOccurs="0" name="Snapshots" nillable="true" type="tns:ArrayOfVirtualComputerSystemSettingInfo" />
+      <xs:element minOccurs="0" name="State" type="tns:EnabledStateInfo" />
+      <xs:element minOccurs="0" name="SystemSetting" nillable="true" type="tns:VirtualComputerSystemSettingInfo" />
+      <xs:element minOccurs="0" name="UpTime" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="VirtualMachineName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="VirtualComputerSystemInfo" nillable="true" type="tns:VirtualComputerSystemInfo" />
+  <xs:simpleType name="VirtualSystemHealthStateInfo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CriticalFailure">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">25</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Ok">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="VirtualSystemHealthStateInfo" nillable="true" type="tns:VirtualSystemHealthStateInfo" />
+  <xs:complexType name="ArrayOfVirtualComputerSystemSettingInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="VirtualComputerSystemSettingInfo" nillable="true" type="tns:VirtualComputerSystemSettingInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfVirtualComputerSystemSettingInfo" nillable="true" type="tns:ArrayOfVirtualComputerSystemSettingInfo" />
+  <xs:simpleType name="EnabledStateInfo">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown" />
+      <xs:enumeration value="Enabled">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Disabled">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ShuttingDown">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Reset">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">10</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Paused">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32768</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Saved">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32769</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Starting">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32770</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Snapshotting">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32771</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Migrating">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32772</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Saving">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32773</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Stopping">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32774</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Deleted">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32775</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Pausing">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32776</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Resuming">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">32777</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="EnabledStateInfo" nillable="true" type="tns:EnabledStateInfo" />
+</xs:schema>

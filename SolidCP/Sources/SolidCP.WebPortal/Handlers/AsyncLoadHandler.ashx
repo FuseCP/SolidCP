@@ -1,0 +1,1 @@
+﻿<%@ WebHandler Language="C#" Class="SolidCP.Portal.AsyncLoadHandler,SolidCP.Portal.Modules" %>

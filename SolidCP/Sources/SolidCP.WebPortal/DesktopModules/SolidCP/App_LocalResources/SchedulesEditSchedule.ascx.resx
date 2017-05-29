@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnClearLog.Text" xml:space="preserve">
+    <value>Clear History</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="btnUpdate.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="chkEnabled.Text" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="cmdClose.Text" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="cmdLog.Text" xml:space="preserve">
+    <value>View Log</value>
+  </data>
+  <data name="ddlPriorityItem.AboveNormal" xml:space="preserve">
+    <value>Above Normal</value>
+  </data>
+  <data name="ddlPriorityItem.BelowNormal" xml:space="preserve">
+    <value>Below Normal</value>
+  </data>
+  <data name="ddlPriorityItem.High" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="ddlPriorityItem.Low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="ddlPriorityItem.Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="ddlScheduleItem.Daily" xml:space="preserve">
+    <value>Daily</value>
+  </data>
+  <data name="ddlScheduleItem.Interval" xml:space="preserve">
+    <value>Interval</value>
+  </data>
+  <data name="ddlScheduleItem.Monthly" xml:space="preserve">
+    <value>Monthly</value>
+  </data>
+  <data name="ddlScheduleItem.Once" xml:space="preserve">
+    <value>Once</value>
+  </data>
+  <data name="ddlScheduleItem.Weekly" xml:space="preserve">
+    <value>Weekly</value>
+  </data>
+  <data name="gvHistory.Empty" xml:space="preserve">
+    <value>The task does not have history records.</value>
+  </data>
+  <data name="gvHistoryFinishTime.Header" xml:space="preserve">
+    <value>Finish Time</value>
+  </data>
+  <data name="gvHistoryStartTime.Header" xml:space="preserve">
+    <value>Start Time</value>
+  </data>
+  <data name="gvSchedulesLog.Header" xml:space="preserve">
+    <value>Execution Log</value>
+  </data>
+  <data name="gvSchedulesResult.Header" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="gvTaskParameters.Empty" xml:space="preserve">
+    <value>The task does not have parameters.</value>
+  </data>
+  <data name="gvTaskParametersName.Header" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="gvTaskParametersValue.Header" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="lblEnabled.Text" xml:space="preserve">
+    <value>Enabled:</value>
+  </data>
+  <data name="lblFrom.Text" xml:space="preserve">
+    <value>From:</value>
+  </data>
+  <data name="lblMaxExecutionTime.Text" xml:space="preserve">
+    <value>Max Execution Time:</value>
+  </data>
+  <data name="lblMonthDay.Text" xml:space="preserve">
+    <value>Day of the Month:</value>
+  </data>
+  <data name="lblPriority.Text" xml:space="preserve">
+    <value>Priority:</value>
+  </data>
+  <data name="lblRunAs.Text" xml:space="preserve">
+    <value>Run As:</value>
+  </data>
+  <data name="lblRunEvery.Text" xml:space="preserve">
+    <value>Run Every:</value>
+  </data>
+  <data name="lblRunOn.Text" xml:space="preserve">
+    <value>Run On:</value>
+  </data>
+  <data name="lblSchedule.Text" xml:space="preserve">
+    <value>Schedule:</value>
+  </data>
+  <data name="lblStartTime.Text" xml:space="preserve">
+    <value>Start Time:</value>
+  </data>
+  <data name="lblTaskName.Text" xml:space="preserve">
+    <value>Task Name:</value>
+  </data>
+  <data name="lblTaskParameters.Text" xml:space="preserve">
+    <value>Task Parameters:</value>
+  </data>
+  <data name="lblTaskType.Text" xml:space="preserve">
+    <value>Task Type:</value>
+  </data>
+  <data name="lblTo.Text" xml:space="preserve">
+    <value>To: </value>
+  </data>
+  <data name="lblWeekDay.Text" xml:space="preserve">
+    <value>Day of the Week:</value>
+  </data>
+  <data name="Result.Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Result.Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="secHistory.Text" xml:space="preserve">
+    <value>History Log</value>
+  </data>
+  <data name="btnUpdate.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Saving Scheduled Task...');</value>
+  </data>
+  <data name="btnDeleteText.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="btnCancelText.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnUpdateText.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+</root>

@@ -1,0 +1,9 @@
+﻿.foo {} /* W3C CSS validator likes CSS files to start with a class rather than a comment. Soooooo.... */
+
+/* This style sheet is intended to contain RARELY CHANGED rules used when the Login control adapter is enabled. */
+/* Empty rules are provided merely as a convenience for your future use or experimentation. */
+
+.AspNet-Login
+{
+}
+

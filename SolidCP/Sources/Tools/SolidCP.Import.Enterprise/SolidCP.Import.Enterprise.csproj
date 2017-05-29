@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3CC79CB9-C8B9-4658-A3C6-AE023445D091}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SolidCP.Import.Enterprise</RootNamespace>
+    <AssemblyName>SolidCP.Import.Enterprise</AssemblyName>
+    <ApplicationIcon>application.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <StartupObject>SolidCP.Import.Enterprise.Program</StartupObject>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="ADUtils.cs" />
+    <Compile Include="AnimatedIcon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ApplicationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationForm.Designer.cs">
+      <DependentUpon>ApplicationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="ImportAction.cs" />
+    <Compile Include="OrganizationImporter.cs" />
+    <Compile Include="OUForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OUForm.Designer.cs">
+      <DependentUpon>OUForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DataNode.cs" />
+    <Compile Include="SpaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpaceForm.Designer.cs">
+      <DependentUpon>SpaceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConnectForm.Designer.cs">
+      <DependentUpon>ConnectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LineBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LineBox.Designer.cs">
+      <DependentUpon>LineBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Log.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgressIcon.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ApplicationForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ApplicationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectForm.resx">
+      <DependentUpon>ConnectForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OUForm.resx">
+      <DependentUpon>OUForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressIcon.resx">
+      <DependentUpon>ProgressIcon.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpaceForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SpaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="App.config" />
+    <Compile Include="Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="application.ico" />
+    <None Include="Resources\OU.ico" />
+    <None Include="Resources\UsersLargeIcon.ico" />
+    <None Include="Resources\UsersSmallIcon.ico" />
+    <None Include="Resources\UserLargeIcon.ico" />
+    <None Include="Resources\SpaceSmallIcon.ico" />
+    <None Include="Resources\SpaceLargeIcon.ico" />
+    <None Include="Resources\RefreshImage.bmp" />
+    <None Include="Resources\ProgressImage8.bmp" />
+    <None Include="Resources\ProgressImage7.bmp" />
+    <None Include="Resources\ProgressImage6.bmp" />
+    <None Include="Resources\ProgressImage5.bmp" />
+    <None Include="Resources\ProgressImage4.bmp" />
+    <None Include="Resources\ProgressImage3.bmp" />
+    <None Include="Resources\ProgressImage2.bmp" />
+    <None Include="Resources\ProgressImage1.bmp" />
+    <None Include="Resources\FolderSmallIcon.ico" />
+    <None Include="Resources\FolderLargeIcon.ico" />
+    <None Include="Resources\ConnectLogo.bmp" />
+    <None Include="Resources\ConnectImage.bmp" />
+    <None Include="Resources\BannerImage.GIF" />
+    <None Include="Resources\UserSmallIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
+      <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
+      <Name>SolidCP.EnterpriseServer.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SolidCP.EnterpriseServer.Client\SolidCP.EnterpriseServer.Client.csproj">
+      <Project>{4b344644-a570-477e-adcc-f2b267d6c038}</Project>
+      <Name>SolidCP.EnterpriseServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
+      <Project>{60e39314-659c-4fad-ab91-d0d08e223578}</Project>
+      <Name>SolidCP.EnterpriseServer.Code</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj">
+      <Project>{59c7623a-5181-48a5-880a-c9b82b48f589}</Project>
+      <Name>SolidCP.EnterpriseServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

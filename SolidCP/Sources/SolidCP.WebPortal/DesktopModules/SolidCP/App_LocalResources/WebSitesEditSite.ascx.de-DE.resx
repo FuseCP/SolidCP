@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnAddFolder.Text" xml:space="preserve">
+    <value>Ordner hinzufügen</value>
+  </data>
+  <data name="btnAddGroup.Text" xml:space="preserve">
+    <value>Gruppe hinzufügen</value>
+  </data>
+  <data name="btnAddPointer.Text" xml:space="preserve">
+    <value>Webseiten-Zeiger hinzufügen</value>
+  </data>
+  <data name="btnAddUser.Text" xml:space="preserve">
+    <value>Benutzer hinzufügen</value>
+  </data>
+  <data name="btnAddAppVirtualDirectory.Text" xml:space="preserve">
+    <value>Verzeichnis erstellen</value>
+  </data>
+  <data name="btnChangeFrontPagePassword.Text" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="btnDelete.OnClientClick" xml:space="preserve">
+    <value>return confirmationSITE();</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="btnInstallFrontPage.Text" xml:space="preserve">
+    <value>Installieren</value>
+  </data>
+  <data name="btnUninstallFrontPage.Text" xml:space="preserve">
+    <value>Deinstallieren</value>
+  </data>
+  <data name="buttonPanel.OnSaveClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Webseite wird aktualisiert...');</value>
+  </data>
+  <data name="cmdContinue.AlternateText" xml:space="preserve">
+    <value>Webseite fortsetzen</value>
+  </data>
+  <data name="cmdDeleteFolder.AlternateText" xml:space="preserve">
+    <value>Ordner löschen</value>
+  </data>
+  <data name="cmdDeleteFolder.OnClientClick" xml:space="preserve">
+    <value>return confirm('Sind Sie sicher, dass Sie diesen Ordner löschen wollen?');</value>
+  </data>
+  <data name="cmdDeleteGroup.AlternateText" xml:space="preserve">
+    <value>Gruppe löschen</value>
+  </data>
+  <data name="cmdDeleteGroup.OnClientClick" xml:space="preserve">
+    <value>return confirm('Sind Sie sicher, dass Sie diese Gruppe löschen wollen?');</value>
+  </data>
+  <data name="cmdDeletePointer.AlternateText" xml:space="preserve">
+    <value>Zeiger entfernen</value>
+  </data>
+  <data name="cmdDeletePointer.OnClientClick" xml:space="preserve">
+    <value>return confirm('Sind Sie sicher, dass Sie diesen Zeiger entfernen wollen?');</value>
+  </data>
+  <data name="cmdDeleteUser.AlternateText" xml:space="preserve">
+    <value>Benutzer löschen</value>
+  </data>
+  <data name="cmdDeleteUser.OnClientClick" xml:space="preserve">
+    <value>return confirm('Sind Sie sicher, dass Sie diesen Benutzer löschen wollen?');</value>
+  </data>
+  <data name="cmdPause.AlternateText" xml:space="preserve">
+    <value>Webseite anhalten</value>
+  </data>
+  <data name="cmdStart.AlternateText" xml:space="preserve">
+    <value>Webseite starten</value>
+  </data>
+  <data name="cmdStop.AlternateText" xml:space="preserve">
+    <value>Webseite beenden</value>
+  </data>
+  <data name="DisableFolders.Text" xml:space="preserve">
+    <value>Gesicherte Ordner deaktivieren</value>
+  </data>
+  <data name="EnableFolders.Text" xml:space="preserve">
+    <value>Gesicherte Ordner aktivieren</value>
+  </data>
+  <data name="gvErrorPages.Empty" xml:space="preserve">
+    <value>Keine benutzerdefinierten Fehler-Handler definiert</value>
+  </data>
+  <data name="gvErrorPagesCode.Header" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="gvErrorPagesErrorContent.Header" xml:space="preserve">
+    <value>Fehlerinhalt</value>
+  </data>
+  <data name="gvErrorPagesHandlerType.Header" xml:space="preserve">
+    <value>Handler-Typ</value>
+  </data>
+  <data name="gvErrorPagesSubcode.Header" xml:space="preserve">
+    <value>Sub-Code</value>
+  </data>
+  <data name="gvFolders.Empty" xml:space="preserve">
+    <value>Klicken Sie auf "Ordner hinzufügen" zum Hinzufügen eines gesicherten Ordners</value>
+  </data>
+  <data name="gvFoldersName.Header" xml:space="preserve">
+    <value>Gesicherte Ordner</value>
+  </data>
+  <data name="gvGroups.Empty" xml:space="preserve">
+    <value>Klicken Sie auf "Gruppe hinzufügen" zum Hinzufügen einer neuen Gruppe</value>
+  </data>
+  <data name="gvGroupsName.Header" xml:space="preserve">
+    <value>Gruppen</value>
+  </data>
+  <data name="gvMimeTypes.Empty" xml:space="preserve">
+    <value>Benutzerdefinierte MIME-Typen sind nicht definiert</value>
+  </data>
+  <data name="gvMimeTypesExtension.Header" xml:space="preserve">
+    <value>Erweiterung</value>
+  </data>
+  <data name="gvMimeTypesMIMEtype.Header" xml:space="preserve">
+    <value>MIME-Typ</value>
+  </data>
+  <data name="gvPointers.Empty" xml:space="preserve">
+    <value>Keine Webseiten-Zeiger</value>
+  </data>
+  <data name="gvPointersName.Header" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="gvUsers.Empty" xml:space="preserve">
+    <value>Klicken Sie auf "Benutzer hinzufügen" zum Hinzufügen eines neuen Benutzers</value>
+  </data>
+  <data name="gvUsersName.Header" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="gvAppVirtualDirectories.Empty" xml:space="preserve">
+    <value>Keine virtuellen Verzeichnisse.</value>
+  </data>
+  <data name="gvAppVirtualDirectoriesName.Header" xml:space="preserve">
+    <value>Verzeichnisname</value>
+  </data>
+  <data name="gvAppVirtualDirectoriesPath.Header" xml:space="preserve">
+    <value>Pfad</value>
+  </data>
+  <data name="lblFPAccount.Text" xml:space="preserve">
+    <value>FrontPage-Konto:</value>
+  </data>
+  <data name="lblFPPassword.Text" xml:space="preserve">
+    <value>FrontPage-Passwort:</value>
+  </data>
+  <data name="lblFPStatus.Text" xml:space="preserve">
+    <value>FrontPage-Status:</value>
+  </data>
+  <data name="lblSharePoint.Text" xml:space="preserve">
+    <value>Diese Webseite beinhaltet SharePoint-Dienste und kann nicht mit FrontPage-Erweiterungen erweitert werden. </value>
+  </data>
+  <data name="SiteState.Continuing" xml:space="preserve">
+    <value>Wird fortgesetzt</value>
+  </data>
+  <data name="SiteState.Paused" xml:space="preserve">
+    <value>Angehalten</value>
+  </data>
+  <data name="SiteState.Started" xml:space="preserve">
+    <value>Gestartet</value>
+  </data>
+  <data name="SiteState.Stopped" xml:space="preserve">
+    <value>Beendet</value>
+  </data>
+  <data name="Tab.CustomErrors" xml:space="preserve">
+    <value>Benutzerdefinierte Fehler</value>
+  </data>
+  <data name="Tab.CustomHeaders" xml:space="preserve">
+    <value>Headers</value>
+  </data>
+  <data name="Tab.Extensions" xml:space="preserve">
+    <value>Erweiterungen</value>
+  </data>
+  <data name="Tab.FrontPage" xml:space="preserve">
+    <value>FrontPage</value>
+  </data>
+  <data name="Tab.HomeFolder" xml:space="preserve">
+    <value>Home-Ordner</value>
+  </data>
+  <data name="Tab.MIMETypes" xml:space="preserve">
+    <value>MIME-Typen</value>
+  </data>
+  <data name="Tab.SecuredFolders" xml:space="preserve">
+    <value>Gesicherte Ordner</value>
+  </data>
+  <data name="Tab.Htaccess" xml:space="preserve">
+    <value>.htaccess</value>
+  </data>
+  <data name="Tab.HeliconZoo" xml:space="preserve">
+    <value>Web-Engines</value>
+  </data>
+  <data name="Tab.VirtualDirs" xml:space="preserve">
+    <value>Virtuelle Verzeichnisse</value>
+  </data>
+  <data name="Text.FPSE_INSTALLED" xml:space="preserve">
+    <value>Installiert</value>
+  </data>
+  <data name="Text.FPSE_NOT_INSTALLED" xml:space="preserve">
+    <value>Nicht installiert</value>
+  </data>
+  <data name="Text.FPSE_UNAVAILABLE" xml:space="preserve">
+    <value>FrontPage-Servererweiterungen sind auf Ihrem Webserver nicht installiert</value>
+  </data>
+  <data name="Text.SharePointInstalled" xml:space="preserve">
+    <value>SharePoint-Dienste installiert</value>
+  </data>
+  <data name="Tab.ColdFusion" xml:space="preserve">
+    <value>ColdFusion</value>
+  </data>
+  <data name="Text.CF_UNAVAILABLE" xml:space="preserve">
+    <value>ColdFusion ist auf dem Webserver nicht installiert</value>
+  </data>
+  <data name="Text.CF_WARNING" xml:space="preserve">
+    <value>*Aktivierung von ColdFusion-Skripting startet IIS automatisch neu</value>
+  </data>
+  <data name="Text.COLDFUSION_UNAVAILABLE" xml:space="preserve">
+    <value>Adobe ColdFusion ist auf Ihrem Webserver nicht installiert</value>
+  </data>
+  <data name="Tab.WebManagement" xml:space="preserve">
+    <value>Verwaltung</value>
+  </data>
+  <data name="btnWmSvcChangePassw.Text" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="btnWmSvcSiteDisable.Text" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="btnWmSvcSiteEnable.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="cvPasswordComparer.ErrorMessage" xml:space="preserve">
+    <value>* Passwortbestätigung stimmt mit angegebenen Passwort nicht überein</value>
+  </data>
+  <data name="lclEnablementHint.Text" xml:space="preserve">
+    <value>Um die Remoteverwaltung für diese Webseite zu aktivieren, geben Sie bitte den Kontonamen und Passwort ein und klicken auf "Aktivieren".</value>
+  </data>
+  <data name="lclWmSvcAccountName.Text" xml:space="preserve">
+    <value>Benutzername:</value>
+  </data>
+  <data name="lclWmSvcAccountPassword.Text" xml:space="preserve">
+    <value>Passwort:</value>
+  </data>
+  <data name="lclWmSvcAccountPasswordC.Text" xml:space="preserve">
+    <value>Passwort bestätigen:</value>
+  </data>
+  <data name="lclWmSvcConnectionHint.Text" xml:space="preserve">
+    <value>Die Site kannn mittels &lt;a href="http://www.iis.net/extensions/IISManager" target="_blank"&gt;IIS Manager zur Remoteverwaltung&lt;/a&gt; aus der Ferne verwaltet werden.&lt;p&gt;&lt;table cellpadding="4" border="0"&gt;&lt;tr&gt;	&lt;td class="NormalBold" colspan="2"&gt;Verbindungsdetails:&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;	&lt;td class="Normal"&gt;Servername: &lt;/td&gt;&lt;td&gt;{0}&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;	&lt;td class="Normal"&gt;Seitenname: &lt;/td&gt;&lt;td&gt;{1}&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/p&gt;&lt;p&gt;Um sich zum Webseitenverwaltungsdienst zu verbinden, benutzen Sie bitte den unten angegebenen Benutzernamen und Passwort.&lt;/p&gt;</value>
+  </data>
+  <data name="lclWmSvcNotInstalled.Text" xml:space="preserve">
+    <value>Verwaltungsdienst ist auf dem Webserver nicht installiert. Bitte kontaktieren Sie Ihren Systemadministrator.</value>
+  </data>
+  <data name="lclWmSvcSiteDisabled.Text" xml:space="preserve">
+    <value>Remotemanagement ist deaktiviert.</value>
+  </data>
+  <data name="lclWmSvcSiteEnabled.Text" xml:space="preserve">
+    <value>Remotemanagement ist aktiviert.</value>
+  </data>
+  <data name="btnWmSvcChangePassw.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Access-Passwort wird geändert...')</value>
+  </data>
+  <data name="btnWmSvcSiteEnable.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Remoteverwaltung wird aktiviert...');</value>
+  </data>
+  <data name="Tab.SSL" xml:space="preserve">
+    <value>SSL</value>
+  </data>
+  <data name="Tab.WebDeployPublishing" xml:space="preserve">
+    <value>Web Publishing</value>
+  </data>
+  <data name="WDeploySitePublishingDisabled.Text" xml:space="preserve">
+    <value>Web Deploy Publishing ist deaktiviert.</value>
+  </data>
+  <data name="WDeploySitePublishingEnabled.Text" xml:space="preserve">
+    <value>Web Deploy Publishing ist aktiviert</value>
+  </data>
+  <data name="WDeploySitePublishingEnablementHint.Text" xml:space="preserve">
+    <value>Um Web-Publishing für diese Webseite zu aktivieren, geben Sie bitte den Kontoname und Passwort ein und klicken auf "Aktivieren".</value>
+  </data>
+  <data name="PubProfileMsSqlLocalize.Text" xml:space="preserve">
+    <value>Bitte wählen Sie eine Microsoft SQL-Datenbank aus.</value>
+  </data>
+  <data name="WDeployBuildPublishingProfileWizard.Text" xml:space="preserve">
+    <value>Publishing Profil-Assistent erstellen</value>
+  </data>
+  <data name="WDeployBuildSitePublishingProfileHint.Text" xml:space="preserve">
+    <value>Bitte benutzen Sie den untenstehenden Link, um ein Publishing Profil zu erstellen, dass es Ihnen erleichtert, die Publishing-Einstellungen nach Ihren Vorstellungen einzurichten.</value>
+  </data>
+  <data name="WDeployChangePublishingPasswButton.Text" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="WDeployDisablePublishingButton.Text" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="WDeployEnabePublishingButton.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="WDeployPublishingAccountLocalize.Text" xml:space="preserve">
+    <value>Benutzername:</value>
+  </data>
+  <data name="WDeployPublishingConfirmPasswordLocalize.Text" xml:space="preserve">
+    <value>Passwort bestätigen:</value>
+  </data>
+  <data name="WDeployPublishingPasswordLocalize.Text" xml:space="preserve">
+    <value>Passwort:</value>
+  </data>
+  <data name="WDeployPublishingProfileUsageNotes.Text" xml:space="preserve">
+    <value>Sie können ab sofort Inhalte auf dieser Webseite mit Hilfe von Web Matrix oder Visual Studio .NET 2010 publizieren. Benutzen Sie dazu den Link weiter unten, um das Publishing-Profil herunterzuladen, welches Ihnen das Publizieren von Online-Inhalten erleichtert. Sie haben zudem die Möglichkeit das Publishing-Profil neu zu erstellen, falls Sie sich Entscheiden Ihre Publishing-Einstellungen zu ändern.</value>
+  </data>
+  <data name="WebPublishing.ChooseDatabasePrompt" xml:space="preserve">
+    <value>Datenbank auswählen...</value>
+  </data>
+  <data name="WebPublishing.ChooseDatabaseUserPrompt" xml:space="preserve">
+    <value>Datenbankbenutzer auswählen...</value>
+  </data>
+  <data name="WebPublishing.ChooseFtpAccountPrompt" xml:space="preserve">
+    <value>FTP-Konto auswählen</value>
+  </data>
+  <data name="cmdApplyDedicatedIP.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Änderungen werden durchgeführt...');</value>
+  </data>
+  <data name="cmdApplyDedicatedIP.Text" xml:space="preserve">
+    <value>Anwenden</value>
+  </data>
+  <data name="cmdCancelDedicatedIP.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="cmdSwitchToDedicatedIP.Text" xml:space="preserve">
+    <value>Zu dedizierter IP wechseln</value>
+  </data>
+  <data name="cmdSwitchToSharedIP.OnClientClick" xml:space="preserve">
+    <value>if(!confirm('Sind Sie sicher, dass Sie diese Webseite auf eine geteilte IP ändern wollen?')) return false;ShowProgressDialog('Änderungen werden vorgenommen...');</value>
+  </data>
+  <data name="cmdSwitchToSharedIP.Text" xml:space="preserve">
+    <value>Zu geteilter IP wechseln</value>
+  </data>
+  <data name="locDedicatedIPAddress.Text" xml:space="preserve">
+    <value>IP-Adresse</value>
+  </data>
+  <data name="locSelectIPAddress.Text" xml:space="preserve">
+    <value>IP-Adresse auswählen:</value>
+  </data>
+  <data name="locSharedIPAddress.Text" xml:space="preserve">
+    <value>IP-Adresse: geteilt</value>
+  </data>
+  <data name="chkDeleteWebsiteDirectory.Text" xml:space="preserve">
+    <value>Löschen des Webseiten-Verzeichnisses erzwingen?</value>
+  </data>
+  <data name="btnChangeFrontPagePasswordText.Text" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="btnDeleteText.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="btnInstallFrontPageText.Text" xml:space="preserve">
+    <value>Installieren</value>
+  </data>
+  <data name="btnUninstallFrontPageText.Text" xml:space="preserve">
+    <value>Deinstallieren</value>
+  </data>
+  <data name="btnWmSvcChangePasswText.Text" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="btnWmSvcSiteDisableText.Text" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="btnWmSvcSiteEnableText.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="PubProfileWizardCancelButtonText.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="PubProfileWizardOkButtonText.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="WDeployChangePublishingPasswButtonText.Text" xml:space="preserve">
+    <value>Passwort ändern</value>
+  </data>
+  <data name="WDeployDisablePublishingButtonText.Text" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="WDeployEnabePublishingButtonText.Text" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+</root>

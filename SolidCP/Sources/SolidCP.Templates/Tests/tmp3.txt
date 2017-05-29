@@ -1,0 +1,22 @@
+{foreach elem in arr1 index idx}
+{$elem} - {$idx % 2}
+{/foreach}
+
+{for i = 0 to b*4}{if i >= 4},{/if} {$i}{/for}
+
+{$arr1[1]}
+{$ arr1[1]
+	.length}
+{$a+b-1}
+{$ a*(b/1) / 2-a+b+3/2  }
+
+{if a}a!!!{/if}
+{if b==null}b is not set{/if}
+
+Hello {$2+a},
+{if a+(b+1)/2*4 == 42/3}
+conditional expression
+{/if}
+
+Best regards,
+Support team

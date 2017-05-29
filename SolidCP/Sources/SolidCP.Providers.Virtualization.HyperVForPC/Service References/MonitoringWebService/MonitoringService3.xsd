@@ -1,0 +1,726 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Monitoring" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+  <xs:element name="GetPerformanceCounterCategories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPerformanceCounterCategoriesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetPerformanceCounterCategoriesResult" nillable="true" type="q1:ArrayOfPerformanceCounterCategoryInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetServices">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetServicesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetServicesResult" nillable="true" type="q2:ArrayOfWindowsService" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSCOMHost">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSCOMHostResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetSCOMHostResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSystemAlertsByDeviceName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="deviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSystemAlertsByDeviceNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetSystemAlertsByDeviceNameResult" nillable="true" type="q3:ArrayOfAlert" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringState">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="deviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringStateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoringStateResult" nillable="true" type="q4:Device" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringDevice">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="deviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringDeviceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoringDeviceResult" nillable="true" type="q5:Device" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVCollectedCounters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVCollectedCountersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetAllHyperVCollectedCountersResult" nillable="true" type="q6:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestCPUUtilization">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestCPUUtilizationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetAllHyperVGuestCPUUtilizationResult" nillable="true" type="q7:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestLegacyNetworkAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestLegacyNetworkAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetAllHyperVGuestLegacyNetworkAdapterResult" nillable="true" type="q8:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestMemoryPagesAllocated">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestMemoryPagesAllocatedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetAllHyperVGuestMemoryPagesAllocatedResult" nillable="true" type="q9:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestStorageUsage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVGuestStorageUsageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetAllHyperVGuestStorageUsageResult" nillable="true" type="q10:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVVirtualNetwork">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllHyperVVirtualNetworkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetAllHyperVVirtualNetworkResult" nillable="true" type="q11:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSingleVMHyperVCPUCounters">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSingleVMHyperVCPUCountersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetSingleVMHyperVCPUCountersResult" nillable="true" type="q12:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSingleVMHyperVVirtualNetwork">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSingleVMHyperVVirtualNetworkResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetSingleVMHyperVVirtualNetworkResult" nillable="true" type="q13:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSingleVMHyperVGuestMemoryPagesAllocated">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetSingleVMHyperVGuestMemoryPagesAllocatedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetSingleVMHyperVGuestMemoryPagesAllocatedResult" nillable="true" type="q14:ArrayOfPerformanceData" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExecuteMonitoringTask">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="device" nillable="true" type="q15:Device" />
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="task" nillable="true" type="q16:Task" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExecuteMonitoringTaskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="ExecuteMonitoringTaskResult" nillable="true" type="q17:ArrayOfTaskResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExecuteTask">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="deviceId" type="q18:guid" />
+        <xs:element xmlns:q19="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="taskId" type="q19:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ExecuteTaskResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="ExecuteTaskResult" nillable="true" type="q20:ArrayOfTaskResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringPerformanceValues">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="perfData" nillable="true" type="q21:PerformanceData" />
+        <xs:element minOccurs="0" name="startRange" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="endRange" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringPerformanceValuesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoringPerformanceValuesResult" nillable="true" type="q22:ArrayOfPerformanceDataValue" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringPerformanceValuesById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q23="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="performanceDataId" type="q23:guid" />
+        <xs:element minOccurs="0" name="startRange" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="endRange" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringPerformanceValuesByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoringPerformanceValuesByIdResult" nillable="true" type="q24:ArrayOfPerformanceDataValue" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoredObjects">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="computers" nillable="true" type="q25:ArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoredObjectsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoredObjectsResult" nillable="true" type="q26:ArrayOfMonitoredObject" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringAlertsByObjectDisplayName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="monitoringObjectDisplayName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringAlertsByObjectDisplayNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoringAlertsByObjectDisplayNameResult" nillable="true" type="q27:ArrayOfAlert" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoredObjectByDisplayName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="displayName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoredObjectByDisplayNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoredObjectByDisplayNameResult" nillable="true" type="q28:MonitoredObject" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoredApplicationComponents">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="componentIds" nillable="true" type="q29:ArrayOfguid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoredApplicationComponentsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoredApplicationComponentsResult" nillable="true" type="q30:ArrayOfMonitoredObject" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringTemplates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringTemplatesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitoringTemplatesResult" nillable="true" type="q31:ArrayOfTemplate" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetManagementPacks">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="filter" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetManagementPacksResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetManagementPacksResult" nillable="true" type="q32:ArrayOfPack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetManagementPack">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="managementPackName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetManagementPackResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetManagementPackResult" nillable="true" type="q33:Pack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteManagementPack">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="pack" nillable="true" type="q34:Pack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteManagementPackResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetManagementPackStringResource">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="managementPackName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="resourceName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetManagementPackStringResourceResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetManagementPackStringResourceResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateManagementPackStringResource">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="managementPackName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="resourceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="content" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateManagementPackStringResourceResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateWebUrlMonitor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q35:Pack" />
+        <xs:element minOccurs="0" name="webUrl" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="displayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pollInterval" type="xs:int" />
+        <xs:element xmlns:q36="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="watcherNodeIds" nillable="true" type="q36:ArrayOfstring" />
+        <xs:element minOccurs="0" name="watcherComputerList" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateWebUrlMonitorResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateTcpPortMonitor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q37:Pack" />
+        <xs:element minOccurs="0" name="webUrl" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="displayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="portNumber" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pollInterval" type="xs:int" />
+        <xs:element xmlns:q38="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="watcherNodeIds" nillable="true" type="q38:ArrayOfstring" />
+        <xs:element minOccurs="0" name="watcherComputerList" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateTcpPortMonitorResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitors">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="pack" nillable="true" type="q39:Pack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitorsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Monitoring" minOccurs="0" name="GetMonitorsResult" nillable="true" type="q40:ArrayOfMonitoringObject" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitorInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="monitorId" type="q41:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitorInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitorInfoResult" nillable="true" type="q42:MonitorInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitorHealthState">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="pack" nillable="true" type="q43:Pack" />
+        <xs:element xmlns:q44="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Monitoring" minOccurs="0" name="mObject" nillable="true" type="q44:MonitoringObject" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitorHealthStateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetMonitorHealthStateResult" nillable="true" type="q45:ArrayOfMonitorHealthState" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetApplicationHealthState">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="pack" nillable="true" type="q46:Pack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetApplicationHealthStateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q47="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetApplicationHealthStateResult" nillable="true" type="q47:ArrayOfMonitorHealthState" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetApplicationComponentHealthState">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="appComponent" nillable="true" type="q48:MonitoredObject" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetApplicationComponentHealthStateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q49="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="GetApplicationComponentHealthStateResult" nillable="true" type="q49:ArrayOfMonitorHealthState" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringStateHierarchy">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="monitorName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMonitoringStateHierarchyResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateManagementPack">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="managementPackName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="friendlyName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateManagementPackResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q50="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="CreateManagementPackResult" nillable="true" type="q50:Pack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateManagementPack">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q51="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q51:Pack" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateManagementPackResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateAverageThresholdPerformanceCounterMonitor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q52="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q52:Pack" />
+        <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="targetMonitoringClassId" type="q53:guid" />
+        <xs:element minOccurs="0" name="monitorName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="monitorDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="underThresholdIsHealthy" type="xs:boolean" />
+        <xs:element minOccurs="0" name="counterName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="instanceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="objectName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="threshold" type="xs:double" />
+        <xs:element minOccurs="0" name="frequency" type="xs:int" />
+        <xs:element minOccurs="0" name="numberOfSample" type="xs:int" />
+        <xs:element minOccurs="0" name="createAlert" type="xs:boolean" />
+        <xs:element minOccurs="0" name="alertName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q54="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="alertPriority" type="q54:ManagementPackWorkflowPriority" />
+        <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="alertSeverity" type="q55:ManagementPackAlertSeverity" />
+        <xs:element minOccurs="0" name="alertDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="alertDescription" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateAverageThresholdPerformanceCounterMonitorResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q56="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="CreateAverageThresholdPerformanceCounterMonitorResult" nillable="true" type="q56:ManagementPackUnitMonitor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateDoubleThresholdPerformanceCounterMonitor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q57="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q57:Pack" />
+        <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="targetMonitoringClassId" type="q58:guid" />
+        <xs:element minOccurs="0" name="monitorName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="monitorDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="underThresholdIsHealthy" type="xs:boolean" />
+        <xs:element minOccurs="0" name="counterName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="instanceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="objectName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="threshold1" type="xs:double" />
+        <xs:element minOccurs="0" name="threshold2" type="xs:double" />
+        <xs:element minOccurs="0" name="frequency" type="xs:int" />
+        <xs:element minOccurs="0" name="createAlert" type="xs:boolean" />
+        <xs:element minOccurs="0" name="alertName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="alertPriority" type="q59:ManagementPackWorkflowPriority" />
+        <xs:element xmlns:q60="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="alertSeverity" type="q60:ManagementPackAlertSeverity" />
+        <xs:element minOccurs="0" name="alertDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="alertDescription" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateDoubleThresholdPerformanceCounterMonitorResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q61="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="CreateDoubleThresholdPerformanceCounterMonitorResult" nillable="true" type="q61:ManagementPackUnitMonitor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateMonitorOverride">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q62:Pack" />
+        <xs:element xmlns:q63="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="overrideMonitoringClassId" type="q63:guid" />
+        <xs:element xmlns:q64="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="monitorId" type="q64:guid" />
+        <xs:element minOccurs="0" name="Enable" type="xs:boolean" />
+        <xs:element minOccurs="0" name="overrideName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="displayName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateMonitorOverrideResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateNTServiceUnitMonitor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="scomServiceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q65:Pack" />
+        <xs:element xmlns:q66="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="targetMonitoringClassId" type="q66:guid" />
+        <xs:element minOccurs="0" name="monitorName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="monitorDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="createAlert" type="xs:boolean" />
+        <xs:element minOccurs="0" name="alertName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="alertPriority" type="q67:ManagementPackWorkflowPriority" />
+        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="alertSeverity" type="q68:ManagementPackAlertSeverity" />
+        <xs:element minOccurs="0" name="alertDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="alertDescription" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreateNTServiceUnitMonitorResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="CreateNTServiceUnitMonitorResult" nillable="true" type="q69:ManagementPackUnitMonitor" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePerformanceCollectionRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="serviceName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q70="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" minOccurs="0" name="packInfo" nillable="true" type="q70:Pack" />
+        <xs:element minOccurs="0" name="ruleName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="ruleDisplayName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="ruleDescription" nillable="true" type="xs:string" />
+        <xs:element xmlns:q71="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="targetMonitoringClassId" type="q71:guid" />
+        <xs:element minOccurs="0" name="performanceCounterName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="objectName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="instanceName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="frequency" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CreatePerformanceCollectionRuleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="CreatePerformanceCollectionRuleResult" nillable="true" type="q72:ManagementPackRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

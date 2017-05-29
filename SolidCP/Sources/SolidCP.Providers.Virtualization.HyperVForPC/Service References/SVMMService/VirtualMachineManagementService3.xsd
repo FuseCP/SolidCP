@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" />
+  <xs:import schemaLocation="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://vmserver3/SCVMMService/VirtualMachineManagementService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="GetISOs">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetISOsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetISOsResult" nillable="true" type="q1:ArrayOfISOInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetISOById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="isoId" type="q2:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetISOByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetISOByIdResult" nillable="true" type="q3:ISOInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveISO">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="iso" nillable="true" type="q4:ISOInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveISOResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetProcessorTypes">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetProcessorTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetProcessorTypesResult" nillable="true" type="q5:ArrayOfProcessorTypeInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetProcessorTypeById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="id" type="q6:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetProcessorTypeByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetProcessorTypeByIdResult" nillable="true" type="q7:ProcessorTypeInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScripts">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScriptsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetScriptsResult" nillable="true" type="q8:ArrayOfScriptInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScriptById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="id" type="q9:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetScriptByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetScriptByIdResult" nillable="true" type="q10:ScriptInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveScript">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="script" nillable="true" type="q11:ScriptInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveScriptResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetOperatingSystems">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetOperatingSystemsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetOperatingSystemsResult" nillable="true" type="q12:ArrayOfOperatingSystemInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetOperatingSystemById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="id" type="q13:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetOperatingSystemByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetOperatingSystemByIdResult" nillable="true" type="q14:OperatingSystemInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualDiskDrivesByVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q15:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualDiskDrivesByVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualDiskDrivesByVMResult" nillable="true" type="q16:ArrayOfVirtualDiskDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualDiskDriveFromVHD">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q17:guid" />
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vhdId" type="q18:guid" />
+        <xs:element minOccurs="0" name="bus" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="lun" type="xs:unsignedByte" />
+        <xs:element xmlns:q19="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="busType" type="q19:VHDBusTypeInfo" />
+        <xs:element minOccurs="0" name="destinationFileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q20="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q20:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualDiskDriveFromVHDResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVMVirtualDiskDriveFromVHDResult" nillable="true" type="q21:VirtualDiskDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualDiskDrive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q22:guid" />
+        <xs:element minOccurs="0" name="size" type="xs:long" />
+        <xs:element minOccurs="0" name="bus" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="lun" type="xs:unsignedByte" />
+        <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="vhdType" type="q23:VHDTypeInfo" />
+        <xs:element xmlns:q24="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="busType" type="q24:VHDBusTypeInfo" />
+        <xs:element minOccurs="0" name="destinationFileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q25="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q25:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualDiskDriveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVMVirtualDiskDriveResult" nillable="true" type="q26:VirtualDiskDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualDiskDrivesByTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q27:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualDiskDrivesByTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualDiskDrivesByTemplateResult" nillable="true" type="q28:ArrayOfVirtualDiskDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHardwareProfileById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="hardwareProfileId" type="q29:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHardwareProfileByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHardwareProfileByIdResult" nillable="true" type="q30:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="processor" nillable="true" type="q31:ProcessorTypeInfo" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element xmlns:q32="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q32:guid" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cpuCount" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="memory" type="xs:int" />
+        <xs:element minOccurs="0" name="expectedCPUUtilization" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="diskIO" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="cpuMax" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="cpuReserve" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="networkUtilization" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="relativeWeight" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="isHighlyAvailable" type="xs:boolean" />
+        <xs:element minOccurs="0" name="numLockEnabled" nillable="true" type="xs:boolean" />
+        <xs:element xmlns:q33="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="bootOrder" nillable="true" type="q33:ArrayOfBootDeviceInfo" />
+        <xs:element minOccurs="0" name="limitProcessorFunctionality" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="limitProcessorForMigration" nillable="true" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q34="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewHardwareProfileResult" nillable="true" type="q34:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneHardwareProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q35="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="oldProfile" nillable="true" type="q35:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneHardwareProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q36="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="CloneHardwareProfileResult" nillable="true" type="q36:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveHardwareProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q37="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q37:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveHardwareProfileResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetGuestOSProfiles">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetGuestOSProfilesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q38="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetGuestOSProfilesResult" nillable="true" type="q38:ArrayOfGuestOSProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetGuestOSProfileById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q39="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="id" type="q39:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetGuestOSProfileByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetGuestOSProfileByIdResult" nillable="true" type="q40:GuestOSProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewGuestOSProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="fullName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="orgName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="hasProductKey" type="xs:boolean" />
+        <xs:element minOccurs="0" name="productKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="timeZone" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="adminUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinWorkgroup" nillable="true" type="xs:string" />
+        <xs:element xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="guiRunOnceCommands" nillable="true" type="q41:ArrayOfstring" />
+        <xs:element xmlns:q42="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="answerFile" nillable="true" type="q42:ScriptInfo" />
+        <xs:element minOccurs="0" name="mergeAnswerFile" type="xs:boolean" />
+        <xs:element xmlns:q43="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="operatingSystem" nillable="true" type="q43:OperatingSystemInfo" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewGuestOSProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q44="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewGuestOSProfileResult" nillable="true" type="q44:GuestOSProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneGuestOSProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q45="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="originalProfile" nillable="true" type="q45:GuestOSProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneGuestOSProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="CloneGuestOSProfileResult" nillable="true" type="q46:GuestOSProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveGuestOSProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q47="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q47:GuestOSProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveGuestOSProfileResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualHardDisks">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualHardDisksResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q48="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualHardDisksResult" nillable="true" type="q48:ArrayOfVirtualHardDiskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualHardDisksByTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q49="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q49:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualHardDisksByTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q50="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualHardDisksByTemplateResult" nillable="true" type="q50:ArrayOfVirtualHardDiskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualHardDisksByVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q51:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualHardDisksByVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q52="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualHardDisksByVMResult" nillable="true" type="q52:ArrayOfVirtualHardDiskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveVirtualHardDiskById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vhdId" type="q53:guid" />
+        <xs:element minOccurs="0" name="destination" nillable="true" type="xs:string" />
+        <xs:element xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q54:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveVirtualHardDiskByIdResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveVirtualHardDisk">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q55="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="busType" type="q55:VHDBusTypeInfo" />
+        <xs:element minOccurs="0" name="bus" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="lun" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="destination" nillable="true" type="xs:string" />
+        <xs:element xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q56:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveVirtualHardDiskResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkAdaptersByVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q57:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkAdaptersByVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q58="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualNetworkAdaptersByVMResult" nillable="true" type="q58:ArrayOfVirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkAdaptersByTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q59="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q59:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkAdaptersByTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q60="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualNetworkAdaptersByTemplateResult" nillable="true" type="q60:ArrayOfVirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkAdaptersByHardwareProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q61="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q61:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkAdaptersByHardwareProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q62="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualNetworkAdaptersByHardwareProfileResult" nillable="true" type="q62:ArrayOfVirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualNetworkAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q63="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q63:guid" />
+        <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+        <xs:element xmlns:q64="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="addressType" nillable="true" type="q64:EthernetAddressTypeInfo" />
+        <xs:element minOccurs="0" name="virtualNetwork" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualNetworkAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVMVirtualNetworkAdapterResult" nillable="true" type="q65:VirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateVirtualNetworkAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q66="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q66:TemplateInfo" />
+        <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+        <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="addressType" nillable="true" type="q67:EthernetAddressTypeInfo" />
+        <xs:element minOccurs="0" name="virtualNetwork" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateVirtualNetworkAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateVirtualNetworkAdapterResult" nillable="true" type="q68:VirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileVirtualNetworkAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q69:HardwareProfileInfo" />
+        <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+        <xs:element xmlns:q70="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="addressType" nillable="true" type="q70:EthernetAddressTypeInfo" />
+        <xs:element minOccurs="0" name="virtualNetwork" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileVirtualNetworkAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q71="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewHardwareProfileVirtualNetworkAdapterResult" nillable="true" type="q71:VirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualNetworkAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="adapter" nillable="true" type="q72:VirtualNetworkAdapterInfo" />
+        <xs:element minOccurs="0" name="runAsync" type="xs:boolean" />
+        <xs:element xmlns:q73="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q73:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualNetworkAdapterResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetVirtualNetworkAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q74="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="adapter" nillable="true" type="q74:VirtualNetworkAdapterInfo" />
+        <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+        <xs:element xmlns:q75="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="addressType" nillable="true" type="q75:EthernetAddressTypeInfo" />
+        <xs:element minOccurs="0" name="virtualNetwork" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="location" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="tag" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="vLanEnabled" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="vLanId" type="xs:unsignedShort" />
+        <xs:element minOccurs="0" name="runAsync" type="xs:boolean" />
+        <xs:element xmlns:q76="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q76:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetVirtualNetworkAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q77="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="SetVirtualNetworkAdapterResult" nillable="true" type="q77:VirtualNetworkAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkByHost">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q78="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="host" nillable="true" type="q78:HostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualNetworkByHostResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q79="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualNetworkByHostResult" nillable="true" type="q79:ArrayOfVirtualNetworkInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualCOMPortsByVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q80="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q80:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualCOMPortsByVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q81="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualCOMPortsByVMResult" nillable="true" type="q81:ArrayOfVirtualCOMPortInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualCOMPortsByTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q82="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q82:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualCOMPortsByTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q83="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualCOMPortsByTemplateResult" nillable="true" type="q83:ArrayOfVirtualCOMPortInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualCOMPortsByHardwareProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q84="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q84:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualCOMPortsByHardwareProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q85="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualCOMPortsByHardwareProfileResult" nillable="true" type="q85:ArrayOfVirtualCOMPortInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualDVDDrivesByVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q86="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q86:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualDVDDrivesByVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q87="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualDVDDrivesByVMResult" nillable="true" type="q87:ArrayOfVirtualDVDDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualDVDDrive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q88="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q88:guid" />
+        <xs:element xmlns:q89="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="iso" nillable="true" type="q89:ISOInfo" />
+        <xs:element minOccurs="0" name="hostDrive" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="bus" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="lun" type="xs:unsignedByte" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualDVDDriveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q90="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVMVirtualDVDDriveResult" nillable="true" type="q90:VirtualDVDDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateVirtualDVDDrive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q91="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q91:TemplateInfo" />
+        <xs:element xmlns:q92="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="iso" nillable="true" type="q92:ISOInfo" />
+        <xs:element minOccurs="0" name="hostDrive" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="bus" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="lun" type="xs:unsignedByte" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateVirtualDVDDriveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q93="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateVirtualDVDDriveResult" nillable="true" type="q93:VirtualDVDDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileVirtualDVDDrive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q94="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q94:HardwareProfileInfo" />
+        <xs:element xmlns:q95="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="iso" nillable="true" type="q95:ISOInfo" />
+        <xs:element minOccurs="0" name="hostDrive" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="bus" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="lun" type="xs:unsignedByte" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileVirtualDVDDriveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q96="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewHardwareProfileVirtualDVDDriveResult" nillable="true" type="q96:VirtualDVDDriveInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualDVDDrive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q97="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="dvd" nillable="true" type="q97:VirtualDVDDriveInfo" />
+        <xs:element xmlns:q98="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q98:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualDVDDriveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSCSIAdaptersByVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q99="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q99:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSCSIAdaptersByVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q100="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualSCSIAdaptersByVMResult" nillable="true" type="q100:ArrayOfVirtualSCSIAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSCSIAdaptersByTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q101="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q101:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSCSIAdaptersByTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q102="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualSCSIAdaptersByTemplateResult" nillable="true" type="q102:ArrayOfVirtualSCSIAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSCSIAdaptersByHardwareProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q103="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q103:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSCSIAdaptersByHardwareProfileResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q104="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualSCSIAdaptersByHardwareProfileResult" nillable="true" type="q104:ArrayOfVirtualSCSIAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualSCSIAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q105="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q105:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVMVirtualSCSIAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q106="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVMVirtualSCSIAdapterResult" nillable="true" type="q106:VirtualSCSIAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateVirtualSCSIAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q107="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q107:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateVirtualSCSIAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q108="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateVirtualSCSIAdapterResult" nillable="true" type="q108:VirtualSCSIAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileVirtualSCSIAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q109="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="profile" nillable="true" type="q109:HardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewHardwareProfileVirtualSCSIAdapterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q110="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewHardwareProfileVirtualSCSIAdapterResult" nillable="true" type="q110:VirtualSCSIAdapterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualSCSIAdapter">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q111="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="adapter" nillable="true" type="q111:VirtualSCSIAdapterInfo" />
+        <xs:element xmlns:q112="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" type="q112:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualSCSIAdapterResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostClusters">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostClustersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q113="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostClustersResult" nillable="true" type="q113:ArrayOfHostClusterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostClusterByName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="clusterName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostClusterByNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q114="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostClusterByNameResult" nillable="true" type="q114:HostClusterInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostDisksByHost">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q115="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="host" nillable="true" type="q115:HostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostDisksByHostResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q116="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostDisksByHostResult" nillable="true" type="q116:ArrayOfHostDiskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostVolumes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q117="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="host" nillable="true" type="q117:HostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostVolumesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q118="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostVolumesResult" nillable="true" type="q118:ArrayOfHostVolumeInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemMemorySetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemMemorySettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q119="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualSystemMemorySettingResult" nillable="true" type="q119:MemorySettingInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemMemorySetting">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q120="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="setting" nillable="true" type="q120:MemorySettingInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ChangeVirtualSystemMemorySettingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ChangeVirtualSystemMemorySettingResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemThumbnailImage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="imgWidth" type="xs:int" />
+        <xs:element minOccurs="0" name="imgHeight" type="xs:int" />
+        <xs:element minOccurs="0" name="systemName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="serverName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualSystemThumbnailImageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetVirtualSystemThumbnailImageResult" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualMachineByName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="virtualMachineName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualMachineByNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q121="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualMachineByNameResult" nillable="true" type="q121:VirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualMachinesByHost">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="hostName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualMachinesByHostResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q122="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualMachinesByHostResult" nillable="true" type="q122:ArrayOfVirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllVirtualMachines">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllVirtualMachinesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q123="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetAllVirtualMachinesResult" nillable="true" type="q123:ArrayOfVirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PauseVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q124="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q124:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PauseVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q125="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q125:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q126="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q126:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q127="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q127:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SaveVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SuspendVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q128="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q128:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SuspendVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q129="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q129:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ShutdownVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q130="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q130:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ShutdownVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResumeVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q131="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q131:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResumeVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q132="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q132:guid" />
+        <xs:element xmlns:q133="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="hostId" type="q133:guid" />
+        <xs:element minOccurs="0" name="path" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="startVM" type="xs:boolean" />
+        <xs:element minOccurs="0" name="useLan" type="xs:boolean" />
+        <xs:element minOccurs="0" name="runAsynchronously" type="xs:boolean" />
+        <xs:element xmlns:q134="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q134:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MoveVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q135="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q135:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q136="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q136:guid" />
+        <xs:element xmlns:q137="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q137:guid" />
+        <xs:element xmlns:q138="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="bootOrder" nillable="true" type="q138:ArrayOfBootDeviceInfo" />
+        <xs:element minOccurs="0" name="costCenter" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cpuCount" nillable="true" type="xs:unsignedByte" />
+        <xs:element minOccurs="0" name="cpuMax" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="cpuReserve" nillable="true" type="xs:int" />
+        <xs:element xmlns:q139="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="cpuType" nillable="true" type="q139:ProcessorTypeInfo" />
+        <xs:element xmlns:q140="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="customProperties" nillable="true" type="q140:ArrayOfstring" />
+        <xs:element minOccurs="0" name="delayStart" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="diskIO" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="expectedCPUUtilization" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="isHighlyAvailable" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="limitCPUForMigration" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="limitCPUFunctionality" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="memory" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="networkUtilization" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="numLockEnabled" nillable="true" type="xs:boolean" />
+        <xs:element xmlns:q141="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="operatingSystemId" nillable="true" type="q141:guid" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="relativeWeight" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="tag" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="runAsync" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SetVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q142="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="SetVirtualMachineResult" nillable="true" type="q142:VirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachine">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element xmlns:q143="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="libServer" nillable="true" type="q143:LibraryServerInfo" />
+        <xs:element minOccurs="0" name="sharePath" nillable="true" type="xs:string" />
+        <xs:element xmlns:q144="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwcfg" nillable="true" type="q144:HardwareProfileInfo" />
+        <xs:element minOccurs="0" name="delayStart" nillable="true" type="xs:int" />
+        <xs:element xmlns:q145="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q145:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q146="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVirtualMachineResult" nillable="true" type="q146:VirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineFromVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q147="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q147:guid" />
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element xmlns:q148="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="library" nillable="true" type="q148:LibraryServerInfo" />
+        <xs:element minOccurs="0" name="sharePath" nillable="true" type="xs:string" />
+        <xs:element xmlns:q149="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwConfig" nillable="true" type="q149:HardwareProfileInfo" />
+        <xs:element xmlns:q150="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q150:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineFromVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q151="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVirtualMachineFromVMResult" nillable="true" type="q151:VirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineFromTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q152="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="template" nillable="true" type="q152:TemplateInfo" />
+        <xs:element minOccurs="0" name="vmName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element xmlns:q153="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="vmHost" nillable="true" type="q153:HostInfo" />
+        <xs:element minOccurs="0" name="vmPath" nillable="true" type="xs:string" />
+        <xs:element xmlns:q154="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwconfig" nillable="true" type="q154:HardwareProfileInfo" />
+        <xs:element xmlns:q155="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="osconfig" nillable="true" type="q155:GuestOSProfileInfo" />
+        <xs:element minOccurs="0" name="adminUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminPassword" nillable="true" type="xs:string" />
+        <xs:element xmlns:q156="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="answerFile" nillable="true" type="q156:ScriptInfo" />
+        <xs:element xmlns:q157="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroupId" nillable="true" type="q157:guid" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="fullName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="mergeAnswerFile" type="xs:boolean" />
+        <xs:element xmlns:q158="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="operatingSystem" nillable="true" type="q158:OperatingSystemInfo" />
+        <xs:element xmlns:q159="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="guiRunOnceCommands" nillable="true" type="q159:ArrayOfstring" />
+        <xs:element minOccurs="0" name="joinDomainPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinWorkgroup" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="orgName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="productKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="timeZone" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineFromTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q160="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVirtualMachineFromTemplateResult" nillable="true" type="q160:VirtualMachineInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualMachineCheckpoints">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q161="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q161:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVirtualMachineCheckpointsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q162="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVirtualMachineCheckpointsResult" nillable="true" type="q162:ArrayOfVMCheckpointInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineCheckpoint">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q163="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q163:guid" />
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewVirtualMachineCheckpointResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q164="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewVirtualMachineCheckpointResult" nillable="true" type="q164:VMCheckpointInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RestoreVirtualMachineCheckpoint">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="checkpointId" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RestoreVirtualMachineCheckpointResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteVirtualMachineCheckpoint">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="checkpointId" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteVirtualMachineCheckpointResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHosts">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q165="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostsResult" nillable="true" type="q165:ArrayOfHostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostByName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="hostName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostByNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q166="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostByNameResult" nillable="true" type="q166:HostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q167="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="hostId" type="q167:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHostByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q168="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHostByIdResult" nillable="true" type="q168:HostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVMHostRatingsByCluster">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q169="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q169:guid" />
+        <xs:element minOccurs="0" name="isMigration" type="xs:boolean" />
+        <xs:element minOccurs="0" name="clusterName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVMHostRatingsByClusterResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q170="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVMHostRatingsByClusterResult" nillable="true" type="q170:ArrayOfVMHostRatingInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTemplates">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTemplatesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q171="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetTemplatesResult" nillable="true" type="q171:ArrayOfTemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVMHostRatingsByHost">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q172="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vmId" type="q172:guid" />
+        <xs:element minOccurs="0" name="isMigration" type="xs:boolean" />
+        <xs:element xmlns:q173="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="host" nillable="true" type="q173:HostInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetVMHostRatingsByHostResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q174="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetVMHostRatingsByHostResult" nillable="true" type="q174:ArrayOfVMHostRatingInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q175="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="taskId" type="q175:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q176="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetTaskByIdResult" nillable="true" type="q176:TaskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTasks">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTasksResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q177="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetTasksResult" nillable="true" type="q177:ArrayOfTaskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskByName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTaskByNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q178="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetTaskByNameResult" nillable="true" type="q178:TaskInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTemplateById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q179="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="templateId" type="q179:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTemplateByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q180="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetTemplateByIdResult" nillable="true" type="q180:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminPassword" nillable="true" type="xs:string" />
+        <xs:element xmlns:q181="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="answerFile" nillable="true" type="q181:ScriptInfo" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cpuCount" nillable="true" type="xs:unsignedByte" />
+        <xs:element xmlns:q182="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="cpuType" nillable="true" type="q182:ProcessorTypeInfo" />
+        <xs:element minOccurs="0" name="fullName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q183="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="oscfg" nillable="true" type="q183:GuestOSProfileInfo" />
+        <xs:element xmlns:q184="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="guiRunOnceCommands" nillable="true" type="q184:ArrayOfstring" />
+        <xs:element xmlns:q185="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwcfg" nillable="true" type="q185:HardwareProfileInfo" />
+        <xs:element minOccurs="0" name="isHighlyAvailable" nillable="true" type="xs:boolean" />
+        <xs:element xmlns:q186="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q186:guid" />
+        <xs:element minOccurs="0" name="joinDomain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinWorkgroup" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="memory" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="mergeAnswerFile" type="xs:boolean" />
+        <xs:element xmlns:q187="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="operatingSystem" nillable="true" type="q187:OperatingSystemInfo" />
+        <xs:element minOccurs="0" name="orgName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="productKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="relativeWeight" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="timeZone" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q188="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateResult" nillable="true" type="q188:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateFromVM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q189="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="libServer" nillable="true" type="q189:LibraryServerInfo" />
+        <xs:element minOccurs="0" name="sharePath" nillable="true" type="xs:string" />
+        <xs:element xmlns:q190="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="vm" nillable="true" type="q190:VirtualMachineInfo" />
+        <xs:element minOccurs="0" name="adminUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminPassword" nillable="true" type="xs:string" />
+        <xs:element xmlns:q191="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="answerFile" nillable="true" type="q191:ScriptInfo" />
+        <xs:element minOccurs="0" name="bootVirtualhardDisk" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cpuCount" nillable="true" type="xs:unsignedByte" />
+        <xs:element xmlns:q192="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="cpuType" nillable="true" type="q192:ProcessorTypeInfo" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="fullName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q193="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="oscfg" nillable="true" type="q193:GuestOSProfileInfo" />
+        <xs:element xmlns:q194="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="guiRunOnceCommands" nillable="true" type="q194:ArrayOfstring" />
+        <xs:element xmlns:q195="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwcfg" nillable="true" type="q195:HardwareProfileInfo" />
+        <xs:element minOccurs="0" name="isHighlyAvailable" nillable="true" type="xs:boolean" />
+        <xs:element xmlns:q196="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q196:guid" />
+        <xs:element minOccurs="0" name="joinDomain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinWorkgroup" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="memory" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="mergeAnswerFile" type="xs:boolean" />
+        <xs:element xmlns:q197="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="operatingSystem" nillable="true" type="q197:OperatingSystemInfo" />
+        <xs:element minOccurs="0" name="orgName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="productKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="relativeWeight" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="timeZone" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateFromVMResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q198="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateFromVMResult" nillable="true" type="q198:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateFromVHD">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q199="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="vhdId" type="q199:guid" />
+        <xs:element minOccurs="0" name="adminUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminPassword" nillable="true" type="xs:string" />
+        <xs:element xmlns:q200="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="answerFile" nillable="true" type="q200:ScriptInfo" />
+        <xs:element minOccurs="0" name="bootVirtualhardDisk" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cpuCount" nillable="true" type="xs:unsignedByte" />
+        <xs:element xmlns:q201="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="cpuType" nillable="true" type="q201:ProcessorTypeInfo" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="fullName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q202="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="oscfg" nillable="true" type="q202:GuestOSProfileInfo" />
+        <xs:element xmlns:q203="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="guiRunOnceCommands" nillable="true" type="q203:ArrayOfstring" />
+        <xs:element xmlns:q204="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwcfg" nillable="true" type="q204:HardwareProfileInfo" />
+        <xs:element minOccurs="0" name="isHighlyAvailable" nillable="true" type="xs:boolean" />
+        <xs:element xmlns:q205="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q205:guid" />
+        <xs:element minOccurs="0" name="joinDomain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinWorkgroup" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="memory" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="mergeAnswerFile" type="xs:boolean" />
+        <xs:element xmlns:q206="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="operatingSystem" nillable="true" type="q206:OperatingSystemInfo" />
+        <xs:element minOccurs="0" name="orgName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="productKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="relativeWeight" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="timeZone" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateFromVHDResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q207="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateFromVHDResult" nillable="true" type="q207:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateFromTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+        <xs:element xmlns:q208="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="templateId" type="q208:guid" />
+        <xs:element minOccurs="0" name="adminUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="adminPassword" nillable="true" type="xs:string" />
+        <xs:element xmlns:q209="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="answerFile" nillable="true" type="q209:ScriptInfo" />
+        <xs:element minOccurs="0" name="bootVirtualhardDisk" nillable="true" type="xs:boolean" />
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="cpuCount" nillable="true" type="xs:unsignedByte" />
+        <xs:element xmlns:q210="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="cpuType" nillable="true" type="q210:ProcessorTypeInfo" />
+        <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="fullName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q211="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="oscfg" nillable="true" type="q211:GuestOSProfileInfo" />
+        <xs:element xmlns:q212="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="guiRunOnceCommands" nillable="true" type="q212:ArrayOfstring" />
+        <xs:element xmlns:q213="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="hwcfg" nillable="true" type="q213:HardwareProfileInfo" />
+        <xs:element minOccurs="0" name="isHighlyAvailable" nillable="true" type="xs:boolean" />
+        <xs:element xmlns:q214="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="jobGroup" nillable="true" type="q214:guid" />
+        <xs:element minOccurs="0" name="joinDomain" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainUserName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinDomainPassword" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="joinWorkgroup" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="memory" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="mergeAnswerFile" type="xs:boolean" />
+        <xs:element xmlns:q215="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="operatingSystem" nillable="true" type="q215:OperatingSystemInfo" />
+        <xs:element minOccurs="0" name="orgName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="owner" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="productKey" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="relativeWeight" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="timeZone" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewTemplateFromTemplateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q216="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="NewTemplateFromTemplateResult" nillable="true" type="q216:TemplateInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveTemplate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q217="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="templateId" type="q217:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RemoveTemplateResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLibraryServers">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLibraryServersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q218="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetLibraryServersResult" nillable="true" type="q218:ArrayOfLibraryServerInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLibraryServerByComputerName">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="computerName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLibraryServerByComputerNameResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q219="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetLibraryServerByComputerNameResult" nillable="true" type="q219:LibraryServerInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHardwareProfles">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHardwareProflesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q220="http://schemas.datacontract.org/2004/07/Microsoft.Hosting.VirtualMachineManagement.DataContracts" minOccurs="0" name="GetHardwareProflesResult" nillable="true" type="q220:ArrayOfHardwareProfileInfo" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:i0="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:import namespace="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" location="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?wsdl=wsdl0" />
+  <wsdl:types />
+  <wsdl:binding name="BasicHttpBinding_IVirtualizationProvisioningService" type="i0:IVirtualizationProvisioningService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CreateVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/CreateVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="MountVirtualHardDisk">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/MountVirtualHardDisk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="UnmountVirtualHardDisk">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/UnmountVirtualHardDisk" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DefineVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/DefineVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RemoveVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/RemoveVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="StartVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/StartVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="TurnoffVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/TurnoffVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="PauseVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/PauseVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ResumeVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResumeVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SnapshotVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SnapshotVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SaveVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SaveVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ResetVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResetVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ShutdownVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ShutdownVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVirtualSystemMemorySetting">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemMemorySetting" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVirtualSystemProcessorSetting">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemProcessorSetting" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVirtualSystemSetting">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemSetting" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVirtualSystems">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystems" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVirtualSystem">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetVirtualSystemThumbnailImage">
+      <soap:operation soapAction="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemThumbnailImage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="HostingServiceFaultFault">
+        <soap:fault use="literal" name="HostingServiceFaultFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+</wsdl:definitions>

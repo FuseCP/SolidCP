@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Monitoring.DataContracts" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/System.Diagnostics" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" />
+  <xs:import schemaLocation="http://vmserver3.sweetsoft.com.ua/MonitoringWebService/MonitoringService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfPerformanceCounterCategoryInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PerformanceCounterCategoryInfo" nillable="true" type="tns:PerformanceCounterCategoryInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPerformanceCounterCategoryInfo" nillable="true" type="tns:ArrayOfPerformanceCounterCategoryInfo" />
+  <xs:complexType name="PerformanceCounterCategoryInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CategoryHelp" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CategoryName" nillable="true" type="xs:string" />
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/System.Diagnostics" minOccurs="0" name="CategoryType" type="q1:PerformanceCounterCategoryType" />
+      <xs:element minOccurs="0" name="MachineName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PerformanceCounterCategoryInfo" nillable="true" type="tns:PerformanceCounterCategoryInfo" />
+  <xs:complexType name="ArrayOfWindowsService">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="WindowsService" nillable="true" type="tns:WindowsService" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfWindowsService" nillable="true" type="tns:ArrayOfWindowsService" />
+  <xs:complexType name="WindowsService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MachineName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ServiceName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="WindowsService" nillable="true" type="tns:WindowsService" />
+  <xs:complexType name="ArrayOfAlert">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Alert" nillable="true" type="tns:Alert" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfAlert" nillable="true" type="tns:ArrayOfAlert" />
+  <xs:complexType name="Alert">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Created" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ResolutionState" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Severity" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Source" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Alert" nillable="true" type="tns:Alert" />
+  <xs:complexType name="Device">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Alerts" nillable="true" type="tns:ArrayOfAlert" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="AvailabilityState" type="q2:HealthState" />
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="ConfigurationState" type="q3:HealthState" />
+      <xs:element minOccurs="0" name="DeviceId" type="ser:guid" />
+      <xs:element minOccurs="0" name="DeviceProperties" nillable="true" type="tns:ArrayOfDeviceProperty" />
+      <xs:element minOccurs="0" name="Events" nillable="true" type="tns:ArrayOfDeviceEvent" />
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="HealthState" type="q4:HealthState" />
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="PerformanceState" type="q5:HealthState" />
+      <xs:element minOccurs="0" name="ProformanceDataList" nillable="true" type="tns:ArrayOfPerformanceData" />
+      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="SecurityState" type="q6:HealthState" />
+      <xs:element minOccurs="0" name="Tasks" nillable="true" type="tns:ArrayOfTask" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Device" nillable="true" type="tns:Device" />
+  <xs:complexType name="ArrayOfDeviceProperty">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DeviceProperty" nillable="true" type="tns:DeviceProperty" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDeviceProperty" nillable="true" type="tns:ArrayOfDeviceProperty" />
+  <xs:complexType name="DeviceProperty">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="PropertyName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="PropertyValue" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeviceProperty" nillable="true" type="tns:DeviceProperty" />
+  <xs:complexType name="ArrayOfDeviceEvent">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DeviceEvent" nillable="true" type="tns:DeviceEvent" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDeviceEvent" nillable="true" type="tns:ArrayOfDeviceEvent" />
+  <xs:complexType name="DeviceEvent">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Category" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Decription" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EventData" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Level" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Number" type="xs:int" />
+      <xs:element minOccurs="0" name="TimeGenerated" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DeviceEvent" nillable="true" type="tns:DeviceEvent" />
+  <xs:complexType name="ArrayOfPerformanceData">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PerformanceData" nillable="true" type="tns:PerformanceData" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPerformanceData" nillable="true" type="tns:ArrayOfPerformanceData" />
+  <xs:complexType name="PerformanceData">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CounterName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="HasSignature" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="InstanceName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MonitoringRuleId" type="ser:guid" />
+      <xs:element minOccurs="0" name="ObjectName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ScaleFactor" type="xs:double" />
+      <xs:element minOccurs="0" name="ScaleLegend" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PerformanceData" nillable="true" type="tns:PerformanceData" />
+  <xs:complexType name="ArrayOfTask">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Task" nillable="true" type="tns:Task" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTask" nillable="true" type="tns:ArrayOfTask" />
+  <xs:complexType name="Task">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TaskId" type="ser:guid" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Task" nillable="true" type="tns:Task" />
+  <xs:complexType name="ArrayOfTaskResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="TaskResult" nillable="true" type="tns:TaskResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTaskResult" nillable="true" type="tns:ArrayOfTaskResult" />
+  <xs:complexType name="TaskResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="BatchId" type="ser:guid" />
+      <xs:element minOccurs="0" name="ErrorCode" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Output" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TaskId" type="ser:guid" />
+      <xs:element minOccurs="0" name="TaskStatus" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="TaskResult" nillable="true" type="tns:TaskResult" />
+  <xs:complexType name="ArrayOfPerformanceDataValue">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PerformanceDataValue" nillable="true" type="tns:PerformanceDataValue" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPerformanceDataValue" nillable="true" type="tns:ArrayOfPerformanceDataValue" />
+  <xs:complexType name="PerformanceDataValue">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SampleValue" nillable="true" type="xs:double" />
+      <xs:element minOccurs="0" name="TimeAdded" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="TimeSampled" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PerformanceDataValue" nillable="true" type="tns:PerformanceDataValue" />
+  <xs:complexType name="ArrayOfMonitoredObject">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MonitoredObject" nillable="true" type="tns:MonitoredObject" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMonitoredObject" nillable="true" type="tns:ArrayOfMonitoredObject" />
+  <xs:complexType name="MonitoredObject">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Alerts" nillable="true" type="tns:ArrayOfAlert" />
+      <xs:element minOccurs="0" name="AvailabilityLastModified" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ComputerName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DeviceProperties" nillable="true" type="tns:ArrayOfDeviceProperty" />
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Events" nillable="true" type="tns:ArrayOfDeviceEvent" />
+      <xs:element minOccurs="0" name="FullName" nillable="true" type="xs:string" />
+      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="HealthState" type="q7:HealthState" />
+      <xs:element minOccurs="0" name="InMaintenanceMode" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsAvailable" type="xs:boolean" />
+      <xs:element minOccurs="0" name="IsManaged" type="xs:boolean" />
+      <xs:element minOccurs="0" name="LastModified" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="LeastDerivedMonitoringClass" nillable="true" type="tns:MonitoringClassInfo" />
+      <xs:element minOccurs="0" name="LeastDerivedNonAbstractMonitoringClassId" type="ser:guid" />
+      <xs:element minOccurs="0" name="MaintenanceModeLastModified" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="MonitoringClassDisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ObjectId" type="ser:guid" />
+      <xs:element minOccurs="0" name="Path" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="StateLastModified" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MonitoredObject" nillable="true" type="tns:MonitoredObject" />
+  <xs:complexType name="MonitoringClassInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MonitoringClassInfo" nillable="true" type="tns:MonitoringClassInfo" />
+  <xs:complexType name="ArrayOfTemplate">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Template" nillable="true" type="tns:Template" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfTemplate" nillable="true" type="tns:ArrayOfTemplate" />
+  <xs:complexType name="Template">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Comment" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Template" nillable="true" type="tns:Template" />
+  <xs:complexType name="ArrayOfPack">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Pack" nillable="true" type="tns:Pack" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPack" nillable="true" type="tns:ArrayOfPack" />
+  <xs:complexType name="Pack">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Id" type="ser:guid" />
+      <xs:element minOccurs="0" name="LastModified" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TimeCreated" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Pack" nillable="true" type="tns:Pack" />
+  <xs:complexType name="MonitorInfo">
+    <xs:sequence>
+      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="AlertSettings" nillable="true" type="q8:ManagementPackMonitorAlertSettings" />
+      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="Category" type="q9:ManagementPackCategoryType" />
+      <xs:element minOccurs="0" name="Configuration" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="KnowedgeArticleContent" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MonitorId" type="ser:guid" />
+      <xs:element minOccurs="0" name="MonitorName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MonitorInfo" nillable="true" type="tns:MonitorInfo" />
+  <xs:complexType name="ArrayOfMonitorHealthState">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="MonitorHealthState" nillable="true" type="tns:MonitorHealthState" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfMonitorHealthState" nillable="true" type="tns:ArrayOfMonitorHealthState" />
+  <xs:complexType name="MonitorHealthState">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ChildStates" nillable="true" type="tns:ArrayOfMonitorHealthState" />
+      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Microsoft.EnterpriseManagement.Configuration" minOccurs="0" name="HealthState" type="q10:HealthState" />
+      <xs:element minOccurs="0" name="Id" nillable="true" type="ser:guid" />
+      <xs:element minOccurs="0" name="LastTimeModified" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="MonitorDescription" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MonitorDisplayName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MonitorId" type="ser:guid" />
+      <xs:element minOccurs="0" name="MonitorName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MonitorSettings" nillable="true" type="tns:MonitorInfo" />
+      <xs:element minOccurs="0" name="MonitorTargetMonitoringClassId" type="ser:guid" />
+      <xs:element minOccurs="0" name="MonitoringObjectId" type="ser:guid" />
+      <xs:element minOccurs="0" name="OperationalState" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="MonitorHealthState" nillable="true" type="tns:MonitorHealthState" />
+</xs:schema>

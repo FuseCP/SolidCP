@@ -1,0 +1,464 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{684C932A-6C75-46AC-A327-F3689D89EB42}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SolidCP.Providers</RootNamespace>
+    <AssemblyName>SolidCP.Providers.Base</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <WarningsAsErrors>618</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <WarningsAsErrors>618</WarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Web.Administration, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Administration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Common\LogExtension\LogExtensionHelper.cs" />
+    <Compile Include="Common\LogExtension\Attributes\LogParentPropertyAttribute.cs" />
+    <Compile Include="Common\LogExtension\Attributes\LogPropertyAttribute.cs" />
+    <Compile Include="Common\AppPoolState.cs" />
+    <Compile Include="Common\ByteOperations.cs" />
+    <Compile Include="Common\ErrorCodes.cs" />
+    <Compile Include="Common\PasswdHelper.cs" />
+    <Compile Include="Common\WPIEntries.cs" />
+    <Compile Include="DomainLookup\DnsRecordInfo.cs" />
+    <Compile Include="DomainLookup\DnsRecordInfoChange.cs" />
+    <Compile Include="DomainLookup\DomainDnsChanges.cs" />
+    <Compile Include="DomainLookup\DomainDnsRecordStatuses.cs" />
+    <Compile Include="EnterpriseStorage\EsFolder.cs" />
+    <Compile Include="EnterpriseStorage\IEnterpriseStorage.cs" />
+    <Compile Include="HeliconZoo\IHeliconZooServer.cs" />
+    <Compile Include="HostedSolution\BaseReport.cs" />
+    <Compile Include="HostedSolution\BaseStatistics.cs" />
+    <Compile Include="HostedSolution\BlackBerryErrorsCodes.cs" />
+    <Compile Include="HostedSolution\BlackBerryStatsItem.cs" />
+    <Compile Include="HostedSolution\BlackBerryUserDeleteState.cs" />
+    <Compile Include="HostedSolution\ExchangeDisclaimer.cs" />
+    <Compile Include="HostedSolution\ExchangeMailboxPlanRetentionPolicyTag.cs" />
+    <Compile Include="HostedSolution\ExchangeOrganization.cs" />
+    <Compile Include="HostedSolution\ExchangeAcceptedDomainType.cs" />
+    <Compile Include="HostedSolution\ExchangeMailboxPlanType.cs" />
+    <Compile Include="HostedSolution\ExchangeMailboxPlan.cs" />
+    <Compile Include="HostedSolution\ExchangeRetentionPolicyTag.cs" />
+    <Compile Include="HostedSolution\ExchangeRetentionPolicyTagAction.cs" />
+    <Compile Include="HostedSolution\ExchangeRetentionPolicyTagType.cs" />
+    <Compile Include="HostedSolution\ISfBServer.cs" />
+    <Compile Include="HostedSolution\ILyncServer.cs" />
+    <Compile Include="HostedSolution\MailCleanerContants.cs" />
+    <Compile Include="HostedSolution\SfBErrorCodes.cs" />
+    <Compile Include="HostedSolution\SfBFederationDomain.cs" />
+    <Compile Include="HostedSolution\SfBOrganizationStatistics.cs" />
+    <Compile Include="HostedSolution\SfBPolicyType.cs" />
+    <Compile Include="HostedSolution\SfBStatisticsReport.cs" />
+    <Compile Include="HostedSolution\SfBTransaction.cs" />
+    <Compile Include="HostedSolution\SfBUser.cs" />
+    <Compile Include="HostedSolution\SfBUserPlan.cs" />
+    <Compile Include="HostedSolution\SfBUserPlanType.cs" />
+    <Compile Include="HostedSolution\SfBUsersPaged.cs" />
+    <Compile Include="HostedSolution\SfBUserStatistics.cs" />
+    <Compile Include="HostedSolution\SfBVoicePolicyType.cs" />
+    <Compile Include="HostedSolution\SfBConstants.cs" />
+    <Compile Include="HostedSolution\LyncConstants.cs" />
+    <Compile Include="HostedSolution\LyncErrorCodes.cs" />
+    <Compile Include="HostedSolution\LyncFederationDomain.cs" />
+    <Compile Include="HostedSolution\LyncOrganizationStatistics.cs" />
+    <Compile Include="HostedSolution\LyncPolicyType.cs" />
+    <Compile Include="HostedSolution\LyncTransaction.cs" />
+    <Compile Include="HostedSolution\LyncUserStatistics.cs" />
+    <Compile Include="HostedSolution\LyncStatisticsReport.cs" />
+    <Compile Include="HostedSolution\LyncUser.cs" />
+    <Compile Include="HostedSolution\LyncUserPlan.cs" />
+    <Compile Include="HostedSolution\LyncUserPlanType.cs" />
+    <Compile Include="HostedSolution\LyncUsersPaged.cs" />
+    <Compile Include="HostedSolution\LyncVoicePolicyType.cs" />
+    <Compile Include="HostedSolution\OrganizationGeneralSettings.cs" />
+    <Compile Include="HostedSolution\OrganizationPasswordSettings.cs" />
+    <Compile Include="HostedSolution\OrganizationSecurityGroup.cs" />
+    <Compile Include="HostedSolution\OrganizationDeletedUser.cs" />
+    <Compile Include="HostedSolution\OrganizationDeletedUsersPaged.cs" />
+    <Compile Include="HostedSolution\OrganizationSettings.cs" />
+    <Compile Include="HostedSolution\OrganizationSettingsEntity.cs" />
+    <Compile Include="HostedSolution\SharePointEnterpriseStatisticsReport.cs" />
+    <Compile Include="HostedSolution\SharePointEntetpriseStatistics.cs" />
+    <Compile Include="HostedSolution\TransactionAction.cs" />
+    <Compile Include="OS\MappedDrivesPaged.cs" />
+    <Compile Include="OS\MappedDrive.cs" />
+    <Compile Include="OS\Quota.cs" />
+    <Compile Include="OS\QuotaType.cs" />
+    <Compile Include="OS\SystemFilesPaged.cs" />
+    <Compile Include="RemoteDesktopServices\ImportedRdsCollection.cs" />
+    <Compile Include="RemoteDesktopServices\IRemoteDesktopServices.cs" />
+    <Compile Include="RemoteDesktopServices\RdsCertificate.cs" />
+    <Compile Include="RemoteDesktopServices\RdsCollection.cs" />
+    <Compile Include="RemoteDesktopServices\RdsCollectionPaged.cs" />
+    <Compile Include="RemoteDesktopServices\RdsCollectionSetting.cs" />
+    <Compile Include="RemoteDesktopServices\RdsCollectionSettings.cs" />
+    <Compile Include="RemoteDesktopServices\RdsEnums.cs" />
+    <Compile Include="RemoteDesktopServices\RdsMessage.cs" />
+    <Compile Include="RemoteDesktopServices\RdsMessageRecipient.cs" />
+    <Compile Include="RemoteDesktopServices\RdsPolicyTypes.cs" />
+    <Compile Include="RemoteDesktopServices\RdsServer.cs" />
+    <Compile Include="RemoteDesktopServices\RdsServerDriveInfo.cs" />
+    <Compile Include="RemoteDesktopServices\RdsServerInfo.cs" />
+    <Compile Include="RemoteDesktopServices\RdsServerSetting.cs" />
+    <Compile Include="RemoteDesktopServices\RdsServerSettings.cs" />
+    <Compile Include="RemoteDesktopServices\RdsServersPaged.cs" />
+    <Compile Include="RemoteDesktopServices\RdsUserSession.cs" />
+    <Compile Include="RemoteDesktopServices\RemoteApplication.cs" />
+    <Compile Include="RemoteDesktopServices\SessionHostServer.cs" />
+    <Compile Include="RemoteDesktopServices\StartMenuApp.cs" />
+    <Compile Include="ResultObjects\HeliconApe.cs" />
+    <Compile Include="HostedSolution\ExchangeMobileDevice.cs" />
+    <Compile Include="HostedSolution\IOCSEdgeServer.cs" />
+    <Compile Include="HostedSolution\CRMOrganizationStatistics.cs" />
+    <Compile Include="HostedSolution\CRMUserAccessMode.cs" />
+    <Compile Include="HostedSolution\ExchangeMailboxStatistics.cs" />
+    <Compile Include="HostedSolution\CRMBaseUnit.cs" />
+    <Compile Include="HostedSolution\CrmOrganizationRole.cs" />
+    <Compile Include="HostedSolution\CRMStatisticsReport.cs" />
+    <Compile Include="HostedSolution\CrmUser.cs" />
+    <Compile Include="HostedSolution\ExchangeStatisticsReport.cs" />
+    <Compile Include="HostedSolution\EnterpriseSolutionStatisticsReport.cs" />
+    <Compile Include="HostedSolution\IBlackBerry.cs" />
+    <Compile Include="HostedSolution\IOCSServer.cs" />
+    <Compile Include="HostedSolution\MobileDeviceStatus.cs" />
+    <Compile Include="HostedSolution\OCSConstants.cs" />
+    <Compile Include="HostedSolution\OCSErrorCodes.cs" />
+    <Compile Include="HostedSolution\OCSUser.cs" />
+    <Compile Include="HostedSolution\OrganizationStatisticsReport.cs" />
+    <Compile Include="HostedSolution\OrganizationStatisticsRepotItem.cs" />
+    <Compile Include="HostedSolution\PasswordPolicy.cs" />
+    <Compile Include="HostedSolution\SharePointStatistics.cs" />
+    <Compile Include="HostedSolution\SharePointStatisticsReport.cs" />
+    <Compile Include="ResultObjects\BlackBerryUserStatsResult.cs" />
+    <Compile Include="ResultObjects\BoolResult.cs" />
+    <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\NtfsPermission.cs" />
+    <Compile Include="ResultObjects\BytesResult.cs" />
+    <Compile Include="ResultObjects\CRMBaseUnitResult.cs" />
+    <Compile Include="ResultObjects\CRMBusinessUnitsResult.cs" />
+    <Compile Include="ResultObjects\CrmOrganizationRolesResult.cs" />
+    <Compile Include="ResultObjects\CrmUserResult.cs" />
+    <Compile Include="ResultObjects\CurrencyCollectionResultObject.cs" />
+    <Compile Include="ResultObjects\ExchangeDistributionListResult.cs" />
+    <Compile Include="ResultObjects\IntResult.cs" />
+    <Compile Include="ResultObjects\JobsValue.cs" />
+    <Compile Include="HostedSolution\OCSUsersPaged.cs" />
+    <Compile Include="ResultObjects\SfBUserResult.cs" />
+    <Compile Include="ResultObjects\LyncUserResult.cs" />
+    <Compile Include="ResultObjects\SfBUsersPagedResult.cs" />
+    <Compile Include="ResultObjects\LyncUsersPagedResult.cs" />
+    <Compile Include="ResultObjects\OCSUserResult.cs" />
+    <Compile Include="ResultObjects\OCSUsersPagedResult.cs" />
+    <Compile Include="ResultObjects\OrganizationResult.cs" />
+    <Compile Include="Common\RemoteServerSettings.cs" />
+    <Compile Include="Common\DailyStatistics.cs" />
+    <Compile Include="Common\HostingServiceProviderBase.cs" />
+    <Compile Include="Common\IHostingServiceProvider.cs" />
+    <Compile Include="Common\PersistentAttribute.cs" />
+    <Compile Include="ResultObjects\OrganizationUsersPagedResult.cs" />
+    <Compile Include="ResultObjects\PasswordPolicyResult.cs" />
+    <Compile Include="ResultObjects\ResultObject.cs" />
+    <Compile Include="Common\ServerBinding.cs" />
+    <Compile Include="Common\ServerState.cs" />
+    <Compile Include="Common\ServiceProviderItemType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\ServiceProviderSettings.cs" />
+    <Compile Include="Common\ServiceProviderItem.cs" />
+    <Compile Include="Common\ServiceProviderItemBandwidth.cs" />
+    <Compile Include="Common\ServiceProviderItemDiskSpace.cs" />
+    <Compile Include="Common\ServiceProviderSettingsSoapHeader.cs" />
+    <Compile Include="Common\HostingServiceProviderWebService.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Common\SettingPair.cs" />
+    <Compile Include="Common\SoapServiceProviderItem.cs" />
+    <Compile Include="Common\WindowsServerEntities.cs" />
+    <Compile Include="DNS\DnsRecord.cs" />
+    <Compile Include="DNS\DnsRecordType.cs" />
+    <Compile Include="DNS\DnsSOARecord.cs" />
+    <Compile Include="DNS\DnsZone.cs" />
+    <Compile Include="DNS\IDnsServer.cs" />
+    <Compile Include="DNS\SecondaryDnsZone.cs" />
+    <Compile Include="FTP\FtpAccount.cs" />
+    <Compile Include="FTP\FtpSite.cs" />
+    <Compile Include="FTP\IFtpServer.cs" />
+    <Compile Include="HostedSolution\ActiveDirectoryUtils.cs" />
+    <Compile Include="HostedSolution\ADAttributes.cs" />
+    <Compile Include="HostedSolution\CrmErrorCodes.cs" />
+    <Compile Include="HostedSolution\CrmOrganizationState.cs" />
+    <Compile Include="HostedSolution\Currency.cs" />
+    <Compile Include="HostedSolution\Errors.cs" />
+    <Compile Include="HostedSolution\ExchangeAccount.cs" />
+    <Compile Include="HostedSolution\ExchangeAccountsPaged.cs" />
+    <Compile Include="HostedSolution\ExchangeAccountType.cs" />
+    <Compile Include="HostedSolution\ExchangeActiveSyncPolicy.cs" />
+    <Compile Include="HostedSolution\ExchangeContact.cs" />
+    <Compile Include="HostedSolution\ExchangeDistributionList.cs" />
+    <Compile Include="HostedSolution\ExchangeDomain.cs" />
+    <Compile Include="HostedSolution\ExchangeDomainName.cs" />
+    <Compile Include="HostedSolution\ExchangeEmailAddress.cs" />
+    <Compile Include="HostedSolution\ExchangeItemStatistics.cs" />
+    <Compile Include="HostedSolution\ExchangeMailbox.cs" />
+    <Compile Include="HostedSolution\ExchangeOrganizationsPaged.cs" />
+    <Compile Include="HostedSolution\ExchangeOrganizationStatistics.cs" />
+    <Compile Include="HostedSolution\ExchangePublicFolder.cs" />
+    <Compile Include="HostedSolution\ICRM.cs" />
+    <Compile Include="HostedSolution\IExchangeServer.cs" />
+    <Compile Include="HostedSolution\IOrganization.cs" />
+    <Compile Include="HostedSolution\MailboxManagerActions.cs" />
+    <Compile Include="HostedSolution\Organization.cs" />
+    <Compile Include="HostedSolution\OrganizationDomain.cs" />
+    <Compile Include="HostedSolution\OrganizationDomainName.cs" />
+    <Compile Include="HostedSolution\OrganizationPaged.cs" />
+    <Compile Include="HostedSolution\OrganizationUser.cs" />
+    <Compile Include="HostedSolution\OrganizationUsersPaged.cs" />
+    <Compile Include="Mail\IMailServer.cs" />
+    <Compile Include="Mail\MailAccount.cs" />
+    <Compile Include="Mail\MailDomain.cs" />
+    <Compile Include="Mail\MailEnums.cs" />
+    <Compile Include="Mail\MailAlias.cs" />
+    <Compile Include="Mail\MailGroup.cs" />
+    <Compile Include="Mail\MailList.cs" />
+    <Compile Include="Database\IDatabaseServer.cs" />
+    <Compile Include="Database\SqlDatabase.cs" />
+    <Compile Include="Database\SqlUser.cs" />
+    <Compile Include="OS\FileHash.cs" />
+    <Compile Include="OS\FileSyncAction.cs" />
+    <Compile Include="OS\FolderGraph.cs" />
+    <Compile Include="OS\SyncActionType.cs" />
+    <Compile Include="OS\SystemDSN.cs" />
+    <Compile Include="OS\SystemFile.cs" />
+    <Compile Include="OS\HomeFolder.cs" />
+    <Compile Include="OS\IOperatingSystem.cs" />
+    <Compile Include="OS\SystemGroup.cs" />
+    <Compile Include="OS\SystemUser.cs" />
+    <Compile Include="OS\UserPermission.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResultObjects\StringCollectionResultObject.cs" />
+    <Compile Include="ResultObjects\UserResult.cs" />
+    <Compile Include="ResultObjects\ValueResultObject.cs" />
+    <Compile Include="ResultObjects\VirtualMachineResult.cs" />
+    <Compile Include="ResultObjects\WebAppGallery.cs" />
+    <Compile Include="SharePoint\IHostedSharePointServerEnt.cs" />
+    <Compile Include="SharePoint\IHostedSharePointServer.cs" />
+    <Compile Include="SharePoint\ISharePointServer.cs" />
+    <Compile Include="SharePoint\SharePointSite.cs" />
+    <Compile Include="SharePoint\SharePointEnterpriseSiteCollection.cs" />
+    <Compile Include="SharePoint\SharePointSiteCollection.cs" />
+    <Compile Include="SharePoint\SharePointEnterpriseSiteCollectionListPaged.cs" />
+    <Compile Include="SharePoint\SharePointSiteCollectionListPaged.cs" />
+    <Compile Include="SharePoint\SharePointEnterpriseSiteDiskSpace.cs" />
+    <Compile Include="SharePoint\SharePointSiteDiskSpace.cs" />
+    <Compile Include="Statistics\IStatisticsServer.cs" />
+    <Compile Include="Statistics\StatsServer.cs" />
+    <Compile Include="Statistics\StatsSite.cs" />
+    <Compile Include="Statistics\StatsUser.cs" />
+    <Compile Include="StorageSpaces\IStorageSpace.cs" />
+    <Compile Include="StorageSpaces\StorageSpace.cs" />
+    <Compile Include="StorageSpaces\StorageSpaceFolder.cs" />
+    <Compile Include="StorageSpaces\StorageSpaceFolderSearchRequest.cs" />
+    <Compile Include="StorageSpaces\StorageSpaceFolderShare.cs" />
+    <Compile Include="StorageSpaces\StorageSpaceItem.cs" />
+    <Compile Include="StorageSpaces\StorageSpaceLevel.cs" />
+    <Compile Include="StorageSpaces\StorageSpaceLevelPaged.cs" />
+    <Compile Include="StorageSpaces\StorageSpacesPaged.cs" />
+    <Compile Include="Virtualization\AutomaticStopAction.cs" />
+    <Compile Include="Virtualization\AutomaticStartAction.cs" />
+    <Compile Include="Virtualization\BiosInfo.cs" />
+    <Compile Include="Virtualization\ChangeJobStateReturnCode.cs" />
+    <Compile Include="Virtualization\ConcreteJob.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\ConcreteJobRequestedState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\ConcreteJobState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\Config\ConfigFile.cs" />
+    <Compile Include="Virtualization\ControllerType.cs" />
+    <Compile Include="Virtualization\IVirtualizationServer2012.cs" />
+    <Compile Include="Virtualization\IVirtualizationServer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\IVirtualizationServerForPC.cs" />
+    <Compile Include="Virtualization\IVirtualizationServerProxmox.cs" />
+    <Compile Include="Virtualization\JobResult.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\KvpExchangeDataItem.cs" />
+    <Compile Include="Virtualization\Config\LibraryItem.cs" />
+    <Compile Include="Virtualization\LogicalDisk.cs" />
+    <Compile Include="Virtualization\DvdDriveInfo.cs" />
+    <Compile Include="Virtualization\MonitoredObjectAlert.cs" />
+    <Compile Include="Virtualization\MonitoredObjectEvent.cs" />
+    <Compile Include="Virtualization\MountedDiskInfo.cs" />
+    <Compile Include="Virtualization\OperationalStatus.cs" />
+    <Compile Include="Virtualization\PerformanceObject.cs" />
+    <Compile Include="Virtualization\Replication\CertificateInfo.cs" />
+    <Compile Include="Virtualization\Replication\ReplicaFrequency.cs" />
+    <Compile Include="Virtualization\Replication\ReplicationHealth.cs" />
+    <Compile Include="Virtualization\Replication\ReplicationServerInfo.cs" />
+    <Compile Include="Virtualization\Replication\VmReplicationMode.cs" />
+    <Compile Include="Virtualization\Replication\ReplicaMode.cs" />
+    <Compile Include="Virtualization\Replication\ReplicationState.cs" />
+    <Compile Include="Virtualization\Replication\ReplicationDetailInfo.cs" />
+    <Compile Include="Virtualization\Replication\VmReplication.cs" />
+    <Compile Include="Virtualization\ReturnCode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\SummaryInformationRequest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\ThumbnailSize.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\VirtualHardDiskFormat.cs" />
+    <Compile Include="Virtualization\VirtualHardDiskInfo.cs" />
+    <Compile Include="Virtualization\VirtualHardDiskType.cs" />
+    <Compile Include="Virtualization\DynamicMemory.cs" />
+    <Compile Include="Virtualization\VirtualMachine.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\VirtualMachineIPAddress.cs" />
+    <Compile Include="Virtualization\VirtualMachineNetworkAdapter.cs" />
+    <Compile Include="Virtualization\VirtualMachineProvisioningStatus.cs" />
+    <Compile Include="Virtualization\VirtualMachineRequestedState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\VirtualMachineSnapshot.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\VirtualMachineState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\VirtualMachineInfo.cs" />
+    <Compile Include="Virtualization\VirtualNetworkInfo.cs" />
+    <Compile Include="Virtualization\VirtualSwitch.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Virtualization\VMComputerSystemStateInfo .cs" />
+    <Compile Include="Virtualization\VMForPCSettingsName.cs" />
+    <Compile Include="WebAppGallery\DeploymentParameter.cs" />
+    <Compile Include="WebAppGallery\GalleryApplication.cs" />
+    <Compile Include="WebAppGallery\GalleryCategory.cs" />
+    <Compile Include="WebAppGallery\GalleryErrors.cs" />
+    <Compile Include="Web\PhpVersion.cs" />
+    <Compile Include="Web\HtaccessFolder.cs" />
+    <Compile Include="Web\HttpError.cs" />
+    <Compile Include="Web\HttpHeader.cs" />
+    <Compile Include="Web\IWebDav.cs" />
+    <Compile Include="Web\IWebServer.cs" />
+    <Compile Include="Web\MimeMap.cs" />
+    <Compile Include="Web\SharedSSLFolder.cs" />
+    <Compile Include="Web\SSLCertificate.cs" />
+    <Compile Include="Web\WebVirtualDirectory.cs" />
+    <Compile Include="Web\WebDavFolderRule.cs" />
+    <Compile Include="Web\WebDavSetting.cs" />
+    <Compile Include="Web\WebFolder.cs" />
+    <Compile Include="Web\WebGroup.cs" />
+    <Compile Include="Web\WebSite.cs" />
+    <Compile Include="Web\WebUser.cs" />
+    <Compile Include="Web\WebAppVirtualDirectory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SolidCP.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

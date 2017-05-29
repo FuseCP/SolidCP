@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<components>
+  
+  
+  <!-- SolidCP Standalone -->
+  <component application="SolidCP" name="Standalone Server Setup" code="standalone">
+    <description>Express setup for standalone server configuration. It installs all components on the same server and configures SolidCP using recommended settings.</description>
+	  <releases>
+	<!-- release version="1.2" date="04/18/2010" available="true" beta="false">
+        <releaseFileID>103</releaseFileID>
+        <fullFilePath>~/Files/SolidCP-Standalone-1.2.zip</fullFilePath>
+        <upgradeFilePath>~/Files/SolidCP-Standalone-1.2-Update.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SCP.Setup.EnterpriseServer12</installerType>
+      </release>
+      <release version="1.1" date="04/17/2010" available="true" beta="false">
+        <releaseFileID>102</releaseFileID>
+        <fullFilePath>~/Files/SolidCP-Standalone-1.1.zip</fullFilePath>
+        <upgradeFilePath>~/Files/SolidCP-Standalone-1.1-Update.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SCP.Setup.EnterpriseServer11</installerType>
+      </release -->
+      <release version="1.0" date="04/16/2010" available="true" beta="false">
+        <releaseFileID>101</releaseFileID>
+        <fullFilePath>~/Files/SolidCP-StandaloneServerSetup-1.0.zip</fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.EnterpriseServer10</installerType>
+      </release>
+    </releases>
+  </component>
+
+  
+  <!-- SolidCP Portal -->
+  <component application="SolidCP" name="Portal" code="portal">
+    <description>SolidCP Portal is a user interface to the control panel which allows managing user accounts, hosting spaces, web sites, FTP accounts, files, etc.</description>
+    <releases>
+      <release version="1.0" date="04/16/2010" available="true" beta="false">
+        <releaseFileID>201</releaseFileID>
+        <fullFilePath>~/Files/SolidCP-Portal-1.0.zip</fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.Portal10</installerType>
+      </release>
+    </releases>
+  </component>
+
+  
+  <!-- SolidCP Enterprise Server-->
+  <component application="SolidCP" name="Enterprise Server" code="enterprise server">
+    <description>Enterprise Server is the core of SolidCP system. It includes all business logic of the application. Enterprise Server should have access to Server and be accessible from Portal applications.</description>
+    <releases>
+      <release version="1.0" date="04/16/2010" available="true" beta="false">
+        <releaseFileID>301</releaseFileID>
+        <fullFilePath>~/Files/SolidCP-EnterpriseServer-1.0.zip</fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>WerbsitePanel.Setup.EnterpriseServer10</installerType>
+      </release>
+    </releases>
+  </component>
+
+  
+  <!-- SolidCP Server -->
+  <component application="SolidCP" name="Server" code="server">
+    <description>SolidCP Server is a set of services running on the remote server to be controlled. Server application should be reachable from Enterprise Server one.</description>
+    <releases>
+      <release version="1.0" date="04/16/2010" available="true" beta="false">
+        <releaseFileID>401</releaseFileID>
+        <fullFilePath>~/Files/SolidCP-Server-1.0.zip</fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.Server10</installerType>
+      </release>
+    </releases>
+  </component>
+
+  
+  <!-- SolidCP Installer -->
+  <component application="SolidCP Installer" name="Installer Core Files" code="inst core">
+    <description>Installer Core Files</description>
+    <releases>
+      <release version="1.0" date="04/16/2010" available="false" beta="false">
+        <releaseFileID>501</releaseFileID>
+        <fullFilePath></fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath></installerPath>
+        <installerType></installerType>
+      </release>
+    </releases>
+  </component>
+
+</components>

@@ -1,0 +1,6 @@
+﻿@model IEnumerable<SolidCP.WebDav.Core.Client.IHierarchyItem>
+
+@foreach (var element in Model)
+{
+    @Html.Partial("_ResoursePartial", element)
+}

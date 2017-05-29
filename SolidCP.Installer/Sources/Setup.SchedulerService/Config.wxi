@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <?define PROJECTPATH = "..\..\..\SolidCP"?>
+  <?define BUILDPATH = "$(var.PROJECTPATH)\Build\$(var.BUILD)\EnterpriseServer\bin"?>
+  <?define SERVERBUILDPATH = "$(var.PROJECTPATH)\Build\$(var.BUILD)\Server\bin"?>
+</Include>

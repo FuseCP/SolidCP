@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <?include Config.wxi?>
+    <?define VERSION="1.0.1"?>
+    <Product Id="*" Name="SolidCP Scheduler Service Installer" Language="1033" Version="$(var.VERSION)" Manufacturer="SolidCP" UpgradeCode="629ccd5c-1f6d-4168-bbe6-01c69e232f44">
+
+      <Package InstallerVersion="200" Compressed="yes" />
+        <Media Id="1" EmbedCab="yes" Cabinet="schedulerservice.cab" />
+        <Feature Id="ProductFeature" Title="SolidCP Scheduler Service Installer" Level="1" ConfigurableDirectory="PI_SCHEDULER_INSTALL_DIR" AllowAdvertise="no">
+            <ComponentGroupRef Id="SchedulerServiceFiles" />
+        </Feature>
+        <Property Id="BannerBitmap">bannrbmp</Property>
+
+      <Property Id="PREVIOUSVERSIONSINSTALLED" Secure="yes" />
+      <Upgrade Id="629ccd5c-1f6d-4168-bbe6-01c69e232f44">
+        <UpgradeVersion
+           Minimum="1.0.0" Maximum="99.0.0"
+           Property="PREVIOUSVERSIONSINSTALLED"
+           IncludeMinimum="yes" IncludeMaximum="no" />
+      </Upgrade>
+
+      <WixVariable Id="WixUIBannerBmp" Value="bannrbmp.bmp" />
+        <WixVariable Id="WixUIDialogBmp" Value="dlgbmp.bmp" />
+        <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+        <Icon Id="SolidCP.ico" SourceFile="SolidCP.ico" />
+        <Property Id="ARPPRODUCTICON" Value="SolidCP.ico" />
+        <Property Id="SERVERNAME" Value="localhost\SQLExpress" />
+        <Property Id="WIXUI_INSTALLDIR" Value="PI_SCHEDULER_INSTALL_DIR" />
+        <Property Id="PI_SCHEDULER_INSTALL_DIR" Value="c:\SolidCP\SchedulerService" />
+        <Property Id="CONNECTIONSTRING" Value="1" />
+        <Property Id="DATABASENAME" Value="SolidCP" />
+        <Property Id="AUTHENTICATIONTYPE" Value="Windows Authentication" />
+        <Binary Id="bannrbmp" SourceFile="bannrbmp.bmp" />
+        <WixVariable Id="BUILDSRVPATH" Value = "$(var.PROJECTPATH)\Build\$(var.BUILD)\SchedulerService" />
+        <UI Id="CustomInstaller">
+            <UIRef Id="WixUI_Mondo" />
+            <Dialog Id="DatabaseConnectionDlg" Width="370" Height="270" NoMinimize="yes" Title="[ProductName] Setup">
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back">
+                    <Publish Event="NewDialog" Value="InstallLocationDlg">1</Publish>
+                </Control>
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                    <Publish Event="DoAction" Value="CheckConnection">1</Publish>
+                    <Publish Event="SpawnDialog" Value="ConnectionWarningDlg">CORRECTCONNECTION = "0"</Publish>
+                    <Publish Event="NewDialog" Value="VerifyReadyDlg">CORRECTCONNECTION = "1"</Publish>
+                </Control>
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+                </Control>
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Description" Type="Text" X="20" Y="23" Width="280" Height="20" Transparent="yes" NoPrefix="yes" Text="Configure SolidCP database connection string" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Database connection string" />
+                <Control Type="Text" Id="ServerLabel" Width="50" Height="17" X="75" Y="68" Text="SQL Server:" />
+                <Control Type="Edit" Id="ServerEdit" Width="163" Height="15" X="142" Y="68" Property="SERVERNAME" />
+                <Control Type="Text" Id="AuthenticationLabel" Width="70" Height="17" X="62" Y="94" Text="Authentication:" />
+                <Control Type="ComboBox" Id="AuthenticationCombo" Width="163" Height="16" X="142" Y="94" Property="AUTHENTICATIONTYPE">
+                    <ComboBox Property="AUTHENTICATIONTYPE">
+                        <ListItem Text="Windows Authentication" Value="Windows Authentication" />
+                        <ListItem Text="SQL Server Authentication" Value="SQL Server Authentication" />
+                    </ComboBox>
+                </Control>
+                <Control Type="Text" Id="LoginLabel" Width="50" Height="17" X="71" Y="120" Text="Login Name:" />
+                <Control Type="Edit" Id="LoginEdit" Width="163" Height="15" X="142" Y="120" Property="LOGIN">
+                    <Condition Action="disable">AUTHENTICATIONTYPE = "Windows Authentication"</Condition>
+                    <Condition Action="enable">NOT(AUTHENTICATIONTYPE = "Windows Authentication")</Condition>
+                </Control>
+                <Control Type="Text" Id="PasswordLabel" Width="50" Height="17" X="80" Y="146" Text="Password:" />
+                <Control Type="Edit" Id="PasswordEdit" Width="163" Height="17" X="142" Y="146" Property="PASSWORD" Hidden="no" Password="yes">
+                    <Condition Action="disable">AUTHENTICATIONTYPE = "Windows Authentication"</Condition>
+                    <Condition Action="enable">NOT(AUTHENTICATIONTYPE = "Windows Authentication")</Condition>
+                </Control>
+                <Control Type="Text" Id="DatabaseLabel" Width="50" Height="17" X="80" Y="172" Text="Database:" />
+                <Control Type="Edit" Id="DatabaseEdit" Width="163" Height="17" X="142" Y="172" Property="DATABASENAME" />
+            </Dialog>
+            <Dialog Id="ConnectionWarningDlg" Width="250" Height="85" Title="[ProductName] Setup" NoMinimize="yes">
+                <Control Id="Ok" Type="PushButton" X="184" Y="60" Width="56" Height="17" Text="Ok">
+                    <Publish Event="EndDialog" Value="Return">1</Publish>
+                </Control>
+                <Control Id="Text" Type="Text" X="8" Y="8" Width="221" Height="30">
+                    <Text>Connection not valid.</Text>
+                </Control>
+            </Dialog>
+            <Dialog Id="InstallLocationDlg" Width="370" Height="270" Title="[ProductName] Setup">
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                   <Publish Event="DoAction" Value="PreInstallationAction">1</Publish>
+                    <Publish Event="NewDialog" Value="DatabaseConnectionDlg" Order="3">SKIPCONNECTIONSTRINGSTEP = "0"</Publish>
+                    <Publish Event="NewDialog" Value="VerifyReadyDlg" Order="3">SKIPCONNECTIONSTRINGSTEP = "1"</Publish>
+                </Control>
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back">
+                    <Publish Event="NewDialog" Value="LicenseAgreementDlg" Order="3">1</Publish>
+                </Control>
+                <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+                    <Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
+                </Control>
+                <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure Scheduler Service Install location" />
+                <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="{\WixUI_Font_Title}Install Location" />
+                <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="[BannerBitmap]" />
+                <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="FolderLabel" Type="Text" X="20" Y="60" Width="290" Height="30" NoPrefix="yes" Text="Folder Name:" />
+                <Control Id="Folder" Type="PathEdit" X="22" Y="90" Width="320" Height="15" Property="WIXUI_INSTALLDIR" Indirect="yes" />
+            </Dialog>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="InstallLocationDlg" Order="3">
+              LicenseAccepted = "1"
+            </Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="DatabaseConnectionDlg">SKIPCONNECTIONSTRINGSTEP = "0"</Publish>
+          <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallLocationDlg">SKIPCONNECTIONSTRINGSTEP = "1"</Publish>
+            <TextStyle Id="DlgTitleFont" FaceName="Tahoma" Size="8" Bold="yes" />
+        </UI>
+        <InstallExecuteSequence>
+          <Custom Action="PropertyFinalizeInstall" After='InstallValidate'/>
+          <Custom Action="FinalizeUnInstall" After="InstallValidate">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>
+          <RemoveExistingProducts After="InstallValidate" />
+          <Custom Action='FinalizeInstall' After='InstallFiles' >NOT Installed or REINSTALL</Custom>
+        </InstallExecuteSequence>
+    </Product>
+    <Fragment>
+        <CustomAction Id="CheckConnection" BinaryKey="CheckConnection.CA" DllEntry="CheckConnection" />
+        <Binary Id="CheckConnection.CA" SourceFile="bin\SolidCP.SchedulerServiceInstaller.CA.dll" />
+    </Fragment>
+    <Fragment>
+        <!-- immediate CA -->
+        <CustomAction Id='PropertyFinalizeInstall' Property='FinalizeInstall' Value='ConnectionString=[CONNECTIONSTRING];PreviousConnectionString=[PREVIOUSCONNECTIONSTRING];ServiceFolder=[SERVICEFOLDER];PreviousCryptoKey=[PREVIOUSCRYPTOKEY]' Return="check"/>
+
+        <!-- deferred CA -->
+        <CustomAction Id='FinalizeInstall' BinaryKey ='CheckConnection.CA' DllEntry='FinalizeInstall' Impersonate='no' Execute='deferred'  Return='check' HideTarget='yes'/>  
+    
+        <!--<CustomAction Id="FinalizeInstall" BinaryKey="CheckConnection.CA" DllEntry="FinalizeInstall"  />-->        
+    </Fragment>
+  <Fragment>
+    <CustomAction Id="PreInstallationAction" BinaryKey="CheckConnection.CA" DllEntry="PreInstallationAction" />
+    <CustomAction Id="FinalizeUnInstall" BinaryKey="CheckConnection.CA" DllEntry="FinalizeUnInstall" />
+    <CustomAction Id='AlreadyUpdated' Error='Product has already been updated to $(var.VERSION) or newer.' />
+    <CustomAction Id='NoDowngrade' Error='A later version of [ProductName] is already installed.' />
+  </Fragment>
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="SolidCPFOLDER" Name="SolidCP">
+                <Directory Id="PI_SCHEDULER_INSTALL_DIR" Name="SchedulerService" />
+            </Directory>
+        </Directory>
+    </Fragment>
+
+</Wix>

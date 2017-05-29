@@ -1,0 +1,647 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLSERVERFOLDER">
+            <Directory Id="dirFE040D7A5771FED5DD77B7A4BED10E7F" Name="bin" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="ServerFiles">
+            <Component Id="cmp96DED412EC1A0669CB1EBFC35932E93E" Directory="INSTALLSERVERFOLDER" Guid="{1B3396EB-9CFB-43C3-A70F-48D01AA02547}">
+                <File Id="filB926634A8138464D8559D474F7C15209" KeyPath="yes" Source="!(wix.BUILDSPATH)\AutoDiscovery.asmx" />
+            </Component>
+            <Component Id="cmp63DCCD43AB534E8330F8B6984D54BCE3" Directory="INSTALLSERVERFOLDER" Guid="{40139C89-BCFE-4797-932B-097826D57ED9}">
+                <File Id="filB2A8C91FC26D98653D2BE1DC12FE6C35" KeyPath="yes" Source="!(wix.BUILDSPATH)\BlackBerry.asmx" />
+            </Component>
+            <Component Id="cmp48930429FE02E9320F1C89B35CDBC289" Directory="INSTALLSERVERFOLDER" Guid="{1B4C0E3B-C747-43F8-ADF3-D691822A20C8}">
+                <File Id="fil62C838302A2E885DE950B0F7F5F25DE2" KeyPath="yes" Source="!(wix.BUILDSPATH)\CRM.asmx" />
+            </Component>
+            <Component Id="cmp8EDD566F3B8E6A2628B81A1DDF643E63" Directory="INSTALLSERVERFOLDER" Guid="{BD5FCCD4-6C18-4E56-9FFB-1AA0B06922C8}">
+                <File Id="filCAC386A1837F77C802D8E416A1B3802B" KeyPath="yes" Source="!(wix.BUILDSPATH)\DatabaseServer.asmx" />
+            </Component>
+            <Component Id="cmp3C73293D8E60BEACC4600440DE85514C" Directory="INSTALLSERVERFOLDER" Guid="{9C43FD76-6379-46AF-8BC6-B30676A78598}">
+                <File Id="filF3FF68EEFC53A97A90C4A37EA9FDC3AA" KeyPath="yes" Source="!(wix.BUILDSPATH)\Default.aspx" />
+            </Component>
+            <Component Id="cmpC093A71A50345DD175FC6A71AACB00C2" Directory="INSTALLSERVERFOLDER" Guid="{AE071E21-6841-4D69-B26C-AFE21BE18D94}">
+                <File Id="fil0A152D8E852A19C966DD73DAFD2A181C" KeyPath="yes" Source="!(wix.BUILDSPATH)\DNSServer.asmx" />
+            </Component>
+            <Component Id="cmp236FAFC1947CE7F66EF8907134B799BE" Directory="INSTALLSERVERFOLDER" Guid="{E1803D4B-FCD6-416F-81A8-5255ED03CC84}">
+                <File Id="fil6FEBC546A076063FB8F589CFFE37E878" KeyPath="yes" Source="!(wix.BUILDSPATH)\EmailSecurity.asmx" />
+            </Component>
+            <Component Id="cmpBABF4FFFC759CED5A9606023F55F378D" Directory="INSTALLSERVERFOLDER" Guid="{961E0775-C0A7-4B23-B816-D2172DA70646}">
+                <File Id="fil40F7159D8E7A786994DA7432718341CD" KeyPath="yes" Source="!(wix.BUILDSPATH)\EnterpriseStorage.asmx" />
+            </Component>
+            <Component Id="cmpEC8263252ABD67BFDF9721AB87B39BA5" Directory="INSTALLSERVERFOLDER" Guid="{82E12053-3BB8-49B3-A3B5-2901EE16BF98}">
+                <File Id="fil76876D97E20E425BC7F16F618E753949" KeyPath="yes" Source="!(wix.BUILDSPATH)\ExchangeServer.asmx" />
+            </Component>
+            <Component Id="cmp6746D2022E8E7DD850E397BA7C978EC6" Directory="INSTALLSERVERFOLDER" Guid="{1CB6CEDC-1663-4729-BD0D-A7751C7F848D}">
+                <File Id="filBF0AF92BE768A2CBAE35B72158FD7356" KeyPath="yes" Source="!(wix.BUILDSPATH)\FTPServer.asmx" />
+            </Component>
+            <Component Id="cmp09C86A4BE06A7D43B7DD384C21575305" Directory="INSTALLSERVERFOLDER" Guid="{CAA45382-AA26-410B-820E-FB7955C4DBC3}">
+                <File Id="fil61BA44AC8127B44683B7F0C15986CFB5" KeyPath="yes" Source="!(wix.BUILDSPATH)\Global.asax" />
+            </Component>
+            <Component Id="cmpF942A5A78A6B3711F175A5CB3180BDA1" Directory="INSTALLSERVERFOLDER" Guid="{1D4630EE-C870-4A38-93E4-3BBF216D0333}">
+                <File Id="fil5AF665BD8AE154094178754575352117" KeyPath="yes" Source="!(wix.BUILDSPATH)\HeliconZoo.asmx" />
+            </Component>
+            <Component Id="cmp2DB0CBC9ED91615C7B8083BE3B0C86D8" Directory="INSTALLSERVERFOLDER" Guid="{B00DDEDA-5761-4025-80CA-3D005F5A9C58}">
+                <File Id="filC8F755A8CF3B17D0DE5FCD854E7F3B48" KeyPath="yes" Source="!(wix.BUILDSPATH)\HostedSharePointServer.asmx" />
+            </Component>
+            <Component Id="cmpC34A97EA3AB0ED3CE564BAEDF1BABFD5" Directory="INSTALLSERVERFOLDER" Guid="{5880E926-9300-45C8-8D2B-96CB0CE8471D}">
+                <File Id="filB13216B0EA9E4BFF8977CFF9157300DE" KeyPath="yes" Source="!(wix.BUILDSPATH)\HostedSharePointServerEnt.asmx" />
+            </Component>
+            <Component Id="cmp4C3E6D8D4B96BE1CD0196869D14FB245" Directory="INSTALLSERVERFOLDER" Guid="{2F95EDE6-B301-4338-B13B-A7A9296197CD}">
+                <File Id="fil660F7518B5488A7DC066BAF177DDEFC8" KeyPath="yes" Source="!(wix.BUILDSPATH)\LyncServer.asmx" />
+            </Component>
+            <Component Id="cmp306CB2383A2A77A41C74C676B7811B47" Directory="INSTALLSERVERFOLDER" Guid="{D3712406-9D16-4E62-953E-74225087C0E2}">
+                <File Id="fil52F43BB29FFD7B874CB9732B72671C0D" KeyPath="yes" Source="!(wix.BUILDSPATH)\MailServer.asmx" />
+            </Component>
+            <Component Id="cmpDB9D3FEB28BCAE6FDF0BE2AEF39C999B" Directory="INSTALLSERVERFOLDER" Guid="{6DDDCE01-2BCB-476C-B552-751A55CC485F}">
+                <File Id="filD57D1DCC138248465285E1F4923C3FD9" KeyPath="yes" Source="!(wix.BUILDSPATH)\OCSEdgeServer.asmx" />
+            </Component>
+            <Component Id="cmp910629BAC7808EF349E7003C542C08E7" Directory="INSTALLSERVERFOLDER" Guid="{060327F4-EE43-4B00-B556-5035AB8D9F59}">
+                <File Id="filEB0E03B52AE3C28E18E512B370C1BBFF" KeyPath="yes" Source="!(wix.BUILDSPATH)\OCSServer.asmx" />
+            </Component>
+            <Component Id="cmp16A31FD89793E3A4C3D070B3B93ACCA9" Directory="INSTALLSERVERFOLDER" Guid="{D92A8FF6-7944-4143-9BA0-D40EF0D8936C}">
+                <File Id="filE1118B09B103A0E647F1AAE7E72F4087" KeyPath="yes" Source="!(wix.BUILDSPATH)\OperatingSystem.asmx" />
+            </Component>
+            <Component Id="cmpFA5D68FB420FDEE4098A69DD50F6AB3E" Directory="INSTALLSERVERFOLDER" Guid="{D36C3AD1-818E-4BD6-8195-813C493EEE27}">
+                <File Id="fil6B0D1DDFDBA6AD698A675110C95379FF" KeyPath="yes" Source="!(wix.BUILDSPATH)\Organizations.asmx" />
+            </Component>
+            <Component Id="cmpEC305535F6E47C43A0E015C70C689B4E" Directory="INSTALLSERVERFOLDER" Guid="{7B967267-6857-4D09-93F5-A4EE31109CEC}">
+                <File Id="fil8F9EF5F9FC4C10EC7BB254F99521A609" KeyPath="yes" Source="!(wix.BUILDSPATH)\packages.config" />
+            </Component>
+            <Component Id="cmp1F38C4981EFD17118857FFFAC10371C8" Directory="INSTALLSERVERFOLDER" Guid="{0853150F-A97A-4378-B898-53CD79857943}">
+                <File Id="fil0D59B72E8BA7341F46B3DDC4D964C321" KeyPath="yes" Source="!(wix.BUILDSPATH)\RemoteDesktopServices.asmx" />
+            </Component>
+            <Component Id="cmp21B566F180DADD0183C0353A687F6FDE" Directory="INSTALLSERVERFOLDER" Guid="{A469B86A-B842-4189-B5D8-AADF61EF7765}">
+                <File Id="filB81FD249DAA39D361B2A0B6687F4F0F3" KeyPath="yes" Source="!(wix.BUILDSPATH)\ServiceProvider.asmx" />
+            </Component>
+            <Component Id="cmp0F916BDB5FDB81B02EE6273FFBADBF8A" Directory="INSTALLSERVERFOLDER" Guid="{956AEBE5-82CA-4C25-ACBD-C604DAE4CEE7}">
+                <File Id="fil47C8F4D7432C6526B7359D581F93E09C" KeyPath="yes" Source="!(wix.BUILDSPATH)\SfBServer.asmx" />
+            </Component>
+            <Component Id="cmp3AA7B99FF832F3B7E9A5808320B0FFE1" Directory="INSTALLSERVERFOLDER" Guid="{64E855B6-C7D0-4D8D-BBA4-4D2999A7957D}">
+                <File Id="fil8FFE5F6C7A39E2A98052559F2C4BCB40" KeyPath="yes" Source="!(wix.BUILDSPATH)\SharePointServer.asmx" />
+            </Component>
+            <Component Id="cmp92F0443BC664FDB758F4B995F00C9E43" Directory="INSTALLSERVERFOLDER" Guid="{1C43C32B-086B-4CC1-9B43-B785AD4E896E}">
+                <File Id="fil3D620C4D77E89EEB1758004E5536C605" KeyPath="yes" Source="!(wix.BUILDSPATH)\StatisticsServer.asmx" />
+            </Component>
+            <Component Id="cmp0E3AEA15CA58E985F751516C5082A535" Directory="INSTALLSERVERFOLDER" Guid="{D9B223BE-07DD-4A68-AC16-748F4B7F3D21}">
+                <File Id="fil35E5DF4BF60D8BFC419F9F0AF367E725" KeyPath="yes" Source="!(wix.BUILDSPATH)\StorageSpaceServices.asmx" />
+            </Component>
+            <Component Id="cmp35F67952E66E5E84604457EC472D58C8" Directory="INSTALLSERVERFOLDER" Guid="{20AF2FB9-C550-4208-9F75-D4DE3D415203}">
+                <File Id="fil8CE9584A7F2FEB79B4FC404F827FD6E7" KeyPath="yes" Source="!(wix.BUILDSPATH)\VirtualizationServer.asmx" />
+            </Component>
+            <Component Id="cmpE38655DAE0E042CC2945F395C75051C1" Directory="INSTALLSERVERFOLDER" Guid="{B77A00E8-9F9F-49DB-822A-D72BB4C1FAC2}">
+                <File Id="fil3F17D88983E3BC21ECF17251CA765ABF" KeyPath="yes" Source="!(wix.BUILDSPATH)\VirtualizationServer2012.asmx" />
+            </Component>
+            <Component Id="cmp033A84582ECFB7373515A77AE2A2CA16" Directory="INSTALLSERVERFOLDER" Guid="{1E5EB043-11F6-4E92-A7E8-16B7C9765206}">
+                <File Id="fil9C92DC5A0309F783F8884E9652AB5E8D" KeyPath="yes" Source="!(wix.BUILDSPATH)\VirtualizationServerForPrivateCloud.asmx" />
+            </Component>
+            <Component Id="cmp5A55A21753E524E255CC690E7E70F3CF" Directory="INSTALLSERVERFOLDER" Guid="{E869BE0F-12E1-4330-9691-4E69113DD450}">
+                <File Id="fil0F382EB2E8489D90828EC5F77409E57D" KeyPath="yes" Source="!(wix.BUILDSPATH)\Web.config" />
+            </Component>
+            <Component Id="cmp527BAE5A0DD4D756EB186D7D6D3F7E0A" Directory="INSTALLSERVERFOLDER" Guid="{54C33B7F-2AC5-43DC-A1D1-63336104F6FE}">
+                <File Id="fil1940908EBFCA3C071C2BB68540F2B8E5" KeyPath="yes" Source="!(wix.BUILDSPATH)\WebServer.asmx" />
+            </Component>
+            <Component Id="cmp3B7B3671DB341EE5B0EAA7AA1FF1540C" Directory="INSTALLSERVERFOLDER" Guid="{F2939ED0-31D4-499D-B5D5-F9EBBDED2A9B}">
+                <File Id="fil8037802C78CCC9C56D336FAF8651017F" KeyPath="yes" Source="!(wix.BUILDSPATH)\WindowsServer.asmx" />
+            </Component>
+            <Component Id="cmp2CB0FF22D207EBE0AAE9670986C7C64A" Directory="INSTALLSERVERFOLDER" Guid="{8AF4B542-6D11-4FF4-B635-27032B9F4FAE}">
+                <File Id="fil86781B5872C7AFF39512F3DC4F983251" KeyPath="yes" Source="!(wix.BUILDSPATH)\WsePolicyCache.Config" />
+            </Component>
+            <Component Id="cmpC637B58C5FFF410A8E4C2BE718BBEDD9" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{96FF1B81-86D3-4A27-B331-F42931269E58}">
+                <File Id="filA2666387782AEE09B82A53BE3E469295" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Ionic.Zip.Reduced.dll" />
+            </Component>
+            <Component Id="cmp7B741F3B7DB42D0193CEAFB0813A819C" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{3C3BB093-F74C-4AFE-8B92-C13418A266E5}">
+                <File Id="filF0E4FE856FD7D18B16E3D53385083F22" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
+            </Component>
+            <Component Id="cmpBF017B6DDBC7DE0627670A52CA32C8D9" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{02488BFD-5E26-4310-A4E1-FFCB25089DAF}">
+                <File Id="filA6B23F941E4184964643B4DA5E6980B4" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
+            </Component>
+            <Component Id="cmp5EF44AD73F328024CA2CBA6B38BB2AFA" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{AF12FA2E-1AE3-42ED-ABB8-F5850FD7CA33}">
+                <File Id="filDA2ECC971C160878E26148C68ACECE82" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Practices.ObjectBuilder.dll" />
+            </Component>
+            <Component Id="cmpD7EFFDD37C0C62CBC3AD51D7BA95B25C" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{9F310C96-60A2-4502-886B-C1C9A19BD64B}">
+                <File Id="filA4518A2029C0B75D954525A4E36A7BBA" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Search.Interop.dll" />
+            </Component>
+            <Component Id="cmpCE54D375F77874621EDDB0A4940EB9E6" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{3A122E65-ACCB-42D2-9B55-D3C01DC49C85}">
+                <File Id="fil29B93179D8635CD59302BFCB051D86DD" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.SharePoint.dll" />
+            </Component>
+            <Component Id="cmp2686283674A773D30617C99B8FC52DEB" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{54B954AE-460B-4B2C-B17F-2A19F3A10FCB}">
+                <File Id="fil85403E8F62C0CF28016EB380EF5888D0" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Web.Deployment.dll" />
+            </Component>
+            <Component Id="cmpBFEB09F79738319DD8854330EB839860" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{C13293F0-88EC-47D6-84C0-B9EC7DA45094}">
+                <File Id="fil7A107E0E86AFB962B7D2018F96A2FBAF" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Web.PlatformInstaller.dll" />
+            </Component>
+            <Component Id="cmpD2BAACE827B05F57348AEE581F1002BA" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{86220180-0FE2-473D-982D-FF19D0F74A8E}">
+                <File Id="fil8EC75244E12F566A35ABCEA075D25971" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Microsoft.Web.Services3.dll" />
+            </Component>
+            <Component Id="cmpB2546D393EC8B6BD4FDE186CCBEAD22F" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{DC8BAE90-06B8-479D-97F6-870183A68FAB}">
+                <File Id="fil367C74D2DD5E9DDD134714903BE1AAB0" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="cmpF6E9374D5A668F8352BB03851FF2FB24" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{B37670EB-8D2A-4B1C-ACAC-2217B20147E8}">
+                <File Id="fil456F1DFE9254552F8117B0629F06AC93" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Base.dll" />
+            </Component>
+            <Component Id="cmp230861B805F73FE29CDF1226699ED175" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{C6079C13-3EF2-4358-BAEC-D4AE93857596}">
+                <File Id="filE860A11AB05B584B3FBFC3032E56239B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Database.MariaDB.dll" />
+            </Component>
+            <Component Id="cmp40A2C93187969CE632554D408F1E709A" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{F6F52F5B-0559-4793-AC09-4A7EAB1D437F}">
+                <File Id="filA28AD0496CBAD09645B33F91799432C9" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Database.MySQL.dll" />
+            </Component>
+            <Component Id="cmpE1D0A095D78E1A9D1758A2936BB3E4A3" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{69E449E2-5D03-4F03-A62C-29C366B886EA}">
+                <File Id="filA5120281ADE510A9DDA02A8C45150C6A" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Database.SqlServer.dll" />
+            </Component>
+            <Component Id="cmp357CC7842C3EE6DFF45506D9C8255C3F" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{980B7B50-1527-4C33-9E80-4A3A90D65EDD}">
+                <File Id="fil69A5122F45253858E43583E4BA760464" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.Bind.dll" />
+            </Component>
+            <Component Id="cmpF7F2ED92366521E864A7B10CB36CCE73" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{4BDBEEA9-147D-4D65-9372-4078FF141F0F}">
+                <File Id="filD7E96D72F19266117FAAB5AF0958E557" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.MsDNS.dll" />
+            </Component>
+            <Component Id="cmp0AD792444D5EAF68BFFB4CBA9043E7A3" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{041D7DFD-C773-4709-AC04-AC9D185FE4FB}">
+                <File Id="fil488DADE7321BC7F1476C51F730517E0B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.Nettica.dll" />
+            </Component>
+            <Component Id="cmpC6A18BB25A996E7CB6FA5286BDC6CB51" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{EF03D124-7019-4C47-948E-1178A9A65EAC}">
+                <File Id="fil66B7F1A1C32F1D6E549E79D3B503CD11" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.PowerDNS.dll" />
+            </Component>
+            <Component Id="cmp7FCFA6789E8502A7CADBB21B8C7F8705" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{2A3B676F-6AAE-46EB-8036-FF5E9C6775FC}">
+                <File Id="fil10CA303A9602FFF0516078538D460F83" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.SimpleDNS.dll" />
+            </Component>
+            <Component Id="cmpA5A709708784D71AF41D0BA901B964E5" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{CDCAE813-16C6-4310-A8B7-142E13F877FB}">
+                <File Id="filBE9EC1F81BEEF086765B0DDADCB21368" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.SimpleDNS50.dll" />
+            </Component>
+            <Component Id="cmp2251F27F9D78A37AF3393CAC7E427578" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{FCA87748-237F-4E23-8E23-990DE0684DF5}">
+                <File Id="filC8C9D26BEFF1A72E4A739AA809D6298F" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.DNS.SimpleDNS60.dll" />
+            </Component>
+            <Component Id="cmpDF2DD05912C777174D34EDD7B41E8964" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{62BD57F9-6024-4195-980B-9DC716CACFAE}">
+                <File Id="fil01E67EE6CF542B7B0A78980D853CB829" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.EnterpriseStorage.Windows2012.dll" />
+            </Component>
+            <Component Id="cmpCB201F49945153FF76EE0183AB77EBCC" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{BF0AA0AB-6463-42A4-8BF4-A85842B81920}">
+                <File Id="filE577C8C26F9736D5E1B37CE3B6897FB6" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.FileZilla.dll" />
+            </Component>
+            <Component Id="cmpF0A3A07105BAFE273358D5B95D3B8185" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{82054A58-0D1B-44B1-93CB-FC7018B113F4}">
+                <File Id="fil8E9751726E92947889D678020D0F1219" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.Gene6.dll" />
+            </Component>
+            <Component Id="cmp958B10CC22EA2FDEBB88CEBE73BE261E" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{C0AB4049-DDF2-494D-883C-3B6F59DD844E}">
+                <File Id="filE0A42F16D809DDDBA76C71DD4FA31D88" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.IIs100.dll" />
+            </Component>
+            <Component Id="cmpBD739F6E92BC5126993DD9B343722F71" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{9A967BA7-7BEE-4243-8495-B78D38B605FB}">
+                <File Id="filCE879F3C168177AA5C88829959648259" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.IIs60.dll" />
+            </Component>
+            <Component Id="cmp1515F049177C94D6E6617BCF3D6996CA" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{59FD361A-FF2B-4925-8DA8-2E8E443CD3A9}">
+                <File Id="fil74794640BC46C538E03B6057445906C3" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.IIs70.dll" />
+            </Component>
+            <Component Id="cmp5D0329F50B9903FE556AD728A2C72DA1" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{BDB78269-1F55-41DB-8758-8AC373CEBDFA}">
+                <File Id="filC2795AFAD109C1C4066FFBEE4693D696" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.IIs80.dll" />
+            </Component>
+            <Component Id="cmpC9045AA7954520104974B80F6282C551" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{0F61E0E4-D172-4916-AA3E-777422FBD48D}">
+                <File Id="filE5B2EB4A50E0EBF9DD14548E7A258BD3" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.FTP.ServU.dll" />
+            </Component>
+            <Component Id="cmp41E66915F1FC7A7309EEA888EB746C84" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{2F762E3C-2765-479F-8F9C-5A575986D7CE}">
+                <File Id="fil02985225FE8F39169E7DFEDA411F75C8" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.HostedSolution.dll" />
+            </Component>
+            <Component Id="cmp996FEC4A9A24D9F970B9A0F37B0D25F9" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{8B42518B-1891-4B1D-867A-BFAF57CA5EC7}">
+                <File Id="fil68015968D33A5AAA9442B7F945801170" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.AbilityMailServer.dll" />
+            </Component>
+            <Component Id="cmp643F968004472D678EFC63C00B2B3F93" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{110616CF-E0E4-49D7-B680-E1DB60B896C2}">
+                <File Id="fil42F48A70F9CB9D7429003A10644A0E45" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.ArgoMail.dll" />
+            </Component>
+            <Component Id="cmpFA8A25B8D0D1A03A2655F11FE836DCD5" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{09E0635B-9F94-4FF4-A8EF-9524FA162DCB}">
+                <File Id="fil4A5FA29CDF70C26013160885ABA4D3E0" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.hMailServer.dll" />
+            </Component>
+            <Component Id="cmpCBD533D2117F57A9AB03AD60D5AE310D" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{9100549F-08E9-4E70-834C-F61C40FA5882}">
+                <File Id="filFFCEE74189DE194030DCBE4E4C46A6EB" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.hMailServer43.dll" />
+            </Component>
+            <Component Id="cmpD88052ABA858305E4E0310B2C4267A53" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{8B10D94A-FA94-4C63-9012-B4117F18F46B}">
+                <File Id="filA661C58DB516C9C3F5FC6AD6B7ED5C31" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.hMailServer5.dll" />
+            </Component>
+            <Component Id="cmpFA474E0D5ADB53CF4CC4B9C649892595" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{2555049D-8393-431C-BCDC-73A04A4132F8}">
+                <File Id="filB7186C7D14120065E0F13CF1E834F6F9" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.MailEnable.dll" />
+            </Component>
+            <Component Id="cmpBF08B5858B9931ABF2F63DCFFE806987" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{AF60BD60-8B2F-4DC2-A256-D0211B8B4BC9}">
+                <File Id="filEA291480E37C4D92DE530F701DAA5FE5" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.MDaemon.dll" />
+            </Component>
+            <Component Id="cmp812281B39D61474EABE3E3816507FD5E" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{82A98FA3-BC06-46C1-80B4-E55DF28AF6F8}">
+                <File Id="fil5462EC6DCC0199B72AFC617913E1D330" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.Merak.dll" />
+            </Component>
+            <Component Id="cmp6E5CA6CDCC87EFD95C2D45726F75D8C2" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{F690D2CB-9189-4606-B2AF-3ACBE061C02F}">
+                <File Id="fil47A87507BB5C3F23B376BB42EE0D40BB" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.Merak10.dll" />
+            </Component>
+            <Component Id="cmp5707E3C47C476C5C82273372B9585BD4" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{F0061DCB-43BC-4B61-911B-29DB0B3B2B2E}">
+                <File Id="fil30A4E43D0110F73BFD88BA0BF8874CB8" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail10.dll" />
+            </Component>
+            <Component Id="cmpFA65F1AA90F5105EF3DD4D7A61C1AE64" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{57945F71-5755-4B7B-A1CF-7E1B957AA18D}">
+                <File Id="fil262062FE50EF5C433ECD1BD9706008F2" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail2.dll" />
+            </Component>
+            <Component Id="cmp833F75A5536F2B5F421CDF8CCAC49890" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{4E949657-297E-497F-8343-4168E8011B88}">
+                <File Id="fil6DF76BAE3B5E6BD4B894393883F821D0" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail3.dll" />
+            </Component>
+            <Component Id="cmp37503BD956FA64BBAF767AD2B647B42B" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{C7FABA6A-6839-4578-9262-73A032E73EE3}">
+                <File Id="fil05A7F1FBAED4272B2DDCB363CF857EEF" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail5.dll" />
+            </Component>
+            <Component Id="cmpE6E705809A20AA9BCB8586DFDE3B4D99" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{7A9BA7E4-CE72-4D31-8986-FED6F0F61BDB}">
+                <File Id="fil6CFBCFF2F975BB0A1B05BF468EAD10C9" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail6.dll" />
+            </Component>
+            <Component Id="cmpF77707533A60ADD03251EF5BB1175836" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{5E4120E1-20B4-429A-9B47-B9E5D2AB5DA6}">
+                <File Id="fil42D80D8882DAC74A563AF965F9224CCC" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail7.dll" />
+            </Component>
+            <Component Id="cmp9915820A670C5C19A6C9294B897FF3C8" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{3A6CC49B-5D91-4A99-8449-F4B1F60C39E6}">
+                <File Id="filC7E94E1BE1944047B2A059842B40FAA6" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Mail.SmarterMail9.dll" />
+            </Component>
+            <Component Id="cmp65CE1CB5E5A24AA63CBA691C915D9AD3" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{4AA0914E-7A87-430A-BE9D-EA97D8067912}">
+                <File Id="filD6718D48E1613420F9673CE7542678E3" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.OS.Windows2003.dll" />
+            </Component>
+            <Component Id="cmpFE93B68116E7CAC066957B5361E4F56E" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{07E95891-7EFA-4AE1-8D03-69F03FE97BE1}">
+                <File Id="filF0CEBF863BFC5AC6B5E9C064F6E6EA0E" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.OS.Windows2008.dll" />
+            </Component>
+            <Component Id="cmp8C4DD577A1F25877B486CCDEF1305C1E" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{8CA365DE-4170-4080-924B-350637FA2BB8}">
+                <File Id="filAE70F49B1733BFDDFC5A33D09AADBA65" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.OS.Windows2012.dll" />
+            </Component>
+            <Component Id="cmp4DAC3798F902020D889357AF38E4FEFA" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{14CF5AD7-B965-4CE6-88EE-A58CECBD2D44}">
+                <File Id="fil543A793BC94DD575AC6A3D7FE9664C9C" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.OS.Windows2016.dll" />
+            </Component>
+            <Component Id="cmpC842A8DC7E13C1E0D73637D76B293173" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{54D588CB-D3E1-462D-8DBF-718E2B131883}">
+                <File Id="filD7A847F390D3F572A21AE08CD82D8F60" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.RemoteDesktopServices.Windows2012.dll" />
+            </Component>
+            <Component Id="cmp3B94C4D030C68CE4D1F3A344E0B6EF8A" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{4CAA475B-BAFE-48F2-80B5-B6F45BBFA602}">
+                <File Id="fil81F4479D3EA0E8F484F6FE76DB86DA2D" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Statistics.AWStats.dll" />
+            </Component>
+            <Component Id="cmp74E8E4F5545500706DDE2FF2E6CAD8A8" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{178817AE-3798-45FC-9A22-78683A7F5C7F}">
+                <File Id="filEE1C024DD7CFC8BEDFE0171BF9299579" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Statistics.SmarterStats.dll" />
+            </Component>
+            <Component Id="cmp89382EC6EB927D0EA7D38FB3C8B58AA4" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{62DB52F0-8ACD-41B0-9ACA-40495CCE3145}">
+                <File Id="fil3690C217042CE1F881352A1FFA9A21C3" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.StorageSpaces.Windows2012.dll" />
+            </Component>
+            <Component Id="cmp8E80DC0248B9D6046F4143341A4A31EA" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{27B5803D-D717-4574-8F7E-EEDC8A07B28D}">
+                <File Id="fil84EAFC51F89F5DCFE1AE229635317B2B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Virtualization.HyperV.dll" />
+            </Component>
+            <Component Id="cmp4F0B00D33FAB0DAFF4EF9D848AC0909B" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{D561173E-2AF4-46BE-8592-741A0470B2D4}">
+                <File Id="filD32093B67E0CD6DE1BF69C6A0EA5E856" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.VirtualizationForPC.HyperVForPC.dll" />
+            </Component>
+            <Component Id="cmp567EF835B513DF4016D4CB3CE3E90A9A" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{B732631A-2A57-4CA1-86D5-8B63704A334F}">
+                <File Id="filBBC9CEA476E061078CA39428812DBD0F" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Web.HeliconZoo.dll" />
+            </Component>
+            <Component Id="cmp532EE2E09A219AD84DF39D2515EE89C7" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{5FB3B58F-F38C-4416-AAAA-99E68EB9C501}">
+                <File Id="fil81591EBD49C161189F3AC9FD1789B8F1" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Web.IIs60.dll" />
+            </Component>
+            <Component Id="cmpC0E39044AF68E962B828A91E03FD506F" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{DF6A87FD-7E79-41EF-B39A-DD3F1089A3BC}">
+                <File Id="fil58837A812FEE964F745DBD4FE5872875" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Web.IIs70.dll" />
+            </Component>
+            <Component Id="cmpA712C99A8ABA90BED2CFAB6C495244A7" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{06675CC7-7123-4193-908C-1A06F28AC3D8}">
+                <File Id="fil0A0EC772F54ECA4E402F5841EFFDD4AE" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Web.IIs80.dll" />
+            </Component>
+            <Component Id="cmpF56B7A3A252246A2D227D1E3FB813F99" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{5373AB18-FA13-4574-9451-5F40F14710EE}">
+                <File Id="fil6654AC47FA27BDD8F095157A447C3416" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Providers.Web.WebDav.dll" />
+            </Component>
+            <Component Id="cmp0308903288A232069E371774998466D5" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{891A57D7-D3AC-4D8C-A45D-23ACFDC9FF8E}">
+                <File Id="filD94AD5745DCB7D074D78F7C2D9A589F1" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Server.dll" />
+            </Component>
+            <Component Id="cmp358EE502B3AC78526DCB71118AE7841E" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{9E46A7A8-DA33-4FA0-ABF4-1FA55F4F2B0F}">
+                <File Id="filC0D76A4E80A317D119217BE6571B7AA2" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Server.dll.config" />
+            </Component>
+            <Component Id="cmpCE372BA63806E9A570CAE910C59B24E3" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{487A982F-D4F0-4BA3-8B62-FC83803AAF84}">
+                <File Id="fil574204AE26BED8AB317B01A89B861021" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Server.Utils.dll" />
+            </Component>
+            <Component Id="cmp11E95779BEC3D5A17F9606F5165F773D" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{0ACEC181-3E1B-4FB9-8666-385BF80B20EA}">
+                <File Id="fil90F4AFB05F4E987130C1BBA8FF50E160" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Server.WPIService.exe" />
+            </Component>
+            <Component Id="cmpE0A8EC53E478CA34FC55B92A29509940" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{BF98C443-FAEB-48C6-87EB-80DCB8ECA327}">
+                <File Id="fil018F9F8A7AD69889930D810858AEE59D" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SolidCP.Server.WPIService.exe.config" />
+            </Component>
+            <Component Id="cmp7F56D8DF49D637EEC2325B5F43570D13" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{A1259705-B46B-4716-B358-E1178C0D69F0}">
+                <File Id="fil21D7A943BA32BF146066009D1D63CE61" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp378159186E25B10226397C53E06F38BA" Directory="dirFE040D7A5771FED5DD77B7A4BED10E7F" Guid="{69B5906A-3D9E-4703-B145-019FB3DC4444}">
+                <File Id="filE2975D3613DBD61E124E4C7EBE483F4E" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\WpiServiceContract.dll" />
+            </Component>
+            <Component Id="cmp4985003E6B0F0F1645AE04EDE9269CF2" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{F64DF595-40A6-4B67-970E-396DCCF6A928}">
+                <File Id="fil50398A76EEBD64ADE5B61D151FC852A5" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.crm.sdk.proxy.dll" />
+            </Component>
+            <Component Id="cmpAFBA22FA233D2CFF4BBD805340F0D0A9" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{BEEA778A-0B3F-4287-A18B-F6CF8744570D}">
+                <File Id="filEDA542483FE90DCD594CD35C18C12F81" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.client.codegeneration.dll" />
+            </Component>
+            <Component Id="cmp62740FCAFC1FB55DF089182FBAA82930" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{430A7343-CF8E-4611-986C-01FFD63DC901}">
+                <File Id="filB23E88B971878AF62AEB0AD41113CB04" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.client.dll" />
+            </Component>
+            <Component Id="cmp4A65EA6177B134C49D67ACF23C7B9B00" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{87FCC216-380A-438D-AC36-D6A54C6A2C45}">
+                <File Id="filEC455712CF5CA31CC79277FB2A8EEDA5" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.portal.dll" />
+            </Component>
+            <Component Id="cmp9F5B9579A69774A96A2A5E831433656C" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{B13ADA58-9BC3-4056-8BEA-78C1C6A02D62}">
+                <File Id="fil78C4A570820F3C09BF139830A20D0580" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.portal.files.dll" />
+            </Component>
+            <Component Id="cmp4B5B936B03682B4316FEF78E2CB2EECA" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{4610C799-3196-4257-866D-199DC4487925}">
+                <File Id="filAA6555CB16EB7368E0935AD3D36B0098" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.sdk.deployment.dll" />
+            </Component>
+            <Component Id="cmpDB221AF3E175B9F31103DF784D4A8B29" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{3CE40034-2202-44FA-BD2A-400AE504D4BE}">
+                <File Id="fil3AF7A7AB8BF103BB79B55DE5CDA6953E" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.sdk.dll" />
+            </Component>
+            <Component Id="cmp0A7AC307A4E864E745D908041B544E61" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{AA19D7C7-3054-40D7-AD2C-1AABB886374D}">
+                <File Id="fil39DAA17C0D70352C51E21C93BF82B3CD" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\microsoft.xrm.sdk.workflow.dll" />
+            </Component>
+            <Component Id="cmp50C22226F40C3DA25AFBAA671D3FF9EC" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{215F0CAD-D9D0-43CA-B8D7-A5B06197750F}">
+                <File Id="filCA72AD4FCEAE04193071639C808835F4" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\SolidCP.Providers.HostedSolution.Crm2011.dll" />
+            </Component>
+            <Component Id="cmp25A3923CD24C1A1FC408CF655D37A53A" Directory="dir0FF1D37B4E002D1097484E8DA68347FE" Guid="{EB049FBE-B822-4D25-9A53-FE81ADA8BF51}">
+                <File Id="filCBE526FC1CCC1404A04918489CFDD79B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2011\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp600CE97A0561D00935DDC3C869CB5BC0" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{5DAAF7FC-D155-47AF-B55D-34B35BB3F2D1}">
+                <File Id="fil2724A9052946EBC7B97A2700DCD3B837" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Crm.Sdk.Proxy.dll" />
+            </Component>
+            <Component Id="cmp58D4C555A54200FF930A4A9821787905" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{4BF1F855-2081-4A51-AD55-F1BF6A9EE063}">
+                <File Id="fil2ED83C4E77D49C99B842E7AACE418F61" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Client.CodeGeneration.dll" />
+            </Component>
+            <Component Id="cmp20512F14450C80F57E51D4F2DFE7430E" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{05976FFB-2054-41F4-BF6D-E462AB079A01}">
+                <File Id="filD65006CF70206A849BAB186C60FF4370" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Client.dll" />
+            </Component>
+            <Component Id="cmpE8C26850E14F5DA23D7D9638390E3C4D" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{5737C454-30E2-41C2-8915-E2B10F7501E5}">
+                <File Id="filEF115D6A5B962C01CCC0B0F4B3B09825" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Portal.dll" />
+            </Component>
+            <Component Id="cmp197EDE5370E60E063675D38B1B451FCE" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{5C877C78-362C-4811-BE54-9917D97D9D8A}">
+                <File Id="fil815EBE3DA213A225C9D8C64E5E27F8C0" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Portal.Files.dll" />
+            </Component>
+            <Component Id="cmpB313C65750A6739F92659B31A8760885" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{70E13D63-04C2-43F3-B13E-C27D2B7DE95F}">
+                <File Id="filE50151DB1204CE36C6C22DF57076F3CE" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Sdk.Deployment.dll" />
+            </Component>
+            <Component Id="cmp739A4CC29091628852BFF4399EB69968" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{15B29E12-05D3-486F-AD8D-9650DDF80CE1}">
+                <File Id="filDD18D2532741F040025B05BEFDC0793D" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Sdk.dll" />
+            </Component>
+            <Component Id="cmp253CF14BA3D498979675E07A12BF9523" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{599438A9-FF9C-4074-8C04-E176859C05FD}">
+                <File Id="fil13084C66DF169007CBA96CBDE22259D6" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\Microsoft.Xrm.Sdk.Workflow.dll" />
+            </Component>
+            <Component Id="cmp5C87BF78813E0B6C4CEC6F013C28D25B" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{AFE4136A-99F0-4527-8AFD-6A18AD6B6853}">
+                <File Id="filED320634ED9AFA69B56F13144FA72495" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\SolidCP.Providers.HostedSolution.Crm2013.dll" />
+            </Component>
+            <Component Id="cmp0C5DA0CE34C0E7592487E9967664BAAD" Directory="dir14530AC2BB9F57DEF83E8CF76842E9A1" Guid="{33ADBBC9-5F2D-4B2A-B81B-61E8F74CD04D}">
+                <File Id="filAFF3218DD357C7611D065CCC68D49359" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2013\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp7EA116D9E06E2E91C11B230AD5A6748C" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{77C66CDE-4296-4784-BBEE-1D3ED903A062}">
+                <File Id="filDEFD27D313D99B0D167660FE1CDD6A6D" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Crm.Sdk.Proxy.dll" />
+            </Component>
+            <Component Id="cmp130E9647B66309C986020FEE7C5090B8" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{D6E01D45-BA80-4965-A8DC-863376F512FD}">
+                <File Id="fil3F11872807E6EF9C3641E843CC988694" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Client.CodeGeneration.dll" />
+            </Component>
+            <Component Id="cmpA55BBEBD3193151DB2D11B467A1EB80C" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{9BE7D180-25BA-41BE-A08E-FC1E44678F6D}">
+                <File Id="fil63368AD681075C2F5FEEF48D9D2C5F85" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Client.dll" />
+            </Component>
+            <Component Id="cmpCE946B35D38A13B783B30994EE8DF3E9" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{A17B41C0-AB84-4F12-9A1B-0A6BA7C6ACA6}">
+                <File Id="fil557C64C16E857A4E98CD6DFB8B5B4B69" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Portal.dll" />
+            </Component>
+            <Component Id="cmp9BAC74A42737D318961490B174C22D70" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{3B078009-B76C-44E4-8A59-3865E406FDC3}">
+                <File Id="filD807139CCFBF2D15E2DF34CC9C79EAC6" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Portal.Files.dll" />
+            </Component>
+            <Component Id="cmpC6803A71FD54618D8C122A6D57F0FFB3" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{42E74D58-829C-455D-86CF-056082B959AD}">
+                <File Id="fil45F7DA0554546C68DADA8A2CCC14B9C6" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Sdk.Deployment.dll" />
+            </Component>
+            <Component Id="cmp3BBE19929C3A27DB2C866CA36B14DE97" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{59DA68BE-8ED7-4B53-B7D4-03A1C0A4D27C}">
+                <File Id="fil1EE5BB1E1A71EB3981FC29AC2085EF1C" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Sdk.dll" />
+            </Component>
+            <Component Id="cmp6DDE29903AD0DD5B11034EE0B0142AF6" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{AEB58E12-623D-4212-9A50-7D7E55F8D945}">
+                <File Id="fil75AF7FE75590470ECA20831B34F18C4A" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\Microsoft.Xrm.Sdk.Workflow.dll" />
+            </Component>
+            <Component Id="cmp5F4B27199543D1D71A02B95D00AAE91F" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{64236DE0-13A4-41EB-A193-CF3E16B7D9E9}">
+                <File Id="fil396724948AA23472EB41C8B6B9ECB9A4" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\SolidCP.Providers.HostedSolution.Crm2015.dll" />
+            </Component>
+            <Component Id="cmp8AD88C914944469E82196138E6B39EF7" Directory="dir0B808EF638F5CB55B6D471AD9B501E22" Guid="{616700F5-FEAE-46CC-847A-3540C84CED55}">
+                <File Id="filAA6429377FB5E442D11E3D9AF3DB3B11" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Crm2015\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmpCEE2DE5921F480D680024ECFC9E4F9B5" Directory="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Guid="{9CB61955-3E50-4EAE-819D-2633C9C40D72}">
+                <File Id="filBFA27EC94AACB8942D029160D37FB3BB" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Dns2012\Ionic.Zip.Reduced.dll" />
+            </Component>
+            <Component Id="cmpC15EACF4C9978AD51C6A7193D28859D5" Directory="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Guid="{3120A4CD-401E-44BB-900E-C83BFC245CF6}">
+                <File Id="fil840EC1EF00874898A1EE79B9EA93628B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Dns2012\Microsoft.Management.Infrastructure.dll" />
+            </Component>
+            <Component Id="cmpFEEF3FFEB295DF53137E98409D825EEF" Directory="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Guid="{D9F129D5-5CFA-4D8E-AF45-0B7C2E36D960}">
+                <File Id="fil1103FC49DAE0A01DEB180DA0A29A3356" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Dns2012\SolidCP.Providers.Base.dll" />
+            </Component>
+            <Component Id="cmpB9F022E202F94413D018F3C9B09AB994" Directory="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Guid="{0C4E8222-988A-4F81-A445-133B6D6E7AD7}">
+                <File Id="filE3A909DD696F5186F051B7FFE02C8B68" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Dns2012\SolidCP.Providers.DNS.MsDNS2012.dll" />
+            </Component>
+            <Component Id="cmpAF3C13C20F5757F2C9EF583E07058073" Directory="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Guid="{04E4F2BF-D849-4E89-9D49-29A8DFF87BE3}">
+                <File Id="filB89029F318B1A86AFE46D7C2ADC2EFF5" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Dns2012\SolidCP.Server.Utils.dll" />
+            </Component>
+            <Component Id="cmp5E399471288617EBA91BEC5A3D0A53D4" Directory="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Guid="{9F65524A-EB91-4143-8C9E-6364CE6FD8B4}">
+                <File Id="filC95A7BD7394C0B6ECC96C1F2B8527FAF" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Dns2012\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp3102943A35FA77FADC16F013E413E062" Directory="dir30FECF9E1562D1E619668EB5D21027FC" Guid="{FDCFB06F-5C05-4EC3-B5A5-B9865903682E}">
+                <File Id="fil3DEF2AA641AEA5D29782412226166E3E" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Exchange2013\Microsoft.Web.Administration.dll" />
+            </Component>
+            <Component Id="cmp74DB59064DB34B38E18FF883D81A23E4" Directory="dir30FECF9E1562D1E619668EB5D21027FC" Guid="{7642B770-9C38-486D-BDF6-6D8F3F7759EC}">
+                <File Id="fil38B2D2EEA7000FA4672BE2FE7B3C4968" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Exchange2013\SolidCP.Providers.HostedSolution.Exchange2013.dll" />
+            </Component>
+            <Component Id="cmpA4C1ECD5DC85161B0D673F54642991BC" Directory="dir30FECF9E1562D1E619668EB5D21027FC" Guid="{C89555B6-7989-41B6-8829-728A3E61D2D4}">
+                <File Id="fil2A5F592F0F2D7C701093BD4F74969D9A" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Exchange2013\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp62C28CE9C478A420B3CDC8CE885353F5" Directory="dir998E0166BF408A87A8670569A16FBE74" Guid="{8A6BFC5B-E8D9-4CF5-84E1-92E9E3289989}">
+                <File Id="filC25216AC261A96553F5695AE6CCCC20A" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Exchange2016\Microsoft.Web.Administration.dll" />
+            </Component>
+            <Component Id="cmpA10CA444926C649CE0453E3FA32D14C0" Directory="dir998E0166BF408A87A8670569A16FBE74" Guid="{99262DC7-0DB8-4E40-AB9C-F9703918B6F2}">
+                <File Id="fil825B00328EB46DB499D02A9158CFE91F" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Exchange2016\SolidCP.Providers.HostedSolution.Exchange2016.dll" />
+            </Component>
+            <Component Id="cmpCBEAF2D692D01C10D926A1F45DD646B9" Directory="dir998E0166BF408A87A8670569A16FBE74" Guid="{D11E749D-E074-48C1-A536-B8DB57989AAF}">
+                <File Id="filDCD3DEB9B7F07434F6587A1466C39B39" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Exchange2016\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp7E755523C127E868008BDC5D065ADE07" Directory="dirC061C169CD84BD16AFC80117EB4BDE97" Guid="{7B2856E3-8892-4E2D-B4B3-A76540419247}">
+                <File Id="fil1C37FA65827BB2713693D598452AE585" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Filters\SolidCP.Providers.EmailSecurity.SpamExperts.dll" />
+            </Component>
+            <Component Id="cmp779E3EA8432DB6A2C214225B28A339D8" Directory="dirC061C169CD84BD16AFC80117EB4BDE97" Guid="{86C41981-9BD2-4094-9E31-EC0C381DBE3A}">
+                <File Id="fil623341A80112B541931BAF1ADD12522B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Filters\SolidCP.Providers.Filters.MailCleaner.dll" />
+            </Component>
+            <Component Id="cmpA17EA3C94948A990BBEB369FC545AE9C" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{3315A833-67E3-4DB0-B7F2-8781163C739A}">
+                <File Id="fil521C55565388CD7A85FFEA4134909017" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\Ionic.Zip.Reduced.dll" />
+            </Component>
+            <Component Id="cmpA80076A2B8A67DEEEA450D7524199E4E" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{17E5A411-7C7B-4CF1-B938-35C08B583E60}">
+                <File Id="fil706A4F543E796327187E583E088E5BEB" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\Microsoft.SharePoint.dll" />
+            </Component>
+            <Component Id="cmpF291526CB800D6B443B1C302875B8732" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{6D71B8CE-48C1-4B1A-A43C-7783AECF689C}">
+                <File Id="filB28D7BA678F2DD1F56D4CD6173629143" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\Microsoft.Storage.Vds.dll" />
+            </Component>
+            <Component Id="cmpBBC86D229A0371340E339E108B70C72B" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{A4EF00FE-2A95-4161-8258-D575337206F2}">
+                <File Id="filCF36CE4125D462BFBCAC44C31210CABA" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\Microsoft.Web.Administration.dll" />
+            </Component>
+            <Component Id="cmp229F87C44D08EEA29A6284BDD2B3F489" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{B379DF88-F593-4ADB-B10A-90DCA1024853}">
+                <File Id="fil7432411DDC319C767505C3CFF90CA136" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\SolidCP.Providers.Base.dll" />
+            </Component>
+            <Component Id="cmp87FA49B206F1D8932631C323EA2317DF" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{81FAAE1A-C853-454F-B777-C6435256D462}">
+                <File Id="filA6289654DF5BFE25076436159D33B983" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\SolidCP.Providers.HostedSolution.dll" />
+            </Component>
+            <Component Id="cmpDCB2F8121D776F51092A3AAC4C15746F" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{7C73F4F3-BE95-465B-9867-4E9214FEC847}">
+                <File Id="fil167A743C6D3CF9C817A868F76ABC666A" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\SolidCP.Providers.Virtualization.HyperV2012R2.dll" />
+            </Component>
+            <Component Id="cmpF600B52D5451CBF0DCBD40F176E34D99" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{259D1C43-DDE0-4B11-9A4F-34C384907649}">
+                <File Id="fil1CECB92E95BBE707D1E606F63F093E5C" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\SolidCP.Server.Utils.dll" />
+            </Component>
+            <Component Id="cmpFD99332CF433C3FACAE7E00A805A93C6" Directory="dir6714DB339E4FD8DFF8B07188F2DA5672" Guid="{99B12470-99DB-4C24-8DEB-2980AA94E499}">
+                <File Id="fil975409D9F25E0376643F2FF4C7989B95" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperV2012R2\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp15922B3A0D767DE771330F968159A84D" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{14F1B60B-17D9-40B6-87C5-1F92243D6F74}">
+                <File Id="fil51C1F5BCDEB0D92C95D98673D29C6D30" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\Ionic.Zip.Reduced.dll" />
+            </Component>
+            <Component Id="cmp1373321899E3D176E5B6C0EF360EBE95" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{3B510766-FC42-4156-BDC8-0283E208FD34}">
+                <File Id="fil5E40A3088A0AB77727465A5A366C7359" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\Microsoft.SharePoint.dll" />
+            </Component>
+            <Component Id="cmp1C30AC4FFE88EA243BCD19FA4F53A0C3" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{7D886CE0-82A4-4CFD-AFD0-B57CE9F5A477}">
+                <File Id="filCD996EF25FFC7326A906E3132EC2DC32" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\Microsoft.Storage.Vds.dll" />
+            </Component>
+            <Component Id="cmpB60D85BD051BB59C30E95F135025F77F" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{12F2D7D5-90B9-4A84-A169-1917CFE826B1}">
+                <File Id="fil21553EDDE5507FCDFC12E0003D50FFDC" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\Microsoft.SystemCenter.VirtualMachineManager.dll" />
+            </Component>
+            <Component Id="cmpDBC1D27AD2043911A91C8C2D9F1BD014" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{91AC773E-F083-475A-A85B-CD19FA49D08C}">
+                <File Id="fil5B20767E95054CDC98AA19459B4FC23C" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\Microsoft.Web.Administration.dll" />
+            </Component>
+            <Component Id="cmp9FD725F2780215446EEDC32D7F1A0A77" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{357F47DA-77DC-4B06-B1D0-50F319DE9777}">
+                <File Id="fil01F113C7DD32D1E292EC248C5E04A44C" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\SolidCP.Providers.Base.dll" />
+            </Component>
+            <Component Id="cmp2361C9FAA13DD55EECCB9E748FBF3BEF" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{1A95482B-6808-4A7F-94B8-FEE1938CEFB7}">
+                <File Id="filC07E6A5BDCEF5C149A36F04ED4C6AB7C" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\SolidCP.Providers.HostedSolution.dll" />
+            </Component>
+            <Component Id="cmp5058BCC97A424A336002F8D0B069D9C1" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{942213F9-4CA6-4F74-8CA5-C5810876890A}">
+                <File Id="fil30485F23B7A12A3788A21CC132855CB1" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\SolidCP.Providers.Virtualization.HyperVvmm.dll" />
+            </Component>
+            <Component Id="cmpB2D4B1632B5A27E53BBFA73F92E42389" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{594CAEAC-1D24-4621-A5DA-5C9CD900FB25}">
+                <File Id="fil749EB798C1A7A9E98BD3C334E2E559E3" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\SolidCP.Server.Utils.dll" />
+            </Component>
+            <Component Id="cmpED974FDC47069D4814FA1C61FB98EEA1" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{CE29E548-7F88-4FFB-8C2E-6ED3A0C59EFC}">
+                <File Id="filAD5FFC407D13FEACA057689BBC1600C3" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmpEA47FC9DDC4D6436CCE89D4A8FDC1ECC" Directory="dir9C9428F6205CBAF9679AB5D22C856718" Guid="{8E65588D-24C5-4ED9-BCCC-37050FD128BA}">
+                <File Id="filB7211A13A12CBA41295A0958D55863DE" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\HyperVvmm\Utils.dll" />
+            </Component>
+            <Component Id="cmp39162192D36615B3E03F4109CA1263B2" Directory="dir0EE9B80D60D6BE4DCE110990FB635EA7" Guid="{42196774-6379-4134-AB17-8B6E32DBC68F}">
+                <File Id="filA08A5212B0DE65BC781DE832B0C5DACD" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IceWarp\SolidCP.Providers.Mail.IceWarp.dll" />
+            </Component>
+            <Component Id="cmp2C11B1555AF29EB19E6A9561FE9AA853" Directory="dir3C1C9B0602EAAE496741C2C790D6B66A" Guid="{77DDD3B3-ECFB-469F-BD9E-72CA9AC61A7F}">
+                <File Id="fil3206CE960486EF15E22E6DBB3047BFF2" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IIs100\Microsoft.Web.Administration.dll" />
+            </Component>
+            <Component Id="cmp73D703025DA60AC7AB1A0CAB18B52A7B" Directory="dir3C1C9B0602EAAE496741C2C790D6B66A" Guid="{E1F8A1D4-07EC-448F-9253-99A8919F1A2E}">
+                <File Id="fil55A9E657ABECFDB31AD13C37AB66BBE9" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IIs100\SolidCP.Providers.Web.IIs100.dll" />
+            </Component>
+            <Component Id="cmpEBF209D607A49D6417F3C196ABF2C713" Directory="dir3C1C9B0602EAAE496741C2C790D6B66A" Guid="{F891AFAC-E728-47C4-90B2-E7693734A7A3}">
+                <File Id="fil8A04B3F16EB5DDDE70C1C0B6258EB38E" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IIs100\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp79755ECB05DAD8A20D2B940C4479A7B4" Directory="dir545332CB192D456FD4BEFF68E1658417" Guid="{4C4140CE-DF87-4D0A-A795-BB1853451AAD}">
+                <File Id="filBD971EBDB47A45E1FCE2C2926AB9B004" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IIs80\Microsoft.Web.Administration.dll" />
+            </Component>
+            <Component Id="cmp9FF622E2B5CF663585271134F2CF3ADC" Directory="dir545332CB192D456FD4BEFF68E1658417" Guid="{35276DDA-8EEC-4A55-AA8D-73CED67856FE}">
+                <File Id="filB23534393CBE481AB59B073B6831E41B" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IIs80\SolidCP.Providers.Web.IIs80.dll" />
+            </Component>
+            <Component Id="cmp7810DAD25C4D294E20DFFCBEFEE1673B" Directory="dir545332CB192D456FD4BEFF68E1658417" Guid="{A1ED2F61-1D5D-49EF-87A9-83315C40373D}">
+                <File Id="filAF1215FB01AF14C24788EF6C57982B15" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\IIs80\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp6BBFCEB80D3EF885C55D2ED22641901F" Directory="dir899A65007F0749FFEFB03A98389E2079" Guid="{0236D623-2658-454D-B368-CD362F0E2FF6}">
+                <File Id="fil4CB4787B5266A04311A09F5203A56AD8" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Lync2013\SolidCP.Providers.Base.dll" />
+            </Component>
+            <Component Id="cmpEA1DF62265A6EFA32C3986B87C88D8E5" Directory="dir899A65007F0749FFEFB03A98389E2079" Guid="{4DF30017-ACB0-4323-A405-037EC5ED39C2}">
+                <File Id="fil606D5E574FE1989FF661A5DA57F0FC5E" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Lync2013\SolidCP.Providers.HostedSolution.Lync2013.dll" />
+            </Component>
+            <Component Id="cmpC79F8355A119D7ACBB4ABAC515A01AA6" Directory="dir899A65007F0749FFEFB03A98389E2079" Guid="{24F54D50-F946-4A39-873F-0DE480A67AA5}">
+                <File Id="fil3781BBC307F693F76BC1560E9D3404F6" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Lync2013\SolidCP.Providers.HostedSolution.Lync2013HP.dll" />
+            </Component>
+            <Component Id="cmpFBFD59314D05031981AEFFFCBD6D32A3" Directory="dir899A65007F0749FFEFB03A98389E2079" Guid="{0FEC9357-D97A-4A9E-9594-284C0A7FFA2A}">
+                <File Id="fil48376E80032E548A7A28051C217668D5" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Lync2013\SolidCP.Server.Utils.dll" />
+            </Component>
+            <Component Id="cmp4B70F17F94EC2996767227E0DCBE8C24" Directory="dir899A65007F0749FFEFB03A98389E2079" Guid="{4C7F4431-5149-4E4C-960D-EEC6B4CC4239}">
+                <File Id="fil90D9E2861CC26BEAEB0B9E644CBE7975" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Lync2013\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmpF2DA7FE0B05CFED902C591B9BF652CAC" Directory="dir08A44BC77623D7AE394350EE60839E15" Guid="{1804E921-97A2-4263-B4DB-1207E0726246}">
+                <File Id="filB891FB13FF10ADC97738A857F1BC3124" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\SfB2015\SolidCP.Providers.HostedSolution.SfB2015.dll" />
+            </Component>
+            <Component Id="cmpA0176FC98514CC366F629DC89F9C1F8D" Directory="dirB3D4D8D478E88FDD3AAF3F23B7B1E605" Guid="{2E736F49-635F-4DA1-9FB7-23AB89B83719}">
+                <File Id="filC2187C99E22F16760CB5ADCADAECA459" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Sharepoint2013\SolidCP.Providers.HostedSolution.SharePoint2013.dll" />
+            </Component>
+            <Component Id="cmpD3A9EE1E33C79ED68D8ECC28E938A415" Directory="dirB3D4D8D478E88FDD3AAF3F23B7B1E605" Guid="{984DFA83-D3BF-4A59-9E5E-06FE9B88F5F4}">
+                <File Id="filD0AA706E1612E449DC850A586B8A06E5" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Sharepoint2013\SolidCP.Providers.HostedSolution.SharePoint2013Ent.dll" />
+            </Component>
+            <Component Id="cmp92962F21E5277BE56E482F5C7E382FED" Directory="dirB3D4D8D478E88FDD3AAF3F23B7B1E605" Guid="{B1F9A3E1-1E6B-4A64-8F19-9B53CF78AB74}">
+                <File Id="filC5FBB87DD650D6D1ED1C79D84AAB2606" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Sharepoint2013\System.Management.Automation.dll" />
+            </Component>
+            <Component Id="cmp5E4E80DCBD05E4174BFCA5429B14348B" Directory="dirA2DF6441077AD1B5CCE3749322E212AD" Guid="{F9A6E0C9-2ECF-4899-92C4-D7CD8B80A174}">
+                <File Id="fil879F67BA8C1ECFBF9DF343104EB86625" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Sharepoint2016\SolidCP.Providers.HostedSolution.SharePoint2016.dll" />
+            </Component>
+            <Component Id="cmpBBB752864C70A5DC75AACA12F6786207" Directory="dirA2DF6441077AD1B5CCE3749322E212AD" Guid="{DE2E6E70-0533-4358-AD9A-D9A9BE551F48}">
+                <File Id="fil58F8695E5451908F491E76DDBAD6E150" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Sharepoint2016\SolidCP.Providers.HostedSolution.SharePoint2016Ent.dll" />
+            </Component>
+            <Component Id="cmp68941AE3D3E1F828406F3BE04211E5E8" Directory="dirA2DF6441077AD1B5CCE3749322E212AD" Guid="{67384631-9ABD-44FF-ADF1-A1C93EB1A1D1}">
+                <File Id="fil0B31AD95B6223EC9C7B8B7CF8F03A332" KeyPath="yes" Source="!(wix.BUILDSPATH)\bin\Sharepoint2016\System.Management.Automation.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir08A44BC77623D7AE394350EE60839E15" Name="SfB2015" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir0B808EF638F5CB55B6D471AD9B501E22" Name="Crm2015" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir0EE9B80D60D6BE4DCE110990FB635EA7" Name="IceWarp" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir0FF1D37B4E002D1097484E8DA68347FE" Name="Crm2011" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir14530AC2BB9F57DEF83E8CF76842E9A1" Name="Crm2013" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir30FECF9E1562D1E619668EB5D21027FC" Name="Exchange2013" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir3C1C9B0602EAAE496741C2C790D6B66A" Name="IIs100" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir545332CB192D456FD4BEFF68E1658417" Name="IIs80" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir6714DB339E4FD8DFF8B07188F2DA5672" Name="HyperV2012R2" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir899A65007F0749FFEFB03A98389E2079" Name="Lync2013" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir998E0166BF408A87A8670569A16FBE74" Name="Exchange2016" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir9C9428F6205CBAF9679AB5D22C856718" Name="HyperVvmm" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dir9DB81FFFD1FC013D1C2CF57BA60D8A21" Name="Dns2012" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dirA2DF6441077AD1B5CCE3749322E212AD" Name="Sharepoint2016" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dirB3D4D8D478E88FDD3AAF3F23B7B1E605" Name="Sharepoint2013" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirFE040D7A5771FED5DD77B7A4BED10E7F">
+            <Directory Id="dirC061C169CD84BD16AFC80117EB4BDE97" Name="Filters" />
+        </DirectoryRef>
+    </Fragment>
+</Wix>

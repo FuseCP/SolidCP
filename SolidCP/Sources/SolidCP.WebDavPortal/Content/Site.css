@@ -1,0 +1,530 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+/* User styles */
+
+.icon-size {
+	width: 100px;
+	height: 100px;
+}
+
+.element-container {
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.element-container .element {
+    position: relative;
+    text-align:center;
+}
+
+.selected-file .element {
+      position: relative;
+      box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+      border: 1px solid rgb(80, 152, 249);
+      padding: 3px;
+      margin: 4px;
+}
+
+.selected-file .element div.selected-element-overlay {
+    position:absolute; 
+    top:0px;
+    left: 0px;
+    width:100%; 
+    height:100%; 
+    background:rgb(200, 224, 255); 
+    opacity:0.3;
+    pointer-events: none;
+}
+
+tr.selected-file {
+    background-color:#E7F0FC!important; 
+}
+
+.table-icon {
+    height: 30px;
+    vertical-align: top;
+}
+
+.column-name .file-info {
+    display: inline-block;
+    padding-left: 5px;
+    width: 90%;
+}
+
+.table-icon.search {
+    height: 45px;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#webdav-items-table tr td {
+    vertical-align: middle !important;
+}
+
+#webdav-items-table .file-link {
+    padding-left: 5px;
+    padding-top: 5px;
+    display: inline-block;
+    vertical-align: middle !important;
+}
+
+.change-view-block {
+    display: inline-block;
+    vertical-align: bottom;
+    height: 32px;
+}
+
+#summary.summary {
+    font-size: 11px;
+    color: rgb(152, 152, 152);
+    word-wrap: break-word;
+}
+
+.drag-and-drop-area input {
+    /* IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    /* IE 5-7 */
+    filter: alpha(opacity=0);
+    /* Netscape */
+    -moz-opacity: 0;
+    /* Safari 1.x */
+    -khtml-opacity: 0;
+    opacity: 0;
+    font-size: 198px;
+    height: 198px;
+    border: #2e8bcc 1px;
+}
+
+.drag-and-drop-area .info-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    margin-left: -100px;
+    margin-top: -51px;
+}
+
+.drag-and-drop-area .upload-block {
+    width: 100%;
+}
+
+.drag-and-drop-area .upload-block-text {
+    font-size: 20px;
+    font-weight: bold;
+    display: block;
+}
+
+.drag-and-drop-area .upload-block-description {
+    display: block;
+}
+
+.drag-and-drop-area .upload-block-icon {
+    font-size: 60px;
+    color: gray;
+}
+
+.drag-and-drop-area .info-block-hover {
+    color: black;
+}
+
+.drag-and-drop-area {
+    margin-left: 15%;
+    margin-right: 15%;
+    background-color: #eee;
+    border: 1px solid #888;
+    border-radius: 3px !important;
+    overflow: hidden;
+}
+
+.template-upload .size, .template-download .size {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.template-upload .progress, .template-download .progress {
+    display: inline-block;
+    width: 70%;
+    margin-bottom: 0px;
+}
+
+.template-upload .column-name, .template-download .column-name, {
+    width: 40%;
+}
+
+.template-upload .column-progress, .template-download .column-progress {
+    width: 40%;
+}
+
+.template-upload .column-actions, .template-download .column-actions  {
+    width: 20%;
+    font-size: 20px;
+}
+
+.template-upload .column-actions .file-actions, .template-download .column-actions .file-actions {
+    float: right;
+    font-size: 23px;
+}
+
+.fileupload-global-process {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #E0E0E0;
+    border-radius: 3px !important;
+}
+
+.fileupload-global-process .cancel-all {
+    float: right;
+}
+
+.file-upload-menu .file-actions-menu {
+    display: none;
+}
+
+.center {
+    text-align: center;
+}
+
+#errorMessage {
+        color: red;
+        font-weight: bold;
+        padding-top: 5px;
+    }
+
+#username {
+    display:inline-block;
+}
+
+#logout {
+    font-size: 1.2em;
+    color: #9d9d9d;
+    margin-bottom: 0px;
+}
+
+#logout :hover {
+    color: white;
+}
+
+.forgot-your-password-link {
+    margin-left: 10px;
+}
+
+.navbar-fixed-top  #user-profile {
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.navbar-fixed-top  #user-profile:hover {
+    text-decoration: none;
+}
+
+.user-profile .password-information {
+    padding-top: 7px;
+}
+
+.user-profile .login-name {
+    padding-top: 7px;
+}
+
+.web-dav-folder-progress {
+    margin-bottom: 0px;
+}
+
+
+#processDialog .modal-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -8px;
+    margin-left: -100px;
+}
+
+
+.file-actions-menu {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.file-actions-menu .file-deletion {
+    display: none;
+    margin-right: 10px;
+}
+
+.file-actions-menu .file-upload {
+    display: inline-block;
+}
+
+.create-new-item {
+    margin-top: -2px;
+}
+
+#message-area {
+    margin-top: 15px;
+}
+
+#processDialog .dialog-text, .container  .dialog-text{
+    display: inline-block;
+    margin-left: 10px;
+}
+
+#processDialog .modal-dialog {
+    width: 200px;
+}
+
+.dataTables_processing {
+    width: 185px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    left: 43% !important;
+    background: initial !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #CDCDCD;
+    height: 44px !important;
+    z-index: 30;
+}
+
+.breadcrumb-scp {
+    display: inline-block;
+    padding-top: 5px;    
+}
+
+.search-block {
+    float: right;
+    margin-right: 10px !important;
+    width: 36%;
+}
+
+.search-block input{
+    display: inline-block;
+    font-weight: normal;
+}
+
+.search-block label {
+    display: inline-block;
+    width: initial;
+    font-weight: normal;
+}
+
+
+.elements-container {
+    padding-top: 10px;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .col-sm-2.element-container {
+        width: 18.666667%;
+    }
+}
+
+@media (max-width: 768px)  {
+    .col-sm-2.element-container {
+        float: left;
+        width: 48%;
+    }
+}
+
+
+@media (max-width: 250px) {
+    .col-sm-2.element-container {
+        float: left;
+        width: 100%;
+    }
+}
+
+.back-button {
+    font-size: 30px;
+    color: white;
+    padding-left: 10px;
+    padding-top: 3px;
+    display: block;
+}
+
+.column-name  {
+    position: relative;
+}
+
+.column-name #quota {
+    position: absolute;
+    right: 0px;
+    top: 20%;
+}
+
+
+.small-processing {
+    display: none;
+}
+
+#filenameForm input {
+    max-width: 100%;
+}
+
+/* Theme Mods */
+
+input,div{border-radius:0px!important;}
+.btn-primary:active,.btn-primary.active,.open>.dropdown-toggle.btn-primary {
+    background-image: none;
+	font-family: 'Segoe UI Light','Open Sans',Arial;    
+	color: #fff;    
+	border: 1px solid #5e86aa;    
+	background: #6598c5;    
+	font-weight: 300;    
+	text-align: center;    
+	vertical-align: middle;    
+	cursor: pointer;    
+	white-space: nowrap;    
+	padding: 6px 12px;    
+	font-size: 14px;    
+	line-height: 1.428571429;
+    border-radius: 0px;
+}
+
+.navbar-inverse .navbar-text {
+    color: #FFFFFF;
+}
+
+.navbar-inverse {
+  background-color: #2e8bcc;
+  border-color: #2e8bcc;
+}
+
+.navbar-collapse, .navbar-header {
+    padding-top: 4px;
+}
+
+.navbar-inverse .navbar-brand, .navbar-text, #logout{
+  color: #FFFFFF;
+  opacity: 0.8;
+}
+
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus, .navbar-text:hover, #logout:hover {
+  color: #fff;
+  background-color: transparent;
+  opacity: 1;
+}
+div#breadcrumb_wrapper {
+  padding: 10px 5px 12px 25px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+}
+
+div#breadcrumb_wrapper a:last-child {
+   color: #999;
+}
+.form-control {
+    border-radius: 4px;
+}
+
+.header-logo {
+    float: none;
+    display: inline-block;
+    margin-right: 10px;
+    vertical-align: top;
+}
+
+.header-portal-title {
+    float: none;
+    display: inline-block;
+}
+
+@media (min-width: 768px) {
+    .navbar-right {
+        margin-right: 0;
+    }
+}
+
+.navbar-inverse {
+  background-color: #F4F4F4;
+  border-color: #d4d4d4;
+  background: rgb(251,251,251);
+  background: -moz-linear-gradient(top, rgba(251,251,251,1) 0%, rgba(242,242,242,1) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(251,251,251,1)), color-stop(100%,rgba(242,242,242,1)));
+  background: -webkit-linear-gradient(top, rgba(251,251,251,1) 0%,rgba(242,242,242,1) 100%);
+  background: -o-linear-gradient(top, rgba(251,251,251,1) 0%,rgba(242,242,242,1) 100%);
+  background: -ms-linear-gradient(top, rgba(251,251,251,1) 0%,rgba(242,242,242,1) 100%);
+  background: linear-gradient(to bottom, rgba(251,251,251,1) 0%,rgba(242,242,242,1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbfbfb', endColorstr='#f2f2f2',GradientType=0 );
+  -webkit-box-shadow: 0 1px 10px rgba(0,0,0,.1);
+  -moz-box-shadow: 0 1px 10px rgba(0,0,0,.1);
+  box-shadow: 0 1px 10px rgba(0,0,0,.1);
+}
+.navbar-inverse .navbar-text, .navbar-inverse .navbar-brand, .navbar-text, #logout {
+  color: #565656;
+}
+
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus, .navbar-text:hover, #logout:hover {
+  color: #565656;
+  background-color: transparent;
+  opacity: 1;
+}
+
+div#breadcrumb_wrapper {
+   background-color: #F7F7F7;
+  border: 1px solid #d4d4d4;
+  margin-top: 9px;
+}
+.progress {  
+	height:21px;
+    
+	background-color: #ffffff;
+     border: 1px solid #BBBBBB;
+  border-radius: 3px!important;  
+}
+.progress-bar {
+	background-color: #F4C18F;
+	-webkit-box-shadow: none; 
+	box-shadow: none; 
+}
+body {
+  background-color: #FAFAFA;
+}
+p.progress-text {
+  position: absolute;
+  left: 44%;  
+  color: #515151;
+}
+p.resource-subtext {
+  color: #AEAEAE;
+}
+#logout :hover {
+  color: #333;
+}
+
+.file-link:hover {
+  text-decoration:none;
+}
+.file-link p {
+  color: #818181;
+  font-size: 13pt;
+}
+.file-link p:hover {
+  color: #333!important;
+}
+.icon-size {
+  width: 60px;
+  height: 60px;
+}

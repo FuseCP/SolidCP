@@ -1,0 +1,94 @@
+﻿@using SolidCP.WebDav.Core.Entities.Account.Enums
+@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDav.Core.Security.Authorization.Enums
+@using SolidCP.WebDav.Core
+@using SolidCP.WebDavPortal.UI.Routes
+
+@model SolidCP.WebDavPortal.Models.ModelForWebDav
+
+<div id="breadcrumb_wrapper" class="container row prevent-deselect">
+    @if (Model != null)
+    {
+        string header = ScpContext.User.OrganizationId;
+        string[] elements = string.IsNullOrEmpty(Model.UrlSuffix)? new string[0]: Model.UrlSuffix.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
+
+        <div class="breadcrumb-scp">
+            @if (String.IsNullOrEmpty(Model.SearchValue))
+            {
+                <a href="/@header/" class="processing-dialog">@header</a>
+
+                for (int i = 0; i < elements.Length; i++)
+                {
+                    <span style="top: 2px;"> / </span>
+                    <a href="@string.Concat("/" + header + "/", string.Join("/", elements.Take(i + 1)))" class="processing-dialog">@elements[i]</a>
+                }
+            }
+            else
+            {
+                <a href="@Url.RouteUrl(FileSystemRouteNames.ShowContentPath)" class="processing-dialog">@(elements.Any() ?elements.Last():ScpContext.User.OrganizationId)</a>
+                <span style="top: 2px;"> / </span>
+                <span>@UI.SearchResults</span>
+            }
+        </div>
+
+        <div class="search-block navbar-right">
+            <div>
+                @using (Html.BeginRouteForm(FileSystemRouteNames.SearchFiles, FormMethod.Post))
+                {
+                    <div>
+                        <label>
+                            @UI.SearchDocuments:
+                        </label>
+                        @Html.TextBox("searchValue", Model.SearchValue, new { @class = "form-control input-sm" })
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+@if (string.IsNullOrEmpty(Model.SearchValue))
+{
+    <div class="container file-actions-menu row prevent-deselect">
+        @if (Model.Permissions.HasFlag(WebDavPermissions.Write))
+        {
+            <div class="file-deletion navbar-left">
+                <a id="delete-button" class="btn btn-danger btn-sm active" role="button"
+                   data-target="#confirm-dialog"
+                   data-target-positive-button-text="@UI.Delete"
+                   data-target-title-text="@UI.DeleteFileQuestion"
+                   data-target-content="@UI.DialogsContentConfrimFileDeletion">@UI.Delete</a>
+            </div>
+            if (Model.Permissions.HasFlag(WebDavPermissions.OwaEdit))
+             {
+                 <div class="dropdown create-new-item navbar-left">
+                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                         @UI.Create
+                         <span class="caret"></span>
+                     </button>
+                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-extension=".docx" data-target="_blank">@UI.WordDocument</a></li>
+                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-extension=".xlsx" data-target="_blank">@UI.ExcelWorkbook</a></li>
+                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-extension=".pptx" data-target="_blank">@UI.PowerPointPresentation</a></li>
+                     </ul>
+                 </div>
+             }
+        }
+
+        <div class="file-upload navbar-right">
+            @if (Request.Browser.IsMobileDevice == false)
+            {
+                <div class="btn-toolbar change-view-block" role="toolbar">
+                    <div class="btn-group">
+                        <a class="btn btn-default" title="@UI.Details" href="@Url.RouteUrl(FileSystemRouteNames.ChangeWebDavViewType, new {viewType = FolderViewTypes.BigIcons, org = ScpContext.User.OrganizationId, pathPart = Model.UrlSuffix})"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span></a>
+                        <a class="btn btn-default" title="@UI.Table" href="@Url.RouteUrl(FileSystemRouteNames.ChangeWebDavViewType, new {viewType = FolderViewTypes.Table, org = ScpContext.User.OrganizationId, pathPart = Model.UrlSuffix})"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span></a>
+                    </div>
+                </div>
+            }
+
+            @if (Model.Permissions.HasFlag(WebDavPermissions.Write))
+            {
+                <a id="upload-button" class="btn btn-success btn-sm active" href="@Url.RouteUrl(FileSystemRouteNames.UploadFile)" role="button">@UI.FileUpload</a>
+            }
+        </div>
+    </div>
+}

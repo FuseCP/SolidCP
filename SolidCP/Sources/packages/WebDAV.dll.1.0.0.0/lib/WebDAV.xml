@@ -1,0 +1,252 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebDAV</name>
+    </assembly>
+    <members>
+        <member name="T:WebDAV.WebDAVResource">
+            <summary>
+            Resourcedefinition from propfind
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVResource.Uri">
+            <summary>
+            The absolute uri
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVResource.Name">
+            <summary>
+            Displayname of the resource if available
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVResource.ContentLength">
+            <summary>
+            The content length if available.
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVResource.IsCollection">
+            <summary>
+            Is the resource a directory.
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVResource.LastModified">
+            <summary>
+            Last modified date.
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVResource.CreationDate">
+            <summary>
+            Creation date.
+            </summary>
+        </member>
+        <member name="T:WebDAV.WebDAVClientCredential">
+            <summary>
+            WebDAV credential information.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClientCredential.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the WebDAVClientCredential with the username and password.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClientCredential.#ctor(System.String,System.String,WebDAV.AuthType)">
+            <summary>
+            Initializes a new instance of the WebDAVClientCredential with the username and password.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClientCredential.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the WebDAVClientCredential with the username and password.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClientCredential.#ctor(System.String,System.String,System.String,WebDAV.AuthType)">
+            <summary>
+            Initializes a new instance of the WebDAVClientCredential with the username and password.
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVClientCredential.AuthenticationType">
+            <summary>
+            The authentication type.
+            </summary>
+        </member>
+        <member name="T:WebDAV.WebDAVClient">
+            <summary>
+            The basic WebDAV client.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.#ctor">
+            <summary>
+            Initializes a new instance of the WebDAVClient.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.#ctor(WebDAV.WebDAVClientCredential)">
+            <summary>
+            Initializes a new instance of the WebDAVClient with the credential information.
+            </summary>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Propfind(System.String)">
+            <summary>
+            Execute propfind for a resource.
+            </summary>
+            <param name="url">The uro to request.</param>
+            <returns>A list of resource informations or null on error.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Propfind(System.Uri)">
+            <summary>
+            Execute propfind for a resource.
+            </summary>
+            <param name="uri">The uro to request.</param>
+            <returns>A list of resource informations or null on error.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Head(System.String)">
+            <summary>
+            Execute head on the resurce.
+            </summary>
+            <param name="url">The uri to request.</param>
+            <returns>Returns true if the resource is available.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Head(System.Uri)">
+            <summary>
+            Execute head on the resurce.
+            </summary>
+            <param name="uri">The uri to request.</param>
+            <returns>Returns true if the resource is available.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Delete(System.String)">
+            <summary>
+            Execute delete on the resurce.
+            </summary>
+            <param name="url">The uri to request.</param>
+            <returns>Returns true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Delete(System.Uri)">
+            <summary>
+            Execute delete on the resurce.
+            </summary>
+            <param name="uri">The uri to request.</param>
+            <returns>Returns true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Mkcol(System.String)">
+            <summary>
+            Execute mkcol on the resurce. This creates a new directory. The uri may need end with a '/'.
+            </summary>
+            <param name="url">The uri to request.</param>
+            <returns>Returns true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Mkcol(System.Uri)">
+            <summary>
+            Execute mkcol on the resurce. This creates a new directory. The uri may need end with a '/'.
+            </summary>
+            <param name="uri">The uri to request.</param>
+            <returns>Returns true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Put(System.String,System.Byte[])">
+            <summary>
+            Execute put to create a new hunk of data. The uri must not end with a '/'.
+            </summary>
+            <param name="url">The uri to request.</param>
+            <param name="buffer">The data as byte array.</param>
+            <returns>Returns true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Put(System.Uri,System.Byte[])">
+            <summary>
+            Execute put to create a new hunk of data. The uri must not end with a '/'.
+            </summary>
+            <param name="uri">The uri to request.</param>
+            <param name="buffer">The data as byte array.</param>
+            <returns>Returns true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Get(System.String)">
+            <summary>
+            Execute get on the resource.
+            </summary>
+            <param name="url">The uri to request.</param>
+            <returns>Returns a byte array.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Get(System.Uri)">
+            <summary>
+            Execute get on the resource.
+            </summary>
+            <param name="uri">The uri to request.</param>
+            <returns>Returns a byte array.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Copy(System.String,System.String,System.Boolean)">
+            <summary>
+            Execute copy the resource.
+            </summary>
+            <param name="src">The source uri.</param>
+            <param name="dest">The destination uri.</param>
+            <param name="overwrite">Overwrite existing.</param>
+            <returns>Return true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Copy(System.Uri,System.Uri,System.Boolean)">
+            <summary>
+            Execute copy the resource.
+            </summary>
+            <param name="src">The source uri.</param>
+            <param name="dest">The destination uri.</param>
+            <param name="overwrite">Overwrite existing.</param>
+            <returns>Return true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Move(System.String,System.String,System.Boolean)">
+            <summary>
+            Execute move the resource.
+            </summary>
+            <param name="src">The source uri.</param>
+            <param name="dest">The destination uri.</param>
+            <param name="overwrite">Overwrite existing.</param>
+            <returns>Return true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.Move(System.Uri,System.Uri,System.Boolean)">
+            <summary>
+            Execute move the resource.
+            </summary>
+            <param name="src">The source uri.</param>
+            <param name="dest">The destination uri.</param>
+            <param name="overwrite">Overwrite existing.</param>
+            <returns>Return true on success.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.GetBaseRequest(System.Uri,WebDAV.RequestMethod)">
+            <summary>
+            Build the basic request object.
+            </summary>
+            <param name="uri">The uri to request.</param>
+            <param name="method">The request method.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.ParsePropfind(System.IO.Stream,System.Uri)">
+            <summary>
+            Build reource object from propfind request.
+            </summary>
+            <param name="stream">The body stream from propfind.</param>
+            <param name="uri">The request uri to extract the server.</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.ExtractDisplayName(System.String)">
+            <summary>
+            Build a display name if no available.
+            </summary>
+            <param name="href">The href component from propfind.</param>
+            <returns>The display name.</returns>
+        </member>
+        <member name="M:WebDAV.WebDAVClient.AbsoluteUri(System.String,System.Uri,System.Boolean)">
+            <summary>
+            Build a absolute uri if href returns only a part of a url.
+            </summary>
+            <param name="url">The url from href in propfind.</param>
+            <param name="uri">The uri from source request.</param>
+            <param name="isCollection">Is the resource a collection.</param>
+            <returns>The absolute path.</returns>
+        </member>
+        <member name="P:WebDAV.WebDAVClient.Credential">
+            <summary>
+            WebDAVClient credential information.
+            </summary>
+        </member>
+        <member name="P:WebDAV.WebDAVClient.Proxy">
+            <summary>
+            The proxy information.
+            </summary>
+        </member>
+    </members>
+</doc>

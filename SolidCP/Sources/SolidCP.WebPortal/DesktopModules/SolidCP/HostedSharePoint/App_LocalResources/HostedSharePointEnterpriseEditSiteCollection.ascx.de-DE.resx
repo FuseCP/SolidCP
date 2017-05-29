@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnBackup.Text" xml:space="preserve">
+    <value>Webseitensammlung sichern</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="btnDelete.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('SharePoint-Webseitensammlung wird gelöscht...');</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="btnRestore.Text" xml:space="preserve">
+    <value>Webseitensammlung wiederherstellen</value>
+  </data>
+  <data name="btnUpdate.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('SharePoint-Webseitensammlung wird aktualisiert...');</value>
+  </data>
+  <data name="btnUpdate.Text" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="FormComments.Text" xml:space="preserve">
+    <value>&lt;p&gt;Hier können Sie eine neue SharePoint Webseitensammlung erstellen. Wählen Sie die URL aus der Liste der Domänen, die Sie schon besitzen. Seiten-URL wie z.B. team.ihrefirma.de sollte zuerst als Domäne in "Domänennamen" unter Ihren Organisationmenü hinzugefügt werden, bevor Sie mit der Erstellung der SharePoint Webseitensammlung beginnen.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Seitenbesitzer&lt;/b&gt; ist das Mitglied Ihrer Organisation, das für die Administration dieser SharePoint Webseitensammlung verantwortlich sein wird: z.B. Auswahl der Seitenvorlagen, Hinzufügen weiterer Benutzer, Erstellen von Unterseiten.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Lokale ID&lt;/b&gt; definiert die Sprache Ihrer Seite und kann nicht mehr nach dem Erstellen der Seite geändert werden. Nichtsdestotrotz können Unterseiten andere lokale IDs verwenden.&lt;/p&gt;
+&lt;p&gt; Titel wird im Seitenkopf sichtbar sein.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Beschreibung&lt;/b&gt; wird oben auf der Startseite sichtbar sein, wenn Sie diese Seite öffnen.&lt;/p&gt;
+&lt;p&gt;Nach dem Erstellen dieser Seite öffnen Sie diese und melden sich mit den Anmeldedaten des Beistzers an und führen mindestens diese 2 Schritte aus: 
+1. Wählen Sie die Seitenvorlage
+2. Definieren Sie, wer Zugriff auf diese Seite erhält. Um einen Benutzer aus Ihrer gehosteten Organisation hinzuzufügen, kopieren Sie seine oder ihre E-Mail aus den Benutzereigenschaften in diesem Administrationsportal und fügen diese in das Feld Benutzer/Gruppen der Webseitensammlungen ein.&lt;/p&gt;</value>
+  </data>
+  <data name="gvUserEmail.HeaderText" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="gvUserName.HeaderText" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="lblDescription.Text" xml:space="preserve">
+    <value>Beschreibung:</value>
+  </data>
+  <data name="lblSiteCollectionLocaleID.Text" xml:space="preserve">
+    <value>Gebietsschema-ID:</value>
+  </data>
+  <data name="lblSiteCollectionOwner.Text" xml:space="preserve">
+    <value>Besitzer:</value>
+  </data>
+  <data name="lblSiteCollectionUrl.Text" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="lblTitle.Text" xml:space="preserve">
+    <value>Titel:</value>
+  </data>
+  <data name="lblWarningStorage.Text" xml:space="preserve">
+    <value>Versende eine Warn-E-Mail, wenn Seitenspeicher den Wert erreicht (MB):</value>
+  </data>
+  <data name="localesList.Text" xml:space="preserve">
+    <value>Komplette Liste der Gebietsschemata</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>SharePoint-Webseitensammlung</value>
+  </data>
+  <data name="secMainTools.Text" xml:space="preserve">
+    <value>Werkzeuge zur SharePoint-Webseitensammlung</value>
+  </data>
+  <data name="Text.Add" xml:space="preserve">
+    <value>Webseitensammlung hinzufügen</value>
+  </data>
+  <data name="Text.PageName" xml:space="preserve">
+    <value>SharePoint-Webseitensammlung bearbeiten</value>
+  </data>
+  <data name="lblMaxStorage.Text" xml:space="preserve">
+    <value>Maximale Speichergröße der Seite [MB]:</value>
+  </data>
+  <data name="WarningUnlimitedValue" xml:space="preserve">
+    <value>Nicht senden</value>
+  </data>
+  <data name="btnCreate.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('SharePoint-Webseitensammlung wird erstellt...');</value>
+  </data>
+  <data name="btnDeleteText.Text" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="btnUpdateText.Text" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+</root>

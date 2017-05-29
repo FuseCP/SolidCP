@@ -1,0 +1,60 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BB38798E-1528-493C-868E-005102316536}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\LICENSE.txt = ..\..\LICENSE.txt
+		..\..\Readme.htm = ..\..\Readme.htm
+		..\..\ReleaseNotes.htm = ..\..\ReleaseNotes.htm
+		VersionInfo.vb = VersionInfo.vb
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CPCC", "CPCC\CPCC.csproj", "{68B50D26-3F14-4AC7-977A-2F6128088019}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Portal.Modules", "SolidCP.WebPortal\DesktopModules\SolidCP\SolidCP.Portal.Modules.csproj", "{12232731-5C45-4ED6-98F8-D47ABE728280}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebPortal", "SolidCP.WebPortal\SolidCP.WebPortal.csproj", "{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebDavPortal", "SolidCP.WebDavPortal\SolidCP.WebDavPortal.csproj", "{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.WebDav.Core", "SolidCP.WebDav.Core\SolidCP.WebDav.Core.csproj", "{BA147805-9EF1-45F2-BF32-A5825D4E950D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B2049447-AC4D-49CB-8A34-FB92B9D89988}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68B50D26-3F14-4AC7-977A-2F6128088019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68B50D26-3F14-4AC7-977A-2F6128088019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68B50D26-3F14-4AC7-977A-2F6128088019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68B50D26-3F14-4AC7-977A-2F6128088019}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12232731-5C45-4ED6-98F8-D47ABE728280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12232731-5C45-4ED6-98F8-D47ABE728280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12232731-5C45-4ED6-98F8-D47ABE728280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12232731-5C45-4ED6-98F8-D47ABE728280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA147805-9EF1-45F2-BF32-A5825D4E950D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA147805-9EF1-45F2-BF32-A5825D4E950D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA147805-9EF1-45F2-BF32-A5825D4E950D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA147805-9EF1-45F2-BF32-A5825D4E950D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

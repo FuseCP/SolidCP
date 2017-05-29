@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/Imports">
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd0" namespace="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd3" namespace="http://Microsoft.Hosting.FaultContracts/2007/04" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://vmserver3.sweetsoft.com.ua/VirtualizationWebService/VirtualizationService.svc?xsd=xsd2" namespace="http://Microsoft.Hosting.Virtualization.DataContracts/2007/04" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IVirtualizationProvisioningService_CreateVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_CreateVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_CreateVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q1="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q1:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_MountVirtualHardDisk_InputMessage">
+    <wsdl:part name="parameters" element="tns:MountVirtualHardDisk" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_MountVirtualHardDisk_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MountVirtualHardDiskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_MountVirtualHardDisk_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q2="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q2:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_UnmountVirtualHardDisk_InputMessage">
+    <wsdl:part name="parameters" element="tns:UnmountVirtualHardDisk" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_UnmountVirtualHardDisk_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UnmountVirtualHardDiskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_UnmountVirtualHardDisk_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q3="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q3:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_DefineVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:DefineVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_DefineVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DefineVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_DefineVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q4="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q4:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_RemoveVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:RemoveVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_RemoveVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RemoveVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_RemoveVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q5="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q5:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_StartVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:StartVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_StartVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StartVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_StartVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q6="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q6:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_TurnoffVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:TurnoffVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_TurnoffVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TurnoffVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_TurnoffVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q7="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q7:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_PauseVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:PauseVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_PauseVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PauseVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_PauseVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q8="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q8:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ResumeVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResumeVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ResumeVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResumeVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ResumeVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q9="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q9:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_SnapshotVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:SnapshotVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_SnapshotVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SnapshotVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_SnapshotVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q10="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q10:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_SaveVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:SaveVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_SaveVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SaveVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_SaveVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q11="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q11:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ResetVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:ResetVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ResetVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ResetVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ResetVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q12="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q12:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ShutdownVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:ShutdownVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ShutdownVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ShutdownVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ShutdownVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q13="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q13:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemMemorySetting_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVirtualSystemMemorySetting" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemMemorySetting_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVirtualSystemMemorySettingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemMemorySetting_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q14="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q14:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemProcessorSetting_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVirtualSystemProcessorSetting" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemProcessorSetting_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVirtualSystemProcessorSettingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemProcessorSetting_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q15="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q15:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemSetting_InputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVirtualSystemSetting" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemSetting_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ChangeVirtualSystemSettingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_ChangeVirtualSystemSetting_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q16="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q16:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystems_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVirtualSystems" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystems_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVirtualSystemsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystems_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q17="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q17:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystem_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVirtualSystem" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystem_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVirtualSystemResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystem_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q18="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q18:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystemThumbnailImage_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVirtualSystemThumbnailImage" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystemThumbnailImage_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVirtualSystemThumbnailImageResponse" />
+  </wsdl:message>
+  <wsdl:message name="IVirtualizationProvisioningService_GetVirtualSystemThumbnailImage_HostingServiceFaultFault_FaultMessage">
+    <wsdl:part xmlns:q19="http://Microsoft.Hosting.FaultContracts/2007/04" name="detail" element="q19:HostingServiceFault" />
+  </wsdl:message>
+  <wsdl:portType name="IVirtualizationProvisioningService">
+    <wsdl:operation name="CreateVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/CreateVirtualSystem" message="tns:IVirtualizationProvisioningService_CreateVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/CreateVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_CreateVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/CreateVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_CreateVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MountVirtualHardDisk">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/MountVirtualHardDisk" message="tns:IVirtualizationProvisioningService_MountVirtualHardDisk_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/MountVirtualHardDiskResponse" message="tns:IVirtualizationProvisioningService_MountVirtualHardDisk_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/MountVirtualHardDiskHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_MountVirtualHardDisk_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UnmountVirtualHardDisk">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/UnmountVirtualHardDisk" message="tns:IVirtualizationProvisioningService_UnmountVirtualHardDisk_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/UnmountVirtualHardDiskResponse" message="tns:IVirtualizationProvisioningService_UnmountVirtualHardDisk_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/UnmountVirtualHardDiskHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_UnmountVirtualHardDisk_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DefineVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/DefineVirtualSystem" message="tns:IVirtualizationProvisioningService_DefineVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/DefineVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_DefineVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/DefineVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_DefineVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="RemoveVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/RemoveVirtualSystem" message="tns:IVirtualizationProvisioningService_RemoveVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/RemoveVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_RemoveVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/RemoveVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_RemoveVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StartVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/StartVirtualSystem" message="tns:IVirtualizationProvisioningService_StartVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/StartVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_StartVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/StartVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_StartVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="TurnoffVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/TurnoffVirtualSystem" message="tns:IVirtualizationProvisioningService_TurnoffVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/TurnoffVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_TurnoffVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/TurnoffVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_TurnoffVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PauseVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/PauseVirtualSystem" message="tns:IVirtualizationProvisioningService_PauseVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/PauseVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_PauseVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/PauseVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_PauseVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ResumeVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResumeVirtualSystem" message="tns:IVirtualizationProvisioningService_ResumeVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResumeVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_ResumeVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResumeVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_ResumeVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SnapshotVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SnapshotVirtualSystem" message="tns:IVirtualizationProvisioningService_SnapshotVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SnapshotVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_SnapshotVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SnapshotVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_SnapshotVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SaveVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SaveVirtualSystem" message="tns:IVirtualizationProvisioningService_SaveVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SaveVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_SaveVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/SaveVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_SaveVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ResetVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResetVirtualSystem" message="tns:IVirtualizationProvisioningService_ResetVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResetVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_ResetVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ResetVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_ResetVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ShutdownVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ShutdownVirtualSystem" message="tns:IVirtualizationProvisioningService_ShutdownVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ShutdownVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_ShutdownVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ShutdownVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_ShutdownVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVirtualSystemMemorySetting">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemMemorySetting" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemMemorySetting_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemMemorySettingResponse" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemMemorySetting_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemMemorySettingHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemMemorySetting_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVirtualSystemProcessorSetting">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemProcessorSetting" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemProcessorSetting_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemProcessorSettingResponse" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemProcessorSetting_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemProcessorSettingHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemProcessorSetting_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ChangeVirtualSystemSetting">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemSetting" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemSetting_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemSettingResponse" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemSetting_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/ChangeVirtualSystemSettingHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_ChangeVirtualSystemSetting_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVirtualSystems">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystems" message="tns:IVirtualizationProvisioningService_GetVirtualSystems_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemsResponse" message="tns:IVirtualizationProvisioningService_GetVirtualSystems_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemsHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_GetVirtualSystems_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVirtualSystem">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystem" message="tns:IVirtualizationProvisioningService_GetVirtualSystem_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemResponse" message="tns:IVirtualizationProvisioningService_GetVirtualSystem_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_GetVirtualSystem_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVirtualSystemThumbnailImage">
+      <wsdl:input wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemThumbnailImage" message="tns:IVirtualizationProvisioningService_GetVirtualSystemThumbnailImage_InputMessage" />
+      <wsdl:output wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemThumbnailImageResponse" message="tns:IVirtualizationProvisioningService_GetVirtualSystemThumbnailImage_OutputMessage" />
+      <wsdl:fault wsaw:Action="http://Microsoft.Hosting.Virtualization.ServiceContracts/2007/04/IVirtualizationProvisioningService/GetVirtualSystemThumbnailImageHostingServiceFaultFault" name="HostingServiceFaultFault" message="tns:IVirtualizationProvisioningService_GetVirtualSystemThumbnailImage_HostingServiceFaultFault_FaultMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

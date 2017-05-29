@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AllowPause.Text" xml:space="preserve">
+    <value>Pause, Resume</value>
+  </data>
+  <data name="AllowReboot.Text" xml:space="preserve">
+    <value>Reboot</value>
+  </data>
+  <data name="AllowReset.Text" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="AllowStartShutdown.Text" xml:space="preserve">
+    <value>Start, Turn off and Shutdown</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnImport.Text" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="EnableRemoteDesktop.Text" xml:space="preserve">
+    <value>Enable Remote Desktop Web Connection</value>
+  </data>
+  <data name="FormComments.Text" xml:space="preserve">
+    <value>&lt;p&gt;This wizard allows you to import existing Virtual Machine to control panel meta-base to provide its owner self-service functions.&lt;/p&gt;&lt;p&gt;Importing is absolutely safe for VM as nor VM configuration, nor its state are changing during the process.&lt;/p&gt;&lt;p&gt;To import VM, first, select registered in control panel Hyper-V service where VM is located. Then select VM, specify its allowed actions and select network adapter bindings.&lt;/p&gt;&lt;p&gt;External and management networks are determined on appropriate Hyper-V service properties page.&lt;/p&gt;&lt;p&gt;To enable Remote Desktop Web connections you have to provide real guest OS administrator password (for automatic sign-on).&lt;/p&gt;</value>
+  </data>
+  <data name="locAdminPassword.Text" xml:space="preserve">
+    <value>Administrator password:</value>
+  </data>
+  <data name="locBootFromCd.Text" xml:space="preserve">
+    <value>Boot from CD</value>
+  </data>
+  <data name="locCPU.Text" xml:space="preserve">
+    <value>CPU, cores:</value>
+  </data>
+  <data name="locDvdInstalled.Text" xml:space="preserve">
+    <value>DVD drive is installed</value>
+  </data>
+  <data name="locExternalAdapter.Text" xml:space="preserve">
+    <value>Connected NIC:</value>
+  </data>
+  <data name="locExternalAddresses.Text" xml:space="preserve">
+    <value>Assign IP addresses:</value>
+  </data>
+  <data name="locHDD.Text" xml:space="preserve">
+    <value>HDD, Gb:</value>
+  </data>
+  <data name="locHyperVService.Text" xml:space="preserve">
+    <value>Hyper-V Service:</value>
+  </data>
+  <data name="locManagementAdapter.Text" xml:space="preserve">
+    <value>Connected NIC:</value>
+  </data>
+  <data name="locManagementAddresses.Text" xml:space="preserve">
+    <value>Assign IP addresses:</value>
+  </data>
+  <data name="locNumLockEnabled.Text" xml:space="preserve">
+    <value>Num Lock</value>
+  </data>
+  <data name="locRAM.Text" xml:space="preserve">
+    <value>RAM, Mb:</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>Import Existing VPS</value>
+  </data>
+  <data name="locVhdPath.Text" xml:space="preserve">
+    <value>VHD location:</value>
+  </data>
+  <data name="locVirtualMachine.Text" xml:space="preserve">
+    <value>Virtual Machine:</value>
+  </data>
+  <data name="secAllowedActions.Text" xml:space="preserve">
+    <value>Allowed Actions</value>
+  </data>
+  <data name="secBios.Text" xml:space="preserve">
+    <value>BIOS</value>
+  </data>
+  <data name="secConfiguration.Text" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="secDvd.Text" xml:space="preserve">
+    <value>DVD</value>
+  </data>
+  <data name="secExternalNetwork.Text" xml:space="preserve">
+    <value>External Network</value>
+  </data>
+  <data name="secManagementNetwork.Text" xml:space="preserve">
+    <value>Management Network</value>
+  </data>
+  <data name="secOsTemplate.Text" xml:space="preserve">
+    <value>OS Template:</value>
+  </data>
+  <data name="SelectHyperVService.Text" xml:space="preserve">
+    <value>&lt;Select Hyper-V service&gt;</value>
+  </data>
+  <data name="SelectVirtualMachine.Text" xml:space="preserve">
+    <value>&lt;Select virtual machine&gt;</value>
+  </data>
+  <data name="RequiredOsTemplate.ErrorMessage" xml:space="preserve">
+    <value>Please select OS template</value>
+  </data>
+  <data name="RequiredVirtualMachine.ErrorMessage" xml:space="preserve">
+    <value>Please select virtual machine to import</value>
+  </data>
+  <data name="RequireHyperVService.ErrorMessage" xml:space="preserve">
+    <value>Please select Hyper-V service to import VPS from</value>
+  </data>
+  <data name="SelectOsTemplate.Text" xml:space="preserve">
+    <value>&lt;Select Operating System template&gt;</value>
+  </data>
+  <data name="btnImport.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Importing Virtual Server...');</value>
+  </data>
+  <data name="RequiredAdminPassword.ErrorMessage" xml:space="preserve">
+    <value>Please enter guest OS administrator password</value>
+  </data>
+  <data name="RequiredExternalAddresses.ErrorMessage" xml:space="preserve">
+    <value>Select at least one External IP address</value>
+  </data>
+  <data name="RequiredManagementAddresses.ErrorMessage" xml:space="preserve">
+    <value>Select at least one Management IP address</value>
+  </data>
+  <data name="SelectNetworkAdapter.Text" xml:space="preserve">
+    <value>&lt;Not connected&gt;</value>
+  </data>
+</root>

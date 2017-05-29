@@ -1,0 +1,89 @@
+﻿@using SolidCP.WebDav.Core
+@using SolidCP.WebDav.Core.Client
+@using Ninject
+@using SolidCP.WebDav.Core.Config
+@using SolidCP.WebDav.Core.Entities.Account.Enums
+@using SolidCP.WebDav.Core.Interfaces.Managers
+@using SolidCP.WebDav.Core.Security.Authorization.Enums
+@using SolidCP.WebDavPortal.Resources
+@using SolidCP.WebDavPortal.UI
+@using SolidCP.WebDavPortal.UI.Routes
+
+@model SolidCP.WebDavPortal.Models.ModelForWebDav
+
+
+@if (Model != null && !string.IsNullOrEmpty(Model.Error))
+{
+    <span class="col-sm-offset-1" style="color: #A94442; font-weight: bold;">@Model.Error</span>
+}
+else
+{
+   @Html.Partial("_ShowContentTopMenu", Model)
+    
+   @Html.Action("ContentList", "FileSystem", new { model = Model });
+}
+
+
+@section scripts{
+    
+    <script>
+        scp.fileBrowser.setSettings({ 
+            deletionUrl: "@Url.RouteUrl(FileSystemRouteNames.DeleteFiles)", 
+            fileExistUrl: "@Url.RouteUrl(FileSystemRouteNames.ItemExist)",
+            textItemExist: "@UI.ItemExist." });
+    </script>
+
+    @Scripts.Render("~/bundles/appScripts-webdav")
+    
+    @if (Model.UserSettings.WebDavViewType == FolderViewTypes.BigIcons)
+    {
+        @Scripts.Render("~/bundles/bigIconsScripts")
+
+        <script>
+            $(document).ready(function () {
+                @if (string.IsNullOrEmpty(Model.SearchValue))
+                {
+                    @:scp.fileBrowser.initBigIcons('#resourcesDiv', '@Url.RouteUrl(FileSystemRouteNames.ShowAdditionalContent)');
+                }
+                recalculateResourseHeight();
+            });
+        </script>
+    }
+    else
+    {
+        <script>
+            $(document).ready(function () {
+                scp.fileBrowser.initDataTable('#webdav-items-table', '@Url.RouteUrl(FileSystemRouteNames.ShowContentDetails)');
+            });
+        </script>
+    }
+}
+
+@section popups{
+    <div id="createNewItemDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-process-dialog-title" data-backdrop="static" data-keyboard="false" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="create-dalog-label" data-title="@UI.Create">@UI.Create</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="filenameForm">
+                        <div class="form-group has-feedback">
+                            <label for="filename">@UI.FileName</label>
+                            <input type="text" class="form-control" id="filename" name="filename" autofocus required placeholder="@UI.EnterFileName">
+                            <span class="glyphicon glyphicon-refresh glyphicon-spin form-control-feedback small-processing" aria-hidden="true"></span>
+                            <span id="inputProcessingStatus" class="sr-only">(processing)</span>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@UI.Cancel</button>
+                    <a href="@Url.RouteUrl(FileSystemRouteNames.NewWebDavItem)" data-href="@Url.RouteUrl(FileSystemRouteNames.NewWebDavItem)" id="create-button" class="btn btn-success danger">@UI.Create</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

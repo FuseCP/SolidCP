@@ -1,0 +1,4 @@
+Each MSI file listed below is redistributable as a single unit. You may not separate or redistribute individual files within the MSI.
+WebDeploy_x64_en-US.msi
+WebDeploy_x86_en-US.msi
+

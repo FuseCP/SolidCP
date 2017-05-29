@@ -1,0 +1,13 @@
+SCP Transport Agent Installation
+================================
+
+Perform the following steps:
+
+A) Copy the files SCPTransportAgent.dll and SCPTransportAgent.dll.config to "C:\Program Files\Microsoft\Exchange Server\V14\Public"
+B) Import the SCPTransportAgent.reg to create the event source
+C) Use the registry editor and provide the "NETWORK SERVICE" Full Control on the following Key
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\services\eventlog\SCPTransportAgent
+D) Run the following powershell command in the exchange management shell:
+Install-TransportAgent "SCPTransportAgent" -TransportAgentFactory SCPTransportAgent.SCPRoutingAgentFactory -AssemblyPath "C:\Program Files\Microsoft\Exchange Server\V14\Public\SCPTransportAgent.dll"
+E) Enable-TransportAgent "SCPTransportAgent"
+F) Restart-Service MSExchangeTransport

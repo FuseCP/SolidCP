@@ -1,0 +1,14 @@
+﻿Notes on .Less
+
+To remove the reliance on .less processing on the server
+
+Archive the main.css
+
+And replace the contents of main.css with the output of defaulttheme.Less
+
+It would be great if this could be added to the deploy release.bat
+
+This can be done manually prior to the next full release.
+
+
+

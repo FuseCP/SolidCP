@@ -1,0 +1,52 @@
+<browsers>
+  <browser refID="Default">
+    <controlAdapters>
+      <adapter controlType="System.Web.UI.WebControls.Menu"
+               adapterType="CSSFriendly.MenuAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.GridView"
+               adapterType="CSSFriendly.GridViewAdapter" />
+			<adapter controlType="System.Web.UI.WebControls.Image"
+               adapterType="CSSFriendly.ImageAdapter" />
+      <!--adapter controlType="System.Web.UI.WebControls.Label"
+               adapterType="CSSFriendly.LabelAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.HyperLink"
+               adapterType="CSSFriendly.HyperLinkAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.TreeView"
+               adapterType="CSSFriendly.TreeViewAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.DetailsView"
+               adapterType="CSSFriendly.DetailsViewAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.FormView"
+               adapterType="CSSFriendly.FormViewAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.DataList"
+               adapterType="CSSFriendly.DataListAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.GridView"
+               adapterType="CSSFriendly.GridViewAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.ChangePassword"
+               adapterType="CSSFriendly.ChangePasswordAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.Login"
+               adapterType="CSSFriendly.LoginAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.LoginStatus"
+               adapterType="CSSFriendly.LoginStatusAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.CreateUserWizard"
+               adapterType="CSSFriendly.CreateUserWizardAdapter" />
+      <adapter controlType="System.Web.UI.WebControls.PasswordRecovery"
+               adapterType="CSSFriendly.PasswordRecoveryAdapter" /-->
+    </controlAdapters>
+  </browser>
+
+  <browser id="W3C_Validator" parentID="default">
+    <identification>
+      <userAgent match="^W3C_Validator" />
+    </identification>
+    <capabilities>
+      <capability name="browser"              value="W3C Validator" />
+      <capability name="ecmaScriptVersion"    value="1.2" />
+      <capability name="javascript"           value="true" />
+      <capability name="supportsCss"          value="true" />
+      <capability name="supportsCallback"     value="true" />
+      <capability name="tables"               value="true" />
+      <capability name="tagWriter"            value="System.Web.UI.HtmlTextWriter" />
+      <capability name="w3cdomversion"        value="1.0" />
+    </capabilities>
+  </browser>
+</browsers>

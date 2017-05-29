@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>SolidCP Server</title>
+    <style>
+		BODY
+		{
+			margin:0px;
+			padding: 10px;
+			font-family: Tahoma, Arial;
+			font-size: 10pt;
+		}
+		
+		.Content
+		{
+			width: 65%;
+			margin-top: 30px;
+			margin-left: auto;
+			margin-right: auto;
+            text-align: center;
+		}
+		
+		H1
+		{
+			font-family: Arial, Tahoma;
+			font-size: 18pt;
+			margin-top: 40px;
+			margin-bottom: 5px;
+			font-weight: bold;
+			padding: 4px;
+		}
+		
+		TABLE
+		{
+			background-color: #e0e0e0;
+			padding: 4px;
+		}
+		
+		TD
+		{
+			padding: 8px;
+			background-color: #ffffff;
+		}
+		
+		.FieldName
+		{
+			width: 100px;
+			font-weight: bold;
+		}
+    </style>
+</head>
+<body>
+		<div class="Content">
+			<div>
+				<img src="/App_Themes/Default/Images/logo-vertical.png" alt="SolidCP Logo">
+			</div>
+		
+			<h1 style="color:red;">SolidCP ERROR</h1>
+			
+			<table cellpadding="0" cellspacing="1" align="center">
+				<tr>
+					<td><h3>if you receive this error and the server is not maintained by you please contact your hosting company immidiately.</h3><br /><br /></td>
+				</tr>
+				<tr>
+					<td><h3>Tips for the server administrators:</h3></td>
+				</tr>
+				<tr>
+					<td><strong>Enterprise Server issue:</strong><br />
+					The most common cause is a enterprise server issue.<br />
+					Please load up your SolidCP Enterprise server through RDP.<br />
+					Inside the browser load up the Enterprise local url<br />
+					It should provide an error that gets you further. <br />
+					A common error would be Error 503, This simply means the Enterprise Server application pool is not running.
+					</td>
+				</tr>
+				<tr>
+					<td><strong>Database issue:</strong><br />
+					If you load up enterprise server site and everything appears to be running (no error).<br />
+					The most likely cause is an conflicting piece of data in the database it self.<br />
+					Load up the Event log on the Enterprise Server --> Go to Applications and Services logs --> Click SolidCP.<br />
+					Check for any recent errors.
+					</td>
+				</tr>
+			</table>
+		</div>
+</body>
+</html>

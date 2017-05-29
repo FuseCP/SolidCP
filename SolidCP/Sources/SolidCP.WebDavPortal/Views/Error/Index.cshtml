@@ -1,0 +1,10 @@
+﻿@model SolidCP.WebDavPortal.Models.ErrorModel
+@{
+    ViewBag.Title = Model.HttpStatusCode;
+}
+<br/>
+<h4 id="errorMessage">
+    @Html.Raw(Model.Message)
+
+    @Html.Raw(Model.Exception)
+</h4>

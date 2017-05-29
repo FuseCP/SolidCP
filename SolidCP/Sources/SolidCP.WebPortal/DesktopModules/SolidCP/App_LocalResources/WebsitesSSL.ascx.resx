@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnCancelPFXUploadText.Text" xml:space="preserve">
+    <value>Cancel Upload</value>
+  </data>
+  <data name="btnCancelRequestText.Text" xml:space="preserve">
+    <value>Cancel request</value>
+  </data>
+  <data name="btnCSR.Text" xml:space="preserve">
+    <value>Generate CSR</value>
+  </data>
+  <data name="btnCSRCancelText.Text" xml:space="preserve">
+    <value>Cancel CSR Generation</value>
+  </data>
+  <data name="btnCSRText.Text" xml:space="preserve">
+    <value>Generate CSR</value>
+  </data>
+  <data name="btnDelete.OnClientClick" xml:space="preserve">
+    <value>return confirm('Remove SSL from this web site?');</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>Delete Certificate</value>
+  </data>
+  <data name="btnDeleteText.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="btnExport.Text" xml:space="preserve">
+    <value>Export Certificate</value>
+  </data>
+  <data name="btnExportModal.Text" xml:space="preserve">
+    <value>Export Certificate</value>
+  </data>
+  <data name="btnExportModalText.Text" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="btnExportText.Text" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="btnImport.Text" xml:space="preserve">
+    <value>Import Existing Certificate</value>
+  </data>
+  <data name="btnImportText.Text" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="btnInstallCertificate.Text" xml:space="preserve">
+    <value>Install Certificate</value>
+  </data>
+  <data name="btnInstallCertificateText.Text" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="btnInstallConfirm.Text" xml:space="preserve">
+    <value>Are you sure? Your current installed certificate will be deleted.</value>
+  </data>
+  <data name="btnInstallPFX.Text" xml:space="preserve">
+    <value>Install Certificate</value>
+  </data>
+  <data name="btnInstallPFXText.Text" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="btnPFXExportCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnPFXExportCancelText.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnRegenCSR.Text" xml:space="preserve">
+    <value>Generate New CSR</value>
+  </data>
+  <data name="btnRegenCSRText.Text" xml:space="preserve">
+    <value>Generate New CSR</value>
+  </data>
+  <data name="btnRenCSR.Text" xml:space="preserve">
+    <value>Generate Renewal CSR</value>
+  </data>
+  <data name="btnRenCSRText" xml:space="preserve">
+    <value>Generate Renewal CSR</value>
+  </data>
+  <data name="btnRenew.Text" xml:space="preserve">
+    <value>Renew Certificate</value>
+  </data>
+  <data name="btnRenewText.Text" xml:space="preserve">
+    <value>Renew</value>
+  </data>
+  <data name="btnRenew.OnClientClick" xml:space="preserve">
+    <value>return confirm('Renew SSL for this web site?');</value>
+  </data>
+  <data name="btnShowpnlCSR.Text" xml:space="preserve">
+    <value>Generate CSR</value>
+  </data>
+  <data name="btnShowpnlCSRText.Text" xml:space="preserve">
+    <value>Generate CSR</value>
+  </data>
+  <data name="btnShowUpload.Text" xml:space="preserve">
+    <value>Upload Certificate</value>
+  </data>
+  <data name="btnShowUploadText.Text" xml:space="preserve">
+    <value>Upload Certificate</value>
+  </data>
+  <data name="GenerateCSR.Text" xml:space="preserve">
+    <value>Generate CSR</value>
+  </data>
+  <data name="headerInstalledCertificate.Text" xml:space="preserve">
+    <value>Certificate Info</value>
+  </data>
+  <data name="headerPFXPassword.Text" xml:space="preserve">
+    <value>Enter a password for the PFX</value>
+  </data>
+  <data name="InstallCSRCertificate.Text" xml:space="preserve">
+    <value>Paste your certificate from your CA into to the text area below and click on “Install Certificate” button.</value>
+  </data>
+  <data name="InstallCSRDescription.Text" xml:space="preserve">
+    <value>A CSR for your Website was generated successfully and is shown below. Copy the text below and paste it to a CA to request the certificate.</value>
+  </data>
+  <data name="InstallCSRHeading.Text" xml:space="preserve">
+    <value>Install Certificate</value>
+  </data>
+  <data name="lblPFXInstallPassword.Text" xml:space="preserve">
+    <value>PFX Password</value>
+  </data>
+  <data name="PfxPassword.Text" xml:space="preserve">
+    <value>Password:</value>
+  </data>
+  <data name="PfxPasswordConfirmation.Text" xml:space="preserve">
+    <value>Confirm:</value>
+  </data>
+  <data name="SelectCertType.Text" xml:space="preserve">
+    <value>Select Certificate Type:</value>
+  </data>
+  <data name="sslBitLength.Text" xml:space="preserve">
+    <value>Bit Length:</value>
+  </data>
+  <data name="sslCertificate.Text" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="sslCity.Text" xml:space="preserve">
+    <value>City/Locality:</value>
+  </data>
+  <data name="sslCountry.Text" xml:space="preserve">
+    <value>Country:</value>
+  </data>
+  <data name="sslCSR.Text" xml:space="preserve">
+    <value>CSR</value>
+  </data>
+  <data name="sslDomain.Text" xml:space="preserve">
+    <value>Domain:</value>
+  </data>
+  <data name="sslExpiry.Text" xml:space="preserve">
+    <value>Expiration Date:</value>
+  </data>
+  <data name="SSLGenereateRenewal.HeaderText" xml:space="preserve">
+    <value>Generate Renewal Request</value>
+  </data>
+  <data name="SSLImportDescription.Text" xml:space="preserve">
+    <value>A SSL certificate has been detected on the website that is not managed by SolidCP. Click the button below
+        to import the certificate settings</value>
+  </data>
+  <data name="SSLImportHeading.Text" xml:space="preserve">
+    <value>Existing certificate detected</value>
+  </data>
+  <data name="sslIncludewww.Text" xml:space="preserve">
+    <value>include www.</value>
+  </data>
+  <data name="SSLInstalledNewDescription.Text" xml:space="preserve">
+    <value>A certificate is already installed on this website. You can create a new request or upload a new certificate, however the current certificate will be removed. If you need to renew the current certificate, click the renew button on the Installed Certificate tab.</value>
+  </data>
+  <data name="SSLInstalledNewHeading.Text" xml:space="preserve">
+    <value>Install New certificate</value>
+  </data>
+  <data name="SSLNotInstalledHeading.Text" xml:space="preserve">
+    <value>SSL not installed</value>
+  </data>
+  <data name="sslOrganization.Text" xml:space="preserve">
+    <value>Organization:</value>
+  </data>
+  <data name="sslOrganizationUnit.Text" xml:space="preserve">
+    <value>Organization Unit:</value>
+  </data>
+  <data name="SSLSSLStateReq.ErrorMessage" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="sslState.Text" xml:space="preserve">
+    <value>State/Province:</value>
+  </data>
+  <data name="sslWildcard.Text" xml:space="preserve">
+    <value>Wildcard certificate (covers all sub-domains)</value>
+  </data>
+  <data name="tabInstalled.Text" xml:space="preserve">
+    <value>Installed Certificate</value>
+  </data>
+  <data name="tabNewCertificate.HeaderText" xml:space="preserve">
+    <value>New Certificate</value>
+  </data>
+  <data name="tabPendingCertificate.HeaderText" xml:space="preserve">
+    <value>Pending Request</value>
+  </data>
+  <data name="valtxtPFXPass.ErrorMessage" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="valtxtPFXPassConfirm.ErrorMessage" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
+</root>

@@ -1,0 +1,303 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnChangeHostname.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Changing host name...', 'ChangeHostnameModal');</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Command.Pause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="Command.Reboot" xml:space="preserve">
+    <value>Reboot</value>
+  </data>
+  <data name="Command.Reset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Command.Resume" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="Command.ShutDown" xml:space="preserve">
+    <value>Shut&amp;nbsp;Down</value>
+  </data>
+  <data name="Command.Snapshot" xml:space="preserve">
+    <value>Snapshot</value>
+  </data>
+  <data name="Command.Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Command.TurnOff" xml:space="preserve">
+    <value>Turn&amp;nbsp;Off</value>
+  </data>
+  <data name="CpuPercentage.Text" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="MemoryPercentage.Text" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="MemoryUsage.Text" xml:space="preserve">
+    <value>Used: {0} MB, Total: {1} MB</value>
+  </data>
+  <data name="OnClientClick.Pause" xml:space="preserve">
+    <value>if(!confirm('Pause VPS?')) return false; ShowProgressDialog('Pausing...');</value>
+  </data>
+  <data name="OnClientClick.Reboot" xml:space="preserve">
+    <value>if(!confirm('Reboot VPS?')) return false; ShowProgressDialog('Rebooting...');</value>
+  </data>
+  <data name="OnClientClick.Reset" xml:space="preserve">
+    <value>if(!confirm('Reset VPS?')) return false; ShowProgressDialog('Resetting...');</value>
+  </data>
+  <data name="OnClientClick.Resume" xml:space="preserve">
+    <value>ShowProgressDialog('Resuming...');</value>
+  </data>
+  <data name="OnClientClick.ShutDown" xml:space="preserve">
+    <value>if(!confirm('Shut down VPS?')) return false; ShowProgressDialog('Shutting down...');</value>
+  </data>
+  <data name="OnClientClick.Snapshot" xml:space="preserve">
+    <value>ShowProgressDialog('Taking snapshot...');</value>
+  </data>
+  <data name="OnClientClick.Start" xml:space="preserve">
+    <value>ShowProgressDialog('Starting...');</value>
+  </data>
+  <data name="OnClientClick.TurnOff" xml:space="preserve">
+    <value>if(!confirm('Turn off VPS?')) return false; ShowProgressDialog('Turning off...');</value>
+  </data>
+  <data name="locHostname.Text" xml:space="preserve">
+    <value>Host&amp;nbsp;name:</value>
+  </data>
+  <data name="btnCancelHostname.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="btnChangeHostname.Text" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="btnChangeHostnamePopup.Text" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="chkUpdateComputerName.Text" xml:space="preserve">
+    <value>Update computer network name</value>
+  </data>
+  <data name="FormComments.Text" xml:space="preserve">
+    <value>&lt;p&gt;&lt;b&gt;Status&lt;/b&gt; shows the current state of VPS. The list of available VPS action buttons on the right depends on the current status.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Uptime&lt;/b&gt; is the time since the last VPS start.&lt;/p&gt;&lt;b&gt;Heartbeat&lt;/b&gt; is a very useful indicator as it shows whether VPS operating system is active and respond. If there is "No contact" then it means the system is not started yet, but if there is an "Error" then it means OS does not respond to the host machine.&lt;/p&gt;&lt;p&gt;&lt;b&gt;CPU&lt;/b&gt; meter displays VPS processor utilization.&lt;/p&gt;&lt;p&gt;&lt;b&gt;RAM&lt;/b&gt; and &lt;b&gt;HDD&lt;/b&gt; meters show real-time data provided by VPS operating system.&lt;/p&gt;</value>
+  </data>
+  <data name="Heartbeat.Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Heartbeat.LostCommunication" xml:space="preserve">
+    <value>Lost communication</value>
+  </data>
+  <data name="Heartbeat.NoContact" xml:space="preserve">
+    <value>No contact</value>
+  </data>
+  <data name="Heartbeat.None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="Heartbeat.OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Heartbeat.Paused" xml:space="preserve">
+    <value>Paused</value>
+  </data>
+  <data name="locChangeHostname.Text" xml:space="preserve">
+    <value>Change VPS Host Name</value>
+  </data>
+  <data name="locCpu.Text" xml:space="preserve">
+    <value>CPU:</value>
+  </data>
+  <data name="locCreated.Text" xml:space="preserve">
+    <value>Created:</value>
+  </data>
+  <data name="locDomain.Text" xml:space="preserve">
+    <value>Domain:</value>
+  </data>
+  <data name="locHeartbeat.Text" xml:space="preserve">
+    <value>Heartbeat:</value>
+  </data>
+  <data name="locHostname1.Text" xml:space="preserve">
+    <value>Host name:</value>
+  </data>
+  <data name="locRam.Text" xml:space="preserve">
+    <value>RAM:</value>
+  </data>
+  <data name="locStatus.Text" xml:space="preserve">
+    <value>Status:</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="locUptime.Text" xml:space="preserve">
+    <value>Uptime:</value>
+  </data>
+  <data name="State.Deleted" xml:space="preserve">
+    <value>Deleted</value>
+  </data>
+  <data name="State.Migrating" xml:space="preserve">
+    <value>Migrating</value>
+  </data>
+  <data name="State.Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="State.Paused" xml:space="preserve">
+    <value>Paused</value>
+  </data>
+  <data name="State.Pausing" xml:space="preserve">
+    <value>Pausing</value>
+  </data>
+  <data name="State.Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="State.Saving" xml:space="preserve">
+    <value>Saving</value>
+  </data>
+  <data name="State.Snapshotting" xml:space="preserve">
+    <value>Taking Snapshot</value>
+  </data>
+  <data name="State.Started" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="State.Starting" xml:space="preserve">
+    <value>Starting</value>
+  </data>
+  <data name="State.Running" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="State.Stopping" xml:space="preserve">
+    <value>Stopping</value>
+  </data>
+  <data name="valCorrectHostname.ErrorMessage" xml:space="preserve">
+    <value>Enter correct host name, for example "vps01"</value>
+  </data>
+  <data name="valNewDomainFormat.ErrorMessage" xml:space="preserve">
+    <value>Enter correct domain name, for example "mydomain.com"</value>
+  </data>
+  <data name="HddPercentage.Text" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="HddUsage.Text" xml:space="preserve">
+    <value>Free: {0} GB, Total: {1} GB on {2} drive(s)</value>
+  </data>
+  <data name="locHdd.Text" xml:space="preserve">
+    <value>HDD:</value>
+  </data>
+  <data name="locDomainTop.Text" xml:space="preserve">
+    <value>Domain:</value>
+  </data>
+</root>
