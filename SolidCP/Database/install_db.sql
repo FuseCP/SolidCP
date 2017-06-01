@@ -42339,7 +42339,7 @@ GO
 SET IDENTITY_INSERT [dbo].[Packages] ON
 GO
 SET LANGUAGE us_english
-INSERT [dbo].[Packages] ([PackageID], [ParentPackageID], [UserID], [PackageName], [PackageComments], [ServerID], [StatusID], [PlanID], [PurchaseDate], [OverrideQuotas], [BandwidthUpdated]) VALUES (1, NULL, 1, N'System', N'', NULL, 1, NULL, Cast(0x00009DB500D45272 AS datetime), 0, NULL)
+INSERT [dbo].[Packages] ([PackageID], [ParentPackageID], [UserID], [PackageName], [PackageComments], [ServerID], [StatusID], [PlanID], [OverrideQuotas], [BandwidthUpdated]) VALUES (1, NULL, 1, N'System', N'', NULL, 1, NULL, 0, NULL)
 GO
 SET IDENTITY_INSERT [dbo].[Packages] OFF
 GO
