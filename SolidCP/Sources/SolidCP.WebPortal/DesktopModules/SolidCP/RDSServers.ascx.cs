@@ -56,7 +56,7 @@ namespace SolidCP.Portal
 		{            
 			if (!IsPostBack)
 			{
-                gvRDSServers.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+                gvRDSServers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
                 gvRDSServers.Sort("Name", System.Web.UI.WebControls.SortDirection.Ascending);                
                 RegisterStatusScript();
 			}
@@ -196,7 +196,7 @@ namespace SolidCP.Portal
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvRDSServers.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvRDSServers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
 
             gvRDSServers.DataBind();
         }

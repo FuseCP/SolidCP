@@ -142,7 +142,7 @@ namespace SolidCP.Portal.RDS
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvRDSCollections.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvRDSCollections.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
 
             gvRDSCollections.DataBind();
         }

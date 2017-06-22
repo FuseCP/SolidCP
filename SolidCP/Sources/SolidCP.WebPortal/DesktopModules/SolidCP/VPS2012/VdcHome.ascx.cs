@@ -171,7 +171,7 @@ namespace SolidCP.Portal.VPS2012
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvServers.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvServers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
             gvServers.DataBind();
         }
 

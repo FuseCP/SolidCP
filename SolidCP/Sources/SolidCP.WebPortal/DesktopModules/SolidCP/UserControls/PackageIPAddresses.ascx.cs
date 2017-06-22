@@ -186,7 +186,7 @@ namespace SolidCP.Portal.UserControls
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvAddresses.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvAddresses.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
             gvAddresses.DataBind();
         }
 

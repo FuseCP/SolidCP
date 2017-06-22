@@ -210,7 +210,7 @@ namespace SolidCP.Portal.ExchangeServer
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvFolders.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvFolders.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
 
             gvFolders.DataBind();
         }

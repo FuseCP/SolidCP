@@ -17,7 +17,7 @@ namespace SolidCP.Portal.StorageSpaces
         {
             if (!IsPostBack)
             {
-                gvStorageSpaces.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+                gvStorageSpaces.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
                 gvStorageSpaces.Sort("Name", System.Web.UI.WebControls.SortDirection.Ascending);
             }
         }
@@ -84,7 +84,7 @@ namespace SolidCP.Portal.StorageSpaces
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvStorageSpaces.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvStorageSpaces.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
 
             gvStorageSpaces.DataBind();
         }

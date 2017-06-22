@@ -101,7 +101,7 @@ namespace SolidCP.Portal.SfB
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)   
         {   
-            gvUsers.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);   
+            gvUsers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);   
        
             // rebind grid   
             gvUsers.DataBind();   

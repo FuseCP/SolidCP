@@ -143,7 +143,7 @@ namespace SolidCP.Portal.ExchangeServer
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)   
         {
-            gvGroups.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);   
+            gvGroups.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);   
        
             // rebind grid   
             gvGroups.DataBind();

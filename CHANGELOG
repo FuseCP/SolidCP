@@ -1,3 +1,7 @@
+Version 1.2.2:
+- Fixed int16 issues.
+
+
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH
 - Guacamole for VPS2012 - With thanks to Centron GmbH

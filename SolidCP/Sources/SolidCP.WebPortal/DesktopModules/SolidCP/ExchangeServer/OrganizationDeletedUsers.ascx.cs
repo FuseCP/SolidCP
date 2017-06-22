@@ -271,7 +271,7 @@ namespace SolidCP.Portal.HostedSolution
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)   
         {   
-            gvDeletedUsers.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);   
+            gvDeletedUsers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);   
                  
             // rebind grid   
             gvDeletedUsers.DataBind();   

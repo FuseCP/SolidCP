@@ -88,7 +88,7 @@ namespace SolidCP.Portal.ExchangeServer
 
         protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvDriveMaps.PageSize = Convert.ToInt16(ddlPageSize.SelectedValue);
+            gvDriveMaps.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
 
             gvDriveMaps.DataBind();
         }

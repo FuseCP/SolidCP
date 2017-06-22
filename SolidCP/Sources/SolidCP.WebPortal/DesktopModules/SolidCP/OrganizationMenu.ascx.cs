@@ -76,7 +76,7 @@ namespace SolidCP.Portal
                         Session["currentUser"] = PanelSecurity.SelectedUserId;
                     }
                 }
-                currentPackage = Convert.ToInt16(Session["currentPackage"]);
+                currentPackage = Convert.ToInt32(Session["currentPackage"]);
             }
             else
             {
