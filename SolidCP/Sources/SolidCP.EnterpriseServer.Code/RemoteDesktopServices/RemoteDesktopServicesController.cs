@@ -110,9 +110,9 @@ namespace SolidCP.EnterpriseServer
             return GetAvailableRemoteApplicationsInternal(itemId, collectionName);
         }
 
-        public static RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public static RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            return GetRdsServersPagedInternal(filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            return GetRdsServersPagedInternal(filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
         public static List<RdsUserSession> GetRdsUserSessions(int collectionId)
@@ -120,19 +120,19 @@ namespace SolidCP.EnterpriseServer
             return GetRdsUserSessionsInternal(collectionId);
         }
 
-        public static RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public static RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId)
         {
-            return GetFreeRdsServersPagedInternal(packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            return GetFreeRdsServersPagedInternal(packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, ServiceId);
         }
 
-        public static RdsServersPaged GetOrganizationRdsServersPaged(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public static RdsServersPaged GetOrganizationRdsServersPaged(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            return GetOrganizationRdsServersPagedInternal(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            return GetOrganizationRdsServersPagedInternal(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
-        public static RdsServersPaged GetOrganizationFreeRdsServersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        public static RdsServersPaged GetOrganizationFreeRdsServersPaged(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            return GetOrganizationFreeRdsServersPagedInternal(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            return GetOrganizationFreeRdsServersPagedInternal(itemId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
         public static RdsServer GetRdsServer(int rdsSeverId)
@@ -155,9 +155,9 @@ namespace SolidCP.EnterpriseServer
             return GetOrganizationRdsServersInternal(itemId);
         }
 
-        public static ResultObject AddRdsServer(RdsServer rdsServer)
+        public static ResultObject AddRdsServer(RdsServer rdsServer, string rdsControllerServiceID)
         {
-            return AddRdsServerInternal(rdsServer);
+            return AddRdsServerInternal(rdsServer, rdsControllerServiceID);
         }
 
         public static ResultObject AddRdsServerToCollection(int itemId, RdsServer rdsServer, RdsCollection rdsCollection)
@@ -340,9 +340,9 @@ namespace SolidCP.EnterpriseServer
             return ShadowSessionInternal(itemId, sessionId, control, fqdName);
         }
 
-        public static ResultObject ImportCollection(int itemId, string collectionName)
+        public static ResultObject ImportCollection(int itemId, string collectionName, string rdsControllerServiceID)
         {
-            return ImportCollectionInternal(itemId, collectionName);
+            return ImportCollectionInternal(itemId, collectionName, rdsControllerServiceID);
         }
 
         public static ResultObject SendMessage(RdsMessageRecipient[] recipients, string text, int itemId, int rdsCollectionId, string userName)
@@ -399,7 +399,7 @@ namespace SolidCP.EnterpriseServer
             return ObjectUtils.CreateListFromDataSet<RdsMessage>(DataProvider.GetRDSMessagesByCollectionId(rdsCollectionId));
         }
 
-        private static ResultObject ImportCollectionInternal(int itemId, string collectionName)
+        private static ResultObject ImportCollectionInternal(int itemId, string collectionName, string rdsControllerServiceID)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "IMPORT_RDS_COLLECTION");
 
@@ -436,7 +436,7 @@ namespace SolidCP.EnterpriseServer
                 newCollection.Settings = RemoteDesktopServicesHelpers.ParseCollectionSettings(collection.CollectionSettings);
                 newCollection.Settings.RdsCollectionId = newCollection.Id;
                 newCollection.Settings.Id = DataProvider.AddRdsCollectionSettings(newCollection.Settings);
-                var existingSessionHosts = GetRdsServersPagedInternal("", "", "", 1, 1000).Servers;
+                var existingSessionHosts = GetRdsServersPagedInternal("", "", "", 1, 1000, rdsControllerServiceID).Servers;
                 RemoteDesktopServicesHelpers.FillSessionHosts(collection.SessionHosts, existingSessionHosts, newCollection.Id, itemId);
                 newCollection.Servers = ObjectUtils.CreateListFromDataReader<RdsServer>(DataProvider.GetRDSServersByCollectionId(newCollection.Id)).ToList();
                 UserInfo user = PackageController.GetPackageOwner(org.PackageId);
@@ -636,8 +636,8 @@ namespace SolidCP.EnterpriseServer
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "INSTALL_CERTIFICATE");
 
             try
-            {                                
-                int serviceId = GetRdsServiceId(rdsServer.ItemId);
+            {
+                int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(rdsServer.FqdName);
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(serviceId);
                 var certificate = GetRdsCertificateByServiceIdInternal(serviceId);
                 
@@ -876,11 +876,6 @@ namespace SolidCP.EnterpriseServer
 
                 foreach(var server in collection.Servers)
                 {                    
-                    if (!server.FqdName.EndsWith(domainName, StringComparison.CurrentCultureIgnoreCase))
-                    {                       
-                        throw TaskManager.WriteError(new Exception("Fully Qualified Domain Name not valid."));
-                    }
-
                     if (!rds.CheckRDSServerAvaliable(server.FqdName))
                     {
                         throw TaskManager.WriteError(new Exception(string.Format("Unable to connect to {0} server.", server.FqdName)));
@@ -1130,9 +1125,9 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetRdsServersPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private static RdsServersPaged GetRdsServersPagedInternal(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, true, true);
+            DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, true, true);
 
             RdsServersPaged result = new RdsServersPaged();
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
@@ -1180,7 +1175,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private static RdsServersPaged GetFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId)
         {
             RdsServersPaged result = new RdsServersPaged();
             Organization org = OrganizationController.GetOrganization(itemId);
@@ -1193,7 +1188,10 @@ namespace SolidCP.EnterpriseServer
             var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
             var existingServers = rds.GetServersExistingInCollections();
 
-            DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows);            
+            var RDSController = (RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId)).ToString();
+
+
+            DataSet ds = DataProvider.GetRDSServersPaged(null, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, RDSController);            
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
 
             List<RdsServer> tmpServers = new List<RdsServer>();
@@ -1222,9 +1220,9 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetOrganizationRdsServersPagedInternal(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private static RdsServersPaged GetOrganizationRdsServersPagedInternal(int itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            DataSet ds = DataProvider.GetRDSServersPaged(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, ignoreRdsCollectionId: !collectionId.HasValue);
+            DataSet ds = DataProvider.GetRDSServersPaged(itemId, collectionId, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID, ignoreRdsCollectionId: !collectionId.HasValue);
 
             RdsServersPaged result = new RdsServersPaged();
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
@@ -1238,9 +1236,9 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsServersPaged GetOrganizationFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        private static RdsServersPaged GetOrganizationFreeRdsServersPagedInternal(int itemId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
-            DataSet ds = DataProvider.GetRDSServersPaged(itemId, null, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+            DataSet ds = DataProvider.GetRDSServersPaged(itemId, null, filterColumn, filterValue, sortColumn, startRow, maximumRows, rdsControllerServiceID);
 
             RdsServersPaged result = new RdsServersPaged();
             result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
@@ -1307,29 +1305,24 @@ namespace SolidCP.EnterpriseServer
             return result;
         }        
 
-        private static ResultObject AddRdsServerInternal(RdsServer rdsServer)
+        private static ResultObject AddRdsServerInternal(RdsServer rdsServer, string rdsControllerServiceID)
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER");
 
             try
             {
-                int serviceId = GetRdsMainServiceId();
-                var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(serviceId);
+                
+
+                var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(Convert.ToInt32(rdsControllerServiceID));
 
                 if (rds.CheckRDSServerAvaliable(rdsServer.FqdName))
                 {
                     var domainName = IPGlobalProperties.GetIPGlobalProperties().DomainName;
-
-                    if (rdsServer.FqdName.EndsWith(domainName, StringComparison.CurrentCultureIgnoreCase))
-                    {                        
+                     
                         rds.AddSessionHostFeatureToServer(rdsServer.FqdName);
                         rds.MoveSessionHostToRdsOU(rdsServer.Name);
-                        rdsServer.Id = DataProvider.AddRDSServer(rdsServer.Name, rdsServer.FqdName, rdsServer.Description);
-                    }
-                    else
-                    {
-                        throw TaskManager.WriteError(new Exception("Fully Qualified Domain Name not valid."));
-                    }
+                        rdsServer.Id = DataProvider.AddRDSServer(rdsServer.Name, rdsServer.FqdName, rdsServer.Description, rdsControllerServiceID);
+
                 }
                 else
                 {
@@ -1802,7 +1795,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                int serviceId = GetRdsServiceId(itemId);
+                int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(fqdnName);
 
                 if (serviceId != -1)
                 {
@@ -1835,7 +1828,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                int serviceId = GetRdsServiceId(itemId);
+                int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(fqdnName);
 
                 if (serviceId != -1)
                 {
@@ -2097,7 +2090,7 @@ namespace SolidCP.EnterpriseServer
 
         private static RdsServerInfo GetRdsServerInfoInternal(int? itemId, string fqdnName)
         {
-            int serviceId = GetRdsServiceId(itemId);
+            int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(fqdnName);
             var result = new RdsServerInfo();
 
             if (serviceId != -1)
@@ -2112,7 +2105,7 @@ namespace SolidCP.EnterpriseServer
         private static string GetRdsServerStatusInternal(int? itemId, string fqdnName)
         {            
             var result = "Unavailable";
-            var serviceId = GetRdsServiceId(itemId);
+            int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(fqdnName);
 
             try
             {

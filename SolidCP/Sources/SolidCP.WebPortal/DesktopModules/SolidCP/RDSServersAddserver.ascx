@@ -21,6 +21,12 @@
         <div class="col-sm-8">
             <asp:TextBox ID="txtServerComments" runat="server" CssClass="form-control"></asp:TextBox>
         </div>
+        <asp:Label runat="server" CssClass="control-label col-sm-4" AssociatedControlID="ddlRdsController">
+            <asp:Localize ID="locRDSController" runat="server" meta:resourcekey="locRDSController" Text="RDS Controller:"></asp:Localize>
+        </asp:Label>
+        <div class="col-sm-8">
+            <asp:DropDownList ID="ddlRdsController" runat="server" CssClass="form-control" />
+        </div>
     </div>
 </div>
 <div class="panel-footer text-right">

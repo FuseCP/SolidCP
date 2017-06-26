@@ -54,7 +54,7 @@ namespace SolidCP.Portal
 
         public RdsServer[] GetRDSServersPaged(int maximumRows, int startRowIndex, string sortColumn, string filterValue)
         {
-            rdsServers = ES.Services.RDS.GetRdsServersPaged("", filterValue, sortColumn, startRowIndex, maximumRows);
+            rdsServers = ES.Services.RDS.GetRdsServersPaged("", filterValue, sortColumn, startRowIndex, maximumRows, 0);
 
             foreach (var rdsServer in rdsServers.Servers)
             {
@@ -77,9 +77,9 @@ namespace SolidCP.Portal
             return rdsServers.Servers;
         }
 
-        public RdsServer[] GetFreeRDSServers(int packageId)
+        public RdsServer[] GetFreeRDSServers(int packageId, string ServiceId)
         {
-            return ES.Services.RDS.GetFreeRdsServersPaged(packageId, "", "", "", 0, 1000).Servers;
+            return ES.Services.RDS.GetFreeRdsServersPaged(packageId, "", "", "", 0, 1000, ServiceId).Servers;
         }
 
         #endregion

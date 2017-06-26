@@ -70,7 +70,9 @@ namespace SolidCP.Providers.RemoteDesktopServices {
         private System.Threading.SendOrPostCallback CheckSessionHostFeatureInstallationOperationCompleted;
         
         private System.Threading.SendOrPostCallback CheckServerAvailabilityOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback GetServerIpOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetApplicationUsersOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetApplicationUsersOperationCompleted;
@@ -179,7 +181,10 @@ namespace SolidCP.Providers.RemoteDesktopServices {
         
         /// <remarks/>
         public event CheckServerAvailabilityCompletedEventHandler CheckServerAvailabilityCompleted;
-        
+
+        /// <remarks/>
+        public event GetServerIpCompletedEventHandler GetServerIpCompleted;
+
         /// <remarks/>
         public event GetApplicationUsersCompletedEventHandler GetApplicationUsersCompleted;
         
@@ -2087,6 +2092,56 @@ namespace SolidCP.Providers.RemoteDesktopServices {
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetServerIp", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetServerIp(string hostName)
+        {
+            object[] results = this.Invoke("GetServerIp", new object[] {
+                        hostName});
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetServerIp(string hostName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetServerIp", new object[] {
+                        hostName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public bool EndGetServerIp(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetServerIpAsync(string hostName)
+        {
+            this.GetServerIpAsync(hostName, null);
+        }
+
+        /// <remarks/>
+        public void GetServerIpAsync(string hostName, object userState)
+        {
+            if ((this.GetServerIpOperationCompleted == null))
+            {
+                this.GetServerIpOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetServerIpOperationCompleted);
+            }
+            this.InvokeAsync("GetServerIp", new object[] {
+                        hostName}, this.GetServerIpOperationCompleted, userState);
+        }
+
+        private void OnGetServerIpOperationCompleted(object arg)
+        {
+            if ((this.GetServerIpCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetServerIpCompleted(this, new GetServerIpCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
     }
     
     /// <remarks/>
@@ -2762,4 +2817,34 @@ namespace SolidCP.Providers.RemoteDesktopServices {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void SendMessageCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void GetServerIpCompletedEventHandler(object sender, GetServerIpCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetServerIpCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetServerIpCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public bool Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+    }
 }

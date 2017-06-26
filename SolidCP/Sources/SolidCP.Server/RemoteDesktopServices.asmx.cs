@@ -763,5 +763,22 @@ namespace SolidCP.Server
                 throw;
             }
         }
+
+        [WebMethod, SoapHeader("settings")]
+        public string GetServerIp(string hostName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetServerIp", ProviderSettings.ProviderName);
+                var result = RDSProvider.GetServerIp(hostName);
+                Log.WriteEnd("'{0}' GetServerIp", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetServerIp", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
     }
 }

@@ -49,6 +49,14 @@ namespace SolidCP.Portal
             if (!IsPostBack)
             {
             }
+
+            // Load Servers
+            var services = ES.Services.RDS.GetRdsServices();
+
+            foreach (var service in services)
+            {
+                ddlRdsController.Items.Add(new ListItem(service.ServiceName, service.ServiceId.ToString()));
+            }
         }
 
         protected void btnAdd_Click(object sender, EventArgs e)
@@ -62,7 +70,7 @@ namespace SolidCP.Portal
                 rdsServer.FqdName = txtServerName.Text;
                 rdsServer.Description = txtServerComments.Text;
 
-                ResultObject result = ES.Services.RDS.AddRdsServer(rdsServer);
+                ResultObject result = ES.Services.RDS.AddRdsServer(rdsServer, ddlRdsController.SelectedValue);
 
                 if (!result.IsSuccess && result.ErrorCodes.Count > 0)
                 {                    

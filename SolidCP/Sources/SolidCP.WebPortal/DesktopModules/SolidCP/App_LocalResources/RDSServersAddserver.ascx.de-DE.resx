@@ -129,4 +129,7 @@
   <data name="locServerName.Text" xml:space="preserve">
     <value>Server Fully Qualified Domain Name:</value>
   </data>
+  <data name="locRDSController.Text" xml:space="preserve">
+    <value>RDS Controller:</value>
+  </data>
 </root>

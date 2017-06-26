@@ -1,6 +1,6 @@
 Version 1.2.2:
-- Fixed int16 issues.
-
+- Changed all Int16 to Int32 due to issues with Int16 values
+- RDS is now made for multiple RDSGateway servers in different domains
 
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH

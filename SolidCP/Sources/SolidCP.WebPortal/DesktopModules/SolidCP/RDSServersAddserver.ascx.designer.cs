@@ -76,13 +76,31 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.TextBox txtServerComments;
         
         /// <summary>
+        /// locRDSController control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locRDSController;
+        
+        /// <summary>
+        /// ddlRdsController control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlRdsController;
+        
+        /// <summary>
         /// btnCancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancel;
+        protected global::CPCC.StyleButton btnCancel;
         
         /// <summary>
         /// btnAdd control.
@@ -91,6 +109,6 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnAdd;
+        protected global::CPCC.StyleButton btnAdd;
     }
 }

@@ -10,6 +10,7 @@ using System.Xml;
 using SolidCP.EnterpriseServer.Base.RDS;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.RemoteDesktopServices;
+using System.Data;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -264,7 +265,14 @@ namespace SolidCP.EnterpriseServer
         public static int GetRemoteDesktopServiceID(int packageId)
         {
             return PackageController.GetPackageServiceId(packageId, ResourceGroups.RDS);
-        }        
+        }
+
+        public static int GetRemoteDesktopControllerServiceIDbyFQDN(string fqdnName)
+        {
+            int serverid = DataProvider.GetRDSControllerServiceIDbyFQDN(fqdnName);
+
+            return serverid;
+        }
 
         public static RemoteDesktopServices GetRemoteDesktopServices(int serviceId)
         {
@@ -276,7 +284,11 @@ namespace SolidCP.EnterpriseServer
 
         public static RdsServer FillRdsServerData(RdsServer server)
         {
-            var serverIp = GetServerIp(server.FqdName);
+            int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(server.FqdName);
+            var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(serviceId);
+            var serverIp = rds.GetServerIp(server.FqdName);
+
+            //var serverIp = GetServerIp(server.FqdName);
 
             if (serverIp != null)
             {
@@ -344,7 +356,7 @@ namespace SolidCP.EnterpriseServer
                 if (existingSessionHost == null)
                 {
                     var serverName = sessionHost.Replace(domainName, "");
-                    serverId = DataProvider.AddRDSServer(serverName, sessionHost, "");                    
+                    serverId = DataProvider.AddRDSServer(serverName, sessionHost, "", "");                    
                 }
                 else
                 {

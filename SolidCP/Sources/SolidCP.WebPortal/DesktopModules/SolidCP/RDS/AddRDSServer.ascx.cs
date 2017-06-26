@@ -54,7 +54,7 @@ namespace SolidCP.Portal.RDS
 
         private void BindRDSServers()
         {
-            ddlServers.DataSource = new RDSHelper().GetFreeRDSServers(PanelRequest.ItemID);
+            ddlServers.DataSource = new RDSHelper().GetFreeRDSServers(PanelRequest.ItemID, PanelSecurity.PackageId.ToString());
             ddlServers.DataTextField = "Name";
             ddlServers.DataValueField = "Id";
             ddlServers.DataBind();

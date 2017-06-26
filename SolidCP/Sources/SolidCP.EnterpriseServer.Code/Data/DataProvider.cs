@@ -5765,7 +5765,7 @@ namespace SolidCP.EnterpriseServer
             );
         }
 
-        public static int AddRDSServer(string name, string fqdName, string description)
+        public static int AddRDSServer(string name, string fqdName, string description, string controller)
         {
             SqlParameter rdsServerId = new SqlParameter("@RDSServerID", SqlDbType.Int);
             rdsServerId.Direction = ParameterDirection.Output;
@@ -5777,7 +5777,8 @@ namespace SolidCP.EnterpriseServer
                 rdsServerId,
                 new SqlParameter("@FqdName", fqdName),
                 new SqlParameter("@Name", name),
-                new SqlParameter("@Description", description)
+                new SqlParameter("@Description", description),
+                new SqlParameter("@Controller", controller)
             );
 
             // read identity
@@ -5794,7 +5795,7 @@ namespace SolidCP.EnterpriseServer
             );
         }
 
-        public static DataSet GetRDSServersPaged(int? itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool ignoreItemId = false, bool ignoreRdsCollectionId = false)
+        public static DataSet GetRDSServersPaged(int? itemId, int? collectionId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string controller, bool ignoreItemId = false, bool ignoreRdsCollectionId = false)
         {
             return SqlHelper.ExecuteDataset(
                 ConnectionString,
@@ -5808,7 +5809,8 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@RdsCollectionId", collectionId),
                 new SqlParameter("@IgnoreItemId", ignoreItemId),
                 new SqlParameter("@IgnoreRdsCollectionId", ignoreRdsCollectionId),
-                new SqlParameter("@maximumRows", maximumRows)
+                new SqlParameter("@maximumRows", maximumRows),
+                new SqlParameter("@Controller", controller)
             );
         }
 
@@ -5936,6 +5938,19 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@RDSCollectionId", rdsCollectionId),
                 new SqlParameter("@AccountID", accountId)
             );
+        }
+
+        public static int GetRDSControllerServiceIDbyFQDN(string fqdnName)
+        {
+            SqlParameter prmController = new SqlParameter("@Controller", SqlDbType.Int);
+            prmController.Direction = ParameterDirection.Output;
+
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetRDSControllerServiceIDbyFQDN",
+                new SqlParameter("@RdsfqdnName", fqdnName),
+                prmController);
+
+            return Convert.ToInt32(prmController.Value);
         }
 
         #endregion

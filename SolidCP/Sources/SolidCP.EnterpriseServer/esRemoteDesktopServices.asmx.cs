@@ -109,34 +109,34 @@ namespace SolidCP.EnterpriseServer
 
         [WebMethod]
         public RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn,
-            int startRow, int maximumRows)
+            int startRow, int maximumRows, string rdsControllerServiceID)
         {
             return RemoteDesktopServicesController.GetRdsServersPaged(filterColumn, filterValue, sortColumn, startRow,
-                maximumRows);
+                maximumRows, rdsControllerServiceID);
         }
 
         [WebMethod]
         public RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue,
-            string sortColumn, int startRow, int maximumRows)
+            string sortColumn, int startRow, int maximumRows, string ServiceId)
         {
             return RemoteDesktopServicesController.GetFreeRdsServersPaged(packageId, filterColumn, filterValue,
-                sortColumn, startRow, maximumRows);
+                sortColumn, startRow, maximumRows, ServiceId);
         }
 
         [WebMethod]
         public RdsServersPaged GetOrganizationRdsServersPaged(int itemId, int? collectionId, string filterColumn, string filterValue,
-            string sortColumn, int startRow, int maximumRows)
+            string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             return RemoteDesktopServicesController.GetOrganizationRdsServersPaged(itemId, collectionId, filterColumn, filterValue,
-                sortColumn, startRow, maximumRows);
+                sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
         [WebMethod]
         public RdsServersPaged GetOrganizationFreeRdsServersPaged(int itemId, string filterColumn, string filterValue,
-            string sortColumn, int startRow, int maximumRows)
+            string sortColumn, int startRow, int maximumRows, string rdsControllerServiceID)
         {
             return RemoteDesktopServicesController.GetOrganizationFreeRdsServersPaged(itemId, filterColumn, filterValue,
-                sortColumn, startRow, maximumRows);
+                sortColumn, startRow, maximumRows, rdsControllerServiceID);
         }
 
         [WebMethod]
@@ -164,9 +164,9 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public ResultObject AddRdsServer(RdsServer rdsServer)
+        public ResultObject AddRdsServer(RdsServer rdsServer, string rdsControllerServiceID)
         {
-            return RemoteDesktopServicesController.AddRdsServer(rdsServer);
+            return RemoteDesktopServicesController.AddRdsServer(rdsServer, rdsControllerServiceID);
         }
 
         [WebMethod]
@@ -392,9 +392,9 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public ResultObject ImportCollection(int itemId, string collectionName)
+        public ResultObject ImportCollection(int itemId, string collectionName, string rdsControllerServiceID)
         {
-            return RemoteDesktopServicesController.ImportCollection(itemId, collectionName);
+            return RemoteDesktopServicesController.ImportCollection(itemId, collectionName, rdsControllerServiceID);
         }
 
         [WebMethod]

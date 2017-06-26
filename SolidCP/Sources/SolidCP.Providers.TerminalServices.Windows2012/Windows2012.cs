@@ -1970,6 +1970,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
             try
             {
+                Log.WriteInfo("AddSessionHostFeatureToServer: {0}", hostName);
                 runSpace = RdsRunspaceExtensions.OpenRunspace();
                 var feature = AddFeature(runSpace, hostName, "RDS-RD-Server", true, true);
                 installationResult = (bool)RdsRunspaceExtensions.GetPSObjectProperty(feature, "Success");
@@ -1977,11 +1978,13 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 if (!IsFeatureInstalled(hostName, "Desktop-Experience", runSpace))
                 {
                     feature = AddFeature(runSpace, hostName, "Desktop-Experience", true, false);
+                    Log.WriteInfo("Add Feature Desktop-Experience: {0}", hostName);
                 }
 
                 if (!IsFeatureInstalled(hostName, "NET-Framework-Core", runSpace))
                 {
                     feature = AddFeature(runSpace, hostName, "NET-Framework-Core", true, false);
+                    Log.WriteInfo("Add Feature NET-Framework-Core: {0}", hostName);
                 }
             }            
             finally
@@ -2258,11 +2261,12 @@ namespace SolidCP.Providers.RemoteDesktopServices
             return remoteApp;
         }
 
-        internal IPAddress GetServerIp(string hostname, AddressFamily addressFamily = AddressFamily.InterNetwork)
+        public string GetServerIp(string hostname)
         {
+            AddressFamily addressFamily = AddressFamily.InterNetwork;
             var address = GetServerIps(hostname);
 
-            return address.FirstOrDefault(x => x.AddressFamily == addressFamily);
+            return (address.FirstOrDefault(x => x.AddressFamily == addressFamily).ToString());
         }
 
         internal IEnumerable<IPAddress> GetServerIps(string hostname)
@@ -2631,7 +2635,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
         }
 
         internal PSObject AddFeature(Runspace runSpace, string hostName, string featureName, bool includeAllSubFeature = true, bool restart = false)
-        {                       
+        {
+            Log.WriteInfo("Add-WindowsFeature: {0} \n\nFeatureName: {0}", hostName, featureName);
             Command cmd = new Command("Add-WindowsFeature");
             cmd.Parameters.Add("Name", featureName);
 
@@ -2843,6 +2848,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
         public RdsServerInfo GetRdsServerInfo(string serverName)
         {
+            Log.WriteInfo("Starting: GetRdsServerInfo");
             var result = new RdsServerInfo();
             Runspace runspace = null;
 
@@ -2934,7 +2940,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
         private RdsServerInfo GetServerInfo(Runspace runspace, string serverName)
         {
-            var result = new RdsServerInfo();
+            Log.WriteInfo("RDS GetServerInfo {0}", serverName);
+            var result = new RdsServerInfo(); 
             Command cmd = new Command("Get-WmiObject");
             cmd.Parameters.Add("Class", "Win32_Processor");
             cmd.Parameters.Add("ComputerName", serverName);

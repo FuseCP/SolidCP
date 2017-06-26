@@ -683,24 +683,26 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetRdsServersPaged", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows) {
+        public RdsServersPaged GetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, int rdsControllerServiceID) {
             object[] results = this.Invoke("GetRdsServersPaged", new object[] {
                         filterColumn,
                         filterValue,
                         sortColumn,
                         startRow,
-                        maximumRows});
+                        maximumRows,
+                        rdsControllerServiceID});
             return ((RdsServersPaged)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginGetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetRdsServersPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, int rdsControllerServiceID, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("GetRdsServersPaged", new object[] {
                         filterColumn,
                         filterValue,
                         sortColumn,
                         startRow,
-                        maximumRows}, callback, asyncState);
+                        maximumRows,
+                        rdsControllerServiceID}, callback, asyncState);
         }
         
         /// <remarks/>
@@ -736,26 +738,28 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetFreeRdsServersPaged", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows) {
+        public RdsServersPaged GetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId) {
             object[] results = this.Invoke("GetFreeRdsServersPaged", new object[] {
                         packageId,
                         filterColumn,
                         filterValue,
                         sortColumn,
                         startRow,
-                        maximumRows});
+                        maximumRows,
+                        ServiceId});
             return ((RdsServersPaged)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginGetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetFreeRdsServersPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, string ServiceId, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("GetFreeRdsServersPaged", new object[] {
                         packageId,
                         filterColumn,
                         filterValue,
                         sortColumn,
                         startRow,
-                        maximumRows}, callback, asyncState);
+                        maximumRows,
+                        ServiceId}, callback, asyncState);
         }
         
         /// <remarks/>
@@ -1077,16 +1081,16 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddRdsServer", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject AddRdsServer(RdsServer rdsServer) {
+        public ResultObject AddRdsServer(RdsServer rdsServer, string rdsControllerServiceID) {
             object[] results = this.Invoke("AddRdsServer", new object[] {
-                        rdsServer});
+                        rdsServer, rdsControllerServiceID });
             return ((ResultObject)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginAddRdsServer(RdsServer rdsServer, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginAddRdsServer(RdsServer rdsServer, string rdsControllerServiceID, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("AddRdsServer", new object[] {
-                        rdsServer}, callback, asyncState);
+                        rdsServer, rdsControllerServiceID }, callback, asyncState);
         }
         
         /// <remarks/>
@@ -1096,17 +1100,17 @@ namespace SolidCP.EnterpriseServer {
         }
         
         /// <remarks/>
-        public void AddRdsServerAsync(RdsServer rdsServer) {
-            this.AddRdsServerAsync(rdsServer, null);
+        public void AddRdsServerAsync(RdsServer rdsServer, string rdsControllerServiceID) {
+            this.AddRdsServerAsync(rdsServer, rdsControllerServiceID, null);
         }
         
         /// <remarks/>
-        public void AddRdsServerAsync(RdsServer rdsServer, object userState) {
+        public void AddRdsServerAsync(RdsServer rdsServer, string rdsControllerServiceID, object userState) {
             if ((this.AddRdsServerOperationCompleted == null)) {
                 this.AddRdsServerOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddRdsServerOperationCompleted);
             }
             this.InvokeAsync("AddRdsServer", new object[] {
-                        rdsServer}, this.AddRdsServerOperationCompleted, userState);
+                        rdsServer, rdsControllerServiceID }, this.AddRdsServerOperationCompleted, userState);
         }
         
         private void OnAddRdsServerOperationCompleted(object arg) {

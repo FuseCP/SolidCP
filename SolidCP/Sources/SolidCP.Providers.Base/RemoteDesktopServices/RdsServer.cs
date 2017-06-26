@@ -53,5 +53,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
         public string ConnectionEnabled { get; set; }
         public string Status { get; set; }
         public bool SslAvailable { get; set; }
+        public string Controller { get; set; }
+        public string ControllerName { get; set; }
     }
 }
