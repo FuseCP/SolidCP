@@ -6301,4 +6301,7 @@
   <data name="Error.SERVERSEDITEVENTVIEWER_SELECTED" xml:space="preserve">
     <value>Error while getting the event log entries.</value>
   </data>
+    <data name="Quota.RDS.DisableUserAddServer" xml:space="preserve">
+    <value>Disable user from adding server</value>
+  </data>
 </root>
