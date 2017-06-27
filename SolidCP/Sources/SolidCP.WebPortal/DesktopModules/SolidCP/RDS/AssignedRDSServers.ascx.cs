@@ -55,7 +55,23 @@ namespace SolidCP.Portal.RDS
             
             if (cntx.Quotas.ContainsKey(Quotas.RDS_SERVERS))
             {
-                btnAddServerToOrg.Enabled = (!(cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue <= gvRDSAssignedServers.Rows.Count) || (cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue == -1));
+                //If logged in person is user
+                if (PanelSecurity.LoggedUser.Role == UserRole.User)
+                {
+                    // Check if User is allowed to add server
+                    if (!Utils.CheckQouta("RDS.DisableUserAddServer", cntx))
+                    {
+                        btnAddServerToOrg.Enabled = (!(cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue <= gvRDSAssignedServers.Rows.Count) || (cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue == -1));
+                    }
+                    else
+                    {
+                        btnAddServerToOrg.Enabled = false;
+                    }
+                }
+                else
+                {
+                    btnAddServerToOrg.Enabled = (!(cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue <= gvRDSAssignedServers.Rows.Count) || (cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue == -1));
+                }
             }
         }
 

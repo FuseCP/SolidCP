@@ -158,7 +158,9 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE [dbo].[GetRDSControllerServiceIDbyFQDN]
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE type_desc = N'SQL_STORED_PROCEDURE' AND name = N'GetRDSControllerServiceIDbyFQDN')
+BEGIN
+EXEC sp_executesql N'CREATE PROCEDURE [dbo].[GetRDSControllerServiceIDbyFQDN]
 (
 	@RdsfqdnName NVARCHAR(255),
 	@Controller int OUTPUT
@@ -169,5 +171,12 @@ SELECT @Controller = Controller
 	FROM RDSServers
 	WHERE FqdName = @RdsfqdnName
 
-RETURN
+RETURN'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = N'452')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (452, 45, 3, N'RDS.DisableUserAddServer', N'Disable user from adding server', 1, 0, NULL, NULL)
+END
 GO
