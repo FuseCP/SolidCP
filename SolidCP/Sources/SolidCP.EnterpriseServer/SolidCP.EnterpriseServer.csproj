@@ -156,6 +156,7 @@
     <Content Include="esSystem.asmx" />
     <Content Include="esTasks.asmx" />
     <Content Include="esUsers.asmx" />
+    <Content Include="esVirtualizationServerProxmox.asmx" />
     <Content Include="esWebServers.asmx" />
     <Content Include="Global.asax" />
     <None Include="Web.config">
@@ -313,6 +314,10 @@
       <DependentUpon>esVirtualizationServer.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="esVirtualizationServerProxmox.asmx.cs">
+      <DependentUpon>esVirtualizationServerProxmox.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="esWebApplicationGallery.asmx.cs">
       <DependentUpon>esWebApplicationGallery.asmx</DependentUpon>
       <SubType>Component</SubType>
@@ -325,9 +330,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-	<Compile Include="Config.cs" />
-	<Compile Include="SE.cs" />
-	<Compile Include="Log.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="SE.cs" />
+    <Compile Include="Log.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="esBlackBerry.asmx" />
