@@ -44,12 +44,32 @@ namespace SolidCP.Portal.RDS
         
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            if (PanelSecurity.LoggedUser.Role == UserRole.User)
             {
-                BindRDSServers();
-            }
+                if (!Utils.CheckQouta("RDS.DisableUserAddServer", cntx))
+                {
+                    if (!IsPostBack)
+                    {
+                        BindRDSServers();
+                    }
 
-            btnAdd.Enabled = ddlServers.Items.Count > 0;
+                    btnAdd.Enabled = ddlServers.Items.Count > 0;
+                }
+                else
+                {
+                    btnAdd.Enabled = false;
+                }
+            }
+            else
+            {
+                if (!IsPostBack)
+                {
+                    BindRDSServers();
+                }
+
+                btnAdd.Enabled = ddlServers.Items.Count > 0;
+            }
         }
 
         private void BindRDSServers()
