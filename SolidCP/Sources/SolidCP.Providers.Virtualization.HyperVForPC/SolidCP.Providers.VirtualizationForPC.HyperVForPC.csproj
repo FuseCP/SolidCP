@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AntiXssLibrary">
-      <HintPath>..\..\Lib\AntiXssLibrary.dll</HintPath>
+    <Reference Include="AntiXSSLibrary">
+      <HintPath>..\packages\AntiXSS Library v4.2\NET35\AntiXSSLibrary.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Storage.Vds">
