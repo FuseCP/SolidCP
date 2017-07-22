@@ -55,6 +55,10 @@
     <WarningsAsErrors>618</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AntiXssLibrary">
+      <HintPath>..\..\Lib\AntiXssLibrary.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.Crm">
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.Crm.dll</HintPath>
       <Private>False</Private>
