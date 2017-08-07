@@ -362,5 +362,19 @@ namespace SolidCP.Portal.VPS2012
 
             return formatted;
         }
+
+        protected void btnCancel_Click(object sender, EventArgs e)
+        {
+            RedirectBack();
+        }
+
+        private void RedirectBack()
+        {
+            if (ViewState["ReturnURL"] != null)
+                Response.Redirect((string)ViewState["ReturnURL"]);
+            else
+                RedirectToBrowsePage();
+        }
+
     }
 }

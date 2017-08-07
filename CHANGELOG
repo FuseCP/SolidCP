@@ -4,6 +4,7 @@ Version 1.2.2:
 - RDS Added option in hosting plan to prevent user from adding new RDSServer to HostedOrg
 - HyperV: Changed group name from Virtual Private Servers 2012 to HyperV
 - HyperV: Added 2016 provider so we can add features in the future for this version
+- HyperV: Fixed Replications page
 
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH
