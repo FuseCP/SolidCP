@@ -32,7 +32,7 @@
             <asp:HyperLink ID="lnkVps" runat="server" meta:resourcekey="lnkVps" Text="Virtual Private Servers"></asp:HyperLink>
         </div>
         <div class="ToolLink">
-            <asp:HyperLink ID="lnkVps2012" runat="server" meta:resourcekey="lnkVps2012" Text="Virtual Private Servers 2012"></asp:HyperLink>
+            <asp:HyperLink ID="lnkVps2012" runat="server" meta:resourcekey="lnkVps2012" Text="HyperV"></asp:HyperLink>
         </div>
         <div class="ToolLink">
             <asp:HyperLink ID="lnkVpsForPC" runat="server" meta:resourcekey="lnkVpsForPC" Text="Virtual Private Servers for Private Cloud"></asp:HyperLink>

@@ -180,3 +180,11 @@ BEGIN
 	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (452, 45, 3, N'RDS.DisableUserAddServer', N'Disable user from adding server', 1, 0, NULL, NULL)
 END
 GO
+
+-- HyperV2016
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2016')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (352, 33, N'HyperV2016', N'Microsoft Hyper-V 2016', N'SolidCP.Providers.Virtualization.HyperV2016, SolidCP.Providers.Virtualization.HyperV2016', N'HyperV2016', 1)
+END
+GO

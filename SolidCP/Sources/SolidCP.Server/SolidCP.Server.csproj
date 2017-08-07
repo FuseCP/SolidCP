@@ -149,6 +149,17 @@
     <Content Include="bin\HyperV2012R2\SolidCP.Providers.Virtualization.HyperV2012R2.pdb" />
     <Content Include="bin\HyperV2012R2\SolidCP.Server.Utils.dll" />
     <Content Include="bin\HyperV2012R2\SolidCP.Server.Utils.pdb" />
+    <Content Include="bin\HyperV2016\Ionic.Zip.Reduced.dll" />
+    <Content Include="bin\HyperV2016\Microsoft.SharePoint.dll" />
+    <Content Include="bin\HyperV2016\Microsoft.Storage.Vds.dll" />
+    <Content Include="bin\HyperV2016\SolidCP.Providers.Base.dll" />
+    <Content Include="bin\HyperV2016\SolidCP.Providers.Base.pdb" />
+    <Content Include="bin\HyperV2016\SolidCP.Providers.HostedSolution.dll" />
+    <Content Include="bin\HyperV2016\SolidCP.Providers.HostedSolution.pdb" />
+    <Content Include="bin\HyperV2016\SolidCP.Providers.Virtualization.HyperV2016.dll" />
+    <Content Include="bin\HyperV2016\SolidCP.Providers.Virtualization.HyperV2016.pdb" />
+    <Content Include="bin\HyperV2016\SolidCP.Server.Utils.dll" />
+    <Content Include="bin\HyperV2016\SolidCP.Server.Utils.pdb" />
     <Content Include="bin\IceWarp\SolidCP.Providers.Mail.IceWarp.dll" />
     <Content Include="bin\IceWarp\SolidCP.Providers.Mail.IceWarp.pdb" />
     <Content Include="bin\IIs80\SolidCP.Providers.Web.IIs80.dll" />

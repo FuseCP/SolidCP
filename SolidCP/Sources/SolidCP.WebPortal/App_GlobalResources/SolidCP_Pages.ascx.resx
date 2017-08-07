@@ -463,10 +463,10 @@
     <value>{user} - {space} - Virtual Private Servers</value>
   </data>
   <data name="PageName.SpaceVPS2012" xml:space="preserve">
-    <value>Virtual Private Servers 2012</value>
+    <value>HyperV</value>
   </data>
   <data name="PageTitle.SpaceVPS2012" xml:space="preserve">
-    <value>{user} - {space} - Virtual Private Servers 2012</value>
+    <value>{user} - {space} - HyperV</value>
   </data>
   <data name="PageName.SpaceProxmox" xml:space="preserve">
     <value>Virtual Servers Proxmox</value>
