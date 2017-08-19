@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using SolidCP.Providers.Common;
 using SolidCP.Providers.Mail;
 
 namespace SolidCP.Portal.ProviderControls
@@ -41,7 +42,7 @@ namespace SolidCP.Portal.ProviderControls
         {
 
             passwordRow.Visible = (PanelRequest.ItemID > 0);
-        }
+		}
 
         public void BindItem(MailAccount item)
         {
@@ -55,8 +56,16 @@ namespace SolidCP.Portal.ProviderControls
             txtMessage.Text = item.ResponderMessage;
             txtForward.Text = item.ForwardingAddresses != null ? String.Join("; ", item.ForwardingAddresses) : "";
             chkDeleteOnForward.Checked = item.DeleteOnForward;
-            cbDomainAdmin.Visible = item.IsDomainAdminEnabled;
-            cbDomainAdmin.Checked = item.IsDomainAdmin;
+			if (item.IsDomainAdminEnabled)
+			{
+				domainAdminRow.Visible = item.IsDomainAdminEnabled;
+				cbDomainAdmin.Checked = item.IsDomainAdmin;
+			}
+			else
+			{
+				domainAdminRow.Visible = item.IsDomainAdminEnabled;
+				cbDomainAdmin.Checked = false;
+			}
         }
 
         public void SaveItem(MailAccount item)
