@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections.Specialized;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Mail;
 
@@ -60,7 +61,7 @@ namespace SolidCP.Portal
                         try
                         {
                             item = ES.Services.MailServers.GetMailAccount(PanelRequest.ItemID);
-                        }
+						}
                         catch (Exception ex)
                         {
                             ShowErrorMessage("MAIL_GET_ACCOUNT", ex);
@@ -95,22 +96,38 @@ namespace SolidCP.Portal
                 {
 					// set messagebox size textbox visibility
 					HandleMaxMailboxSizeLimitDisplay(cntx);
-                    // bind item to controls
-                    if (item != null)
-                    {
-                        // bind item to controls
-                        mailEditAddress.Email = item.Name;
-                        mailEditAddress.EditMode = true;
-                        passwordControl.EditMode = true;
+					// bind item to controls
+					if (item != null)
+					{
+						// bind item to controls
+						mailEditAddress.Email = item.Name;
+						mailEditAddress.EditMode = true;
+						passwordControl.EditMode = true;
 						// Display currently set max mailbox size limit
 						SetMaxMailboxSizeLimit(item.MaxMailboxSize);
-                        // other controls
-                        IMailEditAccountControl ctrl = (IMailEditAccountControl)providerControl.Controls[0];
-                        ctrl.BindItem(item);
-                    }
-                }
+						// other controls
+						IMailEditAccountControl ctrl = (IMailEditAccountControl)providerControl.Controls[0];
+						ctrl.BindItem(item);
+					}
+					else
+					{
+						IMailEditAccountControl ctrl = (IMailEditAccountControl)providerControl.Controls[0];
+
+						string[] settings = ES.Services.Servers.GetMailServiceSettingsByPackage((int)ViewState["PackageId"]);
+						StringDictionary settingsDictionary = ConvertArrayToDictionary(settings);
+
+
+
+						MailAccount item = new MailAccount();
+						if (settingsDictionary.ContainsKey("isDomainAdminEnabled"))
+						{
+							item.IsDomainAdminEnabled = Convert.ToBoolean(settingsDictionary["isDomainAdminEnabled"]);
+						}
+						ctrl.BindItem(item);
+					}
+				}
             }
-            catch
+            catch (Exception ex)
             {
                 ShowWarningMessage("INIT_SERVICE_ITEM_FORM");
                 DisableFormControls(this, btnCancel);
@@ -334,5 +351,16 @@ namespace SolidCP.Portal
         {
             DeleteItem();
         }
-    }
+
+		private StringDictionary ConvertArrayToDictionary(string[] settings)
+		{
+			StringDictionary r = new StringDictionary();
+			foreach (string setting in settings)
+			{
+				int idx = setting.IndexOf('=');
+				r.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
+			}
+			return r;
+		}
+	}
 }

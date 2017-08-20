@@ -18,7 +18,7 @@
             <asp:CheckBox runat="server" meta:resourcekey="cbEnabled" ID="cbEnableAccount" Text="Check to Enable Account" Checked="True" />
     </div>
 </div>
-<div class="form-group">
+<div id="domainAdminRow" runat="server" class="form-group">
     <asp:Label ID="Label3" runat="server" meta:resourcekey="cbDomainAdmin" Text="Domain Administrator:" CssClass="control-label col-sm-2" >
         <asp:Localize ID="Localize3" runat="server" meta:resourcekey="cbDomainAdmin" Text="Domain Administrator:" />
     </asp:Label>

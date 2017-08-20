@@ -292,11 +292,17 @@ namespace SolidCP.EnterpriseServer
             return ServerController.GetProviderServiceQuota(providerId);
         }
 
-        #endregion
+		[WebMethod]
+		public string[] GetMailServiceSettingsByPackage(int packageID)
+		{
+			return ConvertDictionaryToArray(ServerController.GetMailServiceSettingsByPackage(packageID));
+		}
 
-        #region Providers
+		#endregion
 
-        [WebMethod]
+		#region Providers
+
+		[WebMethod]
         public List<ProviderInfo> GetInstalledProviders(int groupId)
         {
             return ServerController.GetInstalledProviders(groupId);

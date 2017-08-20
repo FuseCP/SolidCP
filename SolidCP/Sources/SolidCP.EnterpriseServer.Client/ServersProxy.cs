@@ -276,8 +276,11 @@ namespace SolidCP.EnterpriseServer {
         
         private System.Threading.SendOrPostCallback GetRawDnsRecordsByServerOperationCompleted;
         
-        /// <remarks/>
-        public esServers() {
+        
+        private System.Threading.SendOrPostCallback GetMailServiceSettingsByPackageOperationCompleted;
+
+		/// <remarks/>
+		public esServers() {
             this.Url = "http://localhost:9002/esServers.asmx";
         }
         
@@ -643,9 +646,12 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         public event GetRawDnsRecordsByServerCompletedEventHandler GetRawDnsRecordsByServerCompleted;
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetRawDnsRecordsByPackage", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+
+		/// <remarks/>
+		public event GetMailServiceSettingsByPackageCompletedEventHandler GetMailServiceSettingsByPackageCompleted;
+
+		/// <remarks/>
+		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetRawDnsRecordsByPackage", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public System.Data.DataSet GetRawDnsRecordsByPackage(int packageId) {
             object[] results = this.Invoke("GetRawDnsRecordsByPackage", new object[] {
                         packageId});
@@ -5970,9 +5976,58 @@ namespace SolidCP.EnterpriseServer {
                 this.GetRawDnsRecordsByServerCompleted(this, new GetRawDnsRecordsByServerCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
-        /// <remarks/>
-        public new void CancelAsync(object userState) {
+
+		/// <remarks/>
+		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetMailServiceSettingsByPackage", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+		public string[] GetMailServiceSettingsByPackage(int packageID)
+		{
+			object[] results = this.Invoke("GetMailServiceSettingsByPackage", new object[] {
+						packageID});
+			return ((string[])(results[0]));
+		}
+
+		/// <remarks/>
+		public System.IAsyncResult BeginGetMailServiceSettingsByPackage(int packageID, System.AsyncCallback callback, object asyncState)
+		{
+			return this.BeginInvoke("GetMailServiceSettingsByPackage", new object[] {
+						packageID}, callback, asyncState);
+		}
+
+		/// <remarks/>
+		public string[] GetMailServiceSettingsByPackage(System.IAsyncResult asyncResult)
+		{
+			object[] results = this.EndInvoke(asyncResult);
+			return ((string[])(results[0]));
+		}
+
+		/// <remarks/>
+		public void GetMailServiceSettingsByPackageAsync(int packageID)
+		{
+			this.GetMailServiceSettingsByPackageAsync(packageID, null);
+		}
+
+		/// <remarks/>
+		public void GetMailServiceSettingsByPackageAsync(int packageID, object userState)
+		{
+			if ((this.GetMailServiceSettingsByPackageOperationCompleted == null))
+			{
+				this.GetMailServiceSettingsByPackageOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMailServiceSettingsByPackageOperationCompleted);
+			}
+			this.InvokeAsync("GetMailServiceSettingsByPackage", new object[] {
+						packageID}, this.GetMailServiceSettingsByPackageOperationCompleted, userState);
+		}
+
+		private void OnGetMailServiceSettingsByPackageOperationCompleted(object arg)
+		{
+			if ((this.GetMailServiceSettingsByPackageCompleted != null))
+			{
+				System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+				this.GetMailServiceSettingsByPackageCompleted(this, new GetMailServiceSettingsByPackageCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+			}
+		}
+
+		/// <remarks/>
+		public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
     }
@@ -9038,4 +9093,35 @@ namespace SolidCP.EnterpriseServer {
             }
         }
     }
+
+	/// <remarks/>
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+	public delegate void GetMailServiceSettingsByPackageCompletedEventHandler(object sender, GetMailServiceSettingsByPackageCompletedEventArgs e);
+
+	/// <remarks/>
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+	[System.Diagnostics.DebuggerStepThroughAttribute()]
+	[System.ComponentModel.DesignerCategoryAttribute("code")]
+	public partial class GetMailServiceSettingsByPackageCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+	{
+
+		private object[] results;
+
+		internal GetMailServiceSettingsByPackageCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+				base(exception, cancelled, userState)
+		{
+			this.results = results;
+		}
+
+		/// <remarks/>
+		public string[] Result
+		{
+			get
+			{
+				this.RaiseExceptionIfNecessary();
+				return ((string[])(this.results[0]));
+			}
+		}
+	}
+
 }
