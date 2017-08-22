@@ -203,6 +203,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.Proxmox", "SolidCP.Providers.Virtualization.Proxmox\SolidCP.Providers.Virtualization.Proxmox.csproj", "{E647AEBC-ADD6-4C95-BCB4-0C251206F050}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.HyperV2016", "SolidCP.Providers.Virtualization.HyperV-2016\SolidCP.Providers.Virtualization.HyperV2016.csproj", "{C4530FE2-59A4-4F02-B65A-168BDDFCA5FA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE40516B-93DF-4CAB-80C4-64DCE0B751CC} = {EE40516B-93DF-4CAB-80C4-64DCE0B751CC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
