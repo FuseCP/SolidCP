@@ -39,5 +39,6 @@ namespace SolidCP.Providers.RemoteDesktopServices
         public string FileVirtualPath { get; set; }
         public string RequiredCommandLine { get; set; }
         public string Alias { get; set; }
+        public CommandLineSettings CommandLineSettings { get; set; }
     }
 }

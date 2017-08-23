@@ -872,12 +872,18 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 cmd.Parameters.Add("DisplayName", remoteApp.DisplayName);
                 cmd.Parameters.Add("FilePath", remoteApp.FilePath);
                 cmd.Parameters.Add("ShowInWebAccess", remoteApp.ShowInWebAccess);
-                cmd.Parameters.Add("CommandLineSetting", remoteApp.CommandLineSettings.ToString());
+                //cmd.Parameters.Add("CommandLineSetting", remoteApp.CommandLineSettings.ToString());
 
-                if (remoteApp.CommandLineSettings == CommandLineSettings.Require)
+                //if (remoteApp.CommandLineSettings == CommandLineSettings.Require)
+                if (remoteApp.RequiredCommandLine != "")
                 {
+                    Log.WriteInfo("New-RDRemoteApp: RequiredCommandLine {0}", remoteApp.RequiredCommandLine);
+                    cmd.Parameters.Add("CommandLineSetting", "Require");
                     cmd.Parameters.Add("RequiredCommandLine", remoteApp.RequiredCommandLine);
                 }
+
+                Log.WriteInfo("New-RDRemoteApp: CollectionName {1} ConnectionBroker {2} Alias {3} Displayname {4} FilePath {5} ShowInWebAccess {6}", cmd, collectionName, ConnectionBroker, remoteApp.Alias, remoteApp.DisplayName, remoteApp.FilePath, remoteApp.ShowInWebAccess, remoteApp.CommandLineSettings.ToString(), remoteApp.RequiredCommandLine);
+
 
                 runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController);
 

@@ -141,7 +141,7 @@ namespace SolidCP.Portal.RDS.UserControls
                     {
                         DisplayName = string.Format("Full Desktop - {0}", host.ToLower()),
                         FilePath = "c:\\windows\\system32\\mstsc.exe",                        
-                        RequiredCommandLine = string.Format("/v:{0}", host.ToLower())
+                        RequiredCommandLine = string.Format("/admin /v:{0}", host.ToLower())
                     };
 
                     var sessionHost = collection.Servers.Where(s => s.FqdName.Equals(host, StringComparison.CurrentCultureIgnoreCase)).First();
