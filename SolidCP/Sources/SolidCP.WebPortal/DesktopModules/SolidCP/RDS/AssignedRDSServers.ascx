@@ -62,7 +62,7 @@
         </asp:TemplateField>
         <asp:TemplateField>
             <ItemTemplate>
-                <asp:LinkButton id="imgRemove1" CssClass="btn btn-sm btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Eval("Id") %>' Visible='<%# Eval("RdsCollectionId") == null %>' OnClientClick="return confirm('Are you sure you want to remove selected server?')"> 
+                <asp:LinkButton ID="imgRemove1" CssClass="btn btn-sm btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Eval("Id") %>' Visible='<%# Eval("RdsCollectionId") == null %>' OnClientClick="return confirm('Are you sure you want to remove selected server?')"> 
                     &nbsp;<i class="fa fa-trash-o"></i>&nbsp;
                 </asp:LinkButton>
             </ItemTemplate>

@@ -175,9 +175,17 @@ RETURN'
 END
 GO
 
+-- RDS Disable user from adding server
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = N'452')
 BEGIN
 	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (452, 45, 3, N'RDS.DisableUserAddServer', N'Disable user from adding server', 1, 0, NULL, NULL)
+END
+GO
+
+-- RDS Disable user delete server
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = N'453')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (453, 45, 3, N'RDS.DisableUserDeleteServer', N'Disable user from removing server', 1, 0, NULL, NULL)
 END
 GO
 

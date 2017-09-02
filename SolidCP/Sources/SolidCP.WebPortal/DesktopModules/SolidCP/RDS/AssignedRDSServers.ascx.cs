@@ -44,6 +44,8 @@ namespace SolidCP.Portal.RDS
 {
     public partial class AssignedRDSServers : SolidCPModuleBase
     {
+        public bool VisableDeleteServer;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
@@ -55,8 +57,8 @@ namespace SolidCP.Portal.RDS
             
             if (cntx.Quotas.ContainsKey(Quotas.RDS_SERVERS))
             {
-                //If logged in person is user
-                if (PanelSecurity.LoggedUser.Role == UserRole.User)
+                //If logged in person is not Administrator
+                if (PanelSecurity.LoggedUser.Role != UserRole.Administrator )
                 {
                     // Check if User is allowed to add server
                     if (!Utils.CheckQouta("RDS.DisableUserAddServer", cntx))
@@ -67,12 +69,25 @@ namespace SolidCP.Portal.RDS
                     {
                         btnAddServerToOrg.Enabled = false;
                     }
+
+                    // Check if User is allowed to add server
+                    if (!Utils.CheckQouta("RDS.DisableUserDeleteServer", cntx))
+                    {
+                        VisableDeleteServer = true;
+                    }
+                    else
+                    {
+                        VisableDeleteServer = false;
+                    }
                 }
                 else
                 {
                     btnAddServerToOrg.Enabled = (!(cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue <= gvRDSAssignedServers.Rows.Count) || (cntx.Quotas[Quotas.RDS_SERVERS].QuotaAllocatedValue == -1));
+                    VisableDeleteServer = true;
                 }
             }
+
+
         }
 
         private void BindQuota(PackageContext cntx)
@@ -98,18 +113,33 @@ namespace SolidCP.Portal.RDS
             int rdsServerId = int.Parse(e.CommandArgument.ToString());
 
 
-            RdsServer rdsServer = ES.Services.RDS.GetRdsServer(rdsServerId);            
+            RdsServer rdsServer = ES.Services.RDS.GetRdsServer(rdsServerId);
 
             switch (e.CommandName)
             {
                 case "DeleteItem":
-                    if (rdsServer.RdsCollectionId != null)
+                    //If logged in person is not Administrator
+                    if (PanelSecurity.LoggedUser.Role != UserRole.Administrator)
                     {
-                        messageBox.ShowErrorMessage("RDS_UNASSIGN_SERVER_FROM_ORG_SERVER_IS_IN_COLLECTION");
-                        return;
+                        PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+                        if (!Utils.CheckQouta("RDS.DisableUserDeleteServer", cntx))
+                        {
+                            if (rdsServer.RdsCollectionId != null)
+                            {
+                                messageBox.ShowErrorMessage("RDS_UNASSIGN_SERVER_FROM_ORG_SERVER_IS_IN_COLLECTION");
+                                return;
+                            }
+                            DeleteItem(rdsServerId);
+                        }
+                        else
+                        {
+                            messageBox.ShowErrorMessage("RDS_YOU_DO_NOT_HAVE_PERMISSION_TO_PREFORM_ACTION");
+                        }
                     }
-
-                    DeleteItem(rdsServerId);
+                    else
+                    {
+                        DeleteItem(rdsServerId);
+                    }
                     break;
                 case "EnableItem":
                     ChangeConnectionState("yes", rdsServer);
