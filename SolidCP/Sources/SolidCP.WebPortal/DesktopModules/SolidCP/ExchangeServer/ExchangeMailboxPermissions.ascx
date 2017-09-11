@@ -33,7 +33,7 @@
                     
                     <asp:Panel runat="server" ID="panelFullAccessPermission">
                         <asp:Label runat="server" ID="Label1" meta:resourcekey="grandPermission" /><br /><br />
-                        <uc2:AccountsList id="fullAccessPermission" runat="server" MailboxesEnabled="true" DistributionListsEnabled="true">
+                        <uc2:AccountsList id="fullAccessPermission" runat="server" MailboxesEnabled="true" EnableMailboxOnly = "true" DistributionListsEnabled="true">
                         </uc2:AccountsList>                                            
                     </asp:Panel>
                     
@@ -43,7 +43,7 @@
                     
                     <asp:Panel runat="server" ID="panelSendAsPermission">
                         <asp:Label runat="server" ID="lblSendAsPermission" meta:resourcekey="grandPermission" /><br /><br />
-                        <uc2:AccountsList id="sendAsPermission" runat="server" MailboxesEnabled="true" DistributionListsEnabled="true">
+                        <uc2:AccountsList id="sendAsPermission" runat="server" MailboxesEnabled="true" EnableMailboxOnly = "true" DistributionListsEnabled="true">
                         </uc2:AccountsList>                                           
                     </asp:Panel>
 
@@ -53,7 +53,7 @@
                     
                     <asp:Panel runat="server" ID="panelOnBehalfOf">
                         <asp:Label runat="server" ID="Label2" meta:resourcekey="grandPermission" /><br /><br />
-                        <uc2:AccountsList id="onBehalfOfPermissions" runat="server" MailboxesEnabled="true" DistributionListsEnabled="true">
+                        <uc2:AccountsList id="onBehalfOfPermissions" runat="server" MailboxesEnabled="true" EnableMailboxOnly = "true" DistributionListsEnabled="true">
                         </uc2:AccountsList>                                            
                     </asp:Panel>
                     
