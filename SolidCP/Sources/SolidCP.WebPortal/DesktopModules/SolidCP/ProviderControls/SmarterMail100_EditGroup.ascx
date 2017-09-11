@@ -1,12 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SmarterMail100_EditGroup.ascx.cs" Inherits="SolidCP.Portal.ProviderControls.SmarterMail100_EditGroup" %>
 <%@ Register TagPrefix="dnc" TagName="EditItemsList" Src="../MailEditItems.ascx" %>
-<table cellSpacing="0" cellPadding="3" width="100%">
-	<tr>
-		<td class="SubHead" width="200" nowrap valign="top">
-		    <asp:Label ID="lblGroupMembers" runat="server" meta:resourcekey="lblGroupMembers" Text="Group e-mails:"></asp:Label>
-		</td>
-		<td class="normal" width="100%" valign="top">
+<div class="form-group">
+		    <asp:Label ID="lblGroupMembers" CssClass="control-label col-sm-2" runat="server" meta:resourcekey="lblGroupMembers" Text="Group e-mails:"></asp:Label>
+		<div class="input-group col-sm-8">
 			<dnc:EditItemsList id="mailEditItems" runat="server"></dnc:EditItemsList>
-		</td>
-	</tr>
-</table>
+        </div>
+</div>
