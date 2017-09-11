@@ -19,9 +19,10 @@
             <asp:ListItem Value="1">Disable</asp:ListItem>
             <asp:ListItem Value="2">Enable</asp:ListItem>
         </asp:DropDownList>
-            <span class="input-group-btn">
+            <div class="input-group-btn">
                 <CPCC:StyleButton id="btnApply" CssClass="btn btn-primary" runat="server" OnClick="btnApply_Click" OnClientClick="return ShowProgress(this);"><asp:Localize runat="server" meta:resourcekey="btnApplyText"/> </CPCC:StyleButton>
-            </span>
+            </div>
+            </div>
     </ContentTemplate>
     
     <Triggers>
