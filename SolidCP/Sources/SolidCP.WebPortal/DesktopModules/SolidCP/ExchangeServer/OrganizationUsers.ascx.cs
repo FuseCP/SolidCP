@@ -135,17 +135,12 @@ namespace SolidCP.Portal.HostedSolution
         {
             if (e.CommandName == "DeleteItem")
             {
-                int rowIndex = Utils.ParseInt(e.CommandArgument.ToString(), 0);
-
-                var accountId = Utils.ParseInt(gvUsers.DataKeys[rowIndex][0], 0);
-
-                var accountType = (ExchangeAccountType)gvUsers.DataKeys[rowIndex][1];
-
-                    chkEnableForceArchiveMailbox.Visible = false;
-
-                hdAccountId.Value = accountId.ToString();
-
                 DeleteUserModal.Show();
+                int rowIndex = Utils.ParseInt(e.CommandArgument.ToString(), 0);
+                var accountId = Utils.ParseInt(gvUsers.DataKeys[rowIndex][0], 0);
+                var accountType = (ExchangeAccountType)gvUsers.DataKeys[rowIndex][1];
+                chkEnableForceArchiveMailbox.Visible = false;
+                hdAccountId.Value = accountId.ToString();
             }
 
             if (e.CommandName == "OpenMailProperties")
