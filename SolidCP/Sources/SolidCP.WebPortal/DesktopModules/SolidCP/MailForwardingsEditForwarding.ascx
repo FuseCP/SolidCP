@@ -13,19 +13,15 @@
 <div class="panel-body form-horizontal">
 	<dnc:EmailAddress id="emailAddress" runat="server">
 	</dnc:EmailAddress>
-	<table cellspacing="0" cellpadding="3" width="100%">
-		<tr>
-			<td class="SubHead" style="width: 150px;">
-				<asp:Label ID="lblForwardsToEmail" runat="server" meta:resourcekey="lblForwardsToEmail"
+	<div class="form-group">
+        <asp:Label ID="lblForwardsToEmail" CssClass="control-label col-sm-2" runat="server" meta:resourcekey="lblForwardsToEmail"
 					Text="Forwards to e-mail:"></asp:Label>
-			</td>
-			<td class="normal">
-				<asp:TextBox ID="txtForwardTo" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+        <div class="input-group col-sm-8">
+            <asp:TextBox ID="txtForwardTo" runat="server" CssClass="form-control"></asp:TextBox>
 				<asp:RequiredFieldValidator ID="valtxtForwardTo" runat="server" ErrorMessage="*" meta:resourcekey="valRequireEmail" 
 					ControlToValidate="txtForwardTo" Display="Dynamic"></asp:RequiredFieldValidator>
-			</td>
-		</tr>
-	</table>
+        </div>
+	</div>
 	<asp:PlaceHolder ID="providerControl" runat="server"></asp:PlaceHolder>
 </div>
 <div class="panel-footer text-right">
