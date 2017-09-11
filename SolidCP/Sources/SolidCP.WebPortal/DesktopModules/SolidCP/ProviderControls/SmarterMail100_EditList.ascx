@@ -17,8 +17,8 @@
 		    <asp:Label ID="lblModeratorAddress" runat="server" meta:resourcekey="lblModeratorAddress" Text="List Moderator:"></asp:Label>
 		</td>
 		<td class="normal">
-			<asp:DropDownList ID="ddlListModerators" DataTextField="Moderator" 
-                runat="server" Height="25px" Width="200px">
+			<asp:DropDownList ID="ddlListModerators" CssClass="form-control" DataTextField="Moderator" 
+                runat="server">
             </asp:DropDownList>
             <asp:RequiredFieldValidator ID="reqValModerator" runat="server" ControlToValidate="ddlListModerators"
                     Display="Dynamic" ErrorMessage = "*"/>
