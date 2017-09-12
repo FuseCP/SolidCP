@@ -10,7 +10,7 @@
                                                 <CPCC:StyleButton ID="cmdClear" runat="server" CssClass="btn btn-primary" meta:resourcekey="cmdClear" OnClick="cmdClear_Click" CausesValidation="False"/>
                                             </span>
                                         </div>
-<asp:Panel ID="AddAccountsPanel" CssClas="container" runat="server" style="display:none">
+<asp:Panel ID="AddAccountsPanel" CssClass="container" runat="server" style="display:none">
 	<div class="widget">
              <div class="widget-header clearfix">
                            <h3><i class="fa fa-user"></i> <asp:Localize ID="headerAddAccounts" runat="server" meta:resourcekey="headerAddAccounts"></asp:Localize></h3>
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                        <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
-                       </div></div>
+                       </div></div></div>
                         </asp:Panel>
                     </div>
                 </div>
