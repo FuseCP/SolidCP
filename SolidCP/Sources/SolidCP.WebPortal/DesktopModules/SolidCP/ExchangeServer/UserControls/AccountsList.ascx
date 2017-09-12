@@ -55,14 +55,18 @@
 			</div>
                     <div class="widget-content Popup">
 <asp:UpdatePanel ID="AddAccountsUpdatePanel" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="true">
-    <ContentTemplate>>
+    <ContentTemplate>
                 <div class="FormButtonsBarClean">
                     <div class="FormButtonsBarCleanRight">
                         <asp:Panel ID="SearchPanel" runat="server" DefaultButton="cmdSearch">
-                            <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="NormalTextBox">
+                            <div class="form-inline">
+                                <div class="input-group">
+                            <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="form-control">
                                 <asp:ListItem Value="DisplayName" meta:resourcekey="ddlSearchColumnDisplayName">DisplayName</asp:ListItem>
                                 <asp:ListItem Value="PrimaryEmailAddress" meta:resourcekey="ddlSearchColumnEmail">Email</asp:ListItem>
                             </asp:DropDownList>
+                                    </div>
+                            <div class="input-group">
                             <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
                 <div class="input-group-btn">
                     <div class="btn-group" role="group">
@@ -72,7 +76,8 @@
                                 <form class="form-horizontal" role="form">
                                   <div class="form-group">
                                     <asp:Localize ID="locIncludeSearch" runat="server" Text="Include in search:"></asp:Localize>
-					<asp:CheckBox ID="chkIncludeMailboxes" runat="server" Text="Accounts" Checked="true"
+					</div><div class="form-group">
+                                      <asp:CheckBox ID="chkIncludeMailboxes" runat="server" Text="Accounts" Checked="true"
 							meta:resourcekey="chkIncludeMailboxes" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
                     <asp:CheckBox ID="chkIncludeRooms" runat="server" Text="Rooms" Checked="true"
 						    meta:resourcekey="chkIncludeRooms" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
@@ -96,8 +101,9 @@
                                   </div>
                             </div>
                         </div>
-                       <asp:button ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><span class="fa fa-search" aria-hidden="true"></span></asp:button>
-                    </div>
+                       <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                    </div
+                                </div></div>
                         </asp:Panel>
                     </div>
                 </div>
