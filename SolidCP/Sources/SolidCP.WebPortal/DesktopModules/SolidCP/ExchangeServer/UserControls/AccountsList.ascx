@@ -100,12 +100,10 @@
                                   </div>
                             </div>
                         </div>
-                       <button ID="cmdSearch" type="submit" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"/>><span class="fa fa-search" aria-hidden="true"></span></button>
+                       <button ID="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><span class="fa fa-search" aria-hidden="true"></span></button>
                     </div>
                 </div>
                         </asp:Panel>
-                    </div>
-                </div>
                 <div class="Popup-Scroll">
 					<asp:GridView ID="gvPopupAccounts" runat="server" meta:resourcekey="gvPopupAccounts" AutoGenerateColumns="False"
 						Width="100%" CssSelectorClass="NormalGridView"
@@ -143,6 +141,8 @@
 						</Columns>
 					</asp:GridView>
 				</div>
+                    </div>
+                </div>
 	</ContentTemplate>
 </asp:UpdatePanel>
 		<br /><br />
