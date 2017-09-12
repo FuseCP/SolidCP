@@ -55,10 +55,7 @@
 			</div>
                     <div class="widget-content Popup">
 <asp:UpdatePanel ID="AddAccountsUpdatePanel" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="true">
-    <ContentTemplate>
-	            <div style="text-align:right;margin-bottom: 4px;">
-                
-                </div>
+    <ContentTemplate>>
                 <div class="FormButtonsBarClean">
                     <div class="FormButtonsBarCleanRight">
                         <asp:Panel ID="SearchPanel" runat="server" DefaultButton="cmdSearch">
@@ -66,8 +63,7 @@
                                 <asp:ListItem Value="DisplayName" meta:resourcekey="ddlSearchColumnDisplayName">DisplayName</asp:ListItem>
                                 <asp:ListItem Value="PrimaryEmailAddress" meta:resourcekey="ddlSearchColumnEmail">Email</asp:ListItem>
                             </asp:DropDownList>
-                            <div class="input-group" id="adv-search">
-                <input ID="txtSearchValue" type="text" class="form-control" />
+                            <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
                 <div class="input-group-btn">
                     <div class="btn-group" role="group">
                         <div class="dropdown dropdown-lg">
@@ -100,10 +96,11 @@
                                   </div>
                             </div>
                         </div>
-                       <asp:button ID="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><span class="fa fa-search" aria-hidden="true"></span></asp:button>
+                       <asp:button ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><span class="fa fa-search" aria-hidden="true"></span></asp:button>
+                    </div>
+                        </asp:Panel>
                     </div>
                 </div>
-                        </asp:Panel>
                 <div class="Popup-Scroll">
 					<asp:GridView ID="gvPopupAccounts" runat="server" meta:resourcekey="gvPopupAccounts" AutoGenerateColumns="False"
 						Width="100%" CssSelectorClass="NormalGridView"
@@ -141,8 +138,6 @@
 						</Columns>
 					</asp:GridView>
 				</div>
-                    </div>
-                </div>
 	</ContentTemplate>
 </asp:UpdatePanel>
 		<br /><br />

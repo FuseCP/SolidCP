@@ -94,6 +94,15 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         protected global::System.Web.UI.WebControls.DropDownList ddlSearchColumn;
         
         /// <summary>
+        /// txtSearchValue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSearchValue;
+        
+        /// <summary>
         /// locIncludeSearch control.
         /// </summary>
         /// <remarks>
@@ -164,6 +173,15 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkIncludeSharedMailbox;
+        
+        /// <summary>
+        /// cmdSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button cmdSearch;
         
         /// <summary>
         /// gvPopupAccounts control.
