@@ -73,30 +73,29 @@
                         <div class="dropdown dropdown-lg">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
                             <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                <form class="form-horizontal" role="form">
                                   <div class="form-group">
                                     <asp:Localize ID="locIncludeSearch" runat="server" Text="Include in search:"></asp:Localize>
-					</div><div class="form-group">
+                                      <br />
                                       <asp:CheckBox ID="chkIncludeMailboxes" runat="server" Text="Accounts" Checked="true"
-							meta:resourcekey="chkIncludeMailboxes" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+							meta:resourcekey="chkIncludeMailboxes" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+                                      
                     <asp:CheckBox ID="chkIncludeRooms" runat="server" Text="Rooms" Checked="true"
-						    meta:resourcekey="chkIncludeRooms" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
-                                      </div><div class="form-group">
+						    meta:resourcekey="chkIncludeRooms" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+                                      
                     <asp:CheckBox ID="chkIncludeEquipment" runat="server" Text="Equipment" Checked="true"
-							meta:resourcekey="chkIncludeEquipment" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
-							
+							meta:resourcekey="chkIncludeEquipment" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+							          
 					<asp:CheckBox ID="chkIncludeContacts" runat="server" Text="Contacts" Checked="true"
-							meta:resourcekey="chkIncludeContacts" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
-                                          </div>
-                                      <div class="form-group">
+							meta:resourcekey="chkIncludeContacts" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+                                      
 					<asp:CheckBox ID="chkIncludeLists" runat="server" Text="Distribution Lists" Checked="true"
-							meta:resourcekey="chkIncludeLists" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+							meta:resourcekey="chkIncludeLists" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+                                   
                     <asp:CheckBox ID="chkIncludeGroups" runat="server" Text="Groups" Checked="true"
-							meta:resourcekey="chkIncludeGroups" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
-                                          </div>
-                                    <div class="form-group">
+							meta:resourcekey="chkIncludeGroups" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+                                    
                     <asp:CheckBox ID="chkIncludeSharedMailbox" runat="server" Text="Shared Mailbox" Checked="true"
-                        meta:resourcekey="chkIncludeSharedMailbox" AutoPostBack="true" CssClass="Normal" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
+                        meta:resourcekey="chkIncludeSharedMailbox" AutoPostBack="true" CssClass="col-xs-12 col-sm-6" OnCheckedChanged="chkIncludeMailboxes_CheckedChanged" />
                                         </div>
                                   </div>
                             </div>
@@ -106,7 +105,7 @@
                                 </div></div>
                         </asp:Panel>
                     </div>
-                </div>
+                </div></div>
                 <div class="Popup-Scroll">
 					<asp:GridView ID="gvPopupAccounts" runat="server" meta:resourcekey="gvPopupAccounts" AutoGenerateColumns="False"
 						Width="100%" CssSelectorClass="NormalGridView"
