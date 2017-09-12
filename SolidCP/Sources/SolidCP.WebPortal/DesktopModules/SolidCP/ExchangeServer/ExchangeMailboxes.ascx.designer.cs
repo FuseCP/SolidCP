@@ -103,13 +103,13 @@ namespace SolidCP.Portal.ExchangeServer {
         protected global::System.Web.UI.WebControls.TextBox txtSearchValue;
         
         /// <summary>
-        /// cmdSearch control.
+        /// locIncludeSearch control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CPCC.StyleButton cmdSearch;
+        protected global::System.Web.UI.WebControls.Localize locIncludeSearch;
         
         /// <summary>
         /// chkMailboxes control.
@@ -137,6 +137,15 @@ namespace SolidCP.Portal.ExchangeServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkSharedMailboxes;
+        
+        /// <summary>
+        /// cmdSearch control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton cmdSearch;
         
         /// <summary>
         /// gvMailboxes control.

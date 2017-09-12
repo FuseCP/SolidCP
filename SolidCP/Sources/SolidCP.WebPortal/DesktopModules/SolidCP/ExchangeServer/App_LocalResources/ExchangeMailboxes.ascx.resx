@@ -180,4 +180,7 @@
   <data name="gvServiceLevel.Header" xml:space="preserve">
     <value>Service Level</value>
   </data>
+  <data name="locIncludeSearch.Text" xml:space="preserve">
+    <value>Include in search:</value>
+  </data>
 </root>

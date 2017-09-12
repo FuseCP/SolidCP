@@ -61,6 +61,20 @@
                 <div class="input-group">
                     <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
                     <div class="input-group-btn">
+                        <div class="btn-group" role="group">
+                        <div class="dropdown dropdown-lg">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                  <div class="form-group">
+                                    <asp:Localize ID="locIncludeSearch" runat="server" Text="Include in search:"></asp:Localize>
+                                      <br />
+                                      <asp:CheckBox ID="chkMailboxes" runat="server" meta:resourcekey="chkMailboxes" Text="Mailboxes" AutoPostBack="true" OnCheckedChanged="chkMailboxes_CheckedChanged" CssClass="Small" />&emsp;
+                                      <asp:CheckBox ID="chkResourceMailboxes" runat="server" meta:resourcekey="chkResourceMailboxes" Text="Resource Mailboxes" AutoPostBack="true" OnCheckedChanged="chkMailboxes_CheckedChanged" CssClass="Small" />&emsp;
+                                      <asp:CheckBox ID="chkSharedMailboxes" runat="server" meta:resourcekey="chkSharedMailboxes" Text="Shared Mailboxes" AutoPostBack="true" OnCheckedChanged="chkMailboxes_CheckedChanged" CssClass="Small" />
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
                         <CPCC:StyleButton ID="cmdSearch" runat="server" CausesValidation="false" CssClass="btn btn-primary">
                             <i class="fa fa-search" aria-hidden="true"></i>
                         </CPCC:StyleButton>      
@@ -68,15 +82,6 @@
                 </div>
             </div>
         </asp:Panel>
-    </div>
-    <div class="row">
-        <div class="col-md-12 pull-right">
-            <div class="pull-right" style="margin-top:5px;">
-                <asp:CheckBox ID="chkMailboxes" runat="server" meta:resourcekey="chkMailboxes" Text="Mailboxes" AutoPostBack="true" OnCheckedChanged="chkMailboxes_CheckedChanged" CssClass="Small" />&emsp;
-                <asp:CheckBox ID="chkResourceMailboxes" runat="server" meta:resourcekey="chkResourceMailboxes" Text="Resource Mailboxes" AutoPostBack="true" OnCheckedChanged="chkMailboxes_CheckedChanged" CssClass="Small" />&emsp;
-                <asp:CheckBox ID="chkSharedMailboxes" runat="server" meta:resourcekey="chkSharedMailboxes" Text="Shared Mailboxes" AutoPostBack="true" OnCheckedChanged="chkMailboxes_CheckedChanged" CssClass="Small" />
-            </div>
-        </div>
     </div>
 </div>
 <asp:GridView ID="gvMailboxes" runat="server" AutoGenerateColumns="False" EnableViewState="true" Width="100%" EmptyDataText="gvMailboxes" CssSelectorClass="NormalGridView" DataKeyNames="AccountId" OnRowCommand="gvMailboxes_RowCommand" AllowPaging="True" AllowSorting="True" DataSourceID="odsAccountsPaged" PageSize="20">
