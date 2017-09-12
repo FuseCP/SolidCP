@@ -5,9 +5,6 @@
             <div class="row">
                 <div class="col-md-12">
                     <div>
-                        <div id="SendPasswordResetDisabledDiv" runat="server" class="alert alert-info" role="alert">
-                            <strong>Heads up!</strong> You can send email automatically by enabling Webdav and enabling Organization Password Reset Module in system settings.
-                        </div>
                         <div id="SendPasswordResetEmailDiv" class="form-group" runat="server">
                             <asp:Label runat="server" CssClass="control-label col-sm-2" AssociatedControlID="chkSendPasswordResetEmail">
                                 <asp:Localize ID="Localize1" runat="server" meta:resourcekey="chkSendPasswordResetEmailLabel" Text="Send Password Request." />

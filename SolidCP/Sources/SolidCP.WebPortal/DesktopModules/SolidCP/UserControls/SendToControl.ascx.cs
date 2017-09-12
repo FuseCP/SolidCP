@@ -91,7 +91,6 @@ namespace SolidCP.Portal.UserControls
             var isTwilioEnabled = ES.Services.System.CheckIsTwilioEnabled();
 
             SendPasswordResetEmailDiv.Visible = isSendPasswordEnabled;
-            SendPasswordResetDisabledDiv.Visible = !isSendPasswordEnabled;
             rbtnMobile.Visible = isTwilioEnabled;
 
             if (!Page.IsPostBack)
