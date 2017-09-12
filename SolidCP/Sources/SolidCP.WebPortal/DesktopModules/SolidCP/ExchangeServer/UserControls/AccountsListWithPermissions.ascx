@@ -110,7 +110,7 @@
                        </div></div>
                         </asp:Panel>
                     </div>
-                </div>
+                </div></div>
                 <div class="Popup-Scroll">
 					<asp:GridView ID="gvPopupAccounts" runat="server" meta:resourcekey="gvPopupAccounts" AutoGenerateColumns="False"
 						Width="100%" CssSelectorClass="NormalGridView"

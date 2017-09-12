@@ -66,16 +66,16 @@
     padding: 6px 20px;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 600px) {
     #adv-search {
-        width: 300px;
+        width: 350px;
         margin: 0 auto;
     }
     .dropdown.dropdown-lg {
         position: static !important;
     }
     .dropdown.dropdown-lg .dropdown-menu {
-        min-width: 300px;
+        min-width: 350px;
     }
     .AspNet-GridView-Empty{
     	min-width: 500px;
