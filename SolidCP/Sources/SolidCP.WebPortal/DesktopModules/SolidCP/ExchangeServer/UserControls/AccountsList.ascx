@@ -101,8 +101,7 @@
                             </div>
                         </div>
                        <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
-                    </div
-                                </div></div>
+                        </div></div>
                         </asp:Panel>
                     </div>
                 </div></div>
