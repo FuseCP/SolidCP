@@ -100,7 +100,7 @@
                                   </div>
                             </div>
                         </div>
-                       <button ID="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><span class="fa fa-search" aria-hidden="true"></span></button>
+                       <asp:button ID="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><span class="fa fa-search" aria-hidden="true"></span></asp:button>
                     </div>
                 </div>
                         </asp:Panel>
