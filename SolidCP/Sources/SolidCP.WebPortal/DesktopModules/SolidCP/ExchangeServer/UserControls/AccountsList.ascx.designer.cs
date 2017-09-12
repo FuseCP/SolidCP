@@ -28,7 +28,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnDelete;
+        protected global::CPCC.StyleButton btnDelete;
         
         /// <summary>
         /// btnAdd control.
@@ -37,7 +37,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnAdd;
+        protected global::CPCC.StyleButton btnAdd;
         
         /// <summary>
         /// gvAccounts control.
@@ -74,6 +74,24 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel AddAccountsUpdatePanel;
+        
+        /// <summary>
+        /// SearchPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel SearchPanel;
+        
+        /// <summary>
+        /// ddlSearchColumn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlSearchColumn;
         
         /// <summary>
         /// locIncludeSearch control.
@@ -148,42 +166,6 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         protected global::System.Web.UI.WebControls.CheckBox chkIncludeSharedMailbox;
         
         /// <summary>
-        /// SearchPanel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel SearchPanel;
-        
-        /// <summary>
-        /// ddlSearchColumn control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSearchColumn;
-        
-        /// <summary>
-        /// txtSearchValue control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearchValue;
-        
-        /// <summary>
-        /// cmdSearch control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton cmdSearch;
-        
-        /// <summary>
         /// gvPopupAccounts control.
         /// </summary>
         /// <remarks>
@@ -199,7 +181,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancelAdd;
+        protected global::CPCC.StyleButton btnCancelAdd;
         
         /// <summary>
         /// btnAddSelected control.
@@ -208,7 +190,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnAddSelected;
+        protected global::CPCC.StyleButton btnAddSelected;
         
         /// <summary>
         /// btnAddAccountsFake control.
