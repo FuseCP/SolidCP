@@ -72,7 +72,19 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 			set { ViewState["DistributionListsEnabled"] = value; }
 		}
 
-		public int ExcludeAccountId
+        public bool SecurityGroupsEnabled
+        {
+            get { return ViewState["SecurityGroupsEnabled"] != null ? (bool)ViewState["SecurityGroupsEnabled"] : false; }
+            set { ViewState["SecurityGroupsEnabled"] = value; }
+        }
+
+        public bool SharedMailboxEnabled
+        {
+            get { return ViewState["SharedMailboxEnabled"] != null ? (bool)ViewState["SharedMailboxEnabled"] : false; }
+            set { ViewState["SharedMailboxEnabled"] = value; }
+        }
+
+        public int ExcludeAccountId
 		{
 			get { return PanelRequest.AccountID; }
 		}
@@ -119,7 +131,15 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 				chkIncludeContacts.Checked = ContactsEnabled;
 				chkIncludeLists.Visible = DistributionListsEnabled;
 				chkIncludeLists.Checked = DistributionListsEnabled;
-			}
+
+                chkIncludeGroups.Visible = SecurityGroupsEnabled;
+                chkIncludeGroups.Checked = SecurityGroupsEnabled;
+
+                chkIncludeSharedMailbox.Visible = SharedMailboxEnabled;
+                chkIncludeSharedMailbox.Checked = SharedMailboxEnabled;
+
+                gvAccounts.Columns[3].Visible = gvPopupAccounts.Columns[3].Visible = SecurityGroupsEnabled;
+            }
 
 			// register javascript
 			if (!Page.ClientScript.IsClientScriptBlockRegistered("SelectAllCheckboxes"))
@@ -190,7 +210,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 		{
 			ExchangeAccount[] accounts = ES.Services.ExchangeServer.SearchAccounts(PanelRequest.ItemID,
 				chkIncludeMailboxes.Checked, chkIncludeContacts.Checked, chkIncludeLists.Checked,
-                chkIncludeRooms.Checked, chkIncludeEquipment.Checked, chkIncludeSharedMailbox.Checked, false,
+                chkIncludeRooms.Checked, chkIncludeEquipment.Checked, chkIncludeSharedMailbox.Checked, chkIncludeGroups.Checked,
 				ddlSearchColumn.SelectedValue, txtSearchValue.Text + "%", "");
 
 			if (ExcludeAccountId > 0)

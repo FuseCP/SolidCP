@@ -166,6 +166,15 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         protected global::System.Web.UI.WebControls.CheckBox chkIncludeLists;
         
         /// <summary>
+        /// chkIncludeGroups control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIncludeGroups;
+        
+        /// <summary>
         /// cmdSearch control.
         /// </summary>
         /// <remarks>
