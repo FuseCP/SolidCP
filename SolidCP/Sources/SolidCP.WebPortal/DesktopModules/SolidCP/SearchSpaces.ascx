@@ -39,7 +39,7 @@
 </script>
 
 <div class="FormButtonsBar">
-   <asp:Panel ID="tblSearch" runat="server" DefaultButton="ImageButton1" CssClass="NormalBold">
+   <asp:Panel ID="tblSearch" runat="server" DefaultButton="cmdSearch" CssClass="NormalBold">
    <asp:Label ID="lblSearch" runat="server" meta:resourcekey="lblSearch"></asp:Label>
    <div align="center">
                                 <div class="form-inline">
