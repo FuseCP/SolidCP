@@ -121,7 +121,7 @@ namespace SolidCP.Portal
             return res;
         }
 
-        protected void cmdSearch_Click(object sender, ImageClickEventArgs e)
+        protected void cmdSearch_Click(object sender, EventArgs e)
         {
             string query = tbSearchText.Text.Trim().Replace("%", "");
             if (query.Length == 0)
