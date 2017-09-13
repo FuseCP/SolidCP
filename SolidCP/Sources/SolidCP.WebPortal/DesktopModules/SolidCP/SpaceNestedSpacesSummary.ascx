@@ -5,13 +5,19 @@
 <div class="panel-body form-horizontal">
     <div class="FormRow">
         <asp:Panel ID="tblSearch" runat="server" DefaultButton="cmdSearch" CssClass="NormalBold">
-            <asp:DropDownList ID="ddlFilterColumn" runat="server" CssClass="NormalTextBox" resourcekey="ddlFilterColumn" style="vertical-align: middle;">
+            <div class="form-inline">
+                                            <div class="input-group">
+            <asp:DropDownList ID="ddlFilterColumn" runat="server" CssClass="form-control" resourcekey="ddlFilterColumn">
                 <asp:ListItem Value="Username">Username</asp:ListItem>
                 <asp:ListItem Value="Email">Email</asp:ListItem>
                 <asp:ListItem Value="FullName">FullName</asp:ListItem>
-            </asp:DropDownList><asp:TextBox ID="txtFilterValue" runat="server" CssClass="NormalTextBox" Width="100" style="vertical-align: middle;"></asp:TextBox><asp:ImageButton ID="cmdSearch" Runat="server" SkinID="SearchButton" meta:resourcekey="cmdSearch"
-                CausesValidation="false" OnClick="cmdSearch_Click" style="vertical-align: middle;">
-		        </asp:ImageButton>
+            </asp:DropDownList>
+                    </div>
+                            <div class="input-group">
+                            <asp:TextBox ID="txtFilterValue" runat="server" CssClass="form-control"></asp:TextBox>
+                <div class="input-group-btn">
+                    <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                       </div></div></div>
         </asp:Panel>
     </div>
 	<scp:CollapsiblePanel id="allSpaces" runat="server"

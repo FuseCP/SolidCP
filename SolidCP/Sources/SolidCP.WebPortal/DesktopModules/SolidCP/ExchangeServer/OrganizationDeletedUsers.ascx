@@ -19,6 +19,8 @@
                     <div class="FormButtonsBarClean">
                         <div class="FormButtonsBarCleanRight">
                             <asp:Panel ID="SearchPanel" runat="server" DefaultButton="cmdSearch">
+                                 <div class="form-inline">
+                                            <div class="input-group">
                                 <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="True"    
                                 onselectedindexchanged="ddlPageSize_SelectedIndexChanged">   
                                     <asp:ListItem>10</asp:ListItem>   
@@ -26,15 +28,21 @@
                                     <asp:ListItem>50</asp:ListItem>   
                                     <asp:ListItem>100</asp:ListItem>   
                                 </asp:DropDownList>  
-
+                                </div><div class="input-group">
                                 <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="NormalTextBox">
                                     <asp:ListItem Value="DisplayName" meta:resourcekey="ddlSearchColumnDisplayName">DisplayName</asp:ListItem>
                                     <asp:ListItem Value="PrimaryEmailAddress" meta:resourcekey="ddlSearchColumnEmail">Email</asp:ListItem>
                                     <asp:ListItem Value="AccountName" meta:resourcekey="ddlSearchColumnAccountName">AccountName</asp:ListItem>
                                     <asp:ListItem Value="SubscriberNumber" meta:resourcekey="ddlSearchColumnSubscriberNumber">Account Number</asp:ListItem>
                                     <asp:ListItem Value="UserPrincipalName" meta:resourcekey="ddlSearchColumnUserPrincipalName">Login</asp:ListItem>
-                                </asp:DropDownList><asp:TextBox ID="txtSearchValue" runat="server" CssClass="NormalTextBox" Width="100"></asp:TextBox><asp:ImageButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" SkinID="SearchButton"
-		                            CausesValidation="false"/>
+                                </asp:DropDownList>
+
+                                    </div>
+                            <div class="input-group">
+                            <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
+                <div class="input-group-btn">
+                    <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                       </div></div></div>
                             </asp:Panel>
                         </div>
                     </div>

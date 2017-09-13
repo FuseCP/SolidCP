@@ -175,7 +175,7 @@ namespace SolidCP.Portal.StorageSpaces.UserControls
 
         }
 
-        protected void cmdSearch_Click(object sender, ImageClickEventArgs e)
+        protected void cmdSearch_Click(object sender, EventArgs e)
         {
             BindPopupResourceGroups();
         }

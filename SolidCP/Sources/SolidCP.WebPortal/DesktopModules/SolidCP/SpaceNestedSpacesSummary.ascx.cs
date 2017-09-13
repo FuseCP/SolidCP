@@ -77,7 +77,7 @@ namespace SolidCP.Portal
                 parameterName + "=" + parameterValue);
         }
 
-        protected void cmdSearch_Click(object sender, ImageClickEventArgs e)
+        protected void cmdSearch_Click(object sender, EventArgs e)
         {
             Response.Redirect(NavigatePageURL(PortalUtils.GetNestedSpacesPageId(),
                 PortalUtils.SPACE_ID_PARAM, PanelSecurity.PackageId.ToString(),

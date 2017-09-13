@@ -45,9 +45,12 @@
                             <div class="FormButtonsBarClean">
                                 <div class="FormButtonsBarCleanRight">
                                     <asp:Panel ID="SearchPanel" runat="server" DefaultButton="cmdSearch">
-                                        <asp:TextBox ID="txtSearchValue" runat="server" CssClass="NormalTextBox" Width="100"></asp:TextBox>
-                                        <asp:ImageButton ID="cmdSearch" runat="server" meta:resourcekey="cmdSearch" SkinID="SearchButton"
-                                            CausesValidation="false" OnClick="cmdSearch_Click" />
+                                        <div class="form-inline">
+                                            <div class="input-group">
+                                        <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
+                <div class="input-group-btn">
+                    <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                       </div></div></div>
                                     </asp:Panel>
                                 </div>
                             </div>

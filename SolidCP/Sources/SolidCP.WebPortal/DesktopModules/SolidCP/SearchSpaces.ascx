@@ -45,6 +45,8 @@
                                 <div class="form-inline">
                                             <div class="input-group">
                                 <asp:DropDownList ClientIDMode="Static" ID="ddlItemType" runat="server" CssClass="form-control"></asp:DropDownList>
+                                                </div>
+                                    <div class="input-group">
                                 <asp:TextBox ID="tbSearch" ClientIDMode="Static" runat="server" CssClass="form-control"></asp:TextBox>
                                 <asp:TextBox ID="tbSearchFullType" ClientIDMode="Static" runat="server" type="hidden"></asp:TextBox>
                                 <asp:TextBox ID="tbSearchText" ClientIDMode="Static" runat="server" type="hidden"></asp:TextBox>

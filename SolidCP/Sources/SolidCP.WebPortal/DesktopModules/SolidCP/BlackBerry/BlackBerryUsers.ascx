@@ -35,6 +35,7 @@
                                         <asp:ListItem>50</asp:ListItem>
                                         <asp:ListItem>100</asp:ListItem>
                                     </asp:DropDownList>
+                                                </div><div class="input-group">
                                     <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="form-control">
                                         <asp:ListItem Value="DisplayName" meta:resourcekey="ddlSearchColumnDisplayName">DisplayName</asp:ListItem>
                                         <asp:ListItem Value="PrimaryEmailAddress" meta:resourcekey="ddlSearchColumnEmail">Email</asp:ListItem>

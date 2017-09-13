@@ -59,7 +59,7 @@ namespace SolidCP.Portal
             return PortalUtils.GetUserHomePageUrl(userId);
         }
 
-        protected void cmdSearch_Click(object sender, ImageClickEventArgs e)
+        protected void cmdSearch_Click(object sender, EventArgs e)
         {
             string query = tbSearchText.Text.Trim().Replace("%", "");
             if (query.Length == 0)
