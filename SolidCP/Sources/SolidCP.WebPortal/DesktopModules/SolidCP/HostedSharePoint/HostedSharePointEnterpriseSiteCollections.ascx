@@ -34,16 +34,22 @@ function confirmation()
 					<scp:SimpleMessageBox id="messageBox" runat="server" />
 					<div class="FormButtonsBarClean">
 						<div class="FormButtonsBarCleanLeft">
-							<CPCC:StyleButton id="btnCreateSiteCollection" CssClass="btn btn-success" runat="server" OnClick="btnCreateSiteCollection_Click"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCreateSiteCollectionText"/> </CPCC:StyleButton>
+							<CPCC:StyleButton id="btnCreateSiteCollection" CssClass="btn btn-primary" runat="server" OnClick="btnCreateSiteCollection_Click"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCreateSiteCollectionText"/> </CPCC:StyleButton>
 						</div>
 						<div class="FormButtonsBarCleanRight">
 							<asp:Panel ID="SearchPanel" runat="server" DefaultButton="cmdSearch">
+                                <div class="form-inline">
+                                            <div class="input-group">
 								<asp:Localize ID="locSearch" runat="server" meta:resourcekey="locSearch" Visible="false"></asp:Localize>
-								<asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="NormalTextBox">
+								<asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="form-control">
 									<asp:ListItem Value="ItemName" meta:resourcekey="ddlSearchColumnUrl">Url</asp:ListItem>
-								</asp:DropDownList><asp:TextBox ID="txtSearchValue" runat="server" CssClass="NormalTextBox"
-									Width="100"></asp:TextBox><asp:ImageButton ID="cmdSearch" runat="server" meta:resourcekey="cmdSearch"
-										SkinID="SearchButton" CausesValidation="false" />
+								</asp:DropDownList>
+                                </div>
+                            <div class="input-group">
+                            <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
+                <div class="input-group-btn">
+                    <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                       </div></div></div>
 							</asp:Panel>
 						</div>
 					</div>

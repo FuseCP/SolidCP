@@ -55,7 +55,7 @@ namespace SolidCP.Portal.BlackBerry {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCreateNewBlackBerryUser;
+        protected global::CPCC.StyleButton btnCreateNewBlackBerryUser;
         
         /// <summary>
         /// SearchPanel control.
@@ -100,7 +100,7 @@ namespace SolidCP.Portal.BlackBerry {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton cmdSearch;
+        protected global::CPCC.StyleButton cmdSearch;
         
         /// <summary>
         /// gvUsers control.

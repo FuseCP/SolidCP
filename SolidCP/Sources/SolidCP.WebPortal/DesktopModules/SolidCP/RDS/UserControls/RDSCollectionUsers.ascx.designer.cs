@@ -28,7 +28,7 @@ namespace SolidCP.Portal.RDS.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnDelete;
+        protected global::CPCC.StyleButton btnDelete;
         
         /// <summary>
         /// btnAdd control.
@@ -37,7 +37,7 @@ namespace SolidCP.Portal.RDS.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnAdd;
+        protected global::CPCC.StyleButton btnAdd;
         
         /// <summary>
         /// gvUsers control.
@@ -109,7 +109,7 @@ namespace SolidCP.Portal.RDS.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton cmdSearch;
+        protected global::CPCC.StyleButton cmdSearch;
         
         /// <summary>
         /// gvPopupAccounts control.
@@ -127,7 +127,7 @@ namespace SolidCP.Portal.RDS.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancelAdd;
+        protected global::CPCC.StyleButton btnCancelAdd;
         
         /// <summary>
         /// btnAddSelected control.
@@ -136,7 +136,7 @@ namespace SolidCP.Portal.RDS.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnAddSelected;
+        protected global::CPCC.StyleButton btnAddSelected;
         
         /// <summary>
         /// DeleteWarningPanel control.
@@ -199,7 +199,7 @@ namespace SolidCP.Portal.RDS.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancelDeleteWarning;
+        protected global::CPCC.StyleButton btnCancelDeleteWarning;
         
         /// <summary>
         /// btnDeleteWarningFake control.

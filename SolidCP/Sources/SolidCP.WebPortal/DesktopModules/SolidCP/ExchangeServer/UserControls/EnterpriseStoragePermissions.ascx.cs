@@ -243,7 +243,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 
         }
 
-		protected void cmdSearch_Click(object sender, ImageClickEventArgs e)
+		protected void cmdSearch_Click(object sender, EventArgs e)
 		{
 			BindPopupAccounts();
 		}

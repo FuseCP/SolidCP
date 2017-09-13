@@ -42,55 +42,17 @@
    <asp:Panel ID="tblSearch" runat="server" DefaultButton="ImageButton1" CssClass="NormalBold">
    <asp:Label ID="lblSearch" runat="server" meta:resourcekey="lblSearch"></asp:Label>
    <div align="center">
-    <table>
-        <tr>
-            <td>
-                <asp:DropDownList ClientIDMode="Static" ID="ddlItemType" runat="server" CssClass="form-control">
-                </asp:DropDownList>
-            </td>
-            <td>
-                <table cellpadding="0" cellspacing="0" align="right">
-                    <tr>
-                        <td align="left" class="SearchQuery">
-                            <div class="ui-widget">
-                                <asp:TextBox
-                                    ID="tbSearch"
-                                    ClientIDMode="Static"
-                                    runat="server"
-                                    CssClass="form-control"
-                                    Width="120px"
-                                    style="vertical-align: middle; z-index: 100;"
-                                >
-                                </asp:TextBox>
-                                <asp:TextBox
-                                    ID="tbSearchFullType"
-                                    ClientIDMode="Static"
-                                    runat="server"
-                                    type="hidden"
-                                >
-                                </asp:TextBox>
-                                <asp:TextBox
-                                    ID="tbSearchText"
-                                    ClientIDMode="Static"
-                                    runat="server"
-                                    type="hidden"
-                                >
-                                </asp:TextBox>
-
-                                <asp:ImageButton
-                                    ID="ImageButton1"
-                                    runat="server"
-                                    SkinID="SearchButton"
-                                    OnClick="cmdSearch_Click"
-                                    CausesValidation="false"
-                                    style="vertical-align: middle;"
-                                />                 
+                                <div class="form-inline">
+                                            <div class="input-group">
+                                <asp:DropDownList ClientIDMode="Static" ID="ddlItemType" runat="server" CssClass="form-control"></asp:DropDownList>
+                                <asp:TextBox ID="tbSearch" ClientIDMode="Static" runat="server" CssClass="form-control"></asp:TextBox>
+                                <asp:TextBox ID="tbSearchFullType" ClientIDMode="Static" runat="server" type="hidden"></asp:TextBox>
+                                <asp:TextBox ID="tbSearchText" ClientIDMode="Static" runat="server" type="hidden"></asp:TextBox>
+                                <div class="input-group-btn">
+                                 <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false" OnClick="cmdSearch_Click"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                                    </div>
                             </div>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
+                                    </div></div>
     </asp:Panel>
 </div>
 

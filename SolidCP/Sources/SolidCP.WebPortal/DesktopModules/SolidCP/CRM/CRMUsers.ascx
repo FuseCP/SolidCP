@@ -17,22 +17,28 @@
                     <scp:SimpleMessageBox id="messageBox" runat="server" />
                     <div class="FormButtonsBarClean">
                         <div class="FormButtonsBarCleanLeft">
-                            <CPCC:StyleButton id="btnCreateUser" CssClass="btn btn-success" runat="server" OnClick="btnCreateUser_Click"> <i class="fa fa-user-plus">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCreateUser"/> </CPCC:StyleButton>
+                            <CPCC:StyleButton id="btnCreateUser" CssClass="btn btn-primary" runat="server" OnClick="btnCreateUser_Click"> <i class="fa fa-user-plus">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCreateUser"/> </CPCC:StyleButton>
                         </div>
                         <div class="FormButtonsBarCleanRight">
                             <asp:Panel ID="SearchPanel" runat="server" DefaultButton="cmdSearch">
-                                <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="True" 
-                                    onselectedindexchanged="ddlPageSize_SelectedIndexChanged">
+                                <div class="form-inline">
+                                            <div class="input-group">
+                                <asp:DropDownList ID="ddlPageSize" runat="server" AutoPostBack="True" onselectedindexchanged="ddlPageSize_SelectedIndexChanged" CssClass="form-control">
                                     <asp:ListItem>10</asp:ListItem>
                                     <asp:ListItem Selected="True">20</asp:ListItem>
                                     <asp:ListItem>50</asp:ListItem>
                                     <asp:ListItem>100</asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="NormalTextBox">
+                                <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="form-control">
                                     <asp:ListItem Value="DisplayName" meta:resourcekey="ddlSearchColumnDisplayName">DisplayName</asp:ListItem>
                                     <asp:ListItem Value="PrimaryEmailAddress" meta:resourcekey="ddlSearchColumnEmail">Email</asp:ListItem>
-                                </asp:DropDownList><asp:TextBox ID="txtSearchValue" runat="server" CssClass="NormalTextBox" Width="100"></asp:TextBox><asp:ImageButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" SkinID="SearchButton"
-		                            CausesValidation="false"/>
+                                </asp:DropDownList>
+                                  </div>
+                                                <div class="input-group">
+                                        <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control"></asp:TextBox>
+                                            <div class="input-group-btn">
+                                        <CPCC:StyleButton ID="cmdSearch" Runat="server" meta:resourcekey="cmdSearch" class="btn btn-primary" CausesValidation="false"><i class="fa fa-search" aria-hidden="true"></i></CPCC:StyleButton>
+                                    </div></div></div>
                             </asp:Panel>
                         </div>
                     </div>
