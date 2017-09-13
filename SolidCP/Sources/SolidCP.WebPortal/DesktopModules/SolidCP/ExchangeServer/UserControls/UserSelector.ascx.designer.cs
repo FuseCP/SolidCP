@@ -127,7 +127,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton cmdSearch;
+        protected global::CPCC.StyleButton cmdSearch;
         
         /// <summary>
         /// gvPopupAccounts control.
