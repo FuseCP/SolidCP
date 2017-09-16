@@ -13,6 +13,8 @@ Version 1.3.0:
 - Smartermail 10+ gui design fixes
 - Smartermail 10+ tested with v16
 - Exchange 2013/2016 Distribution boxes allowed in mailbox priveledges
+- Exchange 2013/2016 Root public folder fix (permission and mailenabled disabled)
+- Hosted Organization Delete User button fix (first load issue)
 
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH
