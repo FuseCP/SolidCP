@@ -84,8 +84,8 @@ namespace SolidCP.Portal
 
             Utils.SelectListItem(ddlPrimaryGroup, server.PrimaryGroupId);
 
-            // instant alias
-            txtInstantAlias.Text = server.InstantDomainAlias;
+            // Preview Domain
+            txtPreviewDomain.Text = server.InstantDomainAlias;
         }
 
         private void BindServices()
@@ -183,8 +183,8 @@ namespace SolidCP.Portal
             server.Comments = txtComments.Text;
             server.PrimaryGroupId = Utils.ParseInt(ddlPrimaryGroup.SelectedValue, 0);
 
-            // instant alias
-            server.InstantDomainAlias = txtInstantAlias.Text;
+            // Preview Domain
+            server.InstantDomainAlias = txtPreviewDomain.Text;
 
             // gather groups info
             List<VirtualGroupInfo> groups = new List<VirtualGroupInfo>();

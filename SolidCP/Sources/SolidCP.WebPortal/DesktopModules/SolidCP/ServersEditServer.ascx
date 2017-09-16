@@ -113,16 +113,16 @@
                     </tr>
                 </table>
             </asp:Panel>
-            <scp:CollapsiblePanel id="InstantAliasHeader" runat="server" IsCollapsed="true"
-                TargetControlID="InstantAliasPanel" resourcekey="InstantAliasHeader" Text="Instant Alias">
+            <scp:CollapsiblePanel id="PreviewDomainHeader" runat="server" IsCollapsed="true"
+                TargetControlID="PreviewDomainPanel" resourcekey="PreviewDomainHeader" Text="Preview Domain">
             </scp:CollapsiblePanel>
-            <asp:Panel ID="InstantAliasPanel" runat="server" Height="0" style="overflow:hidden;">
+            <asp:Panel ID="PreviewDomainPanel" runat="server" Height="0" style="overflow:hidden;">
                 <table width="100%">
                     <tr>
                         <td class="Normal">
-                            <div class="form-inline">customerdomain.com.&nbsp;<asp:TextBox ID="txtInstantAlias" runat="server" CssClass="form-control" CausesValidation="true"></asp:TextBox>
+                            <div class="form-inline">customerdomain.com.&nbsp;<asp:TextBox ID="txtPreviewDomain" runat="server" CssClass="form-control" CausesValidation="true"></asp:TextBox>
                             <asp:RegularExpressionValidator id="DomainFormatValidator" ValidationGroup="Server" runat="server" meta:resourcekey="DomainFormatValidator"
-		    ControlToValidate="txtInstantAlias" Display="Dynamic" SetFocusOnError="true"
+		    ControlToValidate="txtPreviewDomain" Display="Dynamic" SetFocusOnError="true"
 		    ValidationExpression="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.){1,10}[a-zA-Z]{2,15}$"></asp:RegularExpressionValidator>
                                 </div>
                          </td>

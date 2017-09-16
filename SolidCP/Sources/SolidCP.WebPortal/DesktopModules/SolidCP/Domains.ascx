@@ -82,7 +82,7 @@
          <asp:TemplateField HeaderText="">
              <ItemStyle Width="5%"></ItemStyle>
              <ItemTemplate>
- 	            <div style="display:inline-block" runat="server" Visible='<%# ShowDomainDnsInfo(Eval("ExpirationDate"), Eval("LastUpdateDate"), !(bool)Eval("IsSubDomain") && !(bool)Eval("IsInstantAlias") && !(bool)Eval("IsDomainPointer")) && !string.IsNullOrEmpty(GetDomainDnsRecords((int)Eval("DomainId"))) %>'>
+ 	            <div style="display:inline-block" runat="server" Visible='<%# ShowDomainDnsInfo(Eval("ExpirationDate"), Eval("LastUpdateDate"), !(bool)Eval("IsSubDomain") && !(bool)Eval("IsPreviewDomain") && !(bool)Eval("IsDomainPointer")) && !string.IsNullOrEmpty(GetDomainDnsRecords((int)Eval("DomainId"))) %>'>
                    <img style="border-width: 0px;" src="App_Themes/Default/Images/information_icon_small.gif" title="<%# GetDomainTooltip((int)Eval("DomainId"), Eval("RegistrarName") != DBNull.Value ? (string)Eval("RegistrarName"):string.Empty)  %>">
                  </div>
              </ItemTemplate>
@@ -92,7 +92,7 @@
          <asp:TemplateField HeaderText="gvDomainsType">
              <ItemStyle Width="30%"></ItemStyle>
              <ItemTemplate>
- 	            <%# GetDomainTypeName((bool)Eval("IsSubDomain"), (bool)Eval("IsInstantAlias"), (bool)Eval("IsDomainPointer"))%>
+ 	            <%# GetDomainTypeName((bool)Eval("IsSubDomain"), (bool)Eval("IsPreviewDomain"), (bool)Eval("IsDomainPointer"))%>
              </ItemTemplate>
          </asp:TemplateField>
 

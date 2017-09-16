@@ -135,8 +135,8 @@
   <data name="secDomains.Text" xml:space="preserve">
     <value>Domain Options</value>
   </data>
-  <data name="chkEnableInstantAlias.Text" xml:space="preserve">
-    <value>Enable Instant Alias</value>
+  <data name="chkEnablePreviewDomain.Text" xml:space="preserve">
+    <value>Enable Preview Domain</value>
   </data>
   <data name="chkEnableCustomDomains.Text" xml:space="preserve">
     <value>Enable User Domains</value>

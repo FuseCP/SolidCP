@@ -135,7 +135,7 @@
   <data name="btnUpdate.Text" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
-  <data name="lblInstantAlias.Text" xml:space="preserve">
+  <data name="lblPreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias:</value>
   </data>
   <data name="lblPDR.Text" xml:space="preserve">
@@ -150,7 +150,7 @@
   <data name="secDnsRecords.Text" xml:space="preserve">
     <value>DNS-Einträge-Vorlage</value>
   </data>
-  <data name="secInstantAlias.Text" xml:space="preserve">
+  <data name="secPreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias</value>
   </data>
   <data name="secServices.Text" xml:space="preserve">

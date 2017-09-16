@@ -12,7 +12,7 @@
             <uc2:UsernameControl ID="txtName" runat="server" />
             <span class="input-group-addon">
                 <asp:Literal ID="litAt" runat="server" Text="@" /></span>
-            <dnc:SelectDomain ID="domainsSelectDomainControl" runat="server" HideDomainPointers="true" HideInstantAlias="false" HideMailDomainPointers="true" HideIdnDomains="True"></dnc:SelectDomain>
+            <dnc:SelectDomain ID="domainsSelectDomainControl" runat="server" HideDomainPointers="true" HidePreviewDomain="false" HideMailDomainPointers="true" HideIdnDomains="True"></dnc:SelectDomain>
         </div>
     </div>
     <div id="DisplayEmailPanel" runat="server" class="col-sm-8">

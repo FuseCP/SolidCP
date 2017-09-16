@@ -135,8 +135,8 @@
   <data name="btnUpdate.Text" xml:space="preserve">
     <value>Update</value>
   </data>
-  <data name="lblInstantAlias.Text" xml:space="preserve">
-    <value>Instant Alias:</value>
+  <data name="lblPreviewDomain.Text" xml:space="preserve">
+    <value>Preview Domain:</value>
   </data>
   <data name="lblPDR.Text" xml:space="preserve">
     <value>Primary Distribution Group:</value>
@@ -150,8 +150,8 @@
   <data name="secDnsRecords.Text" xml:space="preserve">
     <value>DNS Records Template</value>
   </data>
-  <data name="secInstantAlias.Text" xml:space="preserve">
-    <value>Instant Alias</value>
+  <data name="secPreviewDomain.Text" xml:space="preserve">
+    <value>Preview Domain</value>
   </data>
   <data name="secServices.Text" xml:space="preserve">
     <value>Server Services</value>

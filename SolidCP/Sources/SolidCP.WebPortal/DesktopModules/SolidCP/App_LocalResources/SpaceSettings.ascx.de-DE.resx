@@ -123,7 +123,7 @@
   <data name="lnkExchangeServer.Text" xml:space="preserve">
     <value>Exchange-Server</value>
   </data>
-  <data name="lnkInstantAlias.Text" xml:space="preserve">
+  <data name="lnkPreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias</value>
   </data>
   <data name="lnkNameServers.Text" xml:space="preserve">

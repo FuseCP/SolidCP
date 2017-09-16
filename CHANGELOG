@@ -1,10 +1,18 @@
-Version 1.2.2:
+Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
 - RDS is now made for multiple RDSGateway servers in different domains
 - RDS Added option in hosting plan to prevent user from adding new RDSServer to HostedOrg
 - HyperV: Changed group name from Virtual Private Servers 2012 to HyperV
 - HyperV: Added 2016 provider so we can add features in the future for this version
 - HyperV: Fixed Replications page
+- Instant Alias fixed
+- Instant Alias Renamed to Preview Domain
+- Search box improved with advanced search drop down
+- Search box fixed up to html5 on all pages
+- Smartermail 10+ bug fixes 
+- Smartermail 10+ gui design fixes
+- Smartermail 10+ tested with v16
+- Exchange 2013/2016 Distribution boxes allowed in mailbox priveledges
 
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH

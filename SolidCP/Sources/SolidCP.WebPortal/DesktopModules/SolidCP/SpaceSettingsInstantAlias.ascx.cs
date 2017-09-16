@@ -45,16 +45,16 @@ using SolidCP.EnterpriseServer;
 
 namespace SolidCP.Portal
 {
-    public partial class SpaceSettingsInstantAlias : SolidCPControlBase, IPackageSettingsEditorControl
+    public partial class SpaceSettingsPreviewDomain : SolidCPControlBase, IPackageSettingsEditorControl
     {
         public void BindSettings(PackageSettings settings)
         {
-            txtInstantAlias.Text = settings["InstantAlias"];
+            txtPreviewDomain.Text = settings["PreviewDomain"];
         }
 
         public void SaveSettings(PackageSettings settings)
         {
-            settings["InstantAlias"] = txtInstantAlias.Text.Trim();
+            settings["PreviewDomain"] = txtPreviewDomain.Text.Trim();
         }
     }
 }

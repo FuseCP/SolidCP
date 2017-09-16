@@ -1890,11 +1890,11 @@ namespace SolidCP.EnterpriseServer
 			if (domain == null)
 				return null;
 
-			// get instant alias
-			domain.InstantAliasName = GetDomainAlias(domain.PackageId, domain.DomainName);
-			DomainInfo instantAlias = GetDomainItem(domain.InstantAliasName, true, false);
-			if (instantAlias != null)
-				domain.InstantAliasId = instantAlias.DomainId;
+			// get Preview Domain
+			domain.PreviewDomainName = GetDomainAlias(domain.PackageId, domain.DomainName);
+			DomainInfo previewDomain = GetDomainItem(domain.PreviewDomainName, true, false);
+			if (previewDomain != null)
+				domain.PreviewDomainId = previewDomain.DomainId;
 
 			// Log Extension
 			if (withLog)
@@ -1927,18 +1927,18 @@ namespace SolidCP.EnterpriseServer
 			PackageSettings packageSettings = PackageController.GetPackageSettings(packageId,
 				PackageSettings.INSTANT_ALIAS);
 
-			string instantAlias = packageSettings["InstantAlias"];
+			string previewDomain = packageSettings["PreviewDomain"];
 
-			// add instant alias
-			if (!String.IsNullOrEmpty(instantAlias))
+			// add Preview Domain
+			if (!String.IsNullOrEmpty(previewDomain))
 			{
-				instantAlias = domainName + "." + instantAlias;
+				previewDomain = domainName + "." + previewDomain;
 			}
-			return instantAlias;
+			return previewDomain;
 		}
 
 		public static int AddDomainWithProvisioning(int packageId, string domainName, DomainType domainType,
-			bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createInstantAlias, bool allowSubDomains, string hostName)
+			bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1963,7 +1963,22 @@ namespace SolidCP.EnterpriseServer
 			if (domainId < 0)
 				return domainId;
 
-			DomainInfo domain = ServerController.GetDomain(domainId);
+            // add Preview Domain
+            createPreviewDomain &= (domainType != DomainType.DomainPointer);
+            if (createPreviewDomain)
+            {
+                // check if Preview Domain is configured
+                string domainAlias = GetDomainAlias(packageId, domainName);
+
+                // add Preview Domain if required
+                if (!String.IsNullOrEmpty(domainAlias))
+                {
+                    // add alias
+                    AddDomainInternal(packageId, domainAlias, dnsEnabled, false, true, false, false);
+                }
+            }
+
+            DomainInfo domain = ServerController.GetDomain(domainId);
 			if (domain != null)
 			{
 				if (domain.ZoneItemId != 0)
@@ -1989,26 +2004,11 @@ namespace SolidCP.EnterpriseServer
 				UpdateDomainWhoisData(domain);
 			}
 
-			// add instant alias
-			createInstantAlias &= (domainType != DomainType.DomainPointer);
-			if (createInstantAlias)
-			{
-				// check if instant alias is configured
-				string domainAlias = GetDomainAlias(packageId, domainName);
-
-				// add instant alias if required
-				if (!String.IsNullOrEmpty(domainAlias))
-				{
-					// add alias
-					AddDomainInternal(packageId, domainAlias, dnsEnabled, false, true, false, false);
-				}
-			}
-
 			// create web site if requested
 			int webSiteId = 0;
 			if (webEnabled && createWebSite)
 			{
-				webSiteId = WebServerController.AddWebSite(packageId, hostName, domainId, 0, createInstantAlias, false);
+				webSiteId = WebServerController.AddWebSite(packageId, hostName, domainId, 0, createPreviewDomain, false);
 
 				if (webSiteId < 0)
 				{
@@ -2037,7 +2037,7 @@ namespace SolidCP.EnterpriseServer
 			return AddDomain(domain, false, false);
 		}
 
-		public static int AddDomain(DomainInfo domain, bool createInstantAlias, bool createZone)
+		public static int AddDomain(DomainInfo domain, bool createPreviewDomain, bool createZone)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -2049,15 +2049,15 @@ namespace SolidCP.EnterpriseServer
 
 			// add main domain
 			int domainId = AddDomainInternal(domain.PackageId, domain.DomainName, createZone,
-				domain.IsSubDomain, createInstantAlias, domain.IsDomainPointer, false);
+				domain.IsSubDomain, createPreviewDomain, domain.IsDomainPointer, false);
 
 			/*
             if (domainId < 0)
                 return domainId;
 
-            // add instant alias if required
+            // add Preview Domain if required
             string domainAlias = GetDomainAlias(domain.PackageId, domain.DomainName);
-            if (createInstantAlias && !String.IsNullOrEmpty(domainAlias))
+            if (createPreviewDomain && !String.IsNullOrEmpty(domainAlias))
             {
                 AddDomainInternal(domain.PackageId, domainAlias, true, false, true, false, false);
             }
@@ -2067,10 +2067,10 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		private static int AddDomainInternal(int packageId, string domainName,
-			bool createDnsZone, bool isSubDomain, bool isInstantAlias, bool isDomainPointer, bool allowSubDomains)
+			bool createDnsZone, bool isSubDomain, bool isPreviewDomain, bool isDomainPointer, bool allowSubDomains)
 		{
 			// check quota
-			if (!isInstantAlias)
+			if (!isPreviewDomain)
 			{
 				if (isSubDomain)
 				{
@@ -2104,15 +2104,15 @@ namespace SolidCP.EnterpriseServer
 				else
 					return checkResult;
 			}
-			/*
+			
                         if (domainName.ToLower().StartsWith("www."))
                             return BusinessErrorCodes.ERROR_DOMAIN_STARTS_WWW;
-            */
+            
 			// place log record
 			TaskManager.StartTask("DOMAIN", "ADD", domainName, 0, packageId, new BackgroundTaskParameter("CreateZone", createDnsZone));
 
 			// Log Extension
-			LogExtension.WriteVariables(new { domainName, createDnsZone, isSubDomain, isInstantAlias, isDomainPointer, allowSubDomains });
+			LogExtension.WriteVariables(new { domainName, createDnsZone, isSubDomain, isPreviewDomain, isDomainPointer, allowSubDomains });
 
 			// create DNS zone
 			int zoneItemId = 0;
@@ -2124,7 +2124,7 @@ namespace SolidCP.EnterpriseServer
 					int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Dns);
 					if (serviceId > 0)
 					{
-						zoneItemId = DnsServerController.AddZone(packageId, serviceId, domainName, true, isInstantAlias);
+						zoneItemId = DnsServerController.AddZone(packageId, serviceId, domainName, true, isPreviewDomain);
 					}
 
 					if (zoneItemId < 0)
@@ -2140,7 +2140,7 @@ namespace SolidCP.EnterpriseServer
 			}
 
 			int itemId = DataProvider.AddDomain(SecurityContext.User.UserId,
-				packageId, zoneItemId, domainName, allowSubDomains, 0, 0, isSubDomain, isInstantAlias, isDomainPointer);
+				packageId, zoneItemId, domainName, allowSubDomains, 0, 0, isSubDomain, isPreviewDomain, isDomainPointer);
 
 			TaskManager.ItemId = itemId;
 
@@ -2153,7 +2153,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			return DataProvider.AddDomain(SecurityContext.User.UserId,
 				domain.PackageId, domain.ZoneItemId, domain.DomainName, domain.HostingAllowed,
-				domain.WebSiteId, domain.MailDomainId, domain.IsSubDomain, domain.IsInstantAlias, domain.IsDomainPointer);
+				domain.WebSiteId, domain.MailDomainId, domain.IsSubDomain, domain.IsPreviewDomain, domain.IsDomainPointer);
 		}
 
 		public static void AddServiceDNSRecords(int packageId, string groupName, DomainInfo domain, string serviceIP)
@@ -2414,10 +2414,10 @@ namespace SolidCP.EnterpriseServer
 				}
 
 
-				// delete instant alias
-				if (domain.InstantAliasId > 0)
+				// delete Preview Domain
+				if (domain.PreviewDomainId > 0)
 				{
-					int res = DeleteDomainInstantAlias(domainId);
+					int res = DeleteDomainPreviewDomain(domainId);
 					if (res < 0)
 						return res;
 				}
@@ -2459,8 +2459,8 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				// delete instant alias
-				int aliasResult = DeleteDomainInstantAlias(domainId);
+				// delete Preview Domain
+				int aliasResult = DeleteDomainPreviewDomain(domainId);
 				if (aliasResult < 0)
 					return aliasResult;
 
@@ -2712,7 +2712,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static int CreateDomainInstantAlias(string hostName, int domainId)
+		public static int CreateDomainPreviewDomain(string hostName, int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -2721,7 +2721,7 @@ namespace SolidCP.EnterpriseServer
 			// load domain
 			DomainInfo domain = GetDomain(domainId);
 
-			if (String.IsNullOrEmpty(domain.InstantAliasName))
+			if (String.IsNullOrEmpty(domain.PreviewDomainName))
 				return BusinessErrorCodes.ERROR_INSTANT_ALIAS_IS_NOT_CONFIGURED;
 
 			// place log record
@@ -2730,18 +2730,18 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
 				// check if it already exists
-				DomainInfo instantAlias = GetDomainItem(domain.InstantAliasName);
-				int instantAliasId = 0;
-				if (instantAlias == null)
+				DomainInfo previewDomain = GetDomainItem(domain.PreviewDomainName);
+				int previewDomainId = 0;
+				if (previewDomain == null)
 				{
-					// create instant alias
-					instantAliasId = AddDomainInternal(domain.PackageId, domain.InstantAliasName,
+					// create Preview Domain
+					previewDomainId = AddDomainInternal(domain.PackageId, domain.PreviewDomainName,
 						true, false, true, false, false);
-					if (instantAliasId < 0)
-						return instantAliasId;
+					if (previewDomainId < 0)
+						return previewDomainId;
 
-					// load instant alias again
-					instantAlias = GetDomainItem(instantAliasId);
+					// load Preview Domain again
+					previewDomain = GetDomainItem(previewDomainId);
 				}
 
 				string parentZone = domain.ZoneName;
@@ -2751,6 +2751,10 @@ namespace SolidCP.EnterpriseServer
 					parentZone = parentDomain.DomainName;
 				}
 
+                if (previewDomainId > 0)
+                {
+                    EnableDomainDns(previewDomainId);
+                }
 
 				if (domain.WebSiteId > 0)
 				{
@@ -2758,7 +2762,7 @@ namespace SolidCP.EnterpriseServer
 															((domain.DomainName.Replace("." + parentZone, "") == parentZone) |
 															(domain.DomainName == parentZone))
 															? "" : domain.DomainName.Replace("." + parentZone, ""),
-															instantAlias.DomainId);
+															previewDomain.DomainId);
 				}
 
 
@@ -2773,14 +2777,14 @@ namespace SolidCP.EnterpriseServer
 																((d.DomainName.Replace("." + parentZone, "") == parentZone) |
 																(d.DomainName == parentZone))
 																? "" : d.DomainName.Replace("." + parentZone, ""),
-																instantAlias.DomainId);
+																previewDomain.DomainId);
 					}
 				}
 
 				// add mail domain pointer
-				if (domain.MailDomainId > 0 && instantAlias.MailDomainId == 0)
+				if (domain.MailDomainId > 0 && previewDomain.MailDomainId == 0)
 				{
-					int mailRes = MailServerController.AddMailDomainPointer(domain.MailDomainId, instantAliasId);
+					int mailRes = MailServerController.AddMailDomainPointer(domain.MailDomainId, previewDomainId);
 					if (mailRes < 0)
 						return mailRes;
 				}
@@ -2797,7 +2801,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static int DeleteDomainInstantAlias(int domainId)
+		public static int DeleteDomainPreviewDomain(int domainId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
@@ -2813,20 +2817,20 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				// load instant alias domain
-				DomainInfo instantAlias = GetDomainItem(domain.InstantAliasName, true, false);
-				if (instantAlias == null)
+				// load Preview Domain domain
+				DomainInfo previewDomain = GetDomainItem(domain.PreviewDomainName, true, false);
+				if (previewDomain == null)
 					return 0;
 
 				// remove from web site pointers
-				if (instantAlias.WebSiteId > 0)
+				if (previewDomain.WebSiteId > 0)
 				{
-					int webRes = WebServerController.DeleteWebSitePointer(instantAlias.WebSiteId, instantAlias.DomainId);
+					int webRes = WebServerController.DeleteWebSitePointer(previewDomain.WebSiteId, previewDomain.DomainId);
 					if (webRes < 0)
 						return webRes;
 				}
 
-				List<DomainInfo> domains = GetDomainsByDomainItemId(instantAlias.DomainId);
+				List<DomainInfo> domains = GetDomainsByDomainItemId(previewDomain.DomainId);
 
 				foreach (DomainInfo d in domains)
 				{
@@ -2837,15 +2841,15 @@ namespace SolidCP.EnterpriseServer
 				}
 
 				// remove from mail domain pointers
-				if (instantAlias.MailDomainId > 0)
+				if (previewDomain.MailDomainId > 0)
 				{
-					int mailRes = MailServerController.DeleteMailDomainPointer(instantAlias.MailDomainId, instantAlias.DomainId);
+					int mailRes = MailServerController.DeleteMailDomainPointer(previewDomain.MailDomainId, previewDomain.DomainId);
 					if (mailRes < 0)
 						return mailRes;
 				}
 
-				// delete instant alias
-				int res = DeleteDomain(instantAlias.DomainId);
+				// delete Preview Domain
+				int res = DeleteDomain(previewDomain.DomainId);
 				if (res < 0)
 					return res;
 

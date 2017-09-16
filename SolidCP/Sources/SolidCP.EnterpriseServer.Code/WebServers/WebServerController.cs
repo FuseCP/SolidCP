@@ -196,7 +196,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         public static int AddWebSite(int packageId, string hostName, int domainId, int packageAddressId,
-            bool addInstantAlias, bool ignoreGlobalDNSRecords)
+            bool addPreviewDomain, bool ignoreGlobalDNSRecords)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1491,7 +1491,7 @@ namespace SolidCP.EnterpriseServer
                             DomainInfo domainTmp = ServerController.GetDomain(domain.DomainName);
                             if (!((domainTmp != null) && (domainTmp.WebSiteId == siteItemId)))
                             {
-                                int domainID = ServerController.AddDomain(domain, domain.IsInstantAlias, false);
+                                int domainID = ServerController.AddDomain(domain, domain.IsPreviewDomain, false);
                                 domainTmp = ServerController.GetDomain(domainID);
                                 if (domainTmp != null)
                                 {
@@ -4277,7 +4277,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                         newDomain.PackageId = domain.PackageId;
                         newDomain.IsDomainPointer = true;
 
-                        int newDomainID = ServerController.AddDomain(newDomain, domain.IsInstantAlias, false);
+                        int newDomainID = ServerController.AddDomain(newDomain, domain.IsPreviewDomain, false);
                         if (newDomainID > 0)
                         {
                             newDomain = ServerController.GetDomain(newDomainID);

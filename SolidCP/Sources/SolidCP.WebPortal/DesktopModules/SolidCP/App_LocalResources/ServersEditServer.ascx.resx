@@ -156,8 +156,8 @@
   <data name="DnsRecordsHeader.Text" xml:space="preserve">
     <value>DNS Records Template</value>
   </data>
-  <data name="InstantAliasHeader.Text" xml:space="preserve">
-    <value>Instant Alias</value>
+  <data name="PreviewDomainHeader.Text" xml:space="preserve">
+    <value>Preview Domain</value>
   </data>
   <data name="IPAddressesHeader.Text" xml:space="preserve">
     <value>IP Addresses</value>
@@ -177,8 +177,8 @@
   <data name="lblAuthType.Text" xml:space="preserve">
     <value>Authentication Type:</value>
   </data>
-  <data name="lblInstantAlias.Text" xml:space="preserve">
-    <value>Instant Alias</value>
+  <data name="lblPreviewDomain.Text" xml:space="preserve">
+    <value>Preview Domain</value>
   </data>
   <data name="lblNewPassword.Text" xml:space="preserve">
     <value>New password:</value>

@@ -32,7 +32,7 @@
 									Text="Url:"></asp:Label>
 							</td>
 							<td width="100%" class="NormalBold">
-			                    <asp:TextBox ID="txtHostName" runat="server" CssClass="form-control" MaxLength="64"></asp:TextBox>.<uc1:DomainsSelectDomainControl ID="domain" runat="server" HideWebSites="false" HideDomainPointers="true" HideInstantAlias="true"/>
+			                    <asp:TextBox ID="txtHostName" runat="server" CssClass="form-control" MaxLength="64"></asp:TextBox>.<uc1:DomainsSelectDomainControl ID="domain" runat="server" HideWebSites="false" HideDomainPointers="true" HidePreviewDomain="true"/>
                                 <asp:RequiredFieldValidator ID="valRequireHostName" runat="server" meta:resourcekey="valRequireHostName" ControlToValidate="txtHostName"
 	                                ErrorMessage="Enter hostname" ValidationGroup="CreateSite" Display="Dynamic" Text="*" SetFocusOnError="True"></asp:RequiredFieldValidator>
                                 <asp:RegularExpressionValidator ID="valRequireCorrectHostName" runat="server"

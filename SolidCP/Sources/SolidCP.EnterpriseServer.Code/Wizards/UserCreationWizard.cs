@@ -316,16 +316,16 @@ namespace SolidCP.EnterpriseServer
                     }
                 }
 
-                // Instant Alias / Temporary URL
+                // Preview Domain / Temporary URL
                 if (tempDomain && (domainId > 0))
                 {
-                    int instantAliasId = ServerController.CreateDomainInstantAlias("", domainId);
-                    if (instantAliasId < 0)
+                    int previewDomainId = ServerController.CreateDomainPreviewDomain("", domainId);
+                    if (previewDomainId < 0)
                     {
                         // rollback wizard
                         Rollback();
 
-                        return instantAliasId;
+                        return previewDomainId;
                     }
                 }
 

@@ -938,7 +938,7 @@ namespace SolidCP.EnterpriseServer
 
 
         public static int AddDomain(int actorId, int packageId, int zoneItemId, string domainName,
-            bool hostingAllowed, int webSiteId, int mailDomainId, bool isSubDomain, bool isInstantAlias, bool isDomainPointer)
+            bool hostingAllowed, int webSiteId, int mailDomainId, bool isSubDomain, bool isPreviewDomain, bool isDomainPointer)
         {
             SqlParameter prmId = new SqlParameter("@DomainID", SqlDbType.Int);
             prmId.Direction = ParameterDirection.Output;
@@ -954,7 +954,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@WebSiteId", webSiteId),
                 new SqlParameter("@MailDomainId", mailDomainId),
                 new SqlParameter("@IsSubDomain", isSubDomain),
-                new SqlParameter("@IsInstantAlias", isInstantAlias),
+                new SqlParameter("@IsPreviewDomain", isPreviewDomain),
                 new SqlParameter("@IsDomainPointer", isDomainPointer));
 
             return Convert.ToInt32(prmId.Value);

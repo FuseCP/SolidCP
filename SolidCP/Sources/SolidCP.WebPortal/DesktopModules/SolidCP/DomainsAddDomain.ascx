@@ -51,15 +51,14 @@
                 <asp:Localize ID="DescribeEnableDns" runat="server" meta:resourcekey="DescribeEnableDns">Description...</asp:Localize>
             </div>
         </asp:Panel>
-<!--        
-        <asp:Panel id="InstantAliasPanel" runat="server" style="padding-bottom: 15px;">
-            <asp:CheckBox ID="CreateInstantAlias" runat="server" meta:resourcekey="CreateInstantAlias"
-                Text="Create Instant Alias" CssClass="Checkbox Bold" Checked="true" /><br />
+ 
+        <asp:Panel id="PreviewDomainPanel" runat="server" style="padding-bottom: 15px;">
+            <asp:CheckBox ID="CreatePreviewDomain" runat="server" meta:resourcekey="CreatePreviewDomain"
+                Text="Create Preview Domain" CssClass="input-group" Checked="true" /><br />
             <div style="padding-left: 20px;">
-                <asp:Localize ID="DescribeCreateInstantAlias" runat="server" meta:resourcekey="DescribeCreateInstantAlias">Description...</asp:Localize>
+                <asp:Localize ID="DescribeCreatePreviewDomain" runat="server" meta:resourcekey="DescribeCreatePreviewDomain">Description...</asp:Localize>
             </div>
-        </asp:Panel>
--->        
+        </asp:Panel>       
         <asp:Panel id="AllowSubDomainsPanel" runat="server" style="padding-bottom: 15px;">
             <asp:CheckBox ID="AllowSubDomains" runat="server" meta:resourcekey="AllowSubDomains" Text="Allow sub-domains" CssClass="input-group" /><br />
             <div style="padding-left: 20px;">

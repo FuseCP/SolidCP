@@ -247,94 +247,94 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.Localize locDnsDisabled;
         
         /// <summary>
-        /// InstantAliasPanel control.
+        /// PreviewDomainPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl InstantAliasPanel;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PreviewDomainPanel;
         
         /// <summary>
-        /// InstantAliasSection control.
+        /// PreviewDomainSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize InstantAliasSection;
+        protected global::System.Web.UI.WebControls.Localize PreviewDomainSection;
         
         /// <summary>
-        /// InstantAliasDisabled control.
+        /// PreviewDomainDisabled control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl InstantAliasDisabled;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PreviewDomainDisabled;
         
         /// <summary>
-        /// CreateInstantAlias control.
+        /// CreatePreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton CreateInstantAlias;
+       protected global::CPCC.StyleButton CreatePreviewDomain;
         
         /// <summary>
-        /// locInstantAliasDisabled control.
+        /// locPreviewDomainDisabled control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locInstantAliasDisabled;
+        protected global::System.Web.UI.WebControls.Localize locPreviewDomainDisabled;
         
         /// <summary>
-        /// InstantAliasEnabled control.
+        /// PreviewDomainEnabled control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl InstantAliasEnabled;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl PreviewDomainEnabled;
         
         /// <summary>
-        /// DeleteInstantAlias control.
+        /// DeletePreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton DeleteInstantAlias;
+       protected global::CPCC.StyleButton DeletePreviewDomain;
         
         /// <summary>
-        /// locInstantAliasEnabled control.
+        /// locPreviewDomainEnabled control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locInstantAliasEnabled;
+        protected global::System.Web.UI.WebControls.Localize locPreviewDomainEnabled;
         
         /// <summary>
-        /// locInstantAliasName control.
+        /// locPreviewDomainName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locInstantAliasName;
+        protected global::System.Web.UI.WebControls.Localize locPreviewDomainName;
         
         /// <summary>
-        /// InstantAliasName control.
+        /// PreviewDomainName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label InstantAliasName;
+        protected global::System.Web.UI.WebControls.Label PreviewDomainName;
         
         /// <summary>
         /// WebSiteAliasPanel control.

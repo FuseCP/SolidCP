@@ -184,7 +184,7 @@
                                 <asp:HyperLink ID="lnkPointer" runat="server" NavigateUrl='<%# "http://" + (string)Eval("DomainName") %>'
                                     Target="_blank"><%# Eval("DomainName") %></asp:HyperLink>
 
-                                <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsInstantAlias") %>' CssClass="btn btn-default pull-right btn-xs" OnClientClick="return confirm('Remove pointer?');">
+                                <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsPreviewDomain") %>' CssClass="btn btn-default pull-right btn-xs" OnClientClick="return confirm('Remove pointer?');">
                                    
 <i class="fa fa-trash">&nbsp;</i>&nbsp;Remove&nbsp;
                                

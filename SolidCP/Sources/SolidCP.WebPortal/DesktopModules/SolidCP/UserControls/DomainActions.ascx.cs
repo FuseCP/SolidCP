@@ -57,8 +57,8 @@ namespace SolidCP.Portal
         None = 0,
         EnableDns = 1,
         DisableDns = 2,
-        CreateInstantAlias = 3,
-        DeleteInstantAlias = 4,
+        CreatePreviewDomain = 3,
+        DeletePreviewDomain = 4,
     }
 
     public partial class DomainActions : ActionListControlBase<DomainActionTypes>
@@ -72,12 +72,12 @@ namespace SolidCP.Portal
                 RemoveActionItem(DomainActionTypes.DisableDns);
             }
 
-            // Remove Instant Alias items if current Hosting plan does not allow it
+            // Remove Preview Domain items if current Hosting plan does not allow it
             PackageSettings packageSettings = ES.Services.Packages.GetPackageSettings(PanelSecurity.PackageId, PackageSettings.INSTANT_ALIAS);
-            if (packageSettings == null || String.IsNullOrEmpty(packageSettings["InstantAlias"]))
+            if (packageSettings == null || String.IsNullOrEmpty(packageSettings["PreviewDomain"]))
             {
-                RemoveActionItem(DomainActionTypes.CreateInstantAlias);
-                RemoveActionItem(DomainActionTypes.DeleteInstantAlias);
+                RemoveActionItem(DomainActionTypes.CreatePreviewDomain);
+                RemoveActionItem(DomainActionTypes.DeletePreviewDomain);
             }
 
             // hide control if no actions allowed
@@ -100,10 +100,10 @@ namespace SolidCP.Portal
                     return EnableDns(true, ids);
                 case DomainActionTypes.DisableDns:
                     return EnableDns(false, ids);
-                case DomainActionTypes.CreateInstantAlias:
-                    return CreateInstantAlias(true, ids);
-                case DomainActionTypes.DeleteInstantAlias:
-                    return CreateInstantAlias(false, ids);
+                case DomainActionTypes.CreatePreviewDomain:
+                    return CreatePreviewDomain(true, ids);
+                case DomainActionTypes.DeletePreviewDomain:
+                    return CreatePreviewDomain(false, ids);
             }
 
             return 0;
@@ -115,8 +115,8 @@ namespace SolidCP.Portal
             {
                 case DomainActionTypes.EnableDns:
                 case DomainActionTypes.DisableDns:
-                case DomainActionTypes.CreateInstantAlias:
-                case DomainActionTypes.DeleteInstantAlias:
+                case DomainActionTypes.CreatePreviewDomain:
+                case DomainActionTypes.DeletePreviewDomain:
                     FireExecuteAction();
                     break;
             }
@@ -152,7 +152,7 @@ namespace SolidCP.Portal
             return 0;
         }
 
-        private int CreateInstantAlias(bool enable, List<int> ids)
+        private int CreatePreviewDomain(bool enable, List<int> ids)
         {
             foreach (var id in ids)
             {
@@ -161,17 +161,17 @@ namespace SolidCP.Portal
                 if (domain == null)
                     continue;
 
-                // instant alias
-                bool instantAliasAllowed = !String.IsNullOrEmpty(domain.InstantAliasName);
-                if (!instantAliasAllowed || domain.IsDomainPointer || domain.IsInstantAlias)
+                // Preview Domain
+                bool instantAliasAllowed = !String.IsNullOrEmpty(domain.PreviewDomainName);
+                if (!instantAliasAllowed || domain.IsDomainPointer || domain.IsPreviewDomain)
                     continue;
 
                 int result;
 
                 if (enable)
-                    result = ES.Services.Servers.CreateDomainInstantAlias("", id);
+                    result = ES.Services.Servers.CreateDomainPreviewDomain("", id);
                 else
-                    result = ES.Services.Servers.DeleteDomainInstantAlias(id);
+                    result = ES.Services.Servers.DeleteDomainPreviewDomain(id);
 
                 if (result < 0)
                     return result;

@@ -156,7 +156,7 @@
   <data name="DnsRecordsHeader.Text" xml:space="preserve">
     <value>DNS-Einträge-Vorlage</value>
   </data>
-  <data name="InstantAliasHeader.Text" xml:space="preserve">
+  <data name="PreviewDomainHeader.Text" xml:space="preserve">
     <value>Sofort-Alias</value>
   </data>
   <data name="IPAddressesHeader.Text" xml:space="preserve">
@@ -177,7 +177,7 @@
   <data name="lblAuthType.Text" xml:space="preserve">
     <value>Authentifizierungs-Typ:</value>
   </data>
-  <data name="lblInstantAlias.Text" xml:space="preserve">
+  <data name="lblPreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias</value>
   </data>
   <data name="lblNewPassword.Text" xml:space="preserve">

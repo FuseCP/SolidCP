@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblInstantAlias.Text" xml:space="preserve">
+  <data name="lblPreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias:</value>
   </data>
-  <data name="secInstantAlias.Text" xml:space="preserve">
+  <data name="secPreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias</value>
   </data>
 </root>

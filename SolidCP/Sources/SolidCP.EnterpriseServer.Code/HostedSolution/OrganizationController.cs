@@ -237,7 +237,7 @@ namespace SolidCP.EnterpriseServer
             DomainInfo domain = new DomainInfo();
             domain.PackageId = packageId;
             domain.DomainName = domainName;
-            domain.IsInstantAlias = true;
+            domain.IsPreviewDomain = true;
             domain.IsSubDomain = true;
 
             return domain;
@@ -1471,7 +1471,7 @@ namespace SolidCP.EnterpriseServer
                     domain = new DomainInfo();
                     domain.PackageId = org.PackageId;
                     domain.DomainName = domainName;
-                    domain.IsInstantAlias = false;
+                    domain.IsPreviewDomain = false;
                     domain.IsSubDomain = false;
 
                     int domainId = ServerController.AddDomain(domain);

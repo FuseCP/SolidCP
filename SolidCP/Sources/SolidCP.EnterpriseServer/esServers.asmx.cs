@@ -653,12 +653,12 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public int AddDomainWithProvisioning(int packageId, string domainName, DomainType domainType,
             bool createWebSite, int pointWebSiteId, int pointMailDomainId,
-            bool createDnsZone, bool createInstantAlias, bool allowSubDomains, string hostName)
+            bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName)
         {
 
             int res = ServerController.AddDomainWithProvisioning(packageId, domainName, domainType,
                         createWebSite, pointWebSiteId, pointMailDomainId,
-                        createDnsZone, createInstantAlias, allowSubDomains, hostName);
+                        createDnsZone, createPreviewDomain, allowSubDomains, hostName);
 
             PackageInfo pi = PackageController.GetPackage(packageId);
             UserInfoInternal customer = UserHelper.GetUser(pi.UserId);
@@ -736,15 +736,15 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public int CreateDomainInstantAlias(string hostName, int domainId)
+        public int CreateDomainPreviewDomain(string hostName, int domainId)
         {
-            return ServerController.CreateDomainInstantAlias(hostName, domainId);
+            return ServerController.CreateDomainPreviewDomain(hostName, domainId);
         }
 
         [WebMethod]
-        public int DeleteDomainInstantAlias(int domainId)
+        public int DeleteDomainPreviewDomain(int domainId)
         {
-            return ServerController.DeleteDomainInstantAlias(domainId);
+            return ServerController.DeleteDomainPreviewDomain(domainId);
         }
         #endregion
 

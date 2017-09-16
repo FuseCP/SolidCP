@@ -1066,14 +1066,14 @@ namespace SolidCP.EnterpriseServer
                     ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Mail, domain, "");
 				}
 
-				// check if instant alias must be added
-				if (!String.IsNullOrEmpty(domain.InstantAliasName))
+				// check if Preview Domain must be added
+				if (!String.IsNullOrEmpty(domain.PreviewDomainName))
 				{
-					// load instant alias
-					DomainInfo instantAlias = ServerController.GetDomain(domain.InstantAliasId);
-					if (instantAlias != null)
+					// load Preview Domain
+					DomainInfo previewDomain = ServerController.GetDomain(domain.PreviewDomainId);
+					if (previewDomain != null)
 					{
-						AddMailDomainPointer(itemId, instantAlias.DomainId);
+						AddMailDomainPointer(itemId, previewDomain.DomainId);
 					}
 				}
 

@@ -132,17 +132,17 @@
   <data name="BrowseWebSite.Text" xml:space="preserve">
     <value>Browse web site</value>
   </data>
-  <data name="CreateInstantAlias.OnClientClick" xml:space="preserve">
-    <value>ShowProgressDialog('Creating Instant Alias...');</value>
+  <data name="CreatePreviewDomain.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Creating preview domain...');</value>
   </data>
-  <data name="CreateInstantAlias.Text" xml:space="preserve">
-    <value>Create Instant Alias</value>
+  <data name="CreatePreviewDomain.Text" xml:space="preserve">
+    <value>Create Preview Domain</value>
   </data>
-  <data name="DeleteInstantAlias.OnClientClick" xml:space="preserve">
-    <value>if(!confirm('Remove instant alias from this domain?')) return false;ShowProgressDialog('Deleting Instant Alias...');</value>
+  <data name="DeletePreviewDomain.OnClientClick" xml:space="preserve">
+    <value>if(!confirm('Remove Preview Domain from this domain?')) return false;ShowProgressDialog('Deleting Preview Domain...');</value>
   </data>
-  <data name="DeleteInstantAlias.Text" xml:space="preserve">
-    <value>Delete Instant Alias</value>
+  <data name="DeletePreviewDomain.Text" xml:space="preserve">
+    <value>Delete Preview Domain</value>
   </data>
   <data name="DescribeAllowSubDomains.Text" xml:space="preserve">
     <value>Tick this option if you like to offer this domain to your customers to create their own free sub-domains.</value>
@@ -168,8 +168,8 @@
   <data name="EnableDns.Text" xml:space="preserve">
     <value>Enable DNS</value>
   </data>
-  <data name="InstantAliasSection.Text" xml:space="preserve">
-    <value>Instant Alias</value>
+  <data name="PreviewDomainSection.Text" xml:space="preserve">
+    <value>Preview Domain</value>
   </data>
   <data name="locDnsDisabled.Text" xml:space="preserve">
     <value>DNS is disabled for this domain.</value>
@@ -183,8 +183,8 @@
   <data name="locDomainPointWebSite.Text" xml:space="preserve">
     <value>This domain points to the following web site:</value>
   </data>
-  <data name="locInstantAliasEnabled.Text" xml:space="preserve">
-    <value>Instant alias is a temporary domain issued by hosting provider and used to access web site or mailbox during DNS propagation.</value>
+  <data name="locPreviewDomainEnabled.Text" xml:space="preserve">
+    <value>A Preview Domain is a temporary domain issued by us and used to access and test your web site or mailbox during DNS propagation or website migration.</value>
   </data>
   <data name="locMailDomain.Text" xml:space="preserve">
     <value>This domain is mail-enabled.</value>
@@ -207,11 +207,11 @@
   <data name="WebSiteSection.Text" xml:space="preserve">
     <value>Web Site</value>
   </data>
-  <data name="locInstantAliasDisabled.Text" xml:space="preserve">
-    <value>Instant alias is a temporary domain issued by hosting provider and used to access web site or mailbox during DNS propagation.&lt;br/&gt;&lt;br/&gt;Instant alias does not exist for this domain.</value>
+  <data name="locPreviewDomainDisabled.Text" xml:space="preserve">
+    <value>A Preview Domain is a temporary domain issued by us and used to access and test your web site or mailbox during DNS propagation or website migration.&lt;br/&gt;&lt;br/&gt;A Preview Domain does not exist for this domain.</value>
   </data>
-  <data name="locInstantAliasName.Text" xml:space="preserve">
-    <value>Instant alias for this domain:</value>
+  <data name="locPreviewDomainName.Text" xml:space="preserve">
+    <value>Preview Domain for this domain:</value>
   </data>
   <data name="btnDeleteText.Text" xml:space="preserve">
     <value>Delete</value>

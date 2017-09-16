@@ -137,7 +137,7 @@ namespace SolidCP.EnterpriseServer
                     domain.PackageId = org.PackageId;
                     domain.DomainName = strDomainName;
 
-                    domain.IsInstantAlias = false;
+                    domain.IsPreviewDomain = false;
                     domain.IsSubDomain = false;
                     domain.DomainId = ServerController.AddDomain(domain);
 

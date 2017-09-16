@@ -55,8 +55,8 @@ namespace SolidCP.Portal
 
             lnkNameServers.NavigateUrl = EditUrl("SettingsControl", "SpaceSettingsNameServers",
                 "edit_settings", "SettingsName=NameServers", "SpaceID=" + PanelSecurity.PackageId.ToString());
-            lnkInstantAlias.NavigateUrl = EditUrl("SettingsControl", "SpaceSettingsInstantAlias",
-                "edit_settings", "SettingsName=InstantAlias", "SpaceID=" + PanelSecurity.PackageId.ToString());
+            lnkPreviewDomain.NavigateUrl = EditUrl("SettingsControl", "SpaceSettingsPreviewDomain",
+                "edit_settings", "SettingsName=PreviewDomain", "SpaceID=" + PanelSecurity.PackageId.ToString());
             lnkSharedSSL.NavigateUrl = EditUrl("SettingsControl", "SpaceSettingsSharedSslSites",
                 "edit_settings", "SettingsName=SharedSslSites", "SpaceID=" + PanelSecurity.PackageId.ToString());
             lnkPackagesFolder.NavigateUrl = EditUrl("SettingsControl", "SpaceSettingsSpacesFolder",

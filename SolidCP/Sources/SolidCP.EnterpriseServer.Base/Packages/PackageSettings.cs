@@ -41,7 +41,7 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     public class PackageSettings
     {
-        public const string INSTANT_ALIAS = "InstantAlias";
+        public const string INSTANT_ALIAS = "PreviewDomain";
         public const string SPACES_FOLDER = "ChildSpacesFolder";
         public const string NAME_SERVERS = "NameServers";
         public const string SHARED_SSL_SITES = "SharedSslSites";

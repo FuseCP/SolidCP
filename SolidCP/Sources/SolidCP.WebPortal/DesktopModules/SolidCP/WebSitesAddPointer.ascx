@@ -6,7 +6,7 @@
      <div class="col-sm-10 form-inline">
 			<asp:TextBox ID="txtHostName" runat="server" CssClass="form-control" MaxLength="64"></asp:TextBox>
             <asp:Label ID="lblTheDotInTheMiddle" runat="server" meta:resourcekey="lblTheDotInTheMiddle" Text=" . "></asp:Label>
-            <uc1:DomainsSelectDomainControl ID="domainsSelectDomainControl" runat="server" CssClass="form-control" HideWebSites="false" HideDomainPointers="true" HideInstantAlias="true"/>
+            <uc1:DomainsSelectDomainControl ID="domainsSelectDomainControl" runat="server" CssClass="form-control" HideWebSites="false" HideDomainPointers="true" HidePreviewDomain="true"/>
             <asp:RegularExpressionValidator ID="valRequireCorrectHostName" runat="server"
 	                ErrorMessage="Enter valid hostname" ControlToValidate="txtHostName" Display="Dynamic"
 	                meta:resourcekey="valRequireCorrectHostName" ValidationExpression="^([0-9a-zæöøåüA-ZÆÖØÅÜ])*[0-9a-zæöøåüA-ZÆÖØÅÜ]+$" SetFocusOnError="True"></asp:RegularExpressionValidator>

@@ -107,15 +107,15 @@
     </asp:Panel>
 
 
-    <scp:CollapsiblePanel ID="secInstantAlias" runat="server" IsCollapsed="true"
-        TargetControlID="InstantAliasPanel" ResourceKey="secInstantAlias" Text="Instant Alias">
+    <scp:CollapsiblePanel ID="secPreviewDomain" runat="server" IsCollapsed="true"
+        TargetControlID="PreviewDomainPanel" ResourceKey="secPreviewDomain" Text="Preview Domain">
 	</scp:CollapsiblePanel>
-    <asp:Panel ID="InstantAliasPanel" runat="server">
+    <asp:Panel ID="PreviewDomainPanel" runat="server">
          <div class="form-inline">
       customerdomain.com.&nbsp;
-       <asp:TextBox ID="txtInstantAlias" runat="server" CssClass="form-control"></asp:TextBox>
+       <asp:TextBox ID="txtPreviewDomain" runat="server" CssClass="form-control"></asp:TextBox>
                     <asp:RegularExpressionValidator ID="DomainFormatValidator" ValidationGroup="VirtualServer" runat="server" meta:resourcekey="DomainFormatValidator"
-                        ControlToValidate="txtInstantAlias" Display="Dynamic" SetFocusOnError="true"
+                        ControlToValidate="txtPreviewDomain" Display="Dynamic" SetFocusOnError="true"
                         ValidationExpression="^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.){1,16}[a-zA-Z]{2,15}$"></asp:RegularExpressionValidator>
              </div>
     </asp:Panel>

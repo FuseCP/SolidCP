@@ -126,11 +126,11 @@
   <data name="ddlDomainActionsItem.Actions" xml:space="preserve">
     <value>- Actions -</value>
   </data>
-  <data name="ddlDomainActionsItem.CreateInstantAlias" xml:space="preserve">
-    <value>Create Instant Alias</value>
+  <data name="ddlDomainActionsItem.CreatePreviewDomain" xml:space="preserve">
+    <value>Create Preview Domain</value>
   </data>
-  <data name="ddlDomainActionsItem.DeleteInstantAlias" xml:space="preserve">
-    <value>Delete Instant Alias</value>
+  <data name="ddlDomainActionsItem.DeletePreviewDomain" xml:space="preserve">
+    <value>Delete Preview Domain</value>
   </data>
   <data name="ddlDomainActionsItem.DisableDns" xml:space="preserve">
     <value>Disable Dns</value>

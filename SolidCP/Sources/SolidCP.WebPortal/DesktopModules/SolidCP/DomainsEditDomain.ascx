@@ -72,32 +72,32 @@
     </fieldset>
     
     
-    <fieldset id="InstantAliasPanel" runat="server" visible="false">
-        <legend><asp:Localize ID="InstantAliasSection" runat="server" meta:resourcekey="InstantAliasSection" Text="Instant alias"></asp:Localize></legend>
+    <fieldset id="PreviewDomainPanel" runat="server" visible="false">
+        <legend><asp:Localize ID="PreviewDomainSection" runat="server" meta:resourcekey="PreviewDomainSection" Text="Preview Domain"></asp:Localize></legend>
         
-        <div id="InstantAliasDisabled" runat="server">
+        <div id="PreviewDomainDisabled" runat="server">
             <ul class="VerticalButtons">
-                <li><CPCC:StyleButton ID="CreateInstantAlias"  CssClass="btn btn-primary" runat="server" 
-                    meta:resourcekey="CreateInstantAlias" Text="Create Instant Alias" 
-                    onclick="CreateInstantAlias_Click"></CPCC:StyleButton></li>
+                <li><CPCC:StyleButton ID="CreatePreviewDomain"  CssClass="btn btn-primary" runat="server" 
+                    meta:resourcekey="CreatePreviewDomain" Text="Create Preview Domain" 
+                    onclick="CreatePreviewDomain_Click"></CPCC:StyleButton></li>
             </ul>
             <div class="FormRow">
-                <asp:Localize ID="locInstantAliasDisabled" runat="server" meta:resourcekey="locInstantAliasDisabled" Text="Instant alias ..."></asp:Localize>
+                <asp:Localize ID="locPreviewDomainDisabled" runat="server" meta:resourcekey="locPreviewDomainDisabled" Text="Preview Domain ..."></asp:Localize>
             </div>
         </div>
         
-        <div id="InstantAliasEnabled" runat="server">
+        <div id="PreviewDomainEnabled" runat="server">
             <ul class="VerticalButtons">
-                <li><CPCC:StyleButton ID="DeleteInstantAlias" CssClass="btn btn-danger" runat="server" 
-                    meta:resourcekey="DeleteInstantAlias" Text="Delete Instant Alias" 
-                    onclick="DeleteInstantAlias_Click"></CPCC:StyleButton></li>
+                <li><CPCC:StyleButton ID="DeletePreviewDomain" CssClass="btn btn-danger" runat="server" 
+                    meta:resourcekey="DeletePreviewDomain" Text="Delete Preview Domain" 
+                    onclick="DeletePreviewDomain_Click"></CPCC:StyleButton></li>
             </ul>
             <div class="FormRow">
-                <asp:Localize ID="locInstantAliasEnabled" runat="server" meta:resourcekey="locInstantAliasEnabled" Text="Instant alias ..."></asp:Localize>
+                <asp:Localize ID="locPreviewDomainEnabled" runat="server" meta:resourcekey="locPreviewDomainEnabled" Text="Preview Domain ..."></asp:Localize>
             </div>
             <div class="FormRow">
-                <asp:Localize ID="locInstantAliasName" runat="server" meta:resourcekey="locInstantAliasName" Text="Instant alias for this domain:"></asp:Localize><br />
-                <asp:Label ID="InstantAliasName" runat="server" CssClass="NormalBold"></asp:Label>
+                <asp:Localize ID="locPreviewDomainName" runat="server" meta:resourcekey="locPreviewDomainName" Text="Preview Domain for this domain:"></asp:Localize><br />
+                <asp:Label ID="PreviewDomainName" runat="server" CssClass="NormalBold"></asp:Label>
             </div>
             <div id="WebSiteAliasPanel" runat="server" visible="false" class="FormRow">
                 <asp:Localize ID="locWebSiteAlias" runat="server" meta:resourcekey="locWebSiteAlias" Text="Web site temporary URL:"></asp:Localize><br />

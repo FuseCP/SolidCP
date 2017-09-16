@@ -61,10 +61,10 @@ namespace SolidCP.Portal
             set { ViewState["HideWebSites"] = value; }
         }
 
-        public bool HideInstantAlias
+        public bool HidePreviewDomain
         {
-            get { return (ViewState["HideInstantAlias"] != null) ? (bool)ViewState["HideInstantAlias"] : false; }
-            set { ViewState["HideInstantAlias"] = value; }
+            get { return (ViewState["HidePreviewDomain"] != null) ? (bool)ViewState["HidePreviewDomain"] : false; }
+            set { ViewState["HidePreviewDomain"] = value; }
         }
 
         public bool HideMailDomains
@@ -199,7 +199,7 @@ namespace SolidCP.Portal
                 }
 
                 
-                if (HideInstantAlias && domain.IsInstantAlias)
+                if (HidePreviewDomain && domain.IsPreviewDomain)
                     continue;
                 else if (HideMailDomains && domain.MailDomainId > 0)
                     continue;

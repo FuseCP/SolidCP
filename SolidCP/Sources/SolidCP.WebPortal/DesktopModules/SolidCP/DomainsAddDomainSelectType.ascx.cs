@@ -78,7 +78,7 @@ namespace SolidCP.Portal
             bool enableSubDomains = false;
             foreach(DomainInfo domain in myDomains)
             {
-                if(!domain.IsSubDomain && !domain.IsInstantAlias && !domain.IsDomainPointer)
+                if(!domain.IsSubDomain && !domain.IsPreviewDomain && !domain.IsDomainPointer)
                 {
                     enableSubDomains = true;
                     break;

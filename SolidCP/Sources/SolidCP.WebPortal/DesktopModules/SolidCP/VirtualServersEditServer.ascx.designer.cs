@@ -166,31 +166,31 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.GlobalDnsRecordsControl GlobalDnsRecordsControl;
         
         /// <summary>
-        /// secInstantAlias control.
+        /// secPreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SolidCP.Portal.CollapsiblePanel secInstantAlias;
+        protected global::SolidCP.Portal.CollapsiblePanel secPreviewDomain;
         
         /// <summary>
-        /// InstantAliasPanel control.
+        /// PreviewDomainPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel InstantAliasPanel;
+        protected global::System.Web.UI.WebControls.Panel PreviewDomainPanel;
         
         /// <summary>
-        /// txtInstantAlias control.
+        /// txtPreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtInstantAlias;
+        protected global::System.Web.UI.WebControls.TextBox txtPreviewDomain;
         
         /// <summary>
         /// DomainFormatValidator control.

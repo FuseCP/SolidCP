@@ -82,9 +82,9 @@ namespace SolidCP.EnterpriseServer {
         
         private System.Threading.SendOrPostCallback DisableDomainDnsOperationCompleted;
         
-        private System.Threading.SendOrPostCallback CreateDomainInstantAliasOperationCompleted;
+        private System.Threading.SendOrPostCallback CreateDomainPreviewDomainOperationCompleted;
         
-        private System.Threading.SendOrPostCallback DeleteDomainInstantAliasOperationCompleted;
+        private System.Threading.SendOrPostCallback DeleteDomainPreviewDomainOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDnsZoneRecordsOperationCompleted;
         
@@ -357,10 +357,10 @@ namespace SolidCP.EnterpriseServer {
         public event DisableDomainDnsCompletedEventHandler DisableDomainDnsCompleted;
         
         /// <remarks/>
-        public event CreateDomainInstantAliasCompletedEventHandler CreateDomainInstantAliasCompleted;
+        public event CreateDomainPreviewDomainCompletedEventHandler CreateDomainPreviewDomainCompleted;
         
         /// <remarks/>
-        public event DeleteDomainInstantAliasCompletedEventHandler DeleteDomainInstantAliasCompleted;
+        public event DeleteDomainPreviewDomainCompletedEventHandler DeleteDomainPreviewDomainCompleted;
         
         /// <remarks/>
         public event GetDnsZoneRecordsCompletedEventHandler GetDnsZoneRecordsCompleted;
@@ -1411,7 +1411,7 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddDomainWithProvisioning", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int AddDomainWithProvisioning(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createInstantAlias, bool allowSubDomains, string hostName) {
+        public int AddDomainWithProvisioning(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName) {
             object[] results = this.Invoke("AddDomainWithProvisioning", new object[] {
                         packageId,
                         domainName,
@@ -1420,14 +1420,14 @@ namespace SolidCP.EnterpriseServer {
                         pointWebSiteId,
                         pointMailDomainId,
                         createDnsZone,
-                        createInstantAlias,
+                        createPreviewDomain,
                         allowSubDomains,
                         hostName});
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginAddDomainWithProvisioning(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createInstantAlias, bool allowSubDomains, string hostName, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginAddDomainWithProvisioning(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("AddDomainWithProvisioning", new object[] {
                         packageId,
                         domainName,
@@ -1436,7 +1436,7 @@ namespace SolidCP.EnterpriseServer {
                         pointWebSiteId,
                         pointMailDomainId,
                         createDnsZone,
-                        createInstantAlias,
+                        createPreviewDomain,
                         allowSubDomains,
                         hostName}, callback, asyncState);
         }
@@ -1448,12 +1448,12 @@ namespace SolidCP.EnterpriseServer {
         }
         
         /// <remarks/>
-        public void AddDomainWithProvisioningAsync(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createInstantAlias, bool allowSubDomains, string hostName) {
-            this.AddDomainWithProvisioningAsync(packageId, domainName, domainType, createWebSite, pointWebSiteId, pointMailDomainId, createDnsZone, createInstantAlias, allowSubDomains, hostName, null);
+        public void AddDomainWithProvisioningAsync(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName) {
+            this.AddDomainWithProvisioningAsync(packageId, domainName, domainType, createWebSite, pointWebSiteId, pointMailDomainId, createDnsZone, createPreviewDomain, allowSubDomains, hostName, null);
         }
         
         /// <remarks/>
-        public void AddDomainWithProvisioningAsync(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createInstantAlias, bool allowSubDomains, string hostName, object userState) {
+        public void AddDomainWithProvisioningAsync(int packageId, string domainName, DomainType domainType, bool createWebSite, int pointWebSiteId, int pointMailDomainId, bool createDnsZone, bool createPreviewDomain, bool allowSubDomains, string hostName, object userState) {
             if ((this.AddDomainWithProvisioningOperationCompleted == null)) {
                 this.AddDomainWithProvisioningOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddDomainWithProvisioningOperationCompleted);
             }
@@ -1465,7 +1465,7 @@ namespace SolidCP.EnterpriseServer {
                         pointWebSiteId,
                         pointMailDomainId,
                         createDnsZone,
-                        createInstantAlias,
+                        createPreviewDomain,
                         allowSubDomains,
                         hostName}, this.AddDomainWithProvisioningOperationCompleted, userState);
         }
@@ -1683,87 +1683,87 @@ namespace SolidCP.EnterpriseServer {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateDomainInstantAlias", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int CreateDomainInstantAlias(string hostName, int domainId) {
-            object[] results = this.Invoke("CreateDomainInstantAlias", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateDomainPreviewDomain", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int CreateDomainPreviewDomain(string hostName, int domainId) {
+            object[] results = this.Invoke("CreateDomainPreviewDomain", new object[] {
                         hostName,
                         domainId});
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginCreateDomainInstantAlias(string hostName, int domainId, System.AsyncCallback callback, object asyncState) {
-            return this.BeginInvoke("CreateDomainInstantAlias", new object[] {
+        public System.IAsyncResult BeginCreateDomainPreviewDomain(string hostName, int domainId, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("CreateDomainPreviewDomain", new object[] {
                         hostName,
                         domainId}, callback, asyncState);
         }
         
         /// <remarks/>
-        public int EndCreateDomainInstantAlias(System.IAsyncResult asyncResult) {
+        public int EndCreateDomainPreviewDomain(System.IAsyncResult asyncResult) {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public void CreateDomainInstantAliasAsync(string hostName, int domainId) {
-            this.CreateDomainInstantAliasAsync(hostName, domainId, null);
+        public void CreateDomainPreviewDomainAsync(string hostName, int domainId) {
+            this.CreateDomainPreviewDomainAsync(hostName, domainId, null);
         }
         
         /// <remarks/>
-        public void CreateDomainInstantAliasAsync(string hostName, int domainId, object userState) {
-            if ((this.CreateDomainInstantAliasOperationCompleted == null)) {
-                this.CreateDomainInstantAliasOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateDomainInstantAliasOperationCompleted);
+        public void CreateDomainPreviewDomainAsync(string hostName, int domainId, object userState) {
+            if ((this.CreateDomainPreviewDomainOperationCompleted == null)) {
+                this.CreateDomainPreviewDomainOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateDomainPreviewDomainOperationCompleted);
             }
-            this.InvokeAsync("CreateDomainInstantAlias", new object[] {
+            this.InvokeAsync("CreateDomainPreviewDomain", new object[] {
                         hostName,
-                        domainId}, this.CreateDomainInstantAliasOperationCompleted, userState);
+                        domainId}, this.CreateDomainPreviewDomainOperationCompleted, userState);
         }
         
-        private void OnCreateDomainInstantAliasOperationCompleted(object arg) {
-            if ((this.CreateDomainInstantAliasCompleted != null)) {
+        private void OnCreateDomainPreviewDomainOperationCompleted(object arg) {
+            if ((this.CreateDomainPreviewDomainCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CreateDomainInstantAliasCompleted(this, new CreateDomainInstantAliasCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.CreateDomainPreviewDomainCompleted(this, new CreateDomainPreviewDomainCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteDomainInstantAlias", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int DeleteDomainInstantAlias(int domainId) {
-            object[] results = this.Invoke("DeleteDomainInstantAlias", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteDomainPreviewDomain", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int DeleteDomainPreviewDomain(int domainId) {
+            object[] results = this.Invoke("DeleteDomainPreviewDomain", new object[] {
                         domainId});
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteDomainInstantAlias(int domainId, System.AsyncCallback callback, object asyncState) {
-            return this.BeginInvoke("DeleteDomainInstantAlias", new object[] {
+        public System.IAsyncResult BeginDeleteDomainPreviewDomain(int domainId, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("DeleteDomainPreviewDomain", new object[] {
                         domainId}, callback, asyncState);
         }
         
         /// <remarks/>
-        public int EndDeleteDomainInstantAlias(System.IAsyncResult asyncResult) {
+        public int EndDeleteDomainPreviewDomain(System.IAsyncResult asyncResult) {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
         
         /// <remarks/>
-        public void DeleteDomainInstantAliasAsync(int domainId) {
-            this.DeleteDomainInstantAliasAsync(domainId, null);
+        public void DeleteDomainPreviewDomainAsync(int domainId) {
+            this.DeleteDomainPreviewDomainAsync(domainId, null);
         }
         
         /// <remarks/>
-        public void DeleteDomainInstantAliasAsync(int domainId, object userState) {
-            if ((this.DeleteDomainInstantAliasOperationCompleted == null)) {
-                this.DeleteDomainInstantAliasOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteDomainInstantAliasOperationCompleted);
+        public void DeleteDomainPreviewDomainAsync(int domainId, object userState) {
+            if ((this.DeleteDomainPreviewDomainOperationCompleted == null)) {
+                this.DeleteDomainPreviewDomainOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteDomainPreviewDomainOperationCompleted);
             }
-            this.InvokeAsync("DeleteDomainInstantAlias", new object[] {
-                        domainId}, this.DeleteDomainInstantAliasOperationCompleted, userState);
+            this.InvokeAsync("DeleteDomainPreviewDomain", new object[] {
+                        domainId}, this.DeleteDomainPreviewDomainOperationCompleted, userState);
         }
         
-        private void OnDeleteDomainInstantAliasOperationCompleted(object arg) {
-            if ((this.DeleteDomainInstantAliasCompleted != null)) {
+        private void OnDeleteDomainPreviewDomainOperationCompleted(object arg) {
+            if ((this.DeleteDomainPreviewDomainCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.DeleteDomainInstantAliasCompleted(this, new DeleteDomainInstantAliasCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.DeleteDomainPreviewDomainCompleted(this, new DeleteDomainPreviewDomainCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -6658,17 +6658,17 @@ namespace SolidCP.EnterpriseServer {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void CreateDomainInstantAliasCompletedEventHandler(object sender, CreateDomainInstantAliasCompletedEventArgs e);
+    public delegate void CreateDomainPreviewDomainCompletedEventHandler(object sender, CreateDomainPreviewDomainCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CreateDomainInstantAliasCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class CreateDomainPreviewDomainCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal CreateDomainInstantAliasCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal CreateDomainPreviewDomainCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -6684,17 +6684,17 @@ namespace SolidCP.EnterpriseServer {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void DeleteDomainInstantAliasCompletedEventHandler(object sender, DeleteDomainInstantAliasCompletedEventArgs e);
+    public delegate void DeleteDomainPreviewDomainCompletedEventHandler(object sender, DeleteDomainPreviewDomainCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DeleteDomainInstantAliasCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class DeleteDomainPreviewDomainCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal DeleteDomainInstantAliasCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal DeleteDomainPreviewDomainCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

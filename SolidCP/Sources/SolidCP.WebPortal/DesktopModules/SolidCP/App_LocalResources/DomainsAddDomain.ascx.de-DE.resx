@@ -126,7 +126,7 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
-  <data name="CreateInstantAlias.Text" xml:space="preserve">
+  <data name="CreatePreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias erstellen</value>
   </data>
   <data name="CreateWebSite.Text" xml:space="preserve">
@@ -135,7 +135,7 @@
   <data name="DescribeAllowSubDomains.Text" xml:space="preserve">
     <value>Aktivieren Sie diese Checkbox, falls Sie diese Domäne Ihren Kunden anbieten wollen, um ihre eigenen freien Subdomänen anzulegen.</value>
   </data>
-  <data name="DescribeCreateInstantAlias.Text" xml:space="preserve">
+  <data name="DescribeCreatePreviewDomain.Text" xml:space="preserve">
     <value>Aktivieren Sie diese Checkbox, falls Sie Zugriff zu Ihrer Webseite oder Postfächern brauchen bevor die DNS-Aktualisierung stattgefunden hat. DNS-Aktualisierung ist die Zeit, die benötigt wird, um die Informationen zu dieser DNS-Zone überall im Internet zu verteilen. Dieser Vorgang kann zwischen 4 bis 24 Stunden dauern.</value>
   </data>
   <data name="DescribeCreateWebSite.Text" xml:space="preserve">

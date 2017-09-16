@@ -283,31 +283,31 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.Button btnChangeADPassword;
         
         /// <summary>
-        /// InstantAliasHeader control.
+        /// PreviewDomainHeader control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SolidCP.Portal.CollapsiblePanel InstantAliasHeader;
+        protected global::SolidCP.Portal.CollapsiblePanel PreviewDomainHeader;
         
         /// <summary>
-        /// InstantAliasPanel control.
+        /// PreviewDomainPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel InstantAliasPanel;
+        protected global::System.Web.UI.WebControls.Panel PreviewDomainPanel;
         
         /// <summary>
-        /// txtInstantAlias control.
+        /// txtPreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtInstantAlias;
+        protected global::System.Web.UI.WebControls.TextBox txtPreviewDomain;
         
         /// <summary>
         /// DomainFormatValidator control.

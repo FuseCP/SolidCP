@@ -126,8 +126,8 @@
   <data name="btnCancel.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="CreateInstantAlias.Text" xml:space="preserve">
-    <value>Create Instant Alias</value>
+  <data name="CreatePreviewDomain.Text" xml:space="preserve">
+    <value>Create Preview Domain</value>
   </data>
   <data name="CreateWebSite.Text" xml:space="preserve">
     <value>Create Web Site</value>
@@ -135,7 +135,7 @@
   <data name="DescribeAllowSubDomains.Text" xml:space="preserve">
     <value>Tick this option if you like to offer this domain to your customers to create their own free sub-domains.</value>
   </data>
-  <data name="DescribeCreateInstantAlias.Text" xml:space="preserve">
+  <data name="DescribeCreatePreviewDomain.Text" xml:space="preserve">
     <value>Tick this checkbox if you need to access your web site or mailboxes before DNS propagation takes places. DNS propagation is the time required to spread the information about DNS zone all over the Internet. It could take up to 72 hours.</value>
   </data>
   <data name="DescribeCreateWebSite.Text" xml:space="preserve">

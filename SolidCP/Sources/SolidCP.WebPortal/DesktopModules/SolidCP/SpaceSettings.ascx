@@ -14,7 +14,7 @@
             <asp:HyperLink ID="lnkNameServers" runat="server" meta:resourcekey="lnkNameServers" Text="Name Servers"></asp:HyperLink>
         </div>
         <div class="ToolLink">
-            <asp:HyperLink ID="lnkInstantAlias" runat="server" meta:resourcekey="lnkInstantAlias" Text="Instant Alias"></asp:HyperLink>
+            <asp:HyperLink ID="lnkPreviewDomain" runat="server" meta:resourcekey="lnkPreviewDomain" Text="Preview Domain"></asp:HyperLink>
         </div>
         <div class="ToolLink">
             <asp:HyperLink ID="lnkSharedSSL" runat="server" meta:resourcekey="lnkSharedSSL" Text="Shared SSL Sites"></asp:HyperLink>

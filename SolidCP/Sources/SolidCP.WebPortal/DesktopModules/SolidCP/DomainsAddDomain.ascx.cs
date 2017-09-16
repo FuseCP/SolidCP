@@ -155,14 +155,14 @@ namespace SolidCP.Portal
 			EnableDnsPanel.Visible = cntx.Groups.ContainsKey(ResourceGroups.Dns);
 			EnableDns.Checked &= EnableDnsPanel.Visible;
 
-			// instant alias
-			// check if instant alias was setup
-			bool instantAliasAllowed = false;
+            // Preview Domain
+            // check if Preview Domain was setup
+            bool instantAliasAllowed = false;
 			PackageSettings settings = ES.Services.Packages.GetPackageSettings(PanelSecurity.PackageId, PackageSettings.INSTANT_ALIAS);
-			instantAliasAllowed = (settings != null && !String.IsNullOrEmpty(settings["InstantAlias"]));
+			instantAliasAllowed = (settings != null && !String.IsNullOrEmpty(settings["PreviewDomain"]));
 
-			InstantAliasPanel.Visible = instantAliasAllowed && (type != DomainType.DomainPointer) /*&& EnableDnsPanel.Visible*/;
-			CreateInstantAlias.Checked &= InstantAliasPanel.Visible;
+			PreviewDomainPanel.Visible = instantAliasAllowed && (type != DomainType.DomainPointer) /*&& EnableDnsPanel.Visible*/;
+			CreatePreviewDomain.Checked &= PreviewDomainPanel.Visible;
 
 			// allow sub-domains
 			AllowSubDomainsPanel.Visible = (type == DomainType.Domain) && PanelSecurity.EffectiveUser.Role != UserRole.User;
@@ -190,7 +190,7 @@ namespace SolidCP.Portal
 			// filter domains
 			List<DomainInfo> domains = new List<DomainInfo>();
 			foreach (DomainInfo domain in allDomains)
-				if (!domain.IsDomainPointer && !domain.IsSubDomain && !domain.IsInstantAlias)
+				if (!domain.IsDomainPointer && !domain.IsSubDomain && !domain.IsPreviewDomain)
 					domains.Add(domain);
 
             DomainName.DataSource = domains;
@@ -240,7 +240,7 @@ namespace SolidCP.Portal
 			{
 				domainId = ES.Services.Servers.AddDomainWithProvisioning(PanelSecurity.PackageId,
 					domainName.ToLower(), type, CreateWebSite.Checked, pointWebSiteId, pointMailDomainId,
-                    EnableDns.Checked, CreateInstantAlias.Checked, AllowSubDomains.Checked, (PointWebSite.Checked && WebSitesList.Items.Count > 0) ? string.Empty : txtHostName.Text.ToLower());
+                    EnableDns.Checked, CreatePreviewDomain.Checked, AllowSubDomains.Checked, (PointWebSite.Checked && WebSitesList.Items.Count > 0) ? string.Empty : txtHostName.Text.ToLower());
 
 				if (domainId < 0)
 				{

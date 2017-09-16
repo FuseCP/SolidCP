@@ -139,8 +139,8 @@ namespace SolidCP.Portal
             txtDomainName.Text = server.ADRootDomain;
             txtAdUsername.Text = server.ADUsername;
 
-            // instant alias
-            txtInstantAlias.Text = server.InstantDomainAlias;
+            // Preview Domain
+            txtPreviewDomain.Text = server.InstantDomainAlias;
         }
 
 		private void BindServerVersion()
@@ -186,8 +186,8 @@ namespace SolidCP.Portal
             server.ADRootDomain = txtDomainName.Text;
             server.ADUsername = txtAdUsername.Text;
 
-            // instant alias
-            server.InstantDomainAlias = txtInstantAlias.Text;
+            // Preview Domain
+            server.InstantDomainAlias = txtPreviewDomain.Text;
 
             try
             {

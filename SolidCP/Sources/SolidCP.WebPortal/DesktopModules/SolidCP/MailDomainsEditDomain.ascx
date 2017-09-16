@@ -31,7 +31,7 @@ function confirmation()
 		            <ItemStyle Wrap="false" Width="100%"></ItemStyle>
 		            <ItemTemplate>
                         <%# Eval("DomainName") %>
-                        <CPCC:StyleButton id="cmdDeletePointer" CssClass="btn btn-danger" runat="server" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' OnClientClick="return confirm('Remove pointer?');" Visible='<%# !(bool)Eval("IsInstantAlias") %>'> 
+                        <CPCC:StyleButton id="cmdDeletePointer" CssClass="btn btn-danger" runat="server" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' OnClientClick="return confirm('Remove pointer?');" Visible='<%# !(bool)Eval("IsPreviewDomain") %>'> 
                             &nbsp;<i class="fa fa-trash-o"></i>&nbsp; 
                         </CPCC:StyleButton>
 		            </ItemTemplate>

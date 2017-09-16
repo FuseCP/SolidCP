@@ -416,7 +416,7 @@ namespace SolidCP.EnterpriseServer
 
         public static PackageResult AddPackageWithResources(int userId, int planId, string spaceName,
             int statusId, bool sendLetter,
-            bool createResources, string domainName, bool createInstantAlias, bool createWebSite,
+            bool createResources, string domainName, bool createPreviewDomain, bool createWebSite,
             bool createFtpAccount, string ftpAccountName, bool createMailAccount, string hostName)
         {
             try
@@ -520,8 +520,8 @@ namespace SolidCP.EnterpriseServer
                                 }
                             }
 
-                            if (createInstantAlias)
-                                ServerController.CreateDomainInstantAlias("", domainId);
+                            if (createPreviewDomain)
+                                ServerController.CreateDomainPreviewDomain("", domainId);
 
                         }
                         catch (Exception ex)
@@ -537,7 +537,7 @@ namespace SolidCP.EnterpriseServer
                         // create web site
                         try
                         {
-                            int webSiteId = WebServerController.AddWebSite(packageId, hostName, domainId, 0, createInstantAlias, false);
+                            int webSiteId = WebServerController.AddWebSite(packageId, hostName, domainId, 0, createPreviewDomain, false);
                             if (webSiteId < 0)
                             {
                                 result.Result = webSiteId;
@@ -631,13 +631,13 @@ namespace SolidCP.EnterpriseServer
                             int mailDomainId = mailDomain.Id;
 
                             // set mail domain pointer
-                            // load domain instant alias
-                            string instantAlias = ServerController.GetDomainAlias(packageId, domainName);
-                            DomainInfo instantDomain = ServerController.GetDomain(instantAlias);
+                            // load domain Preview Domain
+                            string previewDomain = ServerController.GetDomainAlias(packageId, domainName);
+                            DomainInfo instantDomain = ServerController.GetDomain(previewDomain);
                             if (instantDomain == null || instantDomain.MailDomainId > 0)
-                                instantAlias = "";
+                                previewDomain = "";
 
-                            if (!String.IsNullOrEmpty(instantAlias))
+                            if (!String.IsNullOrEmpty(previewDomain))
                                 MailServerController.AddMailDomainPointer(mailDomainId, instantDomain.DomainId);
                         }
                         catch (Exception ex)
@@ -1648,7 +1648,7 @@ namespace SolidCP.EnterpriseServer
             // set root settings if required
             if (settings.PackageId < 2)
             {
-                // instant alias
+                // Preview Domain
                 if (String.Compare(PackageSettings.INSTANT_ALIAS, settingsName, true) == 0)
                 {
                     // load package info
@@ -1657,7 +1657,7 @@ namespace SolidCP.EnterpriseServer
                     // load package server
                     ServerInfo srv = ServerController.GetServerByIdInternal(package.ServerId);
                     if (srv != null)
-                        settings["InstantAlias"] = srv.InstantDomainAlias;
+                        settings["PreviewDomain"] = srv.InstantDomainAlias;
                 }
 
                 // name servers
@@ -2010,13 +2010,13 @@ namespace SolidCP.EnterpriseServer
 
             items["NameServers"] = nameServers;
 
-            // instant alias
-            string instantAlias = null;
+            // Preview Domain
+            string previewDomain = null;
             packageSettings = PackageController.GetPackageSettings(packageId, PackageSettings.INSTANT_ALIAS);
-            if (!String.IsNullOrEmpty(packageSettings["InstantAlias"]))
-                instantAlias = packageSettings["InstantAlias"];
+            if (!String.IsNullOrEmpty(packageSettings["PreviewDomain"]))
+                previewDomain = packageSettings["PreviewDomain"];
 
-            items["InstantAlias"] = instantAlias;
+            items["PreviewDomain"] = previewDomain;
 
             // web sites
             List<SolidCP.Providers.Web.WebSite> webSites =

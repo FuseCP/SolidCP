@@ -126,10 +126,10 @@
   <data name="ddlDomainActionsItem.Actions" xml:space="preserve">
     <value>- Aktionen -</value>
   </data>
-  <data name="ddlDomainActionsItem.CreateInstantAlias" xml:space="preserve">
+  <data name="ddlDomainActionsItem.CreatePreviewDomain" xml:space="preserve">
     <value>Sofort-Alias erstellen</value>
   </data>
-  <data name="ddlDomainActionsItem.DeleteInstantAlias" xml:space="preserve">
+  <data name="ddlDomainActionsItem.DeletePreviewDomain" xml:space="preserve">
     <value>Sofort-Alias löschen</value>
   </data>
   <data name="ddlDomainActionsItem.DisableDns" xml:space="preserve">

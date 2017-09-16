@@ -116,7 +116,7 @@ namespace SolidCP.Portal
                 parameterName + "=" + parameterValue);
         }
 
-        public string GetDomainTypeName(bool isSubDomain, bool isInstantAlias, bool isDomainPointer)
+        public string GetDomainTypeName(bool isSubDomain, bool isPreviewDomain, bool isDomainPointer)
         {
             if(isDomainPointer)
                 return GetLocalizedString("DomainType.DomainPointer");

@@ -727,7 +727,7 @@
     <value>Error getting child hosting space folder</value>
   </data>
   <data name="Error.PACKAGE_GET_INSTANTALIAS" xml:space="preserve">
-    <value>Error getting hosting space instant alias</value>
+    <value>Error getting hosting space Preview Domain</value>
   </data>
   <data name="Error.PACKAGE_GET_NS" xml:space="preserve">
     <value>Error getting hosting space name servers</value>
@@ -739,7 +739,7 @@
     <value>Error updating child hosting spaces folder</value>
   </data>
   <data name="Error.PACKAGE_UPDATE_INSTANTALIAS" xml:space="preserve">
-    <value>Error updating hosting space instant alias</value>
+    <value>Error updating hosting space Preview Domain</value>
   </data>
   <data name="Error.PACKAGE_UPDATE_NS" xml:space="preserve">
     <value>Error updating hosting space name servers</value>
@@ -4970,10 +4970,10 @@
     <value>Domain Aliases</value>
   </data>
   <data name="Error.DOMAIN_CREATE_INSTANT_ALIAS" xml:space="preserve">
-    <value>Error creating domain instant alias</value>
+    <value>Error creating domain Preview Domain</value>
   </data>
   <data name="Error.DOMAIN_DELETE_INSTANT_ALIAS" xml:space="preserve">
-    <value>Error deleting domain instant alias</value>
+    <value>Error deleting domain Preview Domain</value>
   </data>
   <data name="Error.DOMAIN_DISABLE_DNS" xml:space="preserve">
     <value>Error deleting DNS zone</value>
@@ -4982,10 +4982,10 @@
     <value>Error creating DNS zone</value>
   </data>
   <data name="Success.DOMAIN_CREATE_INSTANT_ALIAS" xml:space="preserve">
-    <value>Instant alias has been created</value>
+    <value>Preview Domain has been created</value>
   </data>
   <data name="Success.DOMAIN_DELETE_INSTANT_ALIAS" xml:space="preserve">
-    <value>Instant alias has been deleted</value>
+    <value>Preview Domain has been deleted</value>
   </data>
   <data name="Success.DOMAIN_DISABLE_DNS" xml:space="preserve">
     <value>DNS has been disabled for this domain</value>
@@ -4997,7 +4997,7 @@
     <value>Domain aliases quota has been reached</value>
   </data>
   <data name="Error.511" xml:space="preserve">
-    <value>Instant alias is not configured by hosting provider</value>
+    <value>Preview Domain is not configured by hosting provider</value>
   </data>
   <data name="IIS7.ACCOUNTNAME_PROHIBITED" xml:space="preserve">
     <value>Account name you've chosen is either prohibited or already exists. Please try to use different account name.</value>

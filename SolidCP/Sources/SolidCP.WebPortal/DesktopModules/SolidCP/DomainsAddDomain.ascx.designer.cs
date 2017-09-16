@@ -193,31 +193,31 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.Localize DescribeEnableDns;
         
         /// <summary>
-        /// InstantAliasPanel control.
+        /// PreviewDomainPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel InstantAliasPanel;
+        protected global::System.Web.UI.WebControls.Panel PreviewDomainPanel;
         
         /// <summary>
-        /// CreateInstantAlias control.
+        /// CreatePreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox CreateInstantAlias;
+        protected global::System.Web.UI.WebControls.CheckBox CreatePreviewDomain;
         
         /// <summary>
-        /// DescribeCreateInstantAlias control.
+        /// DescribeCreatePreviewDomain control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize DescribeCreateInstantAlias;
+        protected global::System.Web.UI.WebControls.Localize DescribeCreatePreviewDomain;
         
         /// <summary>
         /// AllowSubDomainsPanel control.

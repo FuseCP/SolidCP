@@ -599,7 +599,7 @@ namespace SolidCP.Portal
                         DomainInfo[] domains = ES.Services.WebServers.GetWebSitePointers(Int32.Parse(ddlWebSite.SelectedValue));
                         foreach (DomainInfo domain in domains)
                         {
-                            if (domain.IsInstantAlias)
+                            if (domain.IsPreviewDomain)
                             {
                                 // show temp URL
                                 tempUrlPanel.Visible = true;

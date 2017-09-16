@@ -6,7 +6,7 @@
 		    <td class="SubHead" width="200" nowrap><asp:Label ID="lblDomainName" runat="server" meta:resourcekey="lblDomainName" Text="Domain name:"></asp:Label></td>
 		    <td width="100%">
                 <uc1:DomainsSelectDomainControl ID="domainsSelectDomainControl" runat="server"
-                    HideMailDomains="true" HideDomainsSubDomains="false" HideInstantAlias="false" HideDomainPointers="true" HideIdnDomains="True"/>
+                    HideMailDomains="true" HideDomainsSubDomains="false" HidePreviewDomain="false" HideDomainPointers="true" HideIdnDomains="True"/>
 		    </td>
 	    </tr>
     </table>

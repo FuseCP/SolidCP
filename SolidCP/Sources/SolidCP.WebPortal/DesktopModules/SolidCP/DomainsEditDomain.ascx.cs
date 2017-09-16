@@ -114,24 +114,24 @@ namespace SolidCP.Portal
                         || PanelSecurity.LoggedUser.Role == UserRole.Administrator;
                 }
 
-                // instant alias
+                // Preview Domain
                 PackageSettings settings = ES.Services.Packages.GetPackageSettings(PanelSecurity.PackageId, PackageSettings.INSTANT_ALIAS);
 
-                bool instantAliasAllowed = !String.IsNullOrEmpty(domain.InstantAliasName);
-                bool instantAliasExists = (domain.InstantAliasId > 0) && (settings != null && !String.IsNullOrEmpty(settings["InstantAlias"]));
+                bool instantAliasAllowed = !String.IsNullOrEmpty(domain.PreviewDomainName);
+                bool instantAliasExists = (domain.PreviewDomainId > 0) && (settings != null && !String.IsNullOrEmpty(settings["PreviewDomain"]));
                 if (instantAliasAllowed
-                    && !domain.IsDomainPointer && !domain.IsInstantAlias)
+                    && !domain.IsDomainPointer && !domain.IsPreviewDomain)
                 {
-                    InstantAliasPanel.Visible = true;
-                    InstantAliasEnabled.Visible = instantAliasExists;
-                    InstantAliasDisabled.Visible = !instantAliasExists;
+                    PreviewDomainPanel.Visible = true;
+                    PreviewDomainEnabled.Visible = instantAliasExists;
+                    PreviewDomainDisabled.Visible = !instantAliasExists;
 
-                    // load instant alias
-                    DomainInfo instantAlias = ES.Services.Servers.GetDomain(domain.InstantAliasId);
+                    // load Preview Domain
+                    DomainInfo instantAlias = ES.Services.Servers.GetDomain(domain.PreviewDomainId);
                     WebSiteAliasPanel.Visible = false;
                     if (instantAlias != null)
                     {
-                        DomainInfo[] Domains = ES.Services.Servers.GetDomainsByDomainId(domain.InstantAliasId);
+                        DomainInfo[] Domains = ES.Services.Servers.GetDomainsByDomainId(domain.PreviewDomainId);
                         foreach (DomainInfo d in Domains)
                         {
                             if (d.WebSiteId > 0)
@@ -143,25 +143,25 @@ namespace SolidCP.Portal
                         MailDomainAliasPanel.Visible = (instantAlias.MailDomainId > 0);
                     }
 
-                    // instant alias
-                    InstantAliasName.Text = domain.InstantAliasName;
+                    // Preview Domain
+                    PreviewDomainName.Text = domain.PreviewDomainName;
 
                     // web site alias
-                    WebSiteAlias.Text = WebSiteAlias.NavigateUrl = "http://" + domain.InstantAliasName;
+                    WebSiteAlias.Text = WebSiteAlias.NavigateUrl = "http://" + domain.PreviewDomainName;
 
                     // mail domain alias
-                    MailDomainAlias.Text = "@" + domain.InstantAliasName;
+                    MailDomainAlias.Text = "@" + domain.PreviewDomainName;
                 }
 
                 // resellers
                 AllowSubDomains.Checked = domain.HostingAllowed;
                 if (PanelSecurity.EffectiveUser.Role != UserRole.User
-                    && !(domain.IsDomainPointer || domain.IsSubDomain || domain.IsInstantAlias))
+                    && !(domain.IsDomainPointer || domain.IsSubDomain || domain.IsPreviewDomain))
                 {
                     ResellersPanel.Visible = true;
                 }
 
-                if (!(domain.IsDomainPointer || domain.IsSubDomain || domain.IsInstantAlias))
+                if (!(domain.IsDomainPointer || domain.IsSubDomain || domain.IsPreviewDomain))
                 {
                     UserInfo user = UsersHelper.GetUser(PanelSecurity.EffectiveUserId);
 
@@ -308,12 +308,12 @@ namespace SolidCP.Portal
             }
         }
 
-        protected void DeleteInstantAlias_Click(object sender, EventArgs e)
+        protected void DeletePreviewDomain_Click(object sender, EventArgs e)
         {
             try
             {
-                // delete instant alias
-                int result = ES.Services.Servers.DeleteDomainInstantAlias(PanelRequest.DomainID);
+                // delete Preview Domain
+                int result = ES.Services.Servers.DeleteDomainPreviewDomain(PanelRequest.DomainID);
                 if (result < 0)
                 {
                     ShowResultMessage(result);
@@ -333,12 +333,12 @@ namespace SolidCP.Portal
             }
         }
 
-        protected void CreateInstantAlias_Click(object sender, EventArgs e)
+        protected void CreatePreviewDomain_Click(object sender, EventArgs e)
         {
             try
             {
-                // create instant alias
-                int result = ES.Services.Servers.CreateDomainInstantAlias("", PanelRequest.DomainID);
+                // create Preview Domain
+                int result = ES.Services.Servers.CreateDomainPreviewDomain("", PanelRequest.DomainID);
                 if (result < 0)
                 {
                     ShowResultMessage(result);

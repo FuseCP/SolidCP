@@ -50,10 +50,10 @@ namespace SolidCP.EnterpriseServer
         private string mailDomainName;
         private string zoneName;
         private bool isSubDomain;
-        private bool isInstantAlias;
+        private bool isPreviewDomain;
         private bool isDomainPointer;
-        private int instantAliasId;
-        private string instantAliasName;
+        private int previewDomainId;
+        private string previewDomainName;
         
         [LogProperty]
         public int DomainId
@@ -129,10 +129,10 @@ namespace SolidCP.EnterpriseServer
             set { this.isSubDomain = value; }
         }
 
-        public bool IsInstantAlias
+        public bool IsPreviewDomain
         {
-            get { return this.isInstantAlias; }
-            set { this.isInstantAlias = value; }
+            get { return this.isPreviewDomain; }
+            set { this.isPreviewDomain = value; }
         }
 
         public bool IsDomainPointer
@@ -141,16 +141,16 @@ namespace SolidCP.EnterpriseServer
             set { this.isDomainPointer = value; }
         }
 
-        public int InstantAliasId
+        public int PreviewDomainId
         {
-            get { return this.instantAliasId; }
-            set { this.instantAliasId = value; }
+            get { return this.previewDomainId; }
+            set { this.previewDomainId = value; }
         }
 
-        public string InstantAliasName
+        public string PreviewDomainName
         {
-            get { return this.instantAliasName; }
-            set { this.instantAliasName = value; }
+            get { return this.previewDomainName; }
+            set { this.previewDomainName = value; }
         }
 
         public DateTime? CreationDate { get; set; }

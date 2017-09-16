@@ -132,16 +132,16 @@
   <data name="BrowseWebSite.Text" xml:space="preserve">
     <value>Webseite durchsuchen</value>
   </data>
-  <data name="CreateInstantAlias.OnClientClick" xml:space="preserve">
+  <data name="CreatePreviewDomain.OnClientClick" xml:space="preserve">
     <value>ShowProgressDialog('Sofort-Alias wird erstellt...');</value>
   </data>
-  <data name="CreateInstantAlias.Text" xml:space="preserve">
+  <data name="CreatePreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias erstellen</value>
   </data>
-  <data name="DeleteInstantAlias.OnClientClick" xml:space="preserve">
+  <data name="DeletePreviewDomain.OnClientClick" xml:space="preserve">
     <value>if(!confirm('Sind Sie sicher, dass Sie diesen Sofort-Alias von dieser Domäne löschen wollen?')) return false;ShowProgressDialog('Sofort-Alias wird gelöscht...');</value>
   </data>
-  <data name="DeleteInstantAlias.Text" xml:space="preserve">
+  <data name="DeletePreviewDomain.Text" xml:space="preserve">
     <value>Sofort-Alias löschen</value>
   </data>
   <data name="DescribeAllowSubDomains.Text" xml:space="preserve">
@@ -168,7 +168,7 @@
   <data name="EnableDns.Text" xml:space="preserve">
     <value>DNS aktivieren</value>
   </data>
-  <data name="InstantAliasSection.Text" xml:space="preserve">
+  <data name="PreviewDomainSection.Text" xml:space="preserve">
     <value>Sofort-Alias</value>
   </data>
   <data name="locDnsDisabled.Text" xml:space="preserve">
@@ -183,7 +183,7 @@
   <data name="locDomainPointWebSite.Text" xml:space="preserve">
     <value>Diese Domäne zeigt auf die folgende Webseite:</value>
   </data>
-  <data name="locInstantAliasEnabled.Text" xml:space="preserve">
+  <data name="locPreviewDomainEnabled.Text" xml:space="preserve">
     <value>Sofort-Alias ist eine temporäre Domäne, die vom Hostingprovider vergeben wird und zum sofortigen Zugriff auf die Webseite oder Postfächer während der DNS-Aktualisierung dient.</value>
   </data>
   <data name="locMailDomain.Text" xml:space="preserve">
@@ -207,10 +207,10 @@
   <data name="WebSiteSection.Text" xml:space="preserve">
     <value>Webseite</value>
   </data>
-  <data name="locInstantAliasDisabled.Text" xml:space="preserve">
+  <data name="locPreviewDomainDisabled.Text" xml:space="preserve">
     <value>Sofort-Alias ist eine temporäre Domäne, die vom Hostingprovider vergeben wird und zum sofortigen Zugriff auf die Webseite oder Postfächer während der DNS-Aktualisierung dient.&lt;br/&gt;&lt;br/&gt;Es existiert kein Sofort-Alias für diese Domäne.</value>
   </data>
-  <data name="locInstantAliasName.Text" xml:space="preserve">
+  <data name="locPreviewDomainName.Text" xml:space="preserve">
     <value>Sofort-Alias für diese Domäne:</value>
   </data>
   <data name="btnDeleteText.Text" xml:space="preserve">
