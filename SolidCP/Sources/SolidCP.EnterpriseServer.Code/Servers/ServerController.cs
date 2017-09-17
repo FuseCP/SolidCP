@@ -1963,21 +1963,6 @@ namespace SolidCP.EnterpriseServer
 			if (domainId < 0)
 				return domainId;
 
-            // add Preview Domain
-            createPreviewDomain &= (domainType != DomainType.DomainPointer);
-            if (createPreviewDomain)
-            {
-                // check if Preview Domain is configured
-                string domainAlias = GetDomainAlias(packageId, domainName);
-
-                // add Preview Domain if required
-                if (!String.IsNullOrEmpty(domainAlias))
-                {
-                    // add alias
-                    AddDomainInternal(packageId, domainAlias, dnsEnabled, false, true, false, false);
-                }
-            }
-
             DomainInfo domain = ServerController.GetDomain(domainId);
 			if (domain != null)
 			{
@@ -2029,7 +2014,22 @@ namespace SolidCP.EnterpriseServer
 				MailServerController.AddMailDomainPointer(pointMailDomainId, domainId);
 			}
 
-			return domainId;
+            // add Preview Domain
+            createPreviewDomain &= (domainType != DomainType.DomainPointer);
+            if (createPreviewDomain)
+            {
+                // check if Preview Domain is configured
+                string domainAlias = GetDomainAlias(packageId, domainName);
+
+                // add Preview Domain if required
+                if (!String.IsNullOrEmpty(domainAlias))
+                {
+                    // add alias
+                    CreateDomainPreviewDomain(hostName, domainId);
+                }
+            }
+
+            return domainId;
 		}
 
 		public static int AddDomain(DomainInfo domain)
