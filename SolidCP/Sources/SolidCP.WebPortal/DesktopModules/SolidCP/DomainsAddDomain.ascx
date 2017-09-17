@@ -54,7 +54,7 @@
  
         <asp:Panel id="PreviewDomainPanel" runat="server" style="padding-bottom: 15px;">
             <asp:CheckBox ID="CreatePreviewDomain" runat="server" meta:resourcekey="CreatePreviewDomain"
-                Text="Create Preview Domain" CssClass="input-group" Checked="true" /><br />
+                Text="Create Preview Domain" CssClass="input-group" /><br />
             <div style="padding-left: 20px;">
                 <asp:Localize ID="DescribeCreatePreviewDomain" runat="server" meta:resourcekey="DescribeCreatePreviewDomain">Description...</asp:Localize>
             </div>
