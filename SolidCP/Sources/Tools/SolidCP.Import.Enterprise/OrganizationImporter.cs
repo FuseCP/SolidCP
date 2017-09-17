@@ -562,7 +562,7 @@ namespace SolidCP.Import.Enterprise
 			DomainInfo domain = new DomainInfo();
 			domain.PackageId = packageId;
 			domain.DomainName = domainName;
-			domain.IsInstantAlias = true;
+			domain.IsPreviewDomain = true;
 			domain.IsSubDomain = true;
 
 			return domain;
@@ -644,7 +644,7 @@ namespace SolidCP.Import.Enterprise
 				domain = new DomainInfo();
 				domain.PackageId = org.PackageId;
 				domain.DomainName = domainName;
-				domain.IsInstantAlias = false;
+				domain.IsPreviewDomain = false;
 				domain.IsSubDomain = false;
 
 				// add domain
