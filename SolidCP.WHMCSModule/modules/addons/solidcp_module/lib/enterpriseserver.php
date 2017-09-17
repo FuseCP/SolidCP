@@ -485,7 +485,7 @@ final class SolidCP_EnterpriseServer
 					  	-301 => 'Hosting package has child hosting spaces',
 					  	-501 => 'The sub-domain belongs to an existing hosting space that does not allow sub-domains to be created',
 					  	-502 => 'The domain or sub-domain exists in another hosting space / user account',
-					  	-511 => 'Instant alias is enabled, but not configured',
+					  	-511 => 'Preview Domain is enabled, but not configured',
 					  	-601 => 'The website already exists on the target hosting space or server',
 					  	-700 => 'The email domain already exists on the target hosting space or server',
 					  	-1100 => 'User already exists');
