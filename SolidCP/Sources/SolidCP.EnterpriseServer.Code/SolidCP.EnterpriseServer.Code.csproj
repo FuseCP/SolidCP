@@ -10,10 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SolidCP.EnterpriseServer.Code</RootNamespace>
     <AssemblyName>SolidCP.EnterpriseServer.Code</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,6 +25,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Reduced">
@@ -40,16 +43,23 @@
     <Reference Include="IPAddressRange">
       <HintPath>..\..\Lib\References\Whois.NET\IPAddressRange.dll</HintPath>
     </Reference>
+    <Reference Include="JWT, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.1.3.4\lib\3.5\JWT.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Services3">
       <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net45\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
@@ -62,9 +72,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Twilio.Api">
-      <HintPath>..\packages\Twilio.3.6.29\lib\3.5\Twilio.Api.dll</HintPath>
-    </Reference>
     <Reference Include="SolidCP.EnterpriseServer.Base, Version=2.1.0.1, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
@@ -74,6 +81,9 @@
     </Reference>
     <Reference Include="SolidCP.Server.Client">
       <HintPath>..\..\Bin\SolidCP.Server.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio, Version=5.6.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.6.5\lib\net35\Twilio.dll</HintPath>
     </Reference>
     <Reference Include="WhoisClient">
       <HintPath>..\..\Lib\References\Whois.NET\WhoisClient.dll</HintPath>
