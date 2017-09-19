@@ -607,24 +607,6 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.WebSitesHeliconApeControl webSitesHeliconApeControl;
         
         /// <summary>
-        /// tabHeliconZoo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.View tabHeliconZoo;
-        
-        /// <summary>
-        /// webSitesHeliconZooControl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SolidCP.Portal.WebSitesHeliconZooControl webSitesHeliconZooControl;
-        
-        /// <summary>
         /// tabFrontPage control.
         /// </summary>
         /// <remarks>

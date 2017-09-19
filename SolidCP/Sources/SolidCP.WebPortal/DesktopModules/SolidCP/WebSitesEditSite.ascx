@@ -8,7 +8,6 @@
 <%@ Register Src="WebSitesCustomHeadersControl.ascx" TagName="WebSitesCustomHeadersControl" TagPrefix="uc6" %>
 <%@ Register Src="WebSitesSecuredFoldersControl.ascx" TagName="WebSitesSecuredFoldersControl" TagPrefix="scp" %>
 <%@ Register Src="WebSitesHeliconApeControl.ascx" TagName="WebSitesHeliconApeControl" TagPrefix="scp" %>
-<%@ Register Src="WebSitesHeliconZooControl.ascx" TagName="WebSitesHeliconZooControl" TagPrefix="scp" %>
 <%@ Register Src="UserControls/PasswordControl.ascx" TagName="PasswordControl" TagPrefix="scp" %>
 <%@ Register Src="UserControls/UsernameControl.ascx" TagName="UsernameControl" TagPrefix="scp" %>
 <%@ Register Src="UserControls/EnableAsyncTasksSupport.ascx" TagName="EnableAsyncTasksSupport" TagPrefix="scp" %>
@@ -184,11 +183,7 @@
                                 <asp:HyperLink ID="lnkPointer" runat="server" NavigateUrl='<%# "http://" + (string)Eval("DomainName") %>'
                                     Target="_blank"><%# Eval("DomainName") %></asp:HyperLink>
 
-                                <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsPreviewDomain") %>' CssClass="btn btn-default pull-right btn-xs" OnClientClick="return confirm('Remove pointer?');">
-                                   
-<i class="fa fa-trash">&nbsp;</i>&nbsp;Remove&nbsp;
-                               
-                                </CPCC:StyleButton>
+                                <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsPreviewDomain") %>' CssClass="btn btn-danger pull-right btn-xs" OnClientClick="return confirm('Remove pointer?');"><i class="fa fa-trash">&nbsp;</i></CPCC:StyleButton>
 
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -373,9 +368,6 @@
                 </asp:View>
                 <asp:View ID="tabHeliconApe" runat="server">
                     <scp:WebSitesHeliconApeControl ID="webSitesHeliconApeControl" runat="server" />
-                </asp:View>
-                <asp:View ID="tabHeliconZoo" runat="server">
-                    <scp:WebSitesHeliconZooControl ID="webSitesHeliconZooControl" runat="server" />
                 </asp:View>
                 <asp:View ID="tabFrontPage" runat="server">
                     <asp:Panel ID="pnlFrontPage" runat="server" Style="padding: 20;">
@@ -697,7 +689,7 @@
             <CPCC:StyleButton ID="btnDelete" CssClass="btn btn-danger" runat="server" CausesValidation="false" OnClientClick="return confirm('Delete this web site?');" OnClick="btnDelete_Click">
                
 <i class="fa fa-trash-o">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnDeleteText" />
-            </CPCC:StyleButton>
+            </CPCC:StyleButton>&nbsp;&nbsp;
             <asp:CheckBox ID="chkDeleteWebsiteDirectory" runat="server" Text="Delete Website Directory?" AutoPostBack="false" meta:resourcekey="chkDeleteWebsiteDirectory" />
 
         </div>

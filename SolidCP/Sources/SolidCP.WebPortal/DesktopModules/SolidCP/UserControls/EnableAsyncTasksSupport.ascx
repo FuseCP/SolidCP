@@ -3,11 +3,11 @@
 
 <input type="hidden" id="taskID" runat="server" />
 
-<script type="text/javascript" language="javascript" type="text/javascript">
+<script type="text/javascript">
 	var _ctrlTaskID = "<%= taskID.ClientID %>";
 	var _completeMessage = "<%= GetLocalizedString("Text.CompleteMessage") %>";
 </script>
-<script src="<%= GetAjaxUtilsUrl() %>" language="javascript" type="text/javascript"></script>
+<script src="<%= GetAjaxUtilsUrl() %>" type="text/javascript"></script>
 
 <asp:Panel id="pnlModal" runat="server" CssClass="PopupContainer" style="display:none">
     <div class="widget">

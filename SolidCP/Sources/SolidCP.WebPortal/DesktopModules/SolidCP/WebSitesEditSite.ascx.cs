@@ -65,7 +65,6 @@ namespace SolidCP.Portal
 			new Tab { Id = "htaccessfolders", ResourceKey = "Tab.Htaccess", Quota = Quotas.WEB_HTACCESS, ViewId = "tabHeliconApe" },
 			new Tab { Id = "frontpage", ResourceKey = "Tab.FrontPage", Quota = Quotas.WEB_FRONTPAGE, ViewId = "tabFrontPage" },
 			new Tab { Id = "extensions", ResourceKey = "Tab.Extensions", ViewId = "tabExtensions" },
-			new Tab { Id = "HeliconZoo", ResourceKey = "Tab.HeliconZoo", Quota = Quotas.HELICON_ZOO, ResourceGroup = "HeliconZoo", ViewId = "tabHeliconZoo" },
 			new Tab { Id = "errors", ResourceKey = "Tab.CustomErrors", Quota = Quotas.WEB_ERRORS, ViewId = "tabErrors" },
 			new Tab { Id = "headers", ResourceKey = "Tab.CustomHeaders", Quota = Quotas.WEB_HEADERS, ViewId = "tabHeaders" },
 			new Tab { Id = "webpub", ResourceKey = "Tab.WebDeployPublishing", Quota = Quotas.WEB_REMOTEMANAGEMENT, ViewId = "tabWebDeployPublishing" },
@@ -230,43 +229,45 @@ namespace SolidCP.Portal
 			tblFrontPage.Visible = !site.SharePointInstalled;
 
 
-			if (!site.ColdFusionAvailable)
-			{
-				litCFUnavailable.Text = GetLocalizedString("Text.COLDFUSION_UNAVAILABLE");
-				litCFUnavailable.Visible = true;
-				rowCF.Visible = false;
-				rowVirtDir.Visible = false;
+            if (!site.ColdFusionAvailable)
+            {
+                litCFUnavailable.Text = GetLocalizedString("Text.COLDFUSION_UNAVAILABLE");
+                litCFUnavailable.Visible = true;
+                rowCF.Visible = false;
+                rowVirtDir.Visible = false;
 
-			}
-			else
-			{
-				if (site.ColdFusionVersion.Equals("7"))
-				{
-					litCFUnavailable.Text = "ColdFusion 7.x is installed";
-					litCFUnavailable.Visible = true;
-				}
-				else
-				{
-					if (site.ColdFusionVersion.Equals("8"))
-						litCFUnavailable.Text = "ColdFusion 8.x is installed";
-					litCFUnavailable.Visible = true;
-				}
-
-				if (site.ColdFusionVersion.Equals("9"))
-					litCFUnavailable.Text = "ColdFusion 9.x is installed";
-				litCFUnavailable.Visible = true;
-
-				if (site.ColdFusionVersion.Equals("10"))
-					litCFUnavailable.Text = "ColdFusion 10.x is installed";
-				litCFUnavailable.Visible = true;
-
-				if (site.ColdFusionVersion.Equals("11"))
-					litCFUnavailable.Text = "ColdFusion 11.x is installed";
-				litCFUnavailable.Visible = true;
-
-				if (site.ColdFusionVersion.Equals("2016"))
-					litCFUnavailable.Text = "ColdFusion 2016.x is installed";
-				litCFUnavailable.Visible = true;
+            }
+            else
+            {
+                if (site.ColdFusionVersion.Equals("7"))
+                {
+                    litCFUnavailable.Text = "ColdFusion 7.x is installed";
+                    litCFUnavailable.Visible = true;
+                }
+                else if (site.ColdFusionVersion.Equals("8"))
+                {
+                    litCFUnavailable.Text = "ColdFusion 8.x is installed";
+                    litCFUnavailable.Visible = true;
+                }
+                else if (site.ColdFusionVersion.Equals("9")) {
+                    litCFUnavailable.Text = "ColdFusion 9.x is installed";
+                litCFUnavailable.Visible = true;
+                }
+                else if (site.ColdFusionVersion.Equals("10"))
+                {
+                    litCFUnavailable.Text = "ColdFusion 10.x is installed";
+                    litCFUnavailable.Visible = true;
+                }
+                else if (site.ColdFusionVersion.Equals("11"))
+                {
+                    litCFUnavailable.Text = "ColdFusion 11.x is installed";
+                    litCFUnavailable.Visible = true;
+                }
+                else if (site.ColdFusionVersion.Equals("2016"))
+                {
+                    litCFUnavailable.Text = "ColdFusion 2016.x is installed";
+                    litCFUnavailable.Visible = true;
+                }
 
 			}
 
@@ -312,7 +313,6 @@ namespace SolidCP.Portal
 			webSitesMimeTypesControl.BindWebItem(site);
 			webSitesCustomHeadersControl.BindWebItem(site);
 			webSitesCustomErrorsControl.BindWebItem(site);
-			webSitesHeliconZooControl.BindWebItem(site);
 
 			// If SNI is enabled on the server, we do allow for SSL even if site not has dedicated Ip
 			if (site.IsDedicatedIP || site.SniEnabled)
@@ -956,7 +956,6 @@ namespace SolidCP.Portal
 			webSitesMimeTypesControl.SaveWebItem(site);
 			webSitesCustomHeadersControl.SaveWebItem(site);
 			webSitesCustomErrorsControl.SaveWebItem(site);
-			webSitesHeliconZooControl.SaveWebItem(site);
 
 			// update web site
 			try
