@@ -123,10 +123,10 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="padding-top:6px;">
                             <asp:HyperLink ID="lnkSiteName" runat="server" NavigateUrl="#" CssClass="panel-title" Target="_blank">domain.com</asp:HyperLink>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 padding-top-sm">
                             <asp:Panel ID="sharedIP" runat="server">
                                 <asp:Localize ID="locSharedIPAddress" runat="server" meta:resourcekey="locSharedIPAddress" Text="IP address: Shared" />
                                 <asp:Label ID="lblSharedIP" runat="server" />
@@ -180,7 +180,7 @@
                         <asp:TemplateField HeaderText="gvPointersName">
                             <ItemStyle Wrap="false" Width="100%"></ItemStyle>
                             <ItemTemplate>
-                                <asp:HyperLink ID="lnkPointer" runat="server" NavigateUrl='<%# "http://" + (string)Eval("DomainName") %>'
+                                <asp:HyperLink ID="lnkPointer" runat="server" style="padding-top:7px;" NavigateUrl='<%# "http://" + (string)Eval("DomainName") %>'
                                     Target="_blank"><%# Eval("DomainName") %></asp:HyperLink>
 
                                 <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsPreviewDomain") %>' CssClass="btn btn-danger pull-right" OnClientClick="return confirm('Remove pointer?');">&nbsp;<i class="fa fa-trash">&nbsp;</i></CPCC:StyleButton>
