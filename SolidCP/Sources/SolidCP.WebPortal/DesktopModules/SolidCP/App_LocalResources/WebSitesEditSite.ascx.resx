@@ -523,7 +523,7 @@ To connect to web site management service please use username and password provi
     <value>Virtual Directories</value>
   </data>
   <data name="VirtualAppInfo.Text" xml:space="preserve">
-    <value>Virtual Applications are just like your website, It is a group of files that provides services over protocols, it uses its own scripting or AppPool, It has all the options of a website. but also acts as a virtual directory letting you place the directory path outside the website root, and using a name other than the directory name Files_reports_Store_Sales you can name your VD SalesReports.</value>
+    <value>Virtual Applications are just like your website, It is a group of files that provides services over protocols, it uses its own scripting or AppPool, It has all the options of a website. but also acts as a virtual directory letting you place the directory path outside the website root.</value>
   </data>
   <data name="VirtualCFAppInfo.Text" xml:space="preserve">
     <value>Virtual Applications (Virtual Web Mappings) are just like your CF website,A virtual web mapping lets you map a physical system path to a logical resource path that might be outside the ColdFusion MX web root. For example, you might want to map the physical directory "\resources\images" to the logical resource path /images. After setting up the mapping, users access the directory using a URL in the following form: http://hostname/images/.

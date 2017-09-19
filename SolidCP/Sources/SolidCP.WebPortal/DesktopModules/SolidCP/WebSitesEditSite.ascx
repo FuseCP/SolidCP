@@ -183,7 +183,7 @@
                                 <asp:HyperLink ID="lnkPointer" runat="server" NavigateUrl='<%# "http://" + (string)Eval("DomainName") %>'
                                     Target="_blank"><%# Eval("DomainName") %></asp:HyperLink>
 
-                                <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsPreviewDomain") %>' CssClass="btn btn-danger pull-right btn-xs" OnClientClick="return confirm('Remove pointer?');"><i class="fa fa-trash">&nbsp;</i></CPCC:StyleButton>
+                                <CPCC:StyleButton runat="server" ID="cmdDeletePointer" CommandName='delete' CommandArgument='<%# Eval("DomainId") %>' Visible='<%# !(bool)Eval("IsPreviewDomain") %>' CssClass="btn btn-danger pull-right" OnClientClick="return confirm('Remove pointer?');">&nbsp;<i class="fa fa-trash">&nbsp;</i></CPCC:StyleButton>
 
                             </ItemTemplate>
                         </asp:TemplateField>
@@ -389,10 +389,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="SubHead">
+                                <td class="SubHead" style="margin-bottom:10px;">
                                     <asp:Label ID="lblFPAccount" runat="server" meta:resourcekey="lblFPAccount" Text="FrontPage User Account:"></asp:Label>
                                 </td>
-                                <td class="Normal">
+                                <td class="Normal" style="margin-bottom:10px;">
                                     <scp:UsernameControl ID="frontPageUsername" runat="server" ValidationGroup="FrontPage" />
                                 </td>
                             </tr>
@@ -426,7 +426,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td colspan="2">
                                     <h4 class="text-center ">
                                         <label><asp:Localize ID="Localize14" runat="server" meta:resourcekey="HeaderVirtualDirectoriesFP"></asp:Localize></label>
                                     </h4>
