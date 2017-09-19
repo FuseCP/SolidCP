@@ -81,7 +81,8 @@ namespace SolidCP.Portal
             try
             {
                 dsQuotas = ES.Services.Packages.GetHostingPlanQuotas(packageId, planId, serverId);
-                dlGroups.DataSource = dsQuotas.Tables[0];
+                dsQuotas.Tables[0].DefaultView.RowFilter = "ParentEnabled =True";
+                dlGroups.DataSource = dsQuotas.Tables[0].DefaultView;
                 dlGroups.DataBind();
             }
             catch (Exception ex)
