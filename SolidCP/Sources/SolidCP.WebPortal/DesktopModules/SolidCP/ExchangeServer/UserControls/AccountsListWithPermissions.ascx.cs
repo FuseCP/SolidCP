@@ -138,7 +138,6 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
                 chkIncludeSharedMailbox.Visible = SharedMailboxEnabled;
                 chkIncludeSharedMailbox.Checked = SharedMailboxEnabled;
 
-                gvAccounts.Columns[3].Visible = gvPopupAccounts.Columns[3].Visible = SecurityGroupsEnabled;
             }
 
 			// register javascript
@@ -163,17 +162,38 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 			string imgName = "mailbox_16.gif";
 			if (accountType == ExchangeAccountType.Contact)
 				imgName = "contact_16.gif";
-			else if (accountType == ExchangeAccountType.DistributionList)
-				imgName = "dlist_16.gif";
+            else if (accountType == ExchangeAccountType.DistributionList
+                    || accountType == ExchangeAccountType.SecurityGroup
+                    || accountType == ExchangeAccountType.DefaultSecurityGroup)
+                imgName = "dlist_16.gif";
             else if (accountType == ExchangeAccountType.Room)
                 imgName = "room_16.gif";
             else if (accountType == ExchangeAccountType.Equipment)
                 imgName = "equipment_16.gif";
+            else if (accountType == ExchangeAccountType.SharedMailbox)
+                imgName = "shared_16.gif";
 
-			return GetThemedImage("Exchange/" + imgName);
+            return GetThemedImage("Exchange/" + imgName);
 		}
 
-		protected void btnAdd_Click(object sender, EventArgs e)
+        public string GetType(int accountTypeId)
+        {
+            ExchangeAccountType accountType = (ExchangeAccountType)accountTypeId;
+
+            switch (accountType)
+            {
+                case ExchangeAccountType.DistributionList:
+                    return "Distribution";
+                case ExchangeAccountType.SecurityGroup:
+                    return "Security";
+                case ExchangeAccountType.DefaultSecurityGroup:
+                    return "Default";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        protected void btnAdd_Click(object sender, EventArgs e)
 		{
 			// bind all accounts
 			BindPopupAccounts();
@@ -213,7 +233,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
                 chkIncludeRooms.Checked, chkIncludeEquipment.Checked, chkIncludeSharedMailbox.Checked, chkIncludeGroups.Checked,
 				ddlSearchColumn.SelectedValue, txtSearchValue.Text + "%", "");
 
-			if (ExcludeAccountId > 0)
+            if (ExcludeAccountId > 0)
 			{
 				List<ExchangeAccount> updatedAccounts = new List<ExchangeAccount>();
                 foreach (ExchangeAccount account in accounts)
@@ -268,7 +288,6 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 		private List<ExchangeAccount> GetGridViewAccounts(GridView gv, SelectedState state)
 		{
 			List<ExchangeAccount> accounts = new List<ExchangeAccount>();
-			
 			for (int i = 0; i < gv.Rows.Count; i++)
 			{
 				GridViewRow row = gv.Rows[i];
