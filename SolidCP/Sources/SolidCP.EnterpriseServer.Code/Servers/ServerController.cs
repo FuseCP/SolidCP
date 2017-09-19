@@ -2105,8 +2105,8 @@ namespace SolidCP.EnterpriseServer
 					return checkResult;
 			}
 			
-                        if (domainName.ToLower().StartsWith("www."))
-                            return BusinessErrorCodes.ERROR_DOMAIN_STARTS_WWW;
+                //        if (domainName.ToLower().StartsWith("www."))
+                //            return BusinessErrorCodes.ERROR_DOMAIN_STARTS_WWW;
             
 			// place log record
 			TaskManager.StartTask("DOMAIN", "ADD", domainName, 0, packageId, new BackgroundTaskParameter("CreateZone", createDnsZone));
