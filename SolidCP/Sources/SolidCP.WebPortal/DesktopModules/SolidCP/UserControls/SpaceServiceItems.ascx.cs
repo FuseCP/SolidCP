@@ -86,8 +86,8 @@ namespace SolidCP.Portal.UserControls
 
         public bool ShowCreateButton
         {
-            get { EnsureChildControls(); return btnAddItem.Visible; }
-            set { EnsureChildControls(); btnAddItem.Visible = value; }
+            get { EnsureChildControls(); return btnAddItembtn.Visible; }
+            set { EnsureChildControls(); btnAddItembtn.Visible = value; }
         }
 
         public bool ShowQuota
@@ -127,7 +127,7 @@ namespace SolidCP.Portal.UserControls
             if (!IsPostBack)
             {
                 // toggle controls
-                btnAddItem.Enabled = PackagesHelper.CheckGroupQuotaEnabled(
+                btnAddItembtn.Enabled = PackagesHelper.CheckGroupQuotaEnabled(
                     PanelSecurity.PackageId, GroupName, QuotaName);
 
                 searchBox.AddCriteria("ItemName", GetLocalizedString("SearchField.ItemName"));

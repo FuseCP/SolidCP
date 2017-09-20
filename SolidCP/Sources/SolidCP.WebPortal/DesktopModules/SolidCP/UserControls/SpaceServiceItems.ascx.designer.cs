@@ -13,13 +13,22 @@ namespace SolidCP.Portal.UserControls {
     public partial class SpaceServiceItems {
         
         /// <summary>
+        /// btnAddItembtn control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton btnAddItembtn;
+        
+        /// <summary>
         /// btnAddItem control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CPCC.StyleButton btnAddItem;
+        protected global::System.Web.UI.WebControls.Localize btnAddItem;
         
         /// <summary>
         /// chkRecursive control.

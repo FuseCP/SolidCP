@@ -16,10 +16,11 @@
                         $('th :checkbox').prop("checked", false);
                 }
 </script>
+
  <div class="FormButtonsBar right">
      <div class="right">
-        <CPCC:StyleButton ID="btnAddItem" runat="server" CssClass="btn btn-primary" OnClick="btnAddItem_Click" >
-            <i class="fa fa-plus">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnAddItem"/>
+        <CPCC:StyleButton ID="btnAddItembtn" runat="server" CssClass="btn btn-primary" OnClick="btnAddItem_Click" >
+            <i class="fa fa-plus">&nbsp;</i>&nbsp;<asp:Localize id="btnAddItem" runat="server" meta:resourcekey="btnAddItem" Text="btnAddItem"/>
         </CPCC:StyleButton>
          &nbsp;<asp:CheckBox ID="chkRecursive" runat="server" Text="Show Nested Spaces Items" meta:resourcekey="chkRecursive" AutoPostBack="true" Checked="True" CssClass="Normal" />
      </div>
