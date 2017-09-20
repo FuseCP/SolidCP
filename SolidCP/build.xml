@@ -141,6 +141,8 @@
 		<ItemGroup>
 			<ServerBuildExclude Include="$(ServerSrc)\**\.svn\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\*.xml" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin\*.pdb" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin\*.config" />
 			<ServerBuildExclude Include="$(ServerSrc)\obj\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\Release\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\Debug\**" />
@@ -167,6 +169,8 @@
 		<ItemGroup>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\.svn\**" />
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\*.xml" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\*.pdb" />
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\*.config" />
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\obj\**" />
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\Release\**" />
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\**\Debug\**" />
@@ -210,6 +214,8 @@
 		<ItemGroup>
 			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\.svn\**" />
 			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\*.xml" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\*.pdb" />
+			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\bin\*.config" />
 			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\obj\**" />
 			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\Release\**" />
 			<Serveraspv2BuildExclude Include="$(Serveraspv2Src)\**\Debug\**" />
@@ -238,6 +244,8 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\.svn\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\obj\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\*.xml" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\*.pdb" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\*.config" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Release\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Debug\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\Images\**" />
@@ -295,16 +303,20 @@
 		<ItemGroup>
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\.svn\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\obj\**" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\bin\*.config" />
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\bin\*.pdb" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\bin\*.xml" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\Release\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\Debug\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.user" />
-			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
-			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
-			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.csproj" />
-			<WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.sln" />
-			<WebDavPortalBuildFiles Include="$(WebDavPortalSrc)\**\*.*" Exclude="@(WebDavPortalBuildExclude)" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.csproj" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.sln" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\web.release.config" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\web.debug.config" />
+	  <WebDavPortalBuildFiles Include="$(WebDavPortalSrc)\**\*.*" Exclude="@(WebDavPortalBuildExclude)" />
 		</ItemGroup>
 		<Copy SourceFiles="@(WebDavPortalBuildFiles)" DestinationFolder="$(WebDavPortalBuild)\%(RecursiveDir)" />
 	</Target>
