@@ -3150,6 +3150,7 @@ namespace SolidCP.Providers.HostedSolution
                     cmd.Parameters.Add("UserPrincipalName", upn);
                     cmd.Parameters.Add("WindowsEmailAddress", upn);
                 }
+                cmd.Parameters.Add("EmailAddressPolicyEnabled", false);
                 ExecuteShellCommand(runSpace, cmd);
             }
             finally
@@ -3169,14 +3170,13 @@ namespace SolidCP.Providers.HostedSolution
             try
             {
                 runSpace = OpenRunspace();
-
-
                 SmtpAddress primaryEmail = new SmtpAddress(emailAddress);
                 Command cmd = new Command("Set-Mailbox");
                 cmd.Parameters.Add("Identity", accountName);
                 cmd.Parameters.Add("PrimarySmtpAddress", primaryEmail);
                 //cmd.Parameters.Add("UserPrincipalName", primaryEmail);
                 cmd.Parameters.Add("WindowsEmailAddress", primaryEmail);
+                cmd.Parameters.Add("EmailAddressPolicyEnabled", false);
 
                 ExecuteShellCommand(runSpace, cmd);
             }
