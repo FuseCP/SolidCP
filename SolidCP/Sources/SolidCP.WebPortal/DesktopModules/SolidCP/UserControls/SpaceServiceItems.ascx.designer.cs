@@ -19,7 +19,7 @@ namespace SolidCP.Portal.UserControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddItem;
+        protected global::CPCC.StyleButton btnAddItem;
         
         /// <summary>
         /// chkRecursive control.
