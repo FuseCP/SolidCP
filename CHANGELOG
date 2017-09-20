@@ -7,6 +7,7 @@ Version 1.3.0:
 - HyperV: Fixed Replications page
 - Instant Alias fixed
 - Instant Alias Renamed to Preview Domain
+- Added Preview Domain checkbox on Domain creation
 - Search box improved with advanced search drop down
 - Search box fixed up to html5 on all pages
 - Smartermail 10+ bug fixes 
@@ -15,6 +16,13 @@ Version 1.3.0:
 - Exchange 2013/2016 Distribution boxes allowed in mailbox priveledges
 - Exchange 2013/2016 Root public folder fix (permission and mailenabled disabled)
 - Hosted Organization Delete User button fix (first load issue)
+- Hosting Plan only displays available services
+- Space Item button fix
+- Small Website fixes
+- SolidCP Portal, Enterprise and Installer pushed to asp.net v4.5
+- NuGet packages updated to latest version / correct framework.
+- Whoisclient updated to v3
+- AnyCPU + Optimize code set on all projects
 
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH

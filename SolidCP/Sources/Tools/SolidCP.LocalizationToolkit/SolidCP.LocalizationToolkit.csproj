@@ -36,7 +36,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -153,7 +153,6 @@
     </Compile>
     <Compile Include="Resources.cs">
       <DependentUpon>Resources.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Resources.Designer.cs">
       <DependentUpon>Resources.xsd</DependentUpon>
