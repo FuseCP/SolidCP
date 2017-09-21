@@ -138,7 +138,6 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
                 chkIncludeSharedMailbox.Visible = SharedMailboxEnabled;
                 chkIncludeSharedMailbox.Checked = SharedMailboxEnabled;
 
-                gvAccounts.Columns[3].Visible = gvPopupAccounts.Columns[3].Visible = SecurityGroupsEnabled;
             }
 
 			// register javascript
@@ -163,17 +162,38 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 			string imgName = "mailbox_16.gif";
 			if (accountType == ExchangeAccountType.Contact)
 				imgName = "contact_16.gif";
-			else if (accountType == ExchangeAccountType.DistributionList)
-				imgName = "dlist_16.gif";
+            else if (accountType == ExchangeAccountType.DistributionList
+                    || accountType == ExchangeAccountType.SecurityGroup
+                    || accountType == ExchangeAccountType.DefaultSecurityGroup)
+                imgName = "dlist_16.gif";
             else if (accountType == ExchangeAccountType.Room)
                 imgName = "room_16.gif";
             else if (accountType == ExchangeAccountType.Equipment)
                 imgName = "equipment_16.gif";
+            else if (accountType == ExchangeAccountType.SharedMailbox)
+                imgName = "shared_16.gif";
 
-			return GetThemedImage("Exchange/" + imgName);
+            return GetThemedImage("Exchange/" + imgName);
 		}
 
-		protected void btnAdd_Click(object sender, EventArgs e)
+        public string GetType(int accountTypeId)
+        {
+            ExchangeAccountType accountType = (ExchangeAccountType)accountTypeId;
+
+            switch (accountType)
+            {
+                case ExchangeAccountType.DistributionList:
+                    return "Distribution";
+                case ExchangeAccountType.SecurityGroup:
+                    return "Security";
+                case ExchangeAccountType.DefaultSecurityGroup:
+                    return "Default";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        protected void btnAdd_Click(object sender, EventArgs e)
 		{
 			// bind all accounts
 			BindPopupAccounts();
