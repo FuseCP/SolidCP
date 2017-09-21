@@ -5558,15 +5558,17 @@ namespace SolidCP.EnterpriseServer
                     accounts
                     );
 
-                var newObj = exchange.GetPublicFolderGeneralSettings(org.OrganizationId, account.DisplayName);
-
-                // Log Extension
-                LogExtension.LogPropertiesIfChanged(oldObj, newObj);
-                LogExtension.SetItemName(account.DisplayName);
 
                 // update folder name
                 string origName = account.DisplayName;
                 string newFullName = origName.Substring(0, origName.LastIndexOf("\\") + 1) + newName;
+
+                TaskManager.Write("Getting new PF Settings");
+                var newObj = exchange.GetPublicFolderGeneralSettings(org.OrganizationId, newFullName);
+
+                // Log Extension
+                LogExtension.LogPropertiesIfChanged(oldObj, newObj);
+                LogExtension.SetItemName(account.DisplayName);
 
                 if (String.Compare(origName, newFullName, true) != 0)
                 {
