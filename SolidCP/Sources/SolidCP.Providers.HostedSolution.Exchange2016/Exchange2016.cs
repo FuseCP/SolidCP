@@ -4903,7 +4903,7 @@ namespace SolidCP.Providers.HostedSolution
             string rootFolder = "\\" + organizationId;
 
             // exchange transport needs access to create new items in order to deliver email 
-            //AddPublicFolderClientPermission(runSpace, rootFolder, "Anonymous", "CreateItems");
+            AddPublicFolderClientPermission(runSpace, rootFolder, "Default", "None");
         }
 
         public string CreateOrganizationRootPublicFolder(string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain)
@@ -5170,6 +5170,7 @@ namespace SolidCP.Providers.HostedSolution
                 CheckOrganizationRootPublicFolderPermission(runSpace, organizationId);
 
                 // exchange transport needs access to create new items in order to deliver email 
+                AddPublicFolderClientPermission(runSpace, folder, "Default", "CreateItems");
                 AddPublicFolderClientPermission(runSpace, folder, "Anonymous", "CreateItems");
 
             }
