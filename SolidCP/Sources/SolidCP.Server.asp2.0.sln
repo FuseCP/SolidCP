@@ -69,7 +69,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.FTP.FileZ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.Nettica", "SolidCP.Providers.DNS.Nettica\SolidCP.Providers.DNS.Nettica.csproj", "{F04CE8DC-6DE1-411A-B912-73ED7EA662D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs70", "SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj", "{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs70", "SolidCP.Providers.Web.IIS70aspv2\SolidCP.Providers.Web.IIs70.csproj", "{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2008", "SolidCP.Providers.OS.Windows2008\SolidCP.Providers.OS.Windows2008.csproj", "{BED2F43F-2DD8-45CF-AD7C-86799897C575}"
 EndProject

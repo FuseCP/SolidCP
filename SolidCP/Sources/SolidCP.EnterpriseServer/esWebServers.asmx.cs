@@ -600,6 +600,11 @@ namespace SolidCP.EnterpriseServer
             return WebServerController.InstallCertificate(certificate, siteItemId);
         }
         [WebMethod]
+        public ResultObject LEInstallCertificate(int siteItemId, string email)
+        {
+            return WebServerController.LEInstallCertificate(siteItemId, email);
+        }
+        [WebMethod]
         public ResultObject InstallPfx(byte[] certificate, int siteItemId, string password)
         {
             return WebServerController.InstallPfx(certificate, siteItemId, password);

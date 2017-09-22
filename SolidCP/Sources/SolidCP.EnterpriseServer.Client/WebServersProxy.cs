@@ -88,6 +88,8 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback InstallCertificateOperationCompleted;
 
+        private System.Threading.SendOrPostCallback LEInstallCertificateOperationCompleted;
+
         private System.Threading.SendOrPostCallback InstallPfxOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetPendingCertificatesOperationCompleted;
@@ -291,6 +293,9 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event InstallCertificateCompletedEventHandler InstallCertificateCompleted;
+
+        /// <remarks/>
+        public event LEInstallCertificateCompletedEventHandler LEInstallCertificateCompleted;
 
         /// <remarks/>
         public event InstallPfxCompletedEventHandler InstallPfxCompleted;
@@ -1258,6 +1263,58 @@ namespace SolidCP.EnterpriseServer
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.InstallCertificateCompleted(this, new InstallCertificateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/LEInstallCertificate", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject LEInstallCertificate(int siteItemId, string email)
+        {
+            object[] results = this.Invoke("LEInstallCertificate", new object[] {
+                        siteItemId,
+                        email});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginLEInstallCertificate(int siteItemId, string email, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("LEInstallCertificate", new object[] {
+                        siteItemId,
+                        email}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndLEInstallCertificate(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void LEInstallCertificateAsync(int siteItemId, string email)
+        {
+            this.LEInstallCertificateAsync(siteItemId, email, null);
+        }
+
+        /// <remarks/>
+        public void LEInstallCertificateAsync(int siteItemId, string email, object userState)
+        {
+            if ((this.LEInstallCertificateOperationCompleted == null))
+            {
+                this.LEInstallCertificateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnLEInstallCertificateOperationCompleted);
+            }
+            this.InvokeAsync("LEInstallCertificate", new object[] {
+                        siteItemId,
+                        email}, this.LEInstallCertificateOperationCompleted, userState);
+        }
+
+        private void OnLEInstallCertificateOperationCompleted(object arg)
+        {
+            if ((this.LEInstallCertificateCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.LEInstallCertificateCompleted(this, new LEInstallCertificateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -5867,6 +5924,36 @@ namespace SolidCP.EnterpriseServer
         private object[] results;
 
         internal InstallCertificateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+            base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void LEInstallCertificateCompletedEventHandler(object sender, LEInstallCertificateCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class LEInstallCertificateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal LEInstallCertificateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
             base(exception, cancelled, userState)
         {
             this.results = results;

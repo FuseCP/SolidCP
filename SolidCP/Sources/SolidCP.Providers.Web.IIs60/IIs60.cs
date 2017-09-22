@@ -4392,6 +4392,11 @@ namespace SolidCP.Providers.Web
             throw new NotSupportedException();
         }
 
+        public virtual SSLCertificate LEinstallCertificate(WebSite website, string email)
+        {
+            throw new NotSupportedException();
+        }
+
         public virtual SSLCertificate getCertificate(WebSite site)
         {
             throw new NotSupportedException();

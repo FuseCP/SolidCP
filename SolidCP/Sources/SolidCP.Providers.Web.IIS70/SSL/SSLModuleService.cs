@@ -34,9 +34,12 @@ using Microsoft.Web.Administration;
 using SolidCP.Providers.Common;
 using SolidCP.Server.Utils;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.Linq;
 using CertEnrollInterop;
-using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using SolidCP.Providers.Web.Iis.Common;
 using System.Security;
@@ -173,7 +176,30 @@ namespace SolidCP.Providers.Web.Iis
 			return cert;
 		}
 
-		public List<SSLCertificate> GetServerCertificates()
+        public SSLCertificate LEInstallCertificate(WebSite website, string email)
+        {
+            Runspace runSpace = null;
+            SSLCertificate cert = null;
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command(".\bin\\LetsEncrypt\\letsencrypt.exe");
+                cmd.Parameters.Add("-plugin", "iissite");
+                cmd.Parameters.Add("-siteid", website);
+                cmd.Parameters.Add("-emailaddress", email);
+                cmd.Parameters.Add("-accepttos", "--usedefaulttaskuser");
+                ExecuteShellCommand(runSpace, cmd);
+                cert.Success = true;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("Error adding Lets Encrypt certificate", ex);
+                cert.Success = false;
+            }
+            return cert;
+        }
+
+        public List<SSLCertificate> GetServerCertificates()
 		{
 			X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
 			//
@@ -502,5 +528,58 @@ namespace SolidCP.Providers.Web.Iis
 				return certificate;
 			}
 		}
-	}
+
+        #region PowerShell integration
+        private static RunspaceConfiguration runspaceConfiguration = null;
+        private static WSManConnectionInfo connectionInfo = null;
+
+        internal virtual Runspace OpenRunspace()
+        {
+            if (runspaceConfiguration == null)
+            {
+                runspaceConfiguration = RunspaceConfiguration.Create();
+                PSSnapInException exception = null;
+
+                if (exception != null)
+                {
+                    //todo exception
+                }
+            }
+            Runspace runSpace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
+            //
+            runSpace.Open();
+            //
+            runSpace.SessionStateProxy.SetVariable("ConfirmPreference", "none");
+
+            return runSpace;
+        }
+
+        internal void CloseRunspace(Runspace runspace)
+        {
+            try
+            {
+                if (runspace != null && runspace.RunspaceStateInfo.State == RunspaceState.Opened)
+                {
+                    runspace.Close();
+                }
+            }
+            catch (Exception)
+            {
+                //todo exception
+            }
+        }
+
+        internal Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd)
+        {
+            return ExecuteShellCommand(runSpace, cmd);
+        }
+
+
+        internal object GetPSObjectProperty(PSObject obj, string name)
+        {
+            return obj.Members[name].Value;
+        }
+
+        #endregion
+    }
 }

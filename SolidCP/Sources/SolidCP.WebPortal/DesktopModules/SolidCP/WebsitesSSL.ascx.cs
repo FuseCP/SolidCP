@@ -101,6 +101,7 @@ namespace SolidCP.Portal
                 BindCountries();
                 BindStates();
             }
+
         }
 
         protected void lstCountries_SelectedIndexChanged(object sender, EventArgs e)
@@ -294,7 +295,37 @@ namespace SolidCP.Portal
             InstallCertificate(PanelRequest.ItemID, txtCertificate.Text);
         }
 
-        protected void InstallCertificate(int webSiteId, string certText)
+        protected void LEInstallCertificate_Click(object sender, EventArgs e)
+        {
+            LEInstallCertificate(PanelRequest.ItemID);
+        }
+
+        protected void LEInstallCertificate(int webSiteId)
+        {
+            PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
+            UserInfo user = UsersHelper.GetUser(package.UserId);
+
+            ResultObject result = ES.Services.WebServers.LEInstallCertificate(webSiteId, user.Email);
+            // Check the operation status
+            if (!result.IsSuccess)
+            {
+                messageBox.ShowErrorMessage("WEB_INSTALL_LE");
+                return;
+            }
+            //
+            messageBox.ShowSuccessMessage("WEB_INSTALL_LE");
+            tabLEInstalled.Visible = true;
+            tabLEInstalled.Enabled = true;
+            tabInstalled.HeaderText = "Installed Lets Encrypt Certificate";
+            pnlInstallCertificate.Visible = false;
+            SSLNotInstalled.Visible = false;
+            //
+            TabContainer1.ActiveTab = tabInstalled;
+
+            RefreshControlLayout();
+        }
+
+            protected void InstallCertificate(int webSiteId, string certText)
         {
             SSLCertificate certificate = ES.Services.WebServers.GetSSLCertificateByID((int)ViewState["CSRID"]);
             certificate.Certificate = certText;

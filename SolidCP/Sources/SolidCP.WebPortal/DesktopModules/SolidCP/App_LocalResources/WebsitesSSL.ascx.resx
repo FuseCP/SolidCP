@@ -284,7 +284,16 @@
     <value>Install New certificate</value>
   </data>
   <data name="SSLNotInstalledHeading.Text" xml:space="preserve">
-    <value>SSL not installed</value>
+    <value>Install normal Certificate</value>
+  </data>
+  <data name="LENotInstalledHeading.Text" xml:space="preserve">
+    <value>Install (free) Lets Encrypt Certificate</value>
+  </data>
+  <data name="SSLNotInstalledDescription.Text" xml:space="preserve">
+    <value>Install an Existing certificate by uploading your PFX, or create a certificate request to supply to your certificate provider</value>
+  </data>
+  <data name="LENotInstalledDescription.Text" xml:space="preserve">
+    <value>Automatically request and install a Lets Encrypt certificate. It's functionality and support are the same as a paid certificate.</value>
   </data>
   <data name="sslOrganization.Text" xml:space="preserve">
     <value>Organization:</value>
@@ -315,5 +324,8 @@
   </data>
   <data name="valtxtPFXPassConfirm.ErrorMessage" xml:space="preserve">
     <value>Passwords do not match</value>
+  </data>
+  <data name="LEInstallText.Text" xml:space="preserve">
+    <value>Install Certificate</value>
   </data>
 </root>
