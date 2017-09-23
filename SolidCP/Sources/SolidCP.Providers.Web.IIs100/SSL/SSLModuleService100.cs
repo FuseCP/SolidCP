@@ -139,18 +139,23 @@ namespace SolidCP.Providers.Web.Iis
             return cert;
         }
 
-        public SSLCertificate LEInstallCertificate(WebSite website, string email)
+        public new SSLCertificate LEInstallCertificate(WebSite website, string email)
         {
+            Log.WriteStart("LEInstallCertificate");
             Runspace runSpace = null;
             SSLCertificate cert = null;
             try
             {
+                Log.WriteInfo("Starting running exe file");
                 runSpace = OpenRunspace();
-                Command cmd = new Command(".\bin\\LetsEncrypt\\letsencrypt.exe");
+                Command cmd = new Command(".\\bin\\LetsEncrypt\\letsencrypt.exe");
                 cmd.Parameters.Add("-plugin", "iissite");
                 cmd.Parameters.Add("-siteid", website);
                 cmd.Parameters.Add("-emailaddress", email);
-                cmd.Parameters.Add("-accepttos", "--usedefaulttaskuser");
+                cmd.Parameters.Add("-accepttos");
+                cmd.Parameters.Add("-usedefaulttaskuser");
+                cmd.Parameters.Add("-closeonfinish");
+                Log.WriteInfo("Command: {0}", cmd);
                 ExecuteShellCommand(runSpace, cmd);
                 cert.Success = true;
             }
@@ -159,6 +164,7 @@ namespace SolidCP.Providers.Web.Iis
                 Log.WriteError("Error adding Lets Encrypt certificate", ex);
                 cert.Success = false;
             }
+            Log.WriteEnd("LEInstallCertificate");
             return cert;
         }
 

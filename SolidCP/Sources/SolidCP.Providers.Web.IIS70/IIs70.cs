@@ -4761,7 +4761,8 @@ namespace SolidCP.Providers.Web
 		public override SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
 		{
 			var sslObjectService = new SSLModuleService();
-			//
+            //
+            Log.WriteInfo("SSLCertificate installCertificate");
 			return sslObjectService.InstallCertificate(certificate, website);
 		}
 

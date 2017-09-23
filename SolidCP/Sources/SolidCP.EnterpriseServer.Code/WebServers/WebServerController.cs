@@ -4591,10 +4591,13 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
 
                 WebSite item = GetWebSite(siteItemId) as WebSite;
                 TaskManager.WriteParameter("WebSite.Name", item.Name);
-                WebServer server = GetWebServer(item.ServiceId);
+                //WebServer server = GetWebServer(item.ServiceId);
                 TaskManager.WriteParameter("item.ServiceId", item.ServiceId);
 
-                server.LEinstallCertificate(item, email);
+                // get state
+                WebServer web = new WebServer();
+                ServiceProviderProxy.Init(web, item.ServiceId);
+                web.LEinstallCertificate(item, email);
 
             }
             catch (Exception ex)
