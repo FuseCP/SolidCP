@@ -172,7 +172,6 @@ namespace SolidCP.Providers.Web.Iis
                 var result = ExecuteLocalScript(runSpace, scripts, out errors);
                 Log.WriteInfo(result.ToString());
                 cert.Success = true;
-                ;
             }
             catch (Exception ex)
             {
