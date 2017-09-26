@@ -4765,7 +4765,7 @@ namespace SolidCP.Providers.Web
 			return sslObjectService.InstallCertificate(certificate, website);
 		}
 
-        public override SSLCertificate LEinstallCertificate(WebSite website, string email)
+        public override string LEinstallCertificate(WebSite website, string email)
         {
             throw new NotSupportedException();
         }
