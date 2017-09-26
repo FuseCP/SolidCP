@@ -35,6 +35,7 @@ using System.Globalization;
 using System.IO;
 using CertEnrollInterop;
 using SolidCP.Providers.Common;
+using SolidCP.Providers.Web.Iis;
 using SolidCP.Server.Utils;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -43,6 +44,7 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.Web.Administration;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.DirectoryServices;
 
 namespace SolidCP.Providers.Web.Iis
 {
@@ -139,49 +141,58 @@ namespace SolidCP.Providers.Web.Iis
             return cert;
         }
 
-        public new SSLCertificate LEInstallCertificate(WebSite website, string email)
+        public new String LEInstallCertificate(WebSite website, string email)
         {
-            Log.WriteStart("LEInstallCertificate");
+            Log.WriteStart("LEInstallCertificate IIS80");
             Runspace runSpace = null;
-            SSLCertificate cert = null;
+            //SSLCertificate cert = null;
+            object result = null;
+            object[] errors = null;
+
             try
             {
+                Log.WriteInfo("Website: {0}", website.SiteId);
+
+                string siteid = null;
+
+                DirectoryEntry w3svc = new DirectoryEntry("IIS://localhost/w3svc");
+
+                foreach (DirectoryEntry de in w3svc.Children)
+                {
+                    if (de.SchemaClassName == "IIsWebServer" && de.Properties["ServerComment"][0].ToString() == website.SiteId)
+                    {
+                        //Console.Write(de.Name);
+                        Log.WriteInfo("Found a Website: SiteName {0}  ID: {1}", website.SiteId, de.Name);
+                        siteid = de.Name;
+
+                    }
+
+                }
+
                 var Path = AppDomain.CurrentDomain.BaseDirectory;
                 string command = AppDomain.CurrentDomain.BaseDirectory + "\\bin\\LetsEncrypt\\letsencrypt.exe";
 
-
                 Log.WriteInfo("Starting running exe file");
-                runSpace = OpenRunspace();
-                //Command cmd = new Command(command);
-                //cmd.Parameters.Add("-plugin", "iissite");
-                //cmd.Parameters.Add("-siteid", website);
-                //cmd.Parameters.Add("-emailaddress", email);
-                //cmd.Parameters.Add("-accepttos");
-                //cmd.Parameters.Add("-usedefaulttaskuser");
-                //cmd.Parameters.Add("-closeonfinish");
-                //Log.WriteInfo("Command: {0}", cmd);
-                //ExecuteShellCommand(runSpace, cmd);
 
+                runSpace = OpenRunspace();
                 var scripts = new List<string>
                 {
-                    string.Format("$siteid = (Get-Website -Name {0}).ID", website.SiteId),
-                    string.Format("{0} --plugin iissite --siteid $siteid --emailaddress {1} --accepttos ---usedefaulttaskuser --closeonfinish", command, email)
+                    string.Format("{0} --plugin iissite --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email, siteid)
                 };
+                
 
-                object[] errors = null;
-                var result = ExecuteLocalScript(runSpace, scripts, out errors);
+                result = ExecuteLocalScript(runSpace, scripts, out errors);
                 Log.WriteInfo(result.ToString());
-                cert.Success = true;
+                CloseRunspace(runSpace);
+                
             }
             catch (Exception ex)
             {
-                Log.WriteError("Error adding Lets Encrypt certificate", ex);
-                cert.Success = false;
+                Log.WriteError("Error adding Lets Encrypt certificate IIS80", ex);
                 throw;
             }
-            CloseRunspace(runSpace);
-            Log.WriteEnd("LEInstallCertificate");
-            return true;
+            Log.WriteEnd("LEInstallCertificate IIS80");
+            return result.ToString();
         }
 
         public new List<SSLCertificate> GetServerCertificates()
@@ -212,7 +223,7 @@ namespace SolidCP.Providers.Web.Iis
             return certificate ?? (new SSLCertificate { Success = false, Certificate = "No certificate in binding on server, please remove or edit binding" });
         }
 
-        public SSLCertificate InstallPfx(byte[] certificate, string password, WebSite website)
+        public new SSLCertificate InstallPfx(byte[] certificate, string password, WebSite website)
         {
             X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
             //
@@ -639,10 +650,15 @@ namespace SolidCP.Providers.Web.Iis
             throw ex;
         }
 
+        internal new object GetPSObjectProperty(PSObject obj, string name)
+        {
+            return obj.Members[name].Value;
+        }
+
         #region PowerShell integration
         private static InitialSessionState session = null;
 
-        protected virtual Runspace OpenRunspace()
+        protected new virtual Runspace OpenRunspace()
         {
             Log.WriteStart("OpenRunspace");
 
@@ -660,7 +676,7 @@ namespace SolidCP.Providers.Web.Iis
             return runSpace;
         }
 
-        protected void CloseRunspace(Runspace runspace)
+        protected new void CloseRunspace(Runspace runspace)
         {
             try
             {
@@ -675,17 +691,17 @@ namespace SolidCP.Providers.Web.Iis
             }
         }
 
-        protected Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd)
+        protected new Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd)
         {
             return ExecuteShellCommand(runSpace, cmd, true);
         }
 
-        protected Collection<PSObject> ExecuteLocalScript(Runspace runSpace, List<string> scripts, out object[] errors, params string[] moduleImports)
+        protected new Collection<PSObject> ExecuteLocalScript(Runspace runSpace, List<string> scripts, out object[] errors, params string[] moduleImports)
         {
             return ExecuteRemoteScript(runSpace, null, scripts, out errors, moduleImports);
         }
 
-        protected Collection<PSObject> ExecuteRemoteScript(Runspace runSpace, string hostName, List<string> scripts, out object[] errors, params string[] moduleImports)
+        protected new Collection<PSObject> ExecuteRemoteScript(Runspace runSpace, string hostName, List<string> scripts, out object[] errors, params string[] moduleImports)
         {
             Command invokeCommand = new Command("Invoke-Command");
 
@@ -706,7 +722,7 @@ namespace SolidCP.Providers.Web.Iis
             return ExecuteShellCommand(runSpace, invokeCommand, false, out errors);
         }
 
-        protected Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, bool useDomainController)
+        protected new Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, bool useDomainController)
         {
             object[] errors;
             return ExecuteShellCommand(runSpace, cmd, useDomainController, out errors);
@@ -769,10 +785,6 @@ namespace SolidCP.Providers.Web.Iis
             return results;
         }
 
-        protected object GetPSObjectProperty(PSObject obj, string name)
-        {
-            return obj.Members[name].Value;
-        }
 
         /// <summary>
         /// Returns the identity of the object from the shell execution result

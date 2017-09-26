@@ -44,6 +44,7 @@ using System.Security.Cryptography.X509Certificates;
 using SolidCP.Providers.Web.Iis.Common;
 using System.Security;
 using SolidCP.Providers.Web.Iis.WebObjects;
+using System.DirectoryServices;
 
 namespace SolidCP.Providers.Web.Iis
 {
@@ -176,33 +177,58 @@ namespace SolidCP.Providers.Web.Iis
 			return cert;
 		}
 
-        public SSLCertificate LEInstallCertificate(WebSite website, string email)
+        public String LEInstallCertificate(WebSite website, string email)
         {
-            Log.WriteStart("LEInstallCertificate");
+            Log.WriteStart("LEInstallCertificate IIS80");
             Runspace runSpace = null;
-            SSLCertificate cert = null;
+            //SSLCertificate cert = null;
+            object result = null;
+            object[] errors = null;
+
             try
             {
+                Log.WriteInfo("Website: {0}", website.SiteId);
+
+                string siteid = null;
+
+                DirectoryEntry w3svc = new DirectoryEntry("IIS://localhost/w3svc");
+
+                foreach (DirectoryEntry de in w3svc.Children)
+                {
+                    if (de.SchemaClassName == "IIsWebServer" && de.Properties["ServerComment"][0].ToString() == website.SiteId)
+                    {
+                        //Console.Write(de.Name);
+                        Log.WriteInfo("Found a Website: SiteName {0}  ID: {1}", website.SiteId, de.Name);
+                        siteid = de.Name;
+
+                    }
+
+                }
+
+                var Path = AppDomain.CurrentDomain.BaseDirectory;
+                string command = AppDomain.CurrentDomain.BaseDirectory + "\\bin\\LetsEncrypt\\letsencrypt.exe";
+
                 Log.WriteInfo("Starting running exe file");
+
                 runSpace = OpenRunspace();
-                Command cmd = new Command(".\\bin\\LetsEncrypt\\letsencrypt.exe");
-                cmd.Parameters.Add("-plugin", "iissite");
-                cmd.Parameters.Add("-siteid", website);
-                cmd.Parameters.Add("-emailaddress", email);
-                cmd.Parameters.Add("-accepttos");
-                cmd.Parameters.Add("-usedefaulttaskuser");
-                cmd.Parameters.Add("-closeonfinish");
-                Log.WriteInfo("Command: {0}", cmd);
-                ExecuteShellCommand(runSpace, cmd);
-                cert.Success = true;
+                var scripts = new List<string>
+                {
+                    string.Format("{0} --plugin iissite --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email, siteid)
+                };
+
+
+                result = ExecuteLocalScript(runSpace, scripts, out errors);
+                Log.WriteInfo(result.ToString());
+                CloseRunspace(runSpace);
+
             }
             catch (Exception ex)
             {
-                Log.WriteError("Error adding Lets Encrypt certificate", ex);
-                cert.Success = false;
+                Log.WriteError("Error adding Lets Encrypt certificate IIS80", ex);
+                throw;
             }
-            Log.WriteEnd("LEInstallCertificate");
-            return cert;
+            Log.WriteEnd("LEInstallCertificate IIS80");
+            return result.ToString();
         }
 
         public List<SSLCertificate> GetServerCertificates()
@@ -536,31 +562,27 @@ namespace SolidCP.Providers.Web.Iis
 		}
 
         #region PowerShell integration
-        private static RunspaceConfiguration runspaceConfiguration = null;
-        private static WSManConnectionInfo connectionInfo = null;
+        private static InitialSessionState session = null;
 
-        internal virtual Runspace OpenRunspace()
+        protected virtual Runspace OpenRunspace()
         {
-            if (runspaceConfiguration == null)
-            {
-                runspaceConfiguration = RunspaceConfiguration.Create();
-                PSSnapInException exception = null;
+            Log.WriteStart("OpenRunspace");
 
-                if (exception != null)
-                {
-                    //todo exception
-                }
+            if (session == null)
+            {
+                session = InitialSessionState.CreateDefault();
+                session.ImportPSModule(new string[] { "FileServerResourceManager" });
             }
-            Runspace runSpace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
+            Runspace runSpace = RunspaceFactory.CreateRunspace(session);
             //
             runSpace.Open();
             //
             runSpace.SessionStateProxy.SetVariable("ConfirmPreference", "none");
-
+            Log.WriteEnd("OpenRunspace");
             return runSpace;
         }
 
-        internal void CloseRunspace(Runspace runspace)
+        protected void CloseRunspace(Runspace runspace)
         {
             try
             {
@@ -569,22 +591,158 @@ namespace SolidCP.Providers.Web.Iis
                     runspace.Close();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //todo exception
+                Log.WriteError("Runspace error", ex);
             }
         }
 
-        internal Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd)
+        protected Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd)
         {
-            return ExecuteShellCommand(runSpace, cmd);
+            return ExecuteShellCommand(runSpace, cmd, true);
         }
 
+        protected Collection<PSObject> ExecuteLocalScript(Runspace runSpace, List<string> scripts, out object[] errors, params string[] moduleImports)
+        {
+            return ExecuteRemoteScript(runSpace, null, scripts, out errors, moduleImports);
+        }
 
-        internal object GetPSObjectProperty(PSObject obj, string name)
+        protected Collection<PSObject> ExecuteRemoteScript(Runspace runSpace, string hostName, List<string> scripts, out object[] errors, params string[] moduleImports)
+        {
+            Command invokeCommand = new Command("Invoke-Command");
+
+            if (!string.IsNullOrEmpty(hostName))
+            {
+                invokeCommand.Parameters.Add("ComputerName", hostName);
+            }
+
+            RunspaceInvoke invoke = new RunspaceInvoke();
+            string commandString = moduleImports.Any() ? string.Format("import-module {0};", string.Join(",", moduleImports)) : string.Empty;
+
+            commandString = string.Format("{0};{1}", commandString, string.Join(";", scripts.ToArray()));
+
+            ScriptBlock sb = invoke.Invoke(string.Format("{{{0}}}", commandString))[0].BaseObject as ScriptBlock;
+
+            invokeCommand.Parameters.Add("ScriptBlock", sb);
+
+            return ExecuteShellCommand(runSpace, invokeCommand, false, out errors);
+        }
+
+        protected Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, bool useDomainController)
+        {
+            object[] errors;
+            return ExecuteShellCommand(runSpace, cmd, useDomainController, out errors);
+        }
+
+        internal Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, out object[] errors)
+        {
+            return ExecuteShellCommand(runSpace, cmd, true, out errors);
+        }
+
+        internal Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, bool useDomainController, out object[] errors)
+        {
+            Log.WriteStart("ExecuteShellCommand");
+
+            // 05.09.2015 roland.breitschaft@x-company.de
+            // New: Add LogInfo
+            Log.WriteInfo("Command              : {0}", cmd.CommandText);
+            foreach (var par in cmd.Parameters)
+                Log.WriteInfo("Parameter            : Name {0}, Value {1}", par.Name, par.Value);
+            Log.WriteInfo("UseDomainController  : {0}", useDomainController);
+
+            List<object> errorList = new List<object>();
+
+            //if (useDomainController)
+            //{
+            //    CommandParameter dc = new CommandParameter("DomainController", PrimaryDomainController);
+            //    if (!cmd.Parameters.Contains(dc))
+            //    {
+            //        cmd.Parameters.Add(dc);
+            //    }
+            //}
+
+            Collection<PSObject> results = null;
+            // Create a pipeline
+            Pipeline pipeLine = runSpace.CreatePipeline();
+            using (pipeLine)
+            {
+                // Add the command
+                pipeLine.Commands.Add(cmd);
+                // Execute the pipeline and save the objects returned.
+                results = pipeLine.Invoke();
+
+                // Log out any errors in the pipeline execution
+                // NOTE: These errors are NOT thrown as exceptions! 
+                // Be sure to check this to ensure that no errors 
+                // happened while executing the command.
+                if (pipeLine.Error != null && pipeLine.Error.Count > 0)
+                {
+                    foreach (object item in pipeLine.Error.ReadToEnd())
+                    {
+                        errorList.Add(item);
+                        string errorMessage = string.Format("Invoke error: {0}", item);
+                        Log.WriteWarning(errorMessage);
+                    }
+                }
+            }
+            pipeLine = null;
+            errors = errorList.ToArray();
+            Log.WriteEnd("ExecuteShellCommand");
+            return results;
+        }
+
+        protected object GetPSObjectProperty(PSObject obj, string name)
         {
             return obj.Members[name].Value;
         }
+
+        /// <summary>
+        /// Returns the identity of the object from the shell execution result
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        internal string GetResultObjectIdentity(Collection<PSObject> result)
+        {
+            Log.WriteStart("GetResultObjectIdentity");
+            if (result == null)
+                throw new ArgumentNullException("result", "Execution result is not specified");
+
+            if (result.Count < 1)
+                throw new ArgumentException("Execution result is empty", "result");
+
+            if (result.Count > 1)
+                throw new ArgumentException("Execution result contains more than one object", "result");
+
+            PSMemberInfo info = result[0].Members["Identity"];
+            if (info == null)
+                throw new ArgumentException("Execution result does not contain Identity property", "result");
+
+            string ret = info.Value.ToString();
+            Log.WriteEnd("GetResultObjectIdentity");
+            return ret;
+        }
+
+        internal string GetResultObjectDN(Collection<PSObject> result)
+        {
+            Log.WriteStart("GetResultObjectDN");
+            if (result == null)
+                throw new ArgumentNullException("result", "Execution result is not specified");
+
+            if (result.Count < 1)
+                throw new ArgumentException("Execution result does not contain any object");
+
+            if (result.Count > 1)
+                throw new ArgumentException("Execution result contains more than one object");
+
+            PSMemberInfo info = result[0].Members["DistinguishedName"];
+            if (info == null)
+                throw new ArgumentException("Execution result does not contain DistinguishedName property", "result");
+
+            string ret = info.Value.ToString();
+            Log.WriteEnd("GetResultObjectDN");
+            return ret;
+        }
+
 
         #endregion
     }

@@ -790,12 +790,12 @@ namespace SolidCP.Providers.Web
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/LEinstallCertificate", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public SSLCertificate LEinstallCertificate(WebSite website, string email)
+        public String LEinstallCertificate(WebSite website, string email)
         {
             object[] results = this.Invoke("LEinstallCertificate", new object[] {
                         website,
                         email});
-            return ((SSLCertificate)(results[0]));
+            return ((string)(results[0]));
         }
 
         /// <remarks/>
@@ -807,10 +807,10 @@ namespace SolidCP.Providers.Web
         }
 
         /// <remarks/>
-        public SSLCertificate EndLEinstallCertificate(System.IAsyncResult asyncResult)
+        public string EndLEinstallCertificate(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
-            return ((SSLCertificate)(results[0]));
+            return ((string)(results[0]));
         }
 
         /// <remarks/>

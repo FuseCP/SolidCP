@@ -4602,7 +4602,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             }
             catch (Exception ex)
             {
-                result.AddError("0", ex);
+                result.AddError("ERROR_LEInstallCertificate", ex);
                 TaskManager.WriteError(ex);
             }
             finally
