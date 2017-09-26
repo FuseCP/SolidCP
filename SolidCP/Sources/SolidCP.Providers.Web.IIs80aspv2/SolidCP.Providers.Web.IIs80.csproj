@@ -69,7 +69,7 @@
       <Name>SolidCP.Providers.Web.IIs60</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj">
+    <ProjectReference Include="..\SolidCP.Providers.Web.IIS70aspv2\SolidCP.Providers.Web.IIs70.csproj">
       <Project>{1b9dce85-c664-49fc-b6e1-86c63cab88d1}</Project>
       <Name>SolidCP.Providers.Web.IIs70</Name>
       <Private>False</Private>

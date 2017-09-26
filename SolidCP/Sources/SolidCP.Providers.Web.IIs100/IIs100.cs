@@ -188,6 +188,13 @@ namespace SolidCP.Providers.Web
             return sslObjectService.InstallCertificate(certificate, website);
         }
 
+        public override String LEinstallCertificate(WebSite website, string email)
+        {
+            var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
+
+            return sslObjectService.LEInstallCertificate(website, email);
+        }
+
         public override WebSite GetSite(string siteId)
         {
             var site = base.GetSite(siteId);

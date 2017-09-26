@@ -1701,6 +1701,24 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public String LEinstallCertificate(WebSite website, string email)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' LEinstallCertificate", ProviderSettings.ProviderName);
+                string result = WebProvider.LEinstallCertificate(website, email);
+                Log.WriteEnd("'{0}' LEinstallCertificate", ProviderSettings.ProviderName);
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' LEinstallCertificate", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
         {
             try

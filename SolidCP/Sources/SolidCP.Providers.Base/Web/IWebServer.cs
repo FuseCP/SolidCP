@@ -180,6 +180,7 @@ namespace SolidCP.Providers.Web
         ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website);
         SSLCertificate ImportCertificate(WebSite website);
         bool CheckCertificate(WebSite webSite);
+        string LEinstallCertificate(WebSite website, string email);
 
         //Directory Browseing
         bool GetDirectoryBrowseEnabled(string siteId);

@@ -110,12 +110,28 @@
 				DropShadow="false" CancelControlID="btnPFXExportCancel" />
 		</ContentTemplate>
 	</ajaxToolkit:TabPanel>
+    <ajaxToolkit:TabPanel ID="tabLEInstalled" runat="server" Visible="false" Enabled="false" CssClass="nav nav-tabs">
+    <ContentTemplate>
+        <div class="col-sm-12">
+            <h3>Lets Encrypt Installed</h3>
+        </div>
+    </ContentTemplate>
+    </ajaxToolkit:TabPanel>
 	<ajaxToolkit:TabPanel ID="tabCSR" runat="server" meta:resourcekey="tabNewCertificate" CssClass="nav nav-tabs">
 		<ContentTemplate>
 			<asp:Panel ID="SSLNotInstalled" runat="server" Visible="true">
-				<div class="Normal">
-					<h2>
-						<asp:Literal ID="SSLNotInstalledHeading" runat="server" meta:resourcekey="SSLNotInstalledHeading" /></h2>
+                <div id="NoLE" class="col-sm-6">
+                    <h3>
+						<asp:Literal ID="LENotInstalledHeading" runat="server" meta:resourcekey="LENotInstalledHeading" /></h3>
+                    <p class="Normal">
+						<asp:Literal ID="LENotInstalledDescription" runat="server" meta:resourcekey="LENotInstalledDescription" /></p>
+                    <div class="form-group text-center">
+                        <CPCC:StyleButton ID="LEInstall" CssClass="btn btn-primary" runat="server" OnClick="LEInstallCertificate_Click"> <i class="fa fa-lock">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="LEInstallText" /></CPCC:StyleButton>
+                    </div>
+                </div>
+				<div id="NoSSL" class="col-sm-6">
+					<h3>
+						<asp:Literal ID="SSLNotInstalledHeading" runat="server" meta:resourcekey="SSLNotInstalledHeading" /></h3>
 					<p class="Normal">
 						<asp:Literal ID="SSLNotInstalledDescription" runat="server" meta:resourcekey="SSLNotInstalledDescription" /></p>
 				</div>

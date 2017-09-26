@@ -4579,6 +4579,39 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             return result;
         }
 
+        public static ResultObject LEInstallCertificate(int siteItemId, string email)
+        {
+            ResultObject result = new ResultObject { IsSuccess = true };
+            try
+            {
+                TaskManager.StartTask(LOG_SOURCE_WEB, "LEinstallCertificate");
+                TaskManager.WriteParameter("SiteItemId", siteItemId);
+                TaskManager.WriteParameter("Email", email);
+
+
+                WebSite item = GetWebSite(siteItemId) as WebSite;
+                TaskManager.WriteParameter("WebSite.Name", item.Name);
+                //WebServer server = GetWebServer(item.ServiceId);
+                TaskManager.WriteParameter("item.ServiceId", item.ServiceId);
+
+                // get state
+                WebServer web = new WebServer();
+                ServiceProviderProxy.Init(web, item.ServiceId);
+                web.LEinstallCertificate(item, email);
+
+            }
+            catch (Exception ex)
+            {
+                result.AddError("ERROR_LEInstallCertificate", ex);
+                TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+            return result;
+        }
+
         public static ResultObject InstallPfx(byte[] pfx, int siteItemId, string password)
         {
             ResultObject result = new ResultObject { IsSuccess = true };

@@ -104,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="AutoDiscovery.asmx" />
-    <Content Include="bin\ACMESharp.dll" />
     <Content Include="bin\Crm2011\microsoft.crm.sdk.proxy.dll" />
     <Content Include="bin\Crm2011\microsoft.xrm.client.codegeneration.dll" />
     <Content Include="bin\Crm2011\microsoft.xrm.client.dll" />
@@ -164,6 +163,12 @@
     <Content Include="bin\IIs80\SolidCP.Providers.Web.IIs80.dll" />
     <Content Include="bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />
     <Content Include="bin\Ionic.Zip.Reduced.dll" />
+    <Content Include="bin\LetsEncrypt\letsencrypt.exe" />
+    <Content Include="bin\LetsEncrypt\Web_Config.xml" />
+    <Content Include="bin\LetsEncrypt\x64\libeay32.dll" />
+    <Content Include="bin\LetsEncrypt\x64\ssleay32.dll" />
+    <Content Include="bin\LetsEncrypt\x86\libeay32.dll" />
+    <Content Include="bin\LetsEncrypt\x86\ssleay32.dll" />
     <Content Include="bin\Lync2013\SolidCP.Providers.Base.dll" />
     <Content Include="bin\Lync2013\SolidCP.Providers.Base.pdb" />
     <Content Include="bin\Lync2013\SolidCP.Providers.HostedSolution.Lync2013.dll" />
@@ -319,6 +324,7 @@
     <Content Include="bin\SolidCP.Server.dll.config" />
     <Content Include="bin\SolidCP.Server.WPIService.exe.config" />
     <Content Include="packages.config" />
+    <Content Include="bin\LetsEncrypt\letsencrypt.exe.config" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
@@ -479,6 +485,7 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\SolidCP Server.pubxml" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -4761,11 +4761,19 @@ namespace SolidCP.Providers.Web
 		public override SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
 		{
 			var sslObjectService = new SSLModuleService();
-			//
+            //
+            Log.WriteInfo("SSLCertificate installCertificate");
 			return sslObjectService.InstallCertificate(certificate, website);
 		}
 
-		public override List<SSLCertificate> getServerCertificates()
+        public override String LEinstallCertificate(WebSite website, string email)
+        {
+            var sslObjectService = new SSLModuleService();
+            //
+            return sslObjectService.LEInstallCertificate(website, email);
+        }
+
+        public override List<SSLCertificate> getServerCertificates()
 		{
 			var sslObjectService = new SSLModuleService();
 			//
