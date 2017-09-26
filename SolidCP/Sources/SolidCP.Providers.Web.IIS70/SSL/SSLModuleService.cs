@@ -44,6 +44,7 @@ using System.Security.Cryptography.X509Certificates;
 using SolidCP.Providers.Web.Iis.Common;
 using System.Security;
 using SolidCP.Providers.Web.Iis.WebObjects;
+using System.DirectoryServices;
 
 namespace SolidCP.Providers.Web.Iis
 {
@@ -178,49 +179,56 @@ namespace SolidCP.Providers.Web.Iis
 
         public String LEInstallCertificate(WebSite website, string email)
         {
-            Log.WriteStart("LEInstallCertificate IIS70");
+            Log.WriteStart("LEInstallCertificate IIS80");
             Runspace runSpace = null;
             //SSLCertificate cert = null;
             object result = null;
+            object[] errors = null;
+
             try
             {
+                Log.WriteInfo("Website: {0}", website.SiteId);
+
+                string siteid = null;
+
+                DirectoryEntry w3svc = new DirectoryEntry("IIS://localhost/w3svc");
+
+                foreach (DirectoryEntry de in w3svc.Children)
+                {
+                    if (de.SchemaClassName == "IIsWebServer" && de.Properties["ServerComment"][0].ToString() == website.SiteId)
+                    {
+                        //Console.Write(de.Name);
+                        Log.WriteInfo("Found a Website: SiteName {0}  ID: {1}", website.SiteId, de.Name);
+                        siteid = de.Name;
+
+                    }
+
+                }
+
                 var Path = AppDomain.CurrentDomain.BaseDirectory;
                 string command = AppDomain.CurrentDomain.BaseDirectory + "\\bin\\LetsEncrypt\\letsencrypt.exe";
 
-
                 Log.WriteInfo("Starting running exe file");
-                runSpace = OpenRunspace();
-                //Command cmd = new Command(command);
-                //cmd.Parameters.Add("-plugin", "iissite");
-                //cmd.Parameters.Add("-siteid", website);
-                //cmd.Parameters.Add("-emailaddress", email);
-                //cmd.Parameters.Add("-accepttos");
-                //cmd.Parameters.Add("-usedefaulttaskuser");
-                //cmd.Parameters.Add("-closeonfinish");
-                //Log.WriteInfo("Command: {0}", cmd);
-                //ExecuteShellCommand(runSpace, cmd);
 
+                runSpace = OpenRunspace();
                 var scripts = new List<string>
                 {
-                    string.Format("$siteid = (Get-Website -Name {0}).ID", website.SiteId),
-                    string.Format("{0} --plugin iissite --siteid $siteid --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email)
+                    string.Format("{0} --plugin iissite --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email, siteid)
                 };
 
-                object[] errors = null;
+
                 result = ExecuteLocalScript(runSpace, scripts, out errors);
                 Log.WriteInfo(result.ToString());
-                //cert.Success = true;
-                }
+                CloseRunspace(runSpace);
+
+            }
             catch (Exception ex)
             {
-                Log.WriteError("Error adding Lets Encrypt certificate", ex);
-                //cert.Success = false;
+                Log.WriteError("Error adding Lets Encrypt certificate IIS80", ex);
                 throw;
             }
-            CloseRunspace(runSpace);
-            Log.WriteEnd("LEInstallCertificate IIS70");
+            Log.WriteEnd("LEInstallCertificate IIS80");
             return result.ToString();
-
         }
 
         public List<SSLCertificate> GetServerCertificates()
