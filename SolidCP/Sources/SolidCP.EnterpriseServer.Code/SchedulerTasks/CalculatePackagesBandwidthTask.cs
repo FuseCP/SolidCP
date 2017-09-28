@@ -150,7 +150,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 catch (Exception ex)
                 {
-                    TaskManager.WriteError(ex.ToString());
+                    TaskManager.WriteError("Error in Service ID: {1}  Error: {0}", ex.ToString(), serviceId.ToString());
                 }
             }
 
