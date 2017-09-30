@@ -24,6 +24,7 @@ Version 1.3.0:
 - Whoisclient updated to v3
 - AnyCPU + Optimize code set on all projects
 - LetsEncrypt added for IIS 7 , 8 and 10
+- Changes to log error service id for bandwidth task when error is caused
 
 Version 1.2.1:
 - Proxmox - With thanks to Centron GmbH
