@@ -52,7 +52,7 @@
 						</tr>
 						<tr>
 						    <td colspan="2">                                
-                            	<scp:AccountsListWithPermissions ID="allAccounts" runat="server" MailboxesEnabled="true" EnableMailboxOnly="true" DistributionListsEnabled="true" SecurityGroupsEnabled="true"/>
+                            	<scp:AccountsListWithPermissions ID="allAccounts" runat="server" MailboxesEnabled="true" EnableMailboxOnly="true" DistributionListsEnabled="true" SecurityGroupsEnabled="false"/>
                                 
                             </td>
 						</tr>
