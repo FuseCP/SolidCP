@@ -3,7 +3,7 @@
 		<Version>$(Version)</Version>
 		<FileVersion>$(BUILD_NUMBER)</FileVersion>
 		<VersionLabel>$(BUILD_NUMBER)</VersionLabel>
-		<ReleaseDate>2017-05-27</ReleaseDate>
+		<ReleaseDate>2017-10-01</ReleaseDate>
 		<BuildConfiguration></BuildConfiguration>
 		<RootFolder>..</RootFolder>
 		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>

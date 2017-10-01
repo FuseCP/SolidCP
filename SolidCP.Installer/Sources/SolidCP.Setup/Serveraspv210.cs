@@ -41,6 +41,35 @@ namespace SolidCP.Setup
     /// <summary>
     /// Release 1.2.1
     /// </summary>
+    public class Serveraspv2130 : Server
+    {
+        public static new object Install(object obj)
+        {
+            //
+            return Server.InstallBase(obj, "1.3.0");
+        }
+
+        public static new object Uninstall(object obj)
+        {
+            return Server.Uninstall(obj);
+        }
+
+        public static new object Setup(object obj)
+        {
+            return Server.Setup(obj);
+        }
+
+        public static new object Update(object obj)
+        {
+            return Server.UpdateBase(obj,
+                 minimalInstallerVersion: "1.0.1",
+                 versionToUpgrade: "1.2.1,1.2.0",
+                 updateSql: false);
+        }
+    }
+    /// <summary>
+    /// Release 1.2.1
+    /// </summary>
     public class Serveraspv2121 : Server
     {
         public static new object Install(object obj)
