@@ -179,7 +179,7 @@ namespace SolidCP.Providers.Web.Iis
 
         public String LEInstallCertificate(WebSite website, string email)
         {
-            Log.WriteStart("LEInstallCertificate IIS80");
+            Log.WriteStart("LEInstallCertificate IIS70");
             Runspace runSpace = null;
             //SSLCertificate cert = null;
             object result = null;
@@ -189,26 +189,14 @@ namespace SolidCP.Providers.Web.Iis
             {
                 Log.WriteInfo("Website: {0}", website.SiteId);
 
-                string siteid = null;
+                // Get the WebsiteID
+                string siteid = GetSiteID(website.SiteId);
+                Log.WriteInfo("Found Website ID: SiteName {1}  ID: {0}", siteid, website.SiteId);
 
-                DirectoryEntry w3svc = new DirectoryEntry("IIS://localhost/w3svc");
-
-                foreach (DirectoryEntry de in w3svc.Children)
-                {
-                    if (de.SchemaClassName == "IIsWebServer" && de.Properties["ServerComment"][0].ToString() == website.SiteId)
-                    {
-                        //Console.Write(de.Name);
-                        Log.WriteInfo("Found a Website: SiteName {0}  ID: {1}", website.SiteId, de.Name);
-                        siteid = de.Name;
-
-                    }
-
-                }
-
+                // This sets the correct path for the Exe file.
                 var Path = AppDomain.CurrentDomain.BaseDirectory;
+                Log.WriteInfo("SolidCP Server path: {0}", Path);
                 string command = AppDomain.CurrentDomain.BaseDirectory + "\\bin\\LetsEncrypt\\letsencrypt.exe";
-
-                Log.WriteInfo("Starting running exe file");
 
                 runSpace = OpenRunspace();
                 var scripts = new List<string>
@@ -225,9 +213,10 @@ namespace SolidCP.Providers.Web.Iis
             catch (Exception ex)
             {
                 Log.WriteError("Error adding Lets Encrypt certificate IIS80", ex);
+                return ex.ToString();
                 throw;
             }
-            Log.WriteEnd("LEInstallCertificate IIS80");
+            Log.WriteEnd("LEInstallCertificate IIS70");
             return result.ToString();
         }
 
@@ -560,6 +549,18 @@ namespace SolidCP.Providers.Web.Iis
 				return certificate;
 			}
 		}
+
+        public string GetSiteID(string website)
+        {
+            using (ServerManager srvman = GetServerManager())
+            {
+                //var iis = new ServerManager();
+                var site = srvman.Sites[website];
+                string siteid = site.Id.ToString();
+
+                return siteid;
+            }
+        }
 
         #region PowerShell integration
         private static InitialSessionState session = null;
