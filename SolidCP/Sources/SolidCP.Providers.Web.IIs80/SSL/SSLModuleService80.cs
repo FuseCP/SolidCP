@@ -160,7 +160,7 @@ namespace SolidCP.Providers.Web.Iis
                 // This sets the correct path for the Exe file.
                 var Path = AppDomain.CurrentDomain.BaseDirectory;
                 Log.WriteInfo("SolidCP Server path: {0}", Path);
-                string command = AppDomain.CurrentDomain.BaseDirectory + "\\bin\\LetsEncrypt\\letsencrypt.exe";
+                string command = AppDomain.CurrentDomain.BaseDirectory + "bin\\LetsEncrypt\\letsencrypt.exe";
 
                 runSpace = OpenRunspace();
                 var scripts = new List<string>
