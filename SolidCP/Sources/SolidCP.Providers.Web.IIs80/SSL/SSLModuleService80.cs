@@ -165,7 +165,7 @@ namespace SolidCP.Providers.Web.Iis
                 runSpace = OpenRunspace();
                 var scripts = new List<string>
                 {
-                    string.Format("{0} --plugin iissite --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email, siteid)
+                    string.Format("& '{0}' --plugin iissite --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email, siteid)
                 };
                 
 
