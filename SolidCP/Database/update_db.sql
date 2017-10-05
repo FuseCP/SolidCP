@@ -18967,9 +18967,16 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2016')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (352, 33, N'HyperV2016', N'Microsoft Hyper-V 2016', N'SolidCP.Providers.Virtualization.HyperV2016, SolidCP.Providers.Virtualization.HyperV2016', N'HyperV2016', 1)
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (352, 33, N'HyperV2016', N'Microsoft Hyper-V 2016', N'SolidCP.Providers.Virtualization.HyperV2016, SolidCP.Providers.Virtualization.HyperV2016', N'HyperV2012R2', 1)
 END
 GO
+
+IF EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2016' AND [EditorControl] = 'HyperV2016')
+BEGIN
+UPDATE [dbo].[Providers] SET [EditorControl] = 'HyperV2012R2' WHERE [ProviderName] = 'HyperV2016'
+END
+GO
+
 
 -- Name Change for:
 --   Instant Alias = Preview Domain
