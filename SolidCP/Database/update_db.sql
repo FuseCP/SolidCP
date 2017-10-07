@@ -18802,13 +18802,13 @@ END
 GO
 
 -- # Filling the Controller column on the RDS TABLE
-IF EXISTS (SELECT * FROM RDSServers WHERE Controller IS NULL)
+IF EXISTS (SELECT * FROM RDSServers WHERE Controller IS NULL OR Controller = '0')
 BEGIN
 	DECLARE @SystemController nvarchar(max)
 	SET @SystemController = (SELECT PropertyValue FROM [SystemSettings] Where SettingsName = 'RdsSettings' AND PropertyName = 'RdsMainController');
 	IF(@SystemController is not NULL)
 		BEGIN
-			UPDATE RDSServers Set Controller = @SystemController WHERE Controller IS NULL;
+			UPDATE RDSServers Set Controller = @SystemController WHERE Controller IS NULL OR Controller = '0';
 		END
 	ELSE
 		BEGIN
