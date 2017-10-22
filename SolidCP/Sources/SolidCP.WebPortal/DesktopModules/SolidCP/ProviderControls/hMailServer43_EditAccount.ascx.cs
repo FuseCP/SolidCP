@@ -57,7 +57,7 @@ namespace SolidCP.Portal.ProviderControls
 			chkResponderEnabled.Checked = item.ResponderEnabled;
 			txtSubject.Text = item.ResponderSubject;
 			txtMessage.Text = item.ResponderMessage;
-			txtForward.Text = item.ForwardingAddresses[0];
+			txtForward.Text = item.ForwardingAddresses != null ? String.Join("; ", item.ForwardingAddresses) : "";
             chkOriginalMessage.Checked = item.RetainLocalCopy;
             txtFirstName.Text = item.FirstName;
             txtLastName.Text = item.LastName;
