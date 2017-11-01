@@ -1977,7 +1977,8 @@ namespace SolidCP.EnterpriseServer
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2012, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2014, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2016, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql4, domain, "");
+                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2017, domain, "");
+                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql4, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql5, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MariaDB, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.Statistics, domain, "");
@@ -2545,7 +2546,8 @@ namespace SolidCP.EnterpriseServer
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2012, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2014, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2016, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
+                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
+                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MariaDB, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Statistics, domain, "");

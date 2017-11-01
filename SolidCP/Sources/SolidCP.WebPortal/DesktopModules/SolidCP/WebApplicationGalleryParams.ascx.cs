@@ -167,6 +167,8 @@ namespace SolidCP.Portal
                 // add SQL Server engines
                 if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2016))
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2016, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2016));
+                if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2017))
+                    AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2017, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2017));
                 if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2014))
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2014, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2014));
                 if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2012))

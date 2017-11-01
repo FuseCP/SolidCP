@@ -1926,6 +1926,24 @@
   <data name="Quota.MsSQL2016.Users" xml:space="preserve">
     <value>Users</value>
   </data>
+  <data name="Quota.MsSQL2017.Backup" xml:space="preserve">
+    <value>Database Backups</value>
+  </data>
+  <data name="Quota.MsSQL2017.Databases" xml:space="preserve">
+    <value>Databases</value>
+  </data>
+  <data name="Quota.MsSQL2017.MaxDatabaseSize" xml:space="preserve">
+    <value>Max Database Size, MB</value>
+  </data>
+  <data name="Quota.MsSQL2017.Restore" xml:space="preserve">
+    <value>Database Restores</value>
+  </data>
+  <data name="Quota.MsSQL2017.Truncate" xml:space="preserve">
+    <value>Database Truncate</value>
+  </data>
+  <data name="Quota.MsSQL2017.Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
   <data name="Quota.MySQL5.Backup" xml:space="preserve">
     <value>Database Backups</value>
   </data>
@@ -2000,6 +2018,9 @@
   </data>
   <data name="ResourceGroup.MsSQL2016" xml:space="preserve">
     <value>SQL Server 2016</value>
+  </data>
+  <data name="ResourceGroup.MsSQL2017" xml:space="preserve">
+    <value>SQL Server 2017</value>
   </data>
   <data name="ResourceGroup.Filters" xml:space="preserve">
     <value>Exchange anti-spam Filter</value>
@@ -2213,6 +2234,12 @@
   </data>
   <data name="ServiceItemType.MsSQL2016User" xml:space="preserve">
     <value>MS SQL 2016 User</value>
+  </data>
+  <data name="ServiceItemType.MsSQL2017Database" xml:space="preserve">
+    <value>MS SQL 2017 Database</value>
+  </data>
+  <data name="ServiceItemType.MsSQL2017User" xml:space="preserve">
+    <value>MS SQL 2017 User</value>
   </data>
   <data name="ServiceItemType.MySQL4Database" xml:space="preserve">
     <value>MySQL 4 Database</value>
@@ -3434,6 +3461,9 @@
     <value>Max Log Size, MB</value>
   </data>
   <data name="Quota.MsSQL2016.MaxLogSize" xml:space="preserve">
+    <value>Max Log Size, MB</value>
+  </data>
+  <data name="Quota.MsSQL2017.MaxLogSize" xml:space="preserve">
     <value>Max Log Size, MB</value>
   </data>
   <data name="Error.EXCHANGE_UPDATE_MAILBOX_PERMISSIONS" xml:space="preserve">
@@ -5091,6 +5121,9 @@
   </data>
   <data name="ReportResourceGroup.MsSQL2016" xml:space="preserve">
     <value>SQL Server 2016</value>
+  </data>
+  <data name="ReportResourceGroup.MsSQL2017" xml:space="preserve">
+    <value>SQL Server 2017</value>
   </data>
   <data name="WebAppGallery.ApplicationInstallationError" xml:space="preserve">
     <value>Error while install application pack</value>

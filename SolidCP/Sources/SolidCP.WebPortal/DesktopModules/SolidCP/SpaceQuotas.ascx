@@ -107,6 +107,10 @@
         <td class="SubHead" nowrap><asp:Label ID="lblMsSQL2016Databases" runat="server" meta:resourcekey="lblMsSQL2016Databases" Text="MsSQL2016 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamssql2016databases" runat="server" QuotaName="MsSQL2016.Users" DisplayGauge="True"/></td>
     </tr>
+    <tr ID="pnlMsSQL2017Databases" runat="server">
+        <td class="SubHead" nowrap><asp:Label ID="lblMsSQL2017Databases" runat="server" meta:resourcekey="lblMsSQL2017Databases" Text="MsSQL2017 Databases:"></asp:Label></td>
+        <td class="Normal"><scp:Quota ID="quotamssql2017databases" runat="server" QuotaName="MsSQL2017.Users" DisplayGauge="True"/></td>
+    </tr>
         <tr ID="pnlMySQL5Databases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMySQL5Databases" runat="server" meta:resourcekey="lblMySQL5Databases" Text="MySQL5 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamysql5databases" runat="server" QuotaName="MySQL5.Databases" DisplayGauge="True"/></td>

@@ -503,6 +503,7 @@ namespace SolidCP.EnterpriseServer
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2012)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2014)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2016)
+                    || context.Groups.ContainsKey(ResourceGroups.MsSql2017)
                     || context.Groups.ContainsKey(ResourceGroups.MySql4)
                     || context.Groups.ContainsKey(ResourceGroups.MySql5)
                     || context.Groups.ContainsKey(ResourceGroups.MariaDB)))
@@ -515,7 +516,8 @@ namespace SolidCP.EnterpriseServer
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2008)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2012)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2014)
-                    || context.Groups.ContainsKey(ResourceGroups.MsSql2016)))
+                    || context.Groups.ContainsKey(ResourceGroups.MsSql2016)
+                    || context.Groups.ContainsKey(ResourceGroups.MsSql2017)))
                     result.ErrorCodes.Add(GalleryErrors.SQLRequired);
 
                 // MySQL

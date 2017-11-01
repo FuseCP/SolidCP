@@ -70,6 +70,7 @@
     <Compile Include="MsSqlServer2005.cs" />
     <Compile Include="MsSqlServer2008.cs" />
     <Compile Include="MsSqlServer2012.cs" />
+    <Compile Include="MsSqlServer2017.cs" />
     <Compile Include="MsSqlServer2016.cs" />
     <Compile Include="MsSqlServer2014.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

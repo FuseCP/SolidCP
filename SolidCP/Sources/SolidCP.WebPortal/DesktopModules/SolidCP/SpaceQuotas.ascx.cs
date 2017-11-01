@@ -92,6 +92,7 @@ namespace SolidCP.Portal
             { "quotavps2012hddquota", "pnlVPS2012HddQuota" },
             { "quotamssql2014databases", "pnlMsSQL2014Databases" },
             { "quotamssql2016databases", "pnlMsSQL2016Databases" },
+            { "quotamssql2017databases", "pnlMsSQL2017Databases" },
             { "quotamysql5databases", "pnlMySQL5Databases" },
             { "quotamariadbdatabases", "pnlMariaDBDatabases" }
         };

@@ -510,6 +510,7 @@ namespace SolidCP.EnterpriseServer
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2012, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2014, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2016, domain, "");
+                                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2017, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql4, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql5, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MariaDB, domain, "");
@@ -2073,6 +2074,7 @@ namespace SolidCP.EnterpriseServer
             SetSqlServerExternalAddress(packageId, items, ResourceGroups.MsSql2012);
             SetSqlServerExternalAddress(packageId, items, ResourceGroups.MsSql2014);
             SetSqlServerExternalAddress(packageId, items, ResourceGroups.MsSql2016);
+            SetSqlServerExternalAddress(packageId, items, ResourceGroups.MsSql2017);
             SetSqlServerExternalAddress(packageId, items, ResourceGroups.MySql4);
             SetSqlServerExternalAddress(packageId, items, ResourceGroups.MySql5);
             SetSqlServerExternalAddress(packageId, items, ResourceGroups.MariaDB);

@@ -309,6 +309,7 @@ namespace SolidCP.Portal
             AddDatabaseVersion(cntx, ResourceGroups.MsSql2012, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MsSql2014, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MsSql2016, items, versions);
+            AddDatabaseVersion(cntx, ResourceGroups.MsSql2017, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MySql4, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MySql5, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MariaDB, items, versions);

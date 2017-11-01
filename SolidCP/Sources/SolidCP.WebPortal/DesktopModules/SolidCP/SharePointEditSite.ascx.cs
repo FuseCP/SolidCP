@@ -76,6 +76,7 @@ namespace SolidCP.Portal
             versions.Add(ResourceGroups.MsSql2012);
             versions.Add(ResourceGroups.MsSql2014);
             versions.Add(ResourceGroups.MsSql2016);
+            versions.Add(ResourceGroups.MsSql2017);
 
             FillDatabaseVersions(PanelSecurity.PackageId, ddlDatabaseVersion.Items, versions);
         }

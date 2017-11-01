@@ -5306,6 +5306,35 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 71 WHERE [
 END
 GO
 
+/* SQL 2017 Provider */
+IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = 'MsSQL2017')
+BEGIN
+INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (72, N'MsSQL2017', 10, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[ResourceGroups] SET [ShowGroup] = 1 WHERE [GroupName] = 'MsSQL2017'
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Microsoft SQL Server 2017')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1704, 72, N'MsSQL', N'Microsoft SQL Server 2017', N'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer', N'MSSQL', NULL)
+INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (73, 72, N'MsSQL2017Database', N'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1, 1, 0, 0, 1, 1, 1, 1)
+INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (74, 72, N'MsSQL2017User', N'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1, 0, 0, 0, 1, 1, 1, 1)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (711, 72, 1, N'MsSQL2017.Databases', N'Databases', 2, 0, 39, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (712, 72, 2, N'MsSQL2017.Users', N'Users', 2, 0, 40, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (713, 72, 3, N'MsSQL2017.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (714, 72, 5, N'MsSQL2017.Backup', N'Database Backups', 1, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (715, 72, 6, N'MsSQL2017.Restore', N'Database Restores', 1, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (716, 72, 7, N'MsSQL2017.Truncate', N'Database Truncate', 1, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (717, 72, 4, N'MsSQL2017.MaxLogSize', N'Max Log Size', 3, 0, NULL, NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 72 WHERE [DisplayName] = 'Microsoft SQL Server 2017'
+END
+GO
+
 
 /* MariaDB */
 IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupID] = '50')
@@ -5377,7 +5406,7 @@ GO
 
 
 /*This should be [DefaultValue]= N'MsSQL2000=SQL Server 2000;MsSQL2005=SQL Server 2005;MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MySQL4=MySQL 4.0;MySQL5=MySQL 5.0' but the field is not large enough!! */
-UPDATE [dbo].[ScheduleTaskParameters] SET [DefaultValue]= N'MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MsSQL2016=SQL Server 2016;MySQL5=MySQL 5.0;MariaDB=MariaDB' WHERE [TaskID]= 'SCHEDULE_TASK_BACKUP_DATABASE' AND [ParameterID]='DATABASE_GROUP'
+UPDATE [dbo].[ScheduleTaskParameters] SET [DefaultValue]= N'MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MsSQL2016=SQL Server 2016;MsSQL2017=SQL Server 2017;MySQL5=MySQL 5.0;MariaDB=MariaDB' WHERE [TaskID]= 'SCHEDULE_TASK_BACKUP_DATABASE' AND [ParameterID]='DATABASE_GROUP'
 GO
 
 /*SUPPORT SERVICE LEVELS*/
@@ -16966,7 +16995,7 @@ UPDATE ScheduleTaskViewConfiguration SET Description = N'~/DesktopModules/SolidC
 GO
 UPDATE ScheduleTaskViewConfiguration SET Description = N'~/DesktopModules/SolidCP/ScheduleTaskControls/ZipFiles.ascx' WHERE TaskID = 'SCHEDULE_TASK_ZIP_FILES'
 GO
-UPDATE ScheduleTaskParameters SET DefaultValue = N'MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MsSQL2016=SQL Server 2016;MySQL5=MySQL 5.0;MariaDB=MariaDB' WHERE TaskID = 'SCHEDULE_TASK_BACKUP_DATABASE' AND ParameterID = 'DATABASE_GROUP'
+UPDATE ScheduleTaskParameters SET DefaultValue = N'MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MsSQL2016=SQL Server 2016;MsSQL2017=SQL Server 2017;MySQL5=MySQL 5.0;MariaDB=MariaDB' WHERE TaskID = 'SCHEDULE_TASK_BACKUP_DATABASE' AND ParameterID = 'DATABASE_GROUP'
 GO
 
 
