@@ -5357,6 +5357,16 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1560')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1560, 50, N'MariaDB', N'MariaDB 10.2', N'SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1560'
+END
+GO
+
 IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [SettingsName] = 'MariaDBPolicy')
 BEGIN
 INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'MariaDBPolicy', N'DatabaseNamePolicy', N'True;;1;40;;;')
