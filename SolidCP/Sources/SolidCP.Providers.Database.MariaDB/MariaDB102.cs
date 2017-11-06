@@ -54,13 +54,15 @@ namespace SolidCP.Providers.Database
             {
                 versionNumber = key.Name.Split(' ')[1];
             }
-            else {
+            else
+            {
                 key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\Monty Program AB\MariaDB 10.2");
                 if (key != null)
                 {
                     versionNumber = key.Name.Split(' ')[1];
                 }
-                else {
+                else
+                {
                     return false;
                 }
             }
@@ -71,3 +73,4 @@ namespace SolidCP.Providers.Database
         }
 
     }
+}
