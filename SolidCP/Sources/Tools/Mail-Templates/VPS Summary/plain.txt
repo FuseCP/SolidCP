@@ -1,0 +1,18 @@
+<p>
+Hello #user.FirstName#,
+</p>
+
+
+VM: #vm.Hostname.ToUpper()#.#vm.Domain#
+
+<ad:foreach collection="#external_nic.IPAddresses#" var="ip" index="i">
+Mgmt Nic: #ip.IPAddress#
+</ad:foreach>
+
+<ad:foreach collection="#management_nic.IPAddresses#" var="ip" index="i">
+Mgmt Nic: #ip.IPAddress#
+</ad:foreach>
+
+<ad:foreach collection="#private_nic.IPAddresses#" var="ip" index="i">
+Priv Nic: #ip.IPAddress#
+</ad:foreach>

@@ -1,0 +1,316 @@
+================================
+   Hosting Space Information
+================================
+
+<ad:if test="#Signup#">
+Hello #user.FirstName#,
+
+"#space.Package.PackageName#" hosting space has been created under your user account
+and below is the summary information for its resources.
+</ad:if>
+
+Control Panel
+=============
+Control Panel URL: https://pane.HostingCompany.com
+Username: #user.Username#
+Password: #user.Password#
+
+<ad:if test="#space.Groups.ContainsKey("OS")#">
+Hosting Space Overview
+======================
+General hosting space limits:
+Disk Space, MB: <ad:NumericQuota quota="OS.Diskspace" />
+Bandwidth, MB/Month: <ad:NumericQuota quota="OS.Bandwidth" />
+Maximum Number of Domains: <ad:NumericQuota quota="OS.Domains" />
+Maximum Number of Sub-Domains: <ad:NumericQuota quota="OS.SubDomains" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("Web")#">Web
+======
+
+Limits
+------
+Maximum Number of Web Sites: <ad:NumericQuota quota="Web.Sites" />
+Web Application Gallery: <ad:BooleanQuota quota="Web.WebAppGallery" />
+Classic ASP: <ad:BooleanQuota quota="Web.Asp" />
+ASP.NET 1.1: <ad:BooleanQuota quota="Web.AspNet11" />
+ASP.NET 2.0: <ad:BooleanQuota quota="Web.AspNet20" />
+ASP.NET 4.0: <ad:BooleanQuota quota="Web.AspNet40" />
+PHP 4: <ad:BooleanQuota quota="Web.Php4" />
+PHP 5: <ad:BooleanQuota quota="Web.Php5" />
+Perl: <ad:BooleanQuota quota="Web.Perl" />
+CGI-BIN: <ad:BooleanQuota quota="Web.CgiBin" />
+
+Name Servers
+------------
+In order to point your domain to the web site in this hosting space you should use the following Name Servers:
+<ad:foreach collection="#NameServers#" var="NameServer" index="i">
+   #NameServer#</ad:foreach>
+
+You should change the name servers in domain registrar (Register.com, GoDaddy.com, etc.) control panel. Please, study domain registrar's user manual for directions how to change name servers or contact your domain registrar directly by e-mail or phone.
+
+Please note, the changes in domain registrar database do not reflect immediately and sometimes it requires from 12 to 48 hours till the end of DNS propagation.
+
+
+Web Sites
+---------
+The following web sites have been created under hosting space:
+<ad:foreach collection="#WebSites#" var="WebSite">
+   http://#WebSite.Name#</ad:foreach>
+
+* Please note, your web sites may not be accessible from 12 to 48 hours after you've changed name servers for their respective domains.
+
+<ad:if test="#isnotempty(PreviewDomain)#">Temporary URL
+-------------
+You can access your web sites right now using their respective temporary URLs (Preview Domains). Temporary URL is a sub-domain of the form http://yourdomain.com.providerdomain.com where "yourdomain.com" is your domain and "providerdomain.com" is the domain of your hosting provider.
+
+You can use the following Temporary URL for all your web sites:
+
+    http://YourDomain.com.#PreviewDomain#
+</ad:if>
+
+
+Files Location
+--------------
+Sometimes it is required to know the physical location of the hosting space folder (absolute path).
+Hosting space folder is the folder where all hosting space files such as web sites content, web logs, data files, etc. are located.
+
+The root of your hosting space on our HDD is here:
+
+   #PackageRootFolder#
+
+By default the root folder of any web site within your hosting space is built as following (you can change it anytime from the control panel):
+
+   #PackageRootFolder#\YourDomain.com\wwwroot
+
+</ad:if>
+
+
+<ad:if test="#space.Groups.ContainsKey("FTP")#">FTP
+=====
+
+Limits
+------
+Maximum Number of FTP Accounts: <ad:NumericQuota quota="FTP.Accounts" />
+
+FTP Server
+----------
+Your hosting space allows working with your files by FTP.
+You can use the following FTP server to access your space files remotely:
+
+   ftp://#FtpIP#
+
+Also, you can use the following domain names to access your FTP server:
+
+   ftp://ftp.YourDomain.com
+
+<ad:if test="#isnotempty(PreviewDomain)#">During DNS propagation period (when domain name servers have been changed), similar to web sites, FTP server can be access with Temporary URL too:
+
+    ftp://ftp.YourDomain.com.#PreviewDomain#
+</ad:if>
+
+FTP Accounts
+------------
+The following FTP accounts have been created under your hosting space and can be used to access FTP server:
+
+<ad:foreach collection="#FtpAccounts#" var="FtpAcocunt" index="i">Username: #FtpAcocunt.Name#
+<ad:if test="#Signup#">Password: #FtpAcocunt.Password#
+</ad:if>Folder: #FtpAcocunt.Folder#
+
+</ad:foreach>
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("Mail")#">Mail
+========
+
+Limits
+------
+Maximum Number of Mail Accounts: <ad:NumericQuota quota="Mail.Accounts" />
+Maximum Number of Mail Forwardings: <ad:NumericQuota quota="Mail.Forwardings" />
+Maximum Number of Mail Groups (Aliases): <ad:NumericQuota quota="Mail.Groups" />
+Maximum Number of Mailing Lists: <ad:NumericQuota quota="Mail.Lists" />
+
+SMTP/POP3 Server
+----------------
+Below is the IP address of your POP3/SMTP/IMAP server. You can always access your mailbox(es) using this IP address instead of actual POP3/SMTP/IMAP servers name:
+
+   #MailRecords[0].ExternalIP#
+
+Also, you can use the following domain names to access SMTP/POP3 server from your favourite e-mail client software:
+
+   mail.YourDomain.com
+
+<ad:if test="#isnotempty(PreviewDomain)#">During DNS propagation period (when domain name servers have been changed), similar to web sites, SMTP/POP3 server can be access with temporary domain too:
+
+   mail.YourDomain.com.#PreviewDomain#
+</ad:if>
+
+Mail Accounts
+-------------
+The following mail accounts have been created under your hosting space:
+<ad:foreach collection="#MailAccounts#" var="MailAccount">E-mail: #MailAccount.Name#
+<ad:if test="#Signup#">Password: #MailAccount.Password#</ad:if>
+</ad:foreach>
+</ad:if>
+
+
+Databases
+=========
+You can create databases and database users on "Space Home -&gt; Databases" screen in the control panel.
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2000")#">SQL Server 2000
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2000.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2000.Users" />
+
+In order to connect to SQL Server 2000 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2000Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2000Address#" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2005")#">SQL Server 2005
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2005.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2005.Users" />
+
+In order to connect to SQL Server 2005 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2005Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2005Address#" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2008")#">SQL Server 2008
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2008.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2008.Users" />
+
+In order to connect to SQL Server 2008 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2008Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2008Address#" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2012")#">SQL Server 2012
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2012.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2012.Users" />
+
+In order to connect to SQL Server 2012 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2012Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2012Address#" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2014")#">SQL Server 2014
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2014.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2014.Users" />
+
+In order to connect to SQL Server 2014 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2014Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2014Address#" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2016")#">SQL Server 2016
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2016.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2016.Users" />
+
+In order to connect to SQL Server 2016 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2016Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2016Address#" />
+</ad:if>
+
+
+<ad:if test="#space.Groups.ContainsKey("MySQL4")#">MySQL 4.x
+---------
+Maximum Number of Databases: <ad:NumericQuota quota="MySQL4.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MySQL4.Users" />
+
+In order to connect to MySQL 4.x server you can use the following address:
+
+   #MySQL4Address#
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MySQL5")#">MySQL 5.x
+---------
+Maximum Number of Databases: <ad:NumericQuota quota="MySQL5.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MySQL5.Users" />
+
+In order to connect to MySQL 5.x server you can use the following address:
+
+   #MySQL5Address#
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MariaDB")#">MariaDB
+---------
+Maximum Number of Databases: <ad:NumericQuota quota="MariaDB.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MariaDB.Users" />
+
+</ad:if>
+
+Microsoft Access
+----------------
+Microsoft Access database are automatically allowed in any hosting plan. You can create/upload any number of Access database from File Manager in control panel.
+
+<ad:if test="#space.Groups.ContainsKey("Statistics")#">Web Statistics
+==============
+Maximum Number of Statistics Sites: <ad:NumericQuota quota="Stats.Sites" />
+
+You can view advanced statistics from your domain using URL of the following form:
+
+   http://stats.YourDomain.com
+<ad:if test="#isnotempty(PreviewDomain)#">
+During DNS propagation period (when domain name servers have been changed), you can access web site statistics with Temporary URL:
+
+   http://stats.YourDomain.com.#PreviewDomain#
+</ad:if>
+</ad:if>
+
+<ad:if test="#Signup#">If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+SolidCP.
+Web Site: https://HostingCompany.com"
+E-Mail: support@HostingCompany.com
+</ad:if>
+<ad:template name="MsSqlConnectionStrings">You may also use SQL Server address above in your application connection strings, for example:
+
+Classic ASP (ADO Library): Provider=SQLOLEDB;Data source=#server#;Initial catalog=databaseName;User Id=userName;Password=password;
+ASP.NET (ADO.NET Library): Server=#server#;Database=databaseName;Uid=userName;Password=password;
+</ad:template>
+<ad:template name="NumericQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if><ad:else>0</ad:if></ad:template>
+<ad:template name="BooleanQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot 0#">Enabled<ad:else>Disabled</ad:if><ad:else>Disabled</ad:if></ad:template>
+
+
+DOMAINS TEST:
+
+
+<ad:foreach collection="#Domains#" var="Domain">
+<ad:if test="#Domain.IsDomainPointer.Equals(False)#">#Domain.DomainName#</ad:if>
+</ad:foreach>
+
+
+Groups:
+
+<ad:foreach collection="#space.Groups#" var="Group">
+#Group.value.GroupName#
+</ad:foreach>
+
+<ad:if test="#space.Groups.ContainsKey("VPS2012")#">
+VPS2012
+========
+CPUs: <ad:NumericQuota quota="VPS2012.CpuNumber" />
+RAM: <ad:NumericQuota quota="VPS2012.Ram" />
+HDD: <ad:NumericQuota quota="VPS2012.Hdd" />
+
+</ad:if>

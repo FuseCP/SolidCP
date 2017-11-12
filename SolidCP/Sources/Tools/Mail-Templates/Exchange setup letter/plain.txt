@@ -1,0 +1,70 @@
+<ad:if test="#Email#">
+Hello #Account.DisplayName#,
+
+Thanks for choosing as your Exchange hosting provider.
+</ad:if>
+<ad:if test="#not(PMM)#">
+User Accounts
+
+The following user accounts have been created for you.
+
+Username: #Account.UserPrincipalName#
+E-mail: #Account.PrimaryEmailAddress#
+<ad:if test="#PswResetUrl#">
+Password Reset Url: #PswResetUrl#
+</ad:if>
+</ad:if>
+
+=================================
+DNS
+=================================
+
+In order for us to accept mail for your domain, you will need to point your MX records to:
+
+<ad:foreach collection="#SmtpServers#" var="SmtpServer" index="i">#SmtpServer#</ad:foreach>
+
+In addition to changing your MX Records, you will also need to create the following dns record (required due to the AutoDiscover feature):
+SRV record:
+    Service: _autodiscover
+    Protocol: _tcp
+    Port: 443
+    Host: #AutodiscoverDomain#
+
+    priority and weight is not required, you can normally leave them at the default 0
+    
+    The full dns record will then look similar to:
+    _autodiscover._tcp.yourdomain.com
+</p>
+
+=================================
+Webmail (OWA, Outlook Web Access)
+=================================
+
+#OwaUrl#
+
+=================================
+SamAccount name
+=================================
+
+Domain: #SamDomain#
+Your username: #SamUsername#
+
+=================================
+Password Changes
+=================================
+
+Passwords can be changed at any time using Webmail or the Control Panel
+
+
+=================================
+Control Panel
+=================================
+
+If you need to change the details of your account, you can easily do this using the Control Panel 
+
+
+=================================
+Support
+=================================
+
+You have 2 options, email or use the web interface at 

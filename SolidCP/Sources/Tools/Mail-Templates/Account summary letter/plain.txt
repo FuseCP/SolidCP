@@ -1,0 +1,34 @@
+=================================
+   Hosting Account Information
+=================================
+<ad:if test="#Signup#">Hello #user.FirstName#,
+
+New user account has been created and below you can find its summary information.
+
+Control Panel URL: https://panel.HostingCompany.com
+Username: #user.Username#
+Password: #user.Password#
+</ad:if>
+
+Hosting Spaces
+==============
+The following hosting spaces have been created under your account:
+
+<ad:foreach collection="#Spaces#" var="Space" index="i">
+=== #Space.PackageName# ===
+Hosting Plan: <ad:if test="#not(isnull(Plans[Space.PlanId]))#">#Plans[Space.PlanId].PlanName#<ad:else>System</ad:if>
+<ad:if test="#not(isnull(Plans[Space.PlanId]))#">Purchase Date: #Space.PurchaseDate#
+Disk Space, MB: <ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Diskspace" />
+Bandwidth, MB/Month: <ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Bandwidth" />
+Maximum Number of Domains: <ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.Domains" />
+Maximum Number of Sub-Domains: <ad:NumericQuota space="#SpaceContexts[Space.PackageId]#" quota="OS.SubDomains" />
+</ad:if>
+</ad:foreach>
+
+<ad:if test="#Signup#">If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+SolidCP.
+Web Site: https://HostingCompany.com">
+E-Mail: support@HostingCompany.com
+</ad:if><ad:template name="NumericQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if><ad:else>0</ad:if></ad:template>

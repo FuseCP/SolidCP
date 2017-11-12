@@ -1,0 +1,18 @@
+=================================
+   Hosting Account Information
+=================================
+
+Hello #user.FirstName#,
+
+Please, find below details of your control panel account. The one time password was generated for you. You should change the password after login.
+
+Control Panel URL: https://panel.HostingCompany.com
+Username: #user.Username#
+One Time Password: #user.Password#
+
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+SolidCP.
+Web Site: https://HostingCompany.com"
+E-Mail: support@HostingCompany.com

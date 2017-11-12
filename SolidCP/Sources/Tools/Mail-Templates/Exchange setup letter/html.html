@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Account Summary Information</title>
+    <style type="text/css">
+        body {font-family: 'Segoe UI Light','Open Sans',Arial!important;color:black;}
+        p {color:black;}
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.SummaryHeader { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.5em; color: ##1F4978; border-bottom: dotted 3px ##efefef; font-weight:normal; }
+        .Summary H2 { font-size: 1.2em; color: ##1F4978; } 
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; color:black;}
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+        .Label { color:##1F4978; }
+        .menu-bar a {padding: 15px 0;display: inline-block;}
+    </style>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" width="100%"><!-- was 800 -->
+<tbody>
+<tr>
+<td style="padding: 10px 20px 10px 20px; background-color: ##e1e1e1;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="text-align: left; padding: 0px 0px 2px 0px;"><a href=""><img src="" border="0" alt="" /></a></td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="padding-bottom: 10px;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="background-color: ##2e8bcc; padding: 3px;">
+<table class="menu-bar" border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="text-align: center;" width="20%"><a style="color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;" href=""</a></td>
+<td style="text-align: center;" width="20%"><a style="color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;" href=""></a></td>
+<td style="text-align: center;" width="20%"><a style="color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;" href=""></a></td>
+<td style="text-align: center;" width="20%"><a style="color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;" href=""></a></td>
+<td style="text-align: center;" width="20%"><a style="color: ##ffffff; text-transform: uppercase; font-size: 9px; font-weight: bold; font-family: Arial, Helvetica, sans-serif; text-decoration: none;" href=""></a></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="background-color: ##ffffff;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%"><!-- was 759 -->
+<tbody>
+<tr>
+<td style="vertical-align: top; padding: 10px 10px 0px 10px;" width="100%">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="font-family: 'Segoe UI Light','Open Sans',Arial; padding: 0px 10px 0px 0px;">
+<!-- Begin Content -->
+
+<div class="Summary">
+    <ad:if test="#Email#">
+    <p>
+    Hello #Account.DisplayName#,
+    </p>
+    <p>
+    Thanks for choosing as your Exchange hosting provider.
+    </p>
+    </ad:if>
+    <ad:if test="#not(PMM)#">
+    <h1>User Accounts</h1>
+    <p>
+    The following user accounts have been created for you.
+    </p>
+    <table>
+        <tr>
+            <td class="Label">Username:</td>
+            <td>#Account.UserPrincipalName#</td>
+        </tr>
+        <tr>
+            <td class="Label">E-mail:</td>
+            <td>#Account.PrimaryEmailAddress#</td>
+        </tr>
+		<ad:if test="#PswResetUrl#">
+        <tr>
+            <td class="Label">Password Reset Url:</td>
+            <td><a href="#PswResetUrl#" target="_blank">Click here</a></td>
+        </tr>
+		</ad:if>
+    </table>
+    </ad:if>
+    <h1>DNS</h1>
+    <p>
+    In order for us to accept mail for your domain, you will need to point your MX records to:
+    </p>
+    <table>
+        <ad:foreach collection="#SmtpServers#" var="SmtpServer" index="i">
+            <tr>
+                <td class="Label">#SmtpServer#</td>
+            </tr>
+        </ad:foreach>
+    </table>
+    <p>In addition to changing your MX Records, you will also need to create the following dns record (required due to the AutoDiscover feature): </p>
+    <p><strong>SRV record:</strong><br/>
+    Service: _autodiscover<br/>
+    Protocol: _tcp<br>
+    Port: 443<br/>
+    Host: #AutodiscoverDomain#<br/><br/>
+    priority and weight is not required, you can normally leave them at the default 0<br/><br/>
+    
+    <strong>The full dns record will then look similar to:</strong><br/>
+    _autodiscover._tcp.yourdomain.com
+    </p>
+    
+   <h1>
+    Webmail (OWA, Outlook Web Access)</h1>
+    <p>
+    <table>
+        <tr>
+            <td class="Label">OWA URL:</td>
+            <td><a href="#OwaUrl#" target="_blank">#OwaUrl#</a></td>
+        </tr>
+    </table>
+    <a href="#OwaUrl#" target="_blank">#OwaUrl#</a>
+    </p>
+        <h1>
+    SamAccount name</h1>
+    <table>
+        <tr>
+            <td class="Label">Domain:</td>
+            <td>#SamDomain#</td>
+        </tr>
+        <tr>
+            <td class="Label">Your username:</td>
+            <td>#SamUsername#</td>
+        </tr>
+    </table>
+ 
+    <h1>Password Changes</h1>
+    <p>
+    Passwords can be changed at any time using Webmail or the <a href="" target="_blank">Control Panel</a>.</p>
+    <h1>Control Panel</h1>
+    <p>
+    If you need to change the details of your account, you can easily do this using <a href="" target="_blank">Control Panel</a>.</p>
+    <h1>Support</h1>
+    <p>
+    You have 2 options, email <a href="mailto:"></a> or use the web interface at <a href=""></a></p>
+    
+</div>
+<!-- End Content -->
+<br></td>
+</tr>
+</tbody>
+</table>
+</td>
+
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td style="background-color: ##ffffff; border-top: 1px solid ##999999;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="vertical-align: top; padding: 0px 20px 15px 20px;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; text-align: left; font-size: 9px; color: ##717073; padding: 20px 0px 0px 0px;">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+<tbody>
+<tr>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 9px; text-align: left; color: ##1666af; vertical-align: top;" width="33%"><a style="font-weight: bold; text-transform: uppercase; text-decoration: underline; color: ##1666af;" href=""></a><br />Learn more about the services can provide to improve your business.</td>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 9px; text-align: left; color: ##1666af; padding: 0px 10px 0px 10px; vertical-align: top;" width="34%"><a style="font-weight: bold; text-transform: uppercase; text-decoration: underline; color: ##1666af;" href="">Privacy Policy</a><br /> follows strict guidelines in protecting your privacy. Learn about our <a style="font-weight: bold; text-decoration: underline; color: ##1666af;" href="">Privacy Policy</a>.</td>
+<td style="font-family: Arial, Helvetica, sans-serif; font-size: 9px; text-align: left; color: ##1666af; vertical-align: top;" width="33%"><a style="font-weight: bold; text-transform: uppercase; text-decoration: underline; color: ##1666af;" href="">Contact Us</a><br />Questions? For more information, <a style="font-weight: bold; text-decoration: underline; color: ##1666af;" href="">contact us</a>.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

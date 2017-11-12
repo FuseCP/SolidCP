@@ -1,0 +1,31 @@
+=================================
+   Domain Expiration Information
+=================================
+<ad:if test="#user#">
+Hello #user.FirstName#,
+</ad:if>
+
+Please, find below details of your domain expiration information.
+
+
+<ad:foreach collection="#Domains#" var="Domain" index="i">
+	Domain: #Domain.DomainName#
+	Registrar: #iif(isnull(Domain.Registrar), "", Domain.Registrar)#
+	Customer: #Domain.Customer#
+	Expiration Date: #iif(isnull(Domain.ExpirationDate), "", Domain.ExpirationDate)#
+
+</ad:foreach>
+
+<ad:if test="#IncludeNonExistenDomains#">
+Please, find below details of your non-existen domains.
+
+<ad:foreach collection="#NonExistenDomains#" var="Domain" index="i">
+	Domain: #Domain.DomainName#
+	Customer: #Domain.Customer#
+
+</ad:foreach>
+</ad:if>
+
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards
