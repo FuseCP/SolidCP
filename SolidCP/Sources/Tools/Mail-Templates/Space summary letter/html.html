@@ -81,6 +81,14 @@ and below is the summary information for its resources.
         <li><a href="##msaccess">Microsoft Access</a></li>
     </ul>
     <ad:if test="#space.Groups.ContainsKey("Statistics")#"><li><a href="##stats">Statistics</a></li></ad:if>
+	
+	
+	<li><a href="##db">Virtual Machine</a></li>
+    <ul>
+        <ad:if test="#space.Groups.ContainsKey("VPSForPC")#"><li><a href="##VPSForPC">VPSForPC</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("VPS2012")#"><li><a href="##vps2012">VPS2012</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("PROXMOX")#"><li><a href="##proxmox">Proxmox</a></li></ad:if>
+    </ul>
 </ul>
 
 <ad:if test="#Signup#">
@@ -674,6 +682,15 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
         <td><ad:NumericQuota quota="MariaDB.Users" /></td>
     </tr>
 </table>
+
+<p>
+	In order to connect to MariaDB server you can use the following address:
+</p>
+<table>
+	<tr>
+		<td>#MariaDBAddress#</td>
+	</tr>
+</table>
 </ad:if>
 
 
@@ -716,19 +733,6 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
 </ad:if>
 </ad:if>
 
-<ad:if test="#Signup#">
-<p>
-If you have any questions regarding your hosting account, feel free to contact our support department at any time.
-</p>
-
-<p>
-Best regards,<br />
-SolidCP.<br />
-Web Site: <a href="HostingCompany.com">HostingCompany.com</a><br />
-E-Mail: <a href="mailto:support@HostingCompany.com">support@HostingCompany.com</a>
-</p>
-</ad:if>
-
 <!-- Templates -->
 <ad:template name="MsSqlConnectionStrings">
 <p>
@@ -762,29 +766,83 @@ E-Mail: <a href="mailto:support@HostingCompany.com">support@HostingCompany.com</
 	</ad:if>
 </ad:template>
 
-DOMAINS TEST:
+
+<a name="vm"></a>
+<h1>Virtual Machines</h1>
 
 
-<ad:foreach collection="#Domains#" var="Domain">
-<ad:if test="#Domain.IsDomainPointer.Equals(False)#">#Domain.DomainName#</ad:if>
-</ad:foreach>
+<ad:if test="#space.Groups.ContainsKey("VPSForPC")#">
+<a name="VPSForPC"></a>
+<h2>VPSForPC</h2>
 
-
-Groups:
-
-<ad:foreach collection="#space.Groups#" var="Group">
-#Group.value#
-</ad:foreach>
-
-<ad:if test="#space.Groups.ContainsKey("VPS2012")#">
-VPS2012
-========
-CPUs: <ad:NumericQuota quota="VPS2012.CpuNumber" />
-RAM: <ad:NumericQuota quota="VPS2012.Ram" />
-HDD: <ad:NumericQuota quota="VPS2012.Hdd" />
-
+<table>
+    <tr>
+        <td class="Label">CPUs: </td>
+        <td><ad:NumericQuota quota="VPSForPC.CpuNumber" /></td>
+    </tr>
+    <tr>
+        <td class="Label">RAM: </td>
+        <td><ad:NumericQuota quota="VPSForPC.Ram" /></td>
+    </tr>
+    <tr>
+        <td class="Label">HDD: </td>
+        <td><ad:NumericQuota quota="VPSForPC.Hdd" /></td>
+    </tr>
+</table>
 </ad:if>
 
+<ad:if test="#space.Groups.ContainsKey("VPS2012")#">
+<a name="vps2012"></a>
+<h2>HyperV</h2>
+
+<table>
+    <tr>
+        <td class="Label">CPUs: </td>
+        <td><ad:NumericQuota quota="VPS2012.CpuNumber" /></td>
+    </tr>
+    <tr>
+        <td class="Label">RAM: </td>
+        <td><ad:NumericQuota quota="VPS2012.Ram" /></td>
+    </tr>
+    <tr>
+        <td class="Label">HDD: </td>
+        <td><ad:NumericQuota quota="VPS2012.Hdd" /></td>
+    </tr>
+</table>
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("PROXMOX")#">
+<a name="proxmox"></a>
+<h2>Proxmox</h2>
+
+<table>
+    <tr>
+        <td class="Label">CPUs: </td>
+        <td><ad:NumericQuota quota="PROXMOX.CpuNumber" /></td>
+    </tr>
+    <tr>
+        <td class="Label">RAM: </td>
+        <td><ad:NumericQuota quota="PROXMOX.Ram" /></td>
+    </tr>
+    <tr>
+        <td class="Label">HDD: </td>
+        <td><ad:NumericQuota quota="PROXMOX.Hdd" /></td>
+    </tr>
+</table>
+</ad:if>
+
+<ad:if test="#Signup#">
+<p>
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+</p>
+
+<p>
+Best regards,<br />
+HostingCompany.<br />
+Web Site: <a href="HostingCompany.com">HostingCompany.com</a><br />
+E-Mail: <a href="mailto:support@HostingCompany.com">support@HostingCompany.com</a>
+</p>
+</ad:if>
 
 </div>
 </body>

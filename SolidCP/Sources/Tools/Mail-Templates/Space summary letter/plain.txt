@@ -11,7 +11,7 @@ and below is the summary information for its resources.
 
 Control Panel
 =============
-Control Panel URL: https://pane.HostingCompany.com
+Control Panel URL: https://panel.HostingCompany.com
 Username: #user.Username#
 Password: #user.Password#
 
@@ -276,13 +276,7 @@ During DNS propagation period (when domain name servers have been changed), you 
 </ad:if>
 </ad:if>
 
-<ad:if test="#Signup#">If you have any questions regarding your hosting account, feel free to contact our support department at any time.
 
-Best regards,
-SolidCP.
-Web Site: https://HostingCompany.com"
-E-Mail: support@HostingCompany.com
-</ad:if>
 <ad:template name="MsSqlConnectionStrings">You may also use SQL Server address above in your application connection strings, for example:
 
 Classic ASP (ADO Library): Provider=SQLOLEDB;Data source=#server#;Initial catalog=databaseName;User Id=userName;Password=password;
@@ -291,26 +285,28 @@ ASP.NET (ADO.NET Library): Server=#server#;Database=databaseName;Uid=userName;Pa
 <ad:template name="NumericQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if><ad:else>0</ad:if></ad:template>
 <ad:template name="BooleanQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot 0#">Enabled<ad:else>Disabled</ad:if><ad:else>Disabled</ad:if></ad:template>
 
-
-DOMAINS TEST:
-
-
-<ad:foreach collection="#Domains#" var="Domain">
-<ad:if test="#Domain.IsDomainPointer.Equals(False)#">#Domain.DomainName#</ad:if>
-</ad:foreach>
-
-
-Groups:
-
-<ad:foreach collection="#space.Groups#" var="Group">
-#Group.value.GroupName#
-</ad:foreach>
-
-<ad:if test="#space.Groups.ContainsKey("VPS2012")#">
-VPS2012
+<ad:if test="#space.Groups.ContainsKey("VPS2012")#">VPS2012
 ========
 CPUs: <ad:NumericQuota quota="VPS2012.CpuNumber" />
 RAM: <ad:NumericQuota quota="VPS2012.Ram" />
-HDD: <ad:NumericQuota quota="VPS2012.Hdd" />
+HDD: <ad:NumericQuota quota="VPS2012.Hdd" /></ad:if>
 
+<ad:if test="#space.Groups.ContainsKey("VPSForPC")#">VPSForPC
+========
+CPUs: <ad:NumericQuota quota="VPSForPC.CpuNumber" />
+RAM: <ad:NumericQuota quota="VPSForPC.Ram" />
+HDD: <ad:NumericQuota quota="VPSForPC.Hdd" /></ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("PROXMOX")#">PROXMOX
+========
+CPUs: <ad:NumericQuota quota="PROXMOX.CpuNumber" />
+RAM: <ad:NumericQuota quota="PROXMOX.Ram" />
+HDD: <ad:NumericQuota quota="PROXMOX.Hdd" /></ad:if>
+
+<ad:if test="#Signup#">If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+HostingCompany.
+Web Site: https://HostingCompany.com"
+E-Mail: support@HostingCompany.com
 </ad:if>
