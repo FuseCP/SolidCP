@@ -44111,14 +44111,23 @@ and below is the summary information for its resources.
         <ad:if test="#space.Groups.ContainsKey("MsSQL2000")#"><li><a href="##mssql2000">SQL Server 2000</a></li></ad:if>
         <ad:if test="#space.Groups.ContainsKey("MsSQL2005")#"><li><a href="##mssql2005">SQL Server 2005</a></li></ad:if>
         <ad:if test="#space.Groups.ContainsKey("MsSQL2008")#"><li><a href="##mssql2008">SQL Server 2008</a></li></ad:if>
-		<ad:if test="#space.Groups.ContainsKey("MsSQL2012")#"><li><a href="##mssql2012">SQL Server 2012</a></li></ad:if>
-		<ad:if test="#space.Groups.ContainsKey("MsSQL2014")#"><li><a href="##mssql2014">SQL Server 2014</a></li></ad:if>
+	    <ad:if test="#space.Groups.ContainsKey("MsSQL2012")#"><li><a href="##mssql2012">SQL Server 2012</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("MsSQL2014")#"><li><a href="##mssql2012">SQL Server 2014</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("MsSQL2016")#"><li><a href="##mssql2012">SQL Server 2016</a></li></ad:if>
         <ad:if test="#space.Groups.ContainsKey("MySQL4")#"><li><a href="##mysql4">My SQL 4.x</a></li></ad:if>
         <ad:if test="#space.Groups.ContainsKey("MySQL5")#"><li><a href="##mysql5">My SQL 5.x</a></li></ad:if>
-		<ad:if test="#space.Groups.ContainsKey("MariaDB")#"><li><a href="##MariaDB">MariaDB</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("MariaDB")#"><li><a href="##MariaDB">MariaDB</a></li></ad:if>
         <li><a href="##msaccess">Microsoft Access</a></li>
     </ul>
     <ad:if test="#space.Groups.ContainsKey("Statistics")#"><li><a href="##stats">Statistics</a></li></ad:if>
+	
+	
+	<li><a href="##db">Virtual Machine</a></li>
+    <ul>
+        <ad:if test="#space.Groups.ContainsKey("VPSForPC")#"><li><a href="##VPSForPC">VPSForPC</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("VPS2012")#"><li><a href="##vps2012">VPS2012</a></li></ad:if>
+        <ad:if test="#space.Groups.ContainsKey("PROXMOX")#"><li><a href="##proxmox">Proxmox</a></li></ad:if>
+    </ul>
 </ul>
 
 <ad:if test="#Signup#">
@@ -44232,7 +44241,7 @@ and below is the summary information for its resources.
 </table>
 <p>
     You should change the name servers in domain registrar (Register.com, GoDaddy.com, etc.) control panel.
-    Please, study domain registrar''s user manual for directions how to change name servers or contact your domain
+    Please, study domain registrar's user manual for directions how to change name servers or contact your domain
     registrar directly by e-mail or phone.
 </p>
 <p>
@@ -44253,10 +44262,10 @@ and below is the summary information for its resources.
     </ad:foreach>
 </table>
 <p>
-    * Please note, your web sites may not be accessible from 12 to 48 hours after you''ve changed name servers for their respective domains.
+    * Please note, your web sites may not be accessible from 12 to 48 hours after you've changed name servers for their respective domains.
 </p>
 
-<ad:if test="#isnotempty(InstantAlias)#">
+<ad:if test="#isnotempty(PreviewDomain)#">
 <a name="tempurl"></a>
 <h2>Temporary URL</h2>
 <p>
@@ -44270,7 +44279,7 @@ and below is the summary information for its resources.
 <table>
     <tr>
         <td>
-            http://YourDomain.com.<b>#InstantAlias#</b>
+            http://YourDomain.com.<b>#PreviewDomain#</b>
         </td>
     </tr>
 </table>
@@ -44338,13 +44347,13 @@ You can use the following FTP server to access your space files remotely:
         <td>ftp://ftp.YourDomain.com</td>
     </tr>
 </table>
-<ad:if test="#isnotempty(InstantAlias)#">
+<ad:if test="#isnotempty(PreviewDomain)#">
 <p>
     During DNS propagation period (when domain name servers have been changed), similar to web sites, FTP server can be access with Temporary URL too:
 </p>
 <table>
     <tr>
-        <td>ftp://ftp.YourDomain.com.<b>#InstantAlias#</b></td>
+        <td>ftp://ftp.YourDomain.com.<b>#PreviewDomain#</b></td>
     </tr>
 </table>
 </ad:if>
@@ -44428,13 +44437,13 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
     </tr>
 </table>
 
-<ad:if test="#isnotempty(InstantAlias)#">
+<ad:if test="#isnotempty(PreviewDomain)#">
 <p>
     During DNS propagation period (when domain name servers have been changed), similar to web sites, SMTP/POP3 server can be access with temporary domain too:
 </p>
 <table>
     <tr>
-        <td>mail.YourDomain.com.<b>#InstantAlias#</b></td>
+        <td>mail.YourDomain.com.<b>#PreviewDomain#</b></td>
     </tr>
 </table>
 </ad:if>
@@ -44586,9 +44595,9 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
 		<td>#MsSQL2012Address#</td>
 	</tr>
 </table>
-
-<ad:MsSqlConnectionStrings server="#MsSQL2014Address#" />
+<ad:MsSqlConnectionStrings server="#MsSQL2012Address#" />
 </ad:if>
+
 
 <ad:if test="#space.Groups.ContainsKey("MsSQL2014")#">
 <a name="mssql2014"></a>
@@ -44607,16 +44616,45 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
 </table>
 
 <p>
-	In order to connect to SQL Server 2014 from Management Studio, Enterprise Manager, Query Analyzer
-	or other client software you can use the following SQL Server address:
+    In order to connect to SQL Server 2014 from Management Studio, Enterprise Manager, Query Analyzer
+    or other client software you can use the following SQL Server address:
 </p>
 <table>
-	<tr>
-		<td>#MsSQL2014Address#</td>
-	</tr>
+    <tr>
+        <td>#MsSQL2014Address#</td>
+    </tr>
 </table>
 <ad:MsSqlConnectionStrings server="#MsSQL2014Address#" />
 </ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2016")#">
+<a name="mssql2016"></a>
+
+<h2>SQL Server 2016</h2>
+
+<table>
+    <tr>
+        <td class="Label">Maximum Number of Databases:</td>
+        <td><ad:NumericQuota quota="MsSQL2016.Databases" /></td>
+    </tr>
+    <tr>
+        <td class="Label">Maximum Number of Users:</td>
+        <td><ad:NumericQuota quota="MsSQL2016.Users" /></td>
+    </tr>
+</table>
+
+<p>
+    In order to connect to SQL Server 2016 from Management Studio, Enterprise Manager, Query Analyzer
+    or other client software you can use the following SQL Server address:
+</p>
+<table>
+    <tr>
+        <td>#MsSQL2016Address#</td>
+    </tr>
+</table>
+<ad:MsSqlConnectionStrings server="#MsSQL2016Address#" />
+</ad:if>
+
 
 <ad:if test="#space.Groups.ContainsKey("MySQL4")#">
 <a name="mysql4"></a>
@@ -44669,9 +44707,8 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
 </table>
 </ad:if>
 
-
 <ad:if test="#space.Groups.ContainsKey("MariaDB")#">
-<a name="MariaDB"></a>
+<a name="mysql5"></a>
 <h2>MariaDB</h2>
 
 <table>
@@ -44723,29 +44760,16 @@ using this IP address instead of actual POP3/SMTP/IMAP servers name:
 		<td>http://stats.YourDomain.com</td>
 	</tr>
 </table>
-<ad:if test="#isnotempty(InstantAlias)#">
+<ad:if test="#isnotempty(PreviewDomain)#">
 <p>
     During DNS propagation period (when domain name servers have been changed), you can access web site statistics with Temporary URL:
 </p>
 <table>
     <tr>
-        <td>http://stats.YourDomain.com.<b>#InstantAlias#</b></td>
+        <td>http://stats.YourDomain.com.<b>#PreviewDomain#</b></td>
     </tr>
 </table>
 </ad:if>
-</ad:if>
-
-<ad:if test="#Signup#">
-<p>
-If you have any questions regarding your hosting account, feel free to contact our support department at any time.
-</p>
-
-<p>
-Best regards,<br />
-SolidCP.<br />
-Web Site: <a href="https://solidcp.com">https://solidcp.com</a><br />
-E-Mail: <a href="mailto:support@solidcp.com">support@solidcp.com</a>
-</p>
 </ad:if>
 
 <!-- Templates -->
@@ -44781,6 +44805,84 @@ E-Mail: <a href="mailto:support@solidcp.com">support@solidcp.com</a>
 	</ad:if>
 </ad:template>
 
+
+<a name="vm"></a>
+<h1>Virtual Machines</h1>
+
+
+<ad:if test="#space.Groups.ContainsKey("VPSForPC")#">
+<a name="VPSForPC"></a>
+<h2>VPSForPC</h2>
+
+<table>
+    <tr>
+        <td class="Label">CPUs: </td>
+        <td><ad:NumericQuota quota="VPSForPC.CpuNumber" /></td>
+    </tr>
+    <tr>
+        <td class="Label">RAM: </td>
+        <td><ad:NumericQuota quota="VPSForPC.Ram" /></td>
+    </tr>
+    <tr>
+        <td class="Label">HDD: </td>
+        <td><ad:NumericQuota quota="VPSForPC.Hdd" /></td>
+    </tr>
+</table>
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("VPS2012")#">
+<a name="vps2012"></a>
+<h2>HyperV</h2>
+
+<table>
+    <tr>
+        <td class="Label">CPUs: </td>
+        <td><ad:NumericQuota quota="VPS2012.CpuNumber" /></td>
+    </tr>
+    <tr>
+        <td class="Label">RAM: </td>
+        <td><ad:NumericQuota quota="VPS2012.Ram" /></td>
+    </tr>
+    <tr>
+        <td class="Label">HDD: </td>
+        <td><ad:NumericQuota quota="VPS2012.Hdd" /></td>
+    </tr>
+</table>
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("PROXMOX")#">
+<a name="proxmox"></a>
+<h2>Proxmox</h2>
+
+<table>
+    <tr>
+        <td class="Label">CPUs: </td>
+        <td><ad:NumericQuota quota="PROXMOX.CpuNumber" /></td>
+    </tr>
+    <tr>
+        <td class="Label">RAM: </td>
+        <td><ad:NumericQuota quota="PROXMOX.Ram" /></td>
+    </tr>
+    <tr>
+        <td class="Label">HDD: </td>
+        <td><ad:NumericQuota quota="PROXMOX.Hdd" /></td>
+    </tr>
+</table>
+</ad:if>
+
+<ad:if test="#Signup#">
+<p>
+If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+</p>
+
+<p>
+Best regards,<br />
+HostingCompany.<br />
+Web Site: <a href="HostingCompany.com">HostingCompany.com</a><br />
+E-Mail: <a href="mailto:support@HostingCompany.com">support@HostingCompany.com</a>
+</p>
+</ad:if>
+
 </div>
 </body>
 </html>')
@@ -44802,11 +44904,11 @@ and below is the summary information for its resources.
 
 Control Panel
 =============
-Control Panel URL: https://panel.solidcp.com
+Control Panel URL: https://panel.HostingCompany.com
 Username: #user.Username#
 Password: #user.Password#
 
-
+<ad:if test="#space.Groups.ContainsKey("OS")#">
 Hosting Space Overview
 ======================
 General hosting space limits:
@@ -44814,6 +44916,7 @@ Disk Space, MB: <ad:NumericQuota quota="OS.Diskspace" />
 Bandwidth, MB/Month: <ad:NumericQuota quota="OS.Bandwidth" />
 Maximum Number of Domains: <ad:NumericQuota quota="OS.Domains" />
 Maximum Number of Sub-Domains: <ad:NumericQuota quota="OS.SubDomains" />
+</ad:if>
 
 <ad:if test="#space.Groups.ContainsKey("Web")#">Web
 ======
@@ -44837,7 +44940,7 @@ In order to point your domain to the web site in this hosting space you should u
 <ad:foreach collection="#NameServers#" var="NameServer" index="i">
    #NameServer#</ad:foreach>
 
-You should change the name servers in domain registrar (Register.com, GoDaddy.com, etc.) control panel. Please, study domain registrar''s user manual for directions how to change name servers or contact your domain registrar directly by e-mail or phone.
+You should change the name servers in domain registrar (Register.com, GoDaddy.com, etc.) control panel. Please, study domain registrar's user manual for directions how to change name servers or contact your domain registrar directly by e-mail or phone.
 
 Please note, the changes in domain registrar database do not reflect immediately and sometimes it requires from 12 to 48 hours till the end of DNS propagation.
 
@@ -44848,15 +44951,15 @@ The following web sites have been created under hosting space:
 <ad:foreach collection="#WebSites#" var="WebSite">
    http://#WebSite.Name#</ad:foreach>
 
-* Please note, your web sites may not be accessible from 12 to 48 hours after you''ve changed name servers for their respective domains.
+* Please note, your web sites may not be accessible from 12 to 48 hours after you've changed name servers for their respective domains.
 
-<ad:if test="#isnotempty(InstantAlias)#">Temporary URL
+<ad:if test="#isnotempty(PreviewDomain)#">Temporary URL
 -------------
-You can access your web sites right now using their respective temporary URLs (instant aliases). Temporary URL is a sub-domain of the form http://yourdomain.com.providerdomain.com where &quot;yourdomain.com&quot; is your domain and &quot;providerdomain.com&quot; is the domain of your hosting provider.
+You can access your web sites right now using their respective temporary URLs (Preview Domains). Temporary URL is a sub-domain of the form http://yourdomain.com.providerdomain.com where "yourdomain.com" is your domain and "providerdomain.com" is the domain of your hosting provider.
 
 You can use the following Temporary URL for all your web sites:
 
-    http://YourDomain.com.#InstantAlias#
+    http://YourDomain.com.#PreviewDomain#
 </ad:if>
 
 
@@ -44894,9 +44997,9 @@ Also, you can use the following domain names to access your FTP server:
 
    ftp://ftp.YourDomain.com
 
-<ad:if test="#isnotempty(InstantAlias)#">During DNS propagation period (when domain name servers have been changed), similar to web sites, FTP server can be access with Temporary URL too:
+<ad:if test="#isnotempty(PreviewDomain)#">During DNS propagation period (when domain name servers have been changed), similar to web sites, FTP server can be access with Temporary URL too:
 
-    ftp://ftp.YourDomain.com.#InstantAlias#
+    ftp://ftp.YourDomain.com.#PreviewDomain#
 </ad:if>
 
 FTP Accounts
@@ -44928,11 +45031,11 @@ Below is the IP address of your POP3/SMTP/IMAP server. You can always access you
 
 Also, you can use the following domain names to access SMTP/POP3 server from your favourite e-mail client software:
 
-   mail.YourDomain.com</td>
+   mail.YourDomain.com
 
-<ad:if test="#isnotempty(InstantAlias)#">During DNS propagation period (when domain name servers have been changed), similar to web sites, SMTP/POP3 server can be access with temporary domain too:
+<ad:if test="#isnotempty(PreviewDomain)#">During DNS propagation period (when domain name servers have been changed), similar to web sites, SMTP/POP3 server can be access with temporary domain too:
 
-   mail.YourDomain.com.#InstantAlias#
+   mail.YourDomain.com.#PreviewDomain#
 </ad:if>
 
 Mail Accounts
@@ -44955,7 +45058,7 @@ Maximum Number of Users: <ad:NumericQuota quota="MsSQL2000.Users" />
 
 In order to connect to SQL Server 2000 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
 
-    #MsSQL2000Address#</td>
+    #MsSQL2000Address#
 
 <ad:MsSqlConnectionStrings server="#MsSQL2000Address#" />
 </ad:if>
@@ -44967,7 +45070,7 @@ Maximum Number of Users: <ad:NumericQuota quota="MsSQL2005.Users" />
 
 In order to connect to SQL Server 2005 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
 
-    #MsSQL2005Address#</td>
+    #MsSQL2005Address#
 
 <ad:MsSqlConnectionStrings server="#MsSQL2005Address#" />
 </ad:if>
@@ -44979,7 +45082,7 @@ Maximum Number of Users: <ad:NumericQuota quota="MsSQL2008.Users" />
 
 In order to connect to SQL Server 2008 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
 
-    #MsSQL2008Address#</td>
+    #MsSQL2008Address#
 
 <ad:MsSqlConnectionStrings server="#MsSQL2008Address#" />
 </ad:if>
@@ -44991,7 +45094,7 @@ Maximum Number of Users: <ad:NumericQuota quota="MsSQL2012.Users" />
 
 In order to connect to SQL Server 2012 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
 
-    #MsSQL2012Address#</td>
+    #MsSQL2012Address#
 
 <ad:MsSqlConnectionStrings server="#MsSQL2012Address#" />
 </ad:if>
@@ -45003,9 +45106,21 @@ Maximum Number of Users: <ad:NumericQuota quota="MsSQL2014.Users" />
 
 In order to connect to SQL Server 2014 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
 
-    #MsSQL2014Address#</td>
+    #MsSQL2014Address#
 
 <ad:MsSqlConnectionStrings server="#MsSQL2014Address#" />
+</ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("MsSQL2016")#">SQL Server 2016
+---------------
+Maximum Number of Databases: <ad:NumericQuota quota="MsSQL2016.Databases" />
+Maximum Number of Users: <ad:NumericQuota quota="MsSQL2016.Users" />
+
+In order to connect to SQL Server 2016 from Management Studio, Enterprise Manager, Query Analyzer or other client software you can use the following SQL Server address:
+
+    #MsSQL2016Address#
+
+<ad:MsSqlConnectionStrings server="#MsSQL2016Address#" />
 </ad:if>
 
 
@@ -45016,7 +45131,7 @@ Maximum Number of Users: <ad:NumericQuota quota="MySQL4.Users" />
 
 In order to connect to MySQL 4.x server you can use the following address:
 
-   #MySQL4Address#</td>
+   #MySQL4Address#
 </ad:if>
 
 <ad:if test="#space.Groups.ContainsKey("MySQL5")#">MySQL 5.x
@@ -45026,7 +45141,7 @@ Maximum Number of Users: <ad:NumericQuota quota="MySQL5.Users" />
 
 In order to connect to MySQL 5.x server you can use the following address:
 
-   #MySQL5Address#</td>
+   #MySQL5Address#
 </ad:if>
 
 <ad:if test="#space.Groups.ContainsKey("MariaDB")#">MariaDB
@@ -45034,9 +45149,6 @@ In order to connect to MySQL 5.x server you can use the following address:
 Maximum Number of Databases: <ad:NumericQuota quota="MariaDB.Databases" />
 Maximum Number of Users: <ad:NumericQuota quota="MariaDB.Users" />
 
-In order to connect to MariaDB server you can use the following address:
-
-   #MariaDBAddress#</td>
 </ad:if>
 
 Microsoft Access
@@ -45050,27 +45162,47 @@ Maximum Number of Statistics Sites: <ad:NumericQuota quota="Stats.Sites" />
 You can view advanced statistics from your domain using URL of the following form:
 
    http://stats.YourDomain.com
-<ad:if test="#isnotempty(InstantAlias)#">
+<ad:if test="#isnotempty(PreviewDomain)#">
 During DNS propagation period (when domain name servers have been changed), you can access web site statistics with Temporary URL:
 
-   http://stats.YourDomain.com.#InstantAlias#
+   http://stats.YourDomain.com.#PreviewDomain#
 </ad:if>
 </ad:if>
 
-<ad:if test="#Signup#">If you have any questions regarding your hosting account, feel free to contact our support department at any time.
 
-Best regards,
-SolidCP.
-Web Site: https://solidcp.com"
-E-Mail: support@solidcp.com
-</ad:if>
 <ad:template name="MsSqlConnectionStrings">You may also use SQL Server address above in your application connection strings, for example:
 
 Classic ASP (ADO Library): Provider=SQLOLEDB;Data source=#server#;Initial catalog=databaseName;User Id=userName;Password=password;
 ASP.NET (ADO.NET Library): Server=#server#;Database=databaseName;Uid=userName;Password=password;
 </ad:template>
 <ad:template name="NumericQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot -1#">#space.Quotas[quota].QuotaAllocatedValue#<ad:else>Unlimited</ad:if><ad:else>0</ad:if></ad:template>
-<ad:template name="BooleanQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot 0#">Enabled<ad:else>Disabled</ad:if><ad:else>Disabled</ad:if></ad:template>')
+<ad:template name="BooleanQuota"><ad:if test="#space.Quotas.ContainsKey(quota)#"><ad:if test="#space.Quotas[quota].QuotaAllocatedValue isnot 0#">Enabled<ad:else>Disabled</ad:if><ad:else>Disabled</ad:if></ad:template>
+
+<ad:if test="#space.Groups.ContainsKey("VPS2012")#">VPS2012
+========
+CPUs: <ad:NumericQuota quota="VPS2012.CpuNumber" />
+RAM: <ad:NumericQuota quota="VPS2012.Ram" />
+HDD: <ad:NumericQuota quota="VPS2012.Hdd" /></ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("VPSForPC")#">VPSForPC
+========
+CPUs: <ad:NumericQuota quota="VPSForPC.CpuNumber" />
+RAM: <ad:NumericQuota quota="VPSForPC.Ram" />
+HDD: <ad:NumericQuota quota="VPSForPC.Hdd" /></ad:if>
+
+<ad:if test="#space.Groups.ContainsKey("PROXMOX")#">PROXMOX
+========
+CPUs: <ad:NumericQuota quota="PROXMOX.CpuNumber" />
+RAM: <ad:NumericQuota quota="PROXMOX.Ram" />
+HDD: <ad:NumericQuota quota="PROXMOX.Hdd" /></ad:if>
+
+<ad:if test="#Signup#">If you have any questions regarding your hosting account, feel free to contact our support department at any time.
+
+Best regards,
+HostingCompany.
+Web Site: https://HostingCompany.com"
+E-Mail: support@HostingCompany.com
+</ad:if>')
 GO
 INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'PasswordReminderLetter', N'CC', N'')
 GO
