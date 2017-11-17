@@ -40,6 +40,7 @@
 		<SCPTransportAgentSrc>$(TrunkFolder)\Sources\Tools\SCPTransportAgent</SCPTransportAgentSrc>
 		<SolidCP-Configuration-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolSrc>
 		<MSPtoSCPSrc>$(TrunkFolder)\Sources\Tools\MSPtoSCP</MSPtoSCPSrc>
+		<MailTemplatesSrc>$(TrunkFolder)\Sources\Tools\MailTemplates</MailTemplatesSrc>
 		<SolidCP-Auto-Upgrade-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolSrc>
 		<FixDefaultPublicFolderMailboxSrc>$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox\bin\$(BuildConfiguration)</FixDefaultPublicFolderMailboxSrc>
 
@@ -497,6 +498,7 @@
 		<SCPTransportAgentInstall>$(ToolsFolder)\SCPTransportAgent</SCPTransportAgentInstall>
 		<SolidCP-Configuration-ToolInstall>$(ToolsFolder)\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolInstall>
 		<MSPtoSCPInstall>$(ToolsFolder)\MSPtoSCP</MSPtoSCPInstall>
+		<MailTemplatesInstall>$(ToolsFolder)\MailTemplates</MailTemplatesInstall>
 		<SolidCP-Auto-Upgrade-ToolInstall>$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolInstall>
     <FixDefaultPublicFolderMailboxInstall>$(ToolsFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxInstall>
   </PropertyGroup>
@@ -667,7 +669,17 @@
 		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(MSPtoSCPInstall)" />
 	</Target>
 	
-  	<Target Name="SolidCP-Auto-Upgrade-ToolInstall" DependsOnTargets="MSPtoSCPInstall">
+	<Target Name="MailTemplatesInstall" DependsOnTargets="MSPtoSCPInstall">
+	<ItemGroup>
+		<MailTemplatesFiles Include="$(MailTemplatesSrc)\**\*.*" />
+	</ItemGroup>
+	<RemoveDir Directories="$(MailTemplatesInstall)"/>
+	<MakeDir Directories="$(MailTemplatesInstall)"/>
+	<Copy SourceFiles="@(MailTemplatesFiles)" DestinationFolder="$(MailTemplatesInstall)\%(RecursiveDir)" />
+	<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(MailTemplatesInstall)" />
+	</Target>
+	
+  	<Target Name="SolidCP-Auto-Upgrade-ToolInstall" DependsOnTargets="MailTemplatesInstall">
 		<ItemGroup>
 			<SolidCP-Auto-Upgrade-ToolFiles Include="$(SolidCP-Auto-Upgrade-ToolSrc)\*.*" />
 		</ItemGroup>
@@ -943,6 +955,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip&quot; &quot;$(FixDefaultPublicFolderMailboxInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Configuration-Tool.zip&quot; &quot;$(SolidCP-Configuration-ToolInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
 
   </Target>
