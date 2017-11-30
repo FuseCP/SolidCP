@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -125,7 +125,7 @@ namespace SolidCP.Portal.UserControls
             try
             {
                 var ascii = idn.GetAscii(Text);
-                var regex = new Regex(@"^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.){1,10}[a-zA-Z]{2,15}$");
+                var regex = new Regex(@"^([a-zA-Zа-яА-Я0-9]([a-zA-Zа-яА-Я0-9-]{0,61}[a-zA-Zа-яА-Я0-9])?.){1,10}[a-zA-Zа-яА-Я0-9{2,15}$");
                 args.IsValid = regex.IsMatch(ascii);
             }
             catch (Exception)
