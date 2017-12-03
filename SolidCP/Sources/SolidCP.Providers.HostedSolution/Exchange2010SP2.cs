@@ -461,15 +461,6 @@ namespace SolidCP.Providers.HostedSolution
                 cmd.Parameters.Add("BypassSecurityGroupManagerCheck", true);
                 ExecuteShellCommand(runSpace, cmd);
 
-                if (!IsConsumer)
-                {
-                    //Set-MailboxFolderPermission for calendar
-                    cmd = new Command("Add-MailboxFolderPermission");
-                    cmd.Parameters.Add("Identity", id + ":\\calendar");
-                    cmd.Parameters.Add("AccessRights", "Reviewer");
-                    cmd.Parameters.Add("User", organizationId);
-                    ExecuteShellCommand(runSpace, cmd);
-                }
                 cmd = new Command("Set-MailboxFolderPermission");
                 cmd.Parameters.Add("Identity", id + ":\\calendar");
                 cmd.Parameters.Add("AccessRights", "None");
