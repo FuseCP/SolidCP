@@ -2380,8 +2380,8 @@ namespace SolidCP.Providers.HostedSolution
             {
                 string Path = GetOrganizationPath(organizationId);
                 HostedSolutionLog.DebugInfo("Path: {0}", Path);
-                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject);
-                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
                 ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
                 ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
 
