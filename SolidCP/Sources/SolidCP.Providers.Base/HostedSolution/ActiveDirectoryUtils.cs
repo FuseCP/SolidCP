@@ -34,6 +34,8 @@ using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Globalization;
 using System.Text;
 
@@ -175,6 +177,7 @@ namespace SolidCP.Providers.HostedSolution
 
                 ret = ou.Path;
                 ou.CommitChanges();
+
             }
             finally
             {
@@ -552,6 +555,60 @@ namespace SolidCP.Providers.HostedSolution
             return str4;
         }
 
+        public static void AddOUSecurityfromUser(string ouPath, string domain, string Username, ActiveDirectoryRights rights, AccessControlType type, ActiveDirectorySecurityInheritance inheritance)
+        {
+                DirectoryEntry ou = GetADObject(ouPath);
+
+                NTAccount ADUser = new NTAccount(domain, Username);
+
+                ActiveDirectoryAccessRule ruleRead = new ActiveDirectoryAccessRule(
+                                                                ADUser,
+                                                                rights,
+                                                                type,
+                                                                inheritance
+                                                                );
+
+                ou.ObjectSecurity.AddAccessRule(ruleRead);
+                ou.CommitChanges();
+                ou.Close();
+            
+        }
+
+        public static void RemoveOUSecurityfromUser(string ouPath, string domain, string Username, ActiveDirectoryRights rights, AccessControlType type, ActiveDirectorySecurityInheritance inheritance)
+        {
+                DirectoryEntry ou = GetADObject(ouPath);
+                NTAccount ADUser = new NTAccount(domain, Username);
+                ActiveDirectoryAccessRule ruleRead = new ActiveDirectoryAccessRule(
+                                                                ADUser,
+                                                                rights,
+                                                                type,
+                                                                inheritance
+                                                                );
+
+                ou.ObjectSecurity.RemoveAccessRule(ruleRead);
+                ou.CommitChanges();
+                ou.Close();
+        }
+
+        public static void RemoveOUSecurityfromSid(string ouPath, WellKnownSidType UserSid, ActiveDirectoryRights rights, AccessControlType type, ActiveDirectorySecurityInheritance inheritance)
+        {
+            DirectoryEntry ou = GetADObject(ouPath);
+            
+
+            SecurityIdentifier identity = null;
+            identity = new SecurityIdentifier(UserSid, null);
+
+            ActiveDirectoryAccessRule ruleRead = new ActiveDirectoryAccessRule(
+                                                            identity,
+                                                            rights,
+                                                            type,
+                                                            inheritance
+                                                            );
+
+            ou.ObjectSecurity.RemoveAccessRule(ruleRead);
+            ou.CommitChanges();
+            ou.Close();
+        }
 
     }
 }

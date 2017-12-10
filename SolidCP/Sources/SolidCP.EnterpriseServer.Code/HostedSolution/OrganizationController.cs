@@ -452,6 +452,9 @@ namespace SolidCP.EnterpriseServer
                     }
                 }
 
+                // Change to OU security for dSHeuristics
+                orgProxy.SetOUSecurity(org.DistinguishedName, organizationId);
+
                 // register organization domain service item
                 OrganizationDomain orgDomain = new OrganizationDomain
                 {

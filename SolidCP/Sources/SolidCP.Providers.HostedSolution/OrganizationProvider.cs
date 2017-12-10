@@ -40,6 +40,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.DirectoryServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Globalization;
 
 using System.Management.Automation;
@@ -2352,6 +2354,47 @@ namespace SolidCP.Providers.HostedSolution
         }
 
         #endregion
+
+        #endregion
+
+        #region OU Security
+
+        public int SetOUSecurity(string domain, string organizationId)
+        {
+            return SetOUSecurityInternal(domain, organizationId);
+        }
+
+        internal int SetOUSecurityInternal(string domain, string organizationId)
+        {
+            HostedSolutionLog.LogStart("SetOUSecurityInternal");
+            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
+            HostedSolutionLog.DebugInfo("domain : {0}", domain);
+            HostedSolutionLog.DebugInfo("RootDomain : {0}", RootDomain);
+
+            if (string.IsNullOrEmpty(organizationId))
+                throw new ArgumentNullException("organizationId");
+
+            string groupPath = null;
+
+            try
+            {
+                string Path = GetOrganizationPath(organizationId);
+                HostedSolutionLog.DebugInfo("Path: {0}", Path);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren);
+                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
+                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
+
+            }
+            catch (Exception e)
+            {
+                HostedSolutionLog.LogError(e);
+            }
+
+            HostedSolutionLog.LogEnd("SetOUSecurityInternal");
+
+            return Errors.OK;
+        }
 
         #endregion
 

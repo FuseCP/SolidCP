@@ -283,5 +283,12 @@ namespace SolidCP.Server
         {
             return Organization.GetOrganizationUserWithExtraData(loginName, organizationId);
         }
+
+
+        [WebMethod, SoapHeader("settings")]
+        public int SetOUSecurity(string domain, string organizationId)
+        {
+            return Organization.SetOUSecurity(domain, organizationId);
+        }
     }
 }

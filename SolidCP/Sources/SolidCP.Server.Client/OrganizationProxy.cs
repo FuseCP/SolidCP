@@ -99,7 +99,9 @@ namespace SolidCP.Providers.HostedSolution {
         private System.Threading.SendOrPostCallback CheckPhoneNumberIsInUseOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetOrganizationUserWithExtraDataOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback SetOUSecurityOperationCompleted;
+
         /// <remarks/>
         public Organizations() {
             this.Url = "http://localhost:9003/Organizations.asmx";
@@ -201,6 +203,9 @@ namespace SolidCP.Providers.HostedSolution {
         /// <remarks/>
         public event GetOrganizationUserWithExtraDataCompletedEventHandler GetOrganizationUserWithExtraDataCompleted;
         
+        /// <remarks/>
+        public event SetOUSecurityCompletedEventHandler SetOUSecurityCompleted;
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/OrganizationExists", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -786,7 +791,60 @@ namespace SolidCP.Providers.HostedSolution {
                 this.DeleteObjectFromSecurityGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetOUSecurity", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int SetOUSecurity(string domain, string organizationId)
+        {
+            object[] results = this.Invoke("SetOUSecurity", new object[] {
+                        domain,
+                        organizationId});
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginSetOUSecurity(string domain, string organizationId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("SetOUSecurity", new object[] {
+                        domain,
+                        organizationId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public int EndSetOUSecurity(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public void SetOUSecurityAsync(string domain, string organizationId)
+        {
+            this.SetOUSecurityAsync(domain, organizationId, null);
+        }
+
+        /// <remarks/>
+        public void SetOUSecurityAsync(string domain, string organizationId, object userState)
+        {
+            if ((this.SetOUSecurityOperationCompleted == null))
+            {
+                this.SetOUSecurityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetOUSecurityOperationCompleted);
+            }
+            this.InvokeAsync("SetOUSecurity", new object[] {
+                        domain,
+                        organizationId }, this.SetOUSecurityOperationCompleted, userState);
+        }
+
+        private void OnSetOUSecurityOperationCompleted(object arg)
+        {
+            if ((this.SetOUSecurityCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetOUSecurityCompleted(this, new SetOUSecurityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetUserGeneralSettings", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -2261,6 +2319,36 @@ namespace SolidCP.Providers.HostedSolution {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((OrganizationUser)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void SetOUSecurityCompletedEventHandler(object sender, SetOUSecurityCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetOUSecurityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal SetOUSecurityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public int Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
             }
         }
     }

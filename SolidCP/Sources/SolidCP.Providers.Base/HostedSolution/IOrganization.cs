@@ -108,5 +108,7 @@ namespace SolidCP.Providers.HostedSolution
         bool CheckPhoneNumberIsInUse(string phoneNumber, string userSamAccountName = null);
 
         OrganizationUser GetOrganizationUserWithExtraData(string loginName, string organizationId);
+
+        int SetOUSecurity(string domain, string organizationId);
     }
 }
