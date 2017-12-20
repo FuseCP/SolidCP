@@ -675,6 +675,89 @@ namespace SolidCP.Providers.Utils
 			}
 		}
 
+        /*** CreateBackupZip
+ * params:
+ * zipFile: Destination file of zipped backup
+ * rootpath: Path of Folder to Backup Example: C:\HostingSpace\243423
+ * 
+ * Creates a zipped backup of Folder rootPath, excluding .wspak or .scpak Backup Files
+ * */
+        public static void CreateBackupZip(string zipFile, string rootpath)
+        {
+            using (ZipFile zip = new ZipFile())
+            {
+                //use unicode if necessary
+                zip.UseUnicodeAsNecessary = true;
+                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
+
+                //skip locked files
+                zip.ZipErrorAction = ZipErrorAction.Skip;
+                string[] zipfiles = BackupFileNames(rootpath, "").ToArray();
+                foreach (string file in zipfiles)
+                {
+                    string fullPath = Path.Combine(rootpath, file);
+                    if (Directory.Exists(fullPath))
+                    {
+                        //add empty Directory
+                        zip.AddDirectoryByName(file);
+                    }
+                    else if (File.Exists(fullPath))
+                    {
+                        string path = "";
+                        try
+                        {
+                            int idx = file.LastIndexOf("\\");
+                            path = file.Substring(0, idx);
+                        }
+                        catch { }
+                        //add file to relative folder
+                        zip.AddFile(fullPath, path);
+                    }
+                }
+                zip.Save(zipFile);
+            }
+        }
+
+
+        /*** BackupFileNames
+         * params:
+         * rootpath: Directory to get files and folders recursively
+         * folder: "" Empty String (for recursively function)
+         * 
+         * get all files and folders in rootpath excluded the backup files ending with .scpak or .wspak
+         */
+        public static List<string> BackupFileNames(string rootpath, string folder)
+        {
+            // get the list of files
+            SystemFile[] files = GetFiles(Path.Combine(rootpath, folder));
+
+            List<String> list_files = new List<String>();
+            foreach (SystemFile file_i in files)
+            {
+                try
+                {
+                    if (file_i.IsDirectory)
+                    {
+                        string filename = Path.Combine(folder, file_i.Name);
+                        list_files.Add(filename);
+                        list_files.AddRange(BackupFileNames(rootpath, filename));
+                    }
+                    else
+                    {
+                        string filename = Path.Combine(folder, file_i.Name);
+                        // Ignore scpak and old wspak Backup Files in Backup Folder
+                        if (!(filename.EndsWith(".scpak")) && !(filename.EndsWith(".wspak")))
+                        {
+                            list_files.Add(filename);
+                        }
+                    }
+                }
+                catch { }
+
+            }
+            return list_files;
+        }
+
         public static string[] UnzipFiles(string zipFile, string destFolder)
         {
 			using (ZipFile zip = ZipFile.Read(zipFile))

@@ -390,7 +390,18 @@ namespace SolidCP.EnterpriseServer
             var idn = new IdnMapping();
 
             if (itemType == typeof(DnsZone))
-                items.AddRange(dns.GetZones());
+                items.AddRange(dns.GetZones().Select(z =>
+                {
+                    try
+                    {
+                        return idn.GetUnicode(z);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }));
+
 
             return items;
         }

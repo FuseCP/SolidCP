@@ -123,8 +123,12 @@ namespace SolidCP.EnterpriseServer
 			{
                 TaskManager.StartTask(taskId, "BACKUP", "BACKUP", backupFileName, SecurityContext.User.UserId);
 
+                // Set Ending .scpak
+                if (!backupFileName.EndsWith(".scpak"))
+                    backupFileName += ".scpak";
+
                 // get the list of items to backup
-				TaskManager.Write("Calculate items to backup");
+                TaskManager.Write("Calculate items to backup");
 				List<ServiceProviderItem> items = GetBackupItems(userId, packageId, serviceId, serverId);
 
 				if (items.Count == 0)
@@ -252,10 +256,13 @@ namespace SolidCP.EnterpriseServer
 				// compress backup files
 				string[] zipFiles = Directory.GetFiles(tempFolder);
 				string[] zipFileNames = new string[zipFiles.Length];
-				for (int i = 0; i < zipFiles.Length; i++)
-					zipFileNames[i] = Path.GetFileName(zipFiles[i]);
+                for (int i = 0; i < zipFiles.Length; i++)
+                {
+                    zipFileNames[i] = Path.GetFileName(zipFiles[i]);
+                }
 
-				string backupFileNamePath = Path.Combine(tempFolder, backupFileName);
+
+                string backupFileNamePath = Path.Combine(tempFolder, backupFileName);
 
 				try
 				{

@@ -91,8 +91,34 @@ namespace SolidCP.EnterpriseServer
                 if (serviceId == 0)
                     return items;
 
+                // Read existing packages and serviceitems
                 DataTable dtServiceItems = PackageController.GetServiceItemsDataSet(serviceId).Tables[0];
                 DataTable dtPackageItems = PackageController.GetPackageItemsDataSet(packageId).Tables[0];
+
+                // Add already existing packages and serviceitems to lowercase ignorelist
+                List<string> ignorelist = new List<string>();
+                foreach (DataRow dr in dtServiceItems.Rows)
+                {
+                    string serviceItemName = (string)dr["ItemName"];
+                    int serviceItemTypeId = (int)dr["ItemTypeId"];
+
+                    if (serviceItemTypeId == itemTypeId)
+                    {
+                        if (!ignorelist.Contains(serviceItemName))
+                            ignorelist.Add(serviceItemName.ToLower());
+                    }
+                }
+                foreach (DataRow dr in dtPackageItems.Rows)
+                {
+                    string packageItemName = (string)dr["ItemName"];
+                    int packageItemTypeId = (int)dr["ItemTypeId"];
+
+                    if (packageItemTypeId == itemTypeId)
+                    {
+                        if (!ignorelist.Contains(packageItemName))
+                            ignorelist.Add(packageItemName.ToLower());
+                    }
+                }
 
                 // instantiate controller
                 IImportController ctrl = null;
@@ -107,37 +133,7 @@ namespace SolidCP.EnterpriseServer
 
                     foreach (string importableItem in importableItems)
                     {
-                        // filter items by service
-                        bool serviceContains = false;
-                        foreach (DataRow dr in dtServiceItems.Rows)
-                        {
-                            string serviceItemName = (string)dr["ItemName"];
-                            int serviceItemTypeId = (int)dr["ItemTypeId"];
-
-                            if (String.Compare(importableItem, serviceItemName, true) == 0
-                                && serviceItemTypeId == itemTypeId)
-                            {
-                                serviceContains = true;
-                                break;
-                            }
-                        }
-
-                        // filter items by package
-                        bool packageContains = false;
-                        foreach (DataRow dr in dtPackageItems.Rows)
-                        {
-                            string packageItemName = (string)dr["ItemName"];
-                            int packageItemTypeId = (int)dr["ItemTypeId"];
-
-                            if (String.Compare(importableItem, packageItemName, true) == 0
-                                && packageItemTypeId == itemTypeId)
-                            {
-                                packageContains = true;
-                                break;
-                            }
-                        }
-
-                        if (!serviceContains && !packageContains)
+                        if (!ignorelist.Contains(importableItem.ToLower()))
                         {
                             var itemToImport = importableItem;
 

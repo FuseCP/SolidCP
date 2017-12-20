@@ -70,6 +70,7 @@ namespace SolidCP.Providers.OS
         void CopyFile(string sourcePath, string destinationPath);
         void ZipFiles(string zipFile, string rootPath, string[] files);
         string[] UnzipFiles(string zipFile, string destFolder);
+        void CreateBackupZip(string zipFile, string rootPath);
 
         UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU);
         void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions);

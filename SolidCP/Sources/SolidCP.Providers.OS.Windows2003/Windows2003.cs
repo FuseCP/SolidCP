@@ -205,6 +205,11 @@ namespace SolidCP.Providers.OS
             return FileUtils.UnzipFiles(zipFile, destFolder);
         }
 
+        public virtual void CreateBackupZip(string zipFile, string rootPath)
+        {
+            FileUtils.CreateBackupZip(zipFile, rootPath);
+        }
+
         public virtual void CreateAccessDatabase(string databasePath)
         {
             FileUtils.CreateAccessDatabase(databasePath);
