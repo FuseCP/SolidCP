@@ -1,6 +1,10 @@
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)
 - Added MariaDB 10.2 support
+- Bugfix hmailserver - With thanks to Centron GmbH
+- Powerdns Fix's - With thanks to Centron GmbH
+- Fix Importing DNS Zones and speedup importing dns zones - With thanks to Centron GmbH
+- Fixs for backup hostingspace - With thanks to Centron GmbH
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
