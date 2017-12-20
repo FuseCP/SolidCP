@@ -85,17 +85,13 @@ Public Class hMailServer5
     Private Function CheckAccountIsGroup(ByVal objAccount As Object) As Boolean
         If objAccount.Rules.Count > 0 Then
             ' check rule actions
-            Dim objRule As Object = objAccount.Rules.Item(0)
-            ' first read rule name
-            If String.Compare(objRule.Name, MAIL_GROUP_RULE, True) = 0 Then
-                Return True
-            Else ' read rule actions
-                For j As Integer = 0 To objRule.Actions.Count - 1
-                    If objRule.Actions.Item(j).Type = 1 Then 'eRADeleteEmail
-                        Return True
-                    End If
-                Next
-            End If
+            For k As Integer = 0 To objAccount.Rules.Count - 1
+                Dim objRule As Object = objAccount.Rules.Item(k)
+                ' first read rule name
+                If String.Compare(objRule.Name, MAIL_GROUP_RULE, True) = 0 Then
+                    Return True
+                End If
+            Next
         End If
         Return False
     End Function
@@ -379,7 +375,11 @@ Public Class hMailServer5
             objAccount.Address = mailbox.Name
             objAccount.Active = mailbox.Enabled
             objAccount.Password = mailbox.Password
-            objAccount.MaxSize = mailbox.MaxMailboxSize
+            If (mailbox.MaxMailboxSize = -1) Then
+                objAccount.MaxSize = 0
+            Else
+                objAccount.MaxSize = mailbox.MaxMailboxSize
+            End If
             objAccount.PersonFirstName = mailbox.FirstName
             objAccount.PersonLastName = mailbox.LastName
             objAccount.SignatureEnabled = mailbox.SignatureEnabled
@@ -818,7 +818,11 @@ Public Class hMailServer5
                     account.FirstName = objAccount.PersonFirstName
                     account.LastName = objAccount.PersonLastName
                     account.Enabled = objAccount.Active
-                    account.MaxMailboxSize = objAccount.MaxSize
+                    If (CLng(objAccount.MaxSize) = 0) Then
+                        account.MaxMailboxSize = -1
+                    Else
+                        account.MaxMailboxSize = objAccount.MaxSize
+                    End If
                     account.Password = objAccount.Password
                     account.Size = objAccount.Size()
                     account.QuotaUsed = objAccount.QuotaUsed()
@@ -1066,7 +1070,11 @@ Public Class hMailServer5
                 Dim objAccount As Object = objDomain.ComObject.Accounts.ItemByAddress(mailbox.Name)
                 objAccount.Active = mailbox.Enabled
                 objAccount.Password = mailbox.Password
-                objAccount.MaxSize = mailbox.MaxMailboxSize
+                If (mailbox.MaxMailboxSize = -1) Then
+                    objAccount.MaxSize = 0
+                Else
+                    objAccount.MaxSize = mailbox.MaxMailboxSize
+                End If
                 'Auto-Responder
                 objAccount.VacationMessageIsOn = mailbox.ResponderEnabled
                 objAccount.VacationSubject = mailbox.ResponderSubject
