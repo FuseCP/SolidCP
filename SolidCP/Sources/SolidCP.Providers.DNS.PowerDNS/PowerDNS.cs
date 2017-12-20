@@ -219,7 +219,7 @@ namespace SolidCP.Providers.DNS
             try
             {
                 IDataReader reader = ExecuteReader(
-                    "SELECT name FROM domains"
+                    "SELECT name FROM domains WHERE id <> 1"
                 );
 
                 while (reader.Read())
@@ -227,6 +227,17 @@ namespace SolidCP.Providers.DNS
                     zones.Add(
                         reader["name"].ToString()
                     );
+                    try
+                    {
+                        string zonename = reader["name"].ToString();
+                        zones.Add(
+                            zonename
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError("Error getting one zone from the list of Power DNS zones.", ex);
+                    }
                 }
 
                 reader.Close();
@@ -389,8 +400,23 @@ namespace SolidCP.Providers.DNS
                     if (Int32.TryParse(reader["prio"].ToString(), out mxPriority))
                     {
                         record.MxPriority = mxPriority;
+                        record.SrvPriority = mxPriority;
                     }
+                    if (record.RecordType == DnsRecordType.SRV)
+                    {
+                        string[] srvparts = record.RecordData.Split(' ');
+                        if (srvparts.Length == 3)
+                        {
+                            int SrvWeight = 0;
+                            if (Int32.TryParse(srvparts[0], out SrvWeight))
+                                record.SrvWeight = SrvWeight;
 
+                            int SrvPort = 0;
+                            if (Int32.TryParse(srvparts[1], out SrvPort))
+                                record.SrvPort = SrvPort;
+                            record.RecordData = srvparts[2];
+                        }
+                    }
                     records.Add(record);
                 }
 
@@ -516,6 +542,13 @@ namespace SolidCP.Providers.DNS
                     record.RecordName = zoneName;
             }
 
+            //SRV record
+            if (record.RecordType == DnsRecordType.SRV)
+            {
+                record.RecordData = string.Format("{0} {1} {2}", record.SrvWeight, record.SrvPort, record.RecordData);
+                record.MxPriority = record.SrvPriority;
+            }
+
             //widen record name for Power DNS 
             if (!string.IsNullOrEmpty(record.RecordName))
             {
@@ -600,6 +633,8 @@ namespace SolidCP.Providers.DNS
                     recordId = reader["id"].ToString();
                     recordContent = reader["content"].ToString();
                 }
+
+                reader.Close();
 
                 if (string.IsNullOrEmpty(recordId))
                     throw new ArgumentOutOfRangeException(string.Format("SOA record for Power DNS zone '{0}' not found", zoneName));
@@ -705,13 +740,25 @@ namespace SolidCP.Providers.DNS
                 MySqlParameter RecordPriority = new MySqlParameter("?RecordPriority", MySqlDbType.Int32);
                 RecordPriority.Value = mxPriority;
 
-                ExecuteNonQuery(
-                    "DELETE FROM records WHERE name = ?RecordName AND type = ?RecordType AND prio = ?RecordPriority AND content like ?RecordContent "
-                    , RecordName
-                    , RecordType
-                    , RecordContent
-                    , RecordPriority
-                );
+                if (mxPriority > 0)
+                {
+                    ExecuteNonQuery(
+                      "DELETE FROM records WHERE name = ?RecordName AND type = ?RecordType AND prio = ?RecordPriority AND content like ?RecordContent "
+                      , RecordName
+                      , RecordType
+                      , RecordContent
+                      , RecordPriority
+                  );
+                }
+                else
+                {
+                    ExecuteNonQuery(
+                       "DELETE FROM records WHERE name = ?RecordName AND type = ?RecordType AND content like ?RecordContent "
+                       , RecordName
+                       , RecordType
+                       , RecordContent
+                   );
+                }
             }
             catch (Exception ex)
             {
@@ -1088,6 +1135,10 @@ namespace SolidCP.Providers.DNS
                     result = DnsRecordType.SOA;
                     break;
 
+                case "SRV":
+                    result = DnsRecordType.SRV;
+                    break;
+
                 default:
                     result = DnsRecordType.Other;
                     break;
@@ -1128,6 +1179,10 @@ namespace SolidCP.Providers.DNS
 
                 case DnsRecordType.TXT:
                     result = "TXT";
+                    break;
+
+                case DnsRecordType.SRV:
+                    result = "SRV";
                     break;
 
                 case DnsRecordType.Other:
@@ -1179,7 +1234,7 @@ namespace SolidCP.Providers.DNS
 
         public override bool IsInstalled()
         {
-            return false;
+            return true;
         }
 
     }
