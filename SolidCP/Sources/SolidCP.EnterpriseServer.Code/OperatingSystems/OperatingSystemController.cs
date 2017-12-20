@@ -660,16 +660,28 @@ namespace SolidCP.EnterpriseServer
                 // backup home folder files
                 string backupName = String.Format("SpaceFiles_{0}_{1}.zip",
                     item.Id, DateTime.Now.Ticks);
-                
+                /*
                 // get the list of remote files
                 List<SystemFile> files = FilesController.GetFiles(item.PackageId, "\\", true);
 
                 string[] zipFiles = new string[files.Count];
                 for(int i = 0; i < zipFiles.Length; i++)
                     zipFiles[i] = files[i].Name;
+                                    List<String> list_zipfiles = new List<String>();
+                foreach (SystemFile file_i in files)
+                {
+                    // Ignore scpak and old wspak Backup Files in Backup Folder
+                    if (!(file_i.Name.EndsWith(".scpak")) && !(file_i.Name.EndsWith(".wspak"))) {
+                        list_zipfiles.Add(file_i.Name);
+                    }
+                }
+                string[] zipFiles = list_zipfiles.ToArray();
+                */
+
 
                 // zip remote files
-                FilesController.ZipFiles(item.PackageId, zipFiles, backupName);
+                //FilesController.ZipFiles(item.PackageId, zipFiles, backupName);
+                CreateBackupZip(item.PackageId, backupName);
 
                 // download zipped file
                 string localBackupPath = Path.Combine(tempFolder, backupName);
@@ -720,6 +732,43 @@ namespace SolidCP.EnterpriseServer
 
             return 0;
         }
+
+        public static int CreateBackupZip(int packageId, string archivePath)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0) return accountCheck;
+
+            // check package
+            int packageCheck = SecurityContext.CheckPackage(packageId, DemandPackage.IsActive);
+            if (packageCheck < 0) return packageCheck;
+
+            // place log record
+            TaskManager.StartTask("FILES", "ZIP_FILES", archivePath, packageId);
+
+
+            try
+            {
+
+                OS.OperatingSystem os = FilesController.GetOS(packageId);
+                string zipFilePath = FilesController.GetFullPackagePath(packageId, archivePath);
+                string rootFolder = FilesController.GetFullPackagePath(packageId, "");
+                os.CreateBackupZip(zipFilePath, rootFolder);
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                //Log and return a generic error rather than throwing an exception
+                TaskManager.WriteError(ex);
+                return BusinessErrorCodes.ERROR_FILE_GENERIC_LOGGED;
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
 
         public int RestoreItem(string tempFolder, System.Xml.XmlNode itemNode, int itemId, Type itemType, string itemName, int packageId, int serviceId, ResourceGroupInfo group)
         {

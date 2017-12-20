@@ -113,7 +113,9 @@ namespace SolidCP.Providers.OS {
         private System.Threading.SendOrPostCallback ZipFilesOperationCompleted;
         
         private System.Threading.SendOrPostCallback UnzipFilesOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback CreateBackupZipOperationCompleted;
+
         private System.Threading.SendOrPostCallback CreateAccessDatabaseOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetGroupNtfsPermissionsOperationCompleted;
@@ -226,7 +228,10 @@ namespace SolidCP.Providers.OS {
         
         /// <remarks/>
         public event UnzipFilesCompletedEventHandler UnzipFilesCompleted;
-        
+
+        /// <remarks/>
+        public event CreateBackupZipCompletedEventHandler CreateBackupZipCompleted;
+
         /// <remarks/>
         public event CreateAccessDatabaseCompletedEventHandler CreateAccessDatabaseCompleted;
         
@@ -1397,7 +1402,58 @@ namespace SolidCP.Providers.OS {
                 this.UnzipFilesCompleted(this, new UnzipFilesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/CreateBackupZip", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void CreateBackupZip(string zipFile, string rootPath)
+        {
+            this.Invoke("CreateBackupZip", new object[] {
+                        zipFile,
+                        rootPath});
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateBackupZip(string zipFile, string rootPath, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateBackupZip", new object[] {
+                        zipFile,
+                        rootPath}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public void EndCreateBackupZip(System.IAsyncResult asyncResult)
+        {
+            this.EndInvoke(asyncResult);
+        }
+
+        /// <remarks/>
+        public void CreateBackupZipAsync(string zipFile, string rootPath)
+        {
+            this.CreateBackupZipAsync(zipFile, rootPath, null);
+        }
+
+        /// <remarks/>
+        public void CreateBackupZipAsync(string zipFile, string rootPath, object userState)
+        {
+            if ((this.CreateBackupZipOperationCompleted == null))
+            {
+                this.CreateBackupZipOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateBackupZipOperationCompleted);
+            }
+            this.InvokeAsync("CreateBackupZip", new object[] {
+                        zipFile,
+                        rootPath}, this.CreateBackupZipOperationCompleted, userState);
+        }
+
+        private void OnCreateBackupZipOperationCompleted(object arg)
+        {
+            if ((this.CreateBackupZipCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateBackupZipCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/CreateAccessDatabase", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -2415,7 +2471,11 @@ namespace SolidCP.Providers.OS {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void UnzipFilesCompletedEventHandler(object sender, UnzipFilesCompletedEventArgs e);
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void CreateBackupZipCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]

@@ -493,6 +493,22 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public void CreateBackupZip(string zipFile, string rootPath)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' ZipFiles", ProviderSettings.ProviderName);
+                OsProvider.CreateBackupZip(zipFile, rootPath);
+                Log.WriteEnd("'{0}' ZipFiles", ProviderSettings.ProviderName);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' ZipFiles", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public void CreateAccessDatabase(string databasePath)
         {
             try
