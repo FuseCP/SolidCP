@@ -5,6 +5,7 @@ Version 1.4.0:
 - Powerdns Fix's - With thanks to Centron GmbH
 - Fix Importing DNS Zones and speedup importing dns zones - With thanks to Centron GmbH
 - Fixs for backup hostingspace - With thanks to Centron GmbH
+- Upgraded to letsencrypt-win-simple v1.9.7.2
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
