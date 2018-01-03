@@ -1192,7 +1192,6 @@ GO
 
 CREATE PROCEDURE [dbo].[AddSfBUserPlan]
 (
-(
 	@SfBUserPlanId int OUTPUT,
 	@ItemID int,
 	@SfBUserPlanName	nvarchar(300),
@@ -4974,7 +4973,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-CREATE PROCEDURE [dbo].[DeleteLyncUser]
+CREATE PROCEDURE [dbo].[DeleteSfBUser]
 (
 	@AccountId int
 )
