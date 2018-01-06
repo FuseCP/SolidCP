@@ -120,7 +120,7 @@
     </fieldset>
 </div>
 <div class="panel-footer text-right">
-    <CPCC:StyleButton id="btnDelete" CssClass="btn btn-danger" runat="server" OnClick="btnDelete_Click" CausesValidation="false"> <i class="fa fa-trash-o">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnDeleteText"/> </CPCC:StyleButton>&nbsp;
+    <CPCC:StyleButton id="btnDelete" CssClass="btn btn-danger" meta:resourcekey="btnDelete" runat="server" OnClick="btnDelete_Click" CausesValidation="false"> <i class="fa fa-trash-o">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnDeleteText"/> </CPCC:StyleButton>&nbsp;
     <scp:ItemButtonPanel id="buttonPanel" runat="server" ValidationGroup="EditMailbox" 
         OnSaveClick="btnSave_Click" OnSaveExitClick="btnSaveExit_Click" OnSaveClientClick="ShowProgressDialog('Updating Domain...');" />
 </div>
