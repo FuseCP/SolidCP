@@ -223,8 +223,20 @@
 	</asp:Panel>
 	--%>
 </div>
-<div class="FormFooter">
-    <asp:Button id="btnUpdate" runat="server" meta:resourcekey="btnUpdate" CssClass="Button1" Text="Save" OnClick="btnUpdate_Click"></asp:Button>
-	<asp:Button id="btnCancel" runat="server" meta:resourcekey="btnCancel" CssClass="Button1"  CausesValidation="False" Text="Cancel" OnClick="btnCancel_Click"></asp:Button>
-	<asp:Button id="btnDelete" runat="server" meta:resourcekey="btnDelete" CssClass="Button1"  CausesValidation="False" Text="Delete" OnClick="btnDelete_Click" OnClientClick="return confirm('Delete task?');"></asp:Button>
+<div class="panel-footer text-right">
+    <CPCC:StyleButton ID="btnDelete" CssClass="btn btn-danger" runat="server" CausesValidation="False" OnClick="btnDelete_Click" OnClientClick="return confirm('Delete task?');">
+        <i class="fa fa-trash-o">&nbsp;</i>&nbsp;
+        <asp:Localize runat="server" meta:resourcekey="btnDeleteText" />
+    </CPCC:StyleButton>
+    &nbsp;
+    <CPCC:StyleButton ID="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click">
+        <i class="fa fa-times">&nbsp;</i>&nbsp;
+        <asp:Localize runat="server" meta:resourcekey="btnCancel" />
+    </CPCC:StyleButton>
+    &nbsp;
+    <CPCC:StyleButton ID="btnUpdate" CssClass="btn btn-success" runat="server" OnClick="btnUpdate_Click">
+        <i class="fa fa-refresh">&nbsp;</i>&nbsp;
+        <asp:Localize runat="server" meta:resourcekey="btnSaveText" />
+    </CPCC:StyleButton>
+	
 </div>
