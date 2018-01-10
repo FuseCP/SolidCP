@@ -12,6 +12,7 @@ Version 1.4.0:
 - LetsEncrypt renew screen fixed on success.
 - Added Domain deletion confirmation.
 - Fixed IDN Domains (regex / ASCII conversion).
+- Fixed SSL Export popup.
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values

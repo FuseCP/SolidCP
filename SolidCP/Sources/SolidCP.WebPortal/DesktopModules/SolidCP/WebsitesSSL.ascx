@@ -73,16 +73,12 @@
 				CssClass="btn btn-warning" Text="Export" />&nbsp;&nbsp;
 			<asp:Button ID="btnDelete" runat="server" Text="Delete" meta:resourcekey="btnDelete"
 				CssClass="btn btn-danger" OnClick="btnDelete_Click" />&nbsp;&nbsp;
-			<asp:Panel ID="pnlPFXPassword" CssClass="Popup" Style="display: none" runat="server">
-				<table class="Popup-Header" cellpadding="0" cellspacing="0">
-					<tr>
-						<td class="Popup-HeaderLeft">&nbsp;</td>
-						<td class="Popup-HeaderTitle"><asp:Localize runat="server" meta:resourcekey="headerPFXPassword" /></td>
-						<td class="Popup-HeaderRight">&nbsp;</td>
-					</tr>
-				</table>
-				<div class="Popup-Content">
-					<div class="Popup-Body" style="padding-top: 5px; padding-bottom: 5px;">
+			<asp:Panel ID="pnlPFXPassword" Style="display: none" runat="server">
+                <div class="widget">
+                <div class="widget-header clearfix">
+								<h3><i class="fa fa-server"></i> <span><asp:Localize runat="server" meta:resourcekey="headerPFXPassword" /></span></h3>
+                </div>
+                                <div class="widget-content Popup">
 						<div class="FormFieldDescription">
 							<asp:Localize runat="server" meta:resourcekey="PfxPassword" /></div>
 						<div class="FormField">
@@ -96,7 +92,7 @@
 							<asp:CompareValidator ID="valtxtPFXPassConfirm" runat="server" ValidationGroup="pfxExport" 
 								ControlToCompare="txtPFXPass" ControlToValidate="txtPFXPassConfirm" meta:resourcekey="valtxtPFXPassConfirm" /></div>
 					</div>
-					<div class="FormFooter">
+					<div class="popup-buttons text-right">
 						<asp:Button ID="btnExport" meta:resourcekey="btnExport" ValidationGroup="pfxExport"
 							runat="server" OnClick="btnExport_Click" CssClass="btn btn-warning" UseSubmitBehavior="false"
 							Text="Export" />&nbsp;&nbsp;
@@ -110,13 +106,6 @@
 				DropShadow="false" CancelControlID="btnPFXExportCancel" />
 		</ContentTemplate>
 	</ajaxToolkit:TabPanel>
-    <ajaxToolkit:TabPanel ID="tabLEInstalled" runat="server" Visible="false" Enabled="false" CssClass="nav nav-tabs">
-    <ContentTemplate>
-        <div class="col-sm-12">
-            <h3>Lets Encrypt Installed</h3>
-        </div>
-    </ContentTemplate>
-    </ajaxToolkit:TabPanel>
 	<ajaxToolkit:TabPanel ID="tabCSR" runat="server" meta:resourcekey="tabNewCertificate" CssClass="nav nav-tabs">
 		<ContentTemplate>
 			<asp:Panel ID="SSLNotInstalled" runat="server" Visible="true">
