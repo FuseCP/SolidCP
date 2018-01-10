@@ -312,11 +312,6 @@ namespace SolidCP.Portal
                 messageBox.ShowErrorMessage("WEB_INSTALL_LE");
                 return;
             }
-            //
-            //messageBox.ShowSuccessMessage("WEB_INSTALL_LE");
-            tabLEInstalled.Visible = true;
-            tabLEInstalled.Enabled = true;
-            tabInstalled.HeaderText = "Installed Lets Encrypt Certificate";
             pnlInstallCertificate.Visible = false;
             SSLNotInstalled.Visible = false;
             //
