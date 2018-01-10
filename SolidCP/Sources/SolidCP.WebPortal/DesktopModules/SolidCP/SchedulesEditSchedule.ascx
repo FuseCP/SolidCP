@@ -7,7 +7,7 @@
 <%@ Register Src="UserControls/EnableAsyncTasksSupport.ascx" TagName="EnableAsyncTasksSupport" TagPrefix="scp" %>
 
 <scp:EnableAsyncTasksSupport id="asyncTasks" runat="server" />
-<div class="FormBody">
+<div class="panel-body">
 	<table cellspacing="0" cellpadding="4" width="100%">
         <tr>
             <td class="SubHead" style="width:150px;"><asp:Label ID="lblTaskName" runat="server" meta:resourcekey="lblTaskName" Text="Task Name:"></asp:Label></td>
@@ -61,7 +61,8 @@
                 <asp:Label ID="lblSchedule" runat="server" meta:resourcekey="lblSchedule" Text="Schedule:"></asp:Label>
 			</td>
 			<td valign="top">
-			    <asp:DropDownList ID="ddlSchedule" runat="server"   CssClass="NormalDropDown" resourcekey="ddlSchedule"
+                <div class="form-inline">
+			    <asp:DropDownList ID="ddlSchedule" runat="server"   CssClass="form-control" resourcekey="ddlSchedule"
 			        AutoPostBack="True" OnSelectedIndexChanged="ddlSchedule_SelectedIndexChanged">
 			        <asp:ListItem Value="Daily">Daily</asp:ListItem>
 			        <asp:ListItem Value="Weekly">Weekly</asp:ListItem>
@@ -124,6 +125,7 @@
                                 ErrorMessage="*"></asp:RequiredFieldValidator></td>
                     </tr>
                 </table>
+                    </div>
             </td>
 		</tr>
 		<tr>
