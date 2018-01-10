@@ -4608,6 +4608,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             finally
             {
                 TaskManager.CompleteTask();
+                ImportCertificate(siteItemId);
             }
             return result;
         }

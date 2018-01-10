@@ -313,16 +313,17 @@ namespace SolidCP.Portal
                 return;
             }
             //
-            messageBox.ShowSuccessMessage("WEB_INSTALL_LE");
+            //messageBox.ShowSuccessMessage("WEB_INSTALL_LE");
             tabLEInstalled.Visible = true;
             tabLEInstalled.Enabled = true;
             tabInstalled.HeaderText = "Installed Lets Encrypt Certificate";
             pnlInstallCertificate.Visible = false;
             SSLNotInstalled.Visible = false;
             //
-            TabContainer1.ActiveTab = tabInstalled;
-
             RefreshControlLayout();
+            TabContainer1.ActiveTab = TabContainer1.Tabs[0];
+            messageBox.ShowSuccessMessage(WEB_INSTALL_LE);
+            TabContainer1.ActiveTab = tabInstalled;
         }
 
             protected void InstallCertificate(int webSiteId, string certText)

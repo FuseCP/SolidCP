@@ -5253,6 +5253,9 @@
   <data name="Error.WEB_INSTALL_CSR" xml:space="preserve">
     <value>Fehler beim Installieren des Zertifikats</value>
   </data>
+  <data name="Error.WEB_INSTALL_LE" xml:space="preserve">
+    <value>Fehler beim Installieren des LetsEncrypt Zertifikats</value>
+  </data>
   <data name="Error.WEB_SSL_DELETE" xml:space="preserve">
     <value>Fehler beim Löschen des Zertifikats</value>
   </data>
@@ -5267,6 +5270,9 @@
   </data>
   <data name="Success.WEB_INSTALL_CSR" xml:space="preserve">
     <value>Zertifikat wurde erfolgreich auf der Webseite installiert.</value>
+  </data>
+  <data name="Success.WEB_INSTALL_LE" xml:space="preserve">
+    <value>LetsEncrypt Zertifikat wurde erfolgreich auf der Webseite installiert.</value>
   </data>
   <data name="ListItem.NotSpecified" xml:space="preserve">
     <value>&lt;Keine Angabe&gt;</value>
