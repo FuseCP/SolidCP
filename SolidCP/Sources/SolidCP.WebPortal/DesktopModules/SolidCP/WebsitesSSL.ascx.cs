@@ -322,7 +322,7 @@ namespace SolidCP.Portal
             //
             RefreshControlLayout();
             TabContainer1.ActiveTab = TabContainer1.Tabs[0];
-            messageBox.ShowSuccessMessage(WEB_INSTALL_LE);
+            messageBox.ShowSuccessMessage("WEB_INSTALL_LE");
             TabContainer1.ActiveTab = tabInstalled;
         }
 
