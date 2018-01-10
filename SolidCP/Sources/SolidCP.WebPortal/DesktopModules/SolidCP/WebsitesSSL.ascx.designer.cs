@@ -29,7 +29,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// TabContainer1 control.
         /// </summary>
@@ -37,8 +37,8 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit. TabContainer1;
-        
+        protected global::AjaxControlToolkit.TabContainer TabContainer1;
+
         /// <summary>
         /// tabInstalled control.
         /// </summary>

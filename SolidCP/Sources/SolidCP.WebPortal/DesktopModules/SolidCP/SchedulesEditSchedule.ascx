@@ -236,7 +236,7 @@
     &nbsp;
     <CPCC:StyleButton ID="btnUpdate" CssClass="btn btn-success" runat="server" OnClick="btnUpdate_Click">
         <i class="fa fa-refresh">&nbsp;</i>&nbsp;
-        <asp:Localize runat="server" meta:resourcekey="btnSaveText" />
+        <asp:Localize runat="server" meta:resourcekey="btnUpdateText" />
     </CPCC:StyleButton>
 	
 </div>
