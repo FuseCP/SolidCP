@@ -791,7 +791,6 @@ namespace SolidCP.Setup.Actions
 			{
 				Begin(LogStartInstallMessage);
 				Log.WriteStart("Updating configuration file (server password)");
-				Log.WriteInfo(String.Format("Server password is: '{0}'", vars.ServerPassword));
 				Log.WriteInfo("Single quotes are added for clarity purposes");
 				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
 				string hash = Utils.ComputeSHA1(vars.ServerPassword);
