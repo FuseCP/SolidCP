@@ -37,7 +37,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabContainer TabContainer1;
+        protected global::AjaxControlToolkit. TabContainer1;
         
         /// <summary>
         /// tabInstalled control.
