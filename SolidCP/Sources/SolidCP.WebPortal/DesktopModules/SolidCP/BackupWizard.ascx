@@ -18,7 +18,7 @@
                 <asp:Label ID="lblBackupFile" runat="server" meta:resourcekey="lblBackupFile" Text="Backup File Name:"></asp:Label>
             </td>
             <td>
-                <asp:TextBox ID="txtBackupFileName" runat="server" CssClass="NormalTextBox" Width="400px"></asp:TextBox>
+                <asp:TextBox ID="txtBackupFileName" runat="server" CssClass="form-control" Width="400px"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="valRequireBackupFileName" runat="server" Display="Dynamic" ControlToValidate="txtBackupFileName"
                     ErrorMessage="*" ValidationGroup="Backup" meta:resourcekey="valRequireBackupFileName"></asp:RequiredFieldValidator></td>
         </tr>
@@ -30,7 +30,7 @@
                 <asp:Label ID="lblBackupDestination" runat="server" meta:resourcekey="lblBackupDestination" Text="Copy Backup To:"></asp:Label>
             </td>
             <td>
-                <asp:DropDownList ID="ddlDestination" runat="server" CssClass="NormalTextBox" resourcekey="ddlDestination" AutoPostBack="True" OnSelectedIndexChanged="ddlDestination_SelectedIndexChanged">
+                <asp:DropDownList ID="ddlDestination" runat="server" CssClass="form-control" resourcekey="ddlDestination" AutoPostBack="True" OnSelectedIndexChanged="ddlDestination_SelectedIndexChanged">
                     <asp:ListItem Value="1">SpaceFolder</asp:ListItem>
                     <asp:ListItem Value="2">ServerFolder</asp:ListItem>
                 </asp:DropDownList>
@@ -44,7 +44,7 @@
                     <asp:Label ID="lblSpace" runat="server" meta:resourcekey="lblSpace" Text="Space:"></asp:Label>
                 </td>
                 <td>
-                    <asp:DropDownList ID="ddlSpace" runat="server" CssClass="NormalTextBox" AutoPostBack="True" OnSelectedIndexChanged="ddlSpace_SelectedIndexChanged">
+                    <asp:DropDownList ID="ddlSpace" runat="server" CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="ddlSpace_SelectedIndexChanged">
                     </asp:DropDownList>&nbsp;
                 </td>
             </tr>
@@ -66,7 +66,7 @@
                     <asp:Label ID="lblServerPath" runat="server" meta:resourcekey="lblServerPath" Text="Path:"></asp:Label>
                 </td>
                 <td>
-                    <asp:TextBox ID="txtServerPath" runat="server" CssClass="NormalTextBox" Width="400px"></asp:TextBox>
+                    <asp:TextBox ID="txtServerPath" runat="server" CssClass="form-control" Width="400px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="valRequireServerPath" runat="server" Display="Dynamic" ControlToValidate="txtServerPath"
                         ErrorMessage="*" ValidationGroup="Backup" meta:resourcekey="valRequireServerPath"></asp:RequiredFieldValidator>
                 </td>

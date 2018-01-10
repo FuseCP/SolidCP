@@ -22,7 +22,7 @@
 			                <tr>
 			                    <td>
 			                        <asp:TextBox ID="txtInsertedDisk" runat="server" Width="400px"
-			                            CssClass="NormalTextBox" ReadOnly="true"></asp:TextBox>
+			                            CssClass="form-control" ReadOnly="true"></asp:TextBox>
 			                    </td>
 			                </tr>
 			                <tr>

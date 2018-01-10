@@ -3,7 +3,7 @@
     <ContentTemplate> 
 
 <div class="panel-body form-horizontal">
-    <asp:DropDownList ID="ddlOverride" runat="server" CssClass="NormalTextBox"
+    <asp:DropDownList ID="ddlOverride" runat="server" CssClass="form-control"
             resourcekey="ddlOverride" AutoPostBack="true" OnSelectedIndexChanged="ddlOverride_SelectedIndexChanged">
         <asp:ListItem>UseHost</asp:ListItem>
         <asp:ListItem>OverrideHost</asp:ListItem>

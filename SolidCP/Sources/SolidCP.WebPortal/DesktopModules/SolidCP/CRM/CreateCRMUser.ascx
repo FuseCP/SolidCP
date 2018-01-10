@@ -32,7 +32,7 @@
                         <tr>
                             <td class="FormLabel150"><asp:Localize runat="server" meta:resourcekey="locLicenseType" Text="License Type: *" /></td>
                             <td>
-                                <asp:DropDownList ID="ddlLicenseType" runat="server" CssClass="NormalTextBox" AutoPostBack="false">
+                                <asp:DropDownList ID="ddlLicenseType" runat="server" CssClass="form-control" AutoPostBack="false">
                                 </asp:DropDownList>
                             </td>
                         </tr>

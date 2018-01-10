@@ -47,27 +47,27 @@
         </asp:TemplateField>
         <asp:TemplateField HeaderText="gvUsersUsername">
             <itemtemplate>
-	            <asp:TextBox id="txtUsername" Runat=server Width="90px" CssClass=NormalTextBox Text='<%# Eval("Username") %>'>
+	            <asp:TextBox id="txtUsername" Runat=server Width="90px" CssClass=form-control Text='<%# Eval("Username") %>'>
 	            </asp:TextBox>
 	            <asp:RequiredFieldValidator ID="valRequireUsername" runat="server" ControlToValidate="txtUsername" ErrorMessage="*"></asp:RequiredFieldValidator>
             </itemtemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="gvUsersPassword">
             <itemtemplate>
-	            <asp:TextBox id="txtPassword" Runat=server Width="90px" CssClass=NormalTextBox Text='<%# Eval("Password") %>'>
+	            <asp:TextBox id="txtPassword" Runat=server Width="90px" CssClass=form-control Text='<%# Eval("Password") %>'>
 	            </asp:TextBox>
 	            <asp:RequiredFieldValidator ID="valRequirePassword" runat="server" ControlToValidate="txtPassword" ErrorMessage="*"></asp:RequiredFieldValidator>
             </itemtemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="gvUsersFirstName">
             <itemtemplate>
-	            <asp:TextBox id="txtFirstName" Runat=server Width="90px" CssClass=NormalTextBox Text='<%# Eval("FirstName") %>'>
+	            <asp:TextBox id="txtFirstName" Runat=server Width="90px" CssClass=form-control Text='<%# Eval("FirstName") %>'>
 	            </asp:TextBox>
             </itemtemplate>
         </asp:TemplateField>
         <asp:TemplateField HeaderText="gvUsersLastName">
             <itemtemplate>
-	            <asp:TextBox id="txtLastName" Runat=server Width="90px" CssClass=NormalTextBox Text='<%# Eval("LastName") %>'>
+	            <asp:TextBox id="txtLastName" Runat=server Width="90px" CssClass=form-control Text='<%# Eval("LastName") %>'>
 	            </asp:TextBox>
             </itemtemplate>
         </asp:TemplateField>

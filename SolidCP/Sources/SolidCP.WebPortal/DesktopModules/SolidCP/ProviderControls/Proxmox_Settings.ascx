@@ -16,7 +16,7 @@
 		        <asp:Localize ID="locProxmoxClusterServerHost" runat="server" meta:resourcekey="locProxmoxClusterServerHost" Text="Proxmox Cluster Server Host:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxClusterServerHost" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxClusterServerHost" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="ProxmoxClusterServerHostValidator" runat="server" ControlToValidate="txtProxmoxClusterServerHost"
                     Text="*" meta:resourcekey="ProxmoxClusterServerHostValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -29,7 +29,7 @@
 		        <asp:Localize ID="locProxmoxClusterServerPort" runat="server" meta:resourcekey="locProxmoxClusterServerPort" Text="Proxmox Cluster Server Port:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxClusterServerPort" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxClusterServerPort" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="ProxmoxClusterServerPortValidator" runat="server" ControlToValidate="txtProxmoxClusterServerPort"
                     Text="*" meta:resourcekey="ProxmoxClusterServerPortValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -42,7 +42,7 @@
 		        <asp:Localize ID="locProxmoxClusterAdminUser" runat="server" meta:resourcekey="locProxmoxClusterAdminUser" Text="Proxmox Admin User:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxClusterAdminUser" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxClusterAdminUser" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="ProxmoxClusterAdminUserValidator" runat="server" ControlToValidate="txtProxmoxClusterAdminUser"
                     Text="*" meta:resourcekey="ProxmoxClusterAdminUserValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -54,7 +54,7 @@
 		        <asp:Localize ID="locProxmoxClusterRealm" runat="server" meta:resourcekey="locProxmoxClusterRealm" Text="Proxmox Admin User Realm:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxClusterRealm" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxClusterRealm" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="ProxmoxClusterRealmValidator" runat="server" ControlToValidate="txtProxmoxClusterRealm"
                     Text="*" meta:resourcekey="ProxmoxClusterRealmValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -74,7 +74,7 @@
 		        <asp:Localize ID="locProxmoxClusterAdminPass" runat="server" meta:resourcekey="locProxmoxClusterAdminPass" Text="Proxmox Admin Pass:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxClusterAdminPass" TextMode="Password"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxClusterAdminPass" TextMode="Password"></asp:TextBox>
                 
             </td>
 	    </tr>
@@ -84,7 +84,7 @@
 		        <asp:Localize ID="locProxmoxClusterNode" runat="server" meta:resourcekey="locProxmoxClusterNode" Text="Proxmox Cluster Node:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxClusterNode" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxClusterNode" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="ProxmoxClusterNodeValidator" runat="server" ControlToValidate="txtProxmoxClusterNode"
                     Text="*" meta:resourcekey="ProxmoxClusterNodeValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -114,7 +114,7 @@
 		        <asp:Localize ID="locDeploySSHServerHost" runat="server" meta:resourcekey="locDeploySSHServerHost" Text="SSH Server Host:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHServerHost" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtDeploySSHServerHost" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="DeploySSHServerHostValidator" runat="server" ControlToValidate="txtDeploySSHServerHost"
                     Text="*" meta:resourcekey="DeploySSHServerHostValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -127,7 +127,7 @@
 		        <asp:Localize ID="locDeploySSHServerPort" runat="server" meta:resourcekey="locDeploySSHServerPort" Text="SSH Server Port:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHServerPort" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtDeploySSHServerPort" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="DeploySSHServerPortValidator" runat="server" ControlToValidate="txtDeploySSHServerPort"
                     Text="*" meta:resourcekey="DeploySSHServerPortValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -140,7 +140,7 @@
 		        <asp:Localize ID="locDeploySSHUser" runat="server" meta:resourcekey="locDeploySSHUser" Text="SSH User:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHUser" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtDeploySSHUser" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="DeploySSHUserValidator" runat="server" ControlToValidate="txtDeploySSHUser"
                     Text="*" meta:resourcekey="DeploySSHUserValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -161,7 +161,7 @@
 		        <asp:Localize ID="locDeploySSHPass" runat="server" meta:resourcekey="locDeploySSHPass" Text="SSH Password:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHPass" TextMode="Password"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtDeploySSHPass" TextMode="Password"></asp:TextBox>
             </td>
 	    </tr>
 
@@ -186,7 +186,7 @@
 		        <asp:Localize ID="locDeploySSHKeyPass" runat="server" meta:resourcekey="locDeploySSHKeyPass" Text="SSH Key Passphrase:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHKeyPass" TextMode="Password"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtDeploySSHKeyPass" TextMode="Password"></asp:TextBox>
             </td>
 	    </tr>
  
@@ -196,7 +196,7 @@
 		        <asp:Localize ID="locDeploySSHScript" runat="server" meta:resourcekey="locDeploySSHScript" Text="VM Deploy Script:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHScript" Required="true"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtDeploySSHScript" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="DeploySSHScriptValidator" runat="server" ControlToValidate="txtDeploySSHScript"
                     Text="*" meta:resourcekey="DeploySSHScriptValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -209,7 +209,7 @@
 		        <asp:Localize ID="locDeploySSHScriptParams" runat="server" meta:resourcekey="locDeploySSHScriptParams" Text="VM Deploy Script Parameters:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="470px" CssClass="NormalTextBox" Runat="server" ID="txtDeploySSHScriptParams" Required="true"></asp:TextBox>
+                <asp:TextBox Width="470px" CssClass="form-control" Runat="server" ID="txtDeploySSHScriptParams" Required="true"></asp:TextBox>
                 
                 <asp:RequiredFieldValidator ID="DeploySSHScriptParamsValidator" runat="server" ControlToValidate="txtDeploySSHScriptParams"
                     Text="*" meta:resourcekey="DeploySSHScriptParamsValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -244,7 +244,7 @@
                         <asp:Localize ID="locTemplateName" runat="server" meta:resourcekey="locTemplateName" Text="Name:"></asp:Localize>
                     </td>
                     <td>
-                        <asp:TextBox CssClass="NormalTextBox" runat="server" ID="txtTemplateName" Text='<%# Eval("Name") %>'></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" runat="server" ID="txtTemplateName" Text='<%# Eval("Name") %>'></asp:TextBox>
                         <asp:RequiredFieldValidator ID="TemplateNameValidator" runat="server" ControlToValidate="txtTemplateName"
                             Text="*" meta:resourcekey="TemplateNameValidator" Display="Dynamic" SetFocusOnError="true" />
                     </td>
@@ -267,7 +267,7 @@
                         <asp:Localize ID="locTemplateFileName" runat="server" meta:resourcekey="locTemplateFileName" Text="File name (with extension):"></asp:Localize>
                     </td>
                     <td>
-                        <asp:TextBox CssClass="NormalTextBox" runat="server" ID="txtTemplateFileName" Text='<%# Eval("Path") %>'></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" runat="server" ID="txtTemplateFileName" Text='<%# Eval("Path") %>'></asp:TextBox>
                         <asp:RequiredFieldValidator ID="TemplateFileNameValidator" runat="server" ControlToValidate="txtTemplateFileName"
                             Text="*" meta:resourcekey="TemplateFileNameValidator" Display="Dynamic" SetFocusOnError="true" />
                     </td>
@@ -277,7 +277,7 @@
                         <asp:Localize ID="locProcessVolume" runat="server" meta:resourcekey="locProcessVolume" Text="Index of the volume to expand:"></asp:Localize>
                     </td>
                     <td>
-                        <asp:TextBox CssClass="NormalTextBox" runat="server" ID="txtProcessVolume" Text='<%# Eval("ProcessVolume") %>'></asp:TextBox>
+                        <asp:TextBox CssClass="form-control" runat="server" ID="txtProcessVolume" Text='<%# Eval("ProcessVolume") %>'></asp:TextBox>
                         <asp:RequiredFieldValidator ID="valProcessVolume" runat="server" ControlToValidate="txtProcessVolume"
                             Text="*" meta:resourcekey="valProcessVolume" Display="Dynamic" SetFocusOnError="true" />
                         <asp:CompareValidator runat="server" ID="vcmProcessVolume" ControlToValidate="txtProcessVolume"
@@ -289,7 +289,7 @@
                         <asp:Localize ID="locSysprep" runat="server" meta:resourcekey="locSysprep" Text="Sysprep files:"></asp:Localize>
                     </td>
                     <td colspan="2">
-                        <asp:TextBox Width="470px" CssClass="NormalTextBox" runat="server" ID="txtSysprep" Enabled="false" Text='<%# Eval("SysprepFiles") != null ? string.Join(";", (string[])Eval("SysprepFiles")) : "" %>'></asp:TextBox>
+                        <asp:TextBox Width="470px" CssClass="form-control" runat="server" ID="txtSysprep" Enabled="false" Text='<%# Eval("SysprepFiles") != null ? string.Join(";", (string[])Eval("SysprepFiles")) : "" %>'></asp:TextBox>
                     </td>
                 </tr>
                 <tr>
@@ -297,7 +297,7 @@
                         <asp:Localize ID="locDeployScriptParams" runat="server" meta:resourcekey="locDeployScriptParams" Text="Additional Deploy Script Parameters:"></asp:Localize>
                     </td>
                     <td colspan="2">
-                        <asp:TextBox Width="470px" CssClass="NormalTextBox" runat="server" ID="txtDeployScriptParams" Text='<%# Eval("DeployScriptParams") %>'></asp:TextBox>
+                        <asp:TextBox Width="470px" CssClass="form-control" runat="server" ID="txtDeployScriptParams" Text='<%# Eval("DeployScriptParams") %>'></asp:TextBox>
                     </td>
                 </tr>
             </table>
@@ -321,7 +321,7 @@
 		        <asp:Localize ID="locProxmoxIsosonStorage" runat="server" meta:resourcekey="locProxmoxIsosonStorage" Text="DVD ISO Images on Storage:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtProxmoxIsosonStorage"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtProxmoxIsosonStorage"></asp:TextBox>
                                 
 
             </td>
@@ -343,7 +343,7 @@
 		        <asp:Localize ID="locHostnamePattern" runat="server" meta:resourcekey="locHostnamePattern" Text="VPS host name pattern:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="200px" CssClass="NormalTextBox" Runat="server" ID="txtHostnamePattern"></asp:TextBox>
+                <asp:TextBox Width="200px" CssClass="form-control" Runat="server" ID="txtHostnamePattern"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="HostnamePatternValidator" runat="server" ControlToValidate="txtHostnamePattern"
                     Text="*" meta:resourcekey="HostnamePatternValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>

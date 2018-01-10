@@ -26,7 +26,7 @@
 			    <asp:Label ID="lblPublicSharedIP" runat="server" meta:resourcekey="lblPublicSharedIP" Text="Web Sites Public Shared IP Address:"></asp:Label>
 			</td>
 			<td width="100%">
-                <asp:TextBox ID="txtPublicSharedIP" runat="server" Width="200" CssClass="NormalTextBox"></asp:TextBox>
+                <asp:TextBox ID="txtPublicSharedIP" runat="server" Width="200" CssClass="form-control"></asp:TextBox>
 			</td>
 		</tr>
 		<tr>
@@ -34,7 +34,7 @@
 		        <asp:Label ID="lblGroupName" runat="server" meta:resourcekey="lblGroupName" Text="Web Users Group Name:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtWebGroupName" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
+                <asp:TextBox ID="txtWebGroupName" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
             </td>
 		</tr>
 	    <tr>
@@ -79,7 +79,7 @@
 		        <asp:Label ID="lblAspNet11Path" runat="server" meta:resourcekey="lblAspNet11Path" Text="ASP.NET 1.1:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet11Path" runat="server" CssClass="NormalTextBox" Width="450px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet11Path" runat="server" CssClass="form-control" Width="450px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -87,7 +87,7 @@
 		        <asp:Label ID="lblAspNet20Path" runat="server" meta:resourcekey="lblAspNet20Path" Text="ASP.NET 2.0:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet20Path" runat="server" CssClass="NormalTextBox" Width="450px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet20Path" runat="server" CssClass="form-control" Width="450px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -95,7 +95,7 @@
 		        <asp:Label ID="lblAspNet20x64Path" runat="server" meta:resourcekey="lblAspNet20x64Path" Text="ASP.NET 2.0 64-bit:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet20x64Path" runat="server" CssClass="NormalTextBox" Width="450px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet20x64Path" runat="server" CssClass="form-control" Width="450px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -103,7 +103,7 @@
 		        <asp:Label runat="server" meta:resourcekey="AspNet40Path" Text="ASP.NET 4.0:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet40Path" runat="server" CssClass="NormalTextBox" Width="450px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet40Path" runat="server" CssClass="form-control" Width="450px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -111,7 +111,7 @@
 		        <asp:Label runat="server" meta:resourcekey="AspNet40x64Path" Text="ASP.NET 4.0 64-bit:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet40x64Path" runat="server" CssClass="NormalTextBox" Width="450px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet40x64Path" runat="server" CssClass="form-control" Width="450px"></asp:TextBox>
             </td>
 		</tr>
     </table>
@@ -129,7 +129,7 @@
 		        <asp:Label ID="lblAsp11Pool" runat="server" meta:resourcekey="lblAsp11Pool" Text="ASP.NET 1.1:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet11Pool" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet11Pool" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -137,7 +137,7 @@
 		        <asp:Label ID="lblAsp20Pool" runat="server" meta:resourcekey="lblAsp20Pool" Text="ASP.NET 2.0 Classic:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet20Pool" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet20Pool" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -145,7 +145,7 @@
 		        <asp:Label ID="lblAsp20IntegratedPool" runat="server" meta:resourcekey="lblAsp20IntegratedPool" Text="ASP.NET 2.0 Integrated:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspNet20IntegratedPool" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
+                <asp:TextBox ID="txtAspNet20IntegratedPool" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -153,7 +153,7 @@
 				<asp:Localize runat="server" meta:resourcekey="ClassicAspNet40PoolLocalize" />
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="ClassicAspNet40Pool" runat="server" CssClass="NormalTextBox" Width="200px" />
+                <asp:TextBox ID="ClassicAspNet40Pool" runat="server" CssClass="form-control" Width="200px" />
             </td>
 		</tr>
 		<tr>
@@ -161,7 +161,7 @@
 		        <asp:Localize runat="server" meta:resourcekey="IntegratedAspNet40PoolLocalize" />
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="IntegratedAspNet40Pool" runat="server" CssClass="NormalTextBox" Width="200px"/>
+                <asp:TextBox ID="IntegratedAspNet40Pool" runat="server" CssClass="form-control" Width="200px"/>
             </td>
 		</tr>
 		<tr>
@@ -268,7 +268,7 @@
 		        <asp:Label ID="lblAspPath" runat="server" meta:resourcekey="lblAspPath" Text="ASP Library Path:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtAspPath" runat="server" CssClass="NormalTextBox" Width="450px"></asp:TextBox>
+                <asp:TextBox ID="txtAspPath" runat="server" CssClass="form-control" Width="450px"></asp:TextBox>
             </td>
 		</tr>
 		<tr>
@@ -276,7 +276,7 @@
 		        <asp:Label runat="server" meta:resourcekey="php4PathLabel" Text="PHP 4.x Executable Path:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="php4Path" runat="server" CssClass="NormalTextBox" Width="300px"></asp:TextBox>
+                <asp:TextBox ID="php4Path" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
                 <asp:DropDownList ID="php4Mode" runat="server">
                     <asp:ListItem Value="ISAPI">ISAPI</asp:ListItem>
                 </asp:DropDownList>
@@ -287,7 +287,7 @@
 		        <asp:Label ID="lblPhpPath" runat="server" meta:resourcekey="lblPhpPath" Text="PHP 5.x Executable Path:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtPhpPath" runat="server" CssClass="NormalTextBox" Width="300px"></asp:TextBox>
+                <asp:TextBox ID="txtPhpPath" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
                 <asp:DropDownList ID="ddlPhpMode" runat="server">
                     <asp:ListItem Value="FastCGI">FastCGI</asp:ListItem>
                     <asp:ListItem Value="ISAPI">ISAPI</asp:ListItem>
@@ -304,7 +304,7 @@
 		        <asp:Label runat="server" meta:resourcekey="perlPathLabel" Text="Perl Executable Path:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="perlPath" runat="server" CssClass="NormalTextBox" Width="300px"></asp:TextBox>
+                <asp:TextBox ID="perlPath" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
                 <asp:DropDownList ID="perlMode" runat="server">
                     <asp:ListItem Value="ISAPI">ISAPI</asp:ListItem>
                 </asp:DropDownList>
@@ -325,7 +325,7 @@
 		        <asp:Label runat="server" meta:resourcekey="lblWmSvcServiceUrl" Text="Service URL:"></asp:Label>
 		    </td>
 		    <td class="Normal">
-                <asp:TextBox runat="server" ID="txtWmSvcServiceUrl" CssClass="NormalTextBox" Width="350px" />
+                <asp:TextBox runat="server" ID="txtWmSvcServiceUrl" CssClass="form-control" Width="350px" />
             </td>
 		</tr>
 		<tr>
@@ -333,7 +333,7 @@
 		        <asp:Label runat="server" meta:resourcekey="lblWmSvcServicePort" Text="Service Port:"></asp:Label>
 		    </td>
 		    <td class="Normal">
-		        <asp:TextBox runat="server" ID="txtWmSvcServicePort" CssClass="NormalTextBox" Width="70px" />
+		        <asp:TextBox runat="server" ID="txtWmSvcServicePort" CssClass="form-control" Width="70px" />
             </td>
 		</tr>
 		<tr>
@@ -341,7 +341,7 @@
 		        <asp:Label runat="server" meta:resourcekey="lblWmSvcCredentialsMode" Text="Credentials Mode"></asp:Label>
 		    </td>
 		    <td class="Normal">
-                <asp:DropDownList runat="server" ID="ddlWmSvcCredentialsMode" CssClass="NormalTextBox">
+                <asp:DropDownList runat="server" ID="ddlWmSvcCredentialsMode" CssClass="form-control">
 					<asp:ListItem Value="WINDOWS" Text="Windows Credentials" />
 					<asp:ListItem Value="IISMNGR" Text="IIS Manager Credentials" />
                 </asp:DropDownList>
@@ -352,7 +352,7 @@
 		        <asp:Label ID="Label1" runat="server" meta:resourcekey="lblWmSvcNETBIOS" Text="NETBIOS Domain:"></asp:Label>
 		    </td>
 		    <td class="Normal">
-		        <asp:TextBox runat="server" ID="txtWmSvcNETBIOS" CssClass="NormalTextBox" Width="70px" />
+		        <asp:TextBox runat="server" ID="txtWmSvcNETBIOS" CssClass="form-control" Width="70px" />
             </td>
 		</tr>
 	</table>
@@ -370,21 +370,21 @@
 		        <asp:Label ID="lblColdFusionPath" runat="server" meta:resourcekey="lblColdFusionPath" Text="ColdFusion Path:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtColdFusionPath" runat="server" CssClass="NormalTextBox" Width="350px"></asp:TextBox></td>
+                <asp:TextBox ID="txtColdFusionPath" runat="server" CssClass="form-control" Width="350px"></asp:TextBox></td>
 		</tr>
 		<tr>
 		    <td class="Normal" valign="top" width="192">
 		        <asp:Label ID="lblScriptsDirectory" runat="server" meta:resourcekey="lblScriptsDirectory" Text="Scripts Directory:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtScriptsDirectory" runat="server" CssClass="NormalTextBox" Width="350px"></asp:TextBox></td>
+                <asp:TextBox ID="txtScriptsDirectory" runat="server" CssClass="form-control" Width="350px"></asp:TextBox></td>
 		</tr>
 		<tr>
 		    <td class="Normal" valign="top" width="192">
 		        <asp:Label ID="lblFlashRemotingDir" runat="server" meta:resourcekey="lblFlashRemotingDir" Text="Flash Remoting Directory:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtFlashRemotingDir" runat="server" CssClass="NormalTextBox" Width="350px"></asp:TextBox></td>
+                <asp:TextBox ID="txtFlashRemotingDir" runat="server" CssClass="form-control" Width="350px"></asp:TextBox></td>
 		</tr>
     </table>
 </fieldset>
@@ -401,21 +401,21 @@
 		        <asp:Label ID="lblSecureFoldersModulesAsm" runat="server" meta:resourcekey="lblSecureFoldersModulesAsm" Text="Module Assembly:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtSecureFoldersModuleAsm" runat="server" CssClass="NormalTextBox" Width="350px"></asp:TextBox></td>
+                <asp:TextBox ID="txtSecureFoldersModuleAsm" runat="server" CssClass="form-control" Width="350px"></asp:TextBox></td>
 		</tr>
 		<tr>
 		    <td class="Normal" valign="top" width="192">
 		        <asp:Label ID="lblProtectedUsersFile" runat="server" meta:resourcekey="lblProtectedUsersFile" Text="IISPassword Users File:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtProtectedUsersFile" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox></td>
+                <asp:TextBox ID="txtProtectedUsersFile" runat="server" CssClass="form-control" Width="200px"></asp:TextBox></td>
 		</tr>
 		<tr>
 		    <td class="Normal" valign="top" width="192">
 		        <asp:Label ID="lblProtectedGroupsFile" runat="server" meta:resourcekey="lblProtectedGroupsFile" Text="IISPassword Groups File:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="txtProtectedGroupsFile" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox></td>
+                <asp:TextBox ID="txtProtectedGroupsFile" runat="server" CssClass="form-control" Width="200px"></asp:TextBox></td>
 		</tr>
     </table>
 </fieldset>
@@ -524,7 +524,7 @@
 	            <asp:Label ID="lblCCSUNCPath" runat="server" Text="Centralized Certificate Store UNC path :"></asp:Label>
 	        </td>
             <td valign="top">
-                <asp:TextBox ID="txtCCSUNCPath" runat="server" CssClass="NormalTextBox" Width="400px"></asp:TextBox>
+                <asp:TextBox ID="txtCCSUNCPath" runat="server" CssClass="form-control" Width="400px"></asp:TextBox>
             </td>
         </tr>
         <tr>
@@ -532,7 +532,7 @@
 	            <asp:Label ID="lblCCSUNCCommonPassword" runat="server" Text="Centralized Certificate Store common password (blank for none):"></asp:Label>
 	        </td>
             <td valign="top">
-                <asp:TextBox ID="txtCCSCommonPassword" runat="server" CssClass="NormalTextBox" Width="400px"></asp:TextBox>
+                <asp:TextBox ID="txtCCSCommonPassword" runat="server" CssClass="form-control" Width="400px"></asp:TextBox>
             </td>
         </tr>
         </tbody>

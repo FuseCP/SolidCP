@@ -35,7 +35,7 @@
 	<tr>
 		<td align="left" class=SubHead>WebLog Title:</TD>
 		<td align="left" class=Normal>
-			<asp:textbox id="txtWebLogTitle" runat="server" CssClass=NormalTextBox Text="My WebLog"></asp:textbox>
+			<asp:textbox id="txtWebLogTitle" runat="server" CssClass=form-control Text="My WebLog"></asp:textbox>
 		</td>
 	</tr>
 	<tr>
@@ -47,20 +47,20 @@
 	<tr>
 		<td align="left" class=SubHead>Administrator Password:</TD>
 		<td align="left" class=Normal>
-			<asp:textbox id="txtPassword" runat="server" TextMode="Password" CssClass=NormalTextBox></asp:textbox>
+			<asp:textbox id="txtPassword" runat="server" TextMode="Password" CssClass=form-control></asp:textbox>
 		</td>
 	</tr>
 	<tr>
 		<td align="left" class=SubHead>Confirm Password:</td>
 		<td align="left" class=Normal>
-			<asp:textbox id="txtConfirmPassword" runat="server" TextMode="Password" CssClass=NormalTextBox></asp:textbox>
+			<asp:textbox id="txtConfirmPassword" runat="server" TextMode="Password" CssClass=form-control></asp:textbox>
 			<asp:comparevalidator EnableClientScript=True Enabled=True id="ComparePassword" runat="server" ControlToValidate="txtConfirmPassword" ControlToCompare="txtPassword" Cssclass="color:red">*</asp:comparevalidator>
 		</td>
 	</tr>
 	<tr>
 		<td align="left" width=200 nowrap class=SubHead>Administrator E-Mail:</TD>
 		<td align="left" width=100% class=Normal>
-			<asp:textbox id="txtEmail" runat="server" CssClass=NormalTextBox>admin@admin.com</asp:textbox>
+			<asp:textbox id="txtEmail" runat="server" CssClass=form-control>admin@admin.com</asp:textbox>
 		</td>
 	</tr>
 </table>

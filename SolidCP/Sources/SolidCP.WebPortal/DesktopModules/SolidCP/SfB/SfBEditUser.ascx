@@ -53,7 +53,7 @@
                             </td>
                             <td>
                                 <!-- <asp:TextBox runat="server" ID="tb_PhoneNumber" /> -->
-                                <asp:dropdownlist id="ddlPhoneNumber" Runat="server" CssClass="NormalTextBox"></asp:dropdownlist>
+                                <asp:dropdownlist id="ddlPhoneNumber" Runat="server" CssClass="form-control"></asp:dropdownlist>
                                 <asp:RegularExpressionValidator ID="PhoneFormatValidator" runat="server"
 		                        ControlToValidate="ddlPhoneNumber" Display="Dynamic" ValidationGroup="Validation1" SetFocusOnError="true"
 		                        ValidationExpression="^([0-9])*$"

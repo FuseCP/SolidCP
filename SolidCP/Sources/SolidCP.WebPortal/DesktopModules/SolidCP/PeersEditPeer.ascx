@@ -46,7 +46,7 @@
 			    <asp:Label ID="lblRole" runat="server" meta:resourcekey="lblRole" Text="Role:"></asp:Label>
 			</td>
 			<td class="NormalBold" valign="top">
-				<asp:DropDownList id="role" runat="server" resourcekey="role" AutoPostBack="true" CssClass="NormalTextBox">
+				<asp:DropDownList id="role" runat="server" resourcekey="role" AutoPostBack="true" CssClass="form-control">
 				</asp:DropDownList>
 			</td>
 		</tr>
@@ -55,7 +55,7 @@
 				<asp:Label ID="lblFirstName" runat="server" meta:resourcekey="lblFirstName" Text="First name:"></asp:Label>
 			</td>
 			<td class="Normal">
-				<asp:TextBox id="txtFirstName" runat="server" CssClass="NormalTextBox"></asp:TextBox>
+				<asp:TextBox id="txtFirstName" runat="server" CssClass="form-control"></asp:TextBox>
 				<asp:RequiredFieldValidator id="firstNameValidator" runat="server" ErrorMessage="*" Display="Dynamic"
 					ControlToValidate="txtFirstName"></asp:RequiredFieldValidator>
 			</td>
@@ -65,7 +65,7 @@
 				<asp:Label ID="lblLastName" runat="server" meta:resourcekey="lblLastName" Text="Last name:"></asp:Label>
 			</td>
 			<td class="Normal">
-				<asp:TextBox id="txtLastName" runat="server" CssClass="NormalTextBox"></asp:TextBox>
+				<asp:TextBox id="txtLastName" runat="server" CssClass="form-control"></asp:TextBox>
                 <asp:RequiredFieldValidator id="lastNameValidator" runat="server" ErrorMessage="*" Display="Dynamic"
 					ControlToValidate="txtLastName"></asp:RequiredFieldValidator>
 			</td>
@@ -92,7 +92,7 @@
 			</td>
 			<td class="Normal">
 				<asp:DropDownList ID="ddlMailFormat" runat="server"
-				    CssClass="NormalTextBox" resourcekey="ddlMailFormat">
+				    CssClass="form-control" resourcekey="ddlMailFormat">
 				    <asp:ListItem Value="Text">PlainText</asp:ListItem>
 				    <asp:ListItem Value="HTML" Selected="True">HTML</asp:ListItem>
 				</asp:DropDownList>
@@ -103,7 +103,7 @@
 			    <asp:Label ID="lblLoginStatus" runat="server" meta:resourcekey="lblLoginStatus" Text="Login Status:"></asp:Label>
 			</td>
 			<td class="NormalBold" valign="top">
-				<asp:DropDownList id="loginStatus" runat="server" resourcekey="loginStatus"  CssClass="NormalTextBox">
+				<asp:DropDownList id="loginStatus" runat="server" resourcekey="loginStatus"  CssClass="form-control">
 			        <asp:ListItem Value="Enabled">Enabled</asp:ListItem>
 			        <asp:ListItem Value="Disabled">Disabled</asp:ListItem>
 				    <asp:ListItem Value="Locked Out">LockedOut</asp:ListItem>

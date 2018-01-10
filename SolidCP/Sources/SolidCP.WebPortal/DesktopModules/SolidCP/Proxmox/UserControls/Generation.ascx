@@ -12,7 +12,7 @@
                     <asp:Localize ID="locGeneration" runat="server" meta:resourcekey="locGeneration" Text="Generation:"></asp:Localize>
                 </td>
                 <td>
-                    <asp:DropDownList ID="ddlGeneration" runat="server" CssClass="NormalTextBox" resourcekey="ddlGeneration">
+                    <asp:DropDownList ID="ddlGeneration" runat="server" CssClass="form-control" resourcekey="ddlGeneration">
                         <asp:ListItem Value="1">1</asp:ListItem>
                         <asp:ListItem Value="2">2</asp:ListItem>
                     </asp:DropDownList>

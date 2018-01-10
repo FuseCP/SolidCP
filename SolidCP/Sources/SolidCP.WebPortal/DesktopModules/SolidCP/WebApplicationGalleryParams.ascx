@@ -37,7 +37,7 @@
             </div>
             <div class="FormField">
                 <asp:DropDownList ID="ddlWebSite" runat="server" DataValueField="Id" DataTextField="Name" Width="600px"
-                    CssClass="NormalTextBox">
+                    CssClass="form-control">
                 </asp:DropDownList>
                 <div>
                     <asp:RequiredFieldValidator ID="valRequireWebSite" runat="server" ValidationGroup="wag" SetFocusOnError="true" meta:resourcekey="valRequireWebSite"

@@ -22,7 +22,7 @@
 		    <tr>
 			    <td class="SubHead" noWrap width="200"><asp:Label ID="lblInstallOnWebSite" runat="server" meta:resourcekey="lblInstallOnWebSite" Text="Install on web site:"></asp:Label>
 			    </td>
-			    <td width="100%"><asp:dropdownlist id="ddlWebSite" runat="server" DataValueField="Id" DataTextField="Name" CssClass="NormalTextBox"></asp:dropdownlist>
+			    <td width="100%"><asp:dropdownlist id="ddlWebSite" runat="server" DataValueField="Id" DataTextField="Name" CssClass="form-control"></asp:dropdownlist>
                     <asp:requiredfieldvalidator id="valRequireWebSite" runat="server" CssClass="NormalBold" ControlToValidate="ddlWebSite"
 					    Display="Dynamic" ErrorMessage="Select web site to install on">*</asp:requiredfieldvalidator></td>
 		    </tr>
@@ -54,7 +54,7 @@
 	            <tr>
 	                <td class="NormalBold" width="200" height="50" valign="middle" nowrap>
 	                    <asp:DropDownList ID="ddlDatabaseGroup" runat="server"
-	                        AutoPostBack="true" OnSelectedIndexChanged="ddlDatabaseGroup_SelectedIndexChanged" CssClass="NormalTextBox">
+	                        AutoPostBack="true" OnSelectedIndexChanged="ddlDatabaseGroup_SelectedIndexChanged" CssClass="form-control">
 	                    </asp:DropDownList>
 	                </td>
 	            </tr>
@@ -86,7 +86,7 @@
 	                                </td>
 	                                <td width="100%" class="Normal">
                                         <asp:dropdownlist id="ddlDatabase" runat="server" DataValueField="Id" DataTextField="Name"
-							                    CssClass="NormalTextBox"></asp:dropdownlist>
+							                    CssClass="form-control"></asp:dropdownlist>
                                         <asp:RequiredFieldValidator ID="valRequireDatabase" runat="server" ControlToValidate="ddlDatabase"
                                             CssClass="NormalBold" Display="Dynamic" ErrorMessage="*"></asp:RequiredFieldValidator></td>
 	                            </tr>
@@ -120,7 +120,7 @@
 	                                </td>
 	                                <td width="100%" class="Normal">
                                         <asp:dropdownlist id="ddlUser" runat="server" DataValueField="Id" DataTextField="Name"
-								            CssClass="NormalTextBox"></asp:dropdownlist>
+								            CssClass="form-control"></asp:dropdownlist>
                                         <asp:RequiredFieldValidator ID="valRequireUser" runat="server" ControlToValidate="ddlUser"
                                             CssClass="NormalBold" Display="Dynamic" ErrorMessage="*"></asp:RequiredFieldValidator></td>
 	                            </tr>

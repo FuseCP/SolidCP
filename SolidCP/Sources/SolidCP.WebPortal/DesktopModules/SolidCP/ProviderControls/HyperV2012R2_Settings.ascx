@@ -51,7 +51,7 @@
 		        <asp:Localize ID="locGuacamoleConnectScript" runat="server" meta:resourcekey="locGuacamoleConnectScript" Text="Guacamole Connect Script URL:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtGuacamoleConnectScript"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleConnectScript"></asp:TextBox>
             </td>
 	    </tr>
 
@@ -61,7 +61,7 @@
 		        <asp:Localize ID="locGuacamoleConnectPassword" runat="server" meta:resourcekey="locGuacamoleConnectPassword" Text="Guacamole Encryption Password Base64 Encoded 256Bit Key:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtGuacamoleConnectPassword"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleConnectPassword"></asp:TextBox>
                 <asp:Button ID="btnguacamolepassword" runat="server" meta:resourcekey="btnguacamolepassword" CssClass="Button1" Text="Generate Random Password" CausesValidation="false" 
                     onclick="btnguacamolepassword_Click" />
             </td>
@@ -72,7 +72,7 @@
 		        <asp:Localize ID="locGuacamoleHyperVIP" runat="server" meta:resourcekey="locGuacamoleHyperVIP" Text="Hyper-V IP:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtGuacamoleHyperVIP"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleHyperVIP"></asp:TextBox>
                 
             </td>
 	    </tr>
@@ -82,7 +82,7 @@
 		        <asp:Localize ID="locGuacamoleHyperVDomain" runat="server" meta:resourcekey="locGuacamoleHyperVDomain" Text="Hyper-V Domain:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtGuacamoleHyperVDomain"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleHyperVDomain"></asp:TextBox>
                 
             </td>
 	    </tr>
@@ -100,7 +100,7 @@
 		        <asp:Localize ID="locGuacamoleHyperVAdministratorPassword" runat="server" meta:resourcekey="locGuacamoleHyperVAdministratorPassword" Text="Hyper-V Administrator Password:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="250px" CssClass="NormalTextBox" Runat="server" ID="txtGuacamoleHyperVAdministratorPassword"  TextMode="Password"></asp:TextBox>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleHyperVAdministratorPassword"  TextMode="Password"></asp:TextBox>
                 
             </td>
 	    </tr>

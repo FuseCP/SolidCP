@@ -25,7 +25,7 @@
                                     <asp:Label ID="lblTo" runat="server" meta:resourcekey="lblTo" Text="To:"></asp:Label>
                                 </td>
                                 <td class="Normal">
-                                    <asp:TextBox ID="txtTo" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
+                                    <asp:TextBox ID="txtTo" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="valRequireEmail" runat="server" ControlToValidate="txtTo" Display="Dynamic"
                                         ErrorMessage="Enter e-mail" ValidationGroup="SendEmail" meta:resourcekey="valRequireEmail"></asp:RequiredFieldValidator>
                                 </td>
@@ -35,7 +35,7 @@
                                     <asp:Label ID="lblBCC" runat="server" meta:resourcekey="lblBCC" Text="BCC:"></asp:Label>
                                 </td>
                                 <td class="Normal">
-                                    <asp:TextBox ID="txtBCC" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox></td>
+                                    <asp:TextBox ID="txtBCC" runat="server" CssClass="form-control" Width="200px"></asp:TextBox></td>
                             </tr>
                             <tr>
                                 <td></td>

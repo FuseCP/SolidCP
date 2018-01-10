@@ -147,7 +147,7 @@
                             </asp:Panel>
                             <asp:Panel ID="switchToDedicatedIP" runat="server" Visible="false">
                                 <asp:Localize ID="locSelectIPAddress" runat="server" meta:resourcekey="locSelectIPAddress" Text="Select IP address:" />
-                                <asp:DropDownList ID="ddlIpAddresses" runat="server" CssClass="NormalTextBox"></asp:DropDownList>
+                                <asp:DropDownList ID="ddlIpAddresses" runat="server" CssClass="form-control"></asp:DropDownList>
                                 &nbsp;
                                
                                
@@ -489,7 +489,7 @@
                                         <asp:Localize runat="server" meta:resourcekey="WDeployPublishingAccountLocalize" />
                                     </td>
                                     <td class="NormalBold">
-                                        <asp:TextBox runat="server" ID="WDeployPublishingAccountTextBox" CssClass="NormalTextBox"
+                                        <asp:TextBox runat="server" ID="WDeployPublishingAccountTextBox" CssClass="form-control"
                                             ValidationGroup="WDeployPublishingGroup" MaxLength="20" />
                                         <asp:Literal runat="server" ID="WDeployPublishingAccountLiteral" Visible="false" />
                                         <asp:RequiredFieldValidator ID="WDeployPublishingAccountRequiredFieldValidator" runat="server"
@@ -502,7 +502,7 @@
                                     </td>
                                     <td>
                                         <asp:TextBox runat="server" ID="WDeployPublishingPasswordTextBox" TextMode="Password"
-                                            CssClass="NormalTextBox" ValidationGroup="WDeployPublishingGroup" />
+                                            CssClass="form-control" ValidationGroup="WDeployPublishingGroup" />
                                         <asp:RequiredFieldValidator ID="WDeployPublishingPasswordRequiredFieldValidator"
                                             runat="server" ErrorMessage="*" ValidationGroup="WDeployPublishingGroup" ControlToValidate="WDeployPublishingPasswordTextBox" />
                                     </td>
@@ -513,7 +513,7 @@
                                     </td>
                                     <td>
                                         <asp:TextBox runat="server" ID="WDeployPublishingConfirmPasswordTextBox" TextMode="Password"
-                                            CssClass="NormalTextBox" ValidationGroup="WDeployPublishingGroup" />
+                                            CssClass="form-control" ValidationGroup="WDeployPublishingGroup" />
                                         <asp:RequiredFieldValidator ID="WDeployPublishingConfirmPasswordRequiredFieldValidator"
                                             runat="server" ErrorMessage="*" ValidationGroup="WDeployPublishingGroup" ControlToValidate="WDeployPublishingConfirmPasswordTextBox" />
                                         <asp:CompareValidator ID="WDeployPublishingConfirmPasswordTextBoxCompareValidator"
@@ -613,7 +613,7 @@
                                         <asp:Localize runat="server" meta:resourcekey="lclWmSvcAccountName" />
                                     </td>
                                     <td class="NormalBold">
-                                        <asp:TextBox runat="server" ID="txtWmSvcAccountName" CssClass="NormalTextBox" ValidationGroup="WmSvcGroup"
+                                        <asp:TextBox runat="server" ID="txtWmSvcAccountName" CssClass="form-control" ValidationGroup="WmSvcGroup"
                                             MaxLength="20" />
                                         <asp:Literal runat="server" ID="litWmSvcAccountName" Visible="false" />
                                         <asp:RequiredFieldValidator runat="server" ErrorMessage="*" ValidationGroup="WmSvcGroup"
@@ -625,7 +625,7 @@
                                         <asp:Localize runat="server" meta:resourcekey="lclWmSvcAccountPassword" />
                                     </td>
                                     <td>
-                                        <asp:TextBox runat="server" ID="txtWmSvcAccountPassword" TextMode="Password" CssClass="NormalTextBox"
+                                        <asp:TextBox runat="server" ID="txtWmSvcAccountPassword" TextMode="Password" CssClass="form-control"
                                             ValidationGroup="WmSvcGroup" />
                                         <asp:RequiredFieldValidator runat="server" ErrorMessage="*" ValidationGroup="WmSvcGroup"
                                             ControlToValidate="txtWmSvcAccountPassword" />
@@ -636,7 +636,7 @@
                                         <asp:Localize runat="server" meta:resourcekey="lclWmSvcAccountPasswordC" />
                                     </td>
                                     <td>
-                                        <asp:TextBox runat="server" ID="txtWmSvcAccountPasswordC" TextMode="Password" CssClass="NormalTextBox"
+                                        <asp:TextBox runat="server" ID="txtWmSvcAccountPasswordC" TextMode="Password" CssClass="form-control"
                                             ValidationGroup="WmSvcGroup" />
                                         <asp:RequiredFieldValidator runat="server" ErrorMessage="*" ValidationGroup="WmSvcGroup"
                                             ControlToValidate="txtWmSvcAccountPasswordC" />

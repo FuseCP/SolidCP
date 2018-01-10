@@ -19,7 +19,7 @@
                                 <asp:Localize ID="locMinimum" runat="server" meta:resourcekey="locMinimum" Text="Minimum RAM:"></asp:Localize>
                             </td>
                             <td>
-                                <asp:TextBox ID="txtMinimum" runat="server" CssClass="NormalTextBox" Width="50" Text=""></asp:TextBox>
+                                <asp:TextBox ID="txtMinimum" runat="server" CssClass="form-control" Width="50" Text=""></asp:TextBox>
 
                                 <asp:RequiredFieldValidator ControlToValidate="txtMinimum" Display="Dynamic"
                                     meta:resourcekey="MinimumRequireValidator" runat="server" SetFocusOnError="true"
@@ -34,7 +34,7 @@
                                 <asp:Localize ID="locMaximum" runat="server" meta:resourcekey="locMaximum" Text="Maximum RAM:"></asp:Localize>
                             </td>
                             <td>
-                                <asp:TextBox ID="txtMaximum" runat="server" CssClass="NormalTextBox" Width="50" Text=""></asp:TextBox>
+                                <asp:TextBox ID="txtMaximum" runat="server" CssClass="form-control" Width="50" Text=""></asp:TextBox>
 
                                 <asp:RequiredFieldValidator ControlToValidate="txtMaximum" Display="Dynamic"
                                     meta:resourcekey="MaximumRequireValidator" runat="server" SetFocusOnError="true"
@@ -49,7 +49,7 @@
                                 <asp:Localize ID="locBuffer" runat="server" meta:resourcekey="locBuffer" Text="Buffer (%):"></asp:Localize>
                             </td>
                             <td>
-                                <asp:TextBox ID="txtBuffer" runat="server" CssClass="NormalTextBox" Width="50" Text=""></asp:TextBox>
+                                <asp:TextBox ID="txtBuffer" runat="server" CssClass="form-control" Width="50" Text=""></asp:TextBox>
 
                                 <asp:RequiredFieldValidator ControlToValidate="txtBuffer" Display="Dynamic"
                                     meta:resourcekey="BufferRequireValidator" runat="server" SetFocusOnError="true"
@@ -64,7 +64,7 @@
                                 <asp:Localize ID="locPriority" runat="server" meta:resourcekey="locPriority" Text="Weight (Priority):"></asp:Localize>
                             </td>
                             <td>
-                                <asp:TextBox ID="txtPriority" runat="server" CssClass="NormalTextBox" Width="50" Text=""></asp:TextBox>
+                                <asp:TextBox ID="txtPriority" runat="server" CssClass="form-control" Width="50" Text=""></asp:TextBox>
 
                                 <asp:RequiredFieldValidator ControlToValidate="txtPriority" Display="Dynamic"
                                     meta:resourcekey="PriorityRequireValidator" runat="server" SetFocusOnError="true"

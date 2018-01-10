@@ -36,7 +36,7 @@
                                 <asp:Localize ID="locPrivateAddresses" runat="server"
                                         meta:resourcekey="locPrivateAddresses" Text="Number of IP addresses:"></asp:Localize>
 
-                                <asp:TextBox ID="txtPrivateAddressesNumber" runat="server" CssClass="NormalTextBox" Width="50" Text="1"></asp:TextBox>
+                                <asp:TextBox ID="txtPrivateAddressesNumber" runat="server" CssClass="form-control" Width="50" Text="1"></asp:TextBox>
                                 
                                 <asp:RequiredFieldValidator ID="PrivateAddressesValidator" runat="server" Text="*" Display="Dynamic"
                                         ControlToValidate="txtPrivateAddressesNumber" meta:resourcekey="PrivateAddressesValidator" SetFocusOnError="true"
@@ -55,7 +55,7 @@
                         <tr id="PrivateAddressesListRow" runat="server">
                             <td style="padding-left: 30px;">
                                 <asp:TextBox ID="txtPrivateAddressesList" runat="server" TextMode="MultiLine"
-                                    CssClass="NormalTextBox" Width="170" Rows="5"></asp:TextBox>
+                                    CssClass="form-control" Width="170" Rows="5"></asp:TextBox>
                                 <br />
                                 <asp:Localize ID="locOnePerLine" runat="server"
                                         meta:resourcekey="locOnePerLine" Text="* Type one IP address per line"></asp:Localize>

@@ -24,7 +24,7 @@
                         <asp:Label id="lblSeverity" runat="server" meta:resourcekey="lblSeverity" Text="Severity"></asp:Label>
                     </td>
                     <td class="Normal">
-                        <asp:DropDownList ID="ddlSeverity" runat="server" CssClass="NormalTextBox" resourcekey="ddlSeverity" AutoPostBack="true">
+                        <asp:DropDownList ID="ddlSeverity" runat="server" CssClass="form-control" resourcekey="ddlSeverity" AutoPostBack="true">
                             <asp:ListItem Value="-1">All</asp:ListItem>
                             <asp:ListItem Value="0">Information</asp:ListItem>
                             <asp:ListItem Value="1">Warning</asp:ListItem>
@@ -37,7 +37,7 @@
                         <asp:Label id="lblSource" runat="server" meta:resourcekey="lblSource" Text="Source"></asp:Label>
                     </td>
                     <td class="Normal">
-                        <asp:DropDownList ID="ddlSource" runat="server" CssClass="NormalTextBox"
+                        <asp:DropDownList ID="ddlSource" runat="server" CssClass="form-control"
                             AutoPostBack="True" OnSelectedIndexChanged="ddlSource_SelectedIndexChanged">
                         </asp:DropDownList></td>
                 </tr>
@@ -46,7 +46,7 @@
                         <asp:Label id="lblTask" runat="server" meta:resourcekey="lblTask" Text="Task"></asp:Label>
                     </td>
                     <td class="Normal" style="height: 24px">
-                        <asp:DropDownList ID="ddlTask" runat="server" CssClass="NormalTextBox" AutoPostBack="true">
+                        <asp:DropDownList ID="ddlTask" runat="server" CssClass="form-control" AutoPostBack="true">
                         </asp:DropDownList></td>
                 </tr>
                 <tr id="ItemNameRow" runat="server">
@@ -54,7 +54,7 @@
                         <asp:Label id="lblItemName" runat="server" meta:resourcekey="lblItemName" Text="Item Name"></asp:Label>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtItemName" runat="server" CssClass="NormalTextBox"></asp:TextBox>
+                        <asp:TextBox ID="txtItemName" runat="server" CssClass="form-control"></asp:TextBox>
                     </td>
                 </tr>
                 <tr id="FilterButtonsRow" runat="server">

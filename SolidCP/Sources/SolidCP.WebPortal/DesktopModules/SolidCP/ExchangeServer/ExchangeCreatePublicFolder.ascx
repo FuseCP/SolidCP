@@ -18,7 +18,7 @@
 						<tr>
 							<td class="FormLabel150"><asp:Localize ID="locParentFolder" runat="server" meta:resourcekey="locParentFolder" Text="Parent Folder:"></asp:Localize></td>
 							<td>
-								<asp:DropDownList ID="ddlParentFolder" runat="server" CssClass="NormalTextBox">
+								<asp:DropDownList ID="ddlParentFolder" runat="server" CssClass="form-control">
 								</asp:DropDownList>
 							</td>
 						</tr>

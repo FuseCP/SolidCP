@@ -27,7 +27,7 @@
                                 <asp:Localize ID="locHyperVService" runat="server" meta:resourcekey="locHyperVService" Text="Hyper-V Service:"></asp:Localize>
                             </td>
                             <td>
-                                <asp:DropDownList ID="HyperVServices" runat="server" CssClass="NormalTextBox"
+                                <asp:DropDownList ID="HyperVServices" runat="server" CssClass="form-control"
                                     DataValueField="ServiceID" DataTextField="FullServiceName" AutoPostBack="true"
                                     onselectedindexchanged="HyperVServices_SelectedIndexChanged"></asp:DropDownList>
                                 <asp:RequiredFieldValidator ID="RequireHyperVService" runat="server"
@@ -41,7 +41,7 @@
                                 <asp:Localize ID="locVirtualMachine" runat="server" meta:resourcekey="locVirtualMachine" Text="Virtual machine:"></asp:Localize>
                             </td>
                             <td>
-                                <asp:DropDownList ID="VirtualMachines" runat="server" CssClass="NormalTextBox"
+                                <asp:DropDownList ID="VirtualMachines" runat="server" CssClass="form-control"
                                     DataValueField="VirtualMachineId" DataTextField="Name" AutoPostBack="true"
                                     onselectedindexchanged="VirtualMachines_SelectedIndexChanged"></asp:DropDownList>
                                 <asp:RequiredFieldValidator ID="RequiredVirtualMachine" runat="server"
@@ -62,7 +62,7 @@
                                     <asp:Localize ID="locOsTemplate" runat="server" meta:resourcekey="locOsTemplate" Text="OS Template:"></asp:Localize>
                                 </td>
                                 <td>
-                                    <asp:DropDownList ID="OsTemplates" runat="server" CssClass="NormalTextBox"
+                                    <asp:DropDownList ID="OsTemplates" runat="server" CssClass="form-control"
                                         DataValueField="Path" DataTextField="Name"></asp:DropDownList>
                                     <asp:RequiredFieldValidator ID="RequiredOsTemplate" runat="server"
                                         ControlToValidate="OsTemplates" ValidationGroup="ImportWizard" meta:resourcekey="RequiredOsTemplate"
@@ -85,7 +85,7 @@
                                     <asp:Localize ID="locAdminPassword" runat="server" meta:resourcekey="locAdminPassword" Text="Administrator password:"></asp:Localize>
                                 </td>
                                 <td>
-                                    <asp:TextBox ID="adminPassword" runat="server" TextMode="Password" CssClass="NormalTextBox"></asp:TextBox>
+                                    <asp:TextBox ID="adminPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredAdminPassword" runat="server"
                                         ControlToValidate="adminPassword" ValidationGroup="ImportWizard" meta:resourcekey="RequiredAdminPassword"
                                         Display="Dynamic" SetFocusOnError="true" Text="*">
@@ -205,7 +205,7 @@
                                         <asp:Localize ID="locExternalAdapter" runat="server" meta:resourcekey="locExternalAdapter" Text="Connected NIC:"></asp:Localize>
                                     </td>
                                     <td>
-                                        <asp:DropDownList ID="ExternalAdapters" runat="server" CssClass="NormalTextBox"
+                                        <asp:DropDownList ID="ExternalAdapters" runat="server" CssClass="form-control"
                                             DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"></asp:DropDownList>
                                     </td>
                                 </tr>
@@ -235,7 +235,7 @@
                                         <asp:Localize ID="locManagementAdapter" runat="server" meta:resourcekey="locManagementAdapter" Text="Connected NIC:"></asp:Localize>
                                     </td>
                                     <td>
-                                        <asp:DropDownList ID="ManagementAdapters" runat="server" CssClass="NormalTextBox"
+                                        <asp:DropDownList ID="ManagementAdapters" runat="server" CssClass="form-control"
                                             DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"></asp:DropDownList>
                                     </td>
                                 </tr>

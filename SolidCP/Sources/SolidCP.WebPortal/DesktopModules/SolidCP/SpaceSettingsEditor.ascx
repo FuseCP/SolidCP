@@ -3,7 +3,7 @@
     <asp:UpdatePanel runat="server" ID="updatePanelUsers">
         <ContentTemplate>
         
-            <asp:DropDownList ID="ddlOverride" runat="server" CssClass="NormalTextBox"
+            <asp:DropDownList ID="ddlOverride" runat="server" CssClass="form-control"
                     resourcekey="ddlOverride" AutoPostBack="true" OnSelectedIndexChanged="ddlOverride_SelectedIndexChanged">
                 <asp:ListItem>UseHost</asp:ListItem>
                 <asp:ListItem>OverrideHost</asp:ListItem>

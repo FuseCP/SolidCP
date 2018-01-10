@@ -30,7 +30,7 @@
                                 </asp:DropDownList> 
                                            </div> 
                                           <div class="form-group">
-                                <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="NormalTextBox">
+                                <asp:DropDownList ID="ddlSearchColumn" runat="server" CssClass="form-control">
                                     <asp:ListItem Value="DisplayName" meta:resourcekey="ddlSearchColumnDisplayName">DisplayName</asp:ListItem>
                                     <asp:ListItem Value="UserPrincipalName" meta:resourcekey="ddlSearchColumnUserPrincipalName">Email</asp:ListItem>
                                 </asp:DropDownList>

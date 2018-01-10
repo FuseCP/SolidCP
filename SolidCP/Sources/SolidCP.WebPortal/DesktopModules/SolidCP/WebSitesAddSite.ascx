@@ -60,7 +60,7 @@
 	</tr>
 	<tr id="rowDedicatedIP" runat="server">
 		<td></td>
-		<td><asp:dropdownlist id="ddlIpAddresses" Runat="server" CssClass="NormalTextBox"></asp:dropdownlist>
+		<td><asp:dropdownlist id="ddlIpAddresses" Runat="server" CssClass="form-control"></asp:dropdownlist>
 			<asp:RequiredFieldValidator id="valRequireIP" runat="server" meta:resourcekey="valRequireIP" CssClass="NormalBold" ErrorMessage="Please select web site IP address"
 				Display="Dynamic" ControlToValidate="ddlIpAddresses"></asp:RequiredFieldValidator><br/>
 			<div class="Small" style="padding-top: 10px;">

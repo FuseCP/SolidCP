@@ -25,7 +25,7 @@
                                 <asp:Localize ID="locName" runat="server" meta:resourcekey="locName"></asp:Localize>
                             </td>
                             <td style="width: 250px;">
-                                <asp:TextBox ID="txtName" runat="server" CssClass="NormalTextBox" />
+                                <asp:TextBox ID="txtName" runat="server" CssClass="form-control" />
                                 <asp:RequiredFieldValidator runat="server" ID="valReqTxtName" ControlToValidate="txtName" meta:resourcekey="valReqTxtName" ErrorMessage="*" ValidationGroup="SaveSsLevel" />
                             </td>
                         </tr>
@@ -34,7 +34,7 @@
                                 <asp:Localize ID="locDescription" runat="server" meta:resourcekey="locDescription"></asp:Localize>
                             </td>
                             <td style="width: 250px;">
-                                <asp:TextBox ID="txtDescription" runat="server" CssClass="NormalTextBox" TextMode="MultiLine" Rows="4" />
+                                <asp:TextBox ID="txtDescription" runat="server" CssClass="form-control" TextMode="MultiLine" Rows="4" />
                                 <asp:RequiredFieldValidator runat="server" ID="valReqTxtDescription" ControlToValidate="txtDescription" meta:resourcekey="valReqTxtDescription" ErrorMessage="*" ValidationGroup="SaveSsLevel" />
                             </td>
                         </tr>

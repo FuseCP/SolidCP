@@ -15,7 +15,7 @@
 	<tr>
 		<td class="SubHead" valign="top"><asp:Label ID="lblDriver" runat="server" meta:resourcekey="lblDriver" Text="ODBC Driver:"></asp:Label></td>
 		<td class="NormalBold">
-            <asp:DropDownList ID="ddlDriver" runat="server" CssClass="NormalTextBox" resourcekey="ddlDriver"
+            <asp:DropDownList ID="ddlDriver" runat="server" CssClass="form-control" resourcekey="ddlDriver"
                 AutoPostBack="true" OnSelectedIndexChanged="ddlDriver_SelectedIndexChanged">
                 <asp:ListItem Value="">Select</asp:ListItem>
             </asp:DropDownList>
@@ -25,7 +25,7 @@
 	<tr id="rowDatabaseName" runat="server">
 		<td class="SubHead" valign="top"><asp:Label ID="lblDatabaseName" runat="server" meta:resourcekey="lblDatabaseName"></asp:Label></td>
 		<td class="NormalBold">
-            <asp:DropDownList ID="ddlDatabaseName" runat="server" CssClass="NormalTextBox"
+            <asp:DropDownList ID="ddlDatabaseName" runat="server" CssClass="form-control"
                 DataValueField="Name" DataTextField="Name">
             </asp:DropDownList>&nbsp;
             <asp:RequiredFieldValidator ID="valRequireDatabase" runat="server" ControlToValidate="ddlDatabaseName"
@@ -40,7 +40,7 @@
 	<tr id="rowDatabaseUser" runat="server">
 		<td class="SubHead" valign="top"><asp:Label ID="lblDatabaseUser" runat="server" meta:resourcekey="lblDatabaseUser"></asp:Label></td>
 		<td class="NormalBold">
-            <asp:DropDownList ID="ddlDatabaseUser" runat="server" CssClass="NormalTextBox"
+            <asp:DropDownList ID="ddlDatabaseUser" runat="server" CssClass="form-control"
                 DataValueField="Name" DataTextField="Name">
             </asp:DropDownList>
             <asp:RequiredFieldValidator ID="valRequireDatabaseUser" runat="server" ControlToValidate="ddlDatabaseUser"
@@ -49,7 +49,7 @@
 	<tr id="rowUser" runat="server">
 		<td class="SubHead" height="30"><asp:Label ID="lblUser" runat="server" meta:resourcekey="lblUser"></asp:Label></td>
 		<td class="Normal" height="30">
-			<asp:TextBox ID="txtUser" runat="server" CssClass="NormalTextBox"></asp:TextBox>
+			<asp:TextBox ID="txtUser" runat="server" CssClass="form-control"></asp:TextBox>
 		</td>
 	</tr>
 	<tr id="rowPassword" runat="server">

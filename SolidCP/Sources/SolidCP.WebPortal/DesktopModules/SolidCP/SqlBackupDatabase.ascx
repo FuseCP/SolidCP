@@ -12,7 +12,7 @@
 	    <tr>
 		    <td class="SubHead" vAlign="top"><asp:Label ID="lblBackupFileName" runat="server" meta:resourcekey="lblBackupFileName" Text="Backup File Name:"></asp:Label></td>
 		    <td class="normal">
-                <asp:TextBox ID="txtBackupName" runat="server" CssClass="NormalTextBox" Width="200"></asp:TextBox><asp:RequiredFieldValidator
+                <asp:TextBox ID="txtBackupName" runat="server" CssClass="form-control" Width="200"></asp:TextBox><asp:RequiredFieldValidator
                     ID="validatorUserName" runat="server" ControlToValidate="txtBackupName" CssClass="NormalBold"
                     Display="Dynamic" ErrorMessage="*"></asp:RequiredFieldValidator></td>
 	    </tr>

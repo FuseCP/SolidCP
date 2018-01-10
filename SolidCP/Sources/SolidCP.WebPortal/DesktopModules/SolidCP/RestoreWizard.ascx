@@ -14,7 +14,7 @@
                 <asp:Label ID="lblBackupLocation" runat="server" meta:resourcekey="lblBackupLocation" Text="Backup Location:"></asp:Label>
             </td>
             <td>
-                <asp:DropDownList ID="ddlLocation" runat="server" CssClass="NormalTextBox" resourcekey="ddlLocation" AutoPostBack="True"
+                <asp:DropDownList ID="ddlLocation" runat="server" CssClass="form-control" resourcekey="ddlLocation" AutoPostBack="True"
                     OnSelectedIndexChanged="ddlLocation_SelectedIndexChanged">
                     <asp:ListItem Value="1">SpaceFolder</asp:ListItem>
                     <asp:ListItem Value="2">ServerFolder</asp:ListItem>
@@ -29,7 +29,7 @@
                     <asp:Label ID="lblSpace" runat="server" meta:resourcekey="lblSpace" Text="Space:"></asp:Label>
                 </td>
                 <td>
-                    <asp:DropDownList ID="ddlSpace" runat="server" CssClass="NormalTextBox" AutoPostBack="True"
+                    <asp:DropDownList ID="ddlSpace" runat="server" CssClass="form-control" AutoPostBack="True"
                         OnSelectedIndexChanged="ddlSpace_SelectedIndexChanged">
                     </asp:DropDownList>&nbsp;
                 </td>
@@ -52,7 +52,7 @@
                     <asp:Label ID="lblServerPath" runat="server" meta:resourcekey="lblServerPath" Text="Path:"></asp:Label>
                 </td>
                 <td>
-                    <asp:TextBox ID="txtServerPath" runat="server" CssClass="NormalTextBox" Width="400px"></asp:TextBox>
+                    <asp:TextBox ID="txtServerPath" runat="server" CssClass="form-control" Width="400px"></asp:TextBox>
                     <asp:RequiredFieldValidator ID="valRequireServerPath" runat="server" Display="Dynamic" ControlToValidate="txtServerPath"
                         ErrorMessage="*" ValidationGroup="Backup" meta:resourcekey="valRequireServerPath"></asp:RequiredFieldValidator>
                 </td>

@@ -13,7 +13,7 @@
 	<tr>
 		<td class="SubHead" nowrap width=200><asp:Label ID="lblWebSite" runat="server" meta:resourcekey="lblWebSite" Text="Web Site:"></asp:Label></td>
 		<td width="100%" class="NormalBold">
-            <asp:DropDownList ID="ddlWebSites" runat="server" CssClass="NormalTextBox"
+            <asp:DropDownList ID="ddlWebSites" runat="server" CssClass="form-control"
                 DataTextField="Name" DataValueField="Name">
             </asp:DropDownList>
             <asp:RequiredFieldValidator ID="valRequireWebSite" runat="server" ErrorMessage="*" ControlToValidate="ddlWebSites"></asp:RequiredFieldValidator></td>
@@ -33,7 +33,7 @@
 	        <asp:Label ID="lblSiteOwner" runat="server" meta:resourcekey="lblSiteOwner" Text="Site Owner:"></asp:Label>
 	    </td>
 	    <td class="Normal">
-            <asp:DropDownList ID="ddlSiteOwner" runat="server" CssClass="NormalTextBox"
+            <asp:DropDownList ID="ddlSiteOwner" runat="server" CssClass="form-control"
                 DataValueField="Name" DataTextField="Name">
             </asp:DropDownList>
             <asp:RequiredFieldValidator ID="valRequireSiteOwner" runat="server" ControlToValidate="ddlSiteOwner"
@@ -54,7 +54,7 @@
 	    </td>
 	    <td class="Normal">
             <asp:DropDownList ID="ddlDatabaseVersion" runat="server"
-                CssClass="NormalTextBox" meta:resourcekey="ddlDatabaseVersion">
+                CssClass="form-control" meta:resourcekey="ddlDatabaseVersion">
             </asp:DropDownList>
         </td>
 	</tr>

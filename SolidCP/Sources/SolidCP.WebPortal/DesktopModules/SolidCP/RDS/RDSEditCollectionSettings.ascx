@@ -166,7 +166,7 @@
                                 <tr>
                                     <td class="Label" style="width:260px;"><asp:Localize ID="locMonitorsNumber" runat="server" meta:resourcekey="locMonitorsNumber" Text=""></asp:Localize></td>
                                     <td style="width:250px;">
-                                        <asp:TextBox ID="tbMonitorsNumber" runat="server" CssClass="NormalTextBox" />
+                                        <asp:TextBox ID="tbMonitorsNumber" runat="server" CssClass="form-control" />
                                     </td>
                                 </tr>                                
                             </table>
@@ -183,7 +183,7 @@
                                 <tr>
                                     <td class="Label" style="width:260px;"><asp:Localize ID="locSecurityLayer" runat="server" meta:resourcekey="locSecurityLayer" Text=""></asp:Localize></td>
                                     <td style="width:250px;">
-                                        <asp:DropDownList ID="ddSecurityLayer" runat="server" CssClass="NormalTextBox">
+                                        <asp:DropDownList ID="ddSecurityLayer" runat="server" CssClass="form-control">
                                             <asp:ListItem Value="RDP" Text="RDP Security Layer" />
                                             <asp:ListItem Value="Negotiate" Text="Negotiate" />
                                             <asp:ListItem Value="SSL" Text="SSL (TLS 1.0)" />
@@ -193,7 +193,7 @@
                                 <tr>
                                     <td class="Label" style="width:260px;"><asp:Localize ID="locEncryptionLevel" runat="server" meta:resourcekey="locEncryptionLevel" Text=""></asp:Localize></td>
                                     <td style="width:250px;">
-                                        <asp:DropDownList ID="ddEncryptionLevel" runat="server" CssClass="NormalTextBox">
+                                        <asp:DropDownList ID="ddEncryptionLevel" runat="server" CssClass="form-control">
                                             <asp:ListItem Value="Low" Text="Low" />
                                             <asp:ListItem Value="ClientCompatible" Text="Client Compatible" />
                                             <asp:ListItem Value="High" Text="High" />

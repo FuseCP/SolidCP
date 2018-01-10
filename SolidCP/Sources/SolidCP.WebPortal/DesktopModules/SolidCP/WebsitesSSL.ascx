@@ -82,13 +82,13 @@
 						<div class="FormFieldDescription">
 							<asp:Localize runat="server" meta:resourcekey="PfxPassword" /></div>
 						<div class="FormField">
-							<asp:TextBox ID="txtPFXPass" ValidationGroup="pfxExport" runat="server" TextMode="Password" />
+							<asp:TextBox ID="txtPFXPass" ValidationGroup="pfxExport" runat="server" CssClass="form-control" TextMode="Password" />
 							<asp:RequiredFieldValidator ID="valtxtPFXPass" runat="server" Display="Dynamic" ValidationGroup="pfxExport"
 								ControlToValidate="txtPFXPass" meta:resourcekey="valtxtPFXPass" /></div>
 						<div class="FormFieldDescription">
 							<asp:Localize runat="server" meta:resourcekey="PfxPasswordConfirmation" /></div>
 						<div class="FormField">
-							<asp:TextBox ID="txtPFXPassConfirm" ValidationGroup="pfxExport" runat="server" TextMode="Password" />
+							<asp:TextBox ID="txtPFXPassConfirm" ValidationGroup="pfxExport" runat="server" CssClass="form-control" TextMode="Password" />
 							<asp:CompareValidator ID="valtxtPFXPassConfirm" runat="server" ValidationGroup="pfxExport" 
 								ControlToCompare="txtPFXPass" ControlToValidate="txtPFXPassConfirm" meta:resourcekey="valtxtPFXPassConfirm" /></div>
 					</div>
@@ -164,28 +164,28 @@
 						<td class="SubHead">
 							<asp:Localize ID="sslOrganization" runat="server" meta:resourcekey="sslOrganization" /></td>
 						<td class="Normal">
-							<asp:TextBox ID="txtCompany" runat="server" /><asp:RequiredFieldValidator ID="SSLCompanyReq" Display="Dynamic" ValidationGroup="SSL" runat="server"
+							<asp:TextBox ID="txtCompany" CssClass="form-control" runat="server" /><asp:RequiredFieldValidator ID="SSLCompanyReq" Display="Dynamic" ValidationGroup="SSL" runat="server"
 								ControlToValidate="txtCompany" ErrorMessage="*" /></td>
 					</tr>
 					<tr>
 						<td class="SubHead">
 							<asp:Localize ID="sslOrganizationUnit" runat="server" meta:resourcekey="sslOrganizationUnit" /></td>
 						<td class="Normal">
-							<asp:TextBox ID="txtOU" runat="server" /></td>
+							<asp:TextBox ID="txtOU" CssClass="form-control" runat="server" /></td>
 					</tr>
 					<tr>
 						<td class="SubHead">
 							<asp:Localize ID="sslCountry" runat="server" meta:resourcekey="sslCountry" /></td>
 						<td class="Normal">
-							<asp:dropdownlist runat="server" id="lstCountries" cssclass="NormalTextBox" AutoPostBack="true" 
+							<asp:dropdownlist runat="server" id="lstCountries" cssclass="form-control" AutoPostBack="true" 
 								OnSelectedIndexChanged="lstCountries_SelectedIndexChanged" width="200px" /></td>
 					</tr>
 					<tr>
 						<td class="SubHead">
 							<asp:Localize ID="sslState" runat="server" meta:resourcekey="sslState" /></td>
 						<td class="Normal">
-							<asp:TextBox id="txtState" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
-							<asp:DropDownList ID="ddlStates" Runat="server" DataTextField="Text" DataValueField="Value" CssClass="NormalTextBox"
+							<asp:TextBox id="txtState" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
+							<asp:DropDownList ID="ddlStates" Runat="server" DataTextField="Text" DataValueField="Value" CssClass="form-control"
 								Width="200px" Visible="false" />
 							<asp:RequiredFieldValidator ID="SSLSSLStateReq" ValidationGroup="SSL" runat="server"
 								ControlToValidate="txtState" Display="Dynamic" ErrorMessage="*" /></td>
@@ -194,7 +194,7 @@
 						<td class="SubHead">
 							<asp:Localize ID="sslCity" runat="server" meta:resourcekey="sslCity" /></td>
 						<td class="Normal">
-							<asp:TextBox ID="txtCity" runat="server" />
+							<asp:TextBox ID="txtCity" CssClass="form-control" runat="server" />
 							<asp:RequiredFieldValidator ID="SSLCityReq" ValidationGroup="SSL" runat="server"
 								ControlToValidate="txtCity" ErrorMessage="*" /></td>
 					</tr>
@@ -227,7 +227,7 @@
 					<p>
 						<asp:Localize ID="InstallCSRDescription" runat="server" meta:resourcekey="InstallCSRDescription" /></p>
 					<asp:Localize ID="sslCSR" runat="server" meta:resourcekey="sslCSR" />:<br />
-					<asp:TextBox ID="txtCSR" runat="server" Style="text-align: left; font-family: Courier New"
+					<asp:TextBox ID="txtCSR" runat="server" CssClass="form-control" Style="text-align: left; font-family: Courier New"
 						Rows="25" TextMode="MultiLine" ReadOnly="True" Columns="65" Wrap="false" onfocus="this.select();"></asp:TextBox>
 					<br />
 					<br />
@@ -238,7 +238,7 @@
 						<asp:Localize ID="InstallCSRCertificate" runat="server" meta:resourcekey="InstallCSRCertificate" />
 					</p>
 					<asp:Localize ID="sslCertificate" runat="server" meta:resourcekey="sslCertificate" />:<br />
-					<asp:TextBox ID="txtCertificate" runat="server" Rows="30" Columns="65" Wrap="false"
+					<asp:TextBox ID="txtCertificate" CssClass="form-control" runat="server" Rows="30" Columns="65" Wrap="false"
 						Style="text-align: left; font-family: Courier New" TextMode="MultiLine" ReadOnly="False"></asp:TextBox>
 					<br />
 					<br />

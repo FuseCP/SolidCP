@@ -94,7 +94,7 @@
                                                 meta:resourcekey="chkSendSummary" Text="Send summary letter to:" />
                                         </td>
                                         <td>
-                                            <asp:TextBox ID="txtSummaryEmail" runat="server" CssClass="NormalTextBox" AutoPostBack="true"></asp:TextBox>
+                                            <asp:TextBox ID="txtSummaryEmail" runat="server" CssClass="form-control" AutoPostBack="true"></asp:TextBox>
                                             <asp:RequiredFieldValidator ID="SummaryEmailValidator" runat="server" Text="*" Display="Dynamic"
                                                 ControlToValidate="txtSummaryEmail" meta:resourcekey="SummaryEmailValidator"
                                                 SetFocusOnError="true" ValidationGroup="VpsWizard">*</asp:RequiredFieldValidator>
@@ -174,7 +174,7 @@
                                                 <asp:Localize ID="locSnapshots" runat="server" meta:resourcekey="locSnapshots" Text="Number of snapshots:"></asp:Localize>
                                             </td>
                                             <td>
-                                                <asp:TextBox ID="txtSnapshots" runat="server" CssClass="NormalTextBox" Width="50"
+                                                <asp:TextBox ID="txtSnapshots" runat="server" CssClass="form-control" Width="50"
                                                     Text="0"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="SnapshotsValidator" runat="server" Text="*" Display="Dynamic"
                                                     ControlToValidate="txtSnapshots" meta:resourcekey="SnapshotsValidator" SetFocusOnError="true"

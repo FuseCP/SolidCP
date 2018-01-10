@@ -38,7 +38,7 @@
 						<tr>
 							<td class="FormLabel150"><asp:Localize ID="locDomainName" runat="server" meta:resourcekey="locDomainName" Text="Domain Name:"></asp:Localize></td>
 							<td>
-                            <asp:DropDownList id="ddlDomains" runat="server" CssClass="NormalTextBox" DataTextField="DomainName" DataValueField="DomainID" style="vertical-align:middle;"></asp:DropDownList>
+                            <asp:DropDownList id="ddlDomains" runat="server" CssClass="form-control" DataTextField="DomainName" DataValueField="DomainID" style="vertical-align:middle;"></asp:DropDownList>
 							</td>
 						</tr>
 					</table>

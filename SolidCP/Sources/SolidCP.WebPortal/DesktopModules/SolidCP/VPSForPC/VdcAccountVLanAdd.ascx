@@ -26,7 +26,7 @@
                                 <asp:Label ID="lblVLanID" runat="server" meta:resourcekey="lblVLanID" Text="VLan:" />
                             </td>
                             <td>
-                                <asp:TextBox ID="tbVLanID" runat="server" CssClass="NormalTextBox" />
+                                <asp:TextBox ID="tbVLanID" runat="server" CssClass="form-control" />
                                 <asp:RequiredFieldValidator ID="VLanIDValidator" runat="server" ErrorMessage="*"
                                     Display="Dynamic" ControlToValidate="tbVLanID" />
                                 <asp:RegularExpressionValidator  ID="VLanIDRegExpValidator" runat="server" ErrorMessage="*"

@@ -16,7 +16,7 @@
 					    <tr>
 						    <td class="FormLabel150"><asp:Localize ID="locServer" runat="server" meta:resourcekey="locServer" Text="Server:"></asp:Localize></td>
 						    <td>
-							    <asp:DropDownList ID="ddlServers" runat="server" CssClass="NormalTextBox" Width="150px" style="vertical-align: middle;" />
+							    <asp:DropDownList ID="ddlServers" runat="server" CssClass="form-control" Width="150px" style="vertical-align: middle;" />
 						    </td>
 					    </tr>
 					</table> 

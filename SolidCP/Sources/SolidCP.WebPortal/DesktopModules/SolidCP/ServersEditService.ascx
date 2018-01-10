@@ -48,7 +48,7 @@
 				<asp:Label ID="lblComments" runat="server" meta:resourcekey="lblComments" Text="Comments:"></asp:Label>
 			</td>
 			<td class="Normal">
-				<asp:TextBox ID="txtComments" runat="server" Width="300px" CssClass="NormalTextBox"
+				<asp:TextBox ID="txtComments" runat="server" Width="300px" CssClass="form-control"
 					TextMode="MultiLine" Rows="3"></asp:TextBox>
 			</td>
 		</tr>
@@ -78,7 +78,7 @@
 					<asp:Label ID="lblQuotaName" runat="server"></asp:Label>
 				</td>
 				<td width="100%" class="Normal">
-					<asp:TextBox ID="txtQuotaValue" runat="server" CssClass="NormalTextBox" Width="100px">0</asp:TextBox>
+					<asp:TextBox ID="txtQuotaValue" runat="server" CssClass="form-control" Width="100px">0</asp:TextBox>
 				</td>
 			</tr>
 		</table>
@@ -88,7 +88,7 @@
 					<asp:Label ID="lblClusters" runat="server" meta:resourcekey="lblClusters"></asp:Label>
 				</td>
 				<td width="100%" class="Normal">
-					<asp:DropDownList ID="ddlClusters" runat="server" Width="200px" CssClass="NormalTextBox"
+					<asp:DropDownList ID="ddlClusters" runat="server" Width="200px" CssClass="form-control"
 						DataTextField="ClusterName" DataValueField="ClusterID">
 					</asp:DropDownList>
 					<asp:RequiredFieldValidator ID="valCluster" runat="server" ControlToValidate="ddlClusters"
@@ -102,7 +102,7 @@
 					<asp:Label ID="lblNewCluster" runat="server" meta:resourcekey="lblNewCluster"></asp:Label>
 				</td>
 				<td class="Normal">
-					<asp:TextBox ID="txtClusterName" runat="server" CssClass="NormalTextBox" Width="200px"></asp:TextBox>
+					<asp:TextBox ID="txtClusterName" runat="server" CssClass="form-control" Width="200px"></asp:TextBox>
 					<asp:RequiredFieldValidator ID="valNewCluster" runat="server" ControlToValidate="txtClusterName"
 						ErrorMessage="*" ValidationGroup="NewCluster"></asp:RequiredFieldValidator>
 					<CPCC:StyleButton ID="cmdAddCluster" runat="server" ValidationGroup="NewCluster" OnClick="cmdAddCluster_Click">Add Cluster</CPCC:StyleButton>

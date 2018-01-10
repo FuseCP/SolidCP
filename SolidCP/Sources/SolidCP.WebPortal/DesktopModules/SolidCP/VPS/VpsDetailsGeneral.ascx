@@ -211,7 +211,7 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
 				            meta:resourcekey="locHostname1"></asp:Localize>
 			        </td>
 			        <td>
-			            <asp:TextBox ID="txtHostname" runat="server" CssClass="NormalTextBox" Width="200"></asp:TextBox>
+			            <asp:TextBox ID="txtHostname" runat="server" CssClass="form-control" Width="200"></asp:TextBox>
 			            
 			            <asp:RequiredFieldValidator ID="HostnameValidator" runat="server" Text="*" Display="Dynamic"
                                 ControlToValidate="txtHostname" meta:resourcekey="HostnameValidator" SetFocusOnError="true"
@@ -228,7 +228,7 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
 				            meta:resourcekey="locDomain"></asp:Localize>
 			        </td>
 			        <td>
-			            <asp:TextBox ID="txtDomain" runat="server" CssClass="NormalTextBox" Width="200"></asp:TextBox>
+			            <asp:TextBox ID="txtDomain" runat="server" CssClass="form-control" Width="200"></asp:TextBox>
 			            
 			            <asp:RequiredFieldValidator ID="DomainValidator" runat="server" Text="*" Display="Dynamic"
                                 ControlToValidate="txtDomain" meta:resourcekey="DomainValidator" SetFocusOnError="true"

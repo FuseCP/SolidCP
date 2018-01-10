@@ -21,7 +21,7 @@
 	<tr>
 		<td class="SubHead"><asp:Label ID="lblComments" runat="server" meta:resourcekey="lblComments" Text="Comments:"></asp:Label></td>
 		<td class="Normal">
-			<asp:TextBox id="txtComments" runat="server" CssClass="NormalTextBox" Columns="40" Width="400px"
+			<asp:TextBox id="txtComments" runat="server" CssClass="form-control" Columns="40" Width="400px"
 				Rows="3" TextMode="MultiLine"></asp:TextBox>
 		</td>
 	</tr>
@@ -39,7 +39,7 @@
 	<tr>
 		<td class="SubHead"><asp:Label ID="lblHostingPlan" runat="server" meta:resourcekey="lblHostingPlan" Text="Hosting Plan:"></asp:Label></td>
 		<td class="Normal">
-			<asp:DropDownList id="ddlPlan" runat="server" CssClass="NormalTextBox" DataValueField="PlanID" DataTextField="PlanName"></asp:DropDownList>
+			<asp:DropDownList id="ddlPlan" runat="server" CssClass="form-control" DataValueField="PlanID" DataTextField="PlanName"></asp:DropDownList>
 			<asp:RequiredFieldValidator id="planValidator" CssClass="NormalBold" runat="server" ErrorMessage="*"
 				Display="Dynamic" ControlToValidate="ddlPlan" ValidationGroup="EditSpace"></asp:RequiredFieldValidator></td>
 	</tr>

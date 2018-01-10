@@ -33,7 +33,7 @@
                                 <asp:Localize ID="locDestinationService" runat="server" meta:resourcekey="locDestinationService" Text="Destination Service:"></asp:Localize>
                             </td>
                             <td>
-                                <asp:DropDownList ID="HyperVServices" runat="server" CssClass="NormalTextBox"
+                                <asp:DropDownList ID="HyperVServices" runat="server" CssClass="form-control"
                                     DataValueField="ServiceId" DataTextField="FullServiceName"></asp:DropDownList>
                                 <asp:RequiredFieldValidator ID="RequiredHyperVService" runat="server"
                                     ControlToValidate="HyperVServices" ValidationGroup="MoveWizard" meta:resourcekey="RequiredHyperVService"

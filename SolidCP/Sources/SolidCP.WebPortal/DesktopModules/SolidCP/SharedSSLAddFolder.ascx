@@ -11,7 +11,7 @@
 		        <asp:Label ID="lblDomain" runat="server" meta:resourcekey="lblDomain" Text="Domain:"></asp:Label>
 		    </td>
 		    <td class="Normal">
-		        <asp:DropDownList ID="ddlDomains" runat="server" CssClass="NormalTextBox">
+		        <asp:DropDownList ID="ddlDomains" runat="server" CssClass="form-control">
 		        </asp:DropDownList>
                 <asp:RequiredFieldValidator ID="valRequireDomain" runat="server" meta:resourcekey="valRequireDomain"
                     ErrorMessage="*" ControlToValidate="ddlDomains" Display="Dynamic"></asp:RequiredFieldValidator></td>
@@ -24,7 +24,7 @@
 		        <asp:Label ID="lblWebSites" runat="server" meta:resourcekey="lblWebSites" Text="Web Site:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
-                <asp:DropDownList ID="ddlWebSites" runat="server" CssClass="NormalTextBox">
+                <asp:DropDownList ID="ddlWebSites" runat="server" CssClass="form-control">
                 </asp:DropDownList>&nbsp;&nbsp;
                 <asp:RequiredFieldValidator ID="valRequireWebSite" runat="server" meta:resourcekey="valRequireWebSite"
                     ErrorMessage="*" ControlToValidate="ddlWebSites" Display="Dynamic"></asp:RequiredFieldValidator><br />

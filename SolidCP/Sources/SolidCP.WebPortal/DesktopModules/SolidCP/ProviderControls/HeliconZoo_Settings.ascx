@@ -17,7 +17,7 @@ table.EnginesTable th {
 span.ValidationMessageBlock {
     display: block !important;
 }
-#EngineEnvs INPUT.NormalTextBox {
+#EngineEnvs INPUT.form-control {
     font-family: Consolas, Courier New, monospace;
 }
 .AspNet-GridView td {
@@ -122,7 +122,7 @@ span.ValidationMessageBlock {
 		        <span>Name</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineName" runat="server" CssClass="NormalTextBox" Width="666px"></asp:TextBox>
+                <asp:TextBox ID="EngineName" runat="server" CssClass="form-control" Width="666px"></asp:TextBox>
                 <asp:RequiredFieldValidator runat="server"
                     ControlToValidate="EngineName" 
                     ErrorMessage="Engine name can not be empty" 
@@ -138,7 +138,7 @@ span.ValidationMessageBlock {
 		        <span>Friendly name</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineFriendlyName" runat="server" CssClass="NormalTextBox" Width="666px"></asp:TextBox>
+                <asp:TextBox ID="EngineFriendlyName" runat="server" CssClass="form-control" Width="666px"></asp:TextBox>
                 <asp:RequiredFieldValidator runat="server" 
                     ControlToValidate="EngineFriendlyName" 
                     ErrorMessage="Engine friendly name can not be empty" 
@@ -153,7 +153,7 @@ span.ValidationMessageBlock {
 		        <span>Full path to executable</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineFullPath" runat="server" CssClass="NormalTextBox" Width="666px"></asp:TextBox>
+                <asp:TextBox ID="EngineFullPath" runat="server" CssClass="form-control" Width="666px"></asp:TextBox>
                 <asp:RequiredFieldValidator runat="server" 
                     ControlToValidate="EngineFullPath" 
                     ErrorMessage="Path to executable can not be empty" 
@@ -168,7 +168,7 @@ span.ValidationMessageBlock {
 		        <span>Executable`s arguments</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineArguments" runat="server" CssClass="NormalTextBox" Width="666px"></asp:TextBox>
+                <asp:TextBox ID="EngineArguments" runat="server" CssClass="form-control" Width="666px"></asp:TextBox>
                 <p class="description">Set of arguments to be passed to a worker on a call, can include special environment variables</p>
             </td>
 		</tr>
@@ -196,7 +196,7 @@ span.ValidationMessageBlock {
 		        <span>Lower port</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EnginePortLower" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EnginePortLower" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RangeValidator runat="server" 
                     ControlToValidate="EnginePortLower" 
                     MinimumValue="1" MaximumValue="65535"
@@ -212,7 +212,7 @@ span.ValidationMessageBlock {
 		        <span>Upper port</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EnginePortUpper" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EnginePortUpper" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RangeValidator runat="server" 
                     ControlToValidate="EnginePortUpper" 
                     MinimumValue="1" MaximumValue="65535"
@@ -228,7 +228,7 @@ span.ValidationMessageBlock {
 		        <span>Minimum instances</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineMinInstances" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EngineMinInstances" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RegularExpressionValidator runat="server" 
                     ControlToValidate="EngineMinInstances"
                     ValidationExpression="\d*"
@@ -244,7 +244,7 @@ span.ValidationMessageBlock {
 		        <span>Maximum instances</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineMaxInstances" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EngineMaxInstances" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RegularExpressionValidator runat="server" 
                     ControlToValidate="EngineMaxInstances"
                     ValidationExpression="\d*"
@@ -260,7 +260,7 @@ span.ValidationMessageBlock {
 		        <span>Time limit</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineTimeLimit" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EngineTimeLimit" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RegularExpressionValidator runat="server" 
                     ControlToValidate="EngineTimeLimit"
                     ValidationExpression="\d*"
@@ -276,7 +276,7 @@ span.ValidationMessageBlock {
 		        <span>Graceful Shutdown Timeout</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineGracefulShutdownTimeout" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EngineGracefulShutdownTimeout" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RegularExpressionValidator runat="server" 
                     ControlToValidate="EngineGracefulShutdownTimeout"
                     ValidationExpression="\d*"
@@ -292,7 +292,7 @@ span.ValidationMessageBlock {
 		        <span>Memory limit</span>
 		    </th>
 		    <td class="Normal" valign="top">
-                <asp:TextBox ID="EngineMemoryLimit" runat="server" CssClass="NormalTextBox" Width="150px"></asp:TextBox>
+                <asp:TextBox ID="EngineMemoryLimit" runat="server" CssClass="form-control" Width="150px"></asp:TextBox>
                 <asp:RegularExpressionValidator runat="server" 
                     ControlToValidate="EngineMemoryLimit"
                     ValidationExpression="\d*"
@@ -314,36 +314,36 @@ span.ValidationMessageBlock {
                         <th>Value</th>
 		            </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey1" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue1" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey1" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue1" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey2" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue2" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey2" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue2" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey3" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue3" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey3" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue3" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey4" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue4" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey4" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue4" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey5" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue5" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey5" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue5" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey6" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue6" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey6" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue6" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey7" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue7" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey7" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue7" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
                     <tr>
-                        <td><asp:TextBox ID="EnvKey8" runat="server" CssClass="NormalTextBox" Width="240px"></asp:TextBox></td>
-                        <td><asp:TextBox ID="EnvValue8" runat="server" CssClass="NormalTextBox" Width="440px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvKey8" runat="server" CssClass="form-control" Width="240px"></asp:TextBox></td>
+                        <td><asp:TextBox ID="EnvValue8" runat="server" CssClass="form-control" Width="440px"></asp:TextBox></td>
                     </tr>
 		        </table>
             </td>

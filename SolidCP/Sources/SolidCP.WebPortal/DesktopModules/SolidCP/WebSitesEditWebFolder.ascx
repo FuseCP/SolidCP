@@ -11,7 +11,7 @@
 						<asp:Label ID="lblFolderTitle" runat="server" meta:resourcekey="lblFolderTitle" Text="Folder Title:"></asp:Label>
 					</td>
 		            <td class="NormalBold">
-                        <asp:TextBox ID="txtTitle" runat="server" Width="200" CssClass="NormalTextBox"></asp:TextBox>
+                        <asp:TextBox ID="txtTitle" runat="server" Width="200" CssClass="form-control"></asp:TextBox>
                     </td>
 	            </tr>
 	            <tr>
