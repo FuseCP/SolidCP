@@ -87,8 +87,9 @@ namespace SolidCP.EnterpriseServer
 																				@"Registrant Name:(.+)"
 																			};
 
-		private static List<string> _datePatterns = new List<string> {   @"ddd MMM dd HH:mm:ss G\MT yyyy"
-																			  };
+		private static List<string> _datePatterns = new List<string> {   @"ddd MMM dd HH:mm:ss G\MT yyyy",
+                                                                         @"yyyymmdd"
+                                                                              };
 
 		#region Servers
 		public static List<ServerInfo> GetAllServers()
