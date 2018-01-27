@@ -943,6 +943,7 @@ namespace SolidCP.EnterpriseServer
 
                 foreach(var server in removedServers)
                 {
+                    rds.RemoveSessionHostServerFromCollection(org.OrganizationId, collection.Name, server);
                     DataProvider.RemoveRDSServerFromCollection(server.Id);
                 }
 

@@ -605,6 +605,8 @@ namespace SolidCP.Providers.HostedSolution
                                                             inheritance
                                                             );
 
+            
+
             ou.ObjectSecurity.RemoveAccessRule(ruleRead);
             ou.CommitChanges();
             ou.Close();

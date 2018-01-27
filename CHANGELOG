@@ -16,6 +16,8 @@ Version 1.4.0:
 - Removed Server Password value from installer log.
 - Fixed Scheduled task page design.
 - Fixed Whois Client with IDN domains - With thanks to Pds Informatica
+- RDS further fix's related to dSHeuristics
+- Fixed RDS Session Host removal from collection
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
