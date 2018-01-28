@@ -19,6 +19,8 @@ Version 1.4.0:
 - RDS further fix's related to dSHeuristics
 - Fixed RDS Session Host removal from collection
 - Fixed Scheduled task CheckWebSiteTask for TLS1.2 support
+- Fixed Scheduled task layout for CheckWebsiteTask
+- Fixed Exchange Mailbox password request action bar & mobile icon displaying when disabled
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
