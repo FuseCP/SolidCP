@@ -5,7 +5,7 @@
                 <div>
                     <div>
                         <div id="SendPasswordResetEmailDiv" class="form-group" runat="server">
-                            <asp:Label runat="server" CssClass="control-label col-sm-2" AssociatedControlID="chkSendPasswordResetEmail">
+                            <asp:Label runat="server" CssClass="control-label col-sm-2" AssociatedControlID="chkSendPasswordResetEmail" style="white-space:nowrap;">
                                 <asp:Localize ID="Localize1" runat="server" meta:resourcekey="chkSendPasswordResetEmailLabel" Text="Send Password Request." />
                             </asp:Label>
                             <div class="col-sm-10">
