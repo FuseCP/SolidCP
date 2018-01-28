@@ -8,31 +8,27 @@
 		<table cellspacing="0" cellpadding="4" width="100%">
 			<tr>
 				<td class="SubHead" nowrap>
-					<asp:CheckBox ID="cbxResponseStatus" runat="server" meta:resourcekey="cbxResponseStatus" Text="Response status equal to" />
+					<asp:CheckBox ID="cbxResponseStatus" runat="server" meta:resourcekey="cbxResponseStatus" Text="Response status equal to" /> :
    				</td>
    				<td class="SubHead" width="100%">
-   					<asp:TextBox ID="txtResponseStatus" runat="server" Width="30" CssClass="form-control" MaxLength="1000"></asp:TextBox>
+   					<asp:TextBox ID="txtResponseStatus" runat="server" CssClass="form-control" MaxLength="1000"></asp:TextBox>
    					<asp:CompareValidator ID="valResponseStatus" runat="server" ErrorMessage="*" Display="Static" ControlToValidate="txtResponseStatus" Type="Integer" Operator="DataTypeCheck"></asp:CompareValidator>
    				</td>
 			</tr>
-		</table>
-		<table cellspacing="0" cellpadding="4" width="100%">
 			<tr>
-				<td class="SubHead" nowrap style="padding-left: 40px;">
-					<asp:CheckBox ID="cbxResponseContains" runat="server" meta:resourcekey="cbxResponseContains" Text="Response content contains" />
+				<td class="SubHead">
+					<asp:CheckBox ID="cbxResponseContains" runat="server" meta:resourcekey="cbxResponseContains" Text="Response content contains" /> :
    				</td>
    				<td class="SubHead" width="100%">
-   					<asp:TextBox ID="txtResponseContains" runat="server" Width="200" CssClass="form-control" MaxLength="1000"></asp:TextBox>
+   					<asp:TextBox ID="txtResponseContains" runat="server" CssClass="form-control" MaxLength="1000"></asp:TextBox>
    				</td>
 			</tr>
-		</table>
-		<table cellspacing="0" cellpadding="4" width="100%">
 			<tr>
-				<td class="SubHead" nowrap style="padding-left: 80px;">
-					<asp:CheckBox ID="cbxResponseDoesntContain" runat="server" meta:resourcekey="cbxResponseDoesntContain" Text="Response content doesn't contain" />
+				<td class="SubHead">
+					<asp:CheckBox ID="cbxResponseDoesntContain" runat="server" meta:resourcekey="cbxResponseDoesntContain" Text="Response content doesn't contain" /> :
    				</td>
    				<td class="SubHead" width="100%">
-   					<asp:TextBox ID="txtResponseDoesntContain" runat="server" Width="200" CssClass="form-control" MaxLength="1000"></asp:TextBox>
+   					<asp:TextBox ID="txtResponseDoesntContain" runat="server" CssClass="form-control" MaxLength="1000"></asp:TextBox>
    				</td>
 			</tr>
 		</table>
