@@ -79,7 +79,20 @@ namespace SolidCP.Portal
             }
 
             if (!ShowSetMailboxPlan)
+            {
                 RemoveActionItem(UserActionTypes.SetMailboxPlan);
+            }
+            var settings = ES.Services.Organizations.GetWebDavSystemSettings();
+            var isSendPasswordEnabled = settings != null && Utils.ParseBool(settings[EnterpriseServer.SystemSettings.WEBDAV_PASSWORD_RESET_ENABLED_KEY], false);
+            var isTwilioEnabled = ES.Services.System.CheckIsTwilioEnabled();
+            if (!isSendPasswordEnabled)
+            {
+                RemoveActionItem(UserActionTypes.SendByEmail);
+            }
+            if (!isTwilioEnabled)
+            {
+                RemoveActionItem(UserActionTypes.SendBySms);
+            }
         }
 
         protected override DropDownList ActionsList

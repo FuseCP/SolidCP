@@ -92,6 +92,7 @@ namespace SolidCP.Portal.UserControls
 
             SendPasswordResetEmailDiv.Visible = isSendPasswordEnabled;
             rbtnMobile.Visible = isTwilioEnabled;
+            rbtnMobileLabel.Visible = isTwilioEnabled;
 
             if (!Page.IsPostBack)
             {

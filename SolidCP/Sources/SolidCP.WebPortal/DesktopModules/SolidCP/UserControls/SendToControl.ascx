@@ -1,9 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SendToControl.ascx.cs" Inherits="SolidCP.Portal.UserControls.SendToControl" %>
-<div id="sendtoheader">
-    <div class="container">
+<div>
+    <div>
         <fieldset>
-            <div class="row">
-                <div class="col-md-12">
+                <div>
                     <div>
                         <div id="SendPasswordResetEmailDiv" class="form-group" runat="server">
                             <asp:Label runat="server" CssClass="control-label col-sm-2" AssociatedControlID="chkSendPasswordResetEmail">
@@ -17,18 +16,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </fieldset>
     </div>
 </div>
 <div id="SendToBody" runat="server" visible="False">
-    <div class="container">
         <fieldset>
-            <div class="row">
                 <div class="col-md-12">
                     <div class="form-group form-inline">
                         <label for="locSendTo" class="col-sm-2 control-label">
-                            <asp:Localize ID="locSendTo" runat="server" meta:resourcekey="locSendTo" Text="Send to:" /></label>
+                            <asp:Localize ID="locSendTo" runat="server" meta:resourcekey="locSendTo" Text="Send to:" />
                         </label> 
 						<div class="col-sm-10">
                             <div class="input-group form-inline">
@@ -37,17 +33,15 @@
                                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                                         <asp:RadioButton ID="rbtnEmail" runat="server" meta:resourcekey="rbtnEmail" Text="Email" GroupName="SendToGroup" AutoPostBack="true" Checked="true" OnCheckedChanged="SendToGroupCheckedChanged" />
                                     </label>
-                                    <label class="input-group-addon">
+                                    <asp:label class="input-group-addon" ID="rbtnMobileLabel" runat="server">
                                         <i class="fa fa-mobile" aria-hidden="true"></i>
                                         <asp:RadioButton ID="rbtnMobile" runat="server" meta:resourcekey="rbtnMobile" Text="Mobile" GroupName="SendToGroup" AutoPostBack="true" OnCheckedChanged="SendToGroupCheckedChanged" />
-                                    </label>
+                                    </asp:label>
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
+                    </div>
                 <div id="EmailDiv" runat="server" class="col-md-12">
                     <div class="form-group form-inline">
                         <label for="txtEmailAddress" class="col-sm-2 control-label">
@@ -61,10 +55,8 @@
                             <asp:RequiredFieldValidator ID="valEmailAddress" runat="server" ErrorMessage="*" ControlToValidate="txtEmailAddress" ValidationGroup="ResetUserPassword"></asp:RequiredFieldValidator>
                             <asp:RegularExpressionValidator ID="regexEmailValid" runat="server" ValidationExpression="\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ValidationGroup="ResetUserPassword" ControlToValidate="txtEmailAddress" ErrorMessage="Invalid Email Format"></asp:RegularExpressionValidator>
                         </div>
-                    </div>
                 </div>
             </div>
-            <div class="row">
                 <div id="MobileDiv" runat="server" class="col-md-12">
                     <div class="form-group form-inline">
                         <label for="txtMobile" class="col-sm-2 control-label">
@@ -80,7 +72,5 @@
                         </div>
                     </div>
                 </div>
-            </div>
         </fieldset>
     </div>
-</div>
