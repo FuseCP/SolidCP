@@ -56,6 +56,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Collections;
 using System.Xml;
 using SolidCP.EnterpriseServer.Base.RDS;
+using System.Security.Principal;
+using System.Security.AccessControl;
 
 
 namespace SolidCP.Providers.RemoteDesktopServices
@@ -388,6 +390,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     MoveSessionHostToCollectionOU(rdsServer.Name, collection.Name, organizationId);                    
                     AddAdGroupToLocalAdmins(runSpace, rdsServer.FqdName, helpDeskGroupSamAccountName);
                     AddAdGroupToLocalAdmins(runSpace, rdsServer.FqdName, localAdminsGroupSamAccountName);
+                    ActiveDirectoryUtils.AddOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), rdsServer.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
                 }
 
                 string collectionComputersPath = GetComputerGroupPath(organizationId, collection.Name);
@@ -553,6 +556,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                     RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
                     MoveRdsServerToTenantOU(server.Name, organizationId);
+                    ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
                 }
 
                 ActiveDirectoryUtils.DeleteADObject(GetComputerGroupPath(organizationId, collectionName));
@@ -627,6 +631,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 AddAdGroupToLocalAdmins(runSpace, server.FqdName, LocalAdministratorsGroupName);
                 AddAdGroupToLocalAdmins(runSpace, server.FqdName, helpDeskGroupSamAccountName);
                 AddComputerToCollectionAdComputerGroup(organizationId, collectionName, server);
+                Log.WriteWarning("AddSessionHostServerToCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
+                ActiveDirectoryUtils.AddOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }            
             finally
             {
@@ -668,6 +674,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                 RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
                 MoveRdsServerToTenantOU(server.Name, organizationId);
+                Log.WriteWarning("RemoveSessionHostServerFromCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
+                ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }
             finally
             {
@@ -2028,6 +2036,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     DirectoryEntry group = new DirectoryEntry(GetRdsServersGroupPath());
                     computerObject.MoveTo(group);
                     group.CommitChanges();
+                    //Log.WriteWarning("MoveSessionHostToRdsOU, RemoveOUSecurityfromUser  0: {0}, 1: {1}", GetRdsServersGroupPath(), computerObject.Name + "$");
+                    //ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetRdsServersGroupPath(), RootDomain, computerObject.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
                 }
             } 
         }
@@ -2046,6 +2056,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (!ActiveDirectoryUtils.AdObjectExists(collectionOUPath))
             {
                 ActiveDirectoryUtils.CreateOrganizationalUnit(collectionOUName, GetOrganizationPath(organizationId));
+                // Change to OU security for dSHeuristics
+                SetRDSOUSecurity(GetOrganizationPath(organizationId), organizationId, hostName);
             }
 
             if (computerObject != null)
@@ -2059,6 +2071,31 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     group.CommitChanges();
                 }
             }
+        }
+
+        internal int SetRDSOUSecurity(string Path, string organizationId, string hostname)
+        {
+            Log.WriteWarning("SetRDSOUSecurity Path: {0}, OrgID: {1}", Path, organizationId);
+
+            if (string.IsNullOrEmpty(organizationId))
+                throw new ArgumentNullException("organizationId");
+
+            String ComputerAcct = hostname + '$';
+
+            try
+            {
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
+                Log.WriteWarning("Add Computer to OU Security. Path: {0}, Domain: {1}, Hostname: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), ComputerAcct);
+                ActiveDirectoryUtils.AddOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), ComputerAcct, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+
+            }
+            catch (AmbiguousMatchException)
+            {
+                
+            }
+
+            return Errors.OK;
         }
 
         public void MoveRdsServerToTenantOU(string hostName, string organizationId)

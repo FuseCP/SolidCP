@@ -178,6 +178,13 @@ namespace SolidCP.EnterpriseServer
             Stream respStream = null;
             try
             {
+                // Enable TLS1.2 support if its https
+                if (url.StartsWith("https://"))
+                {
+                    TaskManager.Write("Identified as SSL Website");
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                }
+
                 WebRequest req = WebRequest.Create(url);
 
                 // set site credentials if required
