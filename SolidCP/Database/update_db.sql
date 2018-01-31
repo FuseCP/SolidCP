@@ -5306,36 +5306,6 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 71 WHERE [
 END
 GO
 
-/* SQL 2017 Provider */
-IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = 'MsSQL2017')
-BEGIN
-INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (72, N'MsSQL2017', 10, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
-END
-ELSE
-BEGIN
-UPDATE [dbo].[ResourceGroups] SET [ShowGroup] = 1 WHERE [GroupName] = 'MsSQL2017'
-END
-GO
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Microsoft SQL Server 2017')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1704, 72, N'MsSQL', N'Microsoft SQL Server 2017', N'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer', N'MSSQL', NULL)
-INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (73, 72, N'MsSQL2017Database', N'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1, 1, 0, 0, 1, 1, 1, 1)
-INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (74, 72, N'MsSQL2017User', N'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1, 0, 0, 0, 1, 1, 1, 1)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (711, 72, 1, N'MsSQL2017.Databases', N'Databases', 2, 0, 39, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (712, 72, 2, N'MsSQL2017.Users', N'Users', 2, 0, 40, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (713, 72, 3, N'MsSQL2017.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (714, 72, 5, N'MsSQL2017.Backup', N'Database Backups', 1, 0, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (715, 72, 6, N'MsSQL2017.Restore', N'Database Restores', 1, 0, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (716, 72, 7, N'MsSQL2017.Truncate', N'Database Truncate', 1, 0, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (717, 72, 4, N'MsSQL2017.MaxLogSize', N'Max Log Size', 3, 0, NULL, NULL)
-END
-ELSE
-BEGIN
-UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 72 WHERE [DisplayName] = 'Microsoft SQL Server 2017'
-END
-GO
-
-
 /* MariaDB */
 IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupID] = '50')
 BEGIN
@@ -5354,16 +5324,6 @@ END
 ELSE
 BEGIN
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1550'
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1560')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1560, 50, N'MariaDB', N'MariaDB 10.2', N'SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
-END
-ELSE
-BEGIN
-UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1560'
 END
 GO
 
@@ -20154,4 +20114,63 @@ VALUES
 
 SET @DomainID = SCOPE_IDENTITY()
 RETURN
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupID] = '73' AND [GroupName] = 'Sharepoint Enterprise Server')
+BEGIN
+ALTER TABLE ResourceGroups NOCHECK CONSTRAINT ALL
+ALTER TABLE Providers NOCHECK CONSTRAINT ALL
+ALTER TABLE Quotas NOCHECK CONSTRAINT FK_Quotas_ResourceGroups
+ALTER TABLE ServiceItemTypes NOCHECK CONSTRAINT FK_ServiceItemTypes_ResourceGroups
+UPDATE [dbo].[ResourceGroups] SET [GroupID] = '73' WHERE [GroupName] = 'Sharepoint Enterprise Server'
+UPDATE [dbo].[Providers] SET [GroupID] = '73' WHERE [ProviderName] = 'HostedSharePoint2013Ent'
+UPDATE [dbo].[Providers] SET [GroupID] = '73' WHERE [ProviderName] = 'HostedSharePoint2016Ent'
+UPDATE [dbo].[Quotas] SET [GroupID] = '73' WHERE [QuotaName] = 'HostedSharePointEnterprise.Sites'
+UPDATE [dbo].[Quotas] SET [GroupID] = '73' WHERE [QuotaName] = 'HostedSharePointEnterprise.MaxStorage'
+UPDATE [dbo].[Quotas] SET [GroupID] = '73' WHERE [QuotaName] = 'HostedSharePointEnterprise.UseSharedSSL'
+UPDATE [dbo].[ServiceItemTypes] SET [GroupID] = '73' WHERE [DisplayName] = 'SharePointEnterpriseSiteCollection'
+ALTER TABLE ServiceItemTypes WITH CHECK CHECK CONSTRAINT FK_ServiceItemTypes_ResourceGroups
+ALTER TABLE Quotas WITH CHECK CHECK CONSTRAINT FK_Quotas_ResourceGroups
+ALTER TABLE Providers WITH CHECK CHECK CONSTRAINT ALL
+ALTER TABLE ResourceGroups WITH CHECK CHECK CONSTRAINT ALL
+END
+GO
+
+/* SQL 2017 Provider */
+IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = 'MsSQL2017')
+BEGIN
+INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (72, N'MsSQL2017', 10, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[ResourceGroups] SET [ShowGroup] = 1 WHERE [GroupName] = 'MsSQL2017'
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Microsoft SQL Server 2017')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1704, 72, N'MsSQL', N'Microsoft SQL Server 2017', N'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer', N'MSSQL', NULL)
+INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (73, 72, N'MsSQL2017Database', N'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1, 1, 0, 0, 1, 1, 1, 1)
+INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (74, 72, N'MsSQL2017User', N'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1, 0, 0, 0, 1, 1, 1, 1)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (711, 72, 1, N'MsSQL2017.Databases', N'Databases', 2, 0, 39, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (712, 72, 2, N'MsSQL2017.Users', N'Users', 2, 0, 40, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (713, 72, 3, N'MsSQL2017.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (714, 72, 5, N'MsSQL2017.Backup', N'Database Backups', 1, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (715, 72, 6, N'MsSQL2017.Restore', N'Database Restores', 1, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (716, 72, 7, N'MsSQL2017.Truncate', N'Database Truncate', 1, 0, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (717, 72, 4, N'MsSQL2017.MaxLogSize', N'Max Log Size', 3, 0, NULL, NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 72 WHERE [DisplayName] = 'Microsoft SQL Server 2017'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1560')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1560, 50, N'MariaDB', N'MariaDB 10.2', N'SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1560'
+END
 GO
