@@ -42,6 +42,7 @@
 		<MSPtoSCPSrc>$(TrunkFolder)\Sources\Tools\MSPtoSCP</MSPtoSCPSrc>
 		<MailTemplatesSrc>$(TrunkFolder)\Sources\Tools\MailTemplates</MailTemplatesSrc>
 		<SolidCP-Auto-Upgrade-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolSrc>
+		<SolidCP-dSHeuristicsSrc>$(TrunkFolder)\Sources\Tools\SolidCP-dSHeuristics</SolidCP-dSHeuristicsSrc>
 		<FixDefaultPublicFolderMailboxSrc>$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox\bin\$(BuildConfiguration)</FixDefaultPublicFolderMailboxSrc>
 
 		<ServerBuild>$(BuildFolder)\Server</ServerBuild>
@@ -500,6 +501,7 @@
 		<MSPtoSCPInstall>$(ToolsFolder)\MSPtoSCP</MSPtoSCPInstall>
 		<MailTemplatesInstall>$(ToolsFolder)\MailTemplates</MailTemplatesInstall>
 		<SolidCP-Auto-Upgrade-ToolInstall>$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolInstall>
+		<SolidCP-dSHeuristicsInstall>$(ToolsFolder)\SolidCP-dSHeuristics</SolidCP-dSHeuristicsInstall>
     <FixDefaultPublicFolderMailboxInstall>$(ToolsFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxInstall>
   </PropertyGroup>
 
@@ -688,6 +690,17 @@
 		<Copy SourceFiles="@(SolidCP-Auto-Upgrade-ToolFiles)" DestinationFolder="$(SolidCP-Auto-Upgrade-ToolInstall)" />
 		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(SolidCP-Auto-Upgrade-ToolInstall)" />
 	</Target>
+	
+  	<Target Name="SolidCP-dSHeuristics" DependsOnTargets="SolidCP-Auto-Upgrade-ToolInstall">
+		<ItemGroup>
+			<SolidCP-dSHeuristicsFiles Include="$(SolidCP-dSHeuristicsSrc)\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(SolidCP-dSHeuristicsInstall)"/>
+		<MakeDir Directories="$(SolidCP-dSHeuristicsInstall)"/>
+		<Copy SourceFiles="@(SolidCP-dSHeuristicsFiles)" DestinationFolder="$(SolidCP-dSHeuristicsInstall)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(SolidCP-dSHeuristicsInstall)" />
+	</Target>
+
 
   <!-- Create update from previous version -->
 	<PropertyGroup>
@@ -699,7 +712,7 @@
 		<WebDavPortalUpdate>$(UpdateFolder)\WebDavPortal</WebDavPortalUpdate>
 	</PropertyGroup>
 
-	<Target Name="PrepareUpdates" DependsOnTargets="SolidCP-Auto-Upgrade-ToolInstall">
+	<Target Name="PrepareUpdates" DependsOnTargets="SolidCP-dSHeuristics">
 		<RemoveDir Directories="$(UpdateFolder)"/>
 		<MakeDir Directories="$(UpdateFolder)"/>
 
@@ -957,6 +970,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-dSHeuristics.zip&quot; &quot;$(SolidCP-dSHeuristicsInstall)\*&quot;" />
 
   </Target>
 
