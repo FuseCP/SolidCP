@@ -5374,6 +5374,8 @@ UPDATE [dbo].[Quotas] SET [ItemTypeID] = '203' WHERE [QuotaID] = '574'
 END
 GO
 
+/* Modify column size to store more data*/
+ALTER TABLE [dbo].[ScheduleTaskParameters] ALTER COLUMN [DefaultValue] nvarchar(max) NULL;
 
 /*This should be [DefaultValue]= N'MsSQL2000=SQL Server 2000;MsSQL2005=SQL Server 2005;MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MySQL4=MySQL 4.0;MySQL5=MySQL 5.0' but the field is not large enough!! */
 UPDATE [dbo].[ScheduleTaskParameters] SET [DefaultValue]= N'MsSQL2008=SQL Server 2008;MsSQL2012=SQL Server 2012;MsSQL2014=SQL Server 2014;MsSQL2016=SQL Server 2016;MsSQL2017=SQL Server 2017;MySQL5=MySQL 5.0;MariaDB=MariaDB' WHERE [TaskID]= 'SCHEDULE_TASK_BACKUP_DATABASE' AND [ParameterID]='DATABASE_GROUP'
