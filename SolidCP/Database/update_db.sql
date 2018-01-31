@@ -20121,10 +20121,14 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupID] = '73' AND [GroupName] = 'Sharepoint Enterprise Server')
 BEGIN
+DECLARE @group_id INT
+SELECT @group_id = GroupId FROM ResourceGroups WHERE GroupName = 'Sharepoint Enterprise Server'
 ALTER TABLE ResourceGroups NOCHECK CONSTRAINT ALL
+ALTER TABLE VirtualGroups NOCHECK CONSTRAINT ALL
 ALTER TABLE Providers NOCHECK CONSTRAINT ALL
 ALTER TABLE Quotas NOCHECK CONSTRAINT FK_Quotas_ResourceGroups
 ALTER TABLE ServiceItemTypes NOCHECK CONSTRAINT FK_ServiceItemTypes_ResourceGroups
+UPDATE [dbo].[VirtualGroups] SET [GroupID] = '73' WHERE [GroupID] = @group_id
 UPDATE [dbo].[ResourceGroups] SET [GroupID] = '73' WHERE [GroupName] = 'Sharepoint Enterprise Server'
 UPDATE [dbo].[Providers] SET [GroupID] = '73' WHERE [ProviderName] = 'HostedSharePoint2013Ent'
 UPDATE [dbo].[Providers] SET [GroupID] = '73' WHERE [ProviderName] = 'HostedSharePoint2016Ent'
@@ -20135,6 +20139,7 @@ UPDATE [dbo].[ServiceItemTypes] SET [GroupID] = '73' WHERE [DisplayName] = 'Shar
 ALTER TABLE ServiceItemTypes WITH CHECK CHECK CONSTRAINT FK_ServiceItemTypes_ResourceGroups
 ALTER TABLE Quotas WITH CHECK CHECK CONSTRAINT FK_Quotas_ResourceGroups
 ALTER TABLE Providers WITH CHECK CHECK CONSTRAINT ALL
+ALTER TABLE VirtualGroups WITH CHECK CHECK CONSTRAINT ALL
 ALTER TABLE ResourceGroups WITH CHECK CHECK CONSTRAINT ALL
 END
 GO
