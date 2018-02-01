@@ -23,7 +23,9 @@ Version 1.4.0:
 - Fixed Exchange Mailbox password request action bar & mobile icon displaying when disabled
 - Created dSHeuristics.ps1 for users to run and seperate Hosted Organizations OU's
 - Fixed HeliconApe htaccess editor
-- Fixed multi idn domain (co.vs for example) regex
+- Fixed multi idn domain (co.vs for example) regex.
+- Fixed 4+ level deep domain names.
+- Added Emoji domain support. (with ASCII conversion)
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
