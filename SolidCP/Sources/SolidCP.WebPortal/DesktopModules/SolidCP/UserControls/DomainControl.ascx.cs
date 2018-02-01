@@ -125,7 +125,7 @@ namespace SolidCP.Portal.UserControls
             try
             {
                 var ascii = idn.GetAscii(Text);
-                var regex = new Regex(@"^(((?!-))(xn--)?[a-z0-9-_]{0,61}[a-z0-9]{1,1}\.)*(xn--)?([a-z0-9\-]{0,61}[a-z0-9]{1,1}[a-z]{2,})$", RegexOptions.CultureInvariant);
+                var regex = new Regex(@"^(?!-)(xn--)?[a-zA-Z0-9][a-zA-Z0-9-_]{0,61}[a-zA-Z0-9]{0,1}\.(?!-)(xn--)?([a-zA-Z0-9\-]{1,50}|[a-zA-Z0-9-]{1,30}\.[a-zA-Z]{2,})$", RegexOptions.CultureInvariant);
                 args.IsValid = regex.IsMatch(ascii);
             }
             catch (Exception)
