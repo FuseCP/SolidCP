@@ -21,7 +21,7 @@ Version 1.4.0:
 - Fixed Scheduled task CheckWebSiteTask for TLS1.2 support
 - Fixed Scheduled task layout for CheckWebsiteTask
 - Fixed Exchange Mailbox password request action bar & mobile icon displaying when disabled
-- Created dSHeuristics.ps1 for users to run and seperate environment
+- Created dSHeuristics.ps1 for users to run and seperate Hosted Organizations OU's
 
 Version 1.3.0:
 - Changed all Int16 to Int32 due to issues with Int16 values
