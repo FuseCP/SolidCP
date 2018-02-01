@@ -64,7 +64,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton ButtonDebuggerStop;
+        protected global::CPCC.StyleButton ButtonDebuggerStop;
         
         /// <summary>
         /// ButtonDebuggerStart control.
@@ -73,7 +73,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton ButtonDebuggerStart;
+        protected global::CPCC.StyleButton ButtonDebuggerStart;
         
         /// <summary>
         /// BUttonShowDebuggingPageLinkModal control.
@@ -82,8 +82,8 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton BUttonShowDebuggingPageLinkModal;
-        
+        protected global::CPCC.StyleButton BUttonShowDebuggingPageLinkModal;
+
         /// <summary>
         /// DebuggerFramePanel control.
         /// </summary>
@@ -92,7 +92,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel DebuggerFramePanel;
-        
+
         /// <summary>
         /// DebuggerFrame control.
         /// </summary>
@@ -101,7 +101,8 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl DebuggerFrame;
-        
+
+
         /// <summary>
         /// htaccessContent control.
         /// </summary>
@@ -118,7 +119,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnUpdate;
+        protected global::CPCC.StyleButton btnUpdate;
         
         /// <summary>
         /// btnCancel control.
@@ -127,7 +128,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancel;
+        protected global::CPCC.StyleButton btnCancel;
         
         /// <summary>
         /// btnSave control.
@@ -136,7 +137,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnSave;
+        protected global::CPCC.StyleButton btnSave;
         
         /// <summary>
         /// DebuggingPageLinkPanel control.
@@ -172,7 +173,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancelDebuggingPageLinkPanel;
+        protected global::CPCC.StyleButton btnCancelDebuggingPageLinkPanel;
         
         /// <summary>
         /// DebuggingPageLinkModal control.
