@@ -6116,7 +6116,7 @@ begin
 		insert into ServiceProperties(ServiceID, PropertyName, PropertyValue)
 		values(@ServiceID, 'ssluseccs', 'False')
 
-	if not exists(select null from ServiceProperties where ServiceID = @ServiceID and PropertyName = 'ssluseccs')
+	if not exists(select null from ServiceProperties where ServiceID = @ServiceID and PropertyName = 'sslusesni')
 		insert into ServiceProperties(ServiceID, PropertyName, PropertyValue)
 		values(@ServiceID, 'sslusesni', 'False')
 
@@ -6130,7 +6130,45 @@ deallocate c
 
 GO
 
+-- IIS100 Provider update for SNI and CCS support
+-- Add default serviceproperties for all existing IIS100 Services (if any). These properties are used as markers in the IIS70 Controls in WebPortal to know the version of the IIS Provider
+declare c cursor read_only for 
+select ServiceID from Services where ProviderID in(select ProviderID from Providers where ProviderName='IIS100')
 
+declare @ServiceID int
+
+open c
+
+fetch next from c 
+into @ServiceID
+
+while @@FETCH_STATUS = 0
+begin
+	if not exists(select null from ServiceProperties where ServiceID = @ServiceID and PropertyName = 'sslccscommonpassword')
+		insert into ServiceProperties(ServiceID, PropertyName, PropertyValue)
+		values(@ServiceID, 'sslccscommonpassword', '')
+
+	if not exists(select null from ServiceProperties where ServiceID = @ServiceID and PropertyName = 'sslccsuncpath')
+		insert into ServiceProperties(ServiceID, PropertyName, PropertyValue)
+		values(@ServiceID, 'sslccsuncpath', '')
+
+	if not exists(select null from ServiceProperties where ServiceID = @ServiceID and PropertyName = 'ssluseccs')
+		insert into ServiceProperties(ServiceID, PropertyName, PropertyValue)
+		values(@ServiceID, 'ssluseccs', 'False')
+
+	if not exists(select null from ServiceProperties where ServiceID = @ServiceID and PropertyName = 'sslusesni')
+		insert into ServiceProperties(ServiceID, PropertyName, PropertyValue)
+		values(@ServiceID, 'sslusesni', 'False')
+
+	fetch next from c 
+	into @ServiceID
+end
+
+close c
+
+deallocate c
+
+GO
 
 /*Remote Desktop Services*/
 
