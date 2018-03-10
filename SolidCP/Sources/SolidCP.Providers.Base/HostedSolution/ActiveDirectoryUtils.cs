@@ -558,6 +558,7 @@ namespace SolidCP.Providers.HostedSolution
         public static void AddOUSecurityfromUser(string ouPath, string domain, string Username, ActiveDirectoryRights rights, AccessControlType type, ActiveDirectorySecurityInheritance inheritance)
         {
                 DirectoryEntry ou = GetADObject(ouPath);
+                
 
                 NTAccount ADUser = new NTAccount(domain, Username);
 

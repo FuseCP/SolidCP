@@ -2382,8 +2382,10 @@ namespace SolidCP.Providers.HostedSolution
                 HostedSolutionLog.DebugInfo("Path: {0}", Path);
                 ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
                 ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
-                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
-                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                HostedSolutionLog.DebugInfo("AddOUSecurityfromUser Path: {0}  RootDomain: {1}  OrgID: {2}", Path, RootDomain, organizationId);
+                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                //HostedSolutionLog.DebugInfo("AddOUSecurityfromUser Path: {0}  RootDomain: {1}  OrgID: {2}", Path, RootDomain, organizationId);
+                //ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
 
             }
             catch (Exception e)

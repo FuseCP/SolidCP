@@ -2036,8 +2036,6 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     DirectoryEntry group = new DirectoryEntry(GetRdsServersGroupPath());
                     computerObject.MoveTo(group);
                     group.CommitChanges();
-                    //Log.WriteWarning("MoveSessionHostToRdsOU, RemoveOUSecurityfromUser  0: {0}, 1: {1}", GetRdsServersGroupPath(), computerObject.Name + "$");
-                    //ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetRdsServersGroupPath(), RootDomain, computerObject.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
                 }
             } 
         }
@@ -2057,7 +2055,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             {
                 ActiveDirectoryUtils.CreateOrganizationalUnit(collectionOUName, GetOrganizationPath(organizationId));
                 // Change to OU security for dSHeuristics
-                SetRDSOUSecurity(GetOrganizationPath(organizationId), organizationId, hostName);
+                SetRDSOUSecurity(collectionOUPath, organizationId, hostName);
             }
 
             if (computerObject != null)
@@ -2084,9 +2082,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
             try
             {
-                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
-                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
-                Log.WriteWarning("Add Computer to OU Security. Path: {0}, Domain: {1}, Hostname: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), ComputerAcct);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
                 ActiveDirectoryUtils.AddOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), ComputerAcct, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
 
             }
@@ -2105,6 +2102,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (!ActiveDirectoryUtils.AdObjectExists(tenantComputerGroupPath))
             {
                 ActiveDirectoryUtils.CreateOrganizationalUnit(RdsServersOU, GetOrganizationPath(organizationId));
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(tenantComputerGroupPath, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(tenantComputerGroupPath, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }
 
             hostName = hostName.ToLower().Replace(string.Format(".{0}", ServerSettings.ADRootDomain.ToLower()), "");            
@@ -2139,6 +2138,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (!string.IsNullOrEmpty(ComputersRootOU))
             {
                 CheckOrCreateComputersRoot(GetComputersRootPath());
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(GetComputersRootPath(), WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                ActiveDirectoryUtils.RemoveOUSecurityfromSid(GetComputersRootPath(), WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }            
 
             if (!ActiveDirectoryUtils.AdObjectExists(tenantComputerGroupPath))
