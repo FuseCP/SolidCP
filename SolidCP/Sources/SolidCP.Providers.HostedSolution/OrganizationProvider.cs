@@ -51,6 +51,7 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.OS;
 using System.Reflection;
+using System.Threading;
 
 namespace SolidCP.Providers.HostedSolution
 {
@@ -2370,6 +2371,13 @@ namespace SolidCP.Providers.HostedSolution
             HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
             HostedSolutionLog.DebugInfo("domain : {0}", domain);
             HostedSolutionLog.DebugInfo("RootDomain : {0}", RootDomain);
+
+
+            //This is a tempoary solution. This should be released with a checking loop
+            HostedSolutionLog.DebugInfo("10sec delay starting");
+            int milliseconds = 10000;
+            Thread.Sleep(milliseconds);
+            HostedSolutionLog.DebugInfo("10sec delay completed");
 
             if (string.IsNullOrEmpty(organizationId))
                 throw new ArgumentNullException("organizationId");
