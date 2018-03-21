@@ -87,27 +87,32 @@ namespace SolidCP.Portal
 		{
 			// get domain type
 			DomainType type = GetDomainType(Request["DomainType"]);
+            // enable domain/sub-domain fields
+            if (type == DomainType.Domain || type == DomainType.DomainPointer)
+            {
+                if (PackagesHelper.CheckGroupQuotaEnabled(PanelSecurity.PackageId, ResourceGroups.Os, Quotas.OS_DOMAINS))
+                {
+                    // domains
+                    DomainName.IsSubDomain = false;
+                }
+            }
+            else
+            {
+                if (PackagesHelper.CheckGroupQuotaEnabled(PanelSecurity.PackageId, ResourceGroups.Os, Quotas.OS_SUBDOMAINS))
+                {
+                    // sub-domains
+                    DomainName.IsSubDomain = true;
 
-			// enable domain/sub-domain fields
-			if (type == DomainType.Domain || type == DomainType.DomainPointer)
-			{
-				// domains
-			    DomainName.IsSubDomain = false;
-			}
-			else
-			{
-				// sub-domains
-                DomainName.IsSubDomain = true;
-
-				// fill sub-domains
-				if (!IsPostBack)
-				{
-					if (type == DomainType.SubDomain)
-						BindUserDomains();
-					else
-						BindResellerDomains();
-				}
-			}
+                    // fill sub-domains
+                    if (!IsPostBack)
+                    {
+                        if (type == DomainType.SubDomain)
+                            BindUserDomains();
+                        else
+                            BindResellerDomains();
+                    }
+                }
+            }
 			// load package context
 			PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
 
