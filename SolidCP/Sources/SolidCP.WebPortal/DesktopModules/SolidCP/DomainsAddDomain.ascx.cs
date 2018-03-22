@@ -88,9 +88,11 @@ namespace SolidCP.Portal
 			// get domain type
 			DomainType type = GetDomainType(Request["DomainType"]);
             // enable domain/sub-domain fields
+            // load package context
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
             if (type == DomainType.Domain || type == DomainType.DomainPointer)
             {
-                if (PackagesHelper.CheckGroupQuotaEnabled(PanelSecurity.PackageId, ResourceGroups.Os, Quotas.OS_DOMAINS))
+                if (cntx.Quotas.ContainsKey(Quotas.OS_DOMAINS) && !cntx.Quotas[Quotas.OS_DOMAINS].QuotaExhausted)
                 {
                     // domains
                     DomainName.IsSubDomain = false;
@@ -98,7 +100,7 @@ namespace SolidCP.Portal
             }
             else
             {
-                if (PackagesHelper.CheckGroupQuotaEnabled(PanelSecurity.PackageId, ResourceGroups.Os, Quotas.OS_SUBDOMAINS))
+                if (cntx.Quotas.ContainsKey(Quotas.OS_SUBDOMAINS) && !cntx.Quotas[Quotas.OS_SUBDOMAINS].QuotaExhausted)
                 {
                     // sub-domains
                     DomainName.IsSubDomain = true;
@@ -113,9 +115,7 @@ namespace SolidCP.Portal
                     }
                 }
             }
-			// load package context
-			PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
-
+			
 			if ((type == DomainType.DomainPointer || (type == DomainType.Domain)) && !IsPostBack)
 			{
                 // bind web sites
