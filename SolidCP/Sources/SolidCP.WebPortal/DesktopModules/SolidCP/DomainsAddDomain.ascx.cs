@@ -75,8 +75,6 @@ namespace SolidCP.Portal
                     txtHostName.Text = "";
                 }
 
-                DomainType type = GetDomainType(Request["DomainType"]);
-
                 if ((PanelSecurity.LoggedUser.Role == UserRole.User) & (type != DomainType.SubDomain))
                 {
                     if (cntx.Groups.ContainsKey(ResourceGroups.Dns))
@@ -98,7 +96,6 @@ namespace SolidCP.Portal
 			DomainType type = GetDomainType(Request["DomainType"]);
             // enable domain/sub-domain fields
             // load package context
-            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
             if (type == DomainType.Domain || type == DomainType.DomainPointer)
             {
                     // domains
@@ -133,9 +130,9 @@ namespace SolidCP.Portal
                 MailDomainsList.DataBind();
             }
 
-
-			// create web site option
-			CreateSolidCP.Visible = (type == DomainType.Domain || type == DomainType.SubDomain)
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            // create web site option
+            CreateSolidCP.Visible = (type == DomainType.Domain || type == DomainType.SubDomain)
 				&& cntx.Groups.ContainsKey(ResourceGroups.Web);
 
             if (PointWebSite.Checked)
