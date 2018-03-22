@@ -51,10 +51,19 @@ namespace SolidCP.Portal
 			{ 
 				// bind controls
 				BindControls();
-
+                DomainType type = GetDomainType(Request["DomainType"]);
                 PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+                if (type == DomainType.Domain && cntx.Quotas[Quotas.OS_DOMAINS].QuotaExhausted)
+                {
+                    btnAdd.Enabled = false;
+                }
+                if (type == DomainType.SubDomain && cntx.Quotas[Quotas.OS_SUBDOMAINS].QuotaExhausted)
+                {
+                    btnAdd.Enabled = false;
+                }
 
-                if (Utils.CheckQouta(Quotas.WEB_ENABLEHOSTNAMESUPPORT, cntx))
+
+                    if (Utils.CheckQouta(Quotas.WEB_ENABLEHOSTNAMESUPPORT, cntx))
                 {
                     lblHostName.Visible = txtHostName.Visible = true;
                     UserSettings settings = ES.Services.Users.GetUserSettings(PanelSecurity.LoggedUserId, UserSettings.WEB_POLICY);
@@ -92,16 +101,11 @@ namespace SolidCP.Portal
             PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
             if (type == DomainType.Domain || type == DomainType.DomainPointer)
             {
-                if (cntx.Quotas.ContainsKey(Quotas.OS_DOMAINS) && !cntx.Quotas[Quotas.OS_DOMAINS].QuotaExhausted)
-                {
                     // domains
                     DomainName.IsSubDomain = false;
-                }
             }
             else
             {
-                if (cntx.Quotas.ContainsKey(Quotas.OS_SUBDOMAINS) && !cntx.Quotas[Quotas.OS_SUBDOMAINS].QuotaExhausted)
-                {
                     // sub-domains
                     DomainName.IsSubDomain = true;
 
@@ -113,7 +117,6 @@ namespace SolidCP.Portal
                         else
                             BindResellerDomains();
                     }
-                }
             }
 			
 			if ((type == DomainType.DomainPointer || (type == DomainType.Domain)) && !IsPostBack)
