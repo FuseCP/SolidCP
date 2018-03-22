@@ -280,12 +280,28 @@ namespace SolidCP.Portal
 			// return
 			RedirectBack();
 		}
+		
 		protected void btnAdd_Click(object sender, EventArgs e)
 		{
-		    if (CheckForCorrectIdnDomainUsage(DomainName.Text))
-		    {
-		        AddDomain();
-		    }
+			
+			// get domain type
+			DomainType type = GetDomainType(Request["DomainType"]);
+			PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+			
+		    if (type == DomainType.Domain && !cntx.Quotas[Quotas.OS_DOMAINS].QuotaExhausted)
+            {
+                    if (CheckForCorrectIdnDomainUsage(DomainName.Text))
+					{
+						AddDomain();
+					}
+            }
+            if (type == DomainType.SubDomain && !cntx.Quotas[Quotas.OS_SUBDOMAINS].QuotaExhausted)
+            {
+                    if (CheckForCorrectIdnDomainUsage(DomainName.Text))
+					{
+						AddDomain();
+					}
+			}
 		}
 
 	    private bool CheckForCorrectIdnDomainUsage(string domainName)
