@@ -3,11 +3,11 @@
 
 
 <table width="100%">
-    <tr runat="server" id="passwordRow">
+    <tr runat="server" id="passwordRow" class="hide">
         <td>
         </td>
         <td class="SubHead" height="37px">
-            <asp:CheckBox runat="server" meta:resourcekey="cbChangePassword" ID="cbChangePassword" Text="Change password" />
+            <asp:CheckBox runat="server" meta:resourcekey="cbChangePassword" ID="cbChangePassword" Text="Change password" Checked ="true"/>
         </td>
     </tr>    
     <tr>

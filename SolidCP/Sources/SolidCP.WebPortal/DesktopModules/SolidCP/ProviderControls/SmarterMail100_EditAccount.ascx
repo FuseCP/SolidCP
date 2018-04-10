@@ -2,12 +2,12 @@
 <%@ Register TagPrefix="scp" TagName="CollapsiblePanel" Src="../UserControls/CollapsiblePanel.ascx" %>
 
 
-<div runat="server" id="passwordRow" class="form-group">
+<div runat="server" id="passwordRow" class="form-group hide">
     <asp:Label ID="Label1" runat="server" CssClass="control-label col-sm-2" >
         <asp:Localize ID="Localize1" runat="server" meta:resourcekey="cbChangePassword" Text="Change password"/>
     </asp:Label>
     <div runat="server" class="col-sm-10">
-            <asp:CheckBox runat="server" meta:resourcekey="cbEnabled" ID="cbChangePassword" Text="Check to Enable Password Change" />
+            <asp:CheckBox runat="server" meta:resourcekey="cbEnabled" ID="cbChangePassword" Text="Check to Enable Password Change" Checked ="true"/>
     </div>
 </div>
 <div class="form-group">
