@@ -87,13 +87,28 @@ namespace SolidCP.Portal.ExchangeServer
                 if (PanelSecurity.LoggedUser.Role == UserRole.User)
                 {
                     PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
-                    if (cntx.Quotas.ContainsKey(Quotas.EXCHANGE2007_ENABLEDPLANSEDITING))
+
+                    if (!RetentionPolicy)
                     {
+                      if (cntx.Quotas.ContainsKey(Quotas.EXCHANGE2007_ENABLEDPLANSEDITING))
+                      {
                         if (cntx.Quotas[Quotas.EXCHANGE2007_ENABLEDPLANSEDITING].QuotaAllocatedValue != 1)
                         {
-                            gvMailboxPlans.Columns[3].Visible = false;
-                            btnAddMailboxPlan.Enabled = btnAddMailboxPlan.Visible = false;
+                          gvMailboxPlans.Columns[3].Visible = false;
+                          btnAddMailboxPlan.Enabled = btnAddMailboxPlan.Visible = false;
                         }
+                      }
+                    }
+                    else
+                    {
+                      if (cntx.Quotas.ContainsKey(Quotas.EXCHANGE2013_ALLOWRETENTIONPOLICY))
+                      {
+                        if (cntx.Quotas[Quotas.EXCHANGE2013_ALLOWRETENTIONPOLICY].QuotaAllocatedValue != 1)
+                        {
+                          gvMailboxPlans.Columns[3].Visible = false;
+                          btnAddMailboxPlan.Enabled = btnAddMailboxPlan.Visible = false;
+                        }
+                      }
                     }
                 }
 
