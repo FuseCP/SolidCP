@@ -3,7 +3,7 @@
 
 
 <table width="100%">
-    <tr runat="server" id="passwordRow">
+    <tr runat="server" id="passwordRow" class="hide">
         <td>
         </td>
         <td class="SubHead" height="37px">
