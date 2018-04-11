@@ -75,7 +75,7 @@
                 <asp:Localize ID="locAgeLimitForRetention" runat="server" meta:resourcekey="locAgeLimitForRetention" Text="Age limit for retention :"></asp:Localize>
             </asp:Label>
             <div class="form-inline">
-                <uc1:QuotaEditor id="ageLimitForRetention" runat="server" QuotaTypeID="2" QuotaValue="0" ParentQuotaValue="-1"></uc1:QuotaEditor>
+                 <uc1:QuotaEditor id="ageLimitForRetention" runat="server" QuotaTypeID="2" QuotaValue="1" QuotaMinValue="1" QuotaMaxValue="24855" ParentQuotaValue="1"></uc1:QuotaEditor>
             </div>
         </div>
         <div class="form-group">
