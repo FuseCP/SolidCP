@@ -7986,6 +7986,12 @@ namespace SolidCP.Providers.HostedSolution
                     cmd.Parameters.Add("Identity", accountName);
                     cmd.Parameters.Add("RetentionPolicy", RetentionPolicy);
                     ExecuteShellCommand(runSpace, cmd, res);
+                } else
+                {
+                    cmd = new Command("Set-Mailbox");
+                    cmd.Parameters.Add("Identity", accountName);
+                    cmd.Parameters.Add("RetentionPolicy", "$null");
+                    ExecuteShellCommand(runSpace, cmd, res);
                 }
 
 
