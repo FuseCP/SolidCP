@@ -3527,6 +3527,17 @@ namespace SolidCP.EnterpriseServer
                 }
 
             }
+
+            if (retentionPolicyId <= -1)
+            {
+                ExchangeMailboxPlan retentionPolicy = GetExchangeMailboxPlan(itemId, retentionPolicyId);
+                if (retentionPolicy != null)
+                {
+                    RetentionPolicy = null;
+                }
+
+            }
+
             ResultObject res = exchange.SetMailBoxArchiving(orgId, accountName, EnableArchiving, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
             if (res != null)
             {
