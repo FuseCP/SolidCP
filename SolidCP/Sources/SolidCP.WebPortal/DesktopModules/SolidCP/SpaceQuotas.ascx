@@ -144,6 +144,10 @@
         <td class="SubHead" nowrap><asp:Label ID="lblRdsUsers" runat="server" meta:resourcekey="lblRdsUsers" Text="RDS Users:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaRdsUsers" runat="server" QuotaName="RDS.Users" DisplayGauge="True" /></td>
     </tr>
+    <tr ID="pnlVPS2012CpuQuota" runat="server">
+        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012CpuQuota" runat="server" meta:resourcekey="lblVPS2012CpuQuota" Text="VPS 2012 Cpu:"></asp:Label></td>
+        <td class="Normal"><scp:Quota ID="quotavps2012cpuquota" runat="server" QuotaName="VPS2012.CpuNumber" DisplayGauge="True" /></td>
+    </tr>
      <tr ID="pnlVPS2012Servers" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblVPS2012Servers" runat="server" meta:resourcekey="lblVPS2012Servers" Text="VPS 2012 Servers:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotavps2012servers" runat="server" QuotaName="VPS2012.ServersNumber" DisplayGauge="True" /></td>

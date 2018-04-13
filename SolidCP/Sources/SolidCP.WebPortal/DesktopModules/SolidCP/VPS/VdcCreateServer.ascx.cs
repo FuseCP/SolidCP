@@ -67,6 +67,22 @@ namespace SolidCP.Portal.VPS
                 chkExternalNetworkEnabled.Checked = false;
             }
 
+            //KD FSJ
+            // load package context
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
+            if (cpuQuota2.QuotaAllocatedValue > cpuQuota2.QuotaUsedValue)
+            {
+                wizard.Visible = true;
+
+            }
+            else
+            {
+                wizard.Visible = false;
+                messageBox.ShowErrorMessage("NO_CPU_CORES");
+            }
+
+
             // private network
             if (!PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS_PRIVATE_NETWORK_ENABLED))
             {
@@ -112,10 +128,27 @@ namespace SolidCP.Portal.VPS
                     maxCores = cpuQuota.QuotaAllocatedValue;
             }
 
-            for (int i = 1; i < maxCores + 1; i++)
-                ddlCpu.Items.Add(i.ToString());
+            //for (int i = 1; i < maxCores + 1; i++)
+            //    ddlCpu.Items.Add(i.ToString());
 
-            ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+            // ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+
+            QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
+            if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+            {
+                for (int i = 1; i < (cpuQuota2.QuotaAllocatedValue + 1 - cpuQuota2.QuotaUsedValue); i++)
+                    ddlCpu.Items.Add(i.ToString());
+
+                ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+
+            }
+            else
+            {
+                ddlCpu.Items.Add("0");
+
+            }
+
+
 
             // external network details
             if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS_EXTERNAL_NETWORK_ENABLED))
