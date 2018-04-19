@@ -33,7 +33,7 @@ namespace SolidCP.Providers.Virtualization
                 {
                     VirtualMachineNetworkAdapter adapter = new VirtualMachineNetworkAdapter();
 
-                    //adapter.Name = psAdapter.GetString("Name");
+                    adapter.Name = psAdapter.GetString("Name");
                     adapter.MacAddress = psAdapter.GetString("MacAddress");
                     adapter.SwitchName = psAdapter.GetString("SwitchName");
 
@@ -47,7 +47,8 @@ namespace SolidCP.Providers.Virtualization
                     }
                     if (adapter.vlan == 0)
                         adapter.vlan = defaultvlan;
-                    adapter.Name = String.Format("{0} VLAN: {1}", psAdapter.GetString("Name"), adapter.vlan.ToString());
+                    //We can't do that things! https://docs.microsoft.com/en-us/powershell/module/hyper-v/remove-vmnetworkadapter
+                    //adapter.Name = String.Format("{0} VLAN: {1}", psAdapter.GetString("Name"), adapter.vlan.ToString());
                     i++;
                     adapters.Add(adapter);
                 }
