@@ -4294,6 +4294,9 @@
   <data name="Error.VPS_ERROR_CREATE" xml:space="preserve">
     <value>Error creating virtual server</value>
   </data>
+  <data name="Error.NO_CPU_CORES" xml:space="preserve">
+    <value>No CPU cores available</value>
+  </data>
   <data name="Error.VPS_ERROR_DELETE" xml:space="preserve">
     <value>Error deleting virtual server</value>
   </data>

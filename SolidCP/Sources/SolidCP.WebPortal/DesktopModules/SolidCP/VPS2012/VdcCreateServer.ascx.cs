@@ -58,6 +58,7 @@ namespace SolidCP.Portal.VPS2012
 
             // toggle
             ToggleControls();
+            
         }
 
         private void ToggleWizardSteps()
@@ -67,6 +68,21 @@ namespace SolidCP.Portal.VPS2012
             {
                 wizard.WizardSteps.Remove(stepExternalNetwork);
                 //chkExternalNetworkEnabled.Checked = false;
+            }
+
+            //KD FSJ
+            // load package context
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
+            if (cpuQuota2.QuotaAllocatedValue > cpuQuota2.QuotaUsedValue)
+            {
+                wizard.Visible = true;
+
+            }
+            else
+            {
+                wizard.Visible = false;
+                messageBox.ShowErrorMessage("NO_CPU_CORES");
             }
 
             // private network
@@ -124,10 +140,25 @@ namespace SolidCP.Portal.VPS2012
                     maxCores = cpuQuota.QuotaAllocatedValue;
             }
 
-            for (int i = 1; i < maxCores + 1; i++)
-                ddlCpu.Items.Add(i.ToString());
 
-            ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+
+            
+                        //for (int i = 1; i < maxCores + 1; i++)
+            //KD FSJ
+            QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
+            if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+            {
+                for (int i = 1; i < (cpuQuota2.QuotaAllocatedValue+1 - cpuQuota2.QuotaUsedValue); i++)
+                    ddlCpu.Items.Add(i.ToString());
+
+                ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+              
+            }
+            else
+            {
+                ddlCpu.Items.Add("0");
+
+            }
 
             // external network details
             if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED))
@@ -182,6 +213,8 @@ namespace SolidCP.Portal.VPS2012
                 txtPrivateAddressesNumber.Text = "1";
                 litMaxPrivateAddresses.Text = String.Format(GetLocalizedString("litMaxPrivateAddresses.Text"), maxPrivate);
             }
+
+ 
 
             // RAM size
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_RAM))
@@ -268,6 +301,7 @@ namespace SolidCP.Portal.VPS2012
             tablePrivateNetwork.Visible = chkPrivateNetworkEnabled.Checked && (ViewState["DHCP"] == null);
             PrivateAddressesNumberRow.Visible = radioPrivateRandom.Checked;
             PrivateAddressesListRow.Visible = radioPrivateSelected.Checked;
+
         }
 
         private void BindExternalIps()
