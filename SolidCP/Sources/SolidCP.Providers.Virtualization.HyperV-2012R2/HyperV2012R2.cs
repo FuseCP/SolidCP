@@ -338,6 +338,7 @@ namespace SolidCP.Providers.Virtualization
         {
             // evaluate paths
             vm.RootFolderPath = FileUtils.EvaluateSystemVariables(vm.RootFolderPath);
+            string msHyperVFolderPath = vm.RootFolderPath.Substring(0, vm.RootFolderPath.Length - vm.Name.Length);
             vm.OperatingSystemTemplatePath = FileUtils.EvaluateSystemVariables(vm.OperatingSystemTemplatePath);
             vm.VirtualHardDrivePath = FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath);
 
@@ -348,7 +349,7 @@ namespace SolidCP.Providers.Virtualization
                 cmdNew.Parameters.Add("Name", vm.Name);
                 cmdNew.Parameters.Add("Generation", vm.Generation > 1 ? vm.Generation : 1);
                 cmdNew.Parameters.Add("VHDPath", vm.VirtualHardDrivePath);
-                cmdNew.Parameters.Add("Path", vm.RootFolderPath);
+                cmdNew.Parameters.Add("Path", msHyperVFolderPath);
                 PowerShell.Execute(cmdNew, true, true);
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
