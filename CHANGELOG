@@ -1,3 +1,19 @@
+Version 1.4.1:
+
+- Fix for Sharepoint Enterprise regroup
+- Fix for IIS8/10 and sslusesni
+- Adding sslusesni for DefaultServiceProperties for IIS80 and IIS100
+- Further fix's for dSHeuristics
+- SetOUSecurity 10 second delay due to fix OU creation
+- domain quota restrictions
+- quota exhausted added to domain type
+- Cloud portal RestSharp.105.0.1 requirement added to build
+- Exchange RetentionPoliciy fix
+- Removed SmarterMail "Check to Enable Password Change" checkbox requirement
+- VPS2012 CPU Quota fix
+- HyperVR2+ fix to delete unused interface - With thanks to Genadij Judin
+- Added VMConfig backward compatibility for the WSPanel - With thanks to Genadij Judin
+
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)
 - Added MariaDB 10.2 support
