@@ -1406,6 +1406,7 @@ namespace SolidCP.EnterpriseServer
         private static JobResult SendKvpItems(int itemId, string taskName, Dictionary<string, string> taskProps)
         {
             string TASK_PREFIX = "SCP-";
+            string TASK_PREFIX_OLD = "WSP-"; //backward compatibility for the WSPanel and the MSPControl version 0000 < 3000 <= ????
 
             // load item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);
@@ -1425,7 +1426,15 @@ namespace SolidCP.EnterpriseServer
                 foreach (KvpExchangeDataItem vmKvp in vmKvps)
                 {
                     if (vmKvp.Name.StartsWith(TASK_PREFIX))
+                    {
                         completedTasks.Add(vmKvp.Name);
+                        TryToDelUnusedTask(ref vm, ref vs, vmKvp.Name.ToString(), TASK_PREFIX_OLD, TASK_PREFIX);
+                    }
+                    else if (vmKvp.Name.StartsWith(TASK_PREFIX_OLD))
+                    {
+                        completedTasks.Add(vmKvp.Name);
+                        TryToDelUnusedTask(ref vm, ref vs, vmKvp.Name.ToString(), TASK_PREFIX, TASK_PREFIX_OLD);
+                    }
                 }
 
                 // delete completed items
@@ -1442,27 +1451,37 @@ namespace SolidCP.EnterpriseServer
             foreach (string propName in taskProps.Keys)
                 items.Add(propName + "=" + taskProps[propName]);
 
-            taskName = String.Format("{0}{1}-{2}", TASK_PREFIX, taskName, DateTime.Now.Ticks);
+            //taskName = String.Format("{0}{1}-{2}", TASK_PREFIX, taskName, DateTime.Now.Ticks);
+            //string taskData = String.Join("|", items.ToArray());
+            string[] taskNameArr = new string[2];
+            long dataNowTick = DateTime.Now.Ticks;
+            taskNameArr[0] = String.Format("{0}{1}-{2}", TASK_PREFIX, taskName, dataNowTick);
+            taskNameArr[1] = String.Format("{0}{1}-{2}", TASK_PREFIX_OLD, taskName, dataNowTick);
             string taskData = String.Join("|", items.ToArray());
 
             // create KVP item
-            KvpExchangeDataItem[] kvp = new KvpExchangeDataItem[1];
-            kvp[0] = new KvpExchangeDataItem();
-            kvp[0].Name = taskName;
-            kvp[0].Data = taskData;
+            KvpExchangeDataItem[] kvp = new KvpExchangeDataItem[taskNameArr.Length];
+            for (int i = 0; i < kvp.Length; i++)
+            {
+                kvp[i] = new KvpExchangeDataItem();
+                kvp[i].Name = taskNameArr[i];
+                kvp[i].Data = taskData;
+            }
 
             try
             {
                 // try adding KVP items
                 result = vs.AddKVPItems(vm.VirtualMachineId, kvp);
-
+                TaskManager.Write(String.Format("Trying to add the Task"));
                 if (result.Job != null && result.Job.JobState == ConcreteJobState.Exception)
                 {
                     // try updating KVP items
+                    TaskManager.Write(String.Format("Trying to update the task in the VPS"));
                     return vs.ModifyKVPItems(vm.VirtualMachineId, kvp);
                 }
                 else
                 {
+                    TaskManager.Write(String.Format("The task has been sent to the VPS"));
                     return result;
                 }
             }
@@ -1473,6 +1492,25 @@ namespace SolidCP.EnterpriseServer
             }
 
             return null;
+        }
+
+        private static void TryToDelUnusedTask(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string taskName, string PREFIX, string REPLACE_PREFIX)
+        {
+            if (taskName.Substring(PREFIX.Length).Equals("CurrentTask")) //Ignore CurrentTask
+            {
+                return;
+            }
+
+            try
+            {
+                taskName = taskName.Replace(REPLACE_PREFIX, PREFIX);
+                vs.RemoveKVPItems(vm.VirtualMachineId, new string[] { taskName });
+            }
+            catch (Exception ex)
+            {
+                // log error
+                TaskManager.WriteWarning(String.Format("Error deleting  Unused KVP items: {0}", ex.Message));
+            }
         }
 
         private static string EnsurePrivateVirtualSwitch(ServiceProviderItem item)
