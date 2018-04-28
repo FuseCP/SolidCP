@@ -18,6 +18,10 @@
         <td class="Normal"><asp:Literal ID="litCreated" runat="server"></asp:Literal></td>
     </tr>
     <tr>
+        <td class="SubHead"><asp:Label ID="lblSuspendedDate" runat="server" meta:resourcekey="lblSuspendedDate" Text="Suspended:"></asp:Label></td>
+        <td class="Normal"><asp:Literal ID="litSuspendedDate" runat="server"></asp:Literal></td>
+    </tr>
+    <tr>
         <td class="SubHead"><asp:Label ID="lblHostingPlan" runat="server" meta:resourcekey="lblHostingPlan" Text="Hosting Plan:"></asp:Label></td>
         <td class="Normal"><asp:Literal ID="litHostingPlan" runat="server"></asp:Literal></td>
     </tr>

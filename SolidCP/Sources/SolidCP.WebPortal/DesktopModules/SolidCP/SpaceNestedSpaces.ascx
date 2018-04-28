@@ -23,7 +23,7 @@
 
 <asp:GridView ID="gvPackages" runat="server" AutoGenerateColumns="False"
     EmptyDataText="gvPackages" GridLines="both" CssSelectorClass="NormalGridView"
-    AllowSorting="True" DataSourceID="odsNestedPackages" AllowPaging="True">
+    AllowSorting="True" DataSourceID="odsNestedPackages" AllowPaging="True" OnDataBound="gvPackages_DataBound" OnInit="gvPackages_Init">
     <Columns>
         <asp:TemplateField SortExpression="PackageName" HeaderText="gvPackagesName">
             <ItemStyle Width="40%"></ItemStyle>
@@ -63,6 +63,10 @@
 		         <%# PanelFormatter.GetPackageStatusName((int)Eval("StatusID"))%>
             </ItemTemplate>
         </asp:TemplateField>
+        <asp:BoundField SortExpression="StatusIDchangeDate" DataField="StatusIDchangeDate" HeaderText="gvPackagesStatusIDchangeDate" DataFormatString="{0:d}" >
+            <ItemStyle Wrap="False" />
+            <HeaderStyle Wrap="False" />
+        </asp:BoundField>
 		<asp:TemplateField>
 			<ItemTemplate><scp:Comments id="Comments1" runat="server"
 				    Comments='<%# Eval("Comments") %>'>

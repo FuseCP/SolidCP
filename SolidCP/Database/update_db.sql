@@ -8425,6 +8425,32 @@ ALTER TABLE [dbo].[Packages] ADD
 END
 GO
 
+-- add Status ID Change date
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Packages' AND COLS.name='StatusIDchangeDate')
+BEGIN
+ALTER TABLE [dbo].[Packages] ADD
+	[StatusIDchangeDate] [datetime] DEFAULT (GETDATE()) NOT NULL
+END
+GO
+
+-- add Triger update
+IF NOT EXISTS (select * from sys.objects where type = 'TR' and name = 'Update_StatusIDchangeDate')
+EXEC dbo.sp_executesql @statement = N' 
+CREATE TRIGGER [dbo].[Update_StatusIDchangeDate]
+   ON [dbo].[Packages]
+   AFTER UPDATE
+AS BEGIN
+    UPDATE Packages 
+		SET StatusIDchangeDate = GETDATE()
+
+    FROM Packages P 
+    INNER JOIN Inserted I ON P.PackageID = I.PackageID
+    INNER JOIN Deleted D ON P.PackageID = D.PackageID                  
+    WHERE  D.StatusID <> I.StatusID AND I.StatusID > 1 --dont update if nothing change and keep ChangeDate if server back to active  
+    --AND P.StatusID <> I.StatusID
+END
+'
+GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetMyPackages')
 DROP PROCEDURE GetMyPackages
@@ -8447,6 +8473,7 @@ SELECT
 	P.StatusID,
 	P.PlanID,
 	P.PurchaseDate,
+  	P.StatusIDchangeDate,
 	
 	dbo.GetItemComments(P.PackageID, 'PACKAGE', @ActorID) AS Comments,
 	
@@ -8492,7 +8519,8 @@ SELECT
 	P.ParentPackageID,
 	P.PackageName,
 	P.StatusID,
-	P.PurchaseDate,
+	P.PurchaseDate,   
+  	P.StatusIDchangeDate,
 	
 	-- server
 	ISNULL(P.ServerID, 0) AS ServerID,
@@ -8545,7 +8573,8 @@ SELECT
 	P.ServerID,
 	P.StatusID,
 	P.PlanID,
-	P.PurchaseDate,
+	P.PurchaseDate,     
+  	P.StatusIDchangeDate,
 	P.OverrideQuotas,
 	P.DefaultTopPackage
 FROM Packages AS P
@@ -12268,7 +12297,8 @@ SELECT
 	P.PackageID,
 	P.PackageName,
 	P.StatusID,
-	P.PurchaseDate,
+	P.PurchaseDate,    
+  	P.StatusIDchangeDate,
 	
 	dbo.GetItemComments(P.PackageID, ''PACKAGE'', @ActorID) AS Comments,
 	

@@ -46,6 +46,7 @@ namespace SolidCP.Portal
 {
     public partial class SpaceNestedSpaces : SolidCPModuleBase
     {
+        private int columChangedDate = 0; 
         protected void Page_Load(object sender, EventArgs e)
         {
             // set display preferences
@@ -65,6 +66,12 @@ namespace SolidCP.Portal
                 if (Request["StatusID"] != null)
                     Utils.SelectListItem(ddlStatus, Request["StatusID"]);
             }
+            gvPackages.Columns[columChangedDate].Visible = false;
+            //if (ddlStatus.SelectedValue != "1")
+            //gvPackages.Columns[gvPackages.Columns.Count - 2].Visible = true;
+            if (ddlStatus.SelectedItem.Value != "1")
+                gvPackages.Columns[columChangedDate].Visible = true;
+
             searchBox.AjaxData = this.GetSearchBoxAjaxData();
         }
 
@@ -105,6 +112,26 @@ namespace SolidCP.Portal
             res.Append(", PlanID: " + (String.IsNullOrEmpty(Request["PlanID"]) ? "0" : Request["PlanID"]));
             res.Append(", ServerID: " + (String.IsNullOrEmpty(Request["ServerID"]) ? "0" : Request["ServerID"]));
             return res.ToString();
+        }
+
+        protected void gvPackages_DataBound(object sender, EventArgs e)
+        {
+            if (Request["StatusID"] == "1")
+            {
+                gvPackages.Columns[columChangedDate].Visible = false;
+            }                
+        }
+
+        protected void gvPackages_Init(object sender, EventArgs e)
+        {
+            for (int i = 0; i < gvPackages.Columns.Count; i++) //get Index of Column gvPackagesStatusIDchangeDate
+            {
+                if (gvPackages.Columns[i].HeaderText == "gvPackagesStatusIDchangeDate")
+                {
+                    columChangedDate = i;
+                    break;
+                }
+            }
         }
     }
 }

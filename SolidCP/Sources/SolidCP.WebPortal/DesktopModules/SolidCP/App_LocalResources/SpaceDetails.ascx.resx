@@ -153,4 +153,7 @@
   <data name="cmdSuspend.AlternateText" xml:space="preserve">
     <value>Suspend</value>
   </data>
+  <data name="lblSuspendedDate.Text" xml:space="preserve">
+    <value>Suspended:</value>
+  </data>
 </root>

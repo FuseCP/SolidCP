@@ -88,6 +88,13 @@ namespace SolidCP.Portal
 
                 // bind account details
                 litCreated.Text = package.PurchaseDate.ToString();
+                bool isResseler = (((PanelSecurity.LoggedUser.Role == UserRole.Reseller) | (PanelSecurity.LoggedUser.Role == UserRole.Administrator)));
+                lblSuspendedDate.Visible = litSuspendedDate.Visible = false;
+                if (status != PackageStatus.Active)
+                {
+                    lblSuspendedDate.Visible = litSuspendedDate.Visible = isResseler;
+                    litSuspendedDate.Text = package.StatusIDchangeDate.ToString();
+                }
                 serverDetails.ServerId = package.ServerId;
 
                 // load plan

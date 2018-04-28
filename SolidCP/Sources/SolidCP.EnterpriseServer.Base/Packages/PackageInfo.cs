@@ -47,7 +47,8 @@ namespace SolidCP.EnterpriseServer
 		int planId;
         int serverId;
 		DateTime purchaseDate;
-		string packageName;
+        DateTime statusIDchangeDate;
+        string packageName;
 		string packageComments;
         int domains;
         int diskSpace;
@@ -177,5 +178,7 @@ namespace SolidCP.EnterpriseServer
             get { return this.quotas; }
             set { this.quotas = value; }
         }
+
+        public DateTime StatusIDchangeDate { get => statusIDchangeDate; set => statusIDchangeDate = value; }
     }
 }
