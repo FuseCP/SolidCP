@@ -543,9 +543,14 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 vm.RootFolderPath = EvaluateItemVariables(rootFolderPattern, vm);
+                if (!vm.RootFolderPath.EndsWith(vm.Name))  //we must be sure that Path ends with vm.Name (hostname)!
+                {
+                    vm.RootFolderPath = Path.Combine(vm.RootFolderPath, vm.Name);
+                }
                 var correctVhdPath = GetCorrectTemplateFilePath(templatesPath, osTemplateFile);
                 vm.OperatingSystemTemplatePath = correctVhdPath;
-                vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, hostname + Path.GetExtension(correctVhdPath));
+                string msHddHyperVFolderName = "Virtual Hard Disks\\" + vm.Name;
+                vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, msHddHyperVFolderName + Path.GetExtension(correctVhdPath)); ;
 
                 // save meta-item
                 try
