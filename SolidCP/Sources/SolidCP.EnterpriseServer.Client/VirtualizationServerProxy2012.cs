@@ -17,61 +17,63 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
 
-namespace SolidCP.EnterpriseServer {
+namespace SolidCP.EnterpriseServer
+{
     using System.Xml.Serialization;
     using System.Web.Services;
     using System.ComponentModel;
     using System.Web.Services.Protocols;
     using System;
     using System.Diagnostics;
-    
-    
+
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Web.Services.WebServiceBindingAttribute(Name="esVirtualizationServer2012Soap", Namespace="http://smbsaas/solidcp/enterpriseserver")]
+    [System.Web.Services.WebServiceBindingAttribute(Name = "esVirtualizationServer2012Soap", Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(ServiceProviderItem))]
-    public partial class esVirtualizationServer2012 : Microsoft.Web.Services3.WebServicesClientProtocol {
-        
+    public partial class esVirtualizationServer2012 : Microsoft.Web.Services3.WebServicesClientProtocol
+    {
+
         private System.Threading.SendOrPostCallback GetVirtualMachinesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachinesByServiceIdOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineItemOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback EvaluateVirtualMachineTemplateOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetExternalNetworkDetailsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetPackagePrivateIPAddressesPagedOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetPackagePrivateIPAddressesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetPrivateNetworkDetailsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetSpaceUserPermissionsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback UpdateSpaceUserPermissionsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetSpaceAuditLogOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineAuditLogOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetOperatingSystemTemplatesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetOperatingSystemTemplatesByServiceIdOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetMaximumCpuCoresNumberOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetDefaultExportPathOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback CreateDefaultVirtualMachineOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback CreateVirtualMachineOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback ImportVirtualMachineOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineThumbnailOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetAvailableVLANsOperationCompleted;
@@ -79,171 +81,172 @@ namespace SolidCP.EnterpriseServer {
         private System.Threading.SendOrPostCallback GetExternalNetworkVLANOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetVirtualMachineGeneralDetailsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineExtendedInfoOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback CancelVirtualMachineJobOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback UpdateVirtualMachineHostNameOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback ChangeVirtualMachineStateOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineJobsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback ChangeAdministratorPasswordOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback UpdateVirtualMachineConfigurationOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetVirtualMachineGuacamoleURLOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetInsertedDvdDiskOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetLibraryDisksOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback InsertDvdDiskOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback EjectDvdDiskOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineSnapshotsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetSnapshotOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback CreateSnapshotOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback ApplySnapshotOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback RenameSnapshotOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DeleteSnapshotOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DeleteSnapshotSubtreeOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetSnapshotThumbnailOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetExternalNetworkAdapterDetailsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback AddVirtualMachineExternalIPAddressesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback SetVirtualMachinePrimaryExternalIPAddressOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DeleteVirtualMachineExternalIPAddressesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetPrivateNetworkAdapterDetailsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback AddVirtualMachinePrivateIPAddressesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback SetVirtualMachinePrimaryPrivateIPAddressOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DeleteVirtualMachinePrivateIPAddressesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachinePermissionsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback UpdateVirtualMachineUserPermissionsOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DeleteVirtualMachineOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback ReinstallVirtualMachineOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetVirtualMachineSummaryTextOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback SendVirtualMachineSummaryLetterOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetCertificatesOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback SetReplicaServerOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback UnsetReplicaServerOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetReplicaServerOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetReplicationOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback GetReplicationInfoOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback SetVmReplicationOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DisableVmReplicationOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback PauseReplicationOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback ResumeReplicationOperationCompleted;
-        
+
         /// <remarks/>
-        public esVirtualizationServer2012() {
+        public esVirtualizationServer2012()
+        {
             this.Url = "http://127.0.0.1:9012/esVirtualizationServer2012.asmx";
         }
-        
+
         /// <remarks/>
         public event GetVirtualMachinesCompletedEventHandler GetVirtualMachinesCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachinesByServiceIdCompletedEventHandler GetVirtualMachinesByServiceIdCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineItemCompletedEventHandler GetVirtualMachineItemCompleted;
-        
+
         /// <remarks/>
         public event EvaluateVirtualMachineTemplateCompletedEventHandler EvaluateVirtualMachineTemplateCompleted;
-        
+
         /// <remarks/>
         public event GetExternalNetworkDetailsCompletedEventHandler GetExternalNetworkDetailsCompleted;
-        
+
         /// <remarks/>
         public event GetPackagePrivateIPAddressesPagedCompletedEventHandler GetPackagePrivateIPAddressesPagedCompleted;
-        
+
         /// <remarks/>
         public event GetPackagePrivateIPAddressesCompletedEventHandler GetPackagePrivateIPAddressesCompleted;
-        
+
         /// <remarks/>
         public event GetPrivateNetworkDetailsCompletedEventHandler GetPrivateNetworkDetailsCompleted;
-        
+
         /// <remarks/>
         public event GetSpaceUserPermissionsCompletedEventHandler GetSpaceUserPermissionsCompleted;
-        
+
         /// <remarks/>
         public event UpdateSpaceUserPermissionsCompletedEventHandler UpdateSpaceUserPermissionsCompleted;
-        
+
         /// <remarks/>
         public event GetSpaceAuditLogCompletedEventHandler GetSpaceAuditLogCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineAuditLogCompletedEventHandler GetVirtualMachineAuditLogCompleted;
-        
+
         /// <remarks/>
         public event GetOperatingSystemTemplatesCompletedEventHandler GetOperatingSystemTemplatesCompleted;
-        
+
         /// <remarks/>
         public event GetOperatingSystemTemplatesByServiceIdCompletedEventHandler GetOperatingSystemTemplatesByServiceIdCompleted;
-        
+
         /// <remarks/>
         public event GetMaximumCpuCoresNumberCompletedEventHandler GetMaximumCpuCoresNumberCompleted;
-        
+
         /// <remarks/>
         public event GetDefaultExportPathCompletedEventHandler GetDefaultExportPathCompleted;
-        
+
         /// <remarks/>
         public event CreateDefaultVirtualMachineCompletedEventHandler CreateDefaultVirtualMachineCompleted;
-        
+
         /// <remarks/>
         public event CreateVirtualMachineCompletedEventHandler CreateVirtualMachineCompleted;
-        
+
         /// <remarks/>
         public event ImportVirtualMachineCompletedEventHandler ImportVirtualMachineCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineThumbnailCompletedEventHandler GetVirtualMachineThumbnailCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineGeneralDetailsCompletedEventHandler GetVirtualMachineGeneralDetailsCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineExtendedInfoCompletedEventHandler GetVirtualMachineExtendedInfoCompleted;
-        
+
         /// <remarks/>
         public event CancelVirtualMachineJobCompletedEventHandler CancelVirtualMachineJobCompleted;
-        
+
         /// <remarks/>
         public event UpdateVirtualMachineHostNameCompletedEventHandler UpdateVirtualMachineHostNameCompleted;
 
@@ -252,49 +255,49 @@ namespace SolidCP.EnterpriseServer {
 
         /// <remarks/>
         public event ChangeVirtualMachineStateCompletedEventHandler ChangeVirtualMachineStateCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineJobsCompletedEventHandler GetVirtualMachineJobsCompleted;
-        
+
         /// <remarks/>
         public event ChangeAdministratorPasswordCompletedEventHandler ChangeAdministratorPasswordCompleted;
-        
+
         /// <remarks/>
         public event UpdateVirtualMachineConfigurationCompletedEventHandler UpdateVirtualMachineConfigurationCompleted;
-        
+
         /// <remarks/>
         public event GetInsertedDvdDiskCompletedEventHandler GetInsertedDvdDiskCompleted;
-        
+
         /// <remarks/>
         public event GetLibraryDisksCompletedEventHandler GetLibraryDisksCompleted;
-        
+
         /// <remarks/>
         public event InsertDvdDiskCompletedEventHandler InsertDvdDiskCompleted;
-        
+
         /// <remarks/>
         public event EjectDvdDiskCompletedEventHandler EjectDvdDiskCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineSnapshotsCompletedEventHandler GetVirtualMachineSnapshotsCompleted;
-        
+
         /// <remarks/>
         public event GetSnapshotCompletedEventHandler GetSnapshotCompleted;
-        
+
         /// <remarks/>
         public event CreateSnapshotCompletedEventHandler CreateSnapshotCompleted;
-        
+
         /// <remarks/>
         public event ApplySnapshotCompletedEventHandler ApplySnapshotCompleted;
-        
+
         /// <remarks/>
         public event RenameSnapshotCompletedEventHandler RenameSnapshotCompleted;
-        
+
         /// <remarks/>
         public event DeleteSnapshotCompletedEventHandler DeleteSnapshotCompleted;
-        
+
         /// <remarks/>
         public event DeleteSnapshotSubtreeCompletedEventHandler DeleteSnapshotSubtreeCompleted;
-        
+
         /// <remarks/>
         public event GetSnapshotThumbnailCompletedEventHandler GetSnapshotThumbnailCompleted;
 
@@ -306,82 +309,83 @@ namespace SolidCP.EnterpriseServer {
 
         /// <remarks/>
         public event GetExternalNetworkAdapterDetailsCompletedEventHandler GetExternalNetworkAdapterDetailsCompleted;
-        
+
         /// <remarks/>
         public event AddVirtualMachineExternalIPAddressesCompletedEventHandler AddVirtualMachineExternalIPAddressesCompleted;
-        
+
         /// <remarks/>
         public event SetVirtualMachinePrimaryExternalIPAddressCompletedEventHandler SetVirtualMachinePrimaryExternalIPAddressCompleted;
-        
+
         /// <remarks/>
         public event DeleteVirtualMachineExternalIPAddressesCompletedEventHandler DeleteVirtualMachineExternalIPAddressesCompleted;
-        
+
         /// <remarks/>
         public event GetPrivateNetworkAdapterDetailsCompletedEventHandler GetPrivateNetworkAdapterDetailsCompleted;
-        
+
         /// <remarks/>
         public event AddVirtualMachinePrivateIPAddressesCompletedEventHandler AddVirtualMachinePrivateIPAddressesCompleted;
-        
+
         /// <remarks/>
         public event SetVirtualMachinePrimaryPrivateIPAddressCompletedEventHandler SetVirtualMachinePrimaryPrivateIPAddressCompleted;
-        
+
         /// <remarks/>
         public event DeleteVirtualMachinePrivateIPAddressesCompletedEventHandler DeleteVirtualMachinePrivateIPAddressesCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachinePermissionsCompletedEventHandler GetVirtualMachinePermissionsCompleted;
-        
+
         /// <remarks/>
         public event UpdateVirtualMachineUserPermissionsCompletedEventHandler UpdateVirtualMachineUserPermissionsCompleted;
-        
+
         /// <remarks/>
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
-        
+
         /// <remarks/>
         public event DeleteVirtualMachineCompletedEventHandler DeleteVirtualMachineCompleted;
-        
+
         /// <remarks/>
         public event ReinstallVirtualMachineCompletedEventHandler ReinstallVirtualMachineCompleted;
-        
+
         /// <remarks/>
         public event GetVirtualMachineSummaryTextCompletedEventHandler GetVirtualMachineSummaryTextCompleted;
-        
+
         /// <remarks/>
         public event SendVirtualMachineSummaryLetterCompletedEventHandler SendVirtualMachineSummaryLetterCompleted;
-        
+
         /// <remarks/>
         public event GetCertificatesCompletedEventHandler GetCertificatesCompleted;
-        
+
         /// <remarks/>
         public event SetReplicaServerCompletedEventHandler SetReplicaServerCompleted;
-        
+
         /// <remarks/>
         public event UnsetReplicaServerCompletedEventHandler UnsetReplicaServerCompleted;
-        
+
         /// <remarks/>
         public event GetReplicaServerCompletedEventHandler GetReplicaServerCompleted;
-        
+
         /// <remarks/>
         public event GetReplicationCompletedEventHandler GetReplicationCompleted;
-        
+
         /// <remarks/>
         public event GetReplicationInfoCompletedEventHandler GetReplicationInfoCompleted;
-        
+
         /// <remarks/>
         public event SetVmReplicationCompletedEventHandler SetVmReplicationCompleted;
-        
+
         /// <remarks/>
         public event DisableVmReplicationCompletedEventHandler DisableVmReplicationCompleted;
-        
+
         /// <remarks/>
         public event PauseReplicationCompletedEventHandler PauseReplicationCompleted;
-        
+
         /// <remarks/>
         public event ResumeReplicationCompletedEventHandler ResumeReplicationCompleted;
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachines", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachineMetaItemsPaged GetVirtualMachines(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachines", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachineMetaItemsPaged GetVirtualMachines(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive)
+        {
             object[] results = this.Invoke("GetVirtualMachines", new object[] {
                         packageId,
                         filterColumn,
@@ -392,9 +396,10 @@ namespace SolidCP.EnterpriseServer {
                         recursive});
             return ((VirtualMachineMetaItemsPaged)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachines(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachines(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachines", new object[] {
                         packageId,
                         filterColumn,
@@ -404,21 +409,25 @@ namespace SolidCP.EnterpriseServer {
                         maximumRows,
                         recursive}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachineMetaItemsPaged EndGetVirtualMachines(System.IAsyncResult asyncResult) {
+        public VirtualMachineMetaItemsPaged EndGetVirtualMachines(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachineMetaItemsPaged)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachinesAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive) {
+        public void GetVirtualMachinesAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive)
+        {
             this.GetVirtualMachinesAsync(packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, recursive, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachinesAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive, object userState) {
-            if ((this.GetVirtualMachinesOperationCompleted == null)) {
+        public void GetVirtualMachinesAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, bool recursive, object userState)
+        {
+            if ((this.GetVirtualMachinesOperationCompleted == null))
+            {
                 this.GetVirtualMachinesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachinesOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachines", new object[] {
@@ -430,184 +439,219 @@ namespace SolidCP.EnterpriseServer {
                         maximumRows,
                         recursive}, this.GetVirtualMachinesOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachinesOperationCompleted(object arg) {
-            if ((this.GetVirtualMachinesCompleted != null)) {
+
+        private void OnGetVirtualMachinesOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachinesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachinesCompleted(this, new GetVirtualMachinesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachinesByServiceId", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachine[] GetVirtualMachinesByServiceId(int serviceId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachinesByServiceId", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachine[] GetVirtualMachinesByServiceId(int serviceId)
+        {
             object[] results = this.Invoke("GetVirtualMachinesByServiceId", new object[] {
                         serviceId});
             return ((VirtualMachine[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachinesByServiceId(int serviceId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachinesByServiceId(int serviceId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachinesByServiceId", new object[] {
                         serviceId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachine[] EndGetVirtualMachinesByServiceId(System.IAsyncResult asyncResult) {
+        public VirtualMachine[] EndGetVirtualMachinesByServiceId(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachine[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachinesByServiceIdAsync(int serviceId) {
+        public void GetVirtualMachinesByServiceIdAsync(int serviceId)
+        {
             this.GetVirtualMachinesByServiceIdAsync(serviceId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachinesByServiceIdAsync(int serviceId, object userState) {
-            if ((this.GetVirtualMachinesByServiceIdOperationCompleted == null)) {
+        public void GetVirtualMachinesByServiceIdAsync(int serviceId, object userState)
+        {
+            if ((this.GetVirtualMachinesByServiceIdOperationCompleted == null))
+            {
                 this.GetVirtualMachinesByServiceIdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachinesByServiceIdOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachinesByServiceId", new object[] {
                         serviceId}, this.GetVirtualMachinesByServiceIdOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachinesByServiceIdOperationCompleted(object arg) {
-            if ((this.GetVirtualMachinesByServiceIdCompleted != null)) {
+
+        private void OnGetVirtualMachinesByServiceIdOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachinesByServiceIdCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachinesByServiceIdCompleted(this, new GetVirtualMachinesByServiceIdCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineItem", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachine GetVirtualMachineItem(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineItem", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachine GetVirtualMachineItem(int itemId)
+        {
             object[] results = this.Invoke("GetVirtualMachineItem", new object[] {
                         itemId});
             return ((VirtualMachine)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineItem(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineItem(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineItem", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachine EndGetVirtualMachineItem(System.IAsyncResult asyncResult) {
+        public VirtualMachine EndGetVirtualMachineItem(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachine)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineItemAsync(int itemId) {
+        public void GetVirtualMachineItemAsync(int itemId)
+        {
             this.GetVirtualMachineItemAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineItemAsync(int itemId, object userState) {
-            if ((this.GetVirtualMachineItemOperationCompleted == null)) {
+        public void GetVirtualMachineItemAsync(int itemId, object userState)
+        {
+            if ((this.GetVirtualMachineItemOperationCompleted == null))
+            {
                 this.GetVirtualMachineItemOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineItemOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineItem", new object[] {
                         itemId}, this.GetVirtualMachineItemOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineItemOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineItemCompleted != null)) {
+
+        private void OnGetVirtualMachineItemOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineItemCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineItemCompleted(this, new GetVirtualMachineItemCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/EvaluateVirtualMachineTemplate", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string EvaluateVirtualMachineTemplate(int itemId, string template) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/EvaluateVirtualMachineTemplate", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string EvaluateVirtualMachineTemplate(int itemId, string template)
+        {
             object[] results = this.Invoke("EvaluateVirtualMachineTemplate", new object[] {
                         itemId,
                         template});
             return ((string)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginEvaluateVirtualMachineTemplate(int itemId, string template, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginEvaluateVirtualMachineTemplate(int itemId, string template, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("EvaluateVirtualMachineTemplate", new object[] {
                         itemId,
                         template}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public string EndEvaluateVirtualMachineTemplate(System.IAsyncResult asyncResult) {
+        public string EndEvaluateVirtualMachineTemplate(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((string)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void EvaluateVirtualMachineTemplateAsync(int itemId, string template) {
+        public void EvaluateVirtualMachineTemplateAsync(int itemId, string template)
+        {
             this.EvaluateVirtualMachineTemplateAsync(itemId, template, null);
         }
-        
+
         /// <remarks/>
-        public void EvaluateVirtualMachineTemplateAsync(int itemId, string template, object userState) {
-            if ((this.EvaluateVirtualMachineTemplateOperationCompleted == null)) {
+        public void EvaluateVirtualMachineTemplateAsync(int itemId, string template, object userState)
+        {
+            if ((this.EvaluateVirtualMachineTemplateOperationCompleted == null))
+            {
                 this.EvaluateVirtualMachineTemplateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnEvaluateVirtualMachineTemplateOperationCompleted);
             }
             this.InvokeAsync("EvaluateVirtualMachineTemplate", new object[] {
                         itemId,
                         template}, this.EvaluateVirtualMachineTemplateOperationCompleted, userState);
         }
-        
-        private void OnEvaluateVirtualMachineTemplateOperationCompleted(object arg) {
-            if ((this.EvaluateVirtualMachineTemplateCompleted != null)) {
+
+        private void OnEvaluateVirtualMachineTemplateOperationCompleted(object arg)
+        {
+            if ((this.EvaluateVirtualMachineTemplateCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.EvaluateVirtualMachineTemplateCompleted(this, new EvaluateVirtualMachineTemplateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalNetworkDetails", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public NetworkAdapterDetails GetExternalNetworkDetails(int packageId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalNetworkDetails", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public NetworkAdapterDetails GetExternalNetworkDetails(int packageId)
+        {
             object[] results = this.Invoke("GetExternalNetworkDetails", new object[] {
                         packageId});
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetExternalNetworkDetails(int packageId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetExternalNetworkDetails(int packageId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetExternalNetworkDetails", new object[] {
                         packageId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails EndGetExternalNetworkDetails(System.IAsyncResult asyncResult) {
+        public NetworkAdapterDetails EndGetExternalNetworkDetails(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetExternalNetworkDetailsAsync(int packageId) {
+        public void GetExternalNetworkDetailsAsync(int packageId)
+        {
             this.GetExternalNetworkDetailsAsync(packageId, null);
         }
-        
+
         /// <remarks/>
-        public void GetExternalNetworkDetailsAsync(int packageId, object userState) {
-            if ((this.GetExternalNetworkDetailsOperationCompleted == null)) {
+        public void GetExternalNetworkDetailsAsync(int packageId, object userState)
+        {
+            if ((this.GetExternalNetworkDetailsOperationCompleted == null))
+            {
                 this.GetExternalNetworkDetailsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExternalNetworkDetailsOperationCompleted);
             }
             this.InvokeAsync("GetExternalNetworkDetails", new object[] {
                         packageId}, this.GetExternalNetworkDetailsOperationCompleted, userState);
         }
-        
-        private void OnGetExternalNetworkDetailsOperationCompleted(object arg) {
-            if ((this.GetExternalNetworkDetailsCompleted != null)) {
+
+        private void OnGetExternalNetworkDetailsOperationCompleted(object arg)
+        {
+            if ((this.GetExternalNetworkDetailsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetExternalNetworkDetailsCompleted(this, new GetExternalNetworkDetailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPackagePrivateIPAddressesPaged", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public PrivateIPAddressesPaged GetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPackagePrivateIPAddressesPaged", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public PrivateIPAddressesPaged GetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
             object[] results = this.Invoke("GetPackagePrivateIPAddressesPaged", new object[] {
                         packageId,
                         filterColumn,
@@ -617,9 +661,10 @@ namespace SolidCP.EnterpriseServer {
                         maximumRows});
             return ((PrivateIPAddressesPaged)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetPackagePrivateIPAddressesPaged(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetPackagePrivateIPAddressesPaged", new object[] {
                         packageId,
                         filterColumn,
@@ -628,21 +673,25 @@ namespace SolidCP.EnterpriseServer {
                         startRow,
                         maximumRows}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public PrivateIPAddressesPaged EndGetPackagePrivateIPAddressesPaged(System.IAsyncResult asyncResult) {
+        public PrivateIPAddressesPaged EndGetPackagePrivateIPAddressesPaged(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((PrivateIPAddressesPaged)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetPackagePrivateIPAddressesPagedAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows) {
+        public void GetPackagePrivateIPAddressesPagedAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
             this.GetPackagePrivateIPAddressesPagedAsync(packageId, filterColumn, filterValue, sortColumn, startRow, maximumRows, null);
         }
-        
+
         /// <remarks/>
-        public void GetPackagePrivateIPAddressesPagedAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, object userState) {
-            if ((this.GetPackagePrivateIPAddressesPagedOperationCompleted == null)) {
+        public void GetPackagePrivateIPAddressesPagedAsync(int packageId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, object userState)
+        {
+            if ((this.GetPackagePrivateIPAddressesPagedOperationCompleted == null))
+            {
                 this.GetPackagePrivateIPAddressesPagedOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPackagePrivateIPAddressesPagedOperationCompleted);
             }
             this.InvokeAsync("GetPackagePrivateIPAddressesPaged", new object[] {
@@ -653,184 +702,219 @@ namespace SolidCP.EnterpriseServer {
                         startRow,
                         maximumRows}, this.GetPackagePrivateIPAddressesPagedOperationCompleted, userState);
         }
-        
-        private void OnGetPackagePrivateIPAddressesPagedOperationCompleted(object arg) {
-            if ((this.GetPackagePrivateIPAddressesPagedCompleted != null)) {
+
+        private void OnGetPackagePrivateIPAddressesPagedOperationCompleted(object arg)
+        {
+            if ((this.GetPackagePrivateIPAddressesPagedCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPackagePrivateIPAddressesPagedCompleted(this, new GetPackagePrivateIPAddressesPagedCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPackagePrivateIPAddresses", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public PrivateIPAddress[] GetPackagePrivateIPAddresses(int packageId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPackagePrivateIPAddresses", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public PrivateIPAddress[] GetPackagePrivateIPAddresses(int packageId)
+        {
             object[] results = this.Invoke("GetPackagePrivateIPAddresses", new object[] {
                         packageId});
             return ((PrivateIPAddress[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetPackagePrivateIPAddresses(int packageId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetPackagePrivateIPAddresses(int packageId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetPackagePrivateIPAddresses", new object[] {
                         packageId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public PrivateIPAddress[] EndGetPackagePrivateIPAddresses(System.IAsyncResult asyncResult) {
+        public PrivateIPAddress[] EndGetPackagePrivateIPAddresses(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((PrivateIPAddress[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetPackagePrivateIPAddressesAsync(int packageId) {
+        public void GetPackagePrivateIPAddressesAsync(int packageId)
+        {
             this.GetPackagePrivateIPAddressesAsync(packageId, null);
         }
-        
+
         /// <remarks/>
-        public void GetPackagePrivateIPAddressesAsync(int packageId, object userState) {
-            if ((this.GetPackagePrivateIPAddressesOperationCompleted == null)) {
+        public void GetPackagePrivateIPAddressesAsync(int packageId, object userState)
+        {
+            if ((this.GetPackagePrivateIPAddressesOperationCompleted == null))
+            {
                 this.GetPackagePrivateIPAddressesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPackagePrivateIPAddressesOperationCompleted);
             }
             this.InvokeAsync("GetPackagePrivateIPAddresses", new object[] {
                         packageId}, this.GetPackagePrivateIPAddressesOperationCompleted, userState);
         }
-        
-        private void OnGetPackagePrivateIPAddressesOperationCompleted(object arg) {
-            if ((this.GetPackagePrivateIPAddressesCompleted != null)) {
+
+        private void OnGetPackagePrivateIPAddressesOperationCompleted(object arg)
+        {
+            if ((this.GetPackagePrivateIPAddressesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPackagePrivateIPAddressesCompleted(this, new GetPackagePrivateIPAddressesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPrivateNetworkDetails", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public NetworkAdapterDetails GetPrivateNetworkDetails(int packageId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPrivateNetworkDetails", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public NetworkAdapterDetails GetPrivateNetworkDetails(int packageId)
+        {
             object[] results = this.Invoke("GetPrivateNetworkDetails", new object[] {
                         packageId});
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetPrivateNetworkDetails(int packageId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetPrivateNetworkDetails(int packageId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetPrivateNetworkDetails", new object[] {
                         packageId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails EndGetPrivateNetworkDetails(System.IAsyncResult asyncResult) {
+        public NetworkAdapterDetails EndGetPrivateNetworkDetails(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetPrivateNetworkDetailsAsync(int packageId) {
+        public void GetPrivateNetworkDetailsAsync(int packageId)
+        {
             this.GetPrivateNetworkDetailsAsync(packageId, null);
         }
-        
+
         /// <remarks/>
-        public void GetPrivateNetworkDetailsAsync(int packageId, object userState) {
-            if ((this.GetPrivateNetworkDetailsOperationCompleted == null)) {
+        public void GetPrivateNetworkDetailsAsync(int packageId, object userState)
+        {
+            if ((this.GetPrivateNetworkDetailsOperationCompleted == null))
+            {
                 this.GetPrivateNetworkDetailsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPrivateNetworkDetailsOperationCompleted);
             }
             this.InvokeAsync("GetPrivateNetworkDetails", new object[] {
                         packageId}, this.GetPrivateNetworkDetailsOperationCompleted, userState);
         }
-        
-        private void OnGetPrivateNetworkDetailsOperationCompleted(object arg) {
-            if ((this.GetPrivateNetworkDetailsCompleted != null)) {
+
+        private void OnGetPrivateNetworkDetailsOperationCompleted(object arg)
+        {
+            if ((this.GetPrivateNetworkDetailsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPrivateNetworkDetailsCompleted(this, new GetPrivateNetworkDetailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSpaceUserPermissions", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachinePermission[] GetSpaceUserPermissions(int packageId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSpaceUserPermissions", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachinePermission[] GetSpaceUserPermissions(int packageId)
+        {
             object[] results = this.Invoke("GetSpaceUserPermissions", new object[] {
                         packageId});
             return ((VirtualMachinePermission[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetSpaceUserPermissions(int packageId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetSpaceUserPermissions(int packageId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetSpaceUserPermissions", new object[] {
                         packageId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachinePermission[] EndGetSpaceUserPermissions(System.IAsyncResult asyncResult) {
+        public VirtualMachinePermission[] EndGetSpaceUserPermissions(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachinePermission[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetSpaceUserPermissionsAsync(int packageId) {
+        public void GetSpaceUserPermissionsAsync(int packageId)
+        {
             this.GetSpaceUserPermissionsAsync(packageId, null);
         }
-        
+
         /// <remarks/>
-        public void GetSpaceUserPermissionsAsync(int packageId, object userState) {
-            if ((this.GetSpaceUserPermissionsOperationCompleted == null)) {
+        public void GetSpaceUserPermissionsAsync(int packageId, object userState)
+        {
+            if ((this.GetSpaceUserPermissionsOperationCompleted == null))
+            {
                 this.GetSpaceUserPermissionsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSpaceUserPermissionsOperationCompleted);
             }
             this.InvokeAsync("GetSpaceUserPermissions", new object[] {
                         packageId}, this.GetSpaceUserPermissionsOperationCompleted, userState);
         }
-        
-        private void OnGetSpaceUserPermissionsOperationCompleted(object arg) {
-            if ((this.GetSpaceUserPermissionsCompleted != null)) {
+
+        private void OnGetSpaceUserPermissionsOperationCompleted(object arg)
+        {
+            if ((this.GetSpaceUserPermissionsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetSpaceUserPermissionsCompleted(this, new GetSpaceUserPermissionsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateSpaceUserPermissions", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int UpdateSpaceUserPermissions(int packageId, VirtualMachinePermission[] permissions) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateSpaceUserPermissions", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int UpdateSpaceUserPermissions(int packageId, VirtualMachinePermission[] permissions)
+        {
             object[] results = this.Invoke("UpdateSpaceUserPermissions", new object[] {
                         packageId,
                         permissions});
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginUpdateSpaceUserPermissions(int packageId, VirtualMachinePermission[] permissions, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginUpdateSpaceUserPermissions(int packageId, VirtualMachinePermission[] permissions, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("UpdateSpaceUserPermissions", new object[] {
                         packageId,
                         permissions}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public int EndUpdateSpaceUserPermissions(System.IAsyncResult asyncResult) {
+        public int EndUpdateSpaceUserPermissions(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void UpdateSpaceUserPermissionsAsync(int packageId, VirtualMachinePermission[] permissions) {
+        public void UpdateSpaceUserPermissionsAsync(int packageId, VirtualMachinePermission[] permissions)
+        {
             this.UpdateSpaceUserPermissionsAsync(packageId, permissions, null);
         }
-        
+
         /// <remarks/>
-        public void UpdateSpaceUserPermissionsAsync(int packageId, VirtualMachinePermission[] permissions, object userState) {
-            if ((this.UpdateSpaceUserPermissionsOperationCompleted == null)) {
+        public void UpdateSpaceUserPermissionsAsync(int packageId, VirtualMachinePermission[] permissions, object userState)
+        {
+            if ((this.UpdateSpaceUserPermissionsOperationCompleted == null))
+            {
                 this.UpdateSpaceUserPermissionsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateSpaceUserPermissionsOperationCompleted);
             }
             this.InvokeAsync("UpdateSpaceUserPermissions", new object[] {
                         packageId,
                         permissions}, this.UpdateSpaceUserPermissionsOperationCompleted, userState);
         }
-        
-        private void OnUpdateSpaceUserPermissionsOperationCompleted(object arg) {
-            if ((this.UpdateSpaceUserPermissionsCompleted != null)) {
+
+        private void OnUpdateSpaceUserPermissionsOperationCompleted(object arg)
+        {
+            if ((this.UpdateSpaceUserPermissionsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateSpaceUserPermissionsCompleted(this, new UpdateSpaceUserPermissionsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSpaceAuditLog", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public LogRecord[] GetSpaceAuditLog(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSpaceAuditLog", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public LogRecord[] GetSpaceAuditLog(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows)
+        {
             object[] results = this.Invoke("GetSpaceAuditLog", new object[] {
                         packageId,
                         startPeriod,
@@ -841,9 +925,10 @@ namespace SolidCP.EnterpriseServer {
                         maximumRows});
             return ((LogRecord[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetSpaceAuditLog(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetSpaceAuditLog(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetSpaceAuditLog", new object[] {
                         packageId,
                         startPeriod,
@@ -853,21 +938,25 @@ namespace SolidCP.EnterpriseServer {
                         startRow,
                         maximumRows}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public LogRecord[] EndGetSpaceAuditLog(System.IAsyncResult asyncResult) {
+        public LogRecord[] EndGetSpaceAuditLog(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((LogRecord[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetSpaceAuditLogAsync(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows) {
+        public void GetSpaceAuditLogAsync(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows)
+        {
             this.GetSpaceAuditLogAsync(packageId, startPeriod, endPeriod, severity, sortColumn, startRow, maximumRows, null);
         }
-        
+
         /// <remarks/>
-        public void GetSpaceAuditLogAsync(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, object userState) {
-            if ((this.GetSpaceAuditLogOperationCompleted == null)) {
+        public void GetSpaceAuditLogAsync(int packageId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, object userState)
+        {
+            if ((this.GetSpaceAuditLogOperationCompleted == null))
+            {
                 this.GetSpaceAuditLogOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSpaceAuditLogOperationCompleted);
             }
             this.InvokeAsync("GetSpaceAuditLog", new object[] {
@@ -879,17 +968,20 @@ namespace SolidCP.EnterpriseServer {
                         startRow,
                         maximumRows}, this.GetSpaceAuditLogOperationCompleted, userState);
         }
-        
-        private void OnGetSpaceAuditLogOperationCompleted(object arg) {
-            if ((this.GetSpaceAuditLogCompleted != null)) {
+
+        private void OnGetSpaceAuditLogOperationCompleted(object arg)
+        {
+            if ((this.GetSpaceAuditLogCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetSpaceAuditLogCompleted(this, new GetSpaceAuditLogCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineAuditLog", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public LogRecord[] GetVirtualMachineAuditLog(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineAuditLog", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public LogRecord[] GetVirtualMachineAuditLog(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows)
+        {
             object[] results = this.Invoke("GetVirtualMachineAuditLog", new object[] {
                         itemId,
                         startPeriod,
@@ -900,9 +992,10 @@ namespace SolidCP.EnterpriseServer {
                         maximumRows});
             return ((LogRecord[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineAuditLog(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineAuditLog(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineAuditLog", new object[] {
                         itemId,
                         startPeriod,
@@ -912,21 +1005,25 @@ namespace SolidCP.EnterpriseServer {
                         startRow,
                         maximumRows}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public LogRecord[] EndGetVirtualMachineAuditLog(System.IAsyncResult asyncResult) {
+        public LogRecord[] EndGetVirtualMachineAuditLog(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((LogRecord[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineAuditLogAsync(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows) {
+        public void GetVirtualMachineAuditLogAsync(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows)
+        {
             this.GetVirtualMachineAuditLogAsync(itemId, startPeriod, endPeriod, severity, sortColumn, startRow, maximumRows, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineAuditLogAsync(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, object userState) {
-            if ((this.GetVirtualMachineAuditLogOperationCompleted == null)) {
+        public void GetVirtualMachineAuditLogAsync(int itemId, System.DateTime startPeriod, System.DateTime endPeriod, int severity, string sortColumn, int startRow, int maximumRows, object userState)
+        {
+            if ((this.GetVirtualMachineAuditLogOperationCompleted == null))
+            {
                 this.GetVirtualMachineAuditLogOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineAuditLogOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineAuditLog", new object[] {
@@ -938,182 +1035,217 @@ namespace SolidCP.EnterpriseServer {
                         startRow,
                         maximumRows}, this.GetVirtualMachineAuditLogOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineAuditLogOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineAuditLogCompleted != null)) {
+
+        private void OnGetVirtualMachineAuditLogOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineAuditLogCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineAuditLogCompleted(this, new GetVirtualMachineAuditLogCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetOperatingSystemTemplates", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public LibraryItem[] GetOperatingSystemTemplates(int packageId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetOperatingSystemTemplates", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public LibraryItem[] GetOperatingSystemTemplates(int packageId)
+        {
             object[] results = this.Invoke("GetOperatingSystemTemplates", new object[] {
                         packageId});
             return ((LibraryItem[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetOperatingSystemTemplates(int packageId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetOperatingSystemTemplates(int packageId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetOperatingSystemTemplates", new object[] {
                         packageId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public LibraryItem[] EndGetOperatingSystemTemplates(System.IAsyncResult asyncResult) {
+        public LibraryItem[] EndGetOperatingSystemTemplates(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((LibraryItem[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetOperatingSystemTemplatesAsync(int packageId) {
+        public void GetOperatingSystemTemplatesAsync(int packageId)
+        {
             this.GetOperatingSystemTemplatesAsync(packageId, null);
         }
-        
+
         /// <remarks/>
-        public void GetOperatingSystemTemplatesAsync(int packageId, object userState) {
-            if ((this.GetOperatingSystemTemplatesOperationCompleted == null)) {
+        public void GetOperatingSystemTemplatesAsync(int packageId, object userState)
+        {
+            if ((this.GetOperatingSystemTemplatesOperationCompleted == null))
+            {
                 this.GetOperatingSystemTemplatesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetOperatingSystemTemplatesOperationCompleted);
             }
             this.InvokeAsync("GetOperatingSystemTemplates", new object[] {
                         packageId}, this.GetOperatingSystemTemplatesOperationCompleted, userState);
         }
-        
-        private void OnGetOperatingSystemTemplatesOperationCompleted(object arg) {
-            if ((this.GetOperatingSystemTemplatesCompleted != null)) {
+
+        private void OnGetOperatingSystemTemplatesOperationCompleted(object arg)
+        {
+            if ((this.GetOperatingSystemTemplatesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetOperatingSystemTemplatesCompleted(this, new GetOperatingSystemTemplatesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetOperatingSystemTemplatesByService" +
-            "Id", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public LibraryItem[] GetOperatingSystemTemplatesByServiceId(int serviceId) {
+            "Id", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public LibraryItem[] GetOperatingSystemTemplatesByServiceId(int serviceId)
+        {
             object[] results = this.Invoke("GetOperatingSystemTemplatesByServiceId", new object[] {
                         serviceId});
             return ((LibraryItem[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetOperatingSystemTemplatesByServiceId(int serviceId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetOperatingSystemTemplatesByServiceId(int serviceId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetOperatingSystemTemplatesByServiceId", new object[] {
                         serviceId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public LibraryItem[] EndGetOperatingSystemTemplatesByServiceId(System.IAsyncResult asyncResult) {
+        public LibraryItem[] EndGetOperatingSystemTemplatesByServiceId(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((LibraryItem[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetOperatingSystemTemplatesByServiceIdAsync(int serviceId) {
+        public void GetOperatingSystemTemplatesByServiceIdAsync(int serviceId)
+        {
             this.GetOperatingSystemTemplatesByServiceIdAsync(serviceId, null);
         }
-        
+
         /// <remarks/>
-        public void GetOperatingSystemTemplatesByServiceIdAsync(int serviceId, object userState) {
-            if ((this.GetOperatingSystemTemplatesByServiceIdOperationCompleted == null)) {
+        public void GetOperatingSystemTemplatesByServiceIdAsync(int serviceId, object userState)
+        {
+            if ((this.GetOperatingSystemTemplatesByServiceIdOperationCompleted == null))
+            {
                 this.GetOperatingSystemTemplatesByServiceIdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetOperatingSystemTemplatesByServiceIdOperationCompleted);
             }
             this.InvokeAsync("GetOperatingSystemTemplatesByServiceId", new object[] {
                         serviceId}, this.GetOperatingSystemTemplatesByServiceIdOperationCompleted, userState);
         }
-        
-        private void OnGetOperatingSystemTemplatesByServiceIdOperationCompleted(object arg) {
-            if ((this.GetOperatingSystemTemplatesByServiceIdCompleted != null)) {
+
+        private void OnGetOperatingSystemTemplatesByServiceIdOperationCompleted(object arg)
+        {
+            if ((this.GetOperatingSystemTemplatesByServiceIdCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetOperatingSystemTemplatesByServiceIdCompleted(this, new GetOperatingSystemTemplatesByServiceIdCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetMaximumCpuCoresNumber", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int GetMaximumCpuCoresNumber(int packageId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetMaximumCpuCoresNumber", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int GetMaximumCpuCoresNumber(int packageId)
+        {
             object[] results = this.Invoke("GetMaximumCpuCoresNumber", new object[] {
                         packageId});
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetMaximumCpuCoresNumber(int packageId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetMaximumCpuCoresNumber(int packageId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetMaximumCpuCoresNumber", new object[] {
                         packageId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public int EndGetMaximumCpuCoresNumber(System.IAsyncResult asyncResult) {
+        public int EndGetMaximumCpuCoresNumber(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetMaximumCpuCoresNumberAsync(int packageId) {
+        public void GetMaximumCpuCoresNumberAsync(int packageId)
+        {
             this.GetMaximumCpuCoresNumberAsync(packageId, null);
         }
-        
+
         /// <remarks/>
-        public void GetMaximumCpuCoresNumberAsync(int packageId, object userState) {
-            if ((this.GetMaximumCpuCoresNumberOperationCompleted == null)) {
+        public void GetMaximumCpuCoresNumberAsync(int packageId, object userState)
+        {
+            if ((this.GetMaximumCpuCoresNumberOperationCompleted == null))
+            {
                 this.GetMaximumCpuCoresNumberOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMaximumCpuCoresNumberOperationCompleted);
             }
             this.InvokeAsync("GetMaximumCpuCoresNumber", new object[] {
                         packageId}, this.GetMaximumCpuCoresNumberOperationCompleted, userState);
         }
-        
-        private void OnGetMaximumCpuCoresNumberOperationCompleted(object arg) {
-            if ((this.GetMaximumCpuCoresNumberCompleted != null)) {
+
+        private void OnGetMaximumCpuCoresNumberOperationCompleted(object arg)
+        {
+            if ((this.GetMaximumCpuCoresNumberCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetMaximumCpuCoresNumberCompleted(this, new GetMaximumCpuCoresNumberCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetDefaultExportPath", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetDefaultExportPath(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetDefaultExportPath", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetDefaultExportPath(int itemId)
+        {
             object[] results = this.Invoke("GetDefaultExportPath", new object[] {
                         itemId});
             return ((string)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetDefaultExportPath(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetDefaultExportPath(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetDefaultExportPath", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public string EndGetDefaultExportPath(System.IAsyncResult asyncResult) {
+        public string EndGetDefaultExportPath(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((string)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetDefaultExportPathAsync(int itemId) {
+        public void GetDefaultExportPathAsync(int itemId)
+        {
             this.GetDefaultExportPathAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetDefaultExportPathAsync(int itemId, object userState) {
-            if ((this.GetDefaultExportPathOperationCompleted == null)) {
+        public void GetDefaultExportPathAsync(int itemId, object userState)
+        {
+            if ((this.GetDefaultExportPathOperationCompleted == null))
+            {
                 this.GetDefaultExportPathOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDefaultExportPathOperationCompleted);
             }
             this.InvokeAsync("GetDefaultExportPath", new object[] {
                         itemId}, this.GetDefaultExportPathOperationCompleted, userState);
         }
-        
-        private void OnGetDefaultExportPathOperationCompleted(object arg) {
-            if ((this.GetDefaultExportPathCompleted != null)) {
+
+        private void OnGetDefaultExportPathOperationCompleted(object arg)
+        {
+            if ((this.GetDefaultExportPathCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetDefaultExportPathCompleted(this, new GetDefaultExportPathCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateDefaultVirtualMachine", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public IntResult CreateDefaultVirtualMachine(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateDefaultVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public IntResult CreateDefaultVirtualMachine(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail)
+        {
             object[] results = this.Invoke("CreateDefaultVirtualMachine", new object[] {
                         packageId,
                         hostname,
@@ -1122,9 +1254,10 @@ namespace SolidCP.EnterpriseServer {
                         summaryLetterEmail});
             return ((IntResult)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginCreateDefaultVirtualMachine(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginCreateDefaultVirtualMachine(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("CreateDefaultVirtualMachine", new object[] {
                         packageId,
                         hostname,
@@ -1132,21 +1265,25 @@ namespace SolidCP.EnterpriseServer {
                         password,
                         summaryLetterEmail}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public IntResult EndCreateDefaultVirtualMachine(System.IAsyncResult asyncResult) {
+        public IntResult EndCreateDefaultVirtualMachine(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((IntResult)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void CreateDefaultVirtualMachineAsync(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail) {
+        public void CreateDefaultVirtualMachineAsync(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail)
+        {
             this.CreateDefaultVirtualMachineAsync(packageId, hostname, osTemplate, password, summaryLetterEmail, null);
         }
-        
+
         /// <remarks/>
-        public void CreateDefaultVirtualMachineAsync(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail, object userState) {
-            if ((this.CreateDefaultVirtualMachineOperationCompleted == null)) {
+        public void CreateDefaultVirtualMachineAsync(int packageId, string hostname, string osTemplate, string password, string summaryLetterEmail, object userState)
+        {
+            if ((this.CreateDefaultVirtualMachineOperationCompleted == null))
+            {
                 this.CreateDefaultVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateDefaultVirtualMachineOperationCompleted);
             }
             this.InvokeAsync("CreateDefaultVirtualMachine", new object[] {
@@ -1156,43 +1293,46 @@ namespace SolidCP.EnterpriseServer {
                         password,
                         summaryLetterEmail}, this.CreateDefaultVirtualMachineOperationCompleted, userState);
         }
-        
-        private void OnCreateDefaultVirtualMachineOperationCompleted(object arg) {
-            if ((this.CreateDefaultVirtualMachineCompleted != null)) {
+
+        private void OnCreateDefaultVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.CreateDefaultVirtualMachineCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CreateDefaultVirtualMachineCompleted(this, new CreateDefaultVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateVirtualMachine", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public IntResult CreateVirtualMachine(
-                    int packageId, 
-                    string hostname, 
-                    string osTemplateFile, 
-                    string password, 
-                    string summaryLetterEmail, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    int externalAddressesNumber, 
-                    bool randomExternalAddresses, 
-                    int[] externalAddresses, 
-                    bool privateNetworkEnabled, 
-                    int privateAddressesNumber, 
-                    bool randomPrivateAddresses, 
-                    string[] privateAddresses, 
-                    VirtualMachine otherSettings) {
+                    int packageId,
+                    string hostname,
+                    string osTemplateFile,
+                    string password,
+                    string summaryLetterEmail,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    int externalAddressesNumber,
+                    bool randomExternalAddresses,
+                    int[] externalAddresses,
+                    bool privateNetworkEnabled,
+                    int privateAddressesNumber,
+                    bool randomPrivateAddresses,
+                    string[] privateAddresses,
+                    VirtualMachine otherSettings)
+        {
             object[] results = this.Invoke("CreateVirtualMachine", new object[] {
                         packageId,
                         hostname,
@@ -1222,37 +1362,38 @@ namespace SolidCP.EnterpriseServer {
                         otherSettings});
             return ((IntResult)(results[0]));
         }
-        
+
         /// <remarks/>
         public System.IAsyncResult BeginCreateVirtualMachine(
-                    int packageId, 
-                    string hostname, 
-                    string osTemplateFile, 
-                    string password, 
-                    string summaryLetterEmail, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    int externalAddressesNumber, 
-                    bool randomExternalAddresses, 
-                    int[] externalAddresses, 
-                    bool privateNetworkEnabled, 
-                    int privateAddressesNumber, 
-                    bool randomPrivateAddresses, 
-                    string[] privateAddresses, 
-                    VirtualMachine otherSettings, 
-                    System.AsyncCallback callback, 
-                    object asyncState) {
+                    int packageId,
+                    string hostname,
+                    string osTemplateFile,
+                    string password,
+                    string summaryLetterEmail,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    int externalAddressesNumber,
+                    bool randomExternalAddresses,
+                    int[] externalAddresses,
+                    bool privateNetworkEnabled,
+                    int privateAddressesNumber,
+                    bool randomPrivateAddresses,
+                    string[] privateAddresses,
+                    VirtualMachine otherSettings,
+                    System.AsyncCallback callback,
+                    object asyncState)
+        {
             return this.BeginInvoke("CreateVirtualMachine", new object[] {
                         packageId,
                         hostname,
@@ -1281,74 +1422,78 @@ namespace SolidCP.EnterpriseServer {
                         privateAddresses,
                         otherSettings}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public IntResult EndCreateVirtualMachine(System.IAsyncResult asyncResult) {
+        public IntResult EndCreateVirtualMachine(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((IntResult)(results[0]));
         }
-        
+
         /// <remarks/>
         public void CreateVirtualMachineAsync(
-                    int packageId, 
-                    string hostname, 
-                    string osTemplateFile, 
-                    string password, 
-                    string summaryLetterEmail, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    int externalAddressesNumber, 
-                    bool randomExternalAddresses, 
-                    int[] externalAddresses, 
-                    bool privateNetworkEnabled, 
-                    int privateAddressesNumber, 
-                    bool randomPrivateAddresses, 
-                    string[] privateAddresses, 
-                    VirtualMachine otherSettings) {
+                    int packageId,
+                    string hostname,
+                    string osTemplateFile,
+                    string password,
+                    string summaryLetterEmail,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    int externalAddressesNumber,
+                    bool randomExternalAddresses,
+                    int[] externalAddresses,
+                    bool privateNetworkEnabled,
+                    int privateAddressesNumber,
+                    bool randomPrivateAddresses,
+                    string[] privateAddresses,
+                    VirtualMachine otherSettings)
+        {
             this.CreateVirtualMachineAsync(packageId, hostname, osTemplateFile, password, summaryLetterEmail, cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses, privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, otherSettings, null);
         }
-        
+
         /// <remarks/>
         public void CreateVirtualMachineAsync(
-                    int packageId, 
-                    string hostname, 
-                    string osTemplateFile, 
-                    string password, 
-                    string summaryLetterEmail, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    int externalAddressesNumber, 
-                    bool randomExternalAddresses, 
-                    int[] externalAddresses, 
-                    bool privateNetworkEnabled, 
-                    int privateAddressesNumber, 
-                    bool randomPrivateAddresses, 
-                    string[] privateAddresses, 
-                    VirtualMachine otherSettings, 
-                    object userState) {
-            if ((this.CreateVirtualMachineOperationCompleted == null)) {
+                    int packageId,
+                    string hostname,
+                    string osTemplateFile,
+                    string password,
+                    string summaryLetterEmail,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    int externalAddressesNumber,
+                    bool randomExternalAddresses,
+                    int[] externalAddresses,
+                    bool privateNetworkEnabled,
+                    int privateAddressesNumber,
+                    bool randomPrivateAddresses,
+                    string[] privateAddresses,
+                    VirtualMachine otherSettings,
+                    object userState)
+        {
+            if ((this.CreateVirtualMachineOperationCompleted == null))
+            {
                 this.CreateVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateVirtualMachineOperationCompleted);
             }
             this.InvokeAsync("CreateVirtualMachine", new object[] {
@@ -1379,17 +1524,20 @@ namespace SolidCP.EnterpriseServer {
                         privateAddresses,
                         otherSettings}, this.CreateVirtualMachineOperationCompleted, userState);
         }
-        
-        private void OnCreateVirtualMachineOperationCompleted(object arg) {
-            if ((this.CreateVirtualMachineCompleted != null)) {
+
+        private void OnCreateVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.CreateVirtualMachineCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CreateVirtualMachineCompleted(this, new CreateVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ImportVirtualMachine", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public IntResult ImportVirtualMachine(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ImportVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public IntResult ImportVirtualMachine(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress)
+        {
             object[] results = this.Invoke("ImportVirtualMachine", new object[] {
                         packageId,
                         serviceId,
@@ -1407,25 +1555,26 @@ namespace SolidCP.EnterpriseServer {
                         managementAddress});
             return ((IntResult)(results[0]));
         }
-        
+
         /// <remarks/>
         public System.IAsyncResult BeginImportVirtualMachine(
-                    int packageId, 
-                    int serviceId, 
-                    string vmId, 
-                    string osTemplateFile, 
-                    string adminPassword, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    string externalNicMacAddress, 
-                    int[] externalAddresses, 
-                    string managementNicMacAddress, 
-                    int managementAddress, 
-                    System.AsyncCallback callback, 
-                    object asyncState) {
+                    int packageId,
+                    int serviceId,
+                    string vmId,
+                    string osTemplateFile,
+                    string adminPassword,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    string externalNicMacAddress,
+                    int[] externalAddresses,
+                    string managementNicMacAddress,
+                    int managementAddress,
+                    System.AsyncCallback callback,
+                    object asyncState)
+        {
             return this.BeginInvoke("ImportVirtualMachine", new object[] {
                         packageId,
                         serviceId,
@@ -1442,21 +1591,25 @@ namespace SolidCP.EnterpriseServer {
                         managementNicMacAddress,
                         managementAddress}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public IntResult EndImportVirtualMachine(System.IAsyncResult asyncResult) {
+        public IntResult EndImportVirtualMachine(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((IntResult)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void ImportVirtualMachineAsync(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress) {
+        public void ImportVirtualMachineAsync(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress)
+        {
             this.ImportVirtualMachineAsync(packageId, serviceId, vmId, osTemplateFile, adminPassword, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNicMacAddress, externalAddresses, managementNicMacAddress, managementAddress, null);
         }
-        
+
         /// <remarks/>
-        public void ImportVirtualMachineAsync(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress, object userState) {
-            if ((this.ImportVirtualMachineOperationCompleted == null)) {
+        public void ImportVirtualMachineAsync(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress, object userState)
+        {
+            if ((this.ImportVirtualMachineOperationCompleted == null))
+            {
                 this.ImportVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnImportVirtualMachineOperationCompleted);
             }
             this.InvokeAsync("ImportVirtualMachine", new object[] {
@@ -1475,217 +1628,257 @@ namespace SolidCP.EnterpriseServer {
                         managementNicMacAddress,
                         managementAddress}, this.ImportVirtualMachineOperationCompleted, userState);
         }
-        
-        private void OnImportVirtualMachineOperationCompleted(object arg) {
-            if ((this.ImportVirtualMachineCompleted != null)) {
+
+        private void OnImportVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.ImportVirtualMachineCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ImportVirtualMachineCompleted(this, new ImportVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineThumbnail", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineThumbnail", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary")]
+        public byte[] GetVirtualMachineThumbnail(int itemId, ThumbnailSize size)
+        {
             object[] results = this.Invoke("GetVirtualMachineThumbnail", new object[] {
                         itemId,
                         size});
             return ((byte[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineThumbnail(int itemId, ThumbnailSize size, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineThumbnail(int itemId, ThumbnailSize size, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineThumbnail", new object[] {
                         itemId,
                         size}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public byte[] EndGetVirtualMachineThumbnail(System.IAsyncResult asyncResult) {
+        public byte[] EndGetVirtualMachineThumbnail(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((byte[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineThumbnailAsync(int itemId, ThumbnailSize size) {
+        public void GetVirtualMachineThumbnailAsync(int itemId, ThumbnailSize size)
+        {
             this.GetVirtualMachineThumbnailAsync(itemId, size, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineThumbnailAsync(int itemId, ThumbnailSize size, object userState) {
-            if ((this.GetVirtualMachineThumbnailOperationCompleted == null)) {
+        public void GetVirtualMachineThumbnailAsync(int itemId, ThumbnailSize size, object userState)
+        {
+            if ((this.GetVirtualMachineThumbnailOperationCompleted == null))
+            {
                 this.GetVirtualMachineThumbnailOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineThumbnailOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineThumbnail", new object[] {
                         itemId,
                         size}, this.GetVirtualMachineThumbnailOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineThumbnailOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineThumbnailCompleted != null)) {
+
+        private void OnGetVirtualMachineThumbnailOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineThumbnailCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineThumbnailCompleted(this, new GetVirtualMachineThumbnailCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineGeneralDetails", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachine GetVirtualMachineGeneralDetails(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineGeneralDetails", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachine GetVirtualMachineGeneralDetails(int itemId)
+        {
             object[] results = this.Invoke("GetVirtualMachineGeneralDetails", new object[] {
                         itemId});
             return ((VirtualMachine)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineGeneralDetails(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineGeneralDetails(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineGeneralDetails", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachine EndGetVirtualMachineGeneralDetails(System.IAsyncResult asyncResult) {
+        public VirtualMachine EndGetVirtualMachineGeneralDetails(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachine)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineGeneralDetailsAsync(int itemId) {
+        public void GetVirtualMachineGeneralDetailsAsync(int itemId)
+        {
             this.GetVirtualMachineGeneralDetailsAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineGeneralDetailsAsync(int itemId, object userState) {
-            if ((this.GetVirtualMachineGeneralDetailsOperationCompleted == null)) {
+        public void GetVirtualMachineGeneralDetailsAsync(int itemId, object userState)
+        {
+            if ((this.GetVirtualMachineGeneralDetailsOperationCompleted == null))
+            {
                 this.GetVirtualMachineGeneralDetailsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineGeneralDetailsOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineGeneralDetails", new object[] {
                         itemId}, this.GetVirtualMachineGeneralDetailsOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineGeneralDetailsOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineGeneralDetailsCompleted != null)) {
+
+        private void OnGetVirtualMachineGeneralDetailsOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineGeneralDetailsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineGeneralDetailsCompleted(this, new GetVirtualMachineGeneralDetailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineExtendedInfo", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineExtendedInfo", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
+        {
             object[] results = this.Invoke("GetVirtualMachineExtendedInfo", new object[] {
                         serviceId,
                         vmId});
             return ((VirtualMachine)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineExtendedInfo(int serviceId, string vmId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineExtendedInfo(int serviceId, string vmId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineExtendedInfo", new object[] {
                         serviceId,
                         vmId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachine EndGetVirtualMachineExtendedInfo(System.IAsyncResult asyncResult) {
+        public VirtualMachine EndGetVirtualMachineExtendedInfo(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachine)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineExtendedInfoAsync(int serviceId, string vmId) {
+        public void GetVirtualMachineExtendedInfoAsync(int serviceId, string vmId)
+        {
             this.GetVirtualMachineExtendedInfoAsync(serviceId, vmId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineExtendedInfoAsync(int serviceId, string vmId, object userState) {
-            if ((this.GetVirtualMachineExtendedInfoOperationCompleted == null)) {
+        public void GetVirtualMachineExtendedInfoAsync(int serviceId, string vmId, object userState)
+        {
+            if ((this.GetVirtualMachineExtendedInfoOperationCompleted == null))
+            {
                 this.GetVirtualMachineExtendedInfoOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineExtendedInfoOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineExtendedInfo", new object[] {
                         serviceId,
                         vmId}, this.GetVirtualMachineExtendedInfoOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineExtendedInfoOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineExtendedInfoCompleted != null)) {
+
+        private void OnGetVirtualMachineExtendedInfoOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineExtendedInfoCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineExtendedInfoCompleted(this, new GetVirtualMachineExtendedInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CancelVirtualMachineJob", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int CancelVirtualMachineJob(string jobId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CancelVirtualMachineJob", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int CancelVirtualMachineJob(string jobId)
+        {
             object[] results = this.Invoke("CancelVirtualMachineJob", new object[] {
                         jobId});
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginCancelVirtualMachineJob(string jobId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginCancelVirtualMachineJob(string jobId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("CancelVirtualMachineJob", new object[] {
                         jobId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public int EndCancelVirtualMachineJob(System.IAsyncResult asyncResult) {
+        public int EndCancelVirtualMachineJob(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void CancelVirtualMachineJobAsync(string jobId) {
+        public void CancelVirtualMachineJobAsync(string jobId)
+        {
             this.CancelVirtualMachineJobAsync(jobId, null);
         }
-        
+
         /// <remarks/>
-        public void CancelVirtualMachineJobAsync(string jobId, object userState) {
-            if ((this.CancelVirtualMachineJobOperationCompleted == null)) {
+        public void CancelVirtualMachineJobAsync(string jobId, object userState)
+        {
+            if ((this.CancelVirtualMachineJobOperationCompleted == null))
+            {
                 this.CancelVirtualMachineJobOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCancelVirtualMachineJobOperationCompleted);
             }
             this.InvokeAsync("CancelVirtualMachineJob", new object[] {
                         jobId}, this.CancelVirtualMachineJobOperationCompleted, userState);
         }
-        
-        private void OnCancelVirtualMachineJobOperationCompleted(object arg) {
-            if ((this.CancelVirtualMachineJobCompleted != null)) {
+
+        private void OnCancelVirtualMachineJobOperationCompleted(object arg)
+        {
+            if ((this.CancelVirtualMachineJobCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CancelVirtualMachineJobCompleted(this, new CancelVirtualMachineJobCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineHostName", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject UpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineHostName", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject UpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS)
+        {
             object[] results = this.Invoke("UpdateVirtualMachineHostName", new object[] {
                         itemId,
                         hostname,
                         updateNetBIOS});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginUpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginUpdateVirtualMachineHostName(int itemId, string hostname, bool updateNetBIOS, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("UpdateVirtualMachineHostName", new object[] {
                         itemId,
                         hostname,
                         updateNetBIOS}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndUpdateVirtualMachineHostName(System.IAsyncResult asyncResult) {
+        public ResultObject EndUpdateVirtualMachineHostName(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void UpdateVirtualMachineHostNameAsync(int itemId, string hostname, bool updateNetBIOS) {
+        public void UpdateVirtualMachineHostNameAsync(int itemId, string hostname, bool updateNetBIOS)
+        {
             this.UpdateVirtualMachineHostNameAsync(itemId, hostname, updateNetBIOS, null);
         }
-        
+
         /// <remarks/>
-        public void UpdateVirtualMachineHostNameAsync(int itemId, string hostname, bool updateNetBIOS, object userState) {
-            if ((this.UpdateVirtualMachineHostNameOperationCompleted == null)) {
+        public void UpdateVirtualMachineHostNameAsync(int itemId, string hostname, bool updateNetBIOS, object userState)
+        {
+            if ((this.UpdateVirtualMachineHostNameOperationCompleted == null))
+            {
                 this.UpdateVirtualMachineHostNameOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateVirtualMachineHostNameOperationCompleted);
             }
             this.InvokeAsync("UpdateVirtualMachineHostName", new object[] {
@@ -1693,162 +1886,189 @@ namespace SolidCP.EnterpriseServer {
                         hostname,
                         updateNetBIOS}, this.UpdateVirtualMachineHostNameOperationCompleted, userState);
         }
-        
-        private void OnUpdateVirtualMachineHostNameOperationCompleted(object arg) {
-            if ((this.UpdateVirtualMachineHostNameCompleted != null)) {
+
+        private void OnUpdateVirtualMachineHostNameOperationCompleted(object arg)
+        {
+            if ((this.UpdateVirtualMachineHostNameCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateVirtualMachineHostNameCompleted(this, new UpdateVirtualMachineHostNameCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ChangeVirtualMachineState", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject ChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ChangeVirtualMachineState", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject ChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state)
+        {
             object[] results = this.Invoke("ChangeVirtualMachineState", new object[] {
                         itemId,
                         state});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("ChangeVirtualMachineState", new object[] {
                         itemId,
                         state}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndChangeVirtualMachineState(System.IAsyncResult asyncResult) {
+        public ResultObject EndChangeVirtualMachineState(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void ChangeVirtualMachineStateAsync(int itemId, VirtualMachineRequestedState state) {
+        public void ChangeVirtualMachineStateAsync(int itemId, VirtualMachineRequestedState state)
+        {
             this.ChangeVirtualMachineStateAsync(itemId, state, null);
         }
-        
+
         /// <remarks/>
-        public void ChangeVirtualMachineStateAsync(int itemId, VirtualMachineRequestedState state, object userState) {
-            if ((this.ChangeVirtualMachineStateOperationCompleted == null)) {
+        public void ChangeVirtualMachineStateAsync(int itemId, VirtualMachineRequestedState state, object userState)
+        {
+            if ((this.ChangeVirtualMachineStateOperationCompleted == null))
+            {
                 this.ChangeVirtualMachineStateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeVirtualMachineStateOperationCompleted);
             }
             this.InvokeAsync("ChangeVirtualMachineState", new object[] {
                         itemId,
                         state}, this.ChangeVirtualMachineStateOperationCompleted, userState);
         }
-        
-        private void OnChangeVirtualMachineStateOperationCompleted(object arg) {
-            if ((this.ChangeVirtualMachineStateCompleted != null)) {
+
+        private void OnChangeVirtualMachineStateOperationCompleted(object arg)
+        {
+            if ((this.ChangeVirtualMachineStateCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ChangeVirtualMachineStateCompleted(this, new ChangeVirtualMachineStateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineJobs", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ConcreteJob[] GetVirtualMachineJobs(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineJobs", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ConcreteJob[] GetVirtualMachineJobs(int itemId)
+        {
             object[] results = this.Invoke("GetVirtualMachineJobs", new object[] {
                         itemId});
             return ((ConcreteJob[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineJobs(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineJobs(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineJobs", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ConcreteJob[] EndGetVirtualMachineJobs(System.IAsyncResult asyncResult) {
+        public ConcreteJob[] EndGetVirtualMachineJobs(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ConcreteJob[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineJobsAsync(int itemId) {
+        public void GetVirtualMachineJobsAsync(int itemId)
+        {
             this.GetVirtualMachineJobsAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineJobsAsync(int itemId, object userState) {
-            if ((this.GetVirtualMachineJobsOperationCompleted == null)) {
+        public void GetVirtualMachineJobsAsync(int itemId, object userState)
+        {
+            if ((this.GetVirtualMachineJobsOperationCompleted == null))
+            {
                 this.GetVirtualMachineJobsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineJobsOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineJobs", new object[] {
                         itemId}, this.GetVirtualMachineJobsOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineJobsOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineJobsCompleted != null)) {
+
+        private void OnGetVirtualMachineJobsOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineJobsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineJobsCompleted(this, new GetVirtualMachineJobsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ChangeAdministratorPassword", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject ChangeAdministratorPassword(int itemId, string password) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ChangeAdministratorPassword", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject ChangeAdministratorPassword(int itemId, string password)
+        {
             object[] results = this.Invoke("ChangeAdministratorPassword", new object[] {
                         itemId,
                         password});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginChangeAdministratorPassword(int itemId, string password, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginChangeAdministratorPassword(int itemId, string password, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("ChangeAdministratorPassword", new object[] {
                         itemId,
                         password}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndChangeAdministratorPassword(System.IAsyncResult asyncResult) {
+        public ResultObject EndChangeAdministratorPassword(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void ChangeAdministratorPasswordAsync(int itemId, string password) {
+        public void ChangeAdministratorPasswordAsync(int itemId, string password)
+        {
             this.ChangeAdministratorPasswordAsync(itemId, password, null);
         }
-        
+
         /// <remarks/>
-        public void ChangeAdministratorPasswordAsync(int itemId, string password, object userState) {
-            if ((this.ChangeAdministratorPasswordOperationCompleted == null)) {
+        public void ChangeAdministratorPasswordAsync(int itemId, string password, object userState)
+        {
+            if ((this.ChangeAdministratorPasswordOperationCompleted == null))
+            {
                 this.ChangeAdministratorPasswordOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeAdministratorPasswordOperationCompleted);
             }
             this.InvokeAsync("ChangeAdministratorPassword", new object[] {
                         itemId,
                         password}, this.ChangeAdministratorPasswordOperationCompleted, userState);
         }
-        
-        private void OnChangeAdministratorPasswordOperationCompleted(object arg) {
-            if ((this.ChangeAdministratorPasswordCompleted != null)) {
+
+        private void OnChangeAdministratorPasswordOperationCompleted(object arg)
+        {
+            if ((this.ChangeAdministratorPasswordCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ChangeAdministratorPasswordCompleted(this, new ChangeAdministratorPasswordCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineConfiguration", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineConfiguration", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject UpdateVirtualMachineConfiguration(
-                    int itemId, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    bool privateNetworkEnabled, 
-                    VirtualMachine otherSettings) {
+                    int itemId,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    bool privateNetworkEnabled,
+                    VirtualMachine otherSettings)
+        {
             object[] results = this.Invoke("UpdateVirtualMachineConfiguration", new object[] {
                         itemId,
                         cpuCores,
@@ -1868,27 +2088,28 @@ namespace SolidCP.EnterpriseServer {
                         otherSettings});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
         public System.IAsyncResult BeginUpdateVirtualMachineConfiguration(
-                    int itemId, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    bool privateNetworkEnabled, 
-                    VirtualMachine otherSettings, 
-                    System.AsyncCallback callback, 
-                    object asyncState) {
+                    int itemId,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    bool privateNetworkEnabled,
+                    VirtualMachine otherSettings,
+                    System.AsyncCallback callback,
+                    object asyncState)
+        {
             return this.BeginInvoke("UpdateVirtualMachineConfiguration", new object[] {
                         itemId,
                         cpuCores,
@@ -1907,54 +2128,58 @@ namespace SolidCP.EnterpriseServer {
                         privateNetworkEnabled,
                         otherSettings}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndUpdateVirtualMachineConfiguration(System.IAsyncResult asyncResult) {
+        public ResultObject EndUpdateVirtualMachineConfiguration(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
         public void UpdateVirtualMachineConfigurationAsync(
-                    int itemId, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    bool privateNetworkEnabled, 
-                    VirtualMachine otherSettings) {
+                    int itemId,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    bool privateNetworkEnabled,
+                    VirtualMachine otherSettings)
+        {
             this.UpdateVirtualMachineConfigurationAsync(itemId, cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, privateNetworkEnabled, otherSettings, null);
         }
-        
+
         /// <remarks/>
         public void UpdateVirtualMachineConfigurationAsync(
-                    int itemId, 
-                    int cpuCores, 
-                    int ramMB, 
-                    int hddGB, 
-                    int snapshots, 
-                    bool dvdInstalled, 
-                    bool bootFromCD, 
-                    bool numLock, 
-                    bool startShutdownAllowed, 
-                    bool pauseResumeAllowed, 
-                    bool rebootAllowed, 
-                    bool resetAllowed, 
-                    bool reinstallAllowed, 
-                    bool externalNetworkEnabled, 
-                    bool privateNetworkEnabled, 
-                    VirtualMachine otherSettings, 
-                    object userState) {
-            if ((this.UpdateVirtualMachineConfigurationOperationCompleted == null)) {
+                    int itemId,
+                    int cpuCores,
+                    int ramMB,
+                    int hddGB,
+                    int snapshots,
+                    bool dvdInstalled,
+                    bool bootFromCD,
+                    bool numLock,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    bool externalNetworkEnabled,
+                    bool privateNetworkEnabled,
+                    VirtualMachine otherSettings,
+                    object userState)
+        {
+            if ((this.UpdateVirtualMachineConfigurationOperationCompleted == null))
+            {
                 this.UpdateVirtualMachineConfigurationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateVirtualMachineConfigurationOperationCompleted);
             }
             this.InvokeAsync("UpdateVirtualMachineConfiguration", new object[] {
@@ -1975,9 +2200,11 @@ namespace SolidCP.EnterpriseServer {
                         privateNetworkEnabled,
                         otherSettings}, this.UpdateVirtualMachineConfigurationOperationCompleted, userState);
         }
-        
-        private void OnUpdateVirtualMachineConfigurationOperationCompleted(object arg) {
-            if ((this.UpdateVirtualMachineConfigurationCompleted != null)) {
+
+        private void OnUpdateVirtualMachineConfigurationOperationCompleted(object arg)
+        {
+            if ((this.UpdateVirtualMachineConfigurationCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateVirtualMachineConfigurationCompleted(this, new UpdateVirtualMachineConfigurationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
@@ -2035,374 +2262,444 @@ namespace SolidCP.EnterpriseServer {
         }
 
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetInsertedDvdDisk", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public LibraryItem GetInsertedDvdDisk(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetInsertedDvdDisk", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public LibraryItem GetInsertedDvdDisk(int itemId)
+        {
             object[] results = this.Invoke("GetInsertedDvdDisk", new object[] {
                         itemId});
             return ((LibraryItem)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetInsertedDvdDisk(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetInsertedDvdDisk(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetInsertedDvdDisk", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public LibraryItem EndGetInsertedDvdDisk(System.IAsyncResult asyncResult) {
+        public LibraryItem EndGetInsertedDvdDisk(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((LibraryItem)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetInsertedDvdDiskAsync(int itemId) {
+        public void GetInsertedDvdDiskAsync(int itemId)
+        {
             this.GetInsertedDvdDiskAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetInsertedDvdDiskAsync(int itemId, object userState) {
-            if ((this.GetInsertedDvdDiskOperationCompleted == null)) {
+        public void GetInsertedDvdDiskAsync(int itemId, object userState)
+        {
+            if ((this.GetInsertedDvdDiskOperationCompleted == null))
+            {
                 this.GetInsertedDvdDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInsertedDvdDiskOperationCompleted);
             }
             this.InvokeAsync("GetInsertedDvdDisk", new object[] {
                         itemId}, this.GetInsertedDvdDiskOperationCompleted, userState);
         }
-        
-        private void OnGetInsertedDvdDiskOperationCompleted(object arg) {
-            if ((this.GetInsertedDvdDiskCompleted != null)) {
+
+        private void OnGetInsertedDvdDiskOperationCompleted(object arg)
+        {
+            if ((this.GetInsertedDvdDiskCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetInsertedDvdDiskCompleted(this, new GetInsertedDvdDiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetLibraryDisks", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public LibraryItem[] GetLibraryDisks(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetLibraryDisks", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public LibraryItem[] GetLibraryDisks(int itemId)
+        {
             object[] results = this.Invoke("GetLibraryDisks", new object[] {
                         itemId});
             return ((LibraryItem[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetLibraryDisks(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetLibraryDisks(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetLibraryDisks", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public LibraryItem[] EndGetLibraryDisks(System.IAsyncResult asyncResult) {
+        public LibraryItem[] EndGetLibraryDisks(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((LibraryItem[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetLibraryDisksAsync(int itemId) {
+        public void GetLibraryDisksAsync(int itemId)
+        {
             this.GetLibraryDisksAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetLibraryDisksAsync(int itemId, object userState) {
-            if ((this.GetLibraryDisksOperationCompleted == null)) {
+        public void GetLibraryDisksAsync(int itemId, object userState)
+        {
+            if ((this.GetLibraryDisksOperationCompleted == null))
+            {
                 this.GetLibraryDisksOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetLibraryDisksOperationCompleted);
             }
             this.InvokeAsync("GetLibraryDisks", new object[] {
                         itemId}, this.GetLibraryDisksOperationCompleted, userState);
         }
-        
-        private void OnGetLibraryDisksOperationCompleted(object arg) {
-            if ((this.GetLibraryDisksCompleted != null)) {
+
+        private void OnGetLibraryDisksOperationCompleted(object arg)
+        {
+            if ((this.GetLibraryDisksCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetLibraryDisksCompleted(this, new GetLibraryDisksCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/InsertDvdDisk", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject InsertDvdDisk(int itemId, string isoPath) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/InsertDvdDisk", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject InsertDvdDisk(int itemId, string isoPath)
+        {
             object[] results = this.Invoke("InsertDvdDisk", new object[] {
                         itemId,
                         isoPath});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginInsertDvdDisk(int itemId, string isoPath, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginInsertDvdDisk(int itemId, string isoPath, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("InsertDvdDisk", new object[] {
                         itemId,
                         isoPath}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndInsertDvdDisk(System.IAsyncResult asyncResult) {
+        public ResultObject EndInsertDvdDisk(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void InsertDvdDiskAsync(int itemId, string isoPath) {
+        public void InsertDvdDiskAsync(int itemId, string isoPath)
+        {
             this.InsertDvdDiskAsync(itemId, isoPath, null);
         }
-        
+
         /// <remarks/>
-        public void InsertDvdDiskAsync(int itemId, string isoPath, object userState) {
-            if ((this.InsertDvdDiskOperationCompleted == null)) {
+        public void InsertDvdDiskAsync(int itemId, string isoPath, object userState)
+        {
+            if ((this.InsertDvdDiskOperationCompleted == null))
+            {
                 this.InsertDvdDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnInsertDvdDiskOperationCompleted);
             }
             this.InvokeAsync("InsertDvdDisk", new object[] {
                         itemId,
                         isoPath}, this.InsertDvdDiskOperationCompleted, userState);
         }
-        
-        private void OnInsertDvdDiskOperationCompleted(object arg) {
-            if ((this.InsertDvdDiskCompleted != null)) {
+
+        private void OnInsertDvdDiskOperationCompleted(object arg)
+        {
+            if ((this.InsertDvdDiskCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.InsertDvdDiskCompleted(this, new InsertDvdDiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/EjectDvdDisk", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject EjectDvdDisk(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/EjectDvdDisk", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject EjectDvdDisk(int itemId)
+        {
             object[] results = this.Invoke("EjectDvdDisk", new object[] {
                         itemId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginEjectDvdDisk(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginEjectDvdDisk(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("EjectDvdDisk", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndEjectDvdDisk(System.IAsyncResult asyncResult) {
+        public ResultObject EndEjectDvdDisk(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void EjectDvdDiskAsync(int itemId) {
+        public void EjectDvdDiskAsync(int itemId)
+        {
             this.EjectDvdDiskAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void EjectDvdDiskAsync(int itemId, object userState) {
-            if ((this.EjectDvdDiskOperationCompleted == null)) {
+        public void EjectDvdDiskAsync(int itemId, object userState)
+        {
+            if ((this.EjectDvdDiskOperationCompleted == null))
+            {
                 this.EjectDvdDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnEjectDvdDiskOperationCompleted);
             }
             this.InvokeAsync("EjectDvdDisk", new object[] {
                         itemId}, this.EjectDvdDiskOperationCompleted, userState);
         }
-        
-        private void OnEjectDvdDiskOperationCompleted(object arg) {
-            if ((this.EjectDvdDiskCompleted != null)) {
+
+        private void OnEjectDvdDiskOperationCompleted(object arg)
+        {
+            if ((this.EjectDvdDiskCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.EjectDvdDiskCompleted(this, new EjectDvdDiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineSnapshots", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachineSnapshot[] GetVirtualMachineSnapshots(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineSnapshots", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachineSnapshot[] GetVirtualMachineSnapshots(int itemId)
+        {
             object[] results = this.Invoke("GetVirtualMachineSnapshots", new object[] {
                         itemId});
             return ((VirtualMachineSnapshot[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineSnapshots(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineSnapshots(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineSnapshots", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachineSnapshot[] EndGetVirtualMachineSnapshots(System.IAsyncResult asyncResult) {
+        public VirtualMachineSnapshot[] EndGetVirtualMachineSnapshots(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachineSnapshot[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineSnapshotsAsync(int itemId) {
+        public void GetVirtualMachineSnapshotsAsync(int itemId)
+        {
             this.GetVirtualMachineSnapshotsAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineSnapshotsAsync(int itemId, object userState) {
-            if ((this.GetVirtualMachineSnapshotsOperationCompleted == null)) {
+        public void GetVirtualMachineSnapshotsAsync(int itemId, object userState)
+        {
+            if ((this.GetVirtualMachineSnapshotsOperationCompleted == null))
+            {
                 this.GetVirtualMachineSnapshotsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineSnapshotsOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineSnapshots", new object[] {
                         itemId}, this.GetVirtualMachineSnapshotsOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineSnapshotsOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineSnapshotsCompleted != null)) {
+
+        private void OnGetVirtualMachineSnapshotsOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineSnapshotsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineSnapshotsCompleted(this, new GetVirtualMachineSnapshotsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSnapshot", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachineSnapshot GetSnapshot(int itemId, string snaphostId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSnapshot", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachineSnapshot GetSnapshot(int itemId, string snaphostId)
+        {
             object[] results = this.Invoke("GetSnapshot", new object[] {
                         itemId,
                         snaphostId});
             return ((VirtualMachineSnapshot)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetSnapshot(int itemId, string snaphostId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetSnapshot(int itemId, string snaphostId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetSnapshot", new object[] {
                         itemId,
                         snaphostId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachineSnapshot EndGetSnapshot(System.IAsyncResult asyncResult) {
+        public VirtualMachineSnapshot EndGetSnapshot(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachineSnapshot)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetSnapshotAsync(int itemId, string snaphostId) {
+        public void GetSnapshotAsync(int itemId, string snaphostId)
+        {
             this.GetSnapshotAsync(itemId, snaphostId, null);
         }
-        
+
         /// <remarks/>
-        public void GetSnapshotAsync(int itemId, string snaphostId, object userState) {
-            if ((this.GetSnapshotOperationCompleted == null)) {
+        public void GetSnapshotAsync(int itemId, string snaphostId, object userState)
+        {
+            if ((this.GetSnapshotOperationCompleted == null))
+            {
                 this.GetSnapshotOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSnapshotOperationCompleted);
             }
             this.InvokeAsync("GetSnapshot", new object[] {
                         itemId,
                         snaphostId}, this.GetSnapshotOperationCompleted, userState);
         }
-        
-        private void OnGetSnapshotOperationCompleted(object arg) {
-            if ((this.GetSnapshotCompleted != null)) {
+
+        private void OnGetSnapshotOperationCompleted(object arg)
+        {
+            if ((this.GetSnapshotCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetSnapshotCompleted(this, new GetSnapshotCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateSnapshot", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject CreateSnapshot(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateSnapshot", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject CreateSnapshot(int itemId)
+        {
             object[] results = this.Invoke("CreateSnapshot", new object[] {
                         itemId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginCreateSnapshot(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginCreateSnapshot(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("CreateSnapshot", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndCreateSnapshot(System.IAsyncResult asyncResult) {
+        public ResultObject EndCreateSnapshot(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void CreateSnapshotAsync(int itemId) {
+        public void CreateSnapshotAsync(int itemId)
+        {
             this.CreateSnapshotAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void CreateSnapshotAsync(int itemId, object userState) {
-            if ((this.CreateSnapshotOperationCompleted == null)) {
+        public void CreateSnapshotAsync(int itemId, object userState)
+        {
+            if ((this.CreateSnapshotOperationCompleted == null))
+            {
                 this.CreateSnapshotOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateSnapshotOperationCompleted);
             }
             this.InvokeAsync("CreateSnapshot", new object[] {
                         itemId}, this.CreateSnapshotOperationCompleted, userState);
         }
-        
-        private void OnCreateSnapshotOperationCompleted(object arg) {
-            if ((this.CreateSnapshotCompleted != null)) {
+
+        private void OnCreateSnapshotOperationCompleted(object arg)
+        {
+            if ((this.CreateSnapshotCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CreateSnapshotCompleted(this, new CreateSnapshotCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ApplySnapshot", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject ApplySnapshot(int itemId, string snapshotId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ApplySnapshot", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject ApplySnapshot(int itemId, string snapshotId)
+        {
             object[] results = this.Invoke("ApplySnapshot", new object[] {
                         itemId,
                         snapshotId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginApplySnapshot(int itemId, string snapshotId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginApplySnapshot(int itemId, string snapshotId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("ApplySnapshot", new object[] {
                         itemId,
                         snapshotId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndApplySnapshot(System.IAsyncResult asyncResult) {
+        public ResultObject EndApplySnapshot(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void ApplySnapshotAsync(int itemId, string snapshotId) {
+        public void ApplySnapshotAsync(int itemId, string snapshotId)
+        {
             this.ApplySnapshotAsync(itemId, snapshotId, null);
         }
-        
+
         /// <remarks/>
-        public void ApplySnapshotAsync(int itemId, string snapshotId, object userState) {
-            if ((this.ApplySnapshotOperationCompleted == null)) {
+        public void ApplySnapshotAsync(int itemId, string snapshotId, object userState)
+        {
+            if ((this.ApplySnapshotOperationCompleted == null))
+            {
                 this.ApplySnapshotOperationCompleted = new System.Threading.SendOrPostCallback(this.OnApplySnapshotOperationCompleted);
             }
             this.InvokeAsync("ApplySnapshot", new object[] {
                         itemId,
                         snapshotId}, this.ApplySnapshotOperationCompleted, userState);
         }
-        
-        private void OnApplySnapshotOperationCompleted(object arg) {
-            if ((this.ApplySnapshotCompleted != null)) {
+
+        private void OnApplySnapshotOperationCompleted(object arg)
+        {
+            if ((this.ApplySnapshotCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ApplySnapshotCompleted(this, new ApplySnapshotCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/RenameSnapshot", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject RenameSnapshot(int itemId, string snapshotId, string newName) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/RenameSnapshot", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject RenameSnapshot(int itemId, string snapshotId, string newName)
+        {
             object[] results = this.Invoke("RenameSnapshot", new object[] {
                         itemId,
                         snapshotId,
                         newName});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginRenameSnapshot(int itemId, string snapshotId, string newName, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginRenameSnapshot(int itemId, string snapshotId, string newName, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("RenameSnapshot", new object[] {
                         itemId,
                         snapshotId,
                         newName}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndRenameSnapshot(System.IAsyncResult asyncResult) {
+        public ResultObject EndRenameSnapshot(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void RenameSnapshotAsync(int itemId, string snapshotId, string newName) {
+        public void RenameSnapshotAsync(int itemId, string snapshotId, string newName)
+        {
             this.RenameSnapshotAsync(itemId, snapshotId, newName, null);
         }
-        
+
         /// <remarks/>
-        public void RenameSnapshotAsync(int itemId, string snapshotId, string newName, object userState) {
-            if ((this.RenameSnapshotOperationCompleted == null)) {
+        public void RenameSnapshotAsync(int itemId, string snapshotId, string newName, object userState)
+        {
+            if ((this.RenameSnapshotOperationCompleted == null))
+            {
                 this.RenameSnapshotOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRenameSnapshotOperationCompleted);
             }
             this.InvokeAsync("RenameSnapshot", new object[] {
@@ -2410,135 +2707,159 @@ namespace SolidCP.EnterpriseServer {
                         snapshotId,
                         newName}, this.RenameSnapshotOperationCompleted, userState);
         }
-        
-        private void OnRenameSnapshotOperationCompleted(object arg) {
-            if ((this.RenameSnapshotCompleted != null)) {
+
+        private void OnRenameSnapshotOperationCompleted(object arg)
+        {
+            if ((this.RenameSnapshotCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.RenameSnapshotCompleted(this, new RenameSnapshotCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteSnapshot", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject DeleteSnapshot(int itemId, string snapshotId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteSnapshot", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteSnapshot(int itemId, string snapshotId)
+        {
             object[] results = this.Invoke("DeleteSnapshot", new object[] {
                         itemId,
                         snapshotId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteSnapshot(int itemId, string snapshotId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginDeleteSnapshot(int itemId, string snapshotId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("DeleteSnapshot", new object[] {
                         itemId,
                         snapshotId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndDeleteSnapshot(System.IAsyncResult asyncResult) {
+        public ResultObject EndDeleteSnapshot(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void DeleteSnapshotAsync(int itemId, string snapshotId) {
+        public void DeleteSnapshotAsync(int itemId, string snapshotId)
+        {
             this.DeleteSnapshotAsync(itemId, snapshotId, null);
         }
-        
+
         /// <remarks/>
-        public void DeleteSnapshotAsync(int itemId, string snapshotId, object userState) {
-            if ((this.DeleteSnapshotOperationCompleted == null)) {
+        public void DeleteSnapshotAsync(int itemId, string snapshotId, object userState)
+        {
+            if ((this.DeleteSnapshotOperationCompleted == null))
+            {
                 this.DeleteSnapshotOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteSnapshotOperationCompleted);
             }
             this.InvokeAsync("DeleteSnapshot", new object[] {
                         itemId,
                         snapshotId}, this.DeleteSnapshotOperationCompleted, userState);
         }
-        
-        private void OnDeleteSnapshotOperationCompleted(object arg) {
-            if ((this.DeleteSnapshotCompleted != null)) {
+
+        private void OnDeleteSnapshotOperationCompleted(object arg)
+        {
+            if ((this.DeleteSnapshotCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteSnapshotCompleted(this, new DeleteSnapshotCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteSnapshotSubtree", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject DeleteSnapshotSubtree(int itemId, string snapshotId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteSnapshotSubtree", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteSnapshotSubtree(int itemId, string snapshotId)
+        {
             object[] results = this.Invoke("DeleteSnapshotSubtree", new object[] {
                         itemId,
                         snapshotId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteSnapshotSubtree(int itemId, string snapshotId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginDeleteSnapshotSubtree(int itemId, string snapshotId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("DeleteSnapshotSubtree", new object[] {
                         itemId,
                         snapshotId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndDeleteSnapshotSubtree(System.IAsyncResult asyncResult) {
+        public ResultObject EndDeleteSnapshotSubtree(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void DeleteSnapshotSubtreeAsync(int itemId, string snapshotId) {
+        public void DeleteSnapshotSubtreeAsync(int itemId, string snapshotId)
+        {
             this.DeleteSnapshotSubtreeAsync(itemId, snapshotId, null);
         }
-        
+
         /// <remarks/>
-        public void DeleteSnapshotSubtreeAsync(int itemId, string snapshotId, object userState) {
-            if ((this.DeleteSnapshotSubtreeOperationCompleted == null)) {
+        public void DeleteSnapshotSubtreeAsync(int itemId, string snapshotId, object userState)
+        {
+            if ((this.DeleteSnapshotSubtreeOperationCompleted == null))
+            {
                 this.DeleteSnapshotSubtreeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteSnapshotSubtreeOperationCompleted);
             }
             this.InvokeAsync("DeleteSnapshotSubtree", new object[] {
                         itemId,
                         snapshotId}, this.DeleteSnapshotSubtreeOperationCompleted, userState);
         }
-        
-        private void OnDeleteSnapshotSubtreeOperationCompleted(object arg) {
-            if ((this.DeleteSnapshotSubtreeCompleted != null)) {
+
+        private void OnDeleteSnapshotSubtreeOperationCompleted(object arg)
+        {
+            if ((this.DeleteSnapshotSubtreeCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteSnapshotSubtreeCompleted(this, new DeleteSnapshotSubtreeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSnapshotThumbnail", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSnapshotThumbnail", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary")]
+        public byte[] GetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size)
+        {
             object[] results = this.Invoke("GetSnapshotThumbnail", new object[] {
                         itemId,
                         snapshotId,
                         size});
             return ((byte[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetSnapshotThumbnail(int itemId, string snapshotId, ThumbnailSize size, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetSnapshotThumbnail", new object[] {
                         itemId,
                         snapshotId,
                         size}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public byte[] EndGetSnapshotThumbnail(System.IAsyncResult asyncResult) {
+        public byte[] EndGetSnapshotThumbnail(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((byte[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetSnapshotThumbnailAsync(int itemId, string snapshotId, ThumbnailSize size) {
+        public void GetSnapshotThumbnailAsync(int itemId, string snapshotId, ThumbnailSize size)
+        {
             this.GetSnapshotThumbnailAsync(itemId, snapshotId, size, null);
         }
-        
+
         /// <remarks/>
-        public void GetSnapshotThumbnailAsync(int itemId, string snapshotId, ThumbnailSize size, object userState) {
-            if ((this.GetSnapshotThumbnailOperationCompleted == null)) {
+        public void GetSnapshotThumbnailAsync(int itemId, string snapshotId, ThumbnailSize size, object userState)
+        {
+            if ((this.GetSnapshotThumbnailOperationCompleted == null))
+            {
                 this.GetSnapshotThumbnailOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSnapshotThumbnailOperationCompleted);
             }
             this.InvokeAsync("GetSnapshotThumbnail", new object[] {
@@ -2546,9 +2867,11 @@ namespace SolidCP.EnterpriseServer {
                         snapshotId,
                         size}, this.GetSnapshotThumbnailOperationCompleted, userState);
         }
-        
-        private void OnGetSnapshotThumbnailOperationCompleted(object arg) {
-            if ((this.GetSnapshotThumbnailCompleted != null)) {
+
+        private void OnGetSnapshotThumbnailOperationCompleted(object arg)
+        {
+            if ((this.GetSnapshotThumbnailCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetSnapshotThumbnailCompleted(this, new GetSnapshotThumbnailCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
@@ -2659,50 +2982,59 @@ namespace SolidCP.EnterpriseServer {
 
 
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalNetworkAdapterDetails", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalNetworkAdapterDetails", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
+        {
             object[] results = this.Invoke("GetExternalNetworkAdapterDetails", new object[] {
                         itemId});
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetExternalNetworkAdapterDetails(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetExternalNetworkAdapterDetails(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetExternalNetworkAdapterDetails", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails EndGetExternalNetworkAdapterDetails(System.IAsyncResult asyncResult) {
+        public NetworkAdapterDetails EndGetExternalNetworkAdapterDetails(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetExternalNetworkAdapterDetailsAsync(int itemId) {
+        public void GetExternalNetworkAdapterDetailsAsync(int itemId)
+        {
             this.GetExternalNetworkAdapterDetailsAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetExternalNetworkAdapterDetailsAsync(int itemId, object userState) {
-            if ((this.GetExternalNetworkAdapterDetailsOperationCompleted == null)) {
+        public void GetExternalNetworkAdapterDetailsAsync(int itemId, object userState)
+        {
+            if ((this.GetExternalNetworkAdapterDetailsOperationCompleted == null))
+            {
                 this.GetExternalNetworkAdapterDetailsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExternalNetworkAdapterDetailsOperationCompleted);
             }
             this.InvokeAsync("GetExternalNetworkAdapterDetails", new object[] {
                         itemId}, this.GetExternalNetworkAdapterDetailsOperationCompleted, userState);
         }
-        
-        private void OnGetExternalNetworkAdapterDetailsOperationCompleted(object arg) {
-            if ((this.GetExternalNetworkAdapterDetailsCompleted != null)) {
+
+        private void OnGetExternalNetworkAdapterDetailsOperationCompleted(object arg)
+        {
+            if ((this.GetExternalNetworkAdapterDetailsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetExternalNetworkAdapterDetailsCompleted(this, new GetExternalNetworkAdapterDetailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachineExternalIPAddresses" +
-            "", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressId) {
+            "", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressId)
+        {
             object[] results = this.Invoke("AddVirtualMachineExternalIPAddresses", new object[] {
                         itemId,
                         selectRandom,
@@ -2710,30 +3042,35 @@ namespace SolidCP.EnterpriseServer {
                         addressId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginAddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginAddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("AddVirtualMachineExternalIPAddresses", new object[] {
                         itemId,
                         selectRandom,
                         addressesNumber,
                         addressId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndAddVirtualMachineExternalIPAddresses(System.IAsyncResult asyncResult) {
+        public ResultObject EndAddVirtualMachineExternalIPAddresses(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void AddVirtualMachineExternalIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, int[] addressId) {
+        public void AddVirtualMachineExternalIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, int[] addressId)
+        {
             this.AddVirtualMachineExternalIPAddressesAsync(itemId, selectRandom, addressesNumber, addressId, null);
         }
-        
+
         /// <remarks/>
-        public void AddVirtualMachineExternalIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, int[] addressId, object userState) {
-            if ((this.AddVirtualMachineExternalIPAddressesOperationCompleted == null)) {
+        public void AddVirtualMachineExternalIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, int[] addressId, object userState)
+        {
+            if ((this.AddVirtualMachineExternalIPAddressesOperationCompleted == null))
+            {
                 this.AddVirtualMachineExternalIPAddressesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddVirtualMachineExternalIPAddressesOperationCompleted);
             }
             this.InvokeAsync("AddVirtualMachineExternalIPAddresses", new object[] {
@@ -2742,148 +3079,175 @@ namespace SolidCP.EnterpriseServer {
                         addressesNumber,
                         addressId}, this.AddVirtualMachineExternalIPAddressesOperationCompleted, userState);
         }
-        
-        private void OnAddVirtualMachineExternalIPAddressesOperationCompleted(object arg) {
-            if ((this.AddVirtualMachineExternalIPAddressesCompleted != null)) {
+
+        private void OnAddVirtualMachineExternalIPAddressesOperationCompleted(object arg)
+        {
+            if ((this.AddVirtualMachineExternalIPAddressesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.AddVirtualMachineExternalIPAddressesCompleted(this, new AddVirtualMachineExternalIPAddressesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetVirtualMachinePrimaryExternalIPAd" +
-            "dress", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject SetVirtualMachinePrimaryExternalIPAddress(int itemId, int addressId) {
+            "dress", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject SetVirtualMachinePrimaryExternalIPAddress(int itemId, int addressId)
+        {
             object[] results = this.Invoke("SetVirtualMachinePrimaryExternalIPAddress", new object[] {
                         itemId,
                         addressId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginSetVirtualMachinePrimaryExternalIPAddress(int itemId, int addressId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSetVirtualMachinePrimaryExternalIPAddress(int itemId, int addressId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("SetVirtualMachinePrimaryExternalIPAddress", new object[] {
                         itemId,
                         addressId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndSetVirtualMachinePrimaryExternalIPAddress(System.IAsyncResult asyncResult) {
+        public ResultObject EndSetVirtualMachinePrimaryExternalIPAddress(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void SetVirtualMachinePrimaryExternalIPAddressAsync(int itemId, int addressId) {
+        public void SetVirtualMachinePrimaryExternalIPAddressAsync(int itemId, int addressId)
+        {
             this.SetVirtualMachinePrimaryExternalIPAddressAsync(itemId, addressId, null);
         }
-        
+
         /// <remarks/>
-        public void SetVirtualMachinePrimaryExternalIPAddressAsync(int itemId, int addressId, object userState) {
-            if ((this.SetVirtualMachinePrimaryExternalIPAddressOperationCompleted == null)) {
+        public void SetVirtualMachinePrimaryExternalIPAddressAsync(int itemId, int addressId, object userState)
+        {
+            if ((this.SetVirtualMachinePrimaryExternalIPAddressOperationCompleted == null))
+            {
                 this.SetVirtualMachinePrimaryExternalIPAddressOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetVirtualMachinePrimaryExternalIPAddressOperationCompleted);
             }
             this.InvokeAsync("SetVirtualMachinePrimaryExternalIPAddress", new object[] {
                         itemId,
                         addressId}, this.SetVirtualMachinePrimaryExternalIPAddressOperationCompleted, userState);
         }
-        
-        private void OnSetVirtualMachinePrimaryExternalIPAddressOperationCompleted(object arg) {
-            if ((this.SetVirtualMachinePrimaryExternalIPAddressCompleted != null)) {
+
+        private void OnSetVirtualMachinePrimaryExternalIPAddressOperationCompleted(object arg)
+        {
+            if ((this.SetVirtualMachinePrimaryExternalIPAddressCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetVirtualMachinePrimaryExternalIPAddressCompleted(this, new SetVirtualMachinePrimaryExternalIPAddressCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachineExternalIPAddres" +
-            "ses", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] addressId) {
+            "ses", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] addressId)
+        {
             object[] results = this.Invoke("DeleteVirtualMachineExternalIPAddresses", new object[] {
                         itemId,
                         addressId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteVirtualMachineExternalIPAddresses(int itemId, int[] addressId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginDeleteVirtualMachineExternalIPAddresses(int itemId, int[] addressId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("DeleteVirtualMachineExternalIPAddresses", new object[] {
                         itemId,
                         addressId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndDeleteVirtualMachineExternalIPAddresses(System.IAsyncResult asyncResult) {
+        public ResultObject EndDeleteVirtualMachineExternalIPAddresses(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void DeleteVirtualMachineExternalIPAddressesAsync(int itemId, int[] addressId) {
+        public void DeleteVirtualMachineExternalIPAddressesAsync(int itemId, int[] addressId)
+        {
             this.DeleteVirtualMachineExternalIPAddressesAsync(itemId, addressId, null);
         }
-        
+
         /// <remarks/>
-        public void DeleteVirtualMachineExternalIPAddressesAsync(int itemId, int[] addressId, object userState) {
-            if ((this.DeleteVirtualMachineExternalIPAddressesOperationCompleted == null)) {
+        public void DeleteVirtualMachineExternalIPAddressesAsync(int itemId, int[] addressId, object userState)
+        {
+            if ((this.DeleteVirtualMachineExternalIPAddressesOperationCompleted == null))
+            {
                 this.DeleteVirtualMachineExternalIPAddressesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineExternalIPAddressesOperationCompleted);
             }
             this.InvokeAsync("DeleteVirtualMachineExternalIPAddresses", new object[] {
                         itemId,
                         addressId}, this.DeleteVirtualMachineExternalIPAddressesOperationCompleted, userState);
         }
-        
-        private void OnDeleteVirtualMachineExternalIPAddressesOperationCompleted(object arg) {
-            if ((this.DeleteVirtualMachineExternalIPAddressesCompleted != null)) {
+
+        private void OnDeleteVirtualMachineExternalIPAddressesOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachineExternalIPAddressesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteVirtualMachineExternalIPAddressesCompleted(this, new DeleteVirtualMachineExternalIPAddressesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPrivateNetworkAdapterDetails", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public NetworkAdapterDetails GetPrivateNetworkAdapterDetails(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPrivateNetworkAdapterDetails", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public NetworkAdapterDetails GetPrivateNetworkAdapterDetails(int itemId)
+        {
             object[] results = this.Invoke("GetPrivateNetworkAdapterDetails", new object[] {
                         itemId});
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetPrivateNetworkAdapterDetails(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetPrivateNetworkAdapterDetails(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetPrivateNetworkAdapterDetails", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails EndGetPrivateNetworkAdapterDetails(System.IAsyncResult asyncResult) {
+        public NetworkAdapterDetails EndGetPrivateNetworkAdapterDetails(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((NetworkAdapterDetails)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetPrivateNetworkAdapterDetailsAsync(int itemId) {
+        public void GetPrivateNetworkAdapterDetailsAsync(int itemId)
+        {
             this.GetPrivateNetworkAdapterDetailsAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetPrivateNetworkAdapterDetailsAsync(int itemId, object userState) {
-            if ((this.GetPrivateNetworkAdapterDetailsOperationCompleted == null)) {
+        public void GetPrivateNetworkAdapterDetailsAsync(int itemId, object userState)
+        {
+            if ((this.GetPrivateNetworkAdapterDetailsOperationCompleted == null))
+            {
                 this.GetPrivateNetworkAdapterDetailsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPrivateNetworkAdapterDetailsOperationCompleted);
             }
             this.InvokeAsync("GetPrivateNetworkAdapterDetails", new object[] {
                         itemId}, this.GetPrivateNetworkAdapterDetailsOperationCompleted, userState);
         }
-        
-        private void OnGetPrivateNetworkAdapterDetailsOperationCompleted(object arg) {
-            if ((this.GetPrivateNetworkAdapterDetailsCompleted != null)) {
+
+        private void OnGetPrivateNetworkAdapterDetailsOperationCompleted(object arg)
+        {
+            if ((this.GetPrivateNetworkAdapterDetailsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetPrivateNetworkAdapterDetailsCompleted(this, new GetPrivateNetworkAdapterDetailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachinePrivateIPAddresses", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachinePrivateIPAddresses", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        {
             object[] results = this.Invoke("AddVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         selectRandom,
@@ -2891,30 +3255,35 @@ namespace SolidCP.EnterpriseServer {
                         addresses});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("AddVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         selectRandom,
                         addressesNumber,
                         addresses}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndAddVirtualMachinePrivateIPAddresses(System.IAsyncResult asyncResult) {
+        public ResultObject EndAddVirtualMachinePrivateIPAddresses(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses) {
+        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        {
             this.AddVirtualMachinePrivateIPAddressesAsync(itemId, selectRandom, addressesNumber, addresses, null);
         }
-        
+
         /// <remarks/>
-        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, object userState) {
-            if ((this.AddVirtualMachinePrivateIPAddressesOperationCompleted == null)) {
+        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, object userState)
+        {
+            if ((this.AddVirtualMachinePrivateIPAddressesOperationCompleted == null))
+            {
                 this.AddVirtualMachinePrivateIPAddressesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddVirtualMachinePrivateIPAddressesOperationCompleted);
             }
             this.InvokeAsync("AddVirtualMachinePrivateIPAddresses", new object[] {
@@ -2923,236 +3292,279 @@ namespace SolidCP.EnterpriseServer {
                         addressesNumber,
                         addresses}, this.AddVirtualMachinePrivateIPAddressesOperationCompleted, userState);
         }
-        
-        private void OnAddVirtualMachinePrivateIPAddressesOperationCompleted(object arg) {
-            if ((this.AddVirtualMachinePrivateIPAddressesCompleted != null)) {
+
+        private void OnAddVirtualMachinePrivateIPAddressesOperationCompleted(object arg)
+        {
+            if ((this.AddVirtualMachinePrivateIPAddressesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.AddVirtualMachinePrivateIPAddressesCompleted(this, new AddVirtualMachinePrivateIPAddressesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetVirtualMachinePrimaryPrivateIPAdd" +
-            "ress", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId) {
+            "ress", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId)
+        {
             object[] results = this.Invoke("SetVirtualMachinePrimaryPrivateIPAddress", new object[] {
                         itemId,
                         addressId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginSetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("SetVirtualMachinePrimaryPrivateIPAddress", new object[] {
                         itemId,
                         addressId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndSetVirtualMachinePrimaryPrivateIPAddress(System.IAsyncResult asyncResult) {
+        public ResultObject EndSetVirtualMachinePrimaryPrivateIPAddress(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void SetVirtualMachinePrimaryPrivateIPAddressAsync(int itemId, int addressId) {
+        public void SetVirtualMachinePrimaryPrivateIPAddressAsync(int itemId, int addressId)
+        {
             this.SetVirtualMachinePrimaryPrivateIPAddressAsync(itemId, addressId, null);
         }
-        
+
         /// <remarks/>
-        public void SetVirtualMachinePrimaryPrivateIPAddressAsync(int itemId, int addressId, object userState) {
-            if ((this.SetVirtualMachinePrimaryPrivateIPAddressOperationCompleted == null)) {
+        public void SetVirtualMachinePrimaryPrivateIPAddressAsync(int itemId, int addressId, object userState)
+        {
+            if ((this.SetVirtualMachinePrimaryPrivateIPAddressOperationCompleted == null))
+            {
                 this.SetVirtualMachinePrimaryPrivateIPAddressOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetVirtualMachinePrimaryPrivateIPAddressOperationCompleted);
             }
             this.InvokeAsync("SetVirtualMachinePrimaryPrivateIPAddress", new object[] {
                         itemId,
                         addressId}, this.SetVirtualMachinePrimaryPrivateIPAddressOperationCompleted, userState);
         }
-        
-        private void OnSetVirtualMachinePrimaryPrivateIPAddressOperationCompleted(object arg) {
-            if ((this.SetVirtualMachinePrimaryPrivateIPAddressCompleted != null)) {
+
+        private void OnSetVirtualMachinePrimaryPrivateIPAddressOperationCompleted(object arg)
+        {
+            if ((this.SetVirtualMachinePrimaryPrivateIPAddressCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetVirtualMachinePrimaryPrivateIPAddressCompleted(this, new SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachinePrivateIPAddress" +
-            "es", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressId) {
+            "es", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressId)
+        {
             object[] results = this.Invoke("DeleteVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         addressId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginDeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("DeleteVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         addressId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndDeleteVirtualMachinePrivateIPAddresses(System.IAsyncResult asyncResult) {
+        public ResultObject EndDeleteVirtualMachinePrivateIPAddresses(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void DeleteVirtualMachinePrivateIPAddressesAsync(int itemId, int[] addressId) {
+        public void DeleteVirtualMachinePrivateIPAddressesAsync(int itemId, int[] addressId)
+        {
             this.DeleteVirtualMachinePrivateIPAddressesAsync(itemId, addressId, null);
         }
-        
+
         /// <remarks/>
-        public void DeleteVirtualMachinePrivateIPAddressesAsync(int itemId, int[] addressId, object userState) {
-            if ((this.DeleteVirtualMachinePrivateIPAddressesOperationCompleted == null)) {
+        public void DeleteVirtualMachinePrivateIPAddressesAsync(int itemId, int[] addressId, object userState)
+        {
+            if ((this.DeleteVirtualMachinePrivateIPAddressesOperationCompleted == null))
+            {
                 this.DeleteVirtualMachinePrivateIPAddressesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachinePrivateIPAddressesOperationCompleted);
             }
             this.InvokeAsync("DeleteVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         addressId}, this.DeleteVirtualMachinePrivateIPAddressesOperationCompleted, userState);
         }
-        
-        private void OnDeleteVirtualMachinePrivateIPAddressesOperationCompleted(object arg) {
-            if ((this.DeleteVirtualMachinePrivateIPAddressesCompleted != null)) {
+
+        private void OnDeleteVirtualMachinePrivateIPAddressesOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachinePrivateIPAddressesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteVirtualMachinePrivateIPAddressesCompleted(this, new DeleteVirtualMachinePrivateIPAddressesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachinePermissions", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachinePermission[] GetVirtualMachinePermissions(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachinePermissions", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachinePermission[] GetVirtualMachinePermissions(int itemId)
+        {
             object[] results = this.Invoke("GetVirtualMachinePermissions", new object[] {
                         itemId});
             return ((VirtualMachinePermission[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachinePermissions(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachinePermissions(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachinePermissions", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualMachinePermission[] EndGetVirtualMachinePermissions(System.IAsyncResult asyncResult) {
+        public VirtualMachinePermission[] EndGetVirtualMachinePermissions(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualMachinePermission[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachinePermissionsAsync(int itemId) {
+        public void GetVirtualMachinePermissionsAsync(int itemId)
+        {
             this.GetVirtualMachinePermissionsAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachinePermissionsAsync(int itemId, object userState) {
-            if ((this.GetVirtualMachinePermissionsOperationCompleted == null)) {
+        public void GetVirtualMachinePermissionsAsync(int itemId, object userState)
+        {
+            if ((this.GetVirtualMachinePermissionsOperationCompleted == null))
+            {
                 this.GetVirtualMachinePermissionsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachinePermissionsOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachinePermissions", new object[] {
                         itemId}, this.GetVirtualMachinePermissionsOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachinePermissionsOperationCompleted(object arg) {
-            if ((this.GetVirtualMachinePermissionsCompleted != null)) {
+
+        private void OnGetVirtualMachinePermissionsOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachinePermissionsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachinePermissionsCompleted(this, new GetVirtualMachinePermissionsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineUserPermissions", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int UpdateVirtualMachineUserPermissions(int itemId, VirtualMachinePermission[] permissions) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineUserPermissions", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int UpdateVirtualMachineUserPermissions(int itemId, VirtualMachinePermission[] permissions)
+        {
             object[] results = this.Invoke("UpdateVirtualMachineUserPermissions", new object[] {
                         itemId,
                         permissions});
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginUpdateVirtualMachineUserPermissions(int itemId, VirtualMachinePermission[] permissions, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginUpdateVirtualMachineUserPermissions(int itemId, VirtualMachinePermission[] permissions, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("UpdateVirtualMachineUserPermissions", new object[] {
                         itemId,
                         permissions}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public int EndUpdateVirtualMachineUserPermissions(System.IAsyncResult asyncResult) {
+        public int EndUpdateVirtualMachineUserPermissions(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void UpdateVirtualMachineUserPermissionsAsync(int itemId, VirtualMachinePermission[] permissions) {
+        public void UpdateVirtualMachineUserPermissionsAsync(int itemId, VirtualMachinePermission[] permissions)
+        {
             this.UpdateVirtualMachineUserPermissionsAsync(itemId, permissions, null);
         }
-        
+
         /// <remarks/>
-        public void UpdateVirtualMachineUserPermissionsAsync(int itemId, VirtualMachinePermission[] permissions, object userState) {
-            if ((this.UpdateVirtualMachineUserPermissionsOperationCompleted == null)) {
+        public void UpdateVirtualMachineUserPermissionsAsync(int itemId, VirtualMachinePermission[] permissions, object userState)
+        {
+            if ((this.UpdateVirtualMachineUserPermissionsOperationCompleted == null))
+            {
                 this.UpdateVirtualMachineUserPermissionsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateVirtualMachineUserPermissionsOperationCompleted);
             }
             this.InvokeAsync("UpdateVirtualMachineUserPermissions", new object[] {
                         itemId,
                         permissions}, this.UpdateVirtualMachineUserPermissionsOperationCompleted, userState);
         }
-        
-        private void OnUpdateVirtualMachineUserPermissionsOperationCompleted(object arg) {
-            if ((this.UpdateVirtualMachineUserPermissionsCompleted != null)) {
+
+        private void OnUpdateVirtualMachineUserPermissionsOperationCompleted(object arg)
+        {
+            if ((this.UpdateVirtualMachineUserPermissionsCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateVirtualMachineUserPermissionsCompleted(this, new UpdateVirtualMachineUserPermissionsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalSwitches", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalSwitches", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)
+        {
             object[] results = this.Invoke("GetExternalSwitches", new object[] {
                         serviceId,
                         computerName});
             return ((VirtualSwitch[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetExternalSwitches(int serviceId, string computerName, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetExternalSwitches(int serviceId, string computerName, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetExternalSwitches", new object[] {
                         serviceId,
                         computerName}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VirtualSwitch[] EndGetExternalSwitches(System.IAsyncResult asyncResult) {
+        public VirtualSwitch[] EndGetExternalSwitches(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VirtualSwitch[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetExternalSwitchesAsync(int serviceId, string computerName) {
+        public void GetExternalSwitchesAsync(int serviceId, string computerName)
+        {
             this.GetExternalSwitchesAsync(serviceId, computerName, null);
         }
-        
+
         /// <remarks/>
-        public void GetExternalSwitchesAsync(int serviceId, string computerName, object userState) {
-            if ((this.GetExternalSwitchesOperationCompleted == null)) {
+        public void GetExternalSwitchesAsync(int serviceId, string computerName, object userState)
+        {
+            if ((this.GetExternalSwitchesOperationCompleted == null))
+            {
                 this.GetExternalSwitchesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExternalSwitchesOperationCompleted);
             }
             this.InvokeAsync("GetExternalSwitches", new object[] {
                         serviceId,
                         computerName}, this.GetExternalSwitchesOperationCompleted, userState);
         }
-        
-        private void OnGetExternalSwitchesOperationCompleted(object arg) {
-            if ((this.GetExternalSwitchesCompleted != null)) {
+
+        private void OnGetExternalSwitchesOperationCompleted(object arg)
+        {
+            if ((this.GetExternalSwitchesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetExternalSwitchesCompleted(this, new GetExternalSwitchesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachine", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
             object[] results = this.Invoke("DeleteVirtualMachine", new object[] {
                         itemId,
                         saveFiles,
@@ -3160,30 +3572,35 @@ namespace SolidCP.EnterpriseServer {
                         exportPath});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginDeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("DeleteVirtualMachine", new object[] {
                         itemId,
                         saveFiles,
                         exportVps,
                         exportPath}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndDeleteVirtualMachine(System.IAsyncResult asyncResult) {
+        public ResultObject EndDeleteVirtualMachine(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void DeleteVirtualMachineAsync(int itemId, bool saveFiles, bool exportVps, string exportPath) {
+        public void DeleteVirtualMachineAsync(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
             this.DeleteVirtualMachineAsync(itemId, saveFiles, exportVps, exportPath, null);
         }
-        
+
         /// <remarks/>
-        public void DeleteVirtualMachineAsync(int itemId, bool saveFiles, bool exportVps, string exportPath, object userState) {
-            if ((this.DeleteVirtualMachineOperationCompleted == null)) {
+        public void DeleteVirtualMachineAsync(int itemId, bool saveFiles, bool exportVps, string exportPath, object userState)
+        {
+            if ((this.DeleteVirtualMachineOperationCompleted == null))
+            {
                 this.DeleteVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineOperationCompleted);
             }
             this.InvokeAsync("DeleteVirtualMachine", new object[] {
@@ -3192,17 +3609,20 @@ namespace SolidCP.EnterpriseServer {
                         exportVps,
                         exportPath}, this.DeleteVirtualMachineOperationCompleted, userState);
         }
-        
-        private void OnDeleteVirtualMachineOperationCompleted(object arg) {
-            if ((this.DeleteVirtualMachineCompleted != null)) {
+
+        private void OnDeleteVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachineCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteVirtualMachineCompleted(this, new DeleteVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
+        {
             object[] results = this.Invoke("ReinstallVirtualMachine", new object[] {
                         itemId,
                         adminPassword,
@@ -3212,9 +3632,10 @@ namespace SolidCP.EnterpriseServer {
                         exportPath});
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("ReinstallVirtualMachine", new object[] {
                         itemId,
                         adminPassword,
@@ -3223,21 +3644,25 @@ namespace SolidCP.EnterpriseServer {
                         exportVps,
                         exportPath}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public int EndReinstallVirtualMachine(System.IAsyncResult asyncResult) {
+        public int EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((int)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath) {
+        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
+        {
             this.ReinstallVirtualMachineAsync(itemId, adminPassword, preserveVirtualDiskFiles, saveVirtualDisk, exportVps, exportPath, null);
         }
-        
+
         /// <remarks/>
-        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, object userState) {
-            if ((this.ReinstallVirtualMachineOperationCompleted == null)) {
+        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, object userState)
+        {
+            if ((this.ReinstallVirtualMachineOperationCompleted == null))
+            {
                 this.ReinstallVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnReinstallVirtualMachineOperationCompleted);
             }
             this.InvokeAsync("ReinstallVirtualMachine", new object[] {
@@ -3248,87 +3673,103 @@ namespace SolidCP.EnterpriseServer {
                         exportVps,
                         exportPath}, this.ReinstallVirtualMachineOperationCompleted, userState);
         }
-        
-        private void OnReinstallVirtualMachineOperationCompleted(object arg) {
-            if ((this.ReinstallVirtualMachineCompleted != null)) {
+
+        private void OnReinstallVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.ReinstallVirtualMachineCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ReinstallVirtualMachineCompleted(this, new ReinstallVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineSummaryText", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string GetVirtualMachineSummaryText(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineSummaryText", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetVirtualMachineSummaryText(int itemId)
+        {
             object[] results = this.Invoke("GetVirtualMachineSummaryText", new object[] {
                         itemId});
             return ((string)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachineSummaryText(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetVirtualMachineSummaryText(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetVirtualMachineSummaryText", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public string EndGetVirtualMachineSummaryText(System.IAsyncResult asyncResult) {
+        public string EndGetVirtualMachineSummaryText(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((string)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineSummaryTextAsync(int itemId) {
+        public void GetVirtualMachineSummaryTextAsync(int itemId)
+        {
             this.GetVirtualMachineSummaryTextAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetVirtualMachineSummaryTextAsync(int itemId, object userState) {
-            if ((this.GetVirtualMachineSummaryTextOperationCompleted == null)) {
+        public void GetVirtualMachineSummaryTextAsync(int itemId, object userState)
+        {
+            if ((this.GetVirtualMachineSummaryTextOperationCompleted == null))
+            {
                 this.GetVirtualMachineSummaryTextOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachineSummaryTextOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachineSummaryText", new object[] {
                         itemId}, this.GetVirtualMachineSummaryTextOperationCompleted, userState);
         }
-        
-        private void OnGetVirtualMachineSummaryTextOperationCompleted(object arg) {
-            if ((this.GetVirtualMachineSummaryTextCompleted != null)) {
+
+        private void OnGetVirtualMachineSummaryTextOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachineSummaryTextCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineSummaryTextCompleted(this, new GetVirtualMachineSummaryTextCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SendVirtualMachineSummaryLetter", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject SendVirtualMachineSummaryLetter(int itemId, string to, string bcc) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SendVirtualMachineSummaryLetter", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject SendVirtualMachineSummaryLetter(int itemId, string to, string bcc)
+        {
             object[] results = this.Invoke("SendVirtualMachineSummaryLetter", new object[] {
                         itemId,
                         to,
                         bcc});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginSendVirtualMachineSummaryLetter(int itemId, string to, string bcc, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSendVirtualMachineSummaryLetter(int itemId, string to, string bcc, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("SendVirtualMachineSummaryLetter", new object[] {
                         itemId,
                         to,
                         bcc}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndSendVirtualMachineSummaryLetter(System.IAsyncResult asyncResult) {
+        public ResultObject EndSendVirtualMachineSummaryLetter(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void SendVirtualMachineSummaryLetterAsync(int itemId, string to, string bcc) {
+        public void SendVirtualMachineSummaryLetterAsync(int itemId, string to, string bcc)
+        {
             this.SendVirtualMachineSummaryLetterAsync(itemId, to, bcc, null);
         }
-        
+
         /// <remarks/>
-        public void SendVirtualMachineSummaryLetterAsync(int itemId, string to, string bcc, object userState) {
-            if ((this.SendVirtualMachineSummaryLetterOperationCompleted == null)) {
+        public void SendVirtualMachineSummaryLetterAsync(int itemId, string to, string bcc, object userState)
+        {
+            if ((this.SendVirtualMachineSummaryLetterOperationCompleted == null))
+            {
                 this.SendVirtualMachineSummaryLetterOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSendVirtualMachineSummaryLetterOperationCompleted);
             }
             this.InvokeAsync("SendVirtualMachineSummaryLetter", new object[] {
@@ -3336,61 +3777,72 @@ namespace SolidCP.EnterpriseServer {
                         to,
                         bcc}, this.SendVirtualMachineSummaryLetterOperationCompleted, userState);
         }
-        
-        private void OnSendVirtualMachineSummaryLetterOperationCompleted(object arg) {
-            if ((this.SendVirtualMachineSummaryLetterCompleted != null)) {
+
+        private void OnSendVirtualMachineSummaryLetterOperationCompleted(object arg)
+        {
+            if ((this.SendVirtualMachineSummaryLetterCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SendVirtualMachineSummaryLetterCompleted(this, new SendVirtualMachineSummaryLetterCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetCertificates", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public CertificateInfo[] GetCertificates(int serviceId, string remoteServer) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetCertificates", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
+        {
             object[] results = this.Invoke("GetCertificates", new object[] {
                         serviceId,
                         remoteServer});
             return ((CertificateInfo[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetCertificates(int serviceId, string remoteServer, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetCertificates(int serviceId, string remoteServer, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetCertificates", new object[] {
                         serviceId,
                         remoteServer}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public CertificateInfo[] EndGetCertificates(System.IAsyncResult asyncResult) {
+        public CertificateInfo[] EndGetCertificates(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((CertificateInfo[])(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetCertificatesAsync(int serviceId, string remoteServer) {
+        public void GetCertificatesAsync(int serviceId, string remoteServer)
+        {
             this.GetCertificatesAsync(serviceId, remoteServer, null);
         }
-        
+
         /// <remarks/>
-        public void GetCertificatesAsync(int serviceId, string remoteServer, object userState) {
-            if ((this.GetCertificatesOperationCompleted == null)) {
+        public void GetCertificatesAsync(int serviceId, string remoteServer, object userState)
+        {
+            if ((this.GetCertificatesOperationCompleted == null))
+            {
                 this.GetCertificatesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCertificatesOperationCompleted);
             }
             this.InvokeAsync("GetCertificates", new object[] {
                         serviceId,
                         remoteServer}, this.GetCertificatesOperationCompleted, userState);
         }
-        
-        private void OnGetCertificatesOperationCompleted(object arg) {
-            if ((this.GetCertificatesCompleted != null)) {
+
+        private void OnGetCertificatesOperationCompleted(object arg)
+        {
+            if ((this.GetCertificatesCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetCertificatesCompleted(this, new GetCertificatesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetReplicaServer", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject SetReplicaServer(int serviceId, string remoteServer, string thumbprint, string storagePath) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetReplicaServer", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject SetReplicaServer(int serviceId, string remoteServer, string thumbprint, string storagePath)
+        {
             object[] results = this.Invoke("SetReplicaServer", new object[] {
                         serviceId,
                         remoteServer,
@@ -3398,30 +3850,35 @@ namespace SolidCP.EnterpriseServer {
                         storagePath});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginSetReplicaServer(int serviceId, string remoteServer, string thumbprint, string storagePath, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSetReplicaServer(int serviceId, string remoteServer, string thumbprint, string storagePath, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("SetReplicaServer", new object[] {
                         serviceId,
                         remoteServer,
                         thumbprint,
                         storagePath}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndSetReplicaServer(System.IAsyncResult asyncResult) {
+        public ResultObject EndSetReplicaServer(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void SetReplicaServerAsync(int serviceId, string remoteServer, string thumbprint, string storagePath) {
+        public void SetReplicaServerAsync(int serviceId, string remoteServer, string thumbprint, string storagePath)
+        {
             this.SetReplicaServerAsync(serviceId, remoteServer, thumbprint, storagePath, null);
         }
-        
+
         /// <remarks/>
-        public void SetReplicaServerAsync(int serviceId, string remoteServer, string thumbprint, string storagePath, object userState) {
-            if ((this.SetReplicaServerOperationCompleted == null)) {
+        public void SetReplicaServerAsync(int serviceId, string remoteServer, string thumbprint, string storagePath, object userState)
+        {
+            if ((this.SetReplicaServerOperationCompleted == null))
+            {
                 this.SetReplicaServerOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetReplicaServerOperationCompleted);
             }
             this.InvokeAsync("SetReplicaServer", new object[] {
@@ -3430,455 +3887,538 @@ namespace SolidCP.EnterpriseServer {
                         thumbprint,
                         storagePath}, this.SetReplicaServerOperationCompleted, userState);
         }
-        
-        private void OnSetReplicaServerOperationCompleted(object arg) {
-            if ((this.SetReplicaServerCompleted != null)) {
+
+        private void OnSetReplicaServerOperationCompleted(object arg)
+        {
+            if ((this.SetReplicaServerCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetReplicaServerCompleted(this, new SetReplicaServerCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UnsetReplicaServer", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject UnsetReplicaServer(int serviceId, string remoteServer) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UnsetReplicaServer", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject UnsetReplicaServer(int serviceId, string remoteServer)
+        {
             object[] results = this.Invoke("UnsetReplicaServer", new object[] {
                         serviceId,
                         remoteServer});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginUnsetReplicaServer(int serviceId, string remoteServer, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginUnsetReplicaServer(int serviceId, string remoteServer, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("UnsetReplicaServer", new object[] {
                         serviceId,
                         remoteServer}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndUnsetReplicaServer(System.IAsyncResult asyncResult) {
+        public ResultObject EndUnsetReplicaServer(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void UnsetReplicaServerAsync(int serviceId, string remoteServer) {
+        public void UnsetReplicaServerAsync(int serviceId, string remoteServer)
+        {
             this.UnsetReplicaServerAsync(serviceId, remoteServer, null);
         }
-        
+
         /// <remarks/>
-        public void UnsetReplicaServerAsync(int serviceId, string remoteServer, object userState) {
-            if ((this.UnsetReplicaServerOperationCompleted == null)) {
+        public void UnsetReplicaServerAsync(int serviceId, string remoteServer, object userState)
+        {
+            if ((this.UnsetReplicaServerOperationCompleted == null))
+            {
                 this.UnsetReplicaServerOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUnsetReplicaServerOperationCompleted);
             }
             this.InvokeAsync("UnsetReplicaServer", new object[] {
                         serviceId,
                         remoteServer}, this.UnsetReplicaServerOperationCompleted, userState);
         }
-        
-        private void OnUnsetReplicaServerOperationCompleted(object arg) {
-            if ((this.UnsetReplicaServerCompleted != null)) {
+
+        private void OnUnsetReplicaServerOperationCompleted(object arg)
+        {
+            if ((this.UnsetReplicaServerCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UnsetReplicaServerCompleted(this, new UnsetReplicaServerCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetReplicaServer", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ReplicationServerInfo GetReplicaServer(int serviceId, string remoteServer) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetReplicaServer", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ReplicationServerInfo GetReplicaServer(int serviceId, string remoteServer)
+        {
             object[] results = this.Invoke("GetReplicaServer", new object[] {
                         serviceId,
                         remoteServer});
             return ((ReplicationServerInfo)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetReplicaServer(int serviceId, string remoteServer, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetReplicaServer(int serviceId, string remoteServer, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetReplicaServer", new object[] {
                         serviceId,
                         remoteServer}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ReplicationServerInfo EndGetReplicaServer(System.IAsyncResult asyncResult) {
+        public ReplicationServerInfo EndGetReplicaServer(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ReplicationServerInfo)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetReplicaServerAsync(int serviceId, string remoteServer) {
+        public void GetReplicaServerAsync(int serviceId, string remoteServer)
+        {
             this.GetReplicaServerAsync(serviceId, remoteServer, null);
         }
-        
+
         /// <remarks/>
-        public void GetReplicaServerAsync(int serviceId, string remoteServer, object userState) {
-            if ((this.GetReplicaServerOperationCompleted == null)) {
+        public void GetReplicaServerAsync(int serviceId, string remoteServer, object userState)
+        {
+            if ((this.GetReplicaServerOperationCompleted == null))
+            {
                 this.GetReplicaServerOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetReplicaServerOperationCompleted);
             }
             this.InvokeAsync("GetReplicaServer", new object[] {
                         serviceId,
                         remoteServer}, this.GetReplicaServerOperationCompleted, userState);
         }
-        
-        private void OnGetReplicaServerOperationCompleted(object arg) {
-            if ((this.GetReplicaServerCompleted != null)) {
+
+        private void OnGetReplicaServerOperationCompleted(object arg)
+        {
+            if ((this.GetReplicaServerCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetReplicaServerCompleted(this, new GetReplicaServerCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetReplication", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VmReplication GetReplication(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetReplication", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VmReplication GetReplication(int itemId)
+        {
             object[] results = this.Invoke("GetReplication", new object[] {
                         itemId});
             return ((VmReplication)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetReplication(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetReplication(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetReplication", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public VmReplication EndGetReplication(System.IAsyncResult asyncResult) {
+        public VmReplication EndGetReplication(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((VmReplication)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetReplicationAsync(int itemId) {
+        public void GetReplicationAsync(int itemId)
+        {
             this.GetReplicationAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetReplicationAsync(int itemId, object userState) {
-            if ((this.GetReplicationOperationCompleted == null)) {
+        public void GetReplicationAsync(int itemId, object userState)
+        {
+            if ((this.GetReplicationOperationCompleted == null))
+            {
                 this.GetReplicationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetReplicationOperationCompleted);
             }
             this.InvokeAsync("GetReplication", new object[] {
                         itemId}, this.GetReplicationOperationCompleted, userState);
         }
-        
-        private void OnGetReplicationOperationCompleted(object arg) {
-            if ((this.GetReplicationCompleted != null)) {
+
+        private void OnGetReplicationOperationCompleted(object arg)
+        {
+            if ((this.GetReplicationCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetReplicationCompleted(this, new GetReplicationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetReplicationInfo", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ReplicationDetailInfo GetReplicationInfo(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetReplicationInfo", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ReplicationDetailInfo GetReplicationInfo(int itemId)
+        {
             object[] results = this.Invoke("GetReplicationInfo", new object[] {
                         itemId});
             return ((ReplicationDetailInfo)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginGetReplicationInfo(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetReplicationInfo(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("GetReplicationInfo", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ReplicationDetailInfo EndGetReplicationInfo(System.IAsyncResult asyncResult) {
+        public ReplicationDetailInfo EndGetReplicationInfo(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ReplicationDetailInfo)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void GetReplicationInfoAsync(int itemId) {
+        public void GetReplicationInfoAsync(int itemId)
+        {
             this.GetReplicationInfoAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void GetReplicationInfoAsync(int itemId, object userState) {
-            if ((this.GetReplicationInfoOperationCompleted == null)) {
+        public void GetReplicationInfoAsync(int itemId, object userState)
+        {
+            if ((this.GetReplicationInfoOperationCompleted == null))
+            {
                 this.GetReplicationInfoOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetReplicationInfoOperationCompleted);
             }
             this.InvokeAsync("GetReplicationInfo", new object[] {
                         itemId}, this.GetReplicationInfoOperationCompleted, userState);
         }
-        
-        private void OnGetReplicationInfoOperationCompleted(object arg) {
-            if ((this.GetReplicationInfoCompleted != null)) {
+
+        private void OnGetReplicationInfoOperationCompleted(object arg)
+        {
+            if ((this.GetReplicationInfoCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetReplicationInfoCompleted(this, new GetReplicationInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetVmReplication", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject SetVmReplication(int itemId, VmReplication replication) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetVmReplication", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject SetVmReplication(int itemId, VmReplication replication)
+        {
             object[] results = this.Invoke("SetVmReplication", new object[] {
                         itemId,
                         replication});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginSetVmReplication(int itemId, VmReplication replication, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSetVmReplication(int itemId, VmReplication replication, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("SetVmReplication", new object[] {
                         itemId,
                         replication}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndSetVmReplication(System.IAsyncResult asyncResult) {
+        public ResultObject EndSetVmReplication(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void SetVmReplicationAsync(int itemId, VmReplication replication) {
+        public void SetVmReplicationAsync(int itemId, VmReplication replication)
+        {
             this.SetVmReplicationAsync(itemId, replication, null);
         }
-        
+
         /// <remarks/>
-        public void SetVmReplicationAsync(int itemId, VmReplication replication, object userState) {
-            if ((this.SetVmReplicationOperationCompleted == null)) {
+        public void SetVmReplicationAsync(int itemId, VmReplication replication, object userState)
+        {
+            if ((this.SetVmReplicationOperationCompleted == null))
+            {
                 this.SetVmReplicationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetVmReplicationOperationCompleted);
             }
             this.InvokeAsync("SetVmReplication", new object[] {
                         itemId,
                         replication}, this.SetVmReplicationOperationCompleted, userState);
         }
-        
-        private void OnSetVmReplicationOperationCompleted(object arg) {
-            if ((this.SetVmReplicationCompleted != null)) {
+
+        private void OnSetVmReplicationOperationCompleted(object arg)
+        {
+            if ((this.SetVmReplicationCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetVmReplicationCompleted(this, new SetVmReplicationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DisableVmReplication", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject DisableVmReplication(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DisableVmReplication", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DisableVmReplication(int itemId)
+        {
             object[] results = this.Invoke("DisableVmReplication", new object[] {
                         itemId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginDisableVmReplication(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginDisableVmReplication(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("DisableVmReplication", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndDisableVmReplication(System.IAsyncResult asyncResult) {
+        public ResultObject EndDisableVmReplication(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void DisableVmReplicationAsync(int itemId) {
+        public void DisableVmReplicationAsync(int itemId)
+        {
             this.DisableVmReplicationAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void DisableVmReplicationAsync(int itemId, object userState) {
-            if ((this.DisableVmReplicationOperationCompleted == null)) {
+        public void DisableVmReplicationAsync(int itemId, object userState)
+        {
+            if ((this.DisableVmReplicationOperationCompleted == null))
+            {
                 this.DisableVmReplicationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDisableVmReplicationOperationCompleted);
             }
             this.InvokeAsync("DisableVmReplication", new object[] {
                         itemId}, this.DisableVmReplicationOperationCompleted, userState);
         }
-        
-        private void OnDisableVmReplicationOperationCompleted(object arg) {
-            if ((this.DisableVmReplicationCompleted != null)) {
+
+        private void OnDisableVmReplicationOperationCompleted(object arg)
+        {
+            if ((this.DisableVmReplicationCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DisableVmReplicationCompleted(this, new DisableVmReplicationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/PauseReplication", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject PauseReplication(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/PauseReplication", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject PauseReplication(int itemId)
+        {
             object[] results = this.Invoke("PauseReplication", new object[] {
                         itemId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginPauseReplication(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginPauseReplication(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("PauseReplication", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndPauseReplication(System.IAsyncResult asyncResult) {
+        public ResultObject EndPauseReplication(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void PauseReplicationAsync(int itemId) {
+        public void PauseReplicationAsync(int itemId)
+        {
             this.PauseReplicationAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void PauseReplicationAsync(int itemId, object userState) {
-            if ((this.PauseReplicationOperationCompleted == null)) {
+        public void PauseReplicationAsync(int itemId, object userState)
+        {
+            if ((this.PauseReplicationOperationCompleted == null))
+            {
                 this.PauseReplicationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnPauseReplicationOperationCompleted);
             }
             this.InvokeAsync("PauseReplication", new object[] {
                         itemId}, this.PauseReplicationOperationCompleted, userState);
         }
-        
-        private void OnPauseReplicationOperationCompleted(object arg) {
-            if ((this.PauseReplicationCompleted != null)) {
+
+        private void OnPauseReplicationOperationCompleted(object arg)
+        {
+            if ((this.PauseReplicationCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.PauseReplicationCompleted(this, new PauseReplicationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ResumeReplication", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject ResumeReplication(int itemId) {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ResumeReplication", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject ResumeReplication(int itemId)
+        {
             object[] results = this.Invoke("ResumeReplication", new object[] {
                         itemId});
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public System.IAsyncResult BeginResumeReplication(int itemId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginResumeReplication(int itemId, System.AsyncCallback callback, object asyncState)
+        {
             return this.BeginInvoke("ResumeReplication", new object[] {
                         itemId}, callback, asyncState);
         }
-        
+
         /// <remarks/>
-        public ResultObject EndResumeReplication(System.IAsyncResult asyncResult) {
+        public ResultObject EndResumeReplication(System.IAsyncResult asyncResult)
+        {
             object[] results = this.EndInvoke(asyncResult);
             return ((ResultObject)(results[0]));
         }
-        
+
         /// <remarks/>
-        public void ResumeReplicationAsync(int itemId) {
+        public void ResumeReplicationAsync(int itemId)
+        {
             this.ResumeReplicationAsync(itemId, null);
         }
-        
+
         /// <remarks/>
-        public void ResumeReplicationAsync(int itemId, object userState) {
-            if ((this.ResumeReplicationOperationCompleted == null)) {
+        public void ResumeReplicationAsync(int itemId, object userState)
+        {
+            if ((this.ResumeReplicationOperationCompleted == null))
+            {
                 this.ResumeReplicationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnResumeReplicationOperationCompleted);
             }
             this.InvokeAsync("ResumeReplication", new object[] {
                         itemId}, this.ResumeReplicationOperationCompleted, userState);
         }
-        
-        private void OnResumeReplicationOperationCompleted(object arg) {
-            if ((this.ResumeReplicationCompleted != null)) {
+
+        private void OnResumeReplicationOperationCompleted(object arg)
+        {
+            if ((this.ResumeReplicationCompleted != null))
+            {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ResumeReplicationCompleted(this, new ResumeReplicationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
         /// <remarks/>
-        public new void CancelAsync(object userState) {
+        public new void CancelAsync(object userState)
+        {
             base.CancelAsync(userState);
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachinesCompletedEventHandler(object sender, GetVirtualMachinesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachinesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachinesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachineMetaItemsPaged Result {
-            get {
+        public VirtualMachineMetaItemsPaged Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachineMetaItemsPaged)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachinesByServiceIdCompletedEventHandler(object sender, GetVirtualMachinesByServiceIdCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachinesByServiceIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachinesByServiceIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachinesByServiceIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachinesByServiceIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachine[] Result {
-            get {
+        public VirtualMachine[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachine[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineItemCompletedEventHandler(object sender, GetVirtualMachineItemCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineItemCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineItemCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineItemCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineItemCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachine Result {
-            get {
+        public VirtualMachine Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachine)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void EvaluateVirtualMachineTemplateCompletedEventHandler(object sender, EvaluateVirtualMachineTemplateCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class EvaluateVirtualMachineTemplateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class EvaluateVirtualMachineTemplateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal EvaluateVirtualMachineTemplateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal EvaluateVirtualMachineTemplateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public string Result {
-            get {
+        public string Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
             }
@@ -3919,777 +4459,897 @@ namespace SolidCP.EnterpriseServer {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetExternalNetworkDetailsCompletedEventHandler(object sender, GetExternalNetworkDetailsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetExternalNetworkDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetExternalNetworkDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetExternalNetworkDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetExternalNetworkDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails Result {
-            get {
+        public NetworkAdapterDetails Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((NetworkAdapterDetails)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetPackagePrivateIPAddressesPagedCompletedEventHandler(object sender, GetPackagePrivateIPAddressesPagedCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetPackagePrivateIPAddressesPagedCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetPackagePrivateIPAddressesPagedCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetPackagePrivateIPAddressesPagedCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetPackagePrivateIPAddressesPagedCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public PrivateIPAddressesPaged Result {
-            get {
+        public PrivateIPAddressesPaged Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((PrivateIPAddressesPaged)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetPackagePrivateIPAddressesCompletedEventHandler(object sender, GetPackagePrivateIPAddressesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetPackagePrivateIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetPackagePrivateIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetPackagePrivateIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetPackagePrivateIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public PrivateIPAddress[] Result {
-            get {
+        public PrivateIPAddress[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((PrivateIPAddress[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetPrivateNetworkDetailsCompletedEventHandler(object sender, GetPrivateNetworkDetailsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetPrivateNetworkDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetPrivateNetworkDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetPrivateNetworkDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetPrivateNetworkDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails Result {
-            get {
+        public NetworkAdapterDetails Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((NetworkAdapterDetails)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetSpaceUserPermissionsCompletedEventHandler(object sender, GetSpaceUserPermissionsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetSpaceUserPermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetSpaceUserPermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetSpaceUserPermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetSpaceUserPermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachinePermission[] Result {
-            get {
+        public VirtualMachinePermission[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachinePermission[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void UpdateSpaceUserPermissionsCompletedEventHandler(object sender, UpdateSpaceUserPermissionsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UpdateSpaceUserPermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class UpdateSpaceUserPermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal UpdateSpaceUserPermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal UpdateSpaceUserPermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public int Result {
-            get {
+        public int Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((int)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetSpaceAuditLogCompletedEventHandler(object sender, GetSpaceAuditLogCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetSpaceAuditLogCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetSpaceAuditLogCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetSpaceAuditLogCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetSpaceAuditLogCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public LogRecord[] Result {
-            get {
+        public LogRecord[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((LogRecord[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineAuditLogCompletedEventHandler(object sender, GetVirtualMachineAuditLogCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineAuditLogCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineAuditLogCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineAuditLogCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineAuditLogCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public LogRecord[] Result {
-            get {
+        public LogRecord[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((LogRecord[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetOperatingSystemTemplatesCompletedEventHandler(object sender, GetOperatingSystemTemplatesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetOperatingSystemTemplatesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetOperatingSystemTemplatesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetOperatingSystemTemplatesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetOperatingSystemTemplatesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public LibraryItem[] Result {
-            get {
+        public LibraryItem[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((LibraryItem[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetOperatingSystemTemplatesByServiceIdCompletedEventHandler(object sender, GetOperatingSystemTemplatesByServiceIdCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetOperatingSystemTemplatesByServiceIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetOperatingSystemTemplatesByServiceIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetOperatingSystemTemplatesByServiceIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetOperatingSystemTemplatesByServiceIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public LibraryItem[] Result {
-            get {
+        public LibraryItem[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((LibraryItem[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetMaximumCpuCoresNumberCompletedEventHandler(object sender, GetMaximumCpuCoresNumberCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetMaximumCpuCoresNumberCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetMaximumCpuCoresNumberCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetMaximumCpuCoresNumberCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetMaximumCpuCoresNumberCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public int Result {
-            get {
+        public int Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((int)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetDefaultExportPathCompletedEventHandler(object sender, GetDefaultExportPathCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetDefaultExportPathCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetDefaultExportPathCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetDefaultExportPathCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetDefaultExportPathCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public string Result {
-            get {
+        public string Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void CreateDefaultVirtualMachineCompletedEventHandler(object sender, CreateDefaultVirtualMachineCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CreateDefaultVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class CreateDefaultVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal CreateDefaultVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal CreateDefaultVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public IntResult Result {
-            get {
+        public IntResult Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((IntResult)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void CreateVirtualMachineCompletedEventHandler(object sender, CreateVirtualMachineCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CreateVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class CreateVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal CreateVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal CreateVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public IntResult Result {
-            get {
+        public IntResult Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((IntResult)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ImportVirtualMachineCompletedEventHandler(object sender, ImportVirtualMachineCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ImportVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class ImportVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal ImportVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal ImportVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public IntResult Result {
-            get {
+        public IntResult Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((IntResult)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineThumbnailCompletedEventHandler(object sender, GetVirtualMachineThumbnailCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineThumbnailCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineThumbnailCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineThumbnailCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineThumbnailCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public byte[] Result {
-            get {
+        public byte[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((byte[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineGeneralDetailsCompletedEventHandler(object sender, GetVirtualMachineGeneralDetailsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineGeneralDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineGeneralDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineGeneralDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineGeneralDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachine Result {
-            get {
+        public VirtualMachine Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachine)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineExtendedInfoCompletedEventHandler(object sender, GetVirtualMachineExtendedInfoCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineExtendedInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineExtendedInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineExtendedInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineExtendedInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachine Result {
-            get {
+        public VirtualMachine Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachine)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void CancelVirtualMachineJobCompletedEventHandler(object sender, CancelVirtualMachineJobCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CancelVirtualMachineJobCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class CancelVirtualMachineJobCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal CancelVirtualMachineJobCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal CancelVirtualMachineJobCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public int Result {
-            get {
+        public int Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((int)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void UpdateVirtualMachineHostNameCompletedEventHandler(object sender, UpdateVirtualMachineHostNameCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UpdateVirtualMachineHostNameCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class UpdateVirtualMachineHostNameCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal UpdateVirtualMachineHostNameCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal UpdateVirtualMachineHostNameCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ChangeVirtualMachineStateCompletedEventHandler(object sender, ChangeVirtualMachineStateCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ChangeVirtualMachineStateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class ChangeVirtualMachineStateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal ChangeVirtualMachineStateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal ChangeVirtualMachineStateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineJobsCompletedEventHandler(object sender, GetVirtualMachineJobsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineJobsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineJobsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineJobsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineJobsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ConcreteJob[] Result {
-            get {
+        public ConcreteJob[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ConcreteJob[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ChangeAdministratorPasswordCompletedEventHandler(object sender, ChangeAdministratorPasswordCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ChangeAdministratorPasswordCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class ChangeAdministratorPasswordCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal ChangeAdministratorPasswordCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal ChangeAdministratorPasswordCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void UpdateVirtualMachineConfigurationCompletedEventHandler(object sender, UpdateVirtualMachineConfigurationCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UpdateVirtualMachineConfigurationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class UpdateVirtualMachineConfigurationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal UpdateVirtualMachineConfigurationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal UpdateVirtualMachineConfigurationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetInsertedDvdDiskCompletedEventHandler(object sender, GetInsertedDvdDiskCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetInsertedDvdDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetInsertedDvdDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetInsertedDvdDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetInsertedDvdDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public LibraryItem Result {
-            get {
+        public LibraryItem Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((LibraryItem)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetLibraryDisksCompletedEventHandler(object sender, GetLibraryDisksCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetLibraryDisksCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetLibraryDisksCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetLibraryDisksCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetLibraryDisksCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public LibraryItem[] Result {
-            get {
+        public LibraryItem[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((LibraryItem[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void InsertDvdDiskCompletedEventHandler(object sender, InsertDvdDiskCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class InsertDvdDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class InsertDvdDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal InsertDvdDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal InsertDvdDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void EjectDvdDiskCompletedEventHandler(object sender, EjectDvdDiskCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class EjectDvdDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class EjectDvdDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal EjectDvdDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal EjectDvdDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineSnapshotsCompletedEventHandler(object sender, GetVirtualMachineSnapshotsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineSnapshotsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineSnapshotsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineSnapshotsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineSnapshotsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachineSnapshot[] Result {
-            get {
+        public VirtualMachineSnapshot[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachineSnapshot[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetSnapshotCompletedEventHandler(object sender, GetSnapshotCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachineSnapshot Result {
-            get {
+        public VirtualMachineSnapshot Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachineSnapshot)(this.results[0]));
             }
@@ -4731,803 +5391,927 @@ namespace SolidCP.EnterpriseServer {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void CreateSnapshotCompletedEventHandler(object sender, CreateSnapshotCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CreateSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class CreateSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal CreateSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal CreateSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ApplySnapshotCompletedEventHandler(object sender, ApplySnapshotCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ApplySnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class ApplySnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal ApplySnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal ApplySnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void RenameSnapshotCompletedEventHandler(object sender, RenameSnapshotCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class RenameSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class RenameSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal RenameSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal RenameSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteSnapshotCompletedEventHandler(object sender, DeleteSnapshotCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DeleteSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class DeleteSnapshotCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal DeleteSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal DeleteSnapshotCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteSnapshotSubtreeCompletedEventHandler(object sender, DeleteSnapshotSubtreeCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DeleteSnapshotSubtreeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class DeleteSnapshotSubtreeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal DeleteSnapshotSubtreeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal DeleteSnapshotSubtreeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetSnapshotThumbnailCompletedEventHandler(object sender, GetSnapshotThumbnailCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetSnapshotThumbnailCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetSnapshotThumbnailCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetSnapshotThumbnailCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetSnapshotThumbnailCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public byte[] Result {
-            get {
+        public byte[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((byte[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetExternalNetworkAdapterDetailsCompletedEventHandler(object sender, GetExternalNetworkAdapterDetailsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetExternalNetworkAdapterDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetExternalNetworkAdapterDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetExternalNetworkAdapterDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetExternalNetworkAdapterDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails Result {
-            get {
+        public NetworkAdapterDetails Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((NetworkAdapterDetails)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void AddVirtualMachineExternalIPAddressesCompletedEventHandler(object sender, AddVirtualMachineExternalIPAddressesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class AddVirtualMachineExternalIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class AddVirtualMachineExternalIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal AddVirtualMachineExternalIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal AddVirtualMachineExternalIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void SetVirtualMachinePrimaryExternalIPAddressCompletedEventHandler(object sender, SetVirtualMachinePrimaryExternalIPAddressCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetVirtualMachinePrimaryExternalIPAddressCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class SetVirtualMachinePrimaryExternalIPAddressCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal SetVirtualMachinePrimaryExternalIPAddressCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal SetVirtualMachinePrimaryExternalIPAddressCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteVirtualMachineExternalIPAddressesCompletedEventHandler(object sender, DeleteVirtualMachineExternalIPAddressesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DeleteVirtualMachineExternalIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class DeleteVirtualMachineExternalIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal DeleteVirtualMachineExternalIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal DeleteVirtualMachineExternalIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetPrivateNetworkAdapterDetailsCompletedEventHandler(object sender, GetPrivateNetworkAdapterDetailsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetPrivateNetworkAdapterDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetPrivateNetworkAdapterDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetPrivateNetworkAdapterDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetPrivateNetworkAdapterDetailsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public NetworkAdapterDetails Result {
-            get {
+        public NetworkAdapterDetails Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((NetworkAdapterDetails)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void AddVirtualMachinePrivateIPAddressesCompletedEventHandler(object sender, AddVirtualMachinePrivateIPAddressesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class AddVirtualMachinePrivateIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class AddVirtualMachinePrivateIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal AddVirtualMachinePrivateIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal AddVirtualMachinePrivateIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void SetVirtualMachinePrimaryPrivateIPAddressCompletedEventHandler(object sender, SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteVirtualMachinePrivateIPAddressesCompletedEventHandler(object sender, DeleteVirtualMachinePrivateIPAddressesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DeleteVirtualMachinePrivateIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class DeleteVirtualMachinePrivateIPAddressesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal DeleteVirtualMachinePrivateIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal DeleteVirtualMachinePrivateIPAddressesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachinePermissionsCompletedEventHandler(object sender, GetVirtualMachinePermissionsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachinePermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachinePermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachinePermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachinePermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualMachinePermission[] Result {
-            get {
+        public VirtualMachinePermission[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachinePermission[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void UpdateVirtualMachineUserPermissionsCompletedEventHandler(object sender, UpdateVirtualMachineUserPermissionsCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UpdateVirtualMachineUserPermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class UpdateVirtualMachineUserPermissionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal UpdateVirtualMachineUserPermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal UpdateVirtualMachineUserPermissionsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public int Result {
-            get {
+        public int Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((int)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetExternalSwitchesCompletedEventHandler(object sender, GetExternalSwitchesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetExternalSwitchesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetExternalSwitchesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetExternalSwitchesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetExternalSwitchesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VirtualSwitch[] Result {
-            get {
+        public VirtualSwitch[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualSwitch[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteVirtualMachineCompletedEventHandler(object sender, DeleteVirtualMachineCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DeleteVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class DeleteVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal DeleteVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal DeleteVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ReinstallVirtualMachineCompletedEventHandler(object sender, ReinstallVirtualMachineCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ReinstallVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class ReinstallVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal ReinstallVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal ReinstallVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public int Result {
-            get {
+        public int Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((int)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetVirtualMachineSummaryTextCompletedEventHandler(object sender, GetVirtualMachineSummaryTextCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVirtualMachineSummaryTextCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetVirtualMachineSummaryTextCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetVirtualMachineSummaryTextCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetVirtualMachineSummaryTextCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public string Result {
-            get {
+        public string Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void SendVirtualMachineSummaryLetterCompletedEventHandler(object sender, SendVirtualMachineSummaryLetterCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SendVirtualMachineSummaryLetterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class SendVirtualMachineSummaryLetterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal SendVirtualMachineSummaryLetterCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal SendVirtualMachineSummaryLetterCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetCertificatesCompletedEventHandler(object sender, GetCertificatesCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetCertificatesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetCertificatesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetCertificatesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetCertificatesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public CertificateInfo[] Result {
-            get {
+        public CertificateInfo[] Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((CertificateInfo[])(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void SetReplicaServerCompletedEventHandler(object sender, SetReplicaServerCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetReplicaServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class SetReplicaServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal SetReplicaServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal SetReplicaServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void UnsetReplicaServerCompletedEventHandler(object sender, UnsetReplicaServerCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UnsetReplicaServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class UnsetReplicaServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal UnsetReplicaServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal UnsetReplicaServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetReplicaServerCompletedEventHandler(object sender, GetReplicaServerCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetReplicaServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetReplicaServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetReplicaServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetReplicaServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ReplicationServerInfo Result {
-            get {
+        public ReplicationServerInfo Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ReplicationServerInfo)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetReplicationCompletedEventHandler(object sender, GetReplicationCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public VmReplication Result {
-            get {
+        public VmReplication Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((VmReplication)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetReplicationInfoCompletedEventHandler(object sender, GetReplicationInfoCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetReplicationInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class GetReplicationInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal GetReplicationInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal GetReplicationInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ReplicationDetailInfo Result {
-            get {
+        public ReplicationDetailInfo Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ReplicationDetailInfo)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void SetVmReplicationCompletedEventHandler(object sender, SetVmReplicationCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetVmReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class SetVmReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal SetVmReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal SetVmReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DisableVmReplicationCompletedEventHandler(object sender, DisableVmReplicationCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class DisableVmReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class DisableVmReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal DisableVmReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal DisableVmReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void PauseReplicationCompletedEventHandler(object sender, PauseReplicationCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class PauseReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class PauseReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal PauseReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal PauseReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }
         }
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ResumeReplicationCompletedEventHandler(object sender, ResumeReplicationCompletedEventArgs e);
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class ResumeReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
+    public partial class ResumeReplicationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
         private object[] results;
-        
-        internal ResumeReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
+
+        internal ResumeReplicationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
             this.results = results;
         }
-        
+
         /// <remarks/>
-        public ResultObject Result {
-            get {
+        public ResultObject Result
+        {
+            get
+            {
                 this.RaiseExceptionIfNecessary();
                 return ((ResultObject)(this.results[0]));
             }

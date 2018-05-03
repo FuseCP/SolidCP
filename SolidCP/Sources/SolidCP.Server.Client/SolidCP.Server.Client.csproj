@@ -105,6 +105,7 @@
     <Compile Include="VirtualizationServerProxy.cs">
       <SubType>code</SubType>
     </Compile>
+    <Compile Include="VirtualizationServerProxy2016.cs" />
     <Compile Include="VirtualizationServerProxyProxmox.cs" />
     <Compile Include="VirtualizationServerProxy2012.cs" />
     <Compile Include="WebServerProxy.cs" />

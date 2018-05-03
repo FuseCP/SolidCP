@@ -1172,6 +1172,9 @@ namespace SolidCP.EnterpriseServer
                 item.HddSize = vm.HddSize;
                 item.VirtualHardDrivePath = vm.VirtualHardDrivePath;
                 item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath);
+                string msHddHyperVFolderName = "Virtual Hard Disks";
+                if (item.RootFolderPath.EndsWith(msHddHyperVFolderName)) //We have to know root folder of VM, not of hdd.
+                    item.RootFolderPath = item.RootFolderPath.Substring(0, item.RootFolderPath.Length - msHddHyperVFolderName.Length);
                 item.SnapshotsNumber = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
                 item.DvdDriveInstalled = vm.DvdDriveInstalled;
                 item.BootFromCD = vm.BootFromCD;
@@ -3537,7 +3540,7 @@ namespace SolidCP.EnterpriseServer
 
                     #region delete machine
                     TaskManager.Write("VPS_DELETE_DELETE");
-                    result = vs.DeleteVirtualMachine(vm.VirtualMachineId);
+                    result = saveFiles ? vs.DeleteVirtualMachine(vm.VirtualMachineId) : vs.DeleteVirtualMachineExtended(vm.VirtualMachineId);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -3561,9 +3564,10 @@ namespace SolidCP.EnterpriseServer
                 if (!saveFiles)
                 {
                     TaskManager.Write("VPS_DELETE_FILES", vm.RootFolderPath);
+                    //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
                     try
                     {
-                        vs.DeleteRemoteFile(vm.RootFolderPath);
+                        vs.DeleteRemoteFile(vm.RootFolderPath);//TODO: replace by powershell with checking folders size ???
                     }
                     catch (Exception ex)
                     {

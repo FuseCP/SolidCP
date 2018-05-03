@@ -250,6 +250,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public JobResult DeleteVirtualMachineExtended(string vmId)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' DeleteVirtualMachineExtended", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.DeleteVirtualMachineExtended(vmId);
+                Log.WriteEnd("'{0}' DeleteVirtualMachineExtended", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' DeleteVirtualMachineExtended", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public JobResult ExportVirtualMachine(string vmId, string exportPath)
         {
             try

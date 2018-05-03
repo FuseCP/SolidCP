@@ -112,5 +112,18 @@ namespace SolidCP.Providers.Virtualization
                 }
             }
         }
+
+        public static void Delete(PowerShellManager powerShell, VirtualHardDiskInfo[] disks)
+        {
+            if (disks != null && disks.GetLength(0) > 0)
+            {
+                foreach (VirtualHardDiskInfo disk in disks)
+                {
+                    Command cmd = new Command("Remove-item");
+                    cmd.Parameters.Add("path", disk.Path);
+                    powerShell.Execute(cmd, true);
+                }
+            }
+        }
     }
 }

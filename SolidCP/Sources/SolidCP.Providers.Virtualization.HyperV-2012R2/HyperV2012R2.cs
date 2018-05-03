@@ -515,8 +515,17 @@ namespace SolidCP.Providers.Virtualization
 
             return JobHelper.CreateSuccessResult();
         }
-
         public JobResult DeleteVirtualMachine(string vmId)
+        {
+            return DeleteVirtualMachineInternal(vmId, false);
+        }
+
+        public JobResult DeleteVirtualMachineExtended(string vmId)
+        {
+            return DeleteVirtualMachineInternal(vmId, true);
+        }
+
+        protected JobResult DeleteVirtualMachineInternal(string vmId, bool withExternalData)
         {
             var vm = GetVirtualMachineEx(vmId);
 
@@ -534,7 +543,12 @@ namespace SolidCP.Providers.Virtualization
                 //if (!string.IsNullOrEmpty(networkAdapter.SwitchName))
                     //DeleteSwitch(networkAdapter.SwitchName);
             }
-
+            if (withExternalData)
+            {
+                HardDriveHelper.Delete(PowerShell, vm.Disks);
+                SnapshotHelper.Delete(PowerShell, vm.Name);                
+                //something else???
+            }            
             VirtualMachineHelper.Delete(PowerShell, vm.Name, ServerNameSettings);
 
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
@@ -1545,7 +1559,8 @@ namespace SolidCP.Providers.Virtualization
                 #endregion
 
                 #region Delete virtual machine
-                result = DeleteVirtualMachine(vm.VirtualMachineId);
+                //result = DeleteVirtualMachine(vm.VirtualMachineId);
+                result = DeleteVirtualMachineExtended(vm.VirtualMachineId);
 
                 // check result
                 if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1564,10 +1579,11 @@ namespace SolidCP.Providers.Virtualization
                 }
                 #endregion
 
-                #region Delete virtual machine
+                #region Delete virtual machine 
+                //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
                 try
                 {
-                    DeleteFile(vm.RootFolderPath);
+                    DeleteFile(vm.RootFolderPath);//TODO: replace by powershell with checking folders size ???
                 }
                 catch (Exception ex)
                 {

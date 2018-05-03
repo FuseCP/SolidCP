@@ -68,5 +68,13 @@ namespace SolidCP.Providers.Virtualization
 
             powerShell.Execute(cmd, true);
         }
+
+        public static void Delete(PowerShellManager powerShell, string vmName)
+        {
+            Command cmd = new Command("Remove-VMSnapshot");
+            cmd.Parameters.Add("VMName", vmName);
+
+            powerShell.Execute(cmd, true);
+        }
     }
 }
