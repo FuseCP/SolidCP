@@ -255,6 +255,11 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
 
+            // IOPS number
+            // TODO: checke
+            txtHddMinIOPS.Text = "0";
+            txtHddMaxIOPS.Text = "0";
+
             // snapshots number
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_SNAPSHOTS_NUMBER))
             {
@@ -364,6 +369,8 @@ namespace SolidCP.Portal.VPS2012
             litCpu.Text = PortalAntiXSS.Encode(ddlCpu.SelectedValue);
             litRam.Text = PortalAntiXSS.Encode(txtRam.Text.Trim());
             litHdd.Text = PortalAntiXSS.Encode(txtHdd.Text.Trim());
+            litHddIOPSmin.Text = PortalAntiXSS.Encode(txtHddMinIOPS.Text.Trim());
+            litHddIOPSmax.Text = PortalAntiXSS.Encode(txtHddMaxIOPS.Text.Trim());
             litSnapshots.Text = PortalAntiXSS.Encode(txtSnapshots.Text.Trim());
             optionDvdInstalled.Value = chkDvdInstalled.Checked;
             optionBootFromCd.Value = chkBootFromCd.Checked;
@@ -436,7 +443,7 @@ namespace SolidCP.Portal.VPS2012
                 IntResult res = ES.Services.VPS2012.CreateVirtualMachine(PanelSecurity.PackageId,
                     hostname, listOperatingSystems.SelectedValue, adminPassword, summaryEmail,
                     Utils.ParseInt(ddlCpu.SelectedValue), Utils.ParseInt(txtRam.Text.Trim()),
-                    Utils.ParseInt(txtHdd.Text.Trim()), Utils.ParseInt(txtSnapshots.Text.Trim()),
+                    Utils.ParseInt(txtHdd.Text.Trim()), Utils.ParseInt(txtSnapshots.Text.Trim()), Utils.ParseInt(txtHddMinIOPS.Text.Trim()), Utils.ParseInt(txtHddMaxIOPS.Text.Trim()),
                     chkDvdInstalled.Checked, chkBootFromCd.Checked, chkNumLock.Checked,
                     chkStartShutdown.Checked, chkPauseResume.Checked, chkReboot.Checked, chkReset.Checked, chkReinstall.Checked,
                     externalenabled, Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),

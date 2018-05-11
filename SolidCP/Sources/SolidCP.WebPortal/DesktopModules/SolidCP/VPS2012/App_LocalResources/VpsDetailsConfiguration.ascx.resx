@@ -228,4 +228,16 @@
   <data name="btnEditText.Text" xml:space="preserve">
     <value>Edit configuration</value>
   </data>
+  <data name="HddMaxIOPS.Text" xml:space="preserve">
+    <value>{0} IOPS</value>
+  </data>
+  <data name="HddMinIOPS.Text" xml:space="preserve">
+    <value>{0} IOPS</value>
+  </data>
+  <data name="lblHddMaxIOPS.Text" xml:space="preserve">
+    <value>Maximum:</value>
+  </data>
+  <data name="lblHddMinIOPS.Text" xml:space="preserve">
+    <value>Minimum:</value>
+  </data>
 </root>

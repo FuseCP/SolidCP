@@ -49,6 +49,7 @@ using System.Diagnostics;
 ﻿using SolidCP.EnterpriseServer.Code.Virtualization2012;
 ﻿using SolidCP.Providers.Virtualization2012;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
+using System.Reflection;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -66,6 +67,8 @@ namespace SolidCP.EnterpriseServer
         private const int DEFAULT_PRIVATE_IPS_NUMBER = 1;
         private const int DEFAULT_SNAPSHOTS_NUMBER = 5;
         private const int DEFAULT_VLAN = 0;
+        private const int DEFAULT_MINIMUM_IOPS = 0;
+        private const int DEFAULT_MAXIMUM_IOPS = 0;
 
         #region Virtual Machines
         public static VirtualMachineMetaItemsPaged GetVirtualMachines(int packageId,
@@ -276,6 +279,11 @@ namespace SolidCP.EnterpriseServer
             if (hddGB == -1) // unlimited is not possible
                 hddGB = DEFAULT_HDD_SIZE;
 
+            // IOPS
+            // TODO IOPS checks
+            int hddMinimumIOPS = DEFAULT_MINIMUM_IOPS;
+            int hddMaximumIOPS = DEFAULT_MAXIMUM_IOPS;
+
             // snapshots
             int snapshots = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
             if (snapshots == -1) // unlimited is not possible
@@ -314,7 +322,7 @@ namespace SolidCP.EnterpriseServer
 
             // create server and return result
             return CreateVirtualMachine(packageId, hostname, osTemplate, password, summaryLetterEmail,
-                cpuCores, ramMB, hddGB, snapshots,
+                cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS,
                 dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
@@ -323,7 +331,7 @@ namespace SolidCP.EnterpriseServer
 
         public static IntResult CreateVirtualMachine(int packageId,
                 string hostname, string osTemplateFile, string password, string summaryLetterEmail,
-                int cpuCores, int ramMB, int hddGB, int snapshots,
+                int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
                 bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                 bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
@@ -477,6 +485,8 @@ namespace SolidCP.EnterpriseServer
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
                 vm.HddSize = hddGB;
+                vm.HddMinimumIOPS = hddMinimumIOPS;
+                vm.HddMaximumIOPS = hddMaximumIOPS;
                 vm.SnapshotsNumber = snapshots;
                 vm.DvdDriveInstalled = dvdInstalled;
                 vm.BootFromCD = bootFromCD;
@@ -1170,6 +1180,8 @@ namespace SolidCP.EnterpriseServer
                 item.RamSize = vm.RamSize;
                 item.DynamicMemory = vm.DynamicMemory;
                 item.HddSize = vm.HddSize;
+                item.HddMinimumIOPS = vm.HddMinimumIOPS;
+                item.HddMaximumIOPS = vm.HddMaximumIOPS;
                 item.VirtualHardDrivePath = vm.VirtualHardDrivePath;
                 item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath);
                 string msHddHyperVFolderName = "Virtual Hard Disks";
@@ -1994,7 +2006,10 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS – Edit Configuration
-        public static ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
+        public static ResultObject UpdateVirtualMachineConfiguration(
+            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
+            bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, 
+            bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
         {
             ResultObject res = new ResultObject();
 
@@ -2060,6 +2075,9 @@ namespace SolidCP.EnterpriseServer
             if (snapshots < 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
+            // IOPS checks
+            //TODO
+
             if (quotaResults.Count > 0)
             {
                 res.ErrorCodes.AddRange(quotaResults);
@@ -2114,6 +2132,8 @@ namespace SolidCP.EnterpriseServer
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
                 vm.HddSize = hddGB;
+                vm.HddMinimumIOPS = hddMinimumIOPS;
+                vm.HddMaximumIOPS = hddMaximumIOPS;
                 vm.SnapshotsNumber = snapshots;
                 
                 vm.BootFromCD = bootFromCD;

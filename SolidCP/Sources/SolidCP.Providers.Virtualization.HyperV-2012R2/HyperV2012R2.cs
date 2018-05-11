@@ -203,6 +203,8 @@ namespace SolidCP.Providers.Virtualization
                         {
                             vm.VirtualHardDrivePath = vm.Disks[0].Path;
                             vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G);
+                            vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
+                            vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
                         }
 
                         // network adapters
@@ -404,7 +406,8 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize);
+                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize); //TODO rework that method.
+                HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
             {

@@ -85,6 +85,10 @@ namespace SolidCP.Providers.Virtualization
         public int HddSize { get; set; }
         public LogicalDisk[] HddLogicalDisks { get; set; }
         [Persistent]
+        public int HddMaximumIOPS { get; set; }
+        [Persistent]
+        public int HddMinimumIOPS { get; set; }
+        [Persistent]
         public int SnapshotsNumber { get; set; }
 
         [Persistent]

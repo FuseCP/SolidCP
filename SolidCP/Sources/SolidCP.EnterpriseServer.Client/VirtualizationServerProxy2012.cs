@@ -1315,6 +1315,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1343,6 +1345,8 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
+                        hddMinimumIOPS,
+                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -1374,6 +1378,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1404,6 +1410,8 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
+                        hddMinimumIOPS,
+                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -1441,6 +1449,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1459,7 +1469,7 @@ namespace SolidCP.EnterpriseServer
                     string[] privateAddresses,
                     VirtualMachine otherSettings)
         {
-            this.CreateVirtualMachineAsync(packageId, hostname, osTemplateFile, password, summaryLetterEmail, cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses, privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, otherSettings, null);
+            this.CreateVirtualMachineAsync(packageId, hostname, osTemplateFile, password, summaryLetterEmail, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses, privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, otherSettings, null);
         }
 
         /// <remarks/>
@@ -1473,6 +1483,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1506,6 +1518,8 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
+                        hddMinimumIOPS,
+                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -2057,6 +2071,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2075,6 +2091,8 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
+                        hddMinimumIOPS,
+                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -2096,6 +2114,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2116,6 +2136,8 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
+                        hddMinimumIOPS,
+                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -2143,6 +2165,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2155,7 +2179,7 @@ namespace SolidCP.EnterpriseServer
                     bool privateNetworkEnabled,
                     VirtualMachine otherSettings)
         {
-            this.UpdateVirtualMachineConfigurationAsync(itemId, cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, privateNetworkEnabled, otherSettings, null);
+            this.UpdateVirtualMachineConfigurationAsync(itemId, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, privateNetworkEnabled, otherSettings, null);
         }
 
         /// <remarks/>
@@ -2165,6 +2189,8 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
+                    int hddMinimumIOPS, 
+                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2188,6 +2214,8 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
+                        hddMinimumIOPS,
+                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
