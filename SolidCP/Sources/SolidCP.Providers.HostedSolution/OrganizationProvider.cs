@@ -352,10 +352,21 @@ namespace SolidCP.Providers.HostedSolution
         {
             string path = GetOrganizationPath(org.OrganizationId);
             DirectoryEntry entry = ActiveDirectoryUtils.GetADObject(path);
+            string filter = "";
 
-            string filter =
+            string msExchVersion = ActiveDirectoryUtils.GetADObjectStringProperty(entry, "msExchVersion");
+            if (!string.IsNullOrEmpty(msExchVersion))
+            {
+                filter =
                 string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)(!{0}=disabled))",
                               ADAttributes.CustomAttribute2);
+            }
+            else
+            {
+                filter =
+                string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))");
+            }
+
             using (DirectorySearcher searcher = new DirectorySearcher(entry, filter))
             {
                 SearchResultCollection resCollection = searcher.FindAll();
