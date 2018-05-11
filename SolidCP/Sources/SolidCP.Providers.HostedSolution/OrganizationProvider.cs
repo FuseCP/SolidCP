@@ -1174,7 +1174,13 @@ namespace SolidCP.Providers.HostedSolution
             ActiveDirectoryUtils.SetADObjectProperty(entry, ADAttributes.Country, country);
             ActiveDirectoryUtils.SetADObjectProperty(entry, ADAttributes.Notes, notes);
             ActiveDirectoryUtils.SetADObjectProperty(entry, ADAttributes.ExternalEmail, externalEmail);
-            ActiveDirectoryUtils.SetADObjectProperty(entry, ADAttributes.CustomAttribute2, (disabled ? "disabled" : null));
+           
+            // We can only set this value if Exchange mailbox is enabled
+            string msExchVersion = ActiveDirectoryUtils.GetADObjectStringProperty(entry, "msExchVersion");
+            if (!string.IsNullOrEmpty(msExchVersion))
+            {
+                ActiveDirectoryUtils.SetADObjectProperty(entry, ADAttributes.CustomAttribute2, (disabled ? "disabled" : null));
+            }
 
 
             string manager = string.Empty;
