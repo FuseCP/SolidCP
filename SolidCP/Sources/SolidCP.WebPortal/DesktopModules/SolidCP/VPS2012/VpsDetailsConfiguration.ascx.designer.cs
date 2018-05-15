@@ -91,7 +91,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnChangePasswordPopup;
+        protected global::CPCC.StyleButton btnChangePasswordPopup;
         
         /// <summary>
         /// GenerationSetting control.
@@ -173,6 +173,69 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litHdd;
+        
+        /// <summary>
+        /// secHddQOS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.CollapsiblePanel secHddQOS;
+        
+        /// <summary>
+        /// QOSManag control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel QOSManag;
+        
+        /// <summary>
+        /// locHddIOPSTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHddIOPSTitle;
+        
+        /// <summary>
+        /// lblHddMinIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize lblHddMinIOPS;
+        
+        /// <summary>
+        /// litHddMinIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litHddMinIOPS;
+        
+        /// <summary>
+        /// lblHddMaxIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize lblHddMaxIOPS;
+        
+        /// <summary>
+        /// litHddMaxIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litHddMaxIOPS;
         
         /// <summary>
         /// DynamicMemorySetting control.
@@ -388,7 +451,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnEdit;
+        protected global::CPCC.StyleButton btnEdit;
         
         /// <summary>
         /// ChangePasswordPanel control.
@@ -433,7 +496,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancelChangePassword;
+        protected global::CPCC.StyleButton btnCancelChangePassword;
         
         /// <summary>
         /// btnChangePassword control.
@@ -442,7 +505,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnChangePassword;
+        protected global::CPCC.StyleButton btnChangePassword;
         
         /// <summary>
         /// ChangePasswordModal control.

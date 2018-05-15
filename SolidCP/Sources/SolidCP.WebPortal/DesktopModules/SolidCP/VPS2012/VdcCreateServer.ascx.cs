@@ -67,7 +67,7 @@ namespace SolidCP.Portal.VPS2012
             if (!PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED))
             {
                 wizard.WizardSteps.Remove(stepExternalNetwork);
-                //chkExternalNetworkEnabled.Checked = false;
+                chkExternalNetworkEnabled.Checked = false;
             }
 
             //KD FSJ
@@ -180,7 +180,8 @@ namespace SolidCP.Portal.VPS2012
 
                 //List<int> vlans = ES.Services.VPS2012.GetAvailableVLANs(PanelSecurity.PackageId).vlans;
                 listVlanLists.Items.Clear();
-                listVlanLists.Items.Add(new ListItem("External network disabled", "-1"));
+                //listVlanLists.Items.Add(new ListItem("External network disabled", "-1"));
+                listVlanLists.Items.Add(new ListItem("Select a VLAN", "-1"));
                 foreach (int vlan in vlans)
                 {
                     listVlanLists.Items.Add(new ListItem(String.Format("VLAN {0}", vlan.ToString()), vlan.ToString()));
@@ -254,6 +255,11 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
 
+            // IOPS number
+            // TODO: checke
+            txtHddMinIOPS.Text = "0";
+            txtHddMaxIOPS.Text = "0";
+
             // snapshots number
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_SNAPSHOTS_NUMBER))
             {
@@ -291,9 +297,21 @@ namespace SolidCP.Portal.VPS2012
             // external network
             bool emptyIps = listExternalAddresses.Items.Count == 0;
             EmptyExternalAddressesMessage.Visible = emptyIps;
-            tableExternalNetwork.Visible = !emptyIps && (Convert.ToInt32(listVlanLists.SelectedValue) >= 0);
-            //chkExternalNetworkEnabled.Enabled = !emptyIps;
-            //chkExternalNetworkEnabled.Checked = chkExternalNetworkEnabled.Checked && !emptyIps;
+            listVlanLists.Visible = !emptyIps && (listVlanLists.Items.Count > 2); //First is fake ("Select Vlan")
+            if (!emptyIps && (listVlanLists.Items.Count > 2))
+            {
+                tableExternalNetwork.Visible = !emptyIps && (Convert.ToInt32(listVlanLists.SelectedValue) >= 0);
+                //TODO: set the first possible VLAN?
+            }
+            else
+            {
+                tableExternalNetwork.Visible = chkExternalNetworkEnabled.Checked && !emptyIps;
+                chkExternalNetworkEnabled.Enabled = !emptyIps;
+                chkExternalNetworkEnabled.Checked = chkExternalNetworkEnabled.Checked && !emptyIps;
+                listVlanLists.SelectedIndex = listVlanLists.Items.Count - 1;
+            }
+
+
             ExternalAddressesNumberRow.Visible = radioExternalRandom.Checked;
             ExternalAddressesListRow.Visible = radioExternalSelected.Checked;
 
@@ -351,6 +369,8 @@ namespace SolidCP.Portal.VPS2012
             litCpu.Text = PortalAntiXSS.Encode(ddlCpu.SelectedValue);
             litRam.Text = PortalAntiXSS.Encode(txtRam.Text.Trim());
             litHdd.Text = PortalAntiXSS.Encode(txtHdd.Text.Trim());
+            litHddIOPSmin.Text = PortalAntiXSS.Encode(txtHddMinIOPS.Text.Trim());
+            litHddIOPSmax.Text = PortalAntiXSS.Encode(txtHddMaxIOPS.Text.Trim());
             litSnapshots.Text = PortalAntiXSS.Encode(txtSnapshots.Text.Trim());
             optionDvdInstalled.Value = chkDvdInstalled.Checked;
             optionBootFromCd.Value = chkBootFromCd.Checked;
@@ -362,10 +382,11 @@ namespace SolidCP.Portal.VPS2012
             optionReinstall.Value = chkReinstall.Checked;
 
             // external network
-            optionExternalNetwork.Value = (Convert.ToInt32(listVlanLists.SelectedValue) >= 0);
-            SummExternalAddressesNumberRow.Visible = radioExternalRandom.Checked && (Convert.ToInt32(listVlanLists.SelectedValue) >= 0);
+            bool isSelectedAndChecked = chkExternalNetworkEnabled.Checked && (Convert.ToInt32(listVlanLists.SelectedValue) >= 0);
+            optionExternalNetwork.Value = isSelectedAndChecked;
+            SummExternalAddressesNumberRow.Visible = radioExternalRandom.Checked && isSelectedAndChecked;
             litExternalAddressesNumber.Text = PortalAntiXSS.Encode(txtExternalAddressesNumber.Text.Trim());
-            SummExternalAddressesListRow.Visible = radioExternalSelected.Checked && (Convert.ToInt32(listVlanLists.SelectedValue) >= 0);
+            SummExternalAddressesListRow.Visible = radioExternalSelected.Checked && isSelectedAndChecked;
 
             List<string> ipAddresses = new List<string>();
             foreach (ListItem li in listExternalAddresses.Items)
@@ -422,7 +443,7 @@ namespace SolidCP.Portal.VPS2012
                 IntResult res = ES.Services.VPS2012.CreateVirtualMachine(PanelSecurity.PackageId,
                     hostname, listOperatingSystems.SelectedValue, adminPassword, summaryEmail,
                     Utils.ParseInt(ddlCpu.SelectedValue), Utils.ParseInt(txtRam.Text.Trim()),
-                    Utils.ParseInt(txtHdd.Text.Trim()), Utils.ParseInt(txtSnapshots.Text.Trim()),
+                    Utils.ParseInt(txtHdd.Text.Trim()), Utils.ParseInt(txtSnapshots.Text.Trim()), Utils.ParseInt(txtHddMinIOPS.Text.Trim()), Utils.ParseInt(txtHddMaxIOPS.Text.Trim()),
                     chkDvdInstalled.Checked, chkBootFromCd.Checked, chkNumLock.Checked,
                     chkStartShutdown.Checked, chkPauseResume.Checked, chkReboot.Checked, chkReset.Checked, chkReinstall.Checked,
                     externalenabled, Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),

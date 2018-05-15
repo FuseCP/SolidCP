@@ -73,6 +73,8 @@ namespace SolidCP.Portal.SkinControls
         {
             repUsersPath.DataSource = ES.Services.Users.GetUserParents(PanelSecurity.SelectedUserId);
             repUsersPath.DataBind();
+            bool isUser = ((PanelSecurity.LoggedUser.Role == UserRole.User));
+            updatePanelUsers.Visible = !isUser; //hide from user.
         }
 
         private void BindUserSpace()

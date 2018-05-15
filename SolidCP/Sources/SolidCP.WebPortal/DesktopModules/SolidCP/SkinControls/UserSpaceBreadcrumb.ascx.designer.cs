@@ -148,15 +148,6 @@ namespace SolidCP.Portal.SkinControls {
         protected global::System.Web.UI.UpdatePanel updatePanelUsers;
         
         /// <summary>
-        /// lblUserAccountName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblUserAccountName;
-        
-        /// <summary>
         /// pnlViewSpace control.
         /// </summary>
         /// <remarks>
@@ -166,13 +157,22 @@ namespace SolidCP.Portal.SkinControls {
         protected global::System.Web.UI.WebControls.Panel pnlViewSpace;
         
         /// <summary>
+        /// lblUserAccountName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblUserAccountName;
+        
+        /// <summary>
         /// cmdSpaceName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label cmdSpaceName;
+        protected global::System.Web.UI.WebControls.LinkButton cmdSpaceName;
         
         /// <summary>
         /// lblSpaceDescription control.
@@ -202,13 +202,22 @@ namespace SolidCP.Portal.SkinControls {
         protected global::System.Web.UI.WebControls.TextBox txtName;
         
         /// <summary>
+        /// cmdSave control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton cmdSave;
+        
+        /// <summary>
         /// cmdCancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CPCC.StyleButton cmdCancel;
+        protected global::System.Web.UI.WebControls.LinkButton cmdCancel;
         
         /// <summary>
         /// valRequireName control.

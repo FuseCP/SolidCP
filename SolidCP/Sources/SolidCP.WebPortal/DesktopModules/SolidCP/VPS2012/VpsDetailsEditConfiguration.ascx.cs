@@ -86,6 +86,8 @@ namespace SolidCP.Portal.VPS2012
                 ddlCpu.SelectedValue = vm.CpuCores.ToString();
                 txtRam.Text = vm.RamSize.ToString();
                 txtHdd.Text = vm.HddSize.ToString();
+                txtHddMinIOPS.Text = vm.HddMinimumIOPS.ToString();
+                txtHddMaxIOPS.Text = vm.HddMaximumIOPS.ToString();
                 txtSnapshots.Text = vm.SnapshotsNumber.ToString();
 
                 chkDvdInstalled.Checked = vm.DvdDriveInstalled;
@@ -161,8 +163,10 @@ namespace SolidCP.Portal.VPS2012
                 ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,
                     Utils.ParseInt(ddlCpu.SelectedValue),
                     Utils.ParseInt(txtRam.Text.Trim()),
-                    Utils.ParseInt(txtHdd.Text.Trim()),
+                    Utils.ParseInt(txtHdd.Text.Trim()),                    
                     Utils.ParseInt(txtSnapshots.Text.Trim()),
+                    Utils.ParseInt(txtHddMinIOPS.Text.Trim()),
+                    Utils.ParseInt(txtHddMaxIOPS.Text.Trim()),
                     chkDvdInstalled.Checked,
                     chkBootFromCd.Checked,
                     chkNumLock.Checked,

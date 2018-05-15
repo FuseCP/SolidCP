@@ -9,7 +9,7 @@
 
 <scp:EnableAsyncTasksSupport id="asyncTasks" runat="server"/>
 
-<asp:Timer runat="server" Interval="10000" ID="operationTimer" />
+<asp:Timer runat="server" Interval="30000" ID="operationTimer" />
 
 <script language="JavaScript" type="text/javascript">
 function OpenRemoteDesktopWindow(resolution, width, height) {
@@ -100,7 +100,9 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
 				                 
 				            </td>
 				            <td valign="top" style="width:35%;">
-				                <asp:HyperLink ID="lnkRDP" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);" Text="">
+                                <!-- what was idea of this? This block img update -->
+                                <!--NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"-->
+				                <asp:HyperLink ID="lnkRDP" NavigateUrl="" runat="server"  Text=" ">
 				                <asp:UpdatePanel runat="server" ID="UpdatePanel1" UpdateMode="Conditional">
                                     <Triggers>
                                         <asp:AsyncPostBackTrigger ControlID="operationTimer" EventName="Tick" />

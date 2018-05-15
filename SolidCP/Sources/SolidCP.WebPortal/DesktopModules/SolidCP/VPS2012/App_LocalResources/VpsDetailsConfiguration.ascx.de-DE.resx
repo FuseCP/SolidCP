@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnChangePassword.OnClientClick" xml:space="preserve">
     <value>ShowProgressDialog('Passwort wird geändert...', 'PasswordModal');</value>
@@ -227,5 +227,11 @@
   </data>
   <data name="btnEditText.Text" xml:space="preserve">
     <value>Konfiguration bearbeiten</value>
+  </data>
+  <data name="HddMaxIOPS.Text" xml:space="preserve">
+    <value>{0} IOPS</value>
+  </data>
+  <data name="HddMinIOPS.Text" xml:space="preserve">
+    <value>{0} IOPS</value>
   </data>
 </root>

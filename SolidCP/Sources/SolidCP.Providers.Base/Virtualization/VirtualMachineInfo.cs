@@ -89,6 +89,10 @@ namespace SolidCP.Providers.Virtualization
         [Persistent]
         public int SnapshotsNumber { get; set; }
         [Persistent]
+        public int HddMaximumIOPS { get; set; }
+        [Persistent]
+        public int HddMinimumIOPS { get; set; }
+        [Persistent]
         public bool BootFromCD { get; set; }
 
         public LogicalDisk[] HddLogicalDisks { get; set; }

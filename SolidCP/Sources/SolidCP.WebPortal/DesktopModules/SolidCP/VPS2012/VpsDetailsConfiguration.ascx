@@ -78,6 +78,36 @@
                             </tr>
                         </table>
                     </asp:Panel>
+
+                    <scp:CollapsiblePanel id="secHddQOS" runat="server" IsCollapsed="true"
+                        TargetControlID="QOSManag" meta:resourcekey="secHddQOS" Text="Virtual Hard Disk Drive Quality of Service management">
+                    </scp:CollapsiblePanel>
+                    <asp:Panel ID="QOSManag" runat="server" Height="0" style="overflow:hidden;padding:10px;width:400px;">
+                        <p>
+		                <asp:Localize ID="locHddIOPSTitle" runat="server" meta:resourcekey="locHddIOPSTitle" 
+                            Text="Specify Quality of Service management for this virtual hard disk. Minimum and maximum IOPS are measured in 8KB increments. Default value is 0." />
+		                </p>
+                        <table cellspacing="5">
+                            <tr>
+                                <td class="Medium"><asp:Localize ID="lblHddMinIOPS" runat="server"
+                                        meta:resourcekey="lblHddMinIOPS" Text="Minimum:" /></td>
+                                <td class="MediumBold">
+                                    <asp:Literal ID="litHddMinIOPS" runat="server" Text="[hddminiops]"></asp:Literal>
+                                </td>
+                            </tr>
+                        </table>
+                        <table cellspacing="5">
+                            <tr>
+                                <td class="Medium"><asp:Localize ID="lblHddMaxIOPS" runat="server"
+                                        meta:resourcekey="lblHddMaxIOPS" Text="Maximum:" /></td>
+                                <td class="MediumBold">
+                                    <asp:Literal ID="litHddMaxIOPS" runat="server" Text="[hddmaxiops]"></asp:Literal>
+                                </td>
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
+
                     
                     <scp:DynamicMemoryControl runat="server" ID="DynamicMemorySetting" Mode="Display"/>
 

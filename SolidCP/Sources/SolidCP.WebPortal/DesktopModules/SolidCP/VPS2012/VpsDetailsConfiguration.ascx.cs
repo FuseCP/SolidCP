@@ -80,6 +80,9 @@ namespace SolidCP.Portal.VPS2012
                 litCpu.Text = String.Format(GetLocalizedString("CpuCores.Text"), vm.CpuCores);
                 litRam.Text = String.Format(GetLocalizedString("Ram.Text"), vm.RamSize);
                 litHdd.Text = String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize);
+                litHddMinIOPS.Text = String.Format(GetLocalizedString("HddMinIOPS.Text"), vm.HddMinimumIOPS);
+                litHddMaxIOPS.Text = String.Format(GetLocalizedString("HddMaxIOPS.Text"), vm.HddMaximumIOPS);               
+                
                 litSnapshots.Text = vm.SnapshotsNumber.ToString();
 
                 optionDvdInstalled.Value = vm.DvdDriveInstalled;

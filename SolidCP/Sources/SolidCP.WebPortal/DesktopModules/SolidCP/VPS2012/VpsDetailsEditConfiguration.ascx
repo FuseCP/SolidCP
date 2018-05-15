@@ -65,6 +65,43 @@
                             </tr>
                         </table>
                     </asp:Panel>
+
+                    <scp:CollapsiblePanel id="secHddQOS" runat="server" IsCollapsed="true"
+                        TargetControlID="QOSManag" meta:resourcekey="secHddQOS" Text="Virtual Hard Disk Drive Quality of Service management">
+                    </scp:CollapsiblePanel>
+                    <asp:Panel ID="QOSManag" runat="server" Height="0" style="overflow:hidden;padding:10px;width:400px;">
+                        <p>
+		                <asp:Localize ID="locHddIOPSTitle" runat="server" meta:resourcekey="locHddIOPSTitle" 
+                            Text="Specify Quality of Service management for this virtual hard disk. Minimum and maximum IOPS are measured in 8KB increments. Default value is 0." />
+		                </p>
+                        <table cellpadding="3">
+                            <tr>
+                                <td style="width:60px;"><asp:Label ID="lblHddMinIOPS" runat="server" AssociatedControlID="txtHddMinIOPS"
+                                        meta:resourcekey="lblHddMinIOPS" Text="Minimum:" CssClass="Medium" /></td>
+                                <td>
+                                    <asp:TextBox ID="txtHddMinIOPS" runat="server" CssClass="form-control" Width="70"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="RequireHddMinIOPSValidator" runat="server" Text="*" Display="Dynamic"
+                                        ControlToValidate="txtHddMinIOPS" meta:resourcekey="RequireHddMinIOPSValidator" SetFocusOnError="true"
+                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                </td>      
+                                <td><asp:Localize ID="locHddMinIOPS" runat="server" meta:resourcekey="locHddMinIOPS" Text="IOPS"/></td>                          
+                            </tr>
+                        </table>
+                        <table cellpadding="3">
+                            <tr>
+                                <td style="width:60px;"><asp:Label ID="lblHddMaxIOPS" runat="server" AssociatedControlID="txtHddMaxIOPS"
+                                        meta:resourcekey="lblHddMaxIOPS" Text="Maximum:" CssClass="Medium" /></td>
+                                <td>
+                                    <asp:TextBox ID="txtHddMaxIOPS" runat="server" CssClass="form-control" Width="70"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="RequireHddMaxIOPSValidator" runat="server" Text="*" Display="Dynamic"
+                                        ControlToValidate="txtHddMaxIOPS" meta:resourcekey="RequireHddMaxIOPSValidator" SetFocusOnError="true"
+                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                </td>   
+                                <td><asp:Localize ID="locHddMaxIOPS" runat="server" meta:resourcekey="locHddMaxIOPS" Text="IOPS"/></td>                             
+                            </tr>
+                        </table>
+                    </asp:Panel>
+
                     
                     <scp:DynamicMemoryControl runat="server" ID="DynamicMemorySetting" Mode="Edit"/>
                     

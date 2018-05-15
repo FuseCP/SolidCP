@@ -198,14 +198,14 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public IntResult CreateVirtualMachine(int packageId,
                 string hostname, string osTemplateFile, string password, string summaryLetterEmail,
-                int cpuCores, int ramMB, int hddGB, int snapshots, bool dvdInstalled, bool bootFromCD, bool numLock,
+                int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS, bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                 bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, VirtualMachine otherSettings)
         {
             return VirtualizationServerController2012.CreateVirtualMachine(packageId,
                 hostname, osTemplateFile, password, summaryLetterEmail,
-                cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock,
+                cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS, dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
                 privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses,  otherSettings);
@@ -286,14 +286,14 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS – Edit Configuration
         [WebMethod]
-        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
+        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
                     bool dvdInstalled, bool bootFromCD, bool numLock,
                     bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                     bool externalNetworkEnabled,
                     bool privateNetworkEnabled, VirtualMachine otherSettings)
         {
             return VirtualizationServerController2012.UpdateVirtualMachineConfiguration(
-                    itemId, cpuCores, ramMB, hddGB, snapshots,
+                    itemId, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS,
                     dvdInstalled, bootFromCD, numLock,
                     startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                     externalNetworkEnabled, privateNetworkEnabled,

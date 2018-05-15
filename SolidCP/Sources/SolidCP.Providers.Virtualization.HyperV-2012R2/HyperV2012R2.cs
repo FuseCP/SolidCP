@@ -203,6 +203,8 @@ namespace SolidCP.Providers.Virtualization
                         {
                             vm.VirtualHardDrivePath = vm.Disks[0].Path;
                             vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G);
+                            vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
+                            vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
                         }
 
                         // network adapters
@@ -404,7 +406,8 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize);
+                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize); //TODO rework that method.
+                HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
             {
@@ -515,8 +518,17 @@ namespace SolidCP.Providers.Virtualization
 
             return JobHelper.CreateSuccessResult();
         }
-
         public JobResult DeleteVirtualMachine(string vmId)
+        {
+            return DeleteVirtualMachineInternal(vmId, false);
+        }
+
+        public JobResult DeleteVirtualMachineExtended(string vmId)
+        {
+            return DeleteVirtualMachineInternal(vmId, true);
+        }
+
+        protected JobResult DeleteVirtualMachineInternal(string vmId, bool withExternalData)
         {
             var vm = GetVirtualMachineEx(vmId);
 
@@ -534,7 +546,12 @@ namespace SolidCP.Providers.Virtualization
                 //if (!string.IsNullOrEmpty(networkAdapter.SwitchName))
                     //DeleteSwitch(networkAdapter.SwitchName);
             }
-
+            if (withExternalData)
+            {
+                HardDriveHelper.Delete(PowerShell, vm.Disks);
+                SnapshotHelper.Delete(PowerShell, vm.Name);                
+                //something else???
+            }            
             VirtualMachineHelper.Delete(PowerShell, vm.Name, ServerNameSettings);
 
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
@@ -1545,7 +1562,8 @@ namespace SolidCP.Providers.Virtualization
                 #endregion
 
                 #region Delete virtual machine
-                result = DeleteVirtualMachine(vm.VirtualMachineId);
+                //result = DeleteVirtualMachine(vm.VirtualMachineId);
+                result = DeleteVirtualMachineExtended(vm.VirtualMachineId);
 
                 // check result
                 if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1564,10 +1582,11 @@ namespace SolidCP.Providers.Virtualization
                 }
                 #endregion
 
-                #region Delete virtual machine
+                #region Delete virtual machine 
+                //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
                 try
                 {
-                    DeleteFile(vm.RootFolderPath);
+                    DeleteFile(vm.RootFolderPath);//TODO: replace by powershell with checking folders size ???
                 }
                 catch (Exception ex)
                 {

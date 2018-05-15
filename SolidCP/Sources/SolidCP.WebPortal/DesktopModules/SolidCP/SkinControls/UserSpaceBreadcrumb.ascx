@@ -35,28 +35,26 @@
 
     <div class="CurrentNode" runat="server" id="CurrentNode">
         <asp:UpdatePanel runat="server" ID="updatePanelUsers" UpdateMode="Conditional" ChildrenAsTriggers="true">
-            <ContentTemplate>
-                            <div style="display:none;">
-                                <div class="input-group col-xs-12">
-                                    <span class="input-group-addon input-group-md ">
-                                        <asp:Label ID="lblUserAccountName" runat="server" Text="Account-" CssClass="control-label large" Style="margin-right: 4px;" />
-                                    </span>
-                                    <asp:Panel runat="server" ID="pnlViewSpace">
-                                        <span class="input-group-addon input-group-md">
-                                            <asp:Label ID="cmdSpaceName" runat="server" CssClass="control-label" />
-                                        </span>
-                                        <asp:Label ID="lblSpaceDescription" runat="server" Visible="false"></asp:Label>
-                                    </asp:Panel>
-                                    <asp:Panel ID="pnlEditSpace" runat="server" DefaultButton="cmdSave" Visible="false">
-                                        <asp:TextBox ID="txtName" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
-                                        <span class="input-group-btn input-group-md">
-                                            <CPCC:StyleButton ID="cmdCancel" runat="server" Text="Cancel" CssClass="btn btn-warning" OnClick="cmdCancel_Click" CausesValidation="false"><i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel" /></CPCC:StyleButton>
-                                        </span>
-                                    </asp:Panel>
-                                </div>
-                            </div>
-                    <asp:RequiredFieldValidator ID="valRequireName" runat="server" ControlToValidate="txtName" ErrorMessage="*" Display="Dynamic" ValidationGroup="SpaceName"></asp:RequiredFieldValidator>
-            </ContentTemplate>
-        </asp:UpdatePanel>
+			<ContentTemplate>
+	            <asp:Panel ID="pnlViewSpace" runat="server">
+                    <asp:Label ID="lblUserAccountName" runat="server" Text="Account-" CssClass="Huge" style="margin-right:2px;"/>
+			        <asp:LinkButton ID="cmdSpaceName" runat="server" Text="Change Name" OnClick="cmdChangeName_Click" CssClass="Huge" CausesValidation="false" />
+			        <asp:Label ID="lblSpaceDescription" runat="server" Visible="false"></asp:Label>
+		        </asp:Panel>
+		        <asp:Panel ID="pnlEditSpace" runat="server" DefaultButton="cmdSave" Visible="false">
+			        <table cellpadding="0" cellspacing="0">
+				        <tr>
+					        <td>
+						        <asp:TextBox ID="txtName" runat="server" CssClass="Huge" Width="300px"></asp:TextBox>
+					        </td>
+					        <td rowspan="2" valign="top">
+						        &nbsp;&nbsp;<asp:LinkButton ID="cmdSave" runat="server" Text="Save" CssClass="Button" OnClick="cmdSave_Click" ValidationGroup="SpaceName" />
+						        <asp:LinkButton ID="cmdCancel" runat="server" Text="Cancel" CssClass="Button" OnClick="cmdCancel_Click" CausesValidation="false" />
+					        </td>
+				        </tr>
+			        </table>
+		        </asp:Panel><asp:RequiredFieldValidator ID="valRequireName" runat="server" ControlToValidate="txtName"
+			        ErrorMessage="*" Display="Dynamic" ValidationGroup="SpaceName"></asp:RequiredFieldValidator></ContentTemplate>
+		</asp:UpdatePanel>
     </div>
 </div>

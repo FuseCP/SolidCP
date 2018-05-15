@@ -54,7 +54,9 @@ namespace SolidCP.Providers.Virtualization2012 {
         private System.Threading.SendOrPostCallback RenameVirtualMachineOperationCompleted;
         
         private System.Threading.SendOrPostCallback DeleteVirtualMachineOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback DeleteVirtualMachineExtendedOperationCompleted;
+
         private System.Threading.SendOrPostCallback ExportVirtualMachineOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVirtualMachineSnapshotsOperationCompleted;
@@ -187,10 +189,13 @@ namespace SolidCP.Providers.Virtualization2012 {
         
         /// <remarks/>
         public event RenameVirtualMachineCompletedEventHandler RenameVirtualMachineCompleted;
-        
-        /// <remarks/>
+
+        /// <remarks/> 
         public event DeleteVirtualMachineCompletedEventHandler DeleteVirtualMachineCompleted;
-        
+
+        /// <remarks/> 
+        public event DeleteVirtualMachineExtendedCompletedEventHandler DeleteVirtualMachineExtendedCompleted;
+
         /// <remarks/>
         public event ExportVirtualMachineCompletedEventHandler ExportVirtualMachineCompleted;
         
@@ -770,8 +775,8 @@ namespace SolidCP.Providers.Virtualization2012 {
                 this.RenameVirtualMachineCompleted(this, new RenameVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
-        /// <remarks/>
+
+        /// <remarks/> 
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteVirtualMachine", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public JobResult DeleteVirtualMachine(string vmId) {
@@ -812,7 +817,57 @@ namespace SolidCP.Providers.Virtualization2012 {
                 this.DeleteVirtualMachineCompleted(this, new DeleteVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/> 
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteVirtualMachineExtended", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public JobResult DeleteVirtualMachineExtended(string vmId)
+        {
+            object[] results = this.Invoke("DeleteVirtualMachineExtended", new object[] {
+                        vmId});
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeleteVirtualMachineExtended(string vmId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeleteVirtualMachineExtended", new object[] {
+                        vmId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public JobResult EndDeleteVirtualMachineExtended(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineExtendedAsync(string vmId)
+        {
+            this.DeleteVirtualMachineExtendedAsync(vmId, null);
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineExtendedAsync(string vmId, object userState)
+        {
+            if ((this.DeleteVirtualMachineExtendedOperationCompleted == null))
+            {
+                this.DeleteVirtualMachineExtendedOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineExtendedOperationCompleted);
+            }
+            this.InvokeAsync("DeleteVirtualMachineExtended", new object[] {
+                        vmId}, this.DeleteVirtualMachineExtendedOperationCompleted, userState);
+        }
+
+        private void OnDeleteVirtualMachineExtendedOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachineExtendedCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteVirtualMachineExtendedCompleted(this, new DeleteVirtualMachineExtendedCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/ExportVirtualMachine", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -3173,8 +3228,8 @@ namespace SolidCP.Providers.Virtualization2012 {
             }
         }
     }
-    
-    /// <remarks/>
+
+    /// <remarks/> 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteVirtualMachineCompletedEventHandler(object sender, DeleteVirtualMachineCompletedEventArgs e);
     
@@ -3199,7 +3254,37 @@ namespace SolidCP.Providers.Virtualization2012 {
             }
         }
     }
-    
+
+    /// <remarks/> 
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeleteVirtualMachineExtendedCompletedEventHandler(object sender, DeleteVirtualMachineExtendedCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeleteVirtualMachineExtendedCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeleteVirtualMachineExtendedCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public JobResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((JobResult)(this.results[0]));
+            }
+        }
+    }
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void ExportVirtualMachineCompletedEventHandler(object sender, ExportVirtualMachineCompletedEventArgs e);

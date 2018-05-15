@@ -547,6 +547,16 @@ namespace SolidCP.Providers.Virtualization
 
         public JobResult DeleteVirtualMachine(string vmId)
         {
+            return DeleteVirtualMachineInternal(vmId, false);
+        }
+
+        public JobResult DeleteVirtualMachineExtended(string vmId)
+        {
+            return DeleteVirtualMachineInternal(vmId, true);
+        }
+
+        public JobResult DeleteVirtualMachineInternal(string vmId, bool withExternalData)
+        {
             var vm = GetVirtualMachineEx(vmId);
 
             // The virtual computer system must be in the powered off or saved state prior to calling this method.
@@ -562,6 +572,12 @@ namespace SolidCP.Providers.Virtualization
                 // There may be a reason for this that I am not aware of?
                 //if (!string.IsNullOrEmpty(networkAdapter.SwitchName))
                     //DeleteSwitch(networkAdapter.SwitchName);
+            }
+            if (withExternalData)
+            {
+                HardDriveHelper.Delete(PowerShell, vm.Disks);
+                SnapshotHelper.Delete(PowerShell, vm.Name);
+                //something else???
             }
 
             VirtualMachineHelper.Delete(PowerShell, vm.Name, ServerNameSettings);

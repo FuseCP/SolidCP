@@ -175,6 +175,105 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Localize locGB;
         
         /// <summary>
+        /// secHddQOS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.CollapsiblePanel secHddQOS;
+        
+        /// <summary>
+        /// QOSManag control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel QOSManag;
+        
+        /// <summary>
+        /// locHddIOPSTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHddIOPSTitle;
+        
+        /// <summary>
+        /// lblHddMinIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHddMinIOPS;
+        
+        /// <summary>
+        /// txtHddMinIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtHddMinIOPS;
+        
+        /// <summary>
+        /// RequireHddMinIOPSValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddMinIOPSValidator;
+        
+        /// <summary>
+        /// locHddMinIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHddMinIOPS;
+        
+        /// <summary>
+        /// lblHddMaxIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblHddMaxIOPS;
+        
+        /// <summary>
+        /// txtHddMaxIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtHddMaxIOPS;
+        
+        /// <summary>
+        /// RequireHddMaxIOPSValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddMaxIOPSValidator;
+        
+        /// <summary>
+        /// locHddMaxIOPS control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHddMaxIOPS;
+        
+        /// <summary>
         /// DynamicMemorySetting control.
         /// </summary>
         /// <remarks>
@@ -397,7 +496,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancel;
+        protected global::CPCC.StyleButton btnCancel;
         
         /// <summary>
         /// btnUpdate control.
@@ -406,6 +505,6 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnUpdate;
+        protected global::CPCC.StyleButton btnUpdate;
     }
 }

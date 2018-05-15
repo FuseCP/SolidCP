@@ -216,4 +216,34 @@
   <data name="btnUpdateText.Text" xml:space="preserve">
     <value>Update</value>
   </data>
+  <data name="lblHddMaxIOPS.Text" xml:space="preserve">
+    <value>Maximum:</value>
+  </data>
+  <data name="lblHddMinIOPS.Text" xml:space="preserve">
+    <value>Minimum:</value>
+  </data>
+  <data name="locHddIOPSmax.Text" xml:space="preserve">
+    <value>HHD maximum IOPS:</value>
+  </data>
+  <data name="locHddIOPSmin.Text" xml:space="preserve">
+    <value>HHD minimum IOPS:</value>
+  </data>
+  <data name="locHddIOPSTitle.Text" xml:space="preserve">
+    <value>Specify Quality of Service management for this virtual hard disk. &lt;br&gt;Minimum and maximum IOPS are measured in 8KB increments. &lt;br&gt;Default value is 0.</value>
+  </data>
+  <data name="locHddMaxIOPS.Text" xml:space="preserve">
+    <value>IOPS</value>
+  </data>
+  <data name="locHddMinIOPS.Text" xml:space="preserve">
+    <value>IOPS</value>
+  </data>
+  <data name="RequireHddMaxIOPSValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter value</value>
+  </data>
+  <data name="RequireHddMinIOPSValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter value</value>
+  </data>
+  <data name="secHddQOS.Text" xml:space="preserve">
+    <value>Virtual Hard Disk Drive Quality of Service management</value>
+  </data>
 </root>

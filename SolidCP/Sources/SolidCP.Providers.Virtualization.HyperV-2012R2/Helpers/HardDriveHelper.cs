@@ -85,7 +85,7 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, int HddSize)
+        public static void Update(PowerShellManager powerShell, VirtualMachine vm, int HddSize) //TODO rework the code
         {
             Collection<PSObject> result = GetPS(powerShell, vm.Name);
 
@@ -108,6 +108,51 @@ namespace SolidCP.Providers.Virtualization
                     Command cmd = new Command("Resize-VHD");
                     cmd.Parameters.Add("SizeBytes", HddSize * Constants.Size1G);
                     cmd.Parameters.Add("Path", disk.Path);
+                    powerShell.Execute(cmd, true);
+                }
+            }
+        }
+
+        public static void SetIOPS(PowerShellManager powerShell, VirtualMachine vm, int minIOPS, int maxIOPS)
+        {
+            //TODO
+            //*********Move checks in the Enterprise Server methods?*********//
+            int maxPossibleIOPS = 1000000000;
+            if (maxIOPS > maxPossibleIOPS)
+                maxIOPS = maxPossibleIOPS;
+            bool disableIOPS = (maxIOPS == 0 && minIOPS == 0);
+            bool isIOPScorrect = (minIOPS <= maxIOPS) || ((minIOPS > maxIOPS) && (maxIOPS == 0));
+            //***************************************************************//
+
+            if (vm.Disks != null && isIOPScorrect)
+            {
+                foreach (VirtualHardDiskInfo disk in vm.Disks)
+                {
+                    Command cmd = new Command("Set-VMHardDiskDrive");
+                    cmd.Parameters.Add("VMName", vm.Name);
+                    cmd.Parameters.Add("ControllerType", disk.VHDControllerType.ToString());
+                    cmd.Parameters.Add("ControllerNumber", disk.ControllerNumber);
+                    cmd.Parameters.Add("ControllerLocation", disk.ControllerLocation);
+                    if (disableIOPS){
+                        cmd.Parameters.Add("MinimumIOPS", false);
+                        cmd.Parameters.Add("MaximumIOPS", false);
+                    }else{
+                        cmd.Parameters.Add("MinimumIOPS", minIOPS);
+                        cmd.Parameters.Add("MaximumIOPS", maxIOPS);
+                    }
+                    powerShell.Execute(cmd, true, true);
+                }
+            }
+        }
+
+        public static void Delete(PowerShellManager powerShell, VirtualHardDiskInfo[] disks)
+        {
+            if (disks != null && disks.GetLength(0) > 0)
+            {
+                foreach (VirtualHardDiskInfo disk in disks)
+                {
+                    Command cmd = new Command("Remove-item");
+                    cmd.Parameters.Add("path", disk.Path);
                     powerShell.Execute(cmd, true);
                 }
             }

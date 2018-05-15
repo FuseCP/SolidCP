@@ -132,6 +132,35 @@
                                             </div>
                                     </asp:Panel>
 
+                                    <scp:CollapsiblePanel id="secHddQOS" runat="server" IsCollapsed="true"
+                                        TargetControlID="QOSManag" meta:resourcekey="secHddQOS" Text="Virtual Hard Disk Drive Quality of Service management">
+                                    </scp:CollapsiblePanel>
+                                    <asp:Panel ID="QOSManag" runat="server" Height="0" style="overflow:hidden;padding:5px;">
+                                        <div class="form-group">
+                                            <div class="col-sm-10-inline">
+                                        <asp:Localize ID="locHddIOPSTitle" runat="server" meta:resourcekey="locHddIOPSTitle" 
+                            Text="Specify Quality of Service management for this virtual hard disk. Minimum and maximum IOPS are measured in 8KB increments. Default value is 0." />
+		                               </div>
+                                            <asp:Label ID="lblHddMinIOPS" meta:resourcekey="lblHddMinIOPS" runat="server" Text="Minimum:" CssClass="col-sm-2" AssociatedControlID="txtHddMinIOPS"/>
+                                            <div class="col-sm-10 form-inline">                                                
+                                                <asp:TextBox ID="txtHddMinIOPS" runat="server" CssClass="form-control form-control" Width="150" Text="0"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequireHddMinIOPSValidator" runat="server" Text="*" Display="Dynamic"
+                                                     ControlToValidate="txtHddMinIOPS" meta:resourcekey="RequireHddMinIOPSValidator" SetFocusOnError="true"
+                                                     ValidationGroup="Vps">*</asp:RequiredFieldValidator>    
+                                                <asp:Localize ID="locHddMinIOPS" runat="server" meta:resourcekey="locHddMinIOPS" Text="IOPS"/>                         
+                                            </div>
+
+                                            <asp:Label ID="lblHddMaxIOPS" meta:resourcekey="lblHddMaxIOPS" runat="server" Text="Maximum:" CssClass="col-sm-2" AssociatedControlID="txtHddMaxIOPS"/>
+                                            <div class="col-sm-10 form-inline">                                  
+                                                <asp:TextBox ID="txtHddMaxIOPS" runat="server" CssClass="form-control form-control" Width="150" Text="0"></asp:TextBox>
+                                                <asp:RequiredFieldValidator ID="RequireHddMaxIOPSValidator" runat="server" Text="*" Display="Dynamic"
+                                                     ControlToValidate="txtHddMaxIOPS" meta:resourcekey="RequireHddMaxIOPSValidator" SetFocusOnError="true"
+                                                     ValidationGroup="Vps">*</asp:RequiredFieldValidator>                                                
+                                                <asp:Localize ID="locHddMaxIOPS" runat="server" meta:resourcekey="locHddMaxIOPS" Text="IOPS"/>                          
+                                            </div>
+                                        </div>
+                                    </asp:Panel>
+
                                     <scp:DynamicMemoryControl runat="server" ID="DynamicMemorySetting" Mode="Edit"/>
 
                                     <scp:CollapsiblePanel id="secSnapshots" runat="server"
@@ -372,6 +401,14 @@
                                         <tr>
                                             <td><asp:Localize ID="locHdd" runat="server" meta:resourcekey="locHdd" Text="Hard disk size, GB:" /></td>
                                             <td><asp:Literal ID="litHdd" runat="server"></asp:Literal></td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HHD minimum IOPS:" /></td>
+                                            <td><asp:Literal ID="litHddIOPSmin" runat="server"></asp:Literal></td>
+                                        </tr>
+                                        <tr>
+                                            <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HHD maximum IOPS:" /></td>
+                                            <td><asp:Literal ID="litHddIOPSmax" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
                                             <td><asp:Localize ID="locSnapshots2" runat="server" meta:resourcekey="locSnapshots" Text="Number of snapshots:" /></td>

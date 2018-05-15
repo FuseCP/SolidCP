@@ -88,7 +88,7 @@ namespace SolidCP.Portal.VPS2012
                     && item.RemoteDesktopEnabled);
                 lnkHostname.Text = item.Hostname.ToUpper();
                 lnkHostname.Visible = displayRDP;
-                lnkRDP.Enabled = displayRDP;
+                lnkRDP.Enabled = displayRDP; //What is the idea here??
 
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
