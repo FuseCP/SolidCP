@@ -60,6 +60,7 @@
                                     <asp:RequiredFieldValidator ID="RequireHddValidator" runat="server" Text="*" Display="Dynamic"
                                         ControlToValidate="txtHdd" meta:resourcekey="RequireHddValidator" SetFocusOnError="true"
                                         ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                    <asp:HiddenField id="hiddenTxtValHdd" runat="server" />
                                 </td>
                                 <td><asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/></td>
                             </tr>

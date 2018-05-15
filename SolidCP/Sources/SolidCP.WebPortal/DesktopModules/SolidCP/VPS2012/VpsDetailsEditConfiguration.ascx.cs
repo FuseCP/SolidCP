@@ -86,6 +86,7 @@ namespace SolidCP.Portal.VPS2012
                 ddlCpu.SelectedValue = vm.CpuCores.ToString();
                 txtRam.Text = vm.RamSize.ToString();
                 txtHdd.Text = vm.HddSize.ToString();
+                hiddenTxtValHdd.Value = vm.HddSize.ToString();
                 txtHddMinIOPS.Text = vm.HddMinimumIOPS.ToString();
                 txtHddMaxIOPS.Text = vm.HddMaximumIOPS.ToString();
                 txtSnapshots.Text = vm.SnapshotsNumber.ToString();
@@ -145,7 +146,14 @@ namespace SolidCP.Portal.VPS2012
         {
             if (!Page.IsValid)
                 return;
-            
+
+            if (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim()))
+            {
+                messageBox.ShowWarningMessage("VPS_CHANGE_HDD_SIZE");
+                return;
+            }
+                
+
             try
             {
                 // check rights
