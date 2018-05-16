@@ -20508,3 +20508,11 @@ AS
 	END
 GO
 
+-- CRM2016 Provider
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Hosted MS CRM 2016')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) 
+VALUES(1206, 24, N'CRM', N'Hosted MS CRM 2016', N'SolidCP.Providers.HostedSolution.CRMProvider2016, SolidCP.Providers.HostedSolution.Crm2016', N'CRM2011', NULL)
+END
+GO
