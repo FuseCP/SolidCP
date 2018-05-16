@@ -10,10 +10,13 @@ Version 1.4.1:
 - Cloud portal RestSharp.105.0.1 requirement added to build
 - Exchange RetentionPoliciy fix
 - Removed SmarterMail "Check to Enable Password Change" checkbox requirement
-- VPS2012 CPU Quota fix
+- VPS2008/2012/2016 CPU Quota fix
+- VPS2008/2012/2016 CPU Limitation
+- VPS2008/2012/2016 added CPU to space statistics / VPS space overview pages
 - HyperVR2+ fix to delete unused interface - With thanks to Genadij Judin
 - Added VMConfig backward compatibility for the WSPanel - With thanks to Genadij Judin
 - Change to fix Disabled User when Exchange schema is not applied
+- Added CRM 2016 support
 
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)

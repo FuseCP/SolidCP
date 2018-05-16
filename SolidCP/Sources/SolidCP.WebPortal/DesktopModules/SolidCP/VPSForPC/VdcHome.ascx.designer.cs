@@ -121,6 +121,24 @@ namespace SolidCP.Portal.VPSForPC {
         protected global::SolidCP.Portal.Quota vpsQuota;
         
         /// <summary>
+        /// locCPUQuota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locCPUQuota;
+        
+        /// <summary>
+        /// cpuQuota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota cpuQuota;
+        
+        /// <summary>
         /// locRamQuota control.
         /// </summary>
         /// <remarks>

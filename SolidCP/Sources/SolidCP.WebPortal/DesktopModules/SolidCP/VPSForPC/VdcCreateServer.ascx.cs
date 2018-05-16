@@ -89,9 +89,21 @@ namespace SolidCP.Portal.VPSForPC
 
 				ddlCpu.SelectedIndex = (ddlCpu.Items.Count > 0 ? 0 : -1); // select last (maximum) item
 			}
+            // load package context
+            QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPSForPC_CPU_NUMBER];
+            if (cpuQuota2.QuotaAllocatedValue > cpuQuota2.QuotaUsedValue)
+            {
+                wizard.Visible = true;
 
-			// external network
-			if (!PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPSForPC_EXTERNAL_NETWORK_ENABLED))
+            }
+            else
+            {
+                wizard.Visible = false;
+                messageBox.ShowErrorMessage("NO_CPU_CORES");
+            }
+
+            // external network
+            if (!PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPSForPC_EXTERNAL_NETWORK_ENABLED))
 			{
 				wizard.WizardSteps.Remove(stepExternalNetwork);
 				chkExternalNetworkEnabled.Checked = false;
@@ -167,14 +179,26 @@ namespace SolidCP.Portal.VPSForPC
 					maxCores = cpuQuota.QuotaAllocatedValue;
 			}
 
-			for (int i = 1; i < maxCores + 1; i++)
-				ddlCpu.Items.Add(i.ToString());
+            QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPSForPC_CPU_NUMBER];
+            if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+            {
+                for (int i = 1; i < (cpuQuota2.QuotaAllocatedValue + 1 - cpuQuota2.QuotaUsedValue); i++)
+                    ddlCpu.Items.Add(i.ToString());
 
-			ddlCpu.SelectedIndex = (ddlCpu.Items.Count > 0 ? 0 : -1); // select last (maximum) item
+                ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
 
-			#region Network
-			// external network details
-			if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPSForPC_EXTERNAL_NETWORK_ENABLED))
+            }
+            else
+            {
+                ddlCpu.Items.Add("0");
+
+            }
+
+
+
+            #region Network
+            // external network details
+            if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPSForPC_EXTERNAL_NETWORK_ENABLED))
 			{
 			}
 

@@ -109,6 +109,10 @@
                                 <td><scp:Quota ID="vpsQuota" runat="server" QuotaName="VPS2012.ServersNumber" /></td>
                             </tr>
                             <tr>
+                                <td><asp:Localize ID="locCPUQuota" runat="server" meta:resourcekey="locCPUQuota" Text="CPU's:"></asp:Localize></td>
+                                <td><scp:Quota ID="cpuQuota" runat="server" QuotaName="VPS2012.CpuNumber" /></td>
+                            </tr>
+                            <tr>
                                 <td><asp:Localize ID="locRamQuota" runat="server" meta:resourcekey="locRamQuota" Text="RAM, MB:"></asp:Localize></td>
                                 <td><scp:Quota ID="ramQuota" runat="server" QuotaName="VPS2012.Ram" /></td>
                             </tr>

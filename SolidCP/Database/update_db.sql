@@ -20257,6 +20257,18 @@ BEGIN
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1560'
 END
 GO
+-- Change QuotaType for VPS CPU Cores
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '302' AND [QuotaTypeID] = '2' )
+BEGIN
+UPDATE [Quotas] SET [QuotaTypeID] = '2' WHERE [QuotaID] = '302'
+END
+GO
+-- Change QuotaType for VPSforPC CPU Cores
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '347' AND [QuotaTypeID] = '2' )
+BEGIN
+UPDATE [Quotas] SET [QuotaTypeID] = '2' WHERE [QuotaID] = '347'
+END
+GO
 
 -- Change QuotaType for VPS2012 CPU Cores
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '555' AND [QuotaTypeID] = '2' )
@@ -20316,6 +20328,11 @@ AS
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'RamSize' AND PT.ParentPackageID = @PackageID)
+		ELSE IF @QuotaID = 302 -- CpuNumber of VPS
+			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 306 -- HDD of VPS
 			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
@@ -20366,6 +20383,11 @@ AS
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'Memory' AND PT.ParentPackageID = @PackageID)
+		ELSE IF @QuotaID = 347 -- CpuNumber of VPSforPc
+			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
+							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
+							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 351 -- HDD of VPSforPc
 			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID

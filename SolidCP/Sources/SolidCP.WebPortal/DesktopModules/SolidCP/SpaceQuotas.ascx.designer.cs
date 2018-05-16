@@ -886,33 +886,6 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.Quota quotaRdsUsers;
         
         /// <summary>
-        /// pnlVPS2012CpuQuota control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlVPS2012CpuQuota;
-        
-        /// <summary>
-        /// lblVPS2012CpuQuota control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblVPS2012CpuQuota;
-        
-        /// <summary>
-        /// quotavps2012cpuquota control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SolidCP.Portal.Quota quotavps2012cpuquota;
-        
-        /// <summary>
         /// pnlVPS2012Servers control.
         /// </summary>
         /// <remarks>
@@ -938,6 +911,33 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotavps2012servers;
+        
+        /// <summary>
+        /// pnlVPS2012CpuQuota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlVPS2012CpuQuota;
+        
+        /// <summary>
+        /// lblVPS2012CpuQuota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVPS2012CpuQuota;
+        
+        /// <summary>
+        /// quotavps2012cpuquota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota quotavps2012cpuquota;
         
         /// <summary>
         /// pnlVPS2012RamQuota control.
