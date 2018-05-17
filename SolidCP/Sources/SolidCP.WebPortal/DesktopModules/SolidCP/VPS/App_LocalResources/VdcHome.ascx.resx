@@ -198,4 +198,7 @@
   <data name="cmdMoveText.Text" xml:space="preserve">
     <value>Move</value>
   </data>
+  <data name="locCPUQuota.Text" xml:space="preserve">
+    <value>CPU's</value>
+  </data>
 </root>

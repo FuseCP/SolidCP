@@ -10,10 +10,13 @@ Version 1.4.1:
 - Cloud portal RestSharp.105.0.1 requirement added to build
 - Exchange RetentionPoliciy fix
 - Removed SmarterMail "Check to Enable Password Change" checkbox requirement
-- VPS2012 CPU Quota fix
+- VPS2008/2012/2016 CPU Quota fix
+- VPS2008/2012/2016 CPU Limitation
+- VPS2008/2012/2016 added CPU to space statistics / VPS space overview pages
 - HyperVR2+ fix to delete unused interface - With thanks to Genadij Judin
 - Added VMConfig backward compatibility for the WSPanel - With thanks to Genadij Judin
 - Change to fix Disabled User when Exchange schema is not applied
+<<<<<<< CHANGELOG
 - Changed the folder structure for new VM (VPS2012/VPS2016) to the standard Microsoft - With thanks to Genadij Judin
 - Added a simple implementation of Suspend date for Hosting Space. - With thanks to Genadij Judin
 - Added safely removing a VM (VPS2012/VPS2016) from a NODE (now the files of VM are guaranteed to be deleted) - With thanks to Genadij Judin
@@ -22,7 +25,8 @@ Version 1.4.1:
 - Hides the obvious choice of VLAN for creating VPS2012/VPS2016 - With thanks to Genadij Judin
 - HyperV2012R2+ Added Virtual Hard Disk Drive Quality of Service management for VM - With thanks to Genadij Judin
 - some minor fixes for yperV2012R2+ - With thanks to Genadij Judin
-
+- Added CRM 2016 support
+>>>>>>> CHANGELOG
 
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)

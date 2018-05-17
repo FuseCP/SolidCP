@@ -73,6 +73,8 @@ namespace SolidCP.Portal.VPS2012
                 messageBox.ShowErrorMessage("VPS_ERROR_GET_VM_DETAILS", ex);
             }
 
+            lnkRDP.Visible = false;
+
             if (vm != null)
             {
                 // Guacamole & RDP
@@ -88,8 +90,6 @@ namespace SolidCP.Portal.VPS2012
                     && item.RemoteDesktopEnabled);
                 lnkHostname.Text = item.Hostname.ToUpper();
                 lnkHostname.Visible = displayRDP;
-                lnkRDP.Enabled = displayRDP; //What is the idea here??
-
                 litHostname.Text = item.Hostname.ToUpper();
                 litHostname.Visible = !displayRDP;
 
@@ -105,10 +105,12 @@ namespace SolidCP.Portal.VPS2012
                 if (guacamoleconnecturl != "")
                 {
                     litRdpPageUrl.Text = Page.ResolveUrl(guacamoleconnecturl);
+                    lnkRDP.Visible = true;
                 }
                 else
                 {
                     litRdpPageUrl.Text = Page.ResolveUrl("~/DesktopModules/SolidCP/VPS2012/RemoteDesktop/Connect.aspx?ItemID=" + PanelRequest.ItemID + "&Resolution=");
+                    lnkRDP.Visible = true;
                 }
                 TimeSpan uptime = TimeSpan.FromMilliseconds(vm.Uptime);
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));

@@ -192,4 +192,7 @@
   <data name="btnCreateText.Text" xml:space="preserve">
     <value>Create VM</value>
   </data>
+  <data name="locCPUQuota.Text" xml:space="preserve">
+    <value>CPU's</value>
+  </data>
 </root>
