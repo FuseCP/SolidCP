@@ -6343,13 +6343,16 @@
   <data name="Error.SERVERSEDITEVENTVIEWER_SELECTED" xml:space="preserve">
     <value>Error while getting the event log entries.</value>
   </data>
-    <data name="Quota.RDS.DisableUserAddServer" xml:space="preserve">
+  <data name="Quota.RDS.DisableUserAddServer" xml:space="preserve">
     <value>Disable user from adding server</value>
   </data>
-    <data name="Error.RDS_UNASSIGN_SERVER_FROM_ORG_SERVER_IS_IN_COLLECTION" xml:space="preserve">
+  <data name="Error.RDS_UNASSIGN_SERVER_FROM_ORG_SERVER_IS_IN_COLLECTION" xml:space="preserve">
     <value>RDS Server is in collection</value>
   </data>
   <data name="Error.RDS_YOU_DO_NOT_HAVE_PERMISSION_TO_PREFORM_ACTION" xml:space="preserve">
     <value>You do not have permission to remove RDS Servers</value>
+  </data>
+  <data name="Warning.VPS_CHANGE_HDD_SIZE" xml:space="preserve">
+    <value>You can't reduce hdd size!</value>
   </data>
 </root>
