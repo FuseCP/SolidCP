@@ -100,9 +100,6 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
 				                 
 				            </td>
 				            <td valign="top" style="width:35%;">
-                                <!-- what was idea of this? This block img update -->
-                                <!--NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"-->
-				                <asp:HyperLink ID="lnkRDP" NavigateUrl="" runat="server"  Text=" ">
 				                <asp:UpdatePanel runat="server" ID="UpdatePanel1" UpdateMode="Conditional">
                                     <Triggers>
                                         <asp:AsyncPostBackTrigger ControlID="operationTimer" EventName="Tick" />
@@ -111,8 +108,7 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
 				                        <asp:Image ID="imgThumbnail" runat="server" Width="160" Height="120" style="border-style:ridge;border-width: 3px;border-color: #ffffff;" />
 				                    </ContentTemplate>
 				                 </asp:UpdatePanel>
-                                </asp:HyperLink>
-
+                                <asp:HyperLink id="lnkRDP" CssClass="btn btn-primary" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"> <i class="fa fa-desktop">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="lnkRDP" Text="Open Console"/> </asp:HyperLink>
 				            </td>
 				            <td rowspan="2" valign="top">
 				                <ul class="ActionButtons">
