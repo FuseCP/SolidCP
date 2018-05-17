@@ -51,6 +51,7 @@ namespace SolidCP.Portal.VPS2012
         protected void Page_Load(object sender, EventArgs e)
         {
             BindGeneralDetails();
+            lnkRDP.Visible = false;
         }
 
         private void BindGeneralDetails()
@@ -72,8 +73,6 @@ namespace SolidCP.Portal.VPS2012
             {
                 messageBox.ShowErrorMessage("VPS_ERROR_GET_VM_DETAILS", ex);
             }
-
-            lnkRDP.Visible = false;
 
             if (vm != null)
             {
