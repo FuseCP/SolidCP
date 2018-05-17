@@ -406,7 +406,7 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize); //TODO rework that method.
+                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize);
                 HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)

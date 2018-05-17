@@ -85,31 +85,21 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, int HddSize) //TODO rework the code
+        public static void Update(PowerShellManager powerShell, VirtualMachine vm, int newhddSize)
         {
-            Collection<PSObject> result = GetPS(powerShell, vm.Name);
+            if (vm.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
+                vm.Disks = Get(powerShell, vm.Name);
 
-
-            if (result != null && result.Count > 0)
+            if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
             {
-                foreach (PSObject d in result)
-                {
-                    VirtualHardDiskInfo disk = new VirtualHardDiskInfo();
+                int oldHddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G);
+                if (newhddSize <= oldHddSize) //we can't reduce hdd size, so we just exit.
+                    return;
 
-                    disk.SupportPersistentReservations = Convert.ToBoolean(d.GetProperty("SupportPersistentReservations"));
-                    disk.MaximumIOPS = Convert.ToUInt64(d.GetProperty("MaximumIOPS"));
-                    disk.MinimumIOPS = Convert.ToUInt64(d.GetProperty("MinimumIOPS"));
-                    disk.VHDControllerType = d.GetEnum<ControllerType>("ControllerType");
-                    disk.ControllerNumber = Convert.ToInt32(d.GetProperty("ControllerNumber"));
-                    disk.ControllerLocation = Convert.ToInt32(d.GetProperty("ControllerLocation"));
-                    disk.Path = d.GetProperty("Path").ToString();
-                    disk.Name = d.GetProperty("Name").ToString();
-
-                    Command cmd = new Command("Resize-VHD");
-                    cmd.Parameters.Add("SizeBytes", HddSize * Constants.Size1G);
-                    cmd.Parameters.Add("Path", disk.Path);
-                    powerShell.Execute(cmd, true);
-                }
+                Command cmd = new Command("Resize-VHD");
+                cmd.Parameters.Add("SizeBytes", newhddSize * Constants.Size1G);
+                cmd.Parameters.Add("Path", vm.Disks[0].Path);
+                powerShell.Execute(cmd, true);
             }
         }
 
