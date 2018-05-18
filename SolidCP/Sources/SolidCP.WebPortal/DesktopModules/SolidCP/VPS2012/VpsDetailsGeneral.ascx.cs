@@ -51,6 +51,13 @@ namespace SolidCP.Portal.VPS2012
         protected void Page_Load(object sender, EventArgs e)
         {
             BindGeneralDetails();
+            string guacamoleconnecturl = ES.Services.VPS2012.GetVirtualMachineGuacamoleURL(PanelRequest.ItemID);
+            if (guacamoleconnecturl != "")
+            {
+                lnkRDP.Visible = true;
+            } else {
+                lnkRDP.Visible = false;
+            }
         }
 
         private void BindGeneralDetails()
@@ -72,8 +79,6 @@ namespace SolidCP.Portal.VPS2012
             {
                 messageBox.ShowErrorMessage("VPS_ERROR_GET_VM_DETAILS", ex);
             }
-
-            lnkRDP.Visible = false;
 
             if (vm != null)
             {
@@ -105,12 +110,10 @@ namespace SolidCP.Portal.VPS2012
                 if (guacamoleconnecturl != "")
                 {
                     litRdpPageUrl.Text = Page.ResolveUrl(guacamoleconnecturl);
-                    lnkRDP.Visible = true;
                 }
                 else
                 {
                     litRdpPageUrl.Text = Page.ResolveUrl("~/DesktopModules/SolidCP/VPS2012/RemoteDesktop/Connect.aspx?ItemID=" + PanelRequest.ItemID + "&Resolution=");
-                    lnkRDP.Visible = true;
                 }
                 TimeSpan uptime = TimeSpan.FromMilliseconds(vm.Uptime);
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));

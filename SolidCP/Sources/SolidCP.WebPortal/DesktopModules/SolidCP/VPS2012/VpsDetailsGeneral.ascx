@@ -108,7 +108,7 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
 				                        <asp:Image ID="imgThumbnail" runat="server" Width="160" Height="120" style="border-style:ridge;border-width: 3px;border-color: #ffffff;" />
 				                    </ContentTemplate>
 				                 </asp:UpdatePanel>
-                                <asp:HyperLink id="lnkRDP" CssClass="btn btn-primary" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"> <i class="fa fa-desktop">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="lnkRDP" Text="Open Console"/> </asp:HyperLink>
+                                <asp:HyperLink id="lnkRDP" CssClass="btn btn-primary" Width="160" runat="server" NavigateUrl="javascript:OpenRemoteDesktopWindow(4, 1280, 1024);"> <i class="fa fa-desktop">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="lnkRDP" Text="Open Console"/> </asp:HyperLink>
 				            </td>
 				            <td rowspan="2" valign="top">
 				                <ul class="ActionButtons">
