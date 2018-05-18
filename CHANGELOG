@@ -26,6 +26,7 @@ Version 1.4.1:
 - some minor fixes for yperV2012R2+ - With thanks to Genadij Judin
 - Added CRM 2016 support
 - MySQL Added option to set SSL to none as required on newer versions
+- VPS2012/VPS2016 Switched CPU count from NumberOfCores to NumberOfLogicalProcessors to supports CPU with HT enabled
 
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)

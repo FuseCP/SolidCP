@@ -1382,7 +1382,7 @@ namespace SolidCP.Providers.Virtualization
             int coreCount = 0;
             foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
             {
-                coreCount += int.Parse(item["NumberOfCores"].ToString());
+                coreCount += int.Parse(item["NumberOfLogicalProcessors"].ToString());
             }
             return coreCount;
         }
