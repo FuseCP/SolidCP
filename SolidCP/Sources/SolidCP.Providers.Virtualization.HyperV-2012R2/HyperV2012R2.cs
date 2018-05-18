@@ -202,7 +202,8 @@ namespace SolidCP.Providers.Virtualization
                         if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                         {
                             vm.VirtualHardDrivePath = vm.Disks[0].Path;
-                            vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G);
+                            //vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G); //TODO: add FileSize in vm class ??? and change in KVP
+                            vm.HddSize = Convert.ToInt32(vm.Disks[0].MaxInternalSize / Constants.Size1G);
                             vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
                             vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
                         }
