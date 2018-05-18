@@ -70,6 +70,7 @@ namespace SolidCP.Portal.ProviderControls
             txtExternalAddress.Text = settings["ExternalAddress"];
             txtBinFolder.Text = settings["InstallFolder"];
 			chkOldPassword.Checked = Utils.ParseBool(settings["OldPassword"], false);
+            chkSslMode.Checked = Utils.ParseBool(settings["SslMode"], false);
             txtUserName.Text = settings["RootLogin"];
             ViewState["PWD"] = settings["RootPassword"];
             rowPassword.Visible = ((string)ViewState["PWD"]) != "";
@@ -85,6 +86,7 @@ namespace SolidCP.Portal.ProviderControls
             settings["ExternalAddress"] = txtExternalAddress.Text.Trim();
             settings["InstallFolder"] = txtBinFolder.Text.Trim();
 			settings["OldPassword"] = chkOldPassword.Checked.ToString();
+            settings["SslMode"] = chkSslMode.Checked.ToString();
             settings["RootLogin"] = txtUserName.Text.Trim();
             settings["RootPassword"] = (txtPassword.Text.Length > 0) ? txtPassword.Text : (string)ViewState["PWD"];
 			settings["BrowseURL"] = txtBrowseUrl.Text.Trim();

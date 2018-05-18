@@ -25,6 +25,7 @@ Version 1.4.1:
 - HyperV2012R2+ Added Virtual Hard Disk Drive Quality of Service management for VM - With thanks to Genadij Judin
 - some minor fixes for yperV2012R2+ - With thanks to Genadij Judin
 - Added CRM 2016 support
+- MySQL Added option to set SSL to none as required on newer versions
 
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)
