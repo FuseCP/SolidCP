@@ -11,8 +11,10 @@ v1.6    6th  September 2016: Additional improvements to the backup of the databa
 v1.7    28th September 2016: Resolved various issues with the SQL Backup, also improved the component backups to save space and added in additional options to the menu for finer granularity when it comes to upgrading the components.
 v1.8    16th January   2017: Improved the component backups to save time and to remove old files that are no longer in use by SolidCP. Added timer to show run time of this script
 v1.9	27th May 2017:		 Removal of LE Files from the project when the update is ran
+V2.0	17th May 2018		 Added support for CRM2016 and the asp.net server folders
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
+Updated By Trevor Robinson.
 
 The script needs to be run from the server that holds your Enterprise Server
 as the script will query the database to get the servers that form part of your
@@ -669,7 +671,7 @@ function UpgradeSCPserver() # Function to upgrade the SolidCP Server Component
 			foreach ($SCP_RemoteServer in $IPs) { # Loop through each server in the $IPs Array
 				if (Test-Path "\\$SCP_RemoteServer\c$") { # Check to make sure the servers UNC Default Share is accessable
 					foreach ($RemoteServer in (Get-ChildItem (Get-ChildItem -Path "\\$SCP_RemoteServer\c$\" -Include ("WebsitePanel", "SolidCP", "DotNetPanel")).FullName -Directory)) {
-						If ($RemoteServer.name -eq "Server") {
+						If ($RemoteServer.name -eq "Server" -Or $RemoteServer.name -eq "Server asp.net v4.5" -Or $RemoteServer.name -eq "Server asp.net v2.0") {
 							$SCP_Server_Dir  = $RemoteServer.FullName
 							$SCP_Server_FQDN = $([System.Net.Dns]::gethostentry("$SCP_RemoteServer").HostName)
 							$SCP_Server_Name = $SCP_Server_FQDN.split('.')[0]
@@ -717,11 +719,11 @@ function UpgradeSCPserver() # Function to upgrade the SolidCP Server Component
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration" "runtime"
 							if ( !(CheckXMLnode "$SCP_Server_Dir\web.config" "//configuration/runtime" "assemblyBinding") ) {
 								ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration/runtime" "assemblyBinding" @("xmlns", "urn:schemas-microsoft-com:asm.v1")
-								((Get-Content "$SCP_Server_Dir\web.config").replace('    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1" />', "    <assemblyBinding xmlns=`"urn:schemas-microsoft-com:asm.v1`">`n      <probing privatePath=`"bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Sharepoint2013;bin/Sharepoint2016;bin/Lync2013;bin/SfB2015;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Filters`" />`n    </assemblyBinding>") | Set-Content "$dFilePath1")
+								((Get-Content "$SCP_Server_Dir\web.config").replace('    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1" />', "    <assemblyBinding xmlns=`"urn:schemas-microsoft-com:asm.v1`">`n      <probing privatePath=`"bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Sharepoint2013;bin/Sharepoint2016;bin/Lync2013;bin/SfB2015;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters`" />`n    </assemblyBinding>") | Set-Content "$dFilePath1")
 							}
 							# Update the web.config file to make sure it is up to date with the new Settings
 							[xml]$SCP_Server_XML = Get-Content -Path "$SCP_Server_Dir\web.config"
-							$SCP_Server_XML.configuration.runtime.assemblyBinding.probing.privatePath = "bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Sharepoint2013;bin/Sharepoint2016;bin/Lync2013;bin/SfB2015;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Filters"
+							$SCP_Server_XML.configuration.runtime.assemblyBinding.probing.privatePath = "bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Sharepoint2013;bin/Sharepoint2016;bin/Lync2013;bin/SfB2015;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters"
 							$SCP_Server_XML.Save("$SCP_Server_Dir\web.config") | Out-Null
 							Write-Host "`t The `"SolidCP Server`" web.config file has been updated" -ForegroundColor Green
 
