@@ -27,6 +27,7 @@ Version 1.4.1:
 - Added CRM 2016 support
 - MySQL Added option to set SSL to none as required on newer versions
 - VPS2012/VPS2016 Switched CPU count from NumberOfCores to NumberOfLogicalProcessors to supports CPU with HT enabled
+- VPS2008/2012/2016 Changes to better support CPU Quota/Number of cores on the node
 
 Version 1.4.0:
 - Added Microsoft SQL 2017 support (Installer & Portal)

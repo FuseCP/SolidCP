@@ -74,7 +74,7 @@ namespace SolidCP.Portal.VPS2012
             // load package context
             PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
             QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
-            if (cpuQuota2.QuotaAllocatedValue > cpuQuota2.QuotaUsedValue)
+            if (cpuQuota2.QuotaAllocatedValue > cpuQuota2.QuotaUsedValue | cpuQuota2.QuotaAllocatedValue == -1)
             {
                 wizard.Visible = true;
 
@@ -131,28 +131,31 @@ namespace SolidCP.Portal.VPS2012
             // bind CPU cores
             int maxCores = ES.Services.VPS2012.GetMaximumCpuCoresNumber(PanelSecurity.PackageId);
 
-            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_CPU_NUMBER))
-            {
-                QuotaValueInfo cpuQuota = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
-
-                if (cpuQuota.QuotaAllocatedValue != -1
-                    && maxCores > cpuQuota.QuotaAllocatedValue)
-                    maxCores = cpuQuota.QuotaAllocatedValue;
-            }
-
-
-
-            
-                        //for (int i = 1; i < maxCores + 1; i++)
-            //KD FSJ
             QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
-            if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+
+            if (cpuQuota2.QuotaAllocatedValue == -1)
             {
-                for (int i = 1; i < (cpuQuota2.QuotaAllocatedValue+1 - cpuQuota2.QuotaUsedValue); i++)
+                for (int i = 1; i < maxCores + 1; i++)
                     ddlCpu.Items.Add(i.ToString());
 
                 ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
-              
+            }
+            else if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+            {
+                if ((cpuQuota2.QuotaAllocatedValue + 1 - cpuQuota2.QuotaUsedValue) > maxCores)
+                {
+                    for (int i = 1; i < maxCores + 1; i++)
+                        ddlCpu.Items.Add(i.ToString());
+
+                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                }
+                else
+                {
+                    for (int i = 1; i < (cpuQuota2.QuotaAllocatedValue - cpuQuota2.QuotaUsedValue) +1; i++)
+                        ddlCpu.Items.Add(i.ToString());
+
+                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                }
             }
             else
             {
