@@ -2050,7 +2050,7 @@ namespace SolidCP.EnterpriseServer
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
             }
 
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, vm.CpuCores, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, currentRam, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, vm.HddSize, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);

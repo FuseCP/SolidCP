@@ -1988,7 +1988,7 @@ namespace SolidCP.EnterpriseServer
             List<string> quotaResults = new List<string>();
             PackageContext cntx = PackageController.GetPackageContext(vm.PackageId);
 
-            CheckNumericQuota(cntx, quotaResults, Quotas.VPS_CPU_NUMBER, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+            CheckNumericQuota(cntx, quotaResults, Quotas.VPS_CPU_NUMBER, vm.CPUCount, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             CheckNumericQuota(cntx, quotaResults, Quotas.VPS_RAM, vm.Memory, ramMB, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
             CheckNumericQuota(cntx, quotaResults, Quotas.VPS_HDD, vm.HddSize, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
             CheckNumericQuota(cntx, quotaResults, Quotas.VPS_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
