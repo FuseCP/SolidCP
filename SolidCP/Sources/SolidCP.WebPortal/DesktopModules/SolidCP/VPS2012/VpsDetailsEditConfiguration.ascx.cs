@@ -70,17 +70,42 @@ namespace SolidCP.Portal.VPS2012
                 // bind CPU cores
                 int maxCores = ES.Services.VPS2012.GetMaximumCpuCoresNumber(vm.PackageId);
                 PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
-                if (cntx.Quotas.ContainsKey(Quotas.VPS2012_CPU_NUMBER))
+
+                QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
+                int cpuQuotausable = (cpuQuota2.QuotaAllocatedValue - cpuQuota2.QuotaUsedValue) + vm.CpuCores;
+
+                if (cpuQuota2.QuotaAllocatedValue == -1)
                 {
-                    QuotaValueInfo cpuQuota = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
+                    for (int i = 1; i < maxCores + 1; i++)
+                        ddlCpu.Items.Add(i.ToString());
 
-                    if (cpuQuota.QuotaAllocatedValue != -1
-                        && maxCores > cpuQuota.QuotaAllocatedValue)
-                        maxCores = cpuQuota.QuotaAllocatedValue;
+                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
                 }
+                else if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+                {
+                    if (cpuQuotausable > maxCores)
+                    {
+                        for (int i = 1; i < maxCores + 1; i++)
+                            ddlCpu.Items.Add(i.ToString());
 
-                for (int i = 1; i < maxCores + 1; i++)
-                    ddlCpu.Items.Add(i.ToString());
+                        ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                    }
+                    else
+                    {
+                        for (int i = 1; i < cpuQuotausable + 1; i++)
+                            ddlCpu.Items.Add(i.ToString());
+
+                        ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i < vm.CpuCores + 1; i++)
+                        ddlCpu.Items.Add(i.ToString());
+
+                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+
+                }
 
                 // bind item
                 ddlCpu.SelectedValue = vm.CpuCores.ToString();

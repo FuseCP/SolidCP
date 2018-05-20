@@ -92,6 +92,22 @@ namespace SolidCP.Providers.Database
             }
         }
 
+        protected string SslMode
+        {
+            get
+            {
+                bool addr = Boolean.Parse(ProviderSettings["SslMode"]);
+                if (addr)
+                {
+                    return ";SslMode=none";
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        }
+
         protected string InstallFolder
         {
             get { return FileUtils.EvaluateSystemVariables(ProviderSettings["InstallFolder"]); }
@@ -117,8 +133,8 @@ namespace SolidCP.Providers.Database
         {
             get
             {
-                return String.Format("server={0};port={1};database=mysql;uid={2};password={3}",
-                    ServerName, ServerPort, RootLogin, RootPassword);
+                return String.Format("server={0};port={1};database=mysql;uid={2};password={3}{4}",
+                    ServerName, ServerPort, RootLogin, RootPassword, SslMode);
             }
         }
 

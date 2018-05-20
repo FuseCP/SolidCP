@@ -31,6 +31,14 @@
 			</td>
 			<td><asp:TextBox Runat="server" ID="txtBinFolder" CssClass="form-control" Width="300px"></asp:TextBox></td>
 		</tr>
+        <tr>
+			<td class="SubHead">
+				<asp:Label ID="lblSslMode" runat="server" meta:resourcekey="lblSslMode" Text="Set SSLMode to None"></asp:Label>
+			</td>
+			<td class="Normal">
+				<asp:CheckBox ID="chkSslMode" runat="server" meta:resourcekey="chkSslMode" Text="Yes" />
+			</td>
+		</tr>
 		<tr>
 			<td class="SubHead">
 				<asp:Label ID="lblLogin" runat="server" meta:resourcekey="lblLogin" Text="Root Login:"></asp:Label>
