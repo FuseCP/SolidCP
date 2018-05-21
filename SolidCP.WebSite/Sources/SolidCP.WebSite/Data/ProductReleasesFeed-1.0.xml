@@ -7,6 +7,13 @@
   <component application="SolidCP" name="Standalone Server Setup" code="standalone">
     <description>Express setup for standalone server configuration. It installs Portal, Enterprise, and Server components on the same server and configures SolidCP using sample settings.</description>
     <releases>
+      <release version="1.4.1" date="20/05/2018" available="true" beta="false">
+        <releaseFileID>141</releaseFileID>
+        <fullFilePath>~/Files/1.4.1/SolidCP-StandaloneServerSetup.zip</fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.StandaloneServerSetup141</installerType>
+      </release>
       <release version="1.4.0" date="31/01/2018" available="true" beta="false">
         <releaseFileID>140</releaseFileID>
         <fullFilePath>~/Files/1.4.0/SolidCP-StandaloneServerSetup.zip</fullFilePath>
@@ -84,6 +91,13 @@
   <component application="SolidCP" name="Portal" code="portal">
     <description>SolidCP Portal is a user interface to the control panel which allows managing user accounts, hosting spaces, web sites, FTP accounts, files, etc.</description>
     <releases>
+      <release version="1.4.1" date="20/05/2018" available="true" beta="false">
+        <releaseFileID>241</releaseFileID>
+        <fullFilePath>~/Files/1.4.1/SolidCP-Portal.zip</fullFilePath>
+        <upgradeFilePath>~/Files/1.4.1/SolidCP-Portal-Update.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.Portal141</installerType>
+      </release>
       <release version="1.4.0" date="31/01/2018" available="true" beta="false">
         <releaseFileID>240</releaseFileID>
         <fullFilePath>~/Files/1.4.0/SolidCP-Portal.zip</fullFilePath>
@@ -161,6 +175,13 @@
   <component application="SolidCP" name="Enterprise Server" code="enterprise server">
     <description>Enterprise Server is the core of SolidCP system. It includes all business logic of the application. Enterprise Server should have access to Server and be accessible from Portal applications.</description>
     <releases>
+      <release version="1.4.1" date="20/05/2018" available="true" beta="false">
+        <releaseFileID>341</releaseFileID>
+        <fullFilePath>~/Files/1.4.1/SolidCP-EnterpriseServer.zip</fullFilePath>
+        <upgradeFilePath>~/Files/1.4.1/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.EnterpriseServer141</installerType>
+      </release>
       <release version="1.4.0" date="31/01/2018" available="true" beta="false">
         <releaseFileID>340</releaseFileID>
         <fullFilePath>~/Files/1.4.0/SolidCP-EnterpriseServer.zip</fullFilePath>
@@ -238,6 +259,13 @@
   <component application="SolidCP" name="Server asp.net v4.5" code="server">
     <description>SolidCP Server is a set of services running on the remote server to be controlled. Server application should be reachable from Enterprise Server one.</description>
     <releases>
+      <release version="1.4.1" date="20/05/2018" available="true" beta="false">
+        <releaseFileID>441</releaseFileID>
+        <fullFilePath>~/Files/1.4.1/SolidCP-Server.zip</fullFilePath>
+        <upgradeFilePath>~/Files/1.4.1/SolidCP-Server-Update.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.Server141</installerType>
+      </release>
       <release version="1.4.0" date="31/01/2018" available="true" beta="false">
         <releaseFileID>440</releaseFileID>
         <fullFilePath>~/Files/1.4.0/SolidCP-Server.zip</fullFilePath>
@@ -315,6 +343,13 @@
   <component application="SolidCP" name="Server asp.net v2.0" code="serveraspv2">
     <description>SolidCP Server asp.net 2.0 is a SolidCP Server module for Exchange 2010. It has limited functionality mainly aimed to support software that can not run on asp.net 4.5 (like exchange 2010).</description>
     <releases>
+      <release version="1.4.1" date="20/05/2018" available="true" beta="false">
+        <releaseFileID>641</releaseFileID>
+        <fullFilePath>~/Files/1.4.1/SolidCP-Server-asp-v2.zip</fullFilePath>
+        <upgradeFilePath>~/Files/1.4.1/SolidCP-Server-asp-v2-Update.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.Serveraspv2141</installerType>
+      </release>
       <release version="1.4.0" date="31/01/2018" available="true" beta="false">
         <releaseFileID>640</releaseFileID>
         <fullFilePath>~/Files/1.4.0/SolidCP-Server-asp-v2.zip</fullFilePath>
@@ -349,6 +384,13 @@
   <component application="SolidCP" name="Cloud Storage Portal" code="WebDavPortal">
     <description>SolidCP Cloud Storage Portal is a client frontend for viewing and editing their Cloud (WebDav) storage files.</description>
     <releases>
+      <release version="1.4.1" date="20/05/2018" available="true" beta="false">
+        <releaseFileID>541</releaseFileID>
+        <fullFilePath>~/Files/1.4.1/SolidCP-Web-Dav-Portal.zip</fullFilePath>
+        <upgradeFilePath>~/Files/1.4.1/SolidCP-Web-Dav-Portal.zip</upgradeFilePath>
+        <installerPath>setup\setup.dll</installerPath>
+        <installerType>SolidCP.Setup.WebDavPortal141</installerType>
+      </release>
       <release version="1.4.0" date="31/01/2018" available="true" beta="false">
         <releaseFileID>540</releaseFileID>
         <fullFilePath>~/Files/1.4.0/SolidCP-Web-Dav-Portal.zip</fullFilePath>
