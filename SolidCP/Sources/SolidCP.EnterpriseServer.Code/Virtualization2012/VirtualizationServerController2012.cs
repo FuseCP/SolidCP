@@ -481,6 +481,7 @@ namespace SolidCP.EnterpriseServer
                 vm.CurrentTaskId = Guid.NewGuid().ToString("N"); // generate creation task id
                 vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
 
+                //vm.Generation = otherSettings.Generation; get from Template
                 vm.Generation = otherSettings.Generation;
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
@@ -527,7 +528,9 @@ namespace SolidCP.EnterpriseServer
                                 TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.QUOTA_TEMPLATE_DISK_MINIMAL_SIZE + ":" + osTemplate.DiskSize);
                                 return res;
                             }
-
+                            if (osTemplate.Generation < 1)
+                                throw new Exception("The generation of VM was not configured in the template");
+                            vm.Generation = osTemplate.Generation;
                             vm.OperatingSystemTemplate = osTemplate.Name;
                             vm.LegacyNetworkAdapter = osTemplate.LegacyNetworkAdapter;
                             vm.RemoteDesktopEnabled = osTemplate.RemoteDesktop;

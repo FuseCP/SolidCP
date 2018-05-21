@@ -16,7 +16,7 @@ namespace SolidCP.Providers.Virtualization
 </items>";
 
         const string itemTemplate = @"
-  <item path=""{0}"" legacyNetworkAdapter=""{1}"" remoteDesktop=""{2}"" processVolume=""{3}"">
+  <item path=""{0}"" legacyNetworkAdapter=""{1}"" remoteDesktop=""{2}"" processVolume=""{3}"" generation=""{11}"">
     <name>{4}</name>
     <description>{5}</description>
     <DeployScriptParams>{10}</DeployScriptParams>
@@ -68,6 +68,9 @@ namespace SolidCP.Providers.Virtualization
                 LibraryItem item = new LibraryItem();
                 if (nodeItem.Attributes["path"] != null)
                     item.Path = nodeItem.Attributes["path"].Value;
+
+                if (nodeItem.Attributes["generation"] != null)
+                    item.Generation = Int32.Parse(nodeItem.Attributes["generation"].Value);
 
                 // optional attributes
                 if (nodeItem.Attributes["diskSize"] != null)
@@ -142,7 +145,7 @@ namespace SolidCP.Providers.Virtualization
                 items.Add(string.Format(itemTemplate, libraryItem.Path, libraryItem.LegacyNetworkAdapter,
                     libraryItem.RemoteDesktop, libraryItem.ProcessVolume, libraryItem.Name, libraryItem.Description,
                     sysprep, libraryItem.ProvisionComputerName, libraryItem.ProvisionAdministratorPassword,
-                    libraryItem.ProvisionNetworkAdapters, libraryItem.DeployScriptParams));
+                    libraryItem.ProvisionNetworkAdapters, libraryItem.DeployScriptParams, libraryItem.Generation));
             }
 
             Xml = string.Format(resultTemplate, string.Join("", items.ToArray()));

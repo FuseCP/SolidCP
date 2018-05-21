@@ -424,6 +424,7 @@ namespace SolidCP.Portal.ProviderControls
 
                 int.TryParse(GetTextBoxText(item, "txtProcessVolume"), out processVolume);
                 template.ProcessVolume = processVolume;
+                template.Generation = GetDropDownListSelectedIndex(item, "ddlTemplateGeneration");
 
                 template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
                 template.RemoteDesktop = true; // obsolete
@@ -449,6 +450,10 @@ namespace SolidCP.Portal.ProviderControls
         {
             var templates = items.ToArray();
             return new ConfigFile(templates).Xml;
+        }
+        private int GetDropDownListSelectedIndex(RepeaterItem item, string name)
+        {
+            return (item.FindControl(name) as DropDownList).SelectedIndex;
         }
 
         private string GetTextBoxText(RepeaterItem item, string name)

@@ -236,6 +236,19 @@
                         <CPCC:StyleButton id="btnRemoveOsTemplate" CssClass="btn btn-danger" runat="server" CausesValidation="false" CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemoveOsTemplate_OnCommand"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnRemoveOsTemplateText"/> </CPCC:StyleButton>
                     </td>
                 </tr>
+                <tr><td class="SubHead">
+                        <asp:Localize ID="locTemplateGeneration" runat="server" meta:resourcekey="locTemplateGeneration" Text="Generation of VM:"></asp:Localize>
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ddlTemplateGeneration" runat="server" CssClass="form-control" Width="450"
+                            DataValueField="TemplateGenerationId" DataTextField="Name" SelectedIndex='<%# Eval("Generation") %>'>
+                                <asp:ListItem Text="Select a VM Generation" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="First" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="Second" Value="2"></asp:ListItem>
+                        </asp:DropDownList>
+                        
+                    </td>
+                </tr>
                 <tr>
                     <td class="SubHead">
                         <asp:Localize ID="locTemplateFileName" runat="server" meta:resourcekey="locTemplateFileName" Text="File name (with extension):"></asp:Localize>

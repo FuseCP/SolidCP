@@ -6,7 +6,7 @@
 <%@ Register Src="../UserControls/CollapsiblePanel.ascx" TagName="CollapsiblePanel" TagPrefix="scp" %>
 <%@ Register Src="../UserControls/CheckBoxOption.ascx" TagName="CheckBoxOption" TagPrefix="scp" %>
 <%@ Register Src="../UserControls/EnableAsyncTasksSupport.ascx" TagName="EnableAsyncTasksSupport" TagPrefix="scp" %>
-<%@ Register TagPrefix="scp" TagName="Generation" Src="UserControls/Generation.ascx" %>
+<%--<%@ Register TagPrefix="scp" TagName="Generation" Src="UserControls/Generation.ascx" %>--%>
 <%@ Register TagPrefix="scp" TagName="DynamicMemoryControl" Src="UserControls/DynamicMemoryControl.ascx" %>
 
 <scp:EnableAsyncTasksSupport id="asyncTasks" runat="server"/>
@@ -100,7 +100,7 @@
                                        </div>    
                             </asp:WizardStep>
                             <asp:WizardStep ID="stepConfig" runat="server" meta:resourcekey="stepConfig" Title="Configuration">
-                                    <scp:Generation runat="server" ID="GenerationSetting" Mode="Edit"/>
+                                    <%--<scp:Generation runat="server" ID="GenerationSetting" Mode="Edit"/>--%>
 
                                     <scp:CollapsiblePanel id="secResources" runat="server"
                                         TargetControlID="ResourcesPanel" meta:resourcekey="secResources" Text="Resources">
@@ -388,7 +388,7 @@
                                             </td>
                                         </tr>
 
-                                        <scp:Generation runat="server" ID="GenerationSettingsSummary" Mode="Summary"/>
+                                        <%--<scp:Generation runat="server" ID="GenerationSettingsSummary" Mode="Summary"/>--%>
 
                                         <tr>
                                             <td><asp:Localize ID="locCpu" runat="server" meta:resourcekey="locCpu" Text="CPU cores:" /></td>
