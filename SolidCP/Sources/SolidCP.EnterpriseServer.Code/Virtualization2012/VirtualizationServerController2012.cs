@@ -482,7 +482,6 @@ namespace SolidCP.EnterpriseServer
                 vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
 
                 //vm.Generation = otherSettings.Generation; get from Template
-                vm.Generation = otherSettings.Generation;
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
                 vm.HddSize = hddGB;
