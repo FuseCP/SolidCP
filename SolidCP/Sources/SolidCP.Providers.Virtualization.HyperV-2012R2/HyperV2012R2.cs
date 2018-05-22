@@ -1759,10 +1759,34 @@ namespace SolidCP.Providers.Virtualization
 
             return jobCompleted;
         }
+        private void SetUsagesFromKVPHyperV(ref VirtualMachine vm, bool[] isGetData)//HyperV2012 support only HDD.
+        {
+            if (isGetData[1])
+                return;
+
+            vm.Disks = HardDriveHelper.Get(PowerShell, vm.Name);
+            if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
+            {
+                short numOfDisks = (short)vm.Disks.GetLength(0);
+                vm.HddLogicalDisks = new LogicalDisk[numOfDisks];
+                char defaultDiskLetter = 'C';
+                for (short i = 0; i < numOfDisks; i++)
+                {
+                    vm.HddLogicalDisks[i] = new LogicalDisk
+                    {
+                        DriveLetter = Char.ToString(defaultDiskLetter++),
+                        FreeSpace = Convert.ToInt32(vm.Disks[i].MaxInternalSize / Constants.Size1G) - Convert.ToInt32(vm.Disks[i].FileSize / Constants.Size1G),
+                        Size = Convert.ToInt32(vm.Disks[i].MaxInternalSize / Constants.Size1G)
+                    };
+                }
+            }
+        }
+
         private void SetUsagesFromKVP(ref VirtualMachine vm)
         {
             // Use the SolidCP VMConfig Windows service to get the RAM usage as well as the HDD usage / sizes
             List<KvpExchangeDataItem> vmKvps = GetKVPItems(vm.VirtualMachineId);
+            bool[] isGetData = { false, false };
             foreach (KvpExchangeDataItem vmKvp in vmKvps)
             {
                 // RAM
@@ -1773,6 +1797,7 @@ namespace SolidCP.Providers.Virtualization
                     int availRam = Int32.Parse(ram[1]);
 
                     vm.RamUsage = availRam - freeRam;
+                    isGetData[0] = true;
                 }
 
                 // HDD
@@ -1790,8 +1815,10 @@ namespace SolidCP.Providers.Virtualization
                             Size = Int32.Parse(disk[2])
                         };
                     }
+                    isGetData[1] = true;
                 }
             }
+            SetUsagesFromKVPHyperV(ref vm, isGetData); //try to get by powershell
         }
         #endregion
 
