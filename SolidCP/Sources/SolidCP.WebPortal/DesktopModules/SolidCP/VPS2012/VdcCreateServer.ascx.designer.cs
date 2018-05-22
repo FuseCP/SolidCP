@@ -202,15 +202,6 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.WizardStep stepConfig;
         
         /// <summary>
-        /// GenerationSetting control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SolidCP.Portal.VPS2012.UserControls.Generation GenerationSetting;
-        
-        /// <summary>
         /// secResources control.
         /// </summary>
         /// <remarks>
@@ -992,15 +983,6 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locConfig2;
-        
-        /// <summary>
-        /// GenerationSettingsSummary control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SolidCP.Portal.VPS2012.UserControls.Generation GenerationSettingsSummary;
         
         /// <summary>
         /// locCpu control.
