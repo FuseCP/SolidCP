@@ -170,9 +170,15 @@ namespace SolidCP.Providers.Virtualization
                     vm.Name = result[0].GetString("Name");
                     vm.State = result[0].GetEnum<VirtualMachineState>("State");
                     vm.CpuUsage = ConvertNullableToInt32(result[0].GetProperty("CpuUsage"));
-                    // This does not truly give the RAM usage, only the memory assigned to the VPS
+                    vm.Version = Convert.ToDouble(ConvertNullableToDouble(result[0].GetProperty("Version")));
+                    // This does not truly give the RAM usage, only the memory assigned to the VPS - True for Version 5.0
                     // Lets handle detection of total memory and usage else where. SetUsagesFromKVP method have been made for it.
-                    vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryAssigned")) / Constants.Size1M);
+
+                    if (vm.Version > Constants.ConfigurationVersion)
+                        vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryDemand")) / Constants.Size1M);
+                    else
+                        vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryAssigned")) / Constants.Size1M);
+
                     vm.RamSize = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryStartup")) / Constants.Size1M);
                     vm.Uptime = Convert.ToInt64(result[0].GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
                     vm.Status = result[0].GetProperty("Status").ToString();
@@ -1618,6 +1624,10 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Private Methods
+        internal double ConvertNullableToDouble(object value)
+        {
+            return value == null ? 0 : Convert.ToDouble(value);
+        }
 
         internal int ConvertNullableToInt32(object value)
         {
@@ -1759,10 +1769,34 @@ namespace SolidCP.Providers.Virtualization
 
             return jobCompleted;
         }
-        private void SetUsagesFromKVP(ref VirtualMachine vm)
+        private void GetHddUsagesFromKVPHyperV(ref VirtualMachine vm, bool isGetHddData)
+        {
+            if (!isGetHddData)
+            {
+                vm.Disks = HardDriveHelper.Get(PowerShell, vm.Name);
+                if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
+                {
+                    short numOfDisks = (short)vm.Disks.GetLength(0);
+                    vm.HddLogicalDisks = new LogicalDisk[numOfDisks];
+                    char defaultDiskLetter = 'C';
+                    for (short i = 0; i < numOfDisks; i++)
+                    {
+                        vm.HddLogicalDisks[i] = new LogicalDisk
+                        {
+                            DriveLetter = Char.ToString(defaultDiskLetter++),
+                            FreeSpace = Convert.ToInt32(vm.Disks[i].MaxInternalSize / Constants.Size1G) - Convert.ToInt32(vm.Disks[i].FileSize / Constants.Size1G),
+                            Size = Convert.ToInt32(vm.Disks[i].MaxInternalSize / Constants.Size1G)
+                        };
+                    }
+                }
+            }            
+        }
+
+        private void SetUsagesFromKVP(ref VirtualMachine vm) //TODO: make check version and get only RAM??
         {
             // Use the SolidCP VMConfig Windows service to get the RAM usage as well as the HDD usage / sizes
             List<KvpExchangeDataItem> vmKvps = GetKVPItems(vm.VirtualMachineId);
+            bool isGetHddData = false;
             foreach (KvpExchangeDataItem vmKvp in vmKvps)
             {
                 // RAM
@@ -1775,7 +1809,7 @@ namespace SolidCP.Providers.Virtualization
                     vm.RamUsage = availRam - freeRam;
                 }
 
-                // HDD
+                // HDD - Perhaps there is no longer a need - look SetHddUsagesFromKVPHyperV
                 if (vmKvp.Name == Constants.KVP_HDD_SUMMARY_KEY)
                 {
                     string[] disksArray = vmKvp.Data.Split(';');
@@ -1790,8 +1824,10 @@ namespace SolidCP.Providers.Virtualization
                             Size = Int32.Parse(disk[2])
                         };
                     }
+                    isGetHddData = true;
                 }
             }
+            GetHddUsagesFromKVPHyperV(ref vm, isGetHddData); //try to get by powershell
         }
         #endregion
 
