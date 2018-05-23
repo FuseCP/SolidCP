@@ -1769,7 +1769,7 @@ namespace SolidCP.Providers.Virtualization
 
             return jobCompleted;
         }
-        private void SetHddUsagesFromKVPHyperV(ref VirtualMachine vm, bool isGetHddData)
+        private void GetHddUsagesFromKVPHyperV(ref VirtualMachine vm, bool isGetHddData)
         {
             if (!isGetHddData)
             {
@@ -1827,7 +1827,7 @@ namespace SolidCP.Providers.Virtualization
                     isGetHddData = true;
                 }
             }
-            SetHddUsagesFromKVPHyperV(ref vm, isGetHddData); //try to get by powershell
+            GetHddUsagesFromKVPHyperV(ref vm, isGetHddData); //try to get by powershell
         }
         #endregion
 
