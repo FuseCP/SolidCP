@@ -46,6 +46,7 @@ namespace SolidCP.Providers.Virtualization
         public string VirtualMachineId { get; set; }
         public string Hostname { get; set; }
         public string Domain { get; set; }
+        public double Version { get; set; }
 
         public VirtualMachineState State { get; set; }
         public long Uptime { get; set; }
