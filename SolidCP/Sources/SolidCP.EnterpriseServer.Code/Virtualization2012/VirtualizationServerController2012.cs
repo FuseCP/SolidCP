@@ -49,7 +49,7 @@ using System.Diagnostics;
 ﻿using SolidCP.EnterpriseServer.Code.Virtualization2012;
 ﻿using SolidCP.Providers.Virtualization2012;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
-using System.Reflection;
+using System.Threading;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -1034,7 +1034,7 @@ namespace SolidCP.EnterpriseServer
                 if (osTemplate.ProvisionAdministratorPassword)
                 {
                     TaskManager.Write("VPS_CREATE_SET_PASSWORD_KVP");
-                    SendAdministratorPasswordKVP(vm.Id, CryptoUtils.Decrypt(vm.AdministratorPassword));
+                    SendAdministratorPasswordKVP(vm.Id, CryptoUtils.Decrypt(vm.AdministratorPassword), false); //TODO check mb need true
                 }
 
                 // configure network adapters
@@ -1409,7 +1409,7 @@ namespace SolidCP.EnterpriseServer
             return SendKvpItems(itemId, "ChangeComputerName", props);
         }
 
-        private static JobResult SendAdministratorPasswordKVP(int itemId, string password)
+        private static JobResult SendAdministratorPasswordKVP(int itemId, string password, bool cleanResult)
         {
             // load item
             VirtualMachine vm = GetVirtualMachineByItemId(itemId);
@@ -1422,10 +1422,23 @@ namespace SolidCP.EnterpriseServer
             props["Password"] = password;
 
             // send items
-            return SendKvpItems(itemId, "ChangeAdministratorPassword", props);
+            if(cleanResult)
+                return SendKvpItemsAndCleanResult(itemId, "ChangeAdministratorPassword", props);
+            else
+                return SendKvpItems(itemId, "ChangeAdministratorPassword", props);
         }
 
         private static JobResult SendKvpItems(int itemId, string taskName, Dictionary<string, string> taskProps)
+        {
+            return SendKvpItemsInternal(itemId, taskName, taskProps, false);
+        }
+
+        private static JobResult SendKvpItemsAndCleanResult(int itemId, string taskName, Dictionary<string, string> taskProps)
+        {
+            return SendKvpItemsInternal(itemId, taskName, taskProps, true);
+        }
+
+        private static JobResult SendKvpItemsInternal(int itemId, string taskName, Dictionary<string, string> taskProps, bool cleanResult)
         {
             string TASK_PREFIX = "SCP-";
             string TASK_PREFIX_OLD = "WSP-"; //backward compatibility for the WSPanel and the MSPControl version 0000 < 3000 <= ????
@@ -1504,6 +1517,12 @@ namespace SolidCP.EnterpriseServer
                 else
                 {
                     TaskManager.Write(String.Format("The task has been sent to the VPS"));
+                    if (cleanResult)
+                    {
+                        Thread t = new Thread(() => CleanLastKVPResult(ref vm, ref vs, TASK_PREFIX, TASK_PREFIX_OLD, taskNameArr));
+                        t.Start();
+                        //CleanLastKVPResult(ref vm, ref vs, TASK_PREFIX, TASK_PREFIX_OLD, taskNameArr);
+                    }
                     return result;
                 }
             }
@@ -1514,6 +1533,39 @@ namespace SolidCP.EnterpriseServer
             }
 
             return null;
+        }
+
+        private static void CleanLastKVPResult(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string TASK_PREFIX, string TASK_PREFIX_OLD, string[] taskNameArr)
+        {
+            try
+            {
+                ushort waitSec = 60;
+                for(ushort i = 0; i < waitSec; i++)
+                {
+                    KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VirtualMachineId);
+                    System.Threading.Thread.Sleep(1000);
+                    foreach (KvpExchangeDataItem vmKvp in vmKvps)
+                    {
+                        if (vmKvp.Name.Equals(taskNameArr[0]))
+                        {
+                            TryToDelUnusedTask(ref vm, ref vs, vmKvp.Name.ToString(), TASK_PREFIX_OLD, TASK_PREFIX);                            
+                            vs.RemoveKVPItems(vm.VirtualMachineId, new string[] { taskNameArr[0] });
+                            i = waitSec;
+                        }
+                        else if (vmKvp.Name.Equals(taskNameArr[1]))
+                        {
+                            TryToDelUnusedTask(ref vm, ref vs, vmKvp.Name.ToString(), TASK_PREFIX, TASK_PREFIX_OLD);                            
+                            vs.RemoveKVPItems(vm.VirtualMachineId, new string[] { taskNameArr[1] });
+                            i = waitSec;
+                        }
+                    }                    
+                }
+            }
+            catch (Exception ex)
+            {
+                // log error
+                TaskManager.WriteWarning(String.Format("Error clean last KVP item: {0}", ex.Message));
+            }
         }
 
         private static void TryToDelUnusedTask(ref VirtualMachine vm, ref VirtualizationServer2012 vs, string taskName, string PREFIX, string REPLACE_PREFIX)
@@ -1954,6 +2006,16 @@ namespace SolidCP.EnterpriseServer
         #region VPS - Configuration
         public static ResultObject ChangeAdministratorPassword(int itemId, string password)
         {
+            return ChangeAdministratorPasswordInternal(itemId, password, false);
+        }
+
+        public static ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
+        {
+            return ChangeAdministratorPasswordInternal(itemId, password, true);
+        }
+
+        protected static ResultObject ChangeAdministratorPasswordInternal(int itemId, string password, bool cleanResult)
+        {
             ResultObject res = new ResultObject();
 
             // load service item
@@ -1983,7 +2045,7 @@ namespace SolidCP.EnterpriseServer
                 VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
 
                 // change administrator password
-                JobResult result = SendAdministratorPasswordKVP(itemId, password);
+                JobResult result = SendAdministratorPasswordKVP(itemId, password, cleanResult);
                 if (result.ReturnValue != ReturnCode.JobStarted
                     && result.Job.JobState == ConcreteJobState.Completed)
                 {
