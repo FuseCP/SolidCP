@@ -114,7 +114,8 @@ namespace SolidCP.Portal.VPS2012
         {
             try
             {
-                ResultObject res = ES.Services.VPS2012.ChangeAdministratorPassword(PanelRequest.ItemID, password.Password);
+                //ResultObject res = ES.Services.VPS2012.ChangeAdministratorPassword(PanelRequest.ItemID, password.Password)
+                ResultObject res = ES.Services.VPS2012.ChangeAdministratorPasswordAndCleanResult(PanelRequest.ItemID, password.Password);
 
                 if (res.IsSuccess)
                 {

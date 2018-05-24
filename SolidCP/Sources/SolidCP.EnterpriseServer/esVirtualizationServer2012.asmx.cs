@@ -282,6 +282,11 @@ namespace SolidCP.EnterpriseServer
         {
             return VirtualizationServerController2012.ChangeAdministratorPassword(itemId, password);
         }
+        [WebMethod]
+        public ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
+        {
+            return VirtualizationServerController2012.ChangeAdministratorPasswordAndCleanResult(itemId, password);
+        }
         #endregion
 
         #region VPS – Edit Configuration

@@ -94,6 +94,8 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback ChangeAdministratorPasswordOperationCompleted;
 
+        private System.Threading.SendOrPostCallback ChangeAdministratorPasswordAndCleanResultOperationCompleted;
+
         private System.Threading.SendOrPostCallback UpdateVirtualMachineConfigurationOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetVirtualMachineGuacamoleURLOperationCompleted;
@@ -261,6 +263,9 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event ChangeAdministratorPasswordCompletedEventHandler ChangeAdministratorPasswordCompleted;
+
+        /// <remarks/>
+        public event ChangeAdministratorPasswordAndCleanResultCompletedEventHandler ChangeAdministratorPasswordAndCleanResultCompleted;
 
         /// <remarks/>
         public event UpdateVirtualMachineConfigurationCompletedEventHandler UpdateVirtualMachineConfigurationCompleted;
@@ -2060,6 +2065,58 @@ namespace SolidCP.EnterpriseServer
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ChangeAdministratorPasswordCompleted(this, new ChangeAdministratorPasswordCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ChangeAdministratorPasswordAndCleanResult", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject ChangeAdministratorPasswordAndCleanResult(int itemId, string password)
+        {
+            object[] results = this.Invoke("ChangeAdministratorPasswordAndCleanResult", new object[] {
+                        itemId,
+                        password});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginChangeAdministratorPasswordAndCleanResult(int itemId, string password, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("ChangeAdministratorPasswordAndCleanResult", new object[] {
+                        itemId,
+                        password}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndChangeAdministratorPasswordAndCleanResult(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void ChangeAdministratorPasswordAndCleanResultAsync(int itemId, string password)
+        {
+            this.ChangeAdministratorPasswordAndCleanResultAsync(itemId, password, null);
+        }
+
+        /// <remarks/>
+        public void ChangeAdministratorPasswordAndCleanResultAsync(int itemId, string password, object userState)
+        {
+            if ((this.ChangeAdministratorPasswordAndCleanResultOperationCompleted == null))
+            {
+                this.ChangeAdministratorPasswordAndCleanResultOperationCompleted = new System.Threading.SendOrPostCallback(this.OnChangeAdministratorPasswordAndCleanResultOperationCompleted);
+            }
+            this.InvokeAsync("ChangeAdministratorPasswordAndCleanResult", new object[] {
+                        itemId,
+                        password}, this.ChangeAdministratorPasswordAndCleanResultOperationCompleted, userState);
+        }
+
+        private void OnChangeAdministratorPasswordAndCleanResultOperationCompleted(object arg)
+        {
+            if ((this.ChangeAdministratorPasswordCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ChangeAdministratorPasswordAndCleanResultCompleted(this, new ChangeAdministratorPasswordAndCleanResultCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -5158,6 +5215,36 @@ namespace SolidCP.EnterpriseServer
         private object[] results;
 
         internal ChangeAdministratorPasswordCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void ChangeAdministratorPasswordAndCleanResultCompletedEventHandler(object sender, ChangeAdministratorPasswordAndCleanResultCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ChangeAdministratorPasswordAndCleanResultCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal ChangeAdministratorPasswordAndCleanResultCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
