@@ -20234,8 +20234,8 @@ BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1704, 72, N'MsSQL', N'Microsoft SQL Server 2017', N'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer', N'MSSQL', NULL)
 INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (73, 72, N'MsSQL2017Database', N'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1, 1, 0, 0, 1, 1, 1, 1)
 INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (74, 72, N'MsSQL2017User', N'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1, 0, 0, 0, 1, 1, 1, 1)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (711, 72, 1, N'MsSQL2017.Databases', N'Databases', 2, 0, 39, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (712, 72, 2, N'MsSQL2017.Users', N'Users', 2, 0, 40, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (711, 72, 1, N'MsSQL2017.Databases', N'Databases', 2, 0, 73, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (712, 72, 2, N'MsSQL2017.Users', N'Users', 2, 0, 74, NULL)
 INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (713, 72, 3, N'MsSQL2017.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL)
 INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (714, 72, 5, N'MsSQL2017.Backup', N'Database Backups', 1, 0, NULL, NULL)
 INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (715, 72, 6, N'MsSQL2017.Restore', N'Database Restores', 1, 0, NULL, NULL)
@@ -20514,5 +20514,13 @@ IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Hosted MS 
 BEGIN
 INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) 
 VALUES(1206, 24, N'CRM', N'Hosted MS CRM 2016', N'SolidCP.Providers.HostedSolution.CRMProvider2016, SolidCP.Providers.HostedSolution.Crm2016', N'CRM2011', NULL)
+END
+GO
+
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '711' AND [ItemTypeID] = '73')
+BEGIN
+	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '73' WHERE QuotaID = '711' & [QuotaName] = N'MsSQL2017.Databases'
+	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '74' WHERE QuotaID = '712' & [QuotaName] = N'MsSQL2017.Users'
 END
 GO
