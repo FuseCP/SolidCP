@@ -96,7 +96,7 @@ namespace SolidCP.Providers.Database
         {
             get
             {
-                bool addr = Boolean.Parse(ProviderSettings["SslMode"]);
+                bool addr = Boolean.Parse(ProviderSettings["SslMode"] ?? Boolean.FalseString);
                 if (addr)
                 {
                     return ";SslMode=none";
