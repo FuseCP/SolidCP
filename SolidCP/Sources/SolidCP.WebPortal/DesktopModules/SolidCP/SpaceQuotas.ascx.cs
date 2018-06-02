@@ -88,6 +88,7 @@ namespace SolidCP.Portal
             { "quotaRdsServers", "pnlRdsServers"},
             { "quotaRdsUsers", "pnlRdsUsers"},
             { "quotavps2012servers", "pnlVPS2012Servers" },
+            { "quotavps2012cpuquota", "pnlVPS2012CpuQuota" },
             { "quotavps2012ramquota", "pnlVPS2012RamQuota" },
             { "quotavps2012hddquota", "pnlVPS2012HddQuota" },
             { "quotamssql2014databases", "pnlMsSQL2014Databases" },
