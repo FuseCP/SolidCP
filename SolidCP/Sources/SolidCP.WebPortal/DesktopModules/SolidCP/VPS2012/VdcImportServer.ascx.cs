@@ -180,8 +180,8 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
             list.Items.Clear();
-            //IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, pool);
-            IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(-1, serviceId.ToString(), pool);
+            IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, pool);
+            //IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(-1, serviceId.ToString(), pool); //??? why do we do that??
             foreach (IPAddressInfo ip in ips)
             {
                 if (ip.VLAN == adaptervlan)
