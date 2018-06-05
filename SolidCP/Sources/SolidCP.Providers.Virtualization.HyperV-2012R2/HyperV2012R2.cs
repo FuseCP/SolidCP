@@ -434,6 +434,11 @@ namespace SolidCP.Providers.Virtualization
 
             var vm = GetVirtualMachine(vmId);
 
+            bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused); 
+
+            if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server have problem.
+                newState = VirtualMachineRequestedState.TurnOff;
+
             try
             {
                 string cmdTxt;
@@ -456,6 +461,7 @@ namespace SolidCP.Providers.Virtualization
                         break;
                     case VirtualMachineRequestedState.ShutDown:
                         cmdTxt = "Stop-VM";
+                        paramList.Add("Force"); //If the virtual machine has applications with unsaved data, the virtual machine has five minutes to save data and shut down. (Fix for loop)
                         break;
                     case VirtualMachineRequestedState.TurnOff:
                         cmdTxt = "Stop-VM";
@@ -490,9 +496,15 @@ namespace SolidCP.Providers.Virtualization
 
         public ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason)
         {
-            var vm = GetVirtualMachine(vmId);
 
-            VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
+            var vm = GetVirtualMachine(vmId);
+            bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused);
+
+            if (isServerStatusOK)
+                VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
+            else
+                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.TurnOff);
+
 
             return ReturnCode.OK;
         }
