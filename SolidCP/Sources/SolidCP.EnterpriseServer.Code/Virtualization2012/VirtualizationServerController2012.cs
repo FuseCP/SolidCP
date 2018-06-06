@@ -2113,10 +2113,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS – Edit Configuration
-        public static ResultObject UpdateVirtualMachineConfiguration(
-            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
-            bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, 
-            bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
+        public static ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings) 
         {
             ResultObject res = new ResultObject();
 
@@ -2144,42 +2141,42 @@ namespace SolidCP.EnterpriseServer
             PackageContext cntx = PackageController.GetPackageContext(vm.PackageId);
 
             var currentRam = vm.RamSize;
-            var newRam = ramMB;
+            var newRam = vmSettings.RamSize;
 
             // dynamic memory
             if (vm.DynamicMemory != null && vm.DynamicMemory.Enabled)
                 currentRam = vm.DynamicMemory.Maximum;
-            if (otherSettings.DynamicMemory != null && otherSettings.DynamicMemory.Enabled)
+            if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
             {
-                newRam = otherSettings.DynamicMemory.Maximum;
+                newRam = vmSettings.DynamicMemory.Maximum;
 
-                if (ramMB > otherSettings.DynamicMemory.Maximum || ramMB < otherSettings.DynamicMemory.Minimum)
+                if (vm.RamSize > vmSettings.DynamicMemory.Maximum || vm.RamSize < vmSettings.DynamicMemory.Minimum)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
             }
 
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, vm.CpuCores, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, vm.CpuCores, vmSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, currentRam, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, vm.HddSize, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
-            
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, dvdInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, bootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
-            
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, startShutdownAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, pauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, rebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, resetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, reinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
-            
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, externalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, privateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, vm.HddSize, vmSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, vmSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
+
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, vmSettings.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, vmSettings.BootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
+
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, vmSettings.StartTurnOffAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, vmSettings.PauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, vmSettings.RebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, vmSettings.ResetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, vmSettings.ReinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
+
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, vmSettings.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, vmSettings.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
 
             // check acceptable values
-            if (ramMB <= 0)
+            if (vmSettings.RamSize <= 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
-            if (hddGB <= 0)
+            if (vmSettings.HddSize <= 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
-            if (snapshots < 0)
+            if (vmSettings.SnapshotsNumber < 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
             // IOPS checks
@@ -2216,10 +2213,22 @@ namespace SolidCP.EnterpriseServer
                     {
                         // spin until fully stopped
                         vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-                        while (vps.State != VirtualMachineState.Off)
+                        short timeOut = 60 * 10; //10 min
+                        while (vps.State != VirtualMachineState.Off) //TODO: rewrite
                         {
+                            timeOut--;
                             System.Threading.Thread.Sleep(1000); // sleep 1 second
                             vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                            if (timeOut == 0)// turnoff
+                            {
+                                ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
+                                                                VirtualMachineRequestedState.TurnOff);
+                                if (!turnOffResult.IsSuccess)
+                                {
+                                    TaskManager.CompleteResultTask(res);
+                                    return turnOffResult;
+                                }
+                            }
                         }
                     }
                     else
@@ -2235,30 +2244,33 @@ namespace SolidCP.EnterpriseServer
                     }
                 } // end OFF
 
-                // update meta-item
-                vm.CpuCores = cpuCores;
-                vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
-                vm.HddMinimumIOPS = hddMinimumIOPS;
-                vm.HddMaximumIOPS = hddMaximumIOPS;
-                vm.SnapshotsNumber = snapshots;
-                
-                vm.BootFromCD = bootFromCD;
-                vm.NumLockEnabled = numLock;
-                vm.DvdDriveInstalled = dvdInstalled;
+                /////////////////////////////////////////////
+                // update meta-item //TODO: rewrite 
+                //vm = vmSettings; //heh we can't do that :(
+                vm.CpuCores = vmSettings.CpuCores;
+                vm.RamSize = vmSettings.RamSize;
+                vm.HddSize = vmSettings.HddSize;
+                vm.HddMinimumIOPS = vmSettings.HddMinimumIOPS;
+                vm.HddMaximumIOPS = vmSettings.HddMaximumIOPS;
+                vm.SnapshotsNumber = vmSettings.SnapshotsNumber;
 
-                vm.StartTurnOffAllowed = startShutdownAllowed;
-                vm.PauseResumeAllowed = pauseResumeAllowed;
-                vm.ResetAllowed = resetAllowed;
-                vm.RebootAllowed = rebootAllowed;
-                vm.ReinstallAllowed = reinstallAllowed;
+                vm.BootFromCD = vmSettings.BootFromCD;
+                vm.NumLockEnabled = vmSettings.NumLockEnabled;
+                vm.DvdDriveInstalled = vmSettings.DvdDriveInstalled;
 
-                vm.ExternalNetworkEnabled = externalNetworkEnabled;
-                vm.PrivateNetworkEnabled = privateNetworkEnabled;
+                vm.StartTurnOffAllowed = vmSettings.StartTurnOffAllowed;
+                vm.PauseResumeAllowed = vmSettings.PauseResumeAllowed;
+                vm.ResetAllowed = vmSettings.ResetAllowed;
+                vm.RebootAllowed = vmSettings.RebootAllowed;
+                vm.ReinstallAllowed = vmSettings.ReinstallAllowed;
+
+                vm.ExternalNetworkEnabled = vmSettings.ExternalNetworkEnabled;
+                vm.PrivateNetworkEnabled = vmSettings.PrivateNetworkEnabled;
+                /////////////////////////////////////////////
 
                 // dynamic memory
-                if (otherSettings.DynamicMemory != null && otherSettings.DynamicMemory.Enabled)
-                    vm.DynamicMemory = otherSettings.DynamicMemory;
+                if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
+                    vm.DynamicMemory = vmSettings.DynamicMemory;
                 else
                     vm.DynamicMemory = null;
 
@@ -2331,6 +2343,33 @@ namespace SolidCP.EnterpriseServer
 
             TaskManager.CompleteResultTask();
             return res;
+        }
+        //[Obsolete("UpdateVirtualMachineConfiguration is deprecated, please use UpdateVirtualMachineResource instead.")]
+        public static ResultObject UpdateVirtualMachineConfiguration(
+            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
+            bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, 
+            bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
+        {
+            otherSettings.CpuCores = cpuCores;
+            otherSettings.RamSize = ramMB;
+            otherSettings.HddSize = hddGB;
+            otherSettings.HddMinimumIOPS = hddMinimumIOPS;
+            otherSettings.HddMaximumIOPS = hddMaximumIOPS;
+            otherSettings.SnapshotsNumber = snapshots;
+
+            otherSettings.BootFromCD = bootFromCD;
+            otherSettings.NumLockEnabled = numLock;
+            otherSettings.DvdDriveInstalled = dvdInstalled;
+
+            otherSettings.StartTurnOffAllowed = startShutdownAllowed;
+            otherSettings.PauseResumeAllowed = pauseResumeAllowed;
+            otherSettings.ResetAllowed = resetAllowed;
+            otherSettings.RebootAllowed = rebootAllowed;
+            otherSettings.ReinstallAllowed = reinstallAllowed;
+
+            otherSettings.ExternalNetworkEnabled = externalNetworkEnabled;
+            otherSettings.PrivateNetworkEnabled = privateNetworkEnabled;
+            return UpdateVirtualMachineResource(itemId, otherSettings);
         }
         #endregion
 
