@@ -421,7 +421,25 @@ namespace SolidCP.Portal.VPS2012
                 this.SaveSettingsControls(ref virtualMachine);
 
                 // collect and prepare data
-                string hostname = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
+                virtualMachine.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
+                virtualMachine.PackageId = PanelSecurity.PackageId;
+                virtualMachine.CpuCores = Utils.ParseInt(ddlCpu.SelectedValue);
+                virtualMachine.RamSize = Utils.ParseInt(txtRam.Text.Trim());
+                virtualMachine.HddSize = Utils.ParseInt(txtHdd.Text.Trim());
+                virtualMachine.HddMinimumIOPS = Utils.ParseInt(txtHddMinIOPS.Text.Trim());
+                virtualMachine.HddMaximumIOPS = Utils.ParseInt(txtHddMaxIOPS.Text.Trim());
+                virtualMachine.SnapshotsNumber = Utils.ParseInt(txtSnapshots.Text.Trim());
+                virtualMachine.DvdDriveInstalled = chkDvdInstalled.Checked;
+                virtualMachine.BootFromCD = chkBootFromCd.Checked;
+                virtualMachine.NumLockEnabled = chkNumLock.Checked;
+                virtualMachine.StartTurnOffAllowed = chkStartShutdown.Checked;
+                virtualMachine.PauseResumeAllowed = chkPauseResume.Checked;
+                virtualMachine.RebootAllowed = chkReboot.Checked;
+                virtualMachine.ResetAllowed = chkReset.Checked;
+                virtualMachine.ReinstallAllowed = chkReinstall.Checked;
+                virtualMachine.ExternalNetworkEnabled = false; //setting up after
+                virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
+
 
                 string adminPassword = (string)ViewState["Password"];
 
@@ -435,23 +453,29 @@ namespace SolidCP.Portal.VPS2012
 
                 string summaryEmail = chkSendSummary.Checked ? txtSummaryEmail.Text.Trim() : null;
 
-                bool externalenabled = false;
+                //virtualMachine.ExternalNetworkEnabled = false;
                 if (Convert.ToInt32(listVlanLists.SelectedValue) >= 0)
-                    externalenabled = true;
+                    virtualMachine.ExternalNetworkEnabled = true;
 
+                
                 // set default selected vlan
                 virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);
 
                 // create virtual machine
-                IntResult res = ES.Services.VPS2012.CreateVirtualMachine(PanelSecurity.PackageId,
-                    hostname, listOperatingSystems.SelectedValue, adminPassword, summaryEmail,
-                    Utils.ParseInt(ddlCpu.SelectedValue), Utils.ParseInt(txtRam.Text.Trim()),
-                    Utils.ParseInt(txtHdd.Text.Trim()), Utils.ParseInt(txtSnapshots.Text.Trim()), Utils.ParseInt(txtHddMinIOPS.Text.Trim()), Utils.ParseInt(txtHddMaxIOPS.Text.Trim()),
-                    chkDvdInstalled.Checked, chkBootFromCd.Checked, chkNumLock.Checked,
-                    chkStartShutdown.Checked, chkPauseResume.Checked, chkReboot.Checked, chkReset.Checked, chkReinstall.Checked,
-                    externalenabled, Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),
-                    chkPrivateNetworkEnabled.Checked, Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps,
-                    virtualMachine);
+                IntResult res = ES.Services.VPS2012.CreateNewVirtualMachine(virtualMachine, 
+                    listOperatingSystems.SelectedValue, adminPassword, summaryEmail, 
+                    Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(), 
+                    Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps
+                    );
+                //IntResult res = ES.Services.VPS2012.CreateVirtualMachine(PanelSecurity.PackageId,
+                //    hostname, listOperatingSystems.SelectedValue, adminPassword, summaryEmail,
+                //    Utils.ParseInt(ddlCpu.SelectedValue), Utils.ParseInt(txtRam.Text.Trim()),
+                //    Utils.ParseInt(txtHdd.Text.Trim()), Utils.ParseInt(txtSnapshots.Text.Trim()),
+                //    chkDvdInstalled.Checked, chkBootFromCd.Checked, chkNumLock.Checked,
+                //    chkStartShutdown.Checked, chkPauseResume.Checked, chkReboot.Checked, chkReset.Checked, chkReinstall.Checked,
+                //    externalenabled, Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),
+                //    chkPrivateNetworkEnabled.Checked, Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps,
+                //    virtualMachine);
 
                 if (res.IsSuccess)
                 {
@@ -467,7 +491,7 @@ namespace SolidCP.Portal.VPS2012
             {
                 messageBox.ShowErrorMessage("VPS_ERROR_CREATE", ex);
             }
-        }
+        }        
 
         protected void wizard_SideBarButtonClick(object sender, WizardNavigationEventArgs e)
         {

@@ -214,6 +214,8 @@ namespace SolidCP.EnterpriseServer
 
             IntResult res = new IntResult();
 
+            VirtualMachine vmSettings = new VirtualMachine();
+
             // load package info
             PackageInfo package = PackageController.GetPackage(packageId);
             if (package == null)
@@ -281,8 +283,8 @@ namespace SolidCP.EnterpriseServer
 
             // IOPS
             // TODO IOPS checks
-            int hddMinimumIOPS = DEFAULT_MINIMUM_IOPS;
-            int hddMaximumIOPS = DEFAULT_MAXIMUM_IOPS;
+            vmSettings.HddMinimumIOPS = DEFAULT_MINIMUM_IOPS;
+            vmSettings.HddMaximumIOPS = DEFAULT_MAXIMUM_IOPS;
 
             // snapshots
             int snapshots = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
@@ -322,11 +324,11 @@ namespace SolidCP.EnterpriseServer
 
             // create server and return result
             return CreateVirtualMachine(packageId, hostname, osTemplate, password, summaryLetterEmail,
-                cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS,
+                cpuCores, ramMB, hddGB, snapshots,
                 dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
-                privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, new VirtualMachine());
+                privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, vmSettings);
         }
 
         public static IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail, 
@@ -621,7 +623,7 @@ namespace SolidCP.EnterpriseServer
         //[Obsolete("CreateVirtualMachine is deprecated, please use CreateNewVirtualMachine instead.")]
         public static IntResult CreateVirtualMachine(int packageId,
                 string hostname, string osTemplateFile, string password, string summaryLetterEmail,
-                int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
+                int cpuCores, int ramMB, int hddGB, int snapshots,
                 bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                 bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
@@ -632,8 +634,8 @@ namespace SolidCP.EnterpriseServer
             otherSettings.CpuCores = cpuCores;
             otherSettings.RamSize = ramMB;
             otherSettings.HddSize = hddGB;
-            otherSettings.HddMinimumIOPS = hddMinimumIOPS;
-            otherSettings.HddMaximumIOPS = hddMaximumIOPS;
+            //otherSettings.HddMinimumIOPS = hddMinimumIOPS;
+            //otherSettings.HddMaximumIOPS = hddMaximumIOPS;
             otherSettings.SnapshotsNumber = snapshots;
             otherSettings.DvdDriveInstalled = dvdInstalled;
             otherSettings.BootFromCD = bootFromCD;

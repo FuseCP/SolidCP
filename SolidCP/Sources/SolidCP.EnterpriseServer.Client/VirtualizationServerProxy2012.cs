@@ -70,6 +70,8 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback CreateDefaultVirtualMachineOperationCompleted;
 
+        private System.Threading.SendOrPostCallback CreateNewVirtualMachineOperationCompleted;
+
         private System.Threading.SendOrPostCallback CreateVirtualMachineOperationCompleted;
 
         private System.Threading.SendOrPostCallback ImportVirtualMachineOperationCompleted;
@@ -230,6 +232,9 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event CreateDefaultVirtualMachineCompletedEventHandler CreateDefaultVirtualMachineCompleted;
+
+        /// <remarks/>
+        public event CreateNewVirtualMachineCompletedEventHandler CreateNewVirtualMachineCompleted;
 
         /// <remarks/>
         public event CreateVirtualMachineCompletedEventHandler CreateVirtualMachineCompleted;
@@ -1309,6 +1314,92 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateNewVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
+        {
+            object[] results = this.Invoke("CreateNewVirtualMachine", new object[] {
+                        VMSettings,
+                        osTemplateFile,
+                        password,
+                        summaryLetterEmail,
+                        externalAddressesNumber,
+                        randomExternalAddresses,
+                        externalAddresses,
+                        privateAddressesNumber,
+                        randomPrivateAddresses,
+                        privateAddresses});
+            return ((IntResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateNewVirtualMachine", new object[] {
+                        VMSettings,
+                        osTemplateFile,
+                        password,
+                        summaryLetterEmail,
+                        externalAddressesNumber,
+                        randomExternalAddresses,
+                        externalAddresses,
+                        privateAddressesNumber,
+                        randomPrivateAddresses,
+                        privateAddresses}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public IntResult EndCreateNewVirtualMachine(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((IntResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void CreateNewVirtualMachineAsync(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
+        {
+            this.CreateNewVirtualMachineAsync(VMSettings, osTemplateFile, password, summaryLetterEmail,
+            externalAddressesNumber, randomExternalAddresses, externalAddresses,
+            privateAddressesNumber, randomPrivateAddresses, privateAddresses, null);
+        }
+
+        /// <remarks/>
+        public void CreateNewVirtualMachineAsync(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, object userState)
+        {
+            if ((this.CreateNewVirtualMachineOperationCompleted == null))
+            {
+                this.CreateNewVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateNewVirtualMachineOperationCompleted);
+            }
+            this.InvokeAsync("CreateNewVirtualMachine", new object[] {
+                        VMSettings,
+                        osTemplateFile,
+                        password,
+                        summaryLetterEmail,
+                        externalAddressesNumber,
+                        randomExternalAddresses,
+                        externalAddresses,
+                        privateAddressesNumber,
+                        randomPrivateAddresses,
+                        privateAddresses}, this.CreateNewVirtualMachineOperationCompleted, userState);
+        }
+
+        private void OnCreateNewVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.CreateNewVirtualMachineCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateNewVirtualMachineCompleted(this, new CreateNewVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public IntResult CreateVirtualMachine(
                     int packageId,
@@ -1320,8 +1411,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1350,8 +1439,6 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
-                        hddMinimumIOPS,
-                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -1383,8 +1470,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1415,8 +1500,6 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
-                        hddMinimumIOPS,
-                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -1454,8 +1537,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1474,7 +1555,7 @@ namespace SolidCP.EnterpriseServer
                     string[] privateAddresses,
                     VirtualMachine otherSettings)
         {
-            this.CreateVirtualMachineAsync(packageId, hostname, osTemplateFile, password, summaryLetterEmail, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses, privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, otherSettings, null);
+            this.CreateVirtualMachineAsync(packageId, hostname, osTemplateFile, password, summaryLetterEmail, cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses, privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, otherSettings, null);
         }
 
         /// <remarks/>
@@ -1488,8 +1569,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -1523,8 +1602,6 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
-                        hddMinimumIOPS,
-                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -4915,6 +4992,36 @@ namespace SolidCP.EnterpriseServer
         private object[] results;
 
         internal CreateDefaultVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public IntResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((IntResult)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void CreateNewVirtualMachineCompletedEventHandler(object sender, CreateNewVirtualMachineCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CreateNewVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal CreateNewVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
