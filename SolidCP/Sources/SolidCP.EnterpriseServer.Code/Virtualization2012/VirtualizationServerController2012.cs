@@ -1926,10 +1926,22 @@ namespace SolidCP.EnterpriseServer
 
                         // spin until fully stopped
                         VirtualMachine vm = vps.GetVirtualMachine(machine.VirtualMachineId);
+                        short timeOut = 600; //10 min
                         while (vm.State != VirtualMachineState.Off)
                         {
+                            timeOut--;
                             System.Threading.Thread.Sleep(1000); // sleep 1 second
                             vm = vps.GetVirtualMachine(machine.VirtualMachineId);
+                            if(timeOut == 0)// turnoff
+                            {                                
+                                ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
+                                                                VirtualMachineRequestedState.TurnOff);
+                                if (!turnOffResult.IsSuccess)
+                                {
+                                    TaskManager.CompleteResultTask(res);
+                                    return turnOffResult;
+                                }
+                            }                                
                         }
                     }
                     else if (state == VirtualMachineRequestedState.Reboot)
