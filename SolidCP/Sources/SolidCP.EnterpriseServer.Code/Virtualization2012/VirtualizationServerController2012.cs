@@ -2346,15 +2346,13 @@ namespace SolidCP.EnterpriseServer
         }
         //[Obsolete("UpdateVirtualMachineConfiguration is deprecated, please use UpdateVirtualMachineResource instead.")]
         public static ResultObject UpdateVirtualMachineConfiguration(
-            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
+            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
             bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, 
             bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
         {
             otherSettings.CpuCores = cpuCores;
             otherSettings.RamSize = ramMB;
             otherSettings.HddSize = hddGB;
-            otherSettings.HddMinimumIOPS = hddMinimumIOPS;
-            otherSettings.HddMaximumIOPS = hddMaximumIOPS;
             otherSettings.SnapshotsNumber = snapshots;
 
             otherSettings.BootFromCD = bootFromCD;

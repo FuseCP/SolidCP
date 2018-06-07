@@ -100,6 +100,8 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback UpdateVirtualMachineConfigurationOperationCompleted;
 
+        private System.Threading.SendOrPostCallback UpdateVirtualMachineResourceOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetVirtualMachineGuacamoleURLOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetInsertedDvdDiskOperationCompleted;
@@ -274,6 +276,9 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event UpdateVirtualMachineConfigurationCompletedEventHandler UpdateVirtualMachineConfigurationCompleted;
+
+        /// <remarks/>
+        public event UpdateVirtualMachineResourceCompletedEventHandler UpdateVirtualMachineResourceCompleted;
 
         /// <remarks/>
         public event GetInsertedDvdDiskCompletedEventHandler GetInsertedDvdDiskCompleted;
@@ -2205,8 +2210,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2225,8 +2228,6 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
-                        hddMinimumIOPS,
-                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -2248,8 +2249,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2270,8 +2269,6 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
-                        hddMinimumIOPS,
-                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -2299,8 +2296,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2313,7 +2308,7 @@ namespace SolidCP.EnterpriseServer
                     bool privateNetworkEnabled,
                     VirtualMachine otherSettings)
         {
-            this.UpdateVirtualMachineConfigurationAsync(itemId, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, privateNetworkEnabled, otherSettings, null);
+            this.UpdateVirtualMachineConfigurationAsync(itemId, cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNetworkEnabled, privateNetworkEnabled, otherSettings, null);
         }
 
         /// <remarks/>
@@ -2323,8 +2318,6 @@ namespace SolidCP.EnterpriseServer
                     int ramMB,
                     int hddGB,
                     int snapshots,
-                    int hddMinimumIOPS, 
-                    int hddMaximumIOPS,
                     bool dvdInstalled,
                     bool bootFromCD,
                     bool numLock,
@@ -2348,8 +2341,6 @@ namespace SolidCP.EnterpriseServer
                         ramMB,
                         hddGB,
                         snapshots,
-                        hddMinimumIOPS,
-                        hddMaximumIOPS,
                         dvdInstalled,
                         bootFromCD,
                         numLock,
@@ -2372,7 +2363,62 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateVirtualMachineResource", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject UpdateVirtualMachineResource(
+                    int itemId,
+                    VirtualMachine vmSettings)
+        {
+            object[] results = this.Invoke("UpdateVirtualMachineResource", new object[] {
+                        itemId, vmSettings});
+            return ((ResultObject)(results[0]));
+        }
 
+        /// <remarks/>
+        public System.IAsyncResult BeginUpdateVirtualMachineResource(
+                    int itemId, VirtualMachine vmSettings,
+                    System.AsyncCallback callback,
+                    object asyncState)
+        {
+            return this.BeginInvoke("UpdateVirtualMachineResource", new object[] {
+                        itemId, vmSettings}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndUpdateVirtualMachineResource(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void UpdateVirtualMachineResourceAsync(
+                    int itemId, VirtualMachine vmSettings)
+        {
+            this.UpdateVirtualMachineResourceAsync(itemId, vmSettings, null);
+        }
+
+        /// <remarks/>
+        public void UpdateVirtualMachineResourceAsync(
+                    int itemId, VirtualMachine vmSettings,
+                    object userState)
+        {
+            if ((this.UpdateVirtualMachineResourceOperationCompleted == null))
+            {
+                this.UpdateVirtualMachineResourceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateVirtualMachineResourceOperationCompleted);
+            }
+            this.InvokeAsync("UpdateVirtualMachineResource", new object[] {
+                        itemId, vmSettings}, this.UpdateVirtualMachineResourceOperationCompleted, userState);
+        }
+
+        private void OnUpdateVirtualMachineResourceOperationCompleted(object arg)
+        {
+            if ((this.UpdateVirtualMachineResourceCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateVirtualMachineResourceCompleted(this, new UpdateVirtualMachineResourceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVirtualMachineGuacamoleURL", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -5382,6 +5428,36 @@ namespace SolidCP.EnterpriseServer
         private object[] results;
 
         internal UpdateVirtualMachineConfigurationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void UpdateVirtualMachineResourceCompletedEventHandler(object sender, UpdateVirtualMachineResourceCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdateVirtualMachineResourceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal UpdateVirtualMachineResourceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;

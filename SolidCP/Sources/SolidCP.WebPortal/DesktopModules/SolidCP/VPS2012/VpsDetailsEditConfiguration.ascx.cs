@@ -192,25 +192,40 @@ namespace SolidCP.Portal.VPS2012
 
                 // the custom provider control
                 this.SaveSettingsControls(ref virtualMachine);
+                virtualMachine.CpuCores = Utils.ParseInt(ddlCpu.SelectedValue);
+                virtualMachine.RamSize = Utils.ParseInt(txtRam.Text.Trim());
+                virtualMachine.HddSize = Utils.ParseInt(txtHdd.Text.Trim());
+                virtualMachine.SnapshotsNumber = Utils.ParseInt(txtSnapshots.Text.Trim());
+                virtualMachine.HddMinimumIOPS = Utils.ParseInt(txtHddMinIOPS.Text.Trim());
+                virtualMachine.HddMaximumIOPS = Utils.ParseInt(txtHddMaxIOPS.Text.Trim());
+                virtualMachine.DvdDriveInstalled = chkDvdInstalled.Checked;
+                virtualMachine.BootFromCD = chkBootFromCd.Checked;
+                virtualMachine.NumLockEnabled = chkNumLock.Checked;
+                virtualMachine.StartTurnOffAllowed = chkStartShutdown.Checked;
+                virtualMachine.PauseResumeAllowed = chkPauseResume.Checked;
+                virtualMachine.RebootAllowed = chkReboot.Checked;
+                virtualMachine.ResetAllowed = chkReset.Checked;
+                virtualMachine.ReinstallAllowed = chkReinstall.Checked;
+                virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
+                virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
 
-                ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,
-                    Utils.ParseInt(ddlCpu.SelectedValue),
-                    Utils.ParseInt(txtRam.Text.Trim()),
-                    Utils.ParseInt(txtHdd.Text.Trim()),                    
-                    Utils.ParseInt(txtSnapshots.Text.Trim()),
-                    Utils.ParseInt(txtHddMinIOPS.Text.Trim()),
-                    Utils.ParseInt(txtHddMaxIOPS.Text.Trim()),
-                    chkDvdInstalled.Checked,
-                    chkBootFromCd.Checked,
-                    chkNumLock.Checked,
-                    chkStartShutdown.Checked,
-                    chkPauseResume.Checked,
-                    chkReboot.Checked,
-                    chkReset.Checked,
-                    chkReinstall.Checked,
-                    chkExternalNetworkEnabled.Checked,
-                    chkPrivateNetworkEnabled.Checked,
-                    virtualMachine);
+                ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineResource(PanelRequest.ItemID, virtualMachine);
+                //ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,
+                //    Utils.ParseInt(ddlCpu.SelectedValue),
+                //    Utils.ParseInt(txtRam.Text.Trim()),
+                //    Utils.ParseInt(txtHdd.Text.Trim()),                    
+                //    Utils.ParseInt(txtSnapshots.Text.Trim()),
+                //    chkDvdInstalled.Checked,
+                //    chkBootFromCd.Checked,
+                //    chkNumLock.Checked,
+                //    chkStartShutdown.Checked,
+                //    chkPauseResume.Checked,
+                //    chkReboot.Checked,
+                //    chkReset.Checked,
+                //    chkReinstall.Checked,
+                //    chkExternalNetworkEnabled.Checked,
+                //    chkPrivateNetworkEnabled.Checked,
+                //    virtualMachine);
 
                 if (res.IsSuccess)
                 {

@@ -301,14 +301,19 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS – Edit Configuration
         [WebMethod]
-        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
+        public ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings)
+        {
+            return VirtualizationServerController2012.UpdateVirtualMachineResource(itemId, vmSettings);
+        }
+        [WebMethod]
+        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
                     bool dvdInstalled, bool bootFromCD, bool numLock,
                     bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                     bool externalNetworkEnabled,
                     bool privateNetworkEnabled, VirtualMachine otherSettings)
         {
             return VirtualizationServerController2012.UpdateVirtualMachineConfiguration(
-                    itemId, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS,
+                    itemId, cpuCores, ramMB, hddGB, snapshots,
                     dvdInstalled, bootFromCD, numLock,
                     startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                     externalNetworkEnabled, privateNetworkEnabled,
