@@ -99,6 +99,8 @@ namespace SolidCP.Portal.VPS2012
             litCpu.Text = vm.CpuCores.ToString();
             litRam.Text = vm.RamSize.ToString();
             litHdd.Text = vm.HddSize.ToString();
+
+            litHddIOPSmin.Visible = litHddIOPSmax.Visible = manageAllowed; //Technical information, it makes no sense to show the user if it can not create the server
             litHddIOPSmin.Text = vm.HddMinimumIOPS.ToString();
             litHddIOPSmax.Text = vm.HddMaximumIOPS.ToString();
 
@@ -167,8 +169,10 @@ namespace SolidCP.Portal.VPS2012
             {
                 VirtualMachine vm = (VirtualMachine)Session["VirtualMachine"];
                 // create virtual machine
+                vm.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
+                vm.PackageId = PanelSecurity.PackageId;
                 string adminPassword = password.Password;
-                string[] privIps = Utils.ParseDelimitedString(litPrivateAddresses.Text, '\n', '\r', ' ', '\t');//possible doesn't work :)
+                string[] privIps = Utils.ParseDelimitedString(litPrivateAddresses.Text, '\n', '\r', ' ', '\t'); //possible doesn't work :)
                 IntResult createResult = ES.Services.VPS2012.CreateNewVirtualMachine(vm,
                     listOperatingSystems.SelectedValue, adminPassword, null,
                     Utils.ParseInt(hiddenTxtExternalAddressesNumber.Value.Trim()), false, GetExternalAddressesID().ToArray(),
