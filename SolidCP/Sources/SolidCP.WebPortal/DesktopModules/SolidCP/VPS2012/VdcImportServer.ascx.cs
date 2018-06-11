@@ -47,6 +47,10 @@ namespace SolidCP.Portal.VPS2012
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool isAdmin = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+            if (!isAdmin)
+                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+
             if (!IsPostBack)
             {
                 // bind hyper-V services

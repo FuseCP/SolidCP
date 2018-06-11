@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2018, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -30,15 +30,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- using System;
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Web;
+using System.Linq;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
- using SolidCP.Portal.Code.Helpers;
- using SolidCP.Providers.Virtualization;
+using SolidCP.Portal.Code.Helpers;
+using SolidCP.Providers.Virtualization;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 
@@ -48,6 +48,10 @@ namespace SolidCP.Portal.VPS2012
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
+            if (!manageAllowed) //block access for user if they don't have permission.
+                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+
             if (!IsPostBack)
             {
                 BindFormControls();

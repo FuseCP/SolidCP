@@ -46,6 +46,10 @@ namespace SolidCP.Portal.VPS2012
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
+            if (!manageAllowed) //block access for user if they don't have permission.
+                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+
             if (!IsPostBack)
             {
                 BindConfiguration();
