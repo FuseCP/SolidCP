@@ -404,8 +404,8 @@ namespace SolidCP.Portal.VPS2012
             SummPrivateAddressesListRow.Visible = radioPrivateSelected.Checked && chkPrivateNetworkEnabled.Checked && (ViewState["DHCP"] == null);
 
             string[] privIps = Utils.ParseDelimitedString(txtPrivateAddressesList.Text, '\n', '\r', ' ', '\t');
+            
             litPrivateAddressesList.Text = PortalAntiXSS.Encode(String.Join(", ", privIps));
-
         }
 
         protected void wizard_FinishButtonClick(object sender, WizardNavigationEventArgs e)
