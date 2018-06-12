@@ -97,7 +97,7 @@ namespace SolidCP.Portal.VPS2012
             string operatingSystemTemplatePath = Path.GetFileName(vm.OperatingSystemTemplatePath);
             if (Array.Exists(libraryItems, item => item.Path == operatingSystemTemplatePath))
             {
-                listOperatingSystems.SelectedValue = Path.GetFileName(vm.OperatingSystemTemplatePath);
+                listOperatingSystems.SelectedValue = operatingSystemTemplatePath;
             }
             else if(manageAllowed)
             {
