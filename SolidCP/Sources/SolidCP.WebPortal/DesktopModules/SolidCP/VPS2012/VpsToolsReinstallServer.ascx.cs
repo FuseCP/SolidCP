@@ -37,7 +37,6 @@ using SolidCP.Providers.Virtualization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -81,19 +80,34 @@ namespace SolidCP.Portal.VPS2012
             }
             else if (!manageAllowed)
             {
-                //show error
+                btnReinstall.Enabled = false;
+                messageBox.ShowWarningMessage("VPS_REINSTALL_NO_HOSTNAME");
             }
+
 
             //bind password policy
             password.SetPackagePolicy(PanelSecurity.PackageId, UserSettings.VPS_POLICY, "AdministratorPasswordPolicy");
 
             // OS templates
-            //bool isNotUser = ((PanelSecurity.LoggedUser.Role != UserRole.User)); 
+            //bool isNotUser = ((PanelSecurity.LoggedUser.Role != UserRole.User));
+            LibraryItem[] libraryItems = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
             listOperatingSystems.Visible = manageAllowed;
-            listOperatingSystems.DataSource = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
+            listOperatingSystems.DataSource = libraryItems;
             listOperatingSystems.DataBind();
-            listOperatingSystems.SelectedValue = Path.GetFileName(vm.OperatingSystemTemplatePath);
-            //add checks if Template is unavailable and block next steps.
+            string operatingSystemTemplatePath = Path.GetFileName(vm.OperatingSystemTemplatePath);
+            if (Array.Exists(libraryItems, item => item.Path == operatingSystemTemplatePath))
+            {
+                listOperatingSystems.SelectedValue = Path.GetFileName(vm.OperatingSystemTemplatePath);
+            }
+            else if(manageAllowed)
+            {
+                listOperatingSystems.Items.Insert(0, new ListItem(GetLocalizedString("SelectOsTemplate.Text"), ""));
+            }
+            else
+            {
+                btnReinstall.Enabled = false;
+                messageBox.ShowWarningMessage("VPS_REINSTALL_NO_TEMPLATE");
+            }
 
             //show summary
             litCpu.Text = vm.CpuCores.ToString();
@@ -242,11 +256,12 @@ namespace SolidCP.Portal.VPS2012
                 Page.Validate("Vps");
                 if (Page.IsValid)
                 {
+                    btnReinstall.Enabled = false;
                     if (TryToDeleteServerIsSuccess())
                     {
                         TryToCreateServer();
                     }
-                }                    
+                }          
             }
         }
     }

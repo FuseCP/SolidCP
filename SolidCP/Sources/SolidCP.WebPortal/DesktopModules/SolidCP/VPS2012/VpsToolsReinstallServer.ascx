@@ -69,10 +69,10 @@
                                     ControlToValidate="listOperatingSystems" meta:resourcekey="OperatingSystemValidator" SetFocusOnError="true"
                                         ValidationGroup="Vps">*</asp:RequiredFieldValidator>
                             </div>
-                        <p class="SubTitle">
+                        <div class="col-sm-10">
                                 <asp:Localize ID="locAdminPassword" runat="server"
                                     meta:resourcekey="locAdminPassword" Text="Administrator password:"></asp:Localize>
-                        </p>
+                        </div>
                     </div>
                         <scp:PasswordControl id="password" runat="server" ValidationGroup="Vps" AllowGeneratePassword="true">
                         </scp:PasswordControl>
