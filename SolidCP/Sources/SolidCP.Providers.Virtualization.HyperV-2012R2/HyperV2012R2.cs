@@ -233,7 +233,7 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("GetVirtualMachine");
             return vm;
         }
-
+        
         public List<VirtualMachine> GetVirtualMachines()
         {
             HostedSolutionLog.LogStart("GetVirtualMachines");
@@ -244,8 +244,10 @@ namespace SolidCP.Providers.Virtualization
             {
                 HostedSolutionLog.LogInfo("Before Get-VM command");
 
-                Command cmd = new Command("Get-VM");
-                Collection<PSObject> result = PowerShell.Execute(cmd, true);
+                //Command cmd = new Command("Get-VM"); //never not do that for getting all VMs without "Select"!!
+                Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
+
+                Collection <PSObject> result = PowerShell.Execute(cmd, true);
 
                 HostedSolutionLog.LogInfo("After Get-VM command");
                 foreach (PSObject current in result)
@@ -257,11 +259,15 @@ namespace SolidCP.Providers.Virtualization
                     HostedSolutionLog.LogInfo("VirtualMachineId {0}", vm.VirtualMachineId);
                     vm.Name = current.GetString("Name");
                     HostedSolutionLog.LogInfo("Name {0}", vm.Name);
-                    vm.State = current.GetEnum<VirtualMachineState>("State");
-                    HostedSolutionLog.LogInfo("State {0}", vm.State);
-                    vm.Uptime = Convert.ToInt64(current.GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
-                    HostedSolutionLog.LogInfo("Uptime {0}", vm.Uptime);
-                    vm.ReplicationState = current.GetEnum<ReplicationState>("ReplicationState");
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ////////////// We do not use this data, if it needs create a new method, this is overloaded!! ////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //vm.State = current.GetEnum<VirtualMachineState>("State");
+                    //HostedSolutionLog.LogInfo("State {0}", vm.State);
+                    //vm.Uptime = Convert.ToInt64(current.GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
+                    //HostedSolutionLog.LogInfo("Uptime {0}", vm.Uptime);
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    vm.ReplicationState = current.GetEnum<ReplicationState>("ReplicationState"); //better to move for a special Replica Method.
                     HostedSolutionLog.LogInfo("ReplicationState {0}", vm.ReplicationState);
                     vmachines.Add(vm);
                     HostedSolutionLog.LogInfo("- end VM -");
