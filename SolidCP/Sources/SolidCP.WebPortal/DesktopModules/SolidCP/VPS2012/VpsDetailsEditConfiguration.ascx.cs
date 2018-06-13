@@ -176,7 +176,7 @@ namespace SolidCP.Portal.VPS2012
             if (!Page.IsValid)
                 return;
 
-            if (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim()))
+            if (!chkIgnoreHddWarning.Checked && (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim())))
             {
                 messageBox.ShowWarningMessage("VPS_CHANGE_HDD_SIZE");
                 return;
