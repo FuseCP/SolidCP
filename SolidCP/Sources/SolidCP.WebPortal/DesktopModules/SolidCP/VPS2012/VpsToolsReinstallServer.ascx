@@ -107,11 +107,11 @@
                                     <td><asp:Literal ID="litHdd" runat="server"></asp:Literal></td>
                                 </tr>
                                 <tr>
-                                    <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HHD minimum IOPS:" /></td>
+                                    <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HDD minimum IOPS:" /></td>
                                     <td><asp:Literal ID="litHddIOPSmin" runat="server"></asp:Literal></td>
                                 </tr>
                                 <tr>
-                                    <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HHD maximum IOPS:" /></td>
+                                    <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HDD maximum IOPS:" /></td>
                                     <td><asp:Literal ID="litHddIOPSmax" runat="server"></asp:Literal></td>
                                 </tr>
                             </table>

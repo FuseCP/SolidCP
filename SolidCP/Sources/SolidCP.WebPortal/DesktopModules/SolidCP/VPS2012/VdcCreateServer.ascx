@@ -338,7 +338,7 @@
                                     </table>
                                     <br />
                                     
-                                    <table cellspacing="3">
+                                    <table style="border-collapse: separate; border-spacing: 3px;">
                                         <tr>
                                             <td><asp:Localize ID="locPrivateNetworkFormat" runat="server"
                                             meta:resourcekey="locPrivateNetworkFormat" Text="Network addresses format:"></asp:Localize></td>
@@ -358,7 +358,7 @@
                             
                             
                             <asp:WizardStep ID="stepSummary" runat="server" meta:resourcekey="stepSummary" Title="Summary">
-                                    <table cellspacing="6">
+                                    <table style="border-collapse: separate; border-spacing: 6px 1px;">
                                         <tr>
                                             <td colspan="2" class="NormalBold">
                                                 <asp:Localize ID="locNameStepTitle2" runat="server"
@@ -405,11 +405,11 @@
                                             <td><asp:Literal ID="litHdd" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
-                                            <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HHD minimum IOPS:" /></td>
+                                            <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HDD minimum IOPS:" /></td>
                                             <td><asp:Literal ID="litHddIOPSmin" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
-                                            <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HHD maximum IOPS:" /></td>
+                                            <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HDD maximum IOPS:" /></td>
                                             <td><asp:Literal ID="litHddIOPSmax" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
@@ -476,7 +476,7 @@
                                         </tr>
                                         <tr>
                                             <td><asp:Localize ID="locExternalNetworkEnabled" runat="server"
-                                                meta:resourcekey="locExternalNetworkEnabled" Text="External network enabled:" /></asp:Localize></td>
+                                                meta:resourcekey="locExternalNetworkEnabled" Text="External network enabled:" /></td>
                                             <td><scp:CheckBoxOption id="optionExternalNetwork" runat="server" Value="True" /></td>
                                         </tr>
                                         <tr id="SummExternalAddressesNumberRow" runat="server">
@@ -501,7 +501,7 @@
                                         </tr>
                                         <tr>
                                             <td><asp:Localize ID="locPrivateNetworkEnabled" runat="server"
-                                                meta:resourcekey="locPrivateNetworkEnabled" Text="Private network enabled:" /></asp:Localize></td>
+                                                meta:resourcekey="locPrivateNetworkEnabled" Text="Private network enabled:" /></td>
                                             <td><scp:CheckBoxOption id="optionPrivateNetwork" runat="server" Value="True" /></td>
                                         </tr>
                                         <tr id="SummPrivateAddressesNumberRow" runat="server">

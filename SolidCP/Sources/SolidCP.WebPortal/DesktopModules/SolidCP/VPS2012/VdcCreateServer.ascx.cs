@@ -297,6 +297,9 @@ namespace SolidCP.Portal.VPS2012
 
         private void ToggleControls()
         {
+            if(ViewState["Password"] != null)
+                password.Password = ViewState["Password"].ToString();
+
             // send letter
             txtSummaryEmail.Enabled = chkSendSummary.Checked;
             SummaryEmailValidator.Enabled = chkSendSummary.Checked;
