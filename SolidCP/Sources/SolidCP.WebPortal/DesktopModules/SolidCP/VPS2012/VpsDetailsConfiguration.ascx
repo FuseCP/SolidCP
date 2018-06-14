@@ -38,7 +38,7 @@
                                 <td>
                                     ********
                                     <CPCC:StyleButton ID="btnChangePasswordPopup" runat="server" CausesValidation="false"
-                                        Text="Change" meta:resourcekey="btnChangePasswordPopup"></CPCC:StyleButton>
+                                        CssClass="btn btn-warning" Text="Change" meta:resourcekey="btnChangePasswordPopup"></CPCC:StyleButton>
                                 </td>
                             </tr>
                         </table>
@@ -213,9 +213,9 @@
                         </table>
                     </asp:Panel>
                     
-                    <p style="padding: 5px;">
+                    <div class="text-right">
                         <CPCC:StyleButton id="btnEdit" CssClass="btn btn-success" runat="server" OnClick="btnEdit_Click" CausesValidation="false"> <i class="fa fa-pencil">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnEditText"/> </CPCC:StyleButton>
-                    </p>
+                    </div>
 
 
 			    </div>

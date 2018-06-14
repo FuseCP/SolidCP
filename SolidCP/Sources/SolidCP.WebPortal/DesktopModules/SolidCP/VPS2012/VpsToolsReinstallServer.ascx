@@ -93,7 +93,7 @@
                             TargetControlID="VirtualMachineSummaryPanel" meta:resourcekey="secVirtualMachineSummary" Text="Virtual Machine Summary">
                         </scp:CollapsiblePanel>
                         <asp:Panel ID="VirtualMachineSummaryPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table style="border-collapse: separate; border-spacing: 6px;">                                
+                            <table style="border-collapse: separate; border-spacing: 6px 1px;">                                
                                 <tr>
                                     <td><asp:Localize ID="locCpu" runat="server" meta:resourcekey="locCpu" Text="CPU cores:" /></td>
                                     <td><asp:Literal ID="litCpu" runat="server"></asp:Literal></td>
@@ -167,10 +167,10 @@
                         <asp:CheckBox ID="chkConfirmReinstall" runat="server" CssClass="NormalBold"
 				                    meta:resourcekey="chkConfirmReinstall" Text="Yes, I confirm re-installation of this VPS" />
                     </p>
-                    <p>
+                    <div class="text-right">
                         <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel"/> </CPCC:StyleButton>&nbsp;
                         <CPCC:StyleButton id="btnReinstall" CssClass="btn btn-success" runat="server" onclick="btnUpdate_Click" ValidationGroup="Reinstall"> <i class="fa fa-refresh">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnReinstall"/> </CPCC:StyleButton>
-                    </p>
+                    </div>
 			    </div>
 		    </div>
 	    </div>
