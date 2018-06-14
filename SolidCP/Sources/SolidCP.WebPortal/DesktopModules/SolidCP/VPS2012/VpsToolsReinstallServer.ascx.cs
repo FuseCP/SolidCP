@@ -60,12 +60,20 @@ namespace SolidCP.Portal.VPS2012
         {
             VirtualMachine vm = null;
             // load machine
-            vm = ES.Services.VPS2012.GetVirtualMachineItem(PanelRequest.ItemID);
+            //vm = ES.Services.VPS2012.GetVirtualMachineItem(PanelRequest.ItemID);
+            vm = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
             if (vm == null)
             {
                 messageBox.ShowErrorMessage("VPS_LOAD_VM_META_ITEM");
                 return;
             }
+            if (!String.IsNullOrEmpty(vm.CurrentTaskId))
+            {
+                messageBox.ShowWarningMessage("VPS_PROVISIONING_PROCESS");
+                btnReinstall.Enabled = false;
+                return;
+            }
+
             Session["VirtualMachine"] = vm;
             // check package quotas
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
