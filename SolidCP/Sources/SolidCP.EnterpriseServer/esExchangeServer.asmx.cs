@@ -318,12 +318,12 @@ namespace SolidCP.EnterpriseServer
 
         [WebMethod]
         public int SetMailboxMailFlowSettings(int itemId, int accountId,
-            bool enableForwarding, string forwardingAccountName, bool forwardToBoth,
+            bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth,
             string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts,
             bool requireSenderAuthentication)
         {
             return ExchangeServerController.SetMailboxMailFlowSettings(itemId, accountId,
-                enableForwarding, forwardingAccountName, forwardToBoth,
+                enableForwarding, SaveSentItems, forwardingAccountName, forwardToBoth,
                 sendOnBehalfAccounts, acceptAccounts, rejectAccounts,
                 requireSenderAuthentication);
         }

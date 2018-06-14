@@ -175,6 +175,24 @@ namespace SolidCP.Portal.ExchangeServer {
         protected global::SolidCP.Portal.ExchangeServer.UserControls.AccountsList accessAccounts;
         
         /// <summary>
+        /// tablesavesentitems control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable tablesavesentitems;
+        
+        /// <summary>
+        /// chkSaveSentItems control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkSaveSentItems;
+        
+        /// <summary>
         /// secAcceptMessagesFrom control.
         /// </summary>
         /// <remarks>

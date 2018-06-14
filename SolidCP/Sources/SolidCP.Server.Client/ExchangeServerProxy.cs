@@ -1486,10 +1486,11 @@ namespace SolidCP.Providers.Exchange {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/SetMailboxMailFlowSettings", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication) {
+        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, bool saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication) {
             this.Invoke("SetMailboxMailFlowSettings", new object[] {
                         accountName,
                         enableForwarding,
+                        saveSentItems,
                         forwardingAccountName,
                         forwardToBoth,
                         sendOnBehalfAccounts,
@@ -1499,10 +1500,11 @@ namespace SolidCP.Providers.Exchange {
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginSetMailboxMailFlowSettings(string accountName, bool enableForwarding, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginSetMailboxMailFlowSettings(string accountName, bool enableForwarding, bool saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("SetMailboxMailFlowSettings", new object[] {
                         accountName,
                         enableForwarding,
+                        saveSentItems,
                         forwardingAccountName,
                         forwardToBoth,
                         sendOnBehalfAccounts,
@@ -1517,18 +1519,19 @@ namespace SolidCP.Providers.Exchange {
         }
         
         /// <remarks/>
-        public void SetMailboxMailFlowSettingsAsync(string accountName, bool enableForwarding, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication) {
-            this.SetMailboxMailFlowSettingsAsync(accountName, enableForwarding, forwardingAccountName, forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication, null);
+        public void SetMailboxMailFlowSettingsAsync(string accountName, bool enableForwarding, bool saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication) {
+            this.SetMailboxMailFlowSettingsAsync(accountName, enableForwarding, saveSentItems, forwardingAccountName, forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication, null);
         }
         
         /// <remarks/>
-        public void SetMailboxMailFlowSettingsAsync(string accountName, bool enableForwarding, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, object userState) {
+        public void SetMailboxMailFlowSettingsAsync(string accountName, bool enableForwarding, bool saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, object userState) {
             if ((this.SetMailboxMailFlowSettingsOperationCompleted == null)) {
                 this.SetMailboxMailFlowSettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetMailboxMailFlowSettingsOperationCompleted);
             }
             this.InvokeAsync("SetMailboxMailFlowSettings", new object[] {
                         accountName,
                         enableForwarding,
+                        saveSentItems,
                         forwardingAccountName,
                         forwardToBoth,
                         sendOnBehalfAccounts,
