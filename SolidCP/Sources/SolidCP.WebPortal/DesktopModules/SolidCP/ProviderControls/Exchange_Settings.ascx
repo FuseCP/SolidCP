@@ -5,6 +5,15 @@
 <%@ Import Namespace="SolidCP.Portal" %>
 
 <table cellpadding="3" cellspacing="0" width="100%">
+    <tr runat="server" id="Ex2016CU6orhigher" width="200" nowrap>
+        <td class="SubHead">
+            <asp:Localize ID="lblEx2016CU6orhigher" runat="server" meta:resourcekey="lblEx2016CU6orhigher"
+                Text="Exchange 2016 version:"></asp:Localize>
+        </td>
+        <td>
+           <asp:CheckBox ID="chkEx2016CU6orhigher" runat="server" meta:resourcekey="chkEx2016CU6orhigher" Text="Exchange 2016 CU6 or higher" />
+        </td>
+    </tr>
     
     <tr runat="server" id="powershellUrl1" width="200" nowrap>
         <td class="SubHead">

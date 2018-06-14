@@ -174,4 +174,7 @@
   <data name="Text.PageName" xml:space="preserve">
     <value>Mailboxes</value>
   </data>
+  <data name="SaveSentItems.Text" xml:space="preserve">
+    <value>Save sent items</value>
+  </data>
 </root>

@@ -204,4 +204,10 @@
   <data name="bntAddSEDestination.Text" xml:space="preserve">
     <value>Hinzufügen</value>
   </data>
+  <data name="chkEx2016CU6orhigher.Text" xml:space="preserve">
+    <value>Exchange 2016 CU6 or higher</value>
+  </data>
+  <data name="lblEx2016CU6orhigher.Text" xml:space="preserve">
+    <value>Exchange 2016 version:</value>
+  </data>
 </root>

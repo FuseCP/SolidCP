@@ -34,6 +34,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -48,8 +49,27 @@ namespace SolidCP.Portal.ExchangeServer
 {
     public partial class ExchangeMailboxMailFlowSettings : SolidCPModuleBase
     {
+        private StringDictionary ConvertArrayToDictionary(string[] settings)
+        {
+            StringDictionary r = new StringDictionary();
+            foreach (string setting in settings)
+            {
+                int idx = setting.IndexOf('=');
+                r.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
+            }
+            return r;
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            var serviceId = ES.Services.EnterpriseStorage.GetEnterpriseStorageServiceId(PanelRequest.ItemID);
+
+            StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettingsRDS(serviceId));
+            var AllowSentItems = Utils.ParseBool(settings["Ex2016CU6orhigher"], false);
+            if (!AllowSentItems)
+            {
+                tablesavesentitems.Visible = false;
+            }
             if (!IsPostBack)
             {
                 BindSettings();
@@ -77,7 +97,7 @@ namespace SolidCP.Portal.ExchangeServer
                 chkDoNotDeleteOnForward.Checked = mailbox.DoNotDeleteOnForward;
 
                 accessAccounts.SetAccounts(mailbox.SendOnBehalfAccounts);
-
+                chkSaveSentItems.Checked = mailbox.SaveSentItems;
                 acceptAccounts.SetAccounts(mailbox.AcceptAccounts);
                 chkSendersAuthenticated.Checked = mailbox.RequireSenderAuthentication;
                 rejectAccounts.SetAccounts(mailbox.RejectAccounts);
@@ -107,6 +127,7 @@ namespace SolidCP.Portal.ExchangeServer
                     PanelRequest.ItemID, PanelRequest.AccountID,
 
                     chkEnabledForwarding.Checked,
+                    chkSaveSentItems.Checked,
                     forwardingAddress.GetAccount(),
                     chkDoNotDeleteOnForward.Checked,
 

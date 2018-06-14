@@ -182,6 +182,7 @@ namespace SolidCP.Portal.ProviderControls
                         powershellUrl1.Visible = powershellUrl2.Visible = true;
 
                         archivingGroup.Visible = true;
+                        Ex2016CU6orhigher.Visible = true;
                         break;
 
                     default:
@@ -190,7 +191,7 @@ namespace SolidCP.Portal.ProviderControls
                             clusteredMailboxServer.Visible = true;
                             txtMailboxClusterName.Text = settings["MailboxCluster"];
                             locMailboxDAG.Visible = false;
-
+                            Ex2016CU6orhigher.Visible = false;
                             archivingGroup.Visible = false;
                             break;
                     }
@@ -223,6 +224,7 @@ namespace SolidCP.Portal.ProviderControls
                 txtPowerShellUrl.Text = settings["PowerShellUrl"];
 
                 txtArchivingDatabase.Text = settings["ArchivingDatabase"];
+                chkEx2016CU6orhigher.Checked = Utils.ParseBool(settings["Ex2016CU6orhigher"], false);
 
             UpdateHubTransportsGrid();
             UpdateClientAccessGrid();
@@ -247,6 +249,7 @@ namespace SolidCP.Portal.ProviderControls
             settings["StorageGroup"] = txtStorageGroup.Text;
             settings["PowerShellUrl"] = txtPowerShellUrl.Text;
             settings["ArchivingDatabase"] = txtArchivingDatabase.Text;
+            settings["Ex2016CU6orhigher"] = chkEx2016CU6orhigher.Checked.ToString();
         }
 
 		public void BindExchangeServices(DropDownList ddl, bool isHubservice)
