@@ -40,6 +40,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using SolidCP.EnterpriseServer;
 
 namespace SolidCP.Portal
 {
@@ -93,12 +94,21 @@ namespace SolidCP.Portal
         {
             int ownerId = PanelSecurity.SelectedUserId;
             DataSet l_oPackageData = ES.Services.Packages.GetRawPackageItems(PanelSecurity.PackageId);
-            
+
+            PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
+            if ((PackageStatus)package.StatusId != PackageStatus.Active)
+            {
+                ShowErrorMessage("PACKAGE_CHANGE_STATUS");
+                return;
+            }
+
             // delete package
             if (chkConfirm.Checked)
             {
                 try
                 {
+                    
+
                     int result = ES.Services.Packages.DeletePackage(PanelSecurity.PackageId);
                     if (result < 0)
                     {
