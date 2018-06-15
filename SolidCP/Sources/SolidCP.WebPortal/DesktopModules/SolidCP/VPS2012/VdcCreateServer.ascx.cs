@@ -170,16 +170,27 @@ namespace SolidCP.Portal.VPS2012
             // external network details
             if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED))
             {
-
-
-                // bind vlan list
-                PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
-
                 List<int> dupevlans = new List<int>();
                 List<int> vlans = new List<int>();
-                foreach (PackageIPAddress ip in ips)
+
+                bool isUnassignedPackageIPs = false;
+                // bind vlan list
+                PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
+                if(ips.Length > 0)
                 {
-                    dupevlans.Add(ip.VLAN);
+                    foreach (PackageIPAddress ip in ips)
+                    {
+                        dupevlans.Add(ip.VLAN);
+                    }
+                }
+                else
+                {
+                    IPAddressInfo[] uips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+                    isUnassignedPackageIPs = true;
+                    foreach (IPAddressInfo ip in uips)
+                    {
+                        dupevlans.Add(ip.VLAN);
+                    }
                 }
 
                 // return vlan list without dupes
@@ -195,7 +206,11 @@ namespace SolidCP.Portal.VPS2012
                 }
 
                 // bind external network ips 4 selected vlan
-                BindExternalIps();
+                Session["isUnassignedPackageIPs"] = isUnassignedPackageIPs;
+                if (isUnassignedPackageIPs)
+                    BindExternalUnallottedIps();
+                else
+                    BindExternalIps();
             }
 
             // private network
@@ -360,6 +375,30 @@ namespace SolidCP.Portal.VPS2012
             //}
         }
 
+        private void BindExternalUnallottedIps()
+        {
+            // bind list
+            IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+
+            listExternalAddresses.Items.Clear();
+            foreach (IPAddressInfo ip in ips)
+            {
+                if ((listVlanLists.SelectedValue == "-1") || ip.VLAN.ToString() == listVlanLists.SelectedValue)
+                {
+                    string txt = ip.ExternalIP;
+                    if (!String.IsNullOrEmpty(ip.DefaultGateway))
+                        txt += "/" + ip.DefaultGateway + " [VLAN " + ip.VLAN + "]";
+                    listExternalAddresses.Items.Add(new ListItem(txt, ip.AddressId.ToString()));
+                }
+            }
+
+            // toggle controls
+            int maxAddresses = listExternalAddresses.Items.Count;
+            litMaxExternalAddresses.Text = String.Format(GetLocalizedString("litMaxExternalAddresses.Text"), maxAddresses);
+            if (maxAddresses > 0)
+                txtExternalAddressesNumber.Text = "1";
+        }
+
         private void BindSummary()
         {
             var resultVm = new VirtualMachine();
@@ -483,7 +522,7 @@ namespace SolidCP.Portal.VPS2012
                 //    externalenabled, Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),
                 //    chkPrivateNetworkEnabled.Checked, Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps,
                 //    virtualMachine);
-
+                Session.Abandon();
                 if (res.IsSuccess)
                 {
                     Response.Redirect(EditUrl("ItemID", res.Value.ToString(), "vps_general",
@@ -523,7 +562,10 @@ namespace SolidCP.Portal.VPS2012
 
         protected void VlanLists_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindExternalIps();
+            if ((bool)Session["isUnassignedPackageIPs"])
+                BindExternalUnallottedIps();
+            else
+                BindExternalIps();
         }
 
 

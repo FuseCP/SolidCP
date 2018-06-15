@@ -413,7 +413,8 @@ namespace SolidCP.EnterpriseServer
                 if (!randomExternalAddresses && externalAddresses != null)
                     externalAddressesNumber = externalAddresses.Length;
 
-                int maxAddresses = ServerController.GetPackageUnassignedIPAddresses(packageId, IPAddressPool.VpsExternalNetwork).Count;
+                //int maxAddresses = ServerController.GetPackageUnassignedIPAddresses(packageId, IPAddressPool.VpsExternalNetwork).Count; //This rule looks useless
+                int maxAddresses = externalAddressesNumber + 1;
                 if (VMSettings.ExternalNetworkEnabled && externalAddressesNumber > maxAddresses)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_ADDRESSES_NUMBER + ":" + maxAddresses.ToString());
 
@@ -574,6 +575,43 @@ namespace SolidCP.EnterpriseServer
                     return res;
                 }
 
+                #endregion
+
+                #region Setup external Unallotted IPs network
+                // setup external Unallotted IPs network
+                if (vm.ExternalNetworkEnabled)
+                {
+                    int maxItems = 100000000;
+                    PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
+                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;
+                    if(ips.Length == 0)
+                    {
+                        // assign selected IP addresses to package
+                        ServerController.AllocatePackageIPAddresses(packageId, externalAddresses);
+
+                        // re-read package IPs
+                        List<PackageIPAddress> packageIPs = ServerController.GetPackageUnassignedIPAddresses(
+                                        packageId, IPAddressPool.VpsExternalNetwork);
+
+                        // assign IP addresses to VM
+                        for (int i = 0; i < externalAddresses.Length; i++)
+                        {
+                            foreach (PackageIPAddress ip in packageIPs)
+                            {
+                                if (ip.AddressID == externalAddresses[i])
+                                {
+                                    // assign to the item
+                                    ServerController.AddItemIPAddress(vm.Id, ip.PackageAddressID);
+
+                                    // set primary IP address
+                                    if (i == 0)
+                                        ServerController.SetItemPrimaryIPAddress(vm.Id, ip.PackageAddressID);
+                                    break;
+                                }
+                            }
+                        }
+                    }                    
+                }
                 #endregion
 
                 #region Start Asynchronous task
