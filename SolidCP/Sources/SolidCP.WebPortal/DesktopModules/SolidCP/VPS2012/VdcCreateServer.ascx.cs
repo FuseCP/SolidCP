@@ -500,7 +500,7 @@ namespace SolidCP.Portal.VPS2012
                 string summaryEmail = chkSendSummary.Checked ? txtSummaryEmail.Text.Trim() : null;
 
                 //virtualMachine.ExternalNetworkEnabled = false;
-                if (Convert.ToInt32(listVlanLists.SelectedValue) >= 0)
+                if ((Convert.ToInt32(listVlanLists.SelectedValue) >= 0) && chkExternalNetworkEnabled.Checked)
                     virtualMachine.ExternalNetworkEnabled = true;
 
                 
