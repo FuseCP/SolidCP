@@ -413,8 +413,12 @@ namespace SolidCP.EnterpriseServer
                 if (!randomExternalAddresses && externalAddresses != null)
                     externalAddressesNumber = externalAddresses.Length;
 
-                //int maxAddresses = ServerController.GetPackageUnassignedIPAddresses(packageId, IPAddressPool.VpsExternalNetwork).Count; //This rule looks useless
-                int maxAddresses = externalAddressesNumber + 1;
+                int maxAddresses = ServerController.GetPackageUnassignedIPAddresses(packageId, IPAddressPool.VpsExternalNetwork).Count; //Get num IPs if they exist
+                if (maxAddresses == 0)
+                    maxAddresses = cntx.Quotas[Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER].QuotaAllocatedValue
+                                            - cntx.Quotas[Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER].QuotaUsedValue;
+
+
                 if (VMSettings.ExternalNetworkEnabled && externalAddressesNumber > maxAddresses)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_ADDRESSES_NUMBER + ":" + maxAddresses.ToString());
 
