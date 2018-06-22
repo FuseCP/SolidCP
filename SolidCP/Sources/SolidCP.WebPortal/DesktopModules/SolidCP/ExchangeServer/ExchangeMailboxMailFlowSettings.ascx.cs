@@ -62,10 +62,9 @@ namespace SolidCP.Portal.ExchangeServer
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var serviceId = ES.Services.EnterpriseStorage.GetEnterpriseStorageServiceId(PanelRequest.ItemID);
-
+            int serviceId = ES.Services.ExchangeServer.GetExchangeServiceID(PanelRequest.ItemID);
             StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettingsRDS(serviceId));
-            var AllowSentItems = Utils.ParseBool(settings["Ex2016CU6orhigher"], false);
+            var AllowSentItems = Utils.ParseBool(settings["ex2016cu6orhigher"], false);
             if (!AllowSentItems)
             {
                 tablesavesentitems.Visible = false;

@@ -1043,6 +1043,26 @@ namespace SolidCP.EnterpriseServer
         {
             PackageController.UpdatePackageItem(organization);
         }
+
+        public static int GetExchServiceId(int? itemId)
+        {
+            int serviceId = -1;
+
+            if (itemId.HasValue)
+            {
+                Organization org = OrganizationController.GetOrganization(itemId.Value);
+
+                if (org == null)
+                {
+                    return serviceId;
+                }
+
+                serviceId = ExchangeServerController.GetExchangeServiceID(org.PackageId);
+            }
+
+            return serviceId;
+        }
+
         #endregion
 
         #region Accounts

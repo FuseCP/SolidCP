@@ -93,6 +93,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public int GetExchangeServiceID(int itemId)
+        {
+            return ExchangeServerController.GetExchServiceId(itemId);
+        }
+
+        [WebMethod]
         public int DeleteOrganization(int itemId)
         {
             return ExchangeServerController.DeleteOrganization(itemId);

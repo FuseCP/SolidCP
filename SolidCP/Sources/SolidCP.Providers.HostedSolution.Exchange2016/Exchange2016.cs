@@ -2814,7 +2814,7 @@ namespace SolidCP.Providers.HostedSolution
                     info.ForwardingAccount = GetExchangeAccount(runSpace, forwardingAddress);
                     info.DoNotDeleteOnForward = (bool)GetPSObjectProperty(mailbox, "DeliverToMailboxAndForward");
                 }
-                info.SaveSentItems = (bool)GetPSObjectProperty(mailbox, "MessageCopyForSentAsEnabled");
+                info.SaveSentItems = (bool)GetPSObjectProperty(mailbox, "MessageCopyForSendOnBehalfEnabled");
                 info.SendOnBehalfAccounts = GetSendOnBehalfAccounts(runSpace, mailbox);
                 info.AcceptAccounts = GetAcceptedAccounts(runSpace, mailbox);
                 info.RejectAccounts = GetRejectedAccounts(runSpace, mailbox);
@@ -2863,9 +2863,11 @@ namespace SolidCP.Providers.HostedSolution
 
                 if (saveSentItems)
                 {
-                    cmd.Parameters.Add("MessageCopyForSentAsEnabled ", true);
+                    cmd.Parameters.Add("MessageCopyForSendOnBehalfEnabled", true);
+                } else if (!saveSentItems)
+                {
+                    cmd.Parameters.Add("MessageCopyForSendOnBehalfEnabled", false);
                 }
-
                 cmd.Parameters.Add("GrantSendOnBehalfTo", SetSendOnBehalfAccounts(runSpace, sendOnBehalfAccounts));
 
                 MultiValuedProperty<ADObjectId> ids = null;

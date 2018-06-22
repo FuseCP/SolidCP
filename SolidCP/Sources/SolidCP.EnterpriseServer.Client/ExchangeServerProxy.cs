@@ -198,6 +198,8 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback GetMailboxMailFlowSettingsOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetExchangeServiceIDOperationCompleted;
+
         private System.Threading.SendOrPostCallback SetMailboxMailFlowSettingsOperationCompleted;
 
         private System.Threading.SendOrPostCallback SetExchangeMailboxPlanOperationCompleted;
@@ -499,6 +501,9 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event GetMailboxMailFlowSettingsCompletedEventHandler GetMailboxMailFlowSettingsCompleted;
+
+        /// <remarks/>
+        public event GetExchangeServiceIDCompletedEventHandler GetExchangeServiceIDCompleted;
 
         /// <remarks/>
         public event SetMailboxMailFlowSettingsCompletedEventHandler SetMailboxMailFlowSettingsCompleted;
@@ -5046,6 +5051,55 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExchangeServiceID", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int GetExchangeServiceID(int itemId)
+        {
+            object[] results = this.Invoke("GetExchangeServiceID", new object[] {
+                        itemId});
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetExchangeServiceID(int itemId, int accountId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetExchangeServiceID", new object[] {
+                        itemId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public int EndGetExchangeServiceID(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetExchangeServiceIDAsync(int itemId)
+        {
+            this.GetExchangeServiceIDAsync(itemId, null);
+        }
+
+        /// <remarks/>
+        public void GetExchangeServiceIDAsync(int itemId, object userState)
+        {
+            if ((this.GetExchangeServiceIDOperationCompleted == null))
+            {
+                this.GetExchangeServiceIDOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExchangeServiceIDOperationCompleted);
+            }
+            this.InvokeAsync("GetExchangeServiceID", new object[] {
+                        itemId}, this.GetExchangeServiceIDOperationCompleted, userState);
+        }
+
+        private void OnGetExchangeServiceIDOperationCompleted(object arg)
+        {
+            if ((this.GetExchangeServiceIDCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetExchangeServiceIDCompleted(this, new GetExchangeServiceIDCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetMailboxMailFlowSettings", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public int SetMailboxMailFlowSettings(int itemId, int accountId, bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
@@ -9122,6 +9176,38 @@ namespace SolidCP.EnterpriseServer
             }
         }
     }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetExchangeServiceIDCompletedEventHandler(object sender, GetExchangeServiceIDCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetExchangeServiceIDCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetExchangeServiceIDCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public int Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+
+
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
