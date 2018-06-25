@@ -72,7 +72,7 @@ namespace SolidCP.Providers.HostedSolution
         ExchangeMailbox GetMailboxGeneralSettings(string accountName);
         void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled);
         ExchangeMailbox GetMailboxMailFlowSettings(string accountName);
-        void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, bool saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
+        void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         ExchangeMailbox GetMailboxAdvancedSettings(string accountName);
         void SetMailboxAdvancedSettings(string organizationId, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg);
         ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName);

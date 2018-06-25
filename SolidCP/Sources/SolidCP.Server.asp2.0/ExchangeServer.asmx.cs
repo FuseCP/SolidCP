@@ -411,7 +411,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, bool saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
+        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
             try
             {

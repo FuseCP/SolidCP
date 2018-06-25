@@ -69,7 +69,7 @@ namespace SolidCP.Providers.HostedSolution
 		string notes;
 
 		bool enableForwarding;
-        bool saveSentItems;
+        int saveSentItems;
         ExchangeAccount forwardingAccount;
 		bool doNotDeleteOnForward;
 
@@ -261,7 +261,7 @@ namespace SolidCP.Providers.HostedSolution
 			set { this.enableForwarding = value; }
 		}
 
-        public bool SaveSentItems
+        public int SaveSentItems
         {
             get { return this.saveSentItems; }
             set { this.saveSentItems = value; }
