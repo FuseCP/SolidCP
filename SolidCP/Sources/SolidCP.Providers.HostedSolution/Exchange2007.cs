@@ -276,11 +276,11 @@ namespace SolidCP.Providers.HostedSolution
             return GetMailboxMailFlowSettingsInternal(accountName);
         }
 
-        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding,
+        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems,
             string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
-            SetMailboxMailFlowSettingsInternal(accountName, enableForwarding, forwardingAccountName,
+            SetMailboxMailFlowSettingsInternal(accountName, enableForwarding, saveSentItems, forwardingAccountName,
                 forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication);
         }
 
@@ -2449,7 +2449,7 @@ namespace SolidCP.Providers.HostedSolution
                     info.DoNotDeleteOnForward = (bool)GetPSObjectProperty(mailbox, "DeliverToMailboxAndForward");
                 }
 
-                info.SendOnBehalfAccounts = GetSendOnBehalfAccounts(runSpace, mailbox);
+               // info.SaveSentItems = (bool)GetPSObjectProperty(mailbox, "GetSendOnBehalfAccounts");
                 info.AcceptAccounts = GetAcceptedAccounts(runSpace, mailbox);
                 info.RejectAccounts = GetRejectedAccounts(runSpace, mailbox);
                 info.MaxRecipients =
@@ -2468,7 +2468,7 @@ namespace SolidCP.Providers.HostedSolution
             return info;
         }
 
-        private void SetMailboxMailFlowSettingsInternal(string accountName, bool enableForwarding,
+        private void SetMailboxMailFlowSettingsInternal(string accountName, bool enableForwarding, int saveSentItems,
             string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {

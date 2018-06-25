@@ -34,6 +34,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Collections.Specialized;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -48,8 +49,26 @@ namespace SolidCP.Portal.ExchangeServer
 {
     public partial class ExchangeMailboxMailFlowSettings : SolidCPModuleBase
     {
+        private StringDictionary ConvertArrayToDictionary(string[] settings)
+        {
+            StringDictionary r = new StringDictionary();
+            foreach (string setting in settings)
+            {
+                int idx = setting.IndexOf('=');
+                r.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
+            }
+            return r;
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            int serviceId = ES.Services.ExchangeServer.GetExchangeServiceID(PanelRequest.ItemID);
+            StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettingsRDS(serviceId));
+            var AllowSentItems = Utils.ParseBool(settings["ex2016cu6orhigher"], false);
+            if (!AllowSentItems)
+            {
+                tablesavesentitems.Visible = false;
+            }
             if (!IsPostBack)
             {
                 BindSettings();
@@ -78,6 +97,19 @@ namespace SolidCP.Portal.ExchangeServer
 
                 accessAccounts.SetAccounts(mailbox.SendOnBehalfAccounts);
 
+
+                if (mailbox.SaveSentItems == 1)
+                {
+                    // Enabled
+                    chkSaveSentItems.Checked = true;
+                }
+                else
+                {
+                    // Disabled
+                    chkSaveSentItems.Checked = false;
+                }
+
+
                 acceptAccounts.SetAccounts(mailbox.AcceptAccounts);
                 chkSendersAuthenticated.Checked = mailbox.RequireSenderAuthentication;
                 rejectAccounts.SetAccounts(mailbox.RejectAccounts);
@@ -103,10 +135,31 @@ namespace SolidCP.Portal.ExchangeServer
 
             try
             {
+                int SaveSentItems = 0;
+                if (!tablesavesentitems.Visible)
+                {
+                    // Not CU6
+                    SaveSentItems = 0;
+                }
+                else
+                {
+                    if (chkSaveSentItems.Checked)
+                    {
+                        // Enabled
+                        SaveSentItems = 1;
+                    }
+                    else
+                    {
+                        // Disabled
+                        SaveSentItems = 2;
+                    }
+                }
+
                 int result = ES.Services.ExchangeServer.SetMailboxMailFlowSettings(
                     PanelRequest.ItemID, PanelRequest.AccountID,
 
                     chkEnabledForwarding.Checked,
+                    SaveSentItems,
                     forwardingAddress.GetAccount(),
                     chkDoNotDeleteOnForward.Checked,
 

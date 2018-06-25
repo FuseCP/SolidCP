@@ -3819,7 +3819,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Microsoft FTP Server 10.0')
 BEGIN
-INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(113, 3, N'MSFTP100', N'Microsoft FTP Server 10.0', N'SolidCP.Providers.FTP.MsFTP100, SolidCP.Providers.FTP.IIs100', N'IIS70', NULL)
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(113, 3, N'MSFTP100', N'Microsoft FTP Server 10.0', N'SolidCP.Providers.FTP.MsFTP100, SolidCP.Providers.FTP.IIs100', N'MSFTP70', NULL)
 END
 ELSE
 BEGIN
@@ -20522,5 +20522,11 @@ IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '711' AND [ItemTyp
 BEGIN
 	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '73' WHERE QuotaID = '711' & [QuotaName] = N'MsSQL2017.Databases'
 	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '74' WHERE QuotaID = '712' & [QuotaName] = N'MsSQL2017.Users'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'MSFTP100' AND [EditorControl] = 'MSFTP70')
+BEGIN
+	UPDATE [dbo].[Providers] SET [EditorControl] = 'MSFTP70' WHERE [ProviderName] = 'MSFTP100'
 END
 GO

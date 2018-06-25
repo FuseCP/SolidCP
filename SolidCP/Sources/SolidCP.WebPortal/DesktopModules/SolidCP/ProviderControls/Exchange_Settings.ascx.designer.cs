@@ -13,6 +13,33 @@ namespace SolidCP.Portal.ProviderControls {
     public partial class Exchange2010_Settings {
         
         /// <summary>
+        /// Ex2016CU6orhigher control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow Ex2016CU6orhigher;
+        
+        /// <summary>
+        /// lblEx2016CU6orhigher control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize lblEx2016CU6orhigher;
+        
+        /// <summary>
+        /// chkEx2016CU6orhigher control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkEx2016CU6orhigher;
+        
+        /// <summary>
         /// powershellUrl1 control.
         /// </summary>
         /// <remarks>

@@ -1043,6 +1043,26 @@ namespace SolidCP.EnterpriseServer
         {
             PackageController.UpdatePackageItem(organization);
         }
+
+        public static int GetExchServiceId(int? itemId)
+        {
+            int serviceId = -1;
+
+            if (itemId.HasValue)
+            {
+                Organization org = OrganizationController.GetOrganization(itemId.Value);
+
+                if (org == null)
+                {
+                    return serviceId;
+                }
+
+                serviceId = ExchangeServerController.GetExchangeServiceID(org.PackageId);
+            }
+
+            return serviceId;
+        }
+
         #endregion
 
         #region Accounts
@@ -2251,6 +2271,7 @@ namespace SolidCP.EnterpriseServer
             mb.Domain = "HSTDEXCH1";
             mb.AccountName = "john_fabrikam";
             mb.EnableForwarding = true;
+            mb.SaveSentItems = 2;
             mb.EnableIMAP = true;
             mb.EnableMAPI = true;
             mb.EnablePOP = true;
@@ -2627,7 +2648,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         public static int SetMailboxMailFlowSettings(int itemId, int accountId,
-            bool enableForwarding, string forwardingAccountName, bool forwardToBoth,
+            bool enableForwarding, int SaveSentItems, string forwardingAccountName, bool forwardToBoth,
             string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts,
             bool requireSenderAuthentication)
         {
@@ -2663,6 +2684,7 @@ namespace SolidCP.EnterpriseServer
 
                 exchange.SetMailboxMailFlowSettings(account.UserPrincipalName,
                     enableForwarding,
+                    SaveSentItems,
                     forwardingAccountName,
                     forwardToBoth,
                     sendOnBehalfAccounts,
