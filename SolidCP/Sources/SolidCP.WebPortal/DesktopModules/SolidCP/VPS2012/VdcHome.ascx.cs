@@ -143,6 +143,15 @@ namespace SolidCP.Portal.VPS2012
                 Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), "vps_tools_delete",
                     "ItemID=" + itemId));
             }
+            else if (e.CommandName == "ReinstallItem")
+            {
+                // get server ID
+                int itemId = Utils.ParseInt(e.CommandArgument.ToString(), 0);
+
+                // go to delete page
+                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), "vps_tools_reinstall",
+                    "ItemID=" + itemId));
+            }
             else if (e.CommandName == "Detach")
             {
                 // remove item from meta base

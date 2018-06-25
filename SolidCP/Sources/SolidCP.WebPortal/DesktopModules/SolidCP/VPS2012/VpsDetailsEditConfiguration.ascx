@@ -27,7 +27,7 @@
                         TargetControlID="ResourcesPanel" meta:resourcekey="secResources" Text="Resources">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="ResourcesPanel" runat="server" Height="0" style="overflow:hidden;padding:10px;width:400px;">
-                        <table cellpadding="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">
                             <tr>
                                 <td style="width:60px;"><asp:Label ID="lblCpu" runat="server" AssociatedControlID="ddlCpu"
                                         meta:resourcekey="lblCpu" Text="CPU:" CssClass="Medium" /></td>
@@ -38,7 +38,7 @@
                                 <td><asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/></td>
                             </tr>
                         </table>
-                        <table cellpadding="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">
                             <tr>
                                 <td style="width:60px;"><asp:Label ID="lblRam" runat="server" AssociatedControlID="txtRam"
                                         meta:resourcekey="lblRam" Text="RAM:" CssClass="Medium" /></td>
@@ -51,7 +51,7 @@
                                 <td><asp:Localize ID="locMB" runat="server" meta:resourcekey="locMB" Text="MB"/></td>
                             </tr>
                         </table>
-                        <table cellpadding="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">                            
                             <tr>
                                 <td style="width:60px;"><asp:Label ID="lblHdd" runat="server" AssociatedControlID="txtHdd"
                                         meta:resourcekey="lblHdd" Text="HDD:" CssClass="Medium" /></td>
@@ -64,7 +64,15 @@
                                 </td>
                                 <td><asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/></td>
                             </tr>
+                            
                         </table>
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">  
+                            <tr>
+                                <td>
+                                    <asp:CheckBox ID="chkIgnoreHddWarning" runat="server" Text="Ignore reduce size warning (You'll reduce only quota number!)" meta:resourcekey="chkIgnoreHddWarning" />
+                                </td>
+                            </tr>
+                        </table>      
                     </asp:Panel>
 
                     <scp:CollapsiblePanel id="secHddQOS" runat="server" IsCollapsed="true"
@@ -75,7 +83,7 @@
 		                <asp:Localize ID="locHddIOPSTitle" runat="server" meta:resourcekey="locHddIOPSTitle" 
                             Text="Specify Quality of Service management for this virtual hard disk. Minimum and maximum IOPS are measured in 8KB increments. Default value is 0." />
 		                </p>
-                        <table cellpadding="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">                            
                             <tr>
                                 <td style="width:60px;"><asp:Label ID="lblHddMinIOPS" runat="server" AssociatedControlID="txtHddMinIOPS"
                                         meta:resourcekey="lblHddMinIOPS" Text="Minimum:" CssClass="Medium" /></td>
@@ -88,7 +96,7 @@
                                 <td><asp:Localize ID="locHddMinIOPS" runat="server" meta:resourcekey="locHddMinIOPS" Text="IOPS"/></td>                          
                             </tr>
                         </table>
-                        <table cellpadding="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">
                             <tr>
                                 <td style="width:60px;"><asp:Label ID="lblHddMaxIOPS" runat="server" AssociatedControlID="txtHddMaxIOPS"
                                         meta:resourcekey="lblHddMaxIOPS" Text="Maximum:" CssClass="Medium" /></td>
@@ -191,7 +199,7 @@
                         TargetControlID="NetworkPanel" meta:resourcekey="secNetwork" Text="Network">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="NetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td>
                                     <asp:CheckBox ID="chkExternalNetworkEnabled" runat="server"
@@ -207,10 +215,10 @@
                         </table>
                     </asp:Panel>
                     
-                    <p>
+                    <div class="text-right">
                         <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel"/> </CPCC:StyleButton>&nbsp;
                         <CPCC:StyleButton id="btnUpdate" CssClass="btn btn-success" runat="server" OnClick="btnUpdate_Click" ValidationGroup="Vps" OnClientClick="if(!confirm('Before applying new configuration VPS will be stopped.\n\nAfter the configuration is changed it will be started again automatically.\n\nDo you want to proceed?')) return false; ShowProgressDialog('Updating configuration...');"> <i class="fa fa-refresh">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnUpdateText"/> </CPCC:StyleButton>
-                    </p>
+                    </div>
 			    </div>
 		    </div>
 	    </div>

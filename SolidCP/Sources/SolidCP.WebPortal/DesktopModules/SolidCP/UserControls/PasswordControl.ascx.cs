@@ -100,7 +100,7 @@ namespace SolidCP.Portal
         public string Password
         {
             get { return (txtPassword.Text == EMPTY_PASSWORD) ? "" : txtPassword.Text; }
-            set { txtPassword.Text = value; }
+            set { txtPassword.Text = value; txtConfirmPassword.Text = value; }
         }
 
         public bool CheckPasswordLength

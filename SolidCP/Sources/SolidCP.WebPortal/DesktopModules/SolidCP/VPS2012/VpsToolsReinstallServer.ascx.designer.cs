@@ -67,22 +67,121 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Localize locDescription;
         
         /// <summary>
-        /// chkConfirmReinstall control.
+        /// secVirtualMachineSetttings control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkConfirmReinstall;
+        protected global::SolidCP.Portal.CollapsiblePanel secVirtualMachineSetttings;
         
         /// <summary>
-        /// locPassword control.
+        /// VirtualMachineSettingsPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPassword;
+        protected global::System.Web.UI.WebControls.Panel VirtualMachineSettingsPanel;
+        
+        /// <summary>
+        /// locHostname control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label locHostname;
+        
+        /// <summary>
+        /// txtHostname control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtHostname;
+        
+        /// <summary>
+        /// HostnameValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator HostnameValidator;
+        
+        /// <summary>
+        /// valCorrectHostname control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valCorrectHostname;
+        
+        /// <summary>
+        /// txtDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtDomain;
+        
+        /// <summary>
+        /// DomainValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator DomainValidator;
+        
+        /// <summary>
+        /// valNewDomainFormat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valNewDomainFormat;
+        
+        /// <summary>
+        /// locOperatingSystem control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label locOperatingSystem;
+        
+        /// <summary>
+        /// listOperatingSystems control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList listOperatingSystems;
+        
+        /// <summary>
+        /// OperatingSystemValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator OperatingSystemValidator;
+        
+        /// <summary>
+        /// locAdminPassword control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locAdminPassword;
         
         /// <summary>
         /// password control.
@@ -94,67 +193,211 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::SolidCP.Portal.PasswordControl password;
         
         /// <summary>
-        /// chkPreserveExistingFiles control.
+        /// secVirtualMachineSummary control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkPreserveExistingFiles;
+        protected global::SolidCP.Portal.CollapsiblePanel secVirtualMachineSummary;
         
         /// <summary>
-        /// locPreserveHelp control.
+        /// VirtualMachineSummaryPanel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locPreserveHelp;
+        protected global::System.Web.UI.WebControls.Panel VirtualMachineSummaryPanel;
         
         /// <summary>
-        /// AdminOptionsPanel control.
+        /// locCpu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable AdminOptionsPanel;
+        protected global::System.Web.UI.WebControls.Localize locCpu;
         
         /// <summary>
-        /// chkSaveVhd control.
+        /// litCpu control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkSaveVhd;
+        protected global::System.Web.UI.WebControls.Literal litCpu;
         
         /// <summary>
-        /// chkExport control.
+        /// locRam control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkExport;
+        protected global::System.Web.UI.WebControls.Localize locRam;
         
         /// <summary>
-        /// txtExportPath control.
+        /// litRam control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtExportPath;
+        protected global::System.Web.UI.WebControls.Literal litRam;
         
         /// <summary>
-        /// ExportPathValidator control.
+        /// locHdd control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator ExportPathValidator;
+        protected global::System.Web.UI.WebControls.Localize locHdd;
+        
+        /// <summary>
+        /// litHdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litHdd;
+        
+        /// <summary>
+        /// locHddIOPSmin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHddIOPSmin;
+        
+        /// <summary>
+        /// litHddIOPSmin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litHddIOPSmin;
+        
+        /// <summary>
+        /// locHddIOPSmax control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHddIOPSmax;
+        
+        /// <summary>
+        /// litHddIOPSmax control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litHddIOPSmax;
+        
+        /// <summary>
+        /// secVirtualMachineNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.CollapsiblePanel secVirtualMachineNetwork;
+        
+        /// <summary>
+        /// VirtualMachineNetworkPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel VirtualMachineNetworkPanel;
+        
+        /// <summary>
+        /// ExternalAddressesRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow ExternalAddressesRow;
+        
+        /// <summary>
+        /// locExternalAddressesList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locExternalAddressesList;
+        
+        /// <summary>
+        /// litExternalAddresses control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litExternalAddresses;
+        
+        /// <summary>
+        /// hiddenTxtExternalAddressesNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hiddenTxtExternalAddressesNumber;
+        
+        /// <summary>
+        /// PrivateAddressesRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow PrivateAddressesRow;
+        
+        /// <summary>
+        /// locPrivateAddressesList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locPrivateAddressesList;
+        
+        /// <summary>
+        /// litPrivateAddresses control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litPrivateAddresses;
+        
+        /// <summary>
+        /// hiddenTxtPrivateAddressesNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hiddenTxtPrivateAddressesNumber;
+        
+        /// <summary>
+        /// chkConfirmReinstall control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkConfirmReinstall;
         
         /// <summary>
         /// btnCancel control.
@@ -163,7 +406,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancel;
+        protected global::CPCC.StyleButton btnCancel;
         
         /// <summary>
         /// btnReinstall control.
@@ -172,6 +415,6 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnReinstall;
+        protected global::CPCC.StyleButton btnReinstall;
     }
 }
