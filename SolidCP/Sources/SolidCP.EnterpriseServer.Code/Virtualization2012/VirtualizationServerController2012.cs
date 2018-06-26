@@ -569,7 +569,20 @@ namespace SolidCP.EnterpriseServer
                 var correctVhdPath = GetCorrectTemplateFilePath(templatesPath, osTemplateFile);
                 vm.OperatingSystemTemplatePath = correctVhdPath;
                 string msHddHyperVFolderName = "Virtual Hard Disks\\" + vm.Name;
-                vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, msHddHyperVFolderName + Path.GetExtension(correctVhdPath)); ;
+                vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, msHddHyperVFolderName + Path.GetExtension(correctVhdPath));
+
+                // check hdd file
+                try
+                {
+                    VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+                    if (vs.FileExists(vm.VirtualHardDrivePath))
+                        throw new Exception(vm.VirtualHardDrivePath + " is already present in the system");
+                }
+                catch (Exception ex)
+                {
+                    res.AddError(VirtualizationErrorCodes.HDD_VM_FILE_EXIST_ERROR, ex);
+                    return res;
+                }
 
                 // save meta-item
                 try
