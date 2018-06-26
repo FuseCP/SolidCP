@@ -1731,6 +1731,14 @@ namespace SolidCP.EnterpriseServer
             str = Utils.ReplaceStringVariable(str, "user_id", user.UserId.ToString());
             str = Utils.ReplaceStringVariable(str, "username", user.Username);
 
+            return EvaluateRandomSymbolsVariables(str);
+        }
+
+        private static string EvaluateRandomSymbolsVariables(string str)
+        {
+            str = Utils.ReplaceStringVariable(str, "guid", Guid.NewGuid().ToString("N"));
+            str = Utils.ReplaceStringVariable(str, "mac", GenerateMacAddress());
+
             return str;
         }
         #endregion

@@ -309,7 +309,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <value>Relative weight:</value>
   </data>
   <data name="locFolderVariables.Text" xml:space="preserve">
-    <value>The following variables are supported: [VPS_HOSTNAME], [USERNAME], [USER_ID], [SPACE_ID]</value>
+    <value>The following variables are supported: [VPS_HOSTNAME], [USERNAME], [USER_ID], [SPACE_ID], [GUID], [MAC]</value>
   </data>
   <data name="locProcessorSettings.Text" xml:space="preserve">
     <value>Processor Resource Settings</value>
