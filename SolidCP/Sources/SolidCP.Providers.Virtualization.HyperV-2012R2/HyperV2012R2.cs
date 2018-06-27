@@ -1773,11 +1773,16 @@ namespace SolidCP.Providers.Virtualization
         {
             bool jobCompleted = true;
 
+            short timeOut = 10 * 60 * 5; //10 mins
+
             while (job.JobState == ConcreteJobState.Starting ||
                 job.JobState == ConcreteJobState.Running)
             {
+                timeOut--;
                 System.Threading.Thread.Sleep(200);
                 job = GetJob(job.Id);
+                if(timeOut == 0)
+                    job.JobState = ConcreteJobState.Failed;                
             }
 
             if (job.JobState != ConcreteJobState.Completed)
