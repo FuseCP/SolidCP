@@ -957,8 +957,8 @@ namespace SolidCP.Providers.Virtualization
             }
             catch
             {
-                HostedSolutionLog.LogError("GetKVPItems", new Exception("msvm_KvpExchangeComponent"));
-
+                //there is no point in spamming the error, if this method does not work, we have a spare method "GetHddUsagesFromKVPHyperV"
+                //HostedSolutionLog.LogError("GetKVPItems", new Exception("msvm_KvpExchangeComponent"));
                 return pairs;
             }
 
