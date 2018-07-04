@@ -498,7 +498,7 @@ namespace SolidCP.Providers.Virtualization
                     {
                         case VirtualMachineRequestedState.Start: //sometimes we can get an error here, but it in 90% does not mean anything.
                             vm = GetVirtualMachine(vmId);
-                            if (vm.Heartbeat != OperationalStatus.Ok)
+                            if (vm.Heartbeat != OperationalStatus.Ok || vm.State != VirtualMachineState.Running)
                                 ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Reset);
                             cmdTxt = "";
                             break;
