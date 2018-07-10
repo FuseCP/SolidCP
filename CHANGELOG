@@ -1,3 +1,7 @@
+Version 1.4.2
+- Hosted Organization fix for asp.net v2.0 module.
+
+
 Version 1.4.1:
 - Fix for Sharepoint Enterprise regroup
 - Fix for IIS8/10 and sslusesni
@@ -22,7 +26,7 @@ Version 1.4.1:
 - Fixed autoupdate VPS2012/VPS2016 imgThumbnail - With thanks to Genadij Judin
 - Hides the obvious choice of VLAN for creating VPS2012/VPS2016 - With thanks to Genadij Judin
 - HyperV2012R2+ Added Virtual Hard Disk Drive Quality of Service management for VM - With thanks to Genadij Judin
-- some minor fixes for yperV2012R2+ - With thanks to Genadij Judin
+- some minor fixes for HyperV2012R2+ - With thanks to Genadij Judin
 - Added CRM 2016 support
 - MySQL Added option to set SSL to none as required on newer versions
 - VPS2012/VPS2016 Switched CPU count from NumberOfCores to NumberOfLogicalProcessors to supports CPU with HT enabled
