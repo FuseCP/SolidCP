@@ -24,7 +24,7 @@
                         TargetControlID="SoftwarePanel" meta:resourcekey="secSoftware" Text="Software">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="SoftwarePanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td><asp:Localize ID="locOperatingSystem" runat="server"
                                     meta:resourcekey="locOperatingSystem" Text="Operating system:"></asp:Localize></td>
@@ -38,7 +38,7 @@
                                 <td>
                                     ********
                                     <CPCC:StyleButton ID="btnChangePasswordPopup" runat="server" CausesValidation="false"
-                                        Text="Change" meta:resourcekey="btnChangePasswordPopup"></CPCC:StyleButton>
+                                        CssClass="btn btn-warning" Text="Change" meta:resourcekey="btnChangePasswordPopup"></CPCC:StyleButton>
                                 </td>
                             </tr>
                         </table>
@@ -50,7 +50,7 @@
                         TargetControlID="ResourcesPanel" meta:resourcekey="secResources" Text="Resources">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="ResourcesPanel" runat="server" Height="0" style="overflow:hidden;padding:10px;width:400px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td class="Medium"><asp:Localize ID="lblCpu" runat="server"
                                         meta:resourcekey="lblCpu" Text="CPU:" /></td>
@@ -59,7 +59,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td class="Medium"><asp:Localize ID="lblRam" runat="server"
                                         meta:resourcekey="lblRam" Text="RAM:" /></td>
@@ -68,7 +68,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td class="Medium"><asp:Localize ID="lblHdd" runat="server"
                                         meta:resourcekey="lblHdd" Text="HDD:" /></td>
@@ -87,7 +87,7 @@
 		                <asp:Localize ID="locHddIOPSTitle" runat="server" meta:resourcekey="locHddIOPSTitle" 
                             Text="Specify Quality of Service management for this virtual hard disk. Minimum and maximum IOPS are measured in 8KB increments. Default value is 0." />
 		                </p>
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td class="Medium"><asp:Localize ID="lblHddMinIOPS" runat="server"
                                         meta:resourcekey="lblHddMinIOPS" Text="Minimum:" /></td>
@@ -96,7 +96,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td class="Medium"><asp:Localize ID="lblHddMaxIOPS" runat="server"
                                         meta:resourcekey="lblHddMaxIOPS" Text="Maximum:" /></td>
@@ -115,7 +115,7 @@
                         TargetControlID="SnapshotsPanel" meta:resourcekey="secSnapshots" Text="Snapshots">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="SnapshotsPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td><asp:Localize ID="locSnapshots" runat="server"
                                     meta:resourcekey="locSnapshots" Text="Number of snapshots:"></asp:Localize></td>
@@ -130,7 +130,7 @@
                         TargetControlID="DvdPanel" meta:resourcekey="secDvd" Text="DVD">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="DvdPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td>
                                     <scp:CheckBoxOption id="optionDvdInstalled" runat="server"
@@ -144,7 +144,7 @@
                         TargetControlID="BiosPanel" meta:resourcekey="secBios" Text="BIOS">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="BiosPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td style="width:200px;">
                                     <scp:CheckBoxOption id="optionBootFromCD" runat="server"
@@ -162,7 +162,7 @@
                         TargetControlID="ActionsPanel" meta:resourcekey="secActions" Text="Allowed actions">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="ActionsPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table style="width:400px;" cellspacing="5">
+                        <table style="width:400px;" style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td style="width:200px;">
                                     <scp:CheckBoxOption id="optionStartShutdown" runat="server"
@@ -199,7 +199,7 @@
                         TargetControlID="NetworkPanel" meta:resourcekey="secNetwork" Text="Network">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="NetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table cellspacing="5">
+                        <table style="border-collapse: separate; border-spacing: 5px 1px;">
                             <tr>
                                 <td><scp:CheckBoxOption id="optionExternalNetwork" runat="server"
                                         Text="External network enabled" meta:resourcekey="optionExternalNetwork" Value="True" />
@@ -213,9 +213,9 @@
                         </table>
                     </asp:Panel>
                     
-                    <p style="padding: 5px;">
+                    <div class="text-right">
                         <CPCC:StyleButton id="btnEdit" CssClass="btn btn-success" runat="server" OnClick="btnEdit_Click" CausesValidation="false"> <i class="fa fa-pencil">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnEditText"/> </CPCC:StyleButton>
-                    </p>
+                    </div>
 
 
 			    </div>
@@ -223,30 +223,27 @@
 	    </div>
     	
 <asp:Panel ID="ChangePasswordPanel" runat="server" style="display:none;">
-	<div class="widget">
-             <div class="widget-header clearfix">
-                           <h3><i class="fa fa-i-cursor"></i>  <asp:Localize ID="locChangePassword" runat="server" Text="Change Administrator Password" meta:resourcekey="locChangePassword"></asp:Localize></h3>
-			</div>
-                    <div class="widget-content Popup">
-			<table cellspacing="7" style="margin-left:20px;">
-			    <tr>
-			        <td>
-			            <asp:Localize ID="locNewPassword" runat="server" Text="Enter new password:"
-				            meta:resourcekey="locNewPassword"></asp:Localize>
-			        </td>
-			    </tr>
-			    <tr>
-			        <td>
-			            <scp:PasswordControl id="password" runat="server"
-			                ValidationGroup="ChangePassword"></scp:PasswordControl>
-			        </td>
-			    </tr>
-			</table>                     
-			</div>
-					<div class="popup-buttons text-right">
-		    <CPCC:StyleButton id="btnCancelChangePassword" CssClass="btn btn-warning" runat="server" CausesValidation="false"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancelChangePasswordText"/> </CPCC:StyleButton>&nbsp;
-            <CPCC:StyleButton id="btnChangePassword" CssClass="btn btn-primary" runat="server" OnClick="btnChangePassword_Click" ValidationGroup="ChangePassword"> <i class="fa fa-key">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnChangePasswordText"/> </CPCC:StyleButton>
+	<div class="widget" style="max-width: 40%;">
+		<div class="widget-header clearfix">
+					   <h3><i class="fa fa-i-cursor"></i>  <asp:Localize ID="locChangePassword" runat="server" Text="Change Administrator Password" meta:resourcekey="locChangePassword"></asp:Localize></h3>
 		</div>
+		<div class="widget-content Popup">
+			<div class="panel-body form-horizontal">
+				<div class="form-group">
+					<div class="col-sm-20">
+						<asp:Localize ID="locNewPassword" runat="server" Text="Enter new password:"
+											meta:resourcekey="locNewPassword"></asp:Localize>
+					
+						<scp:PasswordControl id="password" runat="server"
+											ValidationGroup="ChangePassword"></scp:PasswordControl>
+					</div>
+				</div>
+			</div>  
+			<div class="popup-buttons text-right">
+				<CPCC:StyleButton id="btnCancelChangePassword" CssClass="btn btn-warning" runat="server" CausesValidation="false"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancelChangePasswordText"/> </CPCC:StyleButton>&nbsp;
+				<CPCC:StyleButton id="btnChangePassword" CssClass="btn btn-primary" runat="server" OnClick="btnChangePassword_Click" ValidationGroup="ChangePassword"> <i class="fa fa-key">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnChangePasswordText"/> </CPCC:StyleButton>
+			</div>				
+		</div>					
 	</div>
 </asp:Panel>
 

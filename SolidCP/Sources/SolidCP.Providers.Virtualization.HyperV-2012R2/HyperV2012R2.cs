@@ -233,7 +233,7 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("GetVirtualMachine");
             return vm;
         }
-
+        
         public List<VirtualMachine> GetVirtualMachines()
         {
             HostedSolutionLog.LogStart("GetVirtualMachines");
@@ -244,8 +244,10 @@ namespace SolidCP.Providers.Virtualization
             {
                 HostedSolutionLog.LogInfo("Before Get-VM command");
 
-                Command cmd = new Command("Get-VM");
-                Collection<PSObject> result = PowerShell.Execute(cmd, true);
+                //Command cmd = new Command("Get-VM"); //never not do that for getting all VMs without "Select"!!
+                Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
+
+                Collection <PSObject> result = PowerShell.Execute(cmd, true);
 
                 HostedSolutionLog.LogInfo("After Get-VM command");
                 foreach (PSObject current in result)
@@ -257,11 +259,15 @@ namespace SolidCP.Providers.Virtualization
                     HostedSolutionLog.LogInfo("VirtualMachineId {0}", vm.VirtualMachineId);
                     vm.Name = current.GetString("Name");
                     HostedSolutionLog.LogInfo("Name {0}", vm.Name);
-                    vm.State = current.GetEnum<VirtualMachineState>("State");
-                    HostedSolutionLog.LogInfo("State {0}", vm.State);
-                    vm.Uptime = Convert.ToInt64(current.GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
-                    HostedSolutionLog.LogInfo("Uptime {0}", vm.Uptime);
-                    vm.ReplicationState = current.GetEnum<ReplicationState>("ReplicationState");
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    ////////////// We do not use this data, if it needs create a new method, this is overloaded!! ////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //vm.State = current.GetEnum<VirtualMachineState>("State");
+                    //HostedSolutionLog.LogInfo("State {0}", vm.State);
+                    //vm.Uptime = Convert.ToInt64(current.GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
+                    //HostedSolutionLog.LogInfo("Uptime {0}", vm.Uptime);
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    vm.ReplicationState = current.GetEnum<ReplicationState>("ReplicationState"); //better to move for a special Replica Method.
                     HostedSolutionLog.LogInfo("ReplicationState {0}", vm.ReplicationState);
                     vmachines.Add(vm);
                     HostedSolutionLog.LogInfo("- end VM -");
@@ -434,6 +440,11 @@ namespace SolidCP.Providers.Virtualization
 
             var vm = GetVirtualMachine(vmId);
 
+            bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused); 
+
+            if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server have problem.
+                newState = VirtualMachineRequestedState.TurnOff;
+
             try
             {
                 string cmdTxt;
@@ -456,6 +467,7 @@ namespace SolidCP.Providers.Virtualization
                         break;
                     case VirtualMachineRequestedState.ShutDown:
                         cmdTxt = "Stop-VM";
+                        paramList.Add("Force"); //If the virtual machine has applications with unsaved data, the virtual machine has five minutes to save data and shut down. (Fix for loop)
                         break;
                     case VirtualMachineRequestedState.TurnOff:
                         cmdTxt = "Stop-VM";
@@ -490,9 +502,15 @@ namespace SolidCP.Providers.Virtualization
 
         public ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason)
         {
-            var vm = GetVirtualMachine(vmId);
 
-            VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
+            var vm = GetVirtualMachine(vmId);
+            bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused);
+
+            if (isServerStatusOK)
+                VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
+            else
+                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.TurnOff);
+
 
             return ReturnCode.OK;
         }

@@ -5101,7 +5101,7 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetMailboxMailFlowSettings", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int SetMailboxMailFlowSettings(int itemId, int accountId, bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
+        public int SetMailboxMailFlowSettings(int itemId, int accountId, bool enableForwarding, int SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
             object[] results = this.Invoke("SetMailboxMailFlowSettings", new object[] {
                         itemId,
@@ -5118,7 +5118,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginSetMailboxMailFlowSettings(int itemId, int accountId, bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginSetMailboxMailFlowSettings(int itemId, int accountId, bool enableForwarding, int SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("SetMailboxMailFlowSettings", new object[] {
                         itemId,
@@ -5141,13 +5141,13 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public void SetMailboxMailFlowSettingsAsync(int itemId, int accountId, bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
+        public void SetMailboxMailFlowSettingsAsync(int itemId, int accountId, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
-            this.SetMailboxMailFlowSettingsAsync(itemId, accountId, enableForwarding, SaveSentItems, forwardingAccountName, forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication, null);
+            this.SetMailboxMailFlowSettingsAsync(itemId, accountId, enableForwarding, saveSentItems, forwardingAccountName, forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication, null);
         }
 
         /// <remarks/>
-        public void SetMailboxMailFlowSettingsAsync(int itemId, int accountId, bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, object userState)
+        public void SetMailboxMailFlowSettingsAsync(int itemId, int accountId, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, object userState)
         {
             if ((this.SetMailboxMailFlowSettingsOperationCompleted == null))
             {
@@ -5157,7 +5157,7 @@ namespace SolidCP.EnterpriseServer
                         itemId,
                         accountId,
                         enableForwarding,
-                        SaveSentItems,
+                        saveSentItems,
                         forwardingAccountName,
                         forwardToBoth,
                         sendOnBehalfAccounts,

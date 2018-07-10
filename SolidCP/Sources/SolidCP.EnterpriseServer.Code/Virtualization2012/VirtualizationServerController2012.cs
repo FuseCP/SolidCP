@@ -214,6 +214,8 @@ namespace SolidCP.EnterpriseServer
 
             IntResult res = new IntResult();
 
+            VirtualMachine vmSettings = new VirtualMachine();
+
             // load package info
             PackageInfo package = PackageController.GetPackage(packageId);
             if (package == null)
@@ -281,8 +283,8 @@ namespace SolidCP.EnterpriseServer
 
             // IOPS
             // TODO IOPS checks
-            int hddMinimumIOPS = DEFAULT_MINIMUM_IOPS;
-            int hddMaximumIOPS = DEFAULT_MAXIMUM_IOPS;
+            vmSettings.HddMinimumIOPS = DEFAULT_MINIMUM_IOPS;
+            vmSettings.HddMaximumIOPS = DEFAULT_MAXIMUM_IOPS;
 
             // snapshots
             int snapshots = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
@@ -322,20 +324,16 @@ namespace SolidCP.EnterpriseServer
 
             // create server and return result
             return CreateVirtualMachine(packageId, hostname, osTemplate, password, summaryLetterEmail,
-                cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS,
+                cpuCores, ramMB, hddGB, snapshots,
                 dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
-                privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, new VirtualMachine());
+                privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, vmSettings);
         }
 
-        public static IntResult CreateVirtualMachine(int packageId,
-                string hostname, string osTemplateFile, string password, string summaryLetterEmail,
-                int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
-                bool dvdInstalled, bool bootFromCD, bool numLock,
-                bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
-                bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
-                bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, VirtualMachine otherSettings)
+        public static IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail, 
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
         {
             // result object
             IntResult res = new IntResult();
@@ -343,6 +341,7 @@ namespace SolidCP.EnterpriseServer
             // meta item
             VirtualMachine vm = null;
 
+            int packageId = VMSettings.PackageId;
             try
             {
                 #region Check account and space statuses
@@ -353,25 +352,25 @@ namespace SolidCP.EnterpriseServer
                 // check package
                 if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
                     return res;
-                
+
                 #endregion
 
                 #region Check if host name is already used
 
                 try
                 {
-                    ServiceProviderItem item = PackageController.GetPackageItemByName(packageId, hostname,
-                                                                                      typeof (VirtualMachine));
+                    ServiceProviderItem item = PackageController.GetPackageItemByName(packageId, VMSettings.Name,
+                                                                                      typeof(VirtualMachine));
                     if (item != null)
                     {
                         res.ErrorCodes.Add(VirtualizationErrorCodes.HOST_NAMER_IS_ALREADY_USED);
                         return res;
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     res.AddError(VirtualizationErrorCodes.CANNOT_CHECK_HOST_EXISTS, ex);
-                    return res;   
+                    return res;
                 }
 
                 #endregion
@@ -382,40 +381,48 @@ namespace SolidCP.EnterpriseServer
                 PackageContext cntx = PackageController.GetPackageContext(packageId);
 
                 // dynamic memory
-                var newRam = ramMB;
-                if (otherSettings.DynamicMemory != null && otherSettings.DynamicMemory.Enabled)
+                var newRam = VMSettings.RamSize;
+                if (VMSettings.DynamicMemory != null && VMSettings.DynamicMemory.Enabled)
                 {
-                    newRam = otherSettings.DynamicMemory.Maximum;
+                    newRam = VMSettings.DynamicMemory.Maximum;
 
-                    if (ramMB > otherSettings.DynamicMemory.Maximum || ramMB < otherSettings.DynamicMemory.Minimum)
+                    if (VMSettings.RamSize > VMSettings.DynamicMemory.Maximum || VMSettings.RamSize < VMSettings.DynamicMemory.Minimum)
                         quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
                 }
 
                 QuotaHelper.CheckListsQuota(cntx, quotaResults, Quotas.VPS2012_SERVERS_NUMBER, VirtualizationErrorCodes.QUOTA_EXCEEDED_SERVERS_NUMBER);
 
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, VMSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
                 QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
+                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, VMSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, VMSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
 
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, dvdInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, bootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, VMSettings.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, VMSettings.BootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
 
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, startShutdownAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, pauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, rebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, resetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, reinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, VMSettings.StartTurnOffAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, VMSettings.PauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, VMSettings.RebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, VMSettings.ResetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, VMSettings.ReinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
 
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, externalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
-                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, privateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, VMSettings.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
+                QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, VMSettings.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
 
                 // check external addresses number
                 if (!randomExternalAddresses && externalAddresses != null)
                     externalAddressesNumber = externalAddresses.Length;
 
-                int maxAddresses = ServerController.GetPackageUnassignedIPAddresses(packageId, IPAddressPool.VpsExternalNetwork).Count;
-                if (externalNetworkEnabled && externalAddressesNumber > maxAddresses)
+                int maxAddresses = ServerController.GetPackageUnassignedIPAddresses(packageId, IPAddressPool.VpsExternalNetwork).Count; //Get num IPs if they exist
+                if (maxAddresses == 0) //get quota for Unallotted IPs network     
+                {
+                    int max = cntx.Quotas[Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER].QuotaAllocatedValue != -1 ?
+                        cntx.Quotas[Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER].QuotaAllocatedValue : int.MaxValue;
+                    maxAddresses = max - cntx.Quotas[Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER].QuotaUsedValue;
+                }                 
+                    
+
+                if (VMSettings.ExternalNetworkEnabled && externalAddressesNumber > maxAddresses)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_ADDRESSES_NUMBER + ":" + maxAddresses.ToString());
 
                 // check private addresses number
@@ -436,11 +443,11 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // check acceptable values
-                if (ramMB <= 0)
+                if (VMSettings.RamSize <= 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
-                if (hddGB <= 0)
+                if (VMSettings.HddSize <= 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
-                if (snapshots < 0)
+                if (VMSettings.SnapshotsNumber < 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
                 if (quotaResults.Count > 0)
@@ -470,9 +477,9 @@ namespace SolidCP.EnterpriseServer
 
                 #region Create meta item
                 // create meta item
-                vm = new VirtualMachine();
+                vm = VMSettings; //new VirtualMachine();
 
-                vm.Name = hostname;
+                //vm.Name = VMSettings.Name;
                 vm.AdministratorPassword = CryptoUtils.Encrypt(password);
                 vm.PackageId = packageId;
                 vm.VirtualMachineId = null; // from service
@@ -482,31 +489,31 @@ namespace SolidCP.EnterpriseServer
                 vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
 
                 //vm.Generation = otherSettings.Generation; get from Template
-                vm.CpuCores = cpuCores;
-                vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
-                vm.HddMinimumIOPS = hddMinimumIOPS;
-                vm.HddMaximumIOPS = hddMaximumIOPS;
-                vm.SnapshotsNumber = snapshots;
-                vm.DvdDriveInstalled = dvdInstalled;
-                vm.BootFromCD = bootFromCD;
-                vm.NumLockEnabled = numLock;
-                vm.StartTurnOffAllowed = startShutdownAllowed;
-                vm.PauseResumeAllowed = pauseResumeAllowed;
-                vm.RebootAllowed = rebootAllowed;
-                vm.ResetAllowed = resetAllowed;
-                vm.ReinstallAllowed = reinstallAllowed;
-                vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
+                //vm.CpuCores = cpuCores;
+                //vm.RamSize = ramMB;
+                //vm.HddSize = hddGB;
+                //vm.HddMinimumIOPS = hddMinimumIOPS;
+                //vm.HddMaximumIOPS = hddMaximumIOPS;
+                //vm.SnapshotsNumber = snapshots;
+                //vm.DvdDriveInstalled = dvdInstalled;
+                //vm.BootFromCD = bootFromCD;
+                //vm.NumLockEnabled = numLock;
+                //vm.StartTurnOffAllowed = startShutdownAllowed;
+                //vm.PauseResumeAllowed = pauseResumeAllowed;
+                //vm.RebootAllowed = rebootAllowed;
+                //vm.ResetAllowed = resetAllowed;
+                //vm.ReinstallAllowed = reinstallAllowed;
+                //vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
 
                 // dynamic memory
-                if (otherSettings.DynamicMemory != null && otherSettings.DynamicMemory.Enabled)
-                    vm.DynamicMemory = otherSettings.DynamicMemory;
+                if (VMSettings.DynamicMemory != null && VMSettings.DynamicMemory.Enabled)
+                    vm.DynamicMemory = VMSettings.DynamicMemory;
                 else
                     vm.DynamicMemory = null;
 
                 // networking
-                vm.ExternalNetworkEnabled = externalNetworkEnabled;
-                vm.PrivateNetworkEnabled = privateNetworkEnabled;
+                //vm.ExternalNetworkEnabled = externalNetworkEnabled;
+                //vm.PrivateNetworkEnabled = privateNetworkEnabled;
                 vm.ManagementNetworkEnabled = !String.IsNullOrEmpty(manageNic.NetworkId);
 
                 // load OS templates
@@ -546,10 +553,10 @@ namespace SolidCP.EnterpriseServer
                 // setup VM paths
                 string templatesPath = settings["OsTemplatesPath"];
                 string rootFolderPattern = settings["RootFolder"];
-                if(rootFolderPattern.IndexOf("[") == -1)
+                if (rootFolderPattern.IndexOf("[") == -1)
                 {
                     // no pattern has been specified
-                    if(!rootFolderPattern.EndsWith("\\"))
+                    if (!rootFolderPattern.EndsWith("\\"))
                         rootFolderPattern += "\\";
                     rootFolderPattern += "[username]\\[vps_hostname]";
                 }
@@ -574,7 +581,44 @@ namespace SolidCP.EnterpriseServer
                     res.AddError(VirtualizationErrorCodes.CREATE_META_ITEM_ERROR, ex);
                     return res;
                 }
-                
+
+                #endregion
+
+                #region Setup external Unallotted IPs network
+                // setup external Unallotted IPs network
+                if (vm.ExternalNetworkEnabled)
+                {
+                    int maxItems = 100000000;
+                    PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
+                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;
+                    if(ips.Length == 0)
+                    {
+                        // assign selected IP addresses to package
+                        ServerController.AllocatePackageIPAddresses(packageId, externalAddresses);
+
+                        // re-read package IPs
+                        List<PackageIPAddress> packageIPs = ServerController.GetPackageUnassignedIPAddresses(
+                                        packageId, IPAddressPool.VpsExternalNetwork);
+
+                        // assign IP addresses to VM
+                        for (int i = 0; i < externalAddresses.Length; i++)
+                        {
+                            foreach (PackageIPAddress ip in packageIPs)
+                            {
+                                if (ip.AddressID == externalAddresses[i])
+                                {
+                                    // assign to the item
+                                    ServerController.AddItemIPAddress(vm.Id, ip.PackageAddressID);
+
+                                    // set primary IP address
+                                    if (i == 0)
+                                        ServerController.SetItemPrimaryIPAddress(vm.Id, ip.PackageAddressID);
+                                    break;
+                                }
+                            }
+                        }
+                    }                    
+                }
                 #endregion
 
                 #region Start Asynchronous task
@@ -616,10 +660,42 @@ namespace SolidCP.EnterpriseServer
                 res.AddError(VirtualizationErrorCodes.CREATE_ERROR, ex);
                 return res;
             }
-
             res.Value = vm.Id;
             res.IsSuccess = true;
             return res;
+        }
+
+        //[Obsolete("CreateVirtualMachine is deprecated, please use CreateNewVirtualMachine instead.")]
+        public static IntResult CreateVirtualMachine(int packageId,
+                string hostname, string osTemplateFile, string password, string summaryLetterEmail,
+                int cpuCores, int ramMB, int hddGB, int snapshots,
+                bool dvdInstalled, bool bootFromCD, bool numLock,
+                bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
+                bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+                bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, VirtualMachine otherSettings)
+        {
+            otherSettings.PackageId = packageId;
+            otherSettings.Name = hostname;
+            otherSettings.CpuCores = cpuCores;
+            otherSettings.RamSize = ramMB;
+            otherSettings.HddSize = hddGB;
+            //otherSettings.HddMinimumIOPS = hddMinimumIOPS;
+            //otherSettings.HddMaximumIOPS = hddMaximumIOPS;
+            otherSettings.SnapshotsNumber = snapshots;
+            otherSettings.DvdDriveInstalled = dvdInstalled;
+            otherSettings.BootFromCD = bootFromCD;
+            otherSettings.NumLockEnabled = numLock;
+            otherSettings.StartTurnOffAllowed = startShutdownAllowed;
+            otherSettings.PauseResumeAllowed = pauseResumeAllowed;
+            otherSettings.RebootAllowed = rebootAllowed;
+            otherSettings.ResetAllowed = resetAllowed;
+            otherSettings.ReinstallAllowed = reinstallAllowed;
+            otherSettings.ExternalNetworkEnabled = externalNetworkEnabled;
+            otherSettings.PrivateNetworkEnabled = privateNetworkEnabled;
+
+            return CreateNewVirtualMachine(otherSettings, osTemplateFile, password, summaryLetterEmail,
+                externalAddressesNumber, randomExternalAddresses, externalAddresses,
+                privateAddressesNumber, randomPrivateAddresses, privateAddresses);
         }
 
         private static string GetCorrectTemplateFilePath(string templatesPath, string osTemplateFile)
@@ -1895,10 +1971,22 @@ namespace SolidCP.EnterpriseServer
 
                         // spin until fully stopped
                         VirtualMachine vm = vps.GetVirtualMachine(machine.VirtualMachineId);
+                        short timeOut = 600; //10 min
                         while (vm.State != VirtualMachineState.Off)
                         {
+                            timeOut--;
                             System.Threading.Thread.Sleep(1000); // sleep 1 second
                             vm = vps.GetVirtualMachine(machine.VirtualMachineId);
+                            if(timeOut == 0)// turnoff
+                            {                                
+                                ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
+                                                                VirtualMachineRequestedState.TurnOff);
+                                if (!turnOffResult.IsSuccess)
+                                {
+                                    TaskManager.CompleteResultTask(res);
+                                    return turnOffResult;
+                                }
+                            }                                
                         }
                     }
                     else if (state == VirtualMachineRequestedState.Reboot)
@@ -2070,10 +2158,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS – Edit Configuration
-        public static ResultObject UpdateVirtualMachineConfiguration(
-            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
-            bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, 
-            bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
+        public static ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings) 
         {
             ResultObject res = new ResultObject();
 
@@ -2101,42 +2186,42 @@ namespace SolidCP.EnterpriseServer
             PackageContext cntx = PackageController.GetPackageContext(vm.PackageId);
 
             var currentRam = vm.RamSize;
-            var newRam = ramMB;
+            var newRam = vmSettings.RamSize;
 
             // dynamic memory
             if (vm.DynamicMemory != null && vm.DynamicMemory.Enabled)
                 currentRam = vm.DynamicMemory.Maximum;
-            if (otherSettings.DynamicMemory != null && otherSettings.DynamicMemory.Enabled)
+            if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
             {
-                newRam = otherSettings.DynamicMemory.Maximum;
+                newRam = vmSettings.DynamicMemory.Maximum;
 
-                if (ramMB > otherSettings.DynamicMemory.Maximum || ramMB < otherSettings.DynamicMemory.Minimum)
+                if (vm.RamSize > vmSettings.DynamicMemory.Maximum || vm.RamSize < vmSettings.DynamicMemory.Minimum)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
             }
 
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, vm.CpuCores, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, vm.CpuCores, vmSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, currentRam, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, vm.HddSize, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
-            
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, dvdInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, bootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
-            
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, startShutdownAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, pauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, rebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, resetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, reinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
-            
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, externalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
-            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, privateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, vm.HddSize, vmSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, vmSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
+
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, vmSettings.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, vmSettings.BootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
+
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, vmSettings.StartTurnOffAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, vmSettings.PauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, vmSettings.RebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, vmSettings.ResetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, vmSettings.ReinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
+
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, vmSettings.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
+            QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, vmSettings.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
 
             // check acceptable values
-            if (ramMB <= 0)
+            if (vmSettings.RamSize <= 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
-            if (hddGB <= 0)
+            if (vmSettings.HddSize <= 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
-            if (snapshots < 0)
+            if (vmSettings.SnapshotsNumber < 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
             // IOPS checks
@@ -2173,10 +2258,22 @@ namespace SolidCP.EnterpriseServer
                     {
                         // spin until fully stopped
                         vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-                        while (vps.State != VirtualMachineState.Off)
+                        short timeOut = 60 * 10; //10 min
+                        while (vps.State != VirtualMachineState.Off) //TODO: rewrite
                         {
+                            timeOut--;
                             System.Threading.Thread.Sleep(1000); // sleep 1 second
                             vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                            if (timeOut == 0)// turnoff
+                            {
+                                ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
+                                                                VirtualMachineRequestedState.TurnOff);
+                                if (!turnOffResult.IsSuccess)
+                                {
+                                    TaskManager.CompleteResultTask(res);
+                                    return turnOffResult;
+                                }
+                            }
                         }
                     }
                     else
@@ -2192,30 +2289,33 @@ namespace SolidCP.EnterpriseServer
                     }
                 } // end OFF
 
-                // update meta-item
-                vm.CpuCores = cpuCores;
-                vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
-                vm.HddMinimumIOPS = hddMinimumIOPS;
-                vm.HddMaximumIOPS = hddMaximumIOPS;
-                vm.SnapshotsNumber = snapshots;
-                
-                vm.BootFromCD = bootFromCD;
-                vm.NumLockEnabled = numLock;
-                vm.DvdDriveInstalled = dvdInstalled;
+                /////////////////////////////////////////////
+                // update meta-item //TODO: rewrite 
+                //vm = vmSettings; //heh we can't do that :(
+                vm.CpuCores = vmSettings.CpuCores;
+                vm.RamSize = vmSettings.RamSize;
+                vm.HddSize = vmSettings.HddSize;
+                vm.HddMinimumIOPS = vmSettings.HddMinimumIOPS;
+                vm.HddMaximumIOPS = vmSettings.HddMaximumIOPS;
+                vm.SnapshotsNumber = vmSettings.SnapshotsNumber;
 
-                vm.StartTurnOffAllowed = startShutdownAllowed;
-                vm.PauseResumeAllowed = pauseResumeAllowed;
-                vm.ResetAllowed = resetAllowed;
-                vm.RebootAllowed = rebootAllowed;
-                vm.ReinstallAllowed = reinstallAllowed;
+                vm.BootFromCD = vmSettings.BootFromCD;
+                vm.NumLockEnabled = vmSettings.NumLockEnabled;
+                vm.DvdDriveInstalled = vmSettings.DvdDriveInstalled;
 
-                vm.ExternalNetworkEnabled = externalNetworkEnabled;
-                vm.PrivateNetworkEnabled = privateNetworkEnabled;
+                vm.StartTurnOffAllowed = vmSettings.StartTurnOffAllowed;
+                vm.PauseResumeAllowed = vmSettings.PauseResumeAllowed;
+                vm.ResetAllowed = vmSettings.ResetAllowed;
+                vm.RebootAllowed = vmSettings.RebootAllowed;
+                vm.ReinstallAllowed = vmSettings.ReinstallAllowed;
+
+                vm.ExternalNetworkEnabled = vmSettings.ExternalNetworkEnabled;
+                vm.PrivateNetworkEnabled = vmSettings.PrivateNetworkEnabled;
+                /////////////////////////////////////////////
 
                 // dynamic memory
-                if (otherSettings.DynamicMemory != null && otherSettings.DynamicMemory.Enabled)
-                    vm.DynamicMemory = otherSettings.DynamicMemory;
+                if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
+                    vm.DynamicMemory = vmSettings.DynamicMemory;
                 else
                     vm.DynamicMemory = null;
 
@@ -2288,6 +2388,31 @@ namespace SolidCP.EnterpriseServer
 
             TaskManager.CompleteResultTask();
             return res;
+        }
+        //[Obsolete("UpdateVirtualMachineConfiguration is deprecated, please use UpdateVirtualMachineResource instead.")]
+        public static ResultObject UpdateVirtualMachineConfiguration(
+            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
+            bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed, 
+            bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
+        {
+            otherSettings.CpuCores = cpuCores;
+            otherSettings.RamSize = ramMB;
+            otherSettings.HddSize = hddGB;
+            otherSettings.SnapshotsNumber = snapshots;
+
+            otherSettings.BootFromCD = bootFromCD;
+            otherSettings.NumLockEnabled = numLock;
+            otherSettings.DvdDriveInstalled = dvdInstalled;
+
+            otherSettings.StartTurnOffAllowed = startShutdownAllowed;
+            otherSettings.PauseResumeAllowed = pauseResumeAllowed;
+            otherSettings.ResetAllowed = resetAllowed;
+            otherSettings.RebootAllowed = rebootAllowed;
+            otherSettings.ReinstallAllowed = reinstallAllowed;
+
+            otherSettings.ExternalNetworkEnabled = externalNetworkEnabled;
+            otherSettings.PrivateNetworkEnabled = privateNetworkEnabled;
+            return UpdateVirtualMachineResource(itemId, otherSettings);
         }
         #endregion
 

@@ -72,6 +72,8 @@
 						    <asp:TemplateField>
 							    <ItemTemplate>
 								    <CPCC:StyleButton id="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Eval("ItemID") %>'> &nbsp;<i class="fa fa-trash-o"></i>&nbsp; </CPCC:StyleButton>
+                                    &nbsp;
+                                    <CPCC:StyleButton id="cmdReinstall" CssClass="btn btn-success" runat="server" CommandName="ReinstallItem" CommandArgument='<%# Eval("ItemID") %>'> &nbsp;<i class="fa fa-refresh"></i>&nbsp; </CPCC:StyleButton>
 							    </ItemTemplate>
 						    </asp:TemplateField>
                             <asp:TemplateField>
