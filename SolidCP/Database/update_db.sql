@@ -20530,3 +20530,10 @@ BEGIN
 	UPDATE [dbo].[Providers] SET [EditorControl] = 'MSFTP70' WHERE [ProviderName] = 'MSFTP100'
 END
 GO
+
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Cerberus FTP Server 6.x')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(110, 3, N'CerberusFTP6', N'Cerberus FTP Server 6.x', N'SolidCP.Providers.FTP.CerberusFTP6, SolidCP.Providers.FTP.CerberusFTP6', N'CerberusFTP6',	NULL)
+END
+GO

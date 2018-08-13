@@ -237,6 +237,20 @@
     <Compile Include="Code\ReportingServices\ReportingServicesUtils.cs" />
     <Compile Include="Code\UserControls\Tab.cs" />
     <Compile Include="App_Code\IPAddressExtensions.cs" />
+    <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.cs">
+      <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.designer.cs">
+      <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\CerberusFTP6_Settings.ascx.cs">
+      <DependentUpon>CerberusFTP6_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\CerberusFTP6_Settings.ascx.designer.cs">
+      <DependentUpon>CerberusFTP6_Settings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ProviderControls\Proxmox_Settings.ascx.cs">
       <DependentUpon>Proxmox_Settings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5418,6 +5432,8 @@
   <ItemGroup>
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
+    <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
+    <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
     <Content Include="ProviderControls\Proxmox_Settings.ascx" />
     <Content Include="Proxmox\RemoteControl\Connect.aspx" />
     <Content Include="Proxmox\RemoteControl\msrdp.cab" />
@@ -6302,6 +6318,10 @@
     <Content Include="Proxmox\UserControls\App_LocalResources\Generation.ascx.resx" />
     <Content Include="Proxmox\UserControls\App_LocalResources\Menu.ascx.resx" />
     <Content Include="Proxmox\UserControls\App_LocalResources\ServerTabs.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_EditAccount.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_Settings.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_EditAccount.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_Settings.ascx.de-DE.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
