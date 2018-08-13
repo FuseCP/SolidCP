@@ -74,6 +74,7 @@
         public const string GET_OS_TEMPLATES_ERROR = "VPS_GET_OS_TEMPLATES_ERROR";
         public const string CREATE_TASK_START_ERROR = "VPS_CREATE_TASK_START_ERROR";
         public const string CREATE_META_ITEM_ERROR = "VPS_CREATE_META_ITEM_ERROR";
+        public const string HDD_VM_FILE_EXIST_ERROR = "HDD_VM_FILE_EXIST_ERROR";
 
         // mail
         public const string SEND_SUMMARY_LETTER = "VPS_SEND_SUMMARY_LETTER";

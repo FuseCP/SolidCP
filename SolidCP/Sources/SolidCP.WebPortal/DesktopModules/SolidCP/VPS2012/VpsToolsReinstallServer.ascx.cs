@@ -56,8 +56,11 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
+        private readonly string sessionVMsettings = "VirtualMachine" + PanelRequest.ItemID;
+        private readonly string sessionIpAddresses = "IpAddresses" + PanelRequest.ItemID;
         private void BindConfiguration()
         {
+            Session.Timeout = 10;
             VirtualMachine vm = null;
             // load machine
             //vm = ES.Services.VPS2012.GetVirtualMachineItem(PanelRequest.ItemID);
@@ -74,7 +77,7 @@ namespace SolidCP.Portal.VPS2012
                 return;
             }
 
-            Session["VirtualMachine"] = vm;
+            Session[sessionVMsettings] = vm;
             // check package quotas
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
 
@@ -107,7 +110,7 @@ namespace SolidCP.Portal.VPS2012
             {
                 listOperatingSystems.SelectedValue = operatingSystemTemplatePath;
             }
-            else if(manageAllowed)
+            else if (manageAllowed)
             {
                 listOperatingSystems.Items.Insert(0, new ListItem(GetLocalizedString("SelectOsTemplate.Text"), ""));
             }
@@ -136,26 +139,26 @@ namespace SolidCP.Portal.VPS2012
 
 
         private void BindExternalAddresses()
-        {            
+        {
             //PackageIPAddress[] ips = ES.Services.Servers.GetPackageIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork, "","","",0,255,true).Items;
             NetworkAdapterDetails nic = ES.Services.VPS2012.GetExternalNetworkAdapterDetails(PanelRequest.ItemID);
             hiddenTxtExternalAddressesNumber.Value = "1";
-            if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0)> 0)
+            if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
             {
                 List<string> ipAddresses = new List<string>();
                 foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
                     ipAddresses.Add(ip.IPAddress);
                 litExternalAddresses.Text = PortalAntiXSS.Encode(String.Join(", ", ipAddresses.ToArray()));
                 ExternalAddressesRow.Visible = true;
-                Session["IpAddresses"] = ipAddresses;
-            }            
+                Session[sessionIpAddresses] = ipAddresses;
+            }
         }
 
         private List<int> GetExternalAddressesID() // call only after deleting VM
         {
             List<int> extIps = new List<int>();
             PackageIPAddress[] uips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
-            List<string> ipAddresses = (List<string>)Session["IpAddresses"];
+            List<string> ipAddresses = (List<string>)Session[sessionIpAddresses];
             foreach (PackageIPAddress uip in uips)
             {
                 foreach (string ip in ipAddresses)
@@ -163,7 +166,7 @@ namespace SolidCP.Portal.VPS2012
                     {
                         extIps.Add(uip.PackageAddressID);
                         break;
-                    }                                        
+                    }
             }
             return extIps;
         }
@@ -177,7 +180,7 @@ namespace SolidCP.Portal.VPS2012
             {
                 litPrivateAddresses.Text = GetLocalizedString("Automatic.Text");
             }
-            else if(nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
+            else if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
             {
                 List<string> ipPrivateAddresses = new List<string>();
                 foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
@@ -189,7 +192,7 @@ namespace SolidCP.Portal.VPS2012
         {
             try
             {
-                VirtualMachine vm = (VirtualMachine)Session["VirtualMachine"];
+                VirtualMachine vm = (VirtualMachine)Session[sessionVMsettings];
                 // create virtual machine
                 vm.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
                 vm.PackageId = PanelSecurity.PackageId;
@@ -202,7 +205,6 @@ namespace SolidCP.Portal.VPS2012
                     );
                 if (createResult.IsSuccess)
                 {
-                    Session.Abandon();
                     Response.Redirect(EditUrl("ItemID", createResult.Value.ToString(), "vps_general",
                         "SpaceID=" + PanelSecurity.PackageId.ToString()));
                 }
@@ -219,8 +221,11 @@ namespace SolidCP.Portal.VPS2012
 
         private bool TryToDeleteServerIsSuccess()
         {
-            // delete machine
             bool isOK = false;
+            if ((VirtualMachine)Session[sessionVMsettings] == null) //if we lost the saved settings
+                return isOK;
+
+            // delete machine
             try
             {
                 bool saveFiles = false, exportFiles = false; //not today
@@ -231,7 +236,7 @@ namespace SolidCP.Portal.VPS2012
                 {
                     System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
                     // ready for creating machine
-                    isOK = true;                    
+                    isOK = true;
                 }
                 else
                 {
@@ -245,7 +250,7 @@ namespace SolidCP.Portal.VPS2012
             }
             return isOK;
         }
-        
+
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             //Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "vps_tools",
@@ -254,7 +259,7 @@ namespace SolidCP.Portal.VPS2012
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
-        {            
+        {
             if (!chkConfirmReinstall.Checked)
             {
                 messageBox.ShowWarningMessage("VPS_REINSTALL_CONFIRM");
@@ -269,7 +274,7 @@ namespace SolidCP.Portal.VPS2012
                     {
                         TryToCreateServer();
                     }
-                }          
+                }
             }
         }
     }

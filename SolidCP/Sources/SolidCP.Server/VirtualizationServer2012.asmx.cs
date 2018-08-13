@@ -651,6 +651,12 @@ namespace SolidCP.Server
 
         #region Storage
         [WebMethod, SoapHeader("settings")]
+        public bool FileExists(string path)
+        {
+            return VirtualizationProvider.FileExists(path);
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public VirtualHardDiskInfo GetVirtualHardDiskInfo(string vhdPath)
         {
             try

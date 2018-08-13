@@ -24,7 +24,7 @@
             </asp:DropDownList>
             <asp:RequiredFieldValidator ID="valRequirePlan" runat="server" ControlToValidate="ddlPlans"
                 Display="Dynamic" ErrorMessage="*" meta:resourcekey="valRequirePlan" ValidationGroup="CreateSpace"></asp:RequiredFieldValidator>
-        </td>
+        </td>        
     </tr>
     <tr>
         <td class="SubHead"><asp:Label ID="lblStatus" runat="server" meta:resourcekey="lblStatus" Text="Space Status:"></asp:Label></td>
@@ -35,6 +35,59 @@
                 <asp:ListItem Value="3">Cancelled</asp:ListItem>
                 <asp:ListItem Value="4">New</asp:ListItem>
             </asp:DropDownList>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2"><div class="FormButtonsBar">
+            <asp:Button ID="btnAddAddon" runat="server" meta:resourcekey="btnAddAddon" Text="Add Add-on" CssClass="Button2" OnClick="btnAddAddon_Click" />
+            </div>
+        </td>
+        <td>
+            <asp:RadioButton ID="rbPlanQuotas" runat="server" GroupName="OverrideQuotas" AutoPostBack="true"
+                                meta:resourcekey="rbPlanQuotas" Text="Use quotas defined on plan level" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <asp:RadioButton ID="rbPackageQuotas" runat="server" GroupName="OverrideQuotas" AutoPostBack="true"
+                                meta:resourcekey="rbPackageQuotas" Text="Override quotas on space level" />                      
+        </td>
+    </tr>
+    <asp:Repeater ID="repHostingAddons" runat="server">
+        <HeaderTemplate>
+        </HeaderTemplate>
+        <ItemTemplate>
+        <tr>
+		    <td><%--<div class="FormButtonsBar">--%>
+                <CPCC:StyleButton id="btnRemoveAddAddon" CssClass="btn btn-danger" runat="server" CausesValidation="false" 
+                    CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemoveAddAddon_OnCommand"> 
+                    <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnRemoveAddAddonText" Text="Remove Add-on:"/> 
+                </CPCC:StyleButton>
+                <%--</div>--%>
+            </td>
+		    <td>
+			    <asp:DropDownList id="ddlPlan" runat="server" CssClass="form-control-inline" DataTextField="PlanName" 
+                    DataValueField="PlanID"></asp:DropDownList>
+			    <asp:RequiredFieldValidator id="planValidator" CssClass="NormalBold" runat="server" ErrorMessage="*"
+				    Display="Dynamic" ControlToValidate="ddlPlan" ValidationGroup="EditAddon"></asp:RequiredFieldValidator>
+
+                <asp:Label ID="lblQuantity" runat="server" meta:resourcekey="lblQuantity" Text="Quantity:"></asp:Label>
+                <asp:TextBox ID="txtQuantity" runat="server" CssClass="form-control-inline" Width="50px" Text='<%# Eval("Quantity") %>'></asp:TextBox>
+                <asp:RequiredFieldValidator ID="valQuantity" runat="server" ControlToValidate="txtQuantity"
+                CssClass="NormalBold" Display="Dynamic" ErrorMessage="*" ValidationGroup="EditAddon"></asp:RequiredFieldValidator>
+		    </td>            
+	    </tr>
+        </ItemTemplate>
+        <SeparatorTemplate>
+            <br/>
+            <%--<hr style="margin-bottom: 20px; margin-top: 10px; margin-left: 10px; margin-right: 10px;"/>--%>
+        </SeparatorTemplate>
+    </asp:Repeater>
+    <tr>
+        <td class="Normal" colspan="2">
+            <br />
+            <asp:CheckBox ID="chkRedirectToCreateVPS" runat="server" meta:resourcekey="chkRedirectToCreateVPS"
+                Text="Redirect to create VPS" Checked="False" />
         </td>
     </tr>
     <tr>
@@ -69,7 +122,7 @@
         </legend>
         <table width="100%" cellpadding="4" style="margin-bottom:20px;" cellspacing="0">
             <tr>
-                <td class="Normal" colspan="2" width="100%">
+                <td class="Normal" width="100%">
                     <scp:DomainControl ID="txtDomainName" runat="server" RequiredEnabled="True" ValidationGroup="CreateSpace" OnTextChanged="txtDomainName_OnTextChanged"></scp:DomainControl>
                 </td>
             </tr>

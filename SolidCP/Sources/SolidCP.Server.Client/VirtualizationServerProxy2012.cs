@@ -104,7 +104,9 @@ namespace SolidCP.Providers.Virtualization2012 {
         private System.Threading.SendOrPostCallback ModifyKVPItemsOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVirtualHardDiskInfoOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback FileExistsOperationCompleted;
+
         private System.Threading.SendOrPostCallback MountVirtualHardDiskOperationCompleted;
         
         private System.Threading.SendOrPostCallback UnmountVirtualHardDiskOperationCompleted;
@@ -267,7 +269,10 @@ namespace SolidCP.Providers.Virtualization2012 {
         
         /// <remarks/>
         public event GetVirtualHardDiskInfoCompletedEventHandler GetVirtualHardDiskInfoCompleted;
-        
+
+        /// <remarks/>
+        public event FileExistsCompletedEventHandler FileExistsCompleted;
+
         /// <remarks/>
         public event MountVirtualHardDiskCompletedEventHandler MountVirtualHardDiskCompleted;
         
@@ -1900,7 +1905,57 @@ namespace SolidCP.Providers.Virtualization2012 {
                 this.GetVirtualHardDiskInfoCompleted(this, new GetVirtualHardDiskInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/FileExists", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool FileExists(string path)
+        {
+            object[] results = this.Invoke("FileExists", new object[] {
+                        path});
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginFileExists(string path, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("FileExists", new object[] {
+                        path}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public bool EndFileExists(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public void FileExistsAsync(string path)
+        {
+            this.FileExistsAsync(path, null);
+        }
+
+        /// <remarks/>
+        public void FileExistsAsync(string path, object userState)
+        {
+            if ((this.FileExistsOperationCompleted == null))
+            {
+                this.FileExistsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnFileExistsOperationCompleted);
+            }
+            this.InvokeAsync("FileExists", new object[] {
+                        path}, this.FileExistsOperationCompleted, userState);
+        }
+
+        private void OnFileExistsOperationCompleted(object arg)
+        {
+            if ((this.FileExistsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.FileExistsCompleted(this, new FileExistsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/MountVirtualHardDisk", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -3908,7 +3963,37 @@ namespace SolidCP.Providers.Virtualization2012 {
             }
         }
     }
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void FileExistsCompletedEventHandler(object sender, FileExistsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class FileExistsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal FileExistsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualHardDiskInfo Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualHardDiskInfo)(this.results[0]));
+            }
+        }
+    }
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void MountVirtualHardDiskCompletedEventHandler(object sender, MountVirtualHardDiskCompletedEventArgs e);

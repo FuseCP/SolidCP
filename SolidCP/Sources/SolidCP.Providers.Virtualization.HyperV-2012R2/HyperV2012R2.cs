@@ -445,11 +445,11 @@ namespace SolidCP.Providers.Virtualization
             if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server have problem.
                 newState = VirtualMachineRequestedState.TurnOff;
 
-            try
-            {
-                string cmdTxt;
-                List<string> paramList = new List<string>();
+            string cmdTxt;
+            List<string> paramList = new List<string>();
 
+            try
+            {               
                 switch (newState)
                 {
                     case VirtualMachineRequestedState.Start:
@@ -485,8 +485,48 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Name", vm.Name);
                 //cmd.Parameters.Add("AsJob");
                 paramList.ForEach(p => cmd.Parameters.Add(p));
+                try
+                {
+                    PowerShell.Execute(cmd, true, true);
+                }
+                catch
+                {
+                    HostedSolutionLog.LogWarning(String.Format("Oops, something happend with VM state!"));
+                    bool startVM = false;
+                    paramList = new List<string>();                    
+                    switch (newState)
+                    {
+                        case VirtualMachineRequestedState.Start: //sometimes we can get an error here, but it in 90% does not mean anything.
+                            vm = GetVirtualMachine(vmId);
+                            if (vm.Heartbeat != OperationalStatus.Ok || vm.State != VirtualMachineState.Running)
+                                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Reset);
+                            cmdTxt = "";
+                            break;
+                        case VirtualMachineRequestedState.ShutDown: //get problem with Shutdown = turnoff
+                            cmdTxt = "Stop-VM";
+                            paramList.Add("TurnOff"); 
+                            break;
+                        case VirtualMachineRequestedState.Resume: //get problem with Resume = turnoff and start
+                            cmdTxt = "Stop-VM";
+                            paramList.Add("TurnOff");
+                            startVM = true;
+                            break;
+                        default: //Do not know what's going on? In 99.9% will help turnOff
+                            cmdTxt = "Stop-VM";
+                            paramList.Add("TurnOff");
+                            break;
+                    }
+                    if (!String.IsNullOrEmpty(cmdTxt))
+                    {
+                        cmd = new Command(cmdTxt);
+                        paramList.ForEach(p => cmd.Parameters.Add(p));
+                        PowerShell.Execute(cmd, true);
 
-                PowerShell.Execute(cmd, true);
+                        if (startVM)
+                            ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Start);
+                    }                    
+                }
+                
                 jobResult = JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)
@@ -502,15 +542,13 @@ namespace SolidCP.Providers.Virtualization
 
         public ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason)
         {
-
             var vm = GetVirtualMachine(vmId);
             bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused);
-
+            
             if (isServerStatusOK)
                 VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
             else
                 ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.TurnOff);
-
 
             return ReturnCode.OK;
         }
@@ -957,8 +995,8 @@ namespace SolidCP.Providers.Virtualization
             }
             catch
             {
-                HostedSolutionLog.LogError("GetKVPItems", new Exception("msvm_KvpExchangeComponent"));
-
+                //there is no point in spamming the error, if this method does not work, we have a spare method "GetHddUsagesFromKVPHyperV"
+                //HostedSolutionLog.LogError("GetKVPItems", new Exception("msvm_KvpExchangeComponent"));
                 return pairs;
             }
 
@@ -1773,11 +1811,16 @@ namespace SolidCP.Providers.Virtualization
         {
             bool jobCompleted = true;
 
+            short timeOut = 10 * 60 * 5; //10 mins
+
             while (job.JobState == ConcreteJobState.Starting ||
                 job.JobState == ConcreteJobState.Running)
             {
+                timeOut--;
                 System.Threading.Thread.Sleep(200);
                 job = GetJob(job.Id);
+                if(timeOut == 0)
+                    job.JobState = ConcreteJobState.Failed;                
             }
 
             if (job.JobState != ConcreteJobState.Completed)
