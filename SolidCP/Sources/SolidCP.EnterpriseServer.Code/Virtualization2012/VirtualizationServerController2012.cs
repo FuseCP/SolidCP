@@ -877,6 +877,7 @@ namespace SolidCP.EnterpriseServer
                 // update service item
                 VirtualMachineProvisioningStatus status = vm.ProvisioningStatus;
                 vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
+                vm.CreationTime = DateTime.Now.ToString();
                 PackageController.UpdatePackageItem(vm);
                 vm.ProvisioningStatus = status;
 
@@ -1269,6 +1270,8 @@ namespace SolidCP.EnterpriseServer
                 item.Generation = vm.Generation;
                 item.CpuCores = vm.CpuCores;
                 item.RamSize = vm.RamSize;
+                //Hyper-V usually loses CreatedDate and set it to 01/01/1601
+                item.CreationTime = vm.CreatedDate < DateTime.Now.AddYears(-10) ? DateTime.Now.ToString() : vm.CreatedDate.ToString();
                 item.DynamicMemory = vm.DynamicMemory;
                 item.HddSize = vm.HddSize;
                 item.HddMinimumIOPS = vm.HddMinimumIOPS;
@@ -1805,6 +1808,7 @@ namespace SolidCP.EnterpriseServer
             vm.Name = machine.Name;
             vm.RamSize = machine.RamSize;
             vm.ServiceId = machine.ServiceId;
+            vm.CreationTime = machine.CreationTime;
             vm.ExternalNicMacAddress = machine.ExternalNicMacAddress;
 
             return vm;

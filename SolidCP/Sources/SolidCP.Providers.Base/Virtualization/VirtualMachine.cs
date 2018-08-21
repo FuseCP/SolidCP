@@ -53,6 +53,8 @@ namespace SolidCP.Providers.Virtualization
         public OperationalStatus Heartbeat { get; set; }
 
         [Persistent]
+        public string CreationTime { get; set; }
+        [Persistent]
         public string RootFolderPath { get; set; }
         [Persistent]
         public string VirtualHardDrivePath { get; set; }
