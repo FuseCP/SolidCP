@@ -242,9 +242,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                HostedSolutionLog.LogInfo("Before Get-VM command");
-
-                //Command cmd = new Command("Get-VM"); //never not do that for getting all VMs without "Select"!!
+                //TODO: Check different structure of Keeping data.
                 Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
 
                 Collection <PSObject> result = PowerShell.Execute(cmd, true);
@@ -1645,11 +1643,15 @@ namespace SolidCP.Providers.Virtualization
                 }
                 #endregion
 
-                #region Delete virtual machine 
-                //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
+                #region Delete virtual machine folder
                 try
                 {
-                    DeleteFile(vm.RootFolderPath);//TODO: replace by powershell with checking folders size ???
+                    //DeleteFile(vm.RootFolderPath); //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended
+                    if (IsEmptyFolders(vm.RootFolderPath))
+                        DeleteFolder(vm.RootFolderPath);
+                    else
+                        HostedSolutionLog.LogWarning(String.Format("Cannot delete virtual machine folder '{0}' it is not Empty!",
+                        vm.RootFolderPath));
                 }
                 catch (Exception ex)
                 {
@@ -1945,6 +1947,13 @@ namespace SolidCP.Providers.Virtualization
                 objFile.InvokeMethod("Copy", new object[] { destinationFileName });
             }
             return true;
+        }
+
+        public bool IsEmptyFolders(string path)
+        {
+            Command cmdScript = new Command("dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname", true);
+            Collection<PSObject> result = PowerShell.Execute(cmdScript, true);
+            return result.Count < 1;
         }
 
         public void DeleteFile(string path)
