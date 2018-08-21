@@ -20531,9 +20531,26 @@ BEGIN
 END
 GO
 
+-- cerberus FTP additions
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Cerberus FTP Server 6.x')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(110, 3, N'CerberusFTP6', N'Cerberus FTP Server 6.x', N'SolidCP.Providers.FTP.CerberusFTP6, SolidCP.Providers.FTP.CerberusFTP6', N'CerberusFTP6',	NULL)
 END
 GO
+
+-- spamexperts additions
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SpamExperts Mail Filter')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1602, 61, N'SpamExperts', N'SpamExperts Mail Filter', N'SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts', N'SpamExperts',	NULL)
+END
+GO
+
+IF EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = N'Exchange_anti_spam_Filters')
+BEGIN
+	UPDATE [dbo].[ResourceGroups] SET [GroupName] = 'Mail Filters' WHERE [GroupName] = 'Exchange_anti_spam_Filters'
+END
+GO
+
+
