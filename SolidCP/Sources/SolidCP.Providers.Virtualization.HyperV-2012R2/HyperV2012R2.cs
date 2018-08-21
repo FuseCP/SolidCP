@@ -242,6 +242,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
+                HostedSolutionLog.LogInfo("Before Get-VM command");
                 //TODO: Check different structure of Keeping data.
                 Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
 
