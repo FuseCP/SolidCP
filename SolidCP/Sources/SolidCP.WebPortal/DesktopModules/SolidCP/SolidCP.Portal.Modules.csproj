@@ -244,6 +244,13 @@
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.designer.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ProviderControls\SpamExperts_Settings.ascx.cs">
+      <DependentUpon>SpamExperts_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SpamExperts_Settings.ascx.designer.cs">
+      <DependentUpon>SpamExperts_Settings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_Settings.ascx.cs">
       <DependentUpon>CerberusFTP6_Settings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5433,6 +5440,7 @@
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
+    <Content Include="ProviderControls\SpamExperts_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
     <Content Include="ProviderControls\Proxmox_Settings.ascx" />
     <Content Include="Proxmox\RemoteControl\Connect.aspx" />

@@ -97,6 +97,7 @@
     <Compile Include="SfBProxy.cs" />
     <Compile Include="LyncProxy.cs" />
     <Compile Include="RemoteDesktopServicesProxy.cs" />
+    <Compile Include="SpamExpertsProxy.cs" />
     <Compile Include="StorageSpacesProxy.cs" />
     <Compile Include="VirtualizationServerProxyProxmox.cs" />
     <Compile Include="VirtualizationServerProxy2012.cs" />

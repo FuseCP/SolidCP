@@ -242,11 +242,9 @@
 <fieldset>
     <legend>
         <asp:Label ID="lblRouteFromSE" runat="server" meta:resourcekey="lblRouteFromSE"
-            Text="Route from SE to:" CssClass="NormalBold"></asp:Label>&nbsp;
+            Text="Automatic Mail Filter" CssClass="NormalBold"></asp:Label>&nbsp;
     </legend>
-    <div class="Content">
-        <p>Please note this will be moving to its own provider in future versions. We will provide a clear notice in the release notes.</p>
-    </div>
+    <asp:CheckBox ID="chkSEEnable" runat="server" meta:resourcekey="chkEnableSE" Text="Enable Automatic Mail Filtering (SpamExperts) for domains managed by this provider" />
     <asp:UpdatePanel ID="GeneralUpdatePanel" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="true">
         <ContentTemplate>
             <asp:GridView id="gvSEDestinations" runat="server"  EnableViewState="true" AutoGenerateColumns="false"

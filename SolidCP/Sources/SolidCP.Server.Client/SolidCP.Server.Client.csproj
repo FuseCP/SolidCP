@@ -38,7 +38,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -99,6 +99,7 @@
     <Compile Include="RemoteDesktopServicesProxy.cs" />
     <Compile Include="ServiceProviderProxy.cs" />
     <Compile Include="SharePointServerProxy.cs" />
+    <Compile Include="SpamExpertsProxy.cs" />
     <Compile Include="StatisticsServerProxy.cs" />
     <Compile Include="StorageSpacesProxy.cs" />
     <Compile Include="VirtualizationServerForPrivateCloudProxy.cs" />

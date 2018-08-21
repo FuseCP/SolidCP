@@ -32,10 +32,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
+using System.IO;
+using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Code.MailServers;
 using SolidCP.Providers;
 using SolidCP.Providers.Mail;
@@ -1041,8 +1045,21 @@ namespace SolidCP.EnterpriseServer
 			// create domain
 			try
 			{
-				// check service items
-				MailServer mail = new MailServer();
+
+                // check if spamexperts filter is needed
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(item.ServiceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+
+                    SpamExpertsRoute route = new SpamExpertsRoute();
+                    route.PackageId = item.PackageId;
+                    route.DomainName = item.Name;
+                    route.Route = settings["MailFilterDestinations"];
+                    SpamExpertsController.AddDomainFilter(route);
+                }
+                return 0;
+                // check service items
+                MailServer mail = new MailServer();
 				ServiceProviderProxy.Init(mail, item.ServiceId);
 				if (mail.DomainExists(item.Name))
 					return BusinessErrorCodes.ERROR_MAIL_DOMAIN_EXISTS;
@@ -1076,6 +1093,7 @@ namespace SolidCP.EnterpriseServer
 						AddMailDomainPointer(itemId, previewDomain.DomainId);
 					}
 				}
+                
 
 				TaskManager.ItemId = itemId;
 				

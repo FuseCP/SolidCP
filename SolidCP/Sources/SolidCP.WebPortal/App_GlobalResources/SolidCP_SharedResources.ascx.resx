@@ -6337,8 +6337,8 @@
   <data name="Quota.Filters.Enable" xml:space="preserve">
     <value>Enable Spam Filter</value>
   </data>
-  <data name="ResourceGroup.Exchange_anti_spam_Filters" xml:space="preserve">
-    <value>Exchange anti-spam Filter</value>
+  <data name="ResourceGroup.Mail_Filters" xml:space="preserve">
+    <value>Anti-Spam Filter</value>
   </data>
   <data name="Error.SERVERSEDITEVENTVIEWER_SELECTED" xml:space="preserve">
     <value>Error while getting the event log entries.</value>

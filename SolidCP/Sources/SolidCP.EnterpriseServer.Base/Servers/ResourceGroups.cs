@@ -70,6 +70,6 @@ namespace SolidCP.EnterpriseServer
         public const string ServiceLevels = "Service Levels";
         public const string RDS = "RDS";
         public const string StorageSpaces = "StorageSpaceServices";
-        public const string Filters = "Exchange_anti_spam_Filters";
+        public const string Filters = "Mail Filters";
     }
 }
