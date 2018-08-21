@@ -151,6 +151,8 @@ namespace SolidCP.Providers.Virtualization
 
         [Persistent]
         public int Generation { get; set; }
+        [Persistent]
+        public bool EnableSecureBoot { get; set; }
 
         [Persistent]
         public int ProcessorCount { get; set; }

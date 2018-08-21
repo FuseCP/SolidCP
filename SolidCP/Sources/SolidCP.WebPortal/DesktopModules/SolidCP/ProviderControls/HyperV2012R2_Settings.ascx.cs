@@ -426,6 +426,7 @@ namespace SolidCP.Portal.ProviderControls
                 template.ProcessVolume = processVolume;
                 template.Generation = GetDropDownListSelectedIndex(item, "ddlTemplateGeneration");
 
+                template.EnableSecureBoot = GetCheckBoxValue(item, "chkEnableSecureBoot");
                 template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
                 template.RemoteDesktop = true; // obsolete
                 template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");

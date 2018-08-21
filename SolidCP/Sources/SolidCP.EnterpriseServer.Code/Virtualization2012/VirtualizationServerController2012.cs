@@ -537,6 +537,7 @@ namespace SolidCP.EnterpriseServer
                             if (osTemplate.Generation < 1)
                                 throw new Exception("The generation of VM was not configured in the template");
                             vm.Generation = osTemplate.Generation;
+                            vm.EnableSecureBoot = osTemplate.Generation == 1 ? false : osTemplate.EnableSecureBoot;
                             vm.OperatingSystemTemplate = osTemplate.Name;
                             vm.LegacyNetworkAdapter = osTemplate.LegacyNetworkAdapter;
                             vm.RemoteDesktopEnabled = osTemplate.RemoteDesktop;
@@ -917,73 +918,73 @@ namespace SolidCP.EnterpriseServer
                     }
                     #endregion
 
-                    #region Get VHD info
-                    VirtualHardDiskInfo vhdInfo = null;
+                #region Get VHD info
+                VirtualHardDiskInfo vhdInfo = null;
+                try
+                {
+                    vhdInfo = vs.GetVirtualHardDiskInfo(vm.VirtualHardDrivePath);
+                }
+                catch (Exception ex)
+                {
+                    TaskManager.WriteError(ex, "VPS_CREATE_GET_VHD_INFO");
+                    return;
+                }
+
+                if (vhdInfo == null || vhdInfo.InUse)
+                {
+                    // master VHD is in use
+                    TaskManager.WriteError("VPS_CREATE_MASTER_VHD_IN_USE");
+                    return;
+                }
+
+                // check if it should be expanded
+                int hddSizeGB = Convert.ToInt32(vhdInfo.MaxInternalSize / Size1G);
+
+                TaskManager.Write("VPS_CREATE_EXPAND_SOURCE_VHD_SIZE", hddSizeGB.ToString());
+                TaskManager.Write("VPS_CREATE_EXPAND_DEST_VHD_SIZE", vm.HddSize.ToString());
+                #endregion
+
+                #region Expand VHD
+                bool expanded = false;
+                if (vm.HddSize > hddSizeGB)
+                {
+                    TaskManager.Write("VPS_CREATE_EXPAND_VHD");
+                    TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+
+                    // expand VHD
                     try
                     {
-                        vhdInfo = vs.GetVirtualHardDiskInfo(vm.VirtualHardDrivePath);
+                        result = vs.ExpandVirtualHardDisk(vm.VirtualHardDrivePath, (ulong)vm.HddSize);
                     }
                     catch (Exception ex)
                     {
-                        TaskManager.WriteError(ex, "VPS_CREATE_GET_VHD_INFO");
+                        TaskManager.WriteError(ex, "VPS_CREATE_EXPAND_VHD_ERROR");
                         return;
                     }
 
-                    if (vhdInfo == null || vhdInfo.InUse)
+                    // check return
+                    if (result.ReturnValue != ReturnCode.JobStarted)
                     {
-                        // master VHD is in use
-                        TaskManager.WriteError("VPS_CREATE_MASTER_VHD_IN_USE");
+                        // error starting Expand job
+                        TaskManager.WriteError("VPS_CREATE_EXPAND_VHD_ERROR_JOB_START", result.ReturnValue.ToString());
                         return;
                     }
 
-                    // check if it should be expanded
-                    int hddSizeGB = Convert.ToInt32(vhdInfo.MaxInternalSize / Size1G);
-
-                    TaskManager.Write("VPS_CREATE_EXPAND_SOURCE_VHD_SIZE", hddSizeGB.ToString());
-                    TaskManager.Write("VPS_CREATE_EXPAND_DEST_VHD_SIZE", vm.HddSize.ToString());
-                    #endregion
-
-                    #region Expand VHD
-                    bool expanded = false;
-                    if (vm.HddSize > hddSizeGB)
+                    // wait for completion
+                    if (!JobCompleted(vs, result.Job))
                     {
-                        TaskManager.Write("VPS_CREATE_EXPAND_VHD");
-                        TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
-
-                        // expand VHD
-                        try
-                        {
-                            result = vs.ExpandVirtualHardDisk(vm.VirtualHardDrivePath, (ulong)vm.HddSize);
-                        }
-                        catch (Exception ex)
-                        {
-                            TaskManager.WriteError(ex, "VPS_CREATE_EXPAND_VHD_ERROR");
-                            return;
-                        }
-
-                        // check return
-                        if (result.ReturnValue != ReturnCode.JobStarted)
-                        {
-                            // error starting Expand job
-                            TaskManager.WriteError("VPS_CREATE_EXPAND_VHD_ERROR_JOB_START", result.ReturnValue.ToString());
-                            return;
-                        }
-
-                        // wait for completion
-                        if (!JobCompleted(vs, result.Job))
-                        {
-                            // error executing Expand job
-                            TaskManager.WriteError("VPS_CREATE_EXPAND_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription);
-                            return;
-                        }
-                        expanded = true;
+                        // error executing Expand job
+                        TaskManager.WriteError("VPS_CREATE_EXPAND_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription);
+                        return;
                     }
-                    else
-                    {
-                        // skip expanding
-                        TaskManager.Write("VPS_CREATE_EXPAND_VHD_SKIP");
-                    }
-                    #endregion
+                    expanded = true;
+                }
+                else
+                {
+                    // skip expanding
+                    TaskManager.Write("VPS_CREATE_EXPAND_VHD_SKIP");
+                }
+                #endregion
                 
                 #region Process VHD contents
                    // mount VHD
@@ -1268,6 +1269,7 @@ namespace SolidCP.EnterpriseServer
                 item.ProvisioningStatus = VirtualMachineProvisioningStatus.OK;
 
                 item.Generation = vm.Generation;
+                item.EnableSecureBoot = vm.EnableSecureBoot;
                 item.CpuCores = vm.CpuCores;
                 item.RamSize = vm.RamSize;
                 //Hyper-V usually loses CreatedDate and set it to 01/01/1601

@@ -415,7 +415,7 @@ namespace SolidCP.Providers.Virtualization
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
-                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled);
+                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot);
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);

@@ -231,6 +231,7 @@
                         <asp:CheckBox ID="chkCanSetComputerName" runat="server" Checked='<%# Eval("ProvisionComputerName") %>' meta:resourcekey="chkCanSetComputerName" Text="Can set a computer name" /><br />
                         <asp:CheckBox ID="chkCanSetAdminPass" runat="server" Checked='<%# Eval("ProvisionAdministratorPassword") %>' meta:resourcekey="chkCanSetAdminPass" Text="Can set an Administrator password" /><br />
                         <asp:CheckBox ID="chkCanSetNetwork" runat="server" Checked='<%# Eval("ProvisionNetworkAdapters") %>' meta:resourcekey="chkCanSetNetwork" Text="Can set Ip addresses" /><br />
+                        <asp:CheckBox ID="chkEnableSecureBoot" runat="server" Checked='<%# Eval("EnableSecureBoot") %>' meta:resourcekey="chkEnableSecureBoot" Text="Enable Secure Boot (Second Generation only)" /><br />
                     </td>
                     <td rowspan="3">
                         <CPCC:StyleButton id="btnRemoveOsTemplate" CssClass="btn btn-danger" runat="server" CausesValidation="false" CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemoveOsTemplate_OnCommand"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnRemoveOsTemplateText"/> </CPCC:StyleButton>
