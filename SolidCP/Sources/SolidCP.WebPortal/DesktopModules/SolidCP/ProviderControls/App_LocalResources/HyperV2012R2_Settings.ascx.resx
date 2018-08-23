@@ -186,7 +186,8 @@
   <data name="locPatternText.Text" xml:space="preserve">
     <value>When user is not allowed to specify their custom host name the system will generate the host name for new VPS based on this pattern.&lt;br/&gt;&lt;br/&gt;
 The following substitution variables can be used in the pattern:&lt;br/&gt;
-[USERNAME], [USER_ID], [SPACE_ID]</value>
+[USERNAME], [USER_ID], [SPACE_ID], [ip_last_1_octect], [ip_last_2_octects], [ip_last_3_octects], [ip_last_4_octects] &lt;br/&gt;
+Example: vm-[USERNAME]-[USER_ID].domain.local</value>
   </data>
   <data name="locPreferredNameServer.Text" xml:space="preserve">
     <value>Preferred Name Server:</value>

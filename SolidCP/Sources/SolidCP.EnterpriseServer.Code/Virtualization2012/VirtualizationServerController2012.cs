@@ -353,27 +353,7 @@ namespace SolidCP.EnterpriseServer
                 if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
                     return res;
 
-                #endregion
-
-                #region Check if host name is already used
-
-                try
-                {
-                    ServiceProviderItem item = PackageController.GetPackageItemByName(packageId, VMSettings.Name,
-                                                                                      typeof(VirtualMachine));
-                    if (item != null)
-                    {
-                        res.ErrorCodes.Add(VirtualizationErrorCodes.HOST_NAMER_IS_ALREADY_USED);
-                        return res;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    res.AddError(VirtualizationErrorCodes.CANNOT_CHECK_HOST_EXISTS, ex);
-                    return res;
-                }
-
-                #endregion
+                #endregion                
 
                 #region Check Quotas
                 // check quotas
@@ -467,12 +447,66 @@ namespace SolidCP.EnterpriseServer
                 }
                 #endregion
 
+                #region Setup external Unallotted IPs network
+                // setup external Unallotted IPs network
+                if (VMSettings.ExternalNetworkEnabled)
+                {
+                    int maxItems = 100000000;
+                    PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
+                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;
+                    if (ips.Length == 0) //if the Customer does not have IP - addresses
+                    {
+                        // assign selected IP addresses to package
+                        ServerController.AllocatePackageIPAddresses(packageId, externalAddresses);
+
+                        // re-read package IPs
+                        List<PackageIPAddress> packageIPs = ServerController.GetPackageUnassignedIPAddresses(
+                                        packageId, IPAddressPool.VpsExternalNetwork);
+                        // get new externalAddresses IDs (Yep, very strange WSP/SolidCP logic)
+                        for (int i = 0; i < externalAddresses.Length; i++)
+                        {
+                            externalAddresses[i] = packageIPs[i].PackageAddressID;
+                        }
+                    }
+                }
+                #endregion
+
                 #region Context variables
                 // service ID
                 int serviceId = GetServiceId(packageId);
 
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(serviceId);
+                #endregion
+                               
+                #region Check host name
+                                
+                if (string.IsNullOrEmpty(VMSettings.Name))
+                {
+                    string hostnamePattern = settings["HostnamePattern"];                    
+                    if (hostnamePattern.IndexOf("[") == -1) //If we do not find a pattern, replace the string with the default value
+                    {
+                        hostnamePattern = "ip-[ip_last_4_octects]-id[space_id].hostname.local";
+                    }
+                    VMSettings.Name = EvaluateSpaceVariables(hostnamePattern, packageId);
+                }
+
+                try //TODO: Change this check. It works only in one Package. Just use => packageId = 1?
+                {
+                    ServiceProviderItem item = PackageController.GetPackageItemByName(packageId, VMSettings.Name,
+                                                                                      typeof(VirtualMachine));
+                    if (item != null)
+                    {
+                        res.ErrorCodes.Add(VirtualizationErrorCodes.HOST_NAMER_IS_ALREADY_USED);
+                        return res;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    res.AddError(VirtualizationErrorCodes.CANNOT_CHECK_HOST_EXISTS, ex);
+                    return res;
+                }
+
                 #endregion
 
                 #region Create meta item
@@ -598,43 +632,6 @@ namespace SolidCP.EnterpriseServer
 
                 #endregion
 
-                #region Setup external Unallotted IPs network
-                // setup external Unallotted IPs network
-                if (vm.ExternalNetworkEnabled)
-                {
-                    int maxItems = 100000000;
-                    PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
-                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;
-                    if(ips.Length == 0)
-                    {
-                        // assign selected IP addresses to package
-                        ServerController.AllocatePackageIPAddresses(packageId, externalAddresses);
-
-                        // re-read package IPs
-                        List<PackageIPAddress> packageIPs = ServerController.GetPackageUnassignedIPAddresses(
-                                        packageId, IPAddressPool.VpsExternalNetwork);
-
-                        // assign IP addresses to VM
-                        for (int i = 0; i < externalAddresses.Length; i++)
-                        {
-                            foreach (PackageIPAddress ip in packageIPs)
-                            {
-                                if (ip.AddressID == externalAddresses[i])
-                                {
-                                    // assign to the item
-                                    ServerController.AddItemIPAddress(vm.Id, ip.PackageAddressID);
-
-                                    // set primary IP address
-                                    if (i == 0)
-                                        ServerController.SetItemPrimaryIPAddress(vm.Id, ip.PackageAddressID);
-                                    break;
-                                }
-                            }
-                        }
-                    }                    
-                }
-                #endregion
-
                 #region Start Asynchronous task
                 try
                 {
@@ -743,7 +740,7 @@ namespace SolidCP.EnterpriseServer
                 try
                 {
                     if (vm.ExternalNetworkEnabled)
-                    {
+                    {                        
                         // provision IP addresses
                         ResultObject privResult = AddVirtualMachineInternalIPAddresses(vm.Id, randomExternalAddresses,
                             externalAddressesNumber, externalAddresses, false, vm.defaultaccessvlan);
@@ -886,37 +883,37 @@ namespace SolidCP.EnterpriseServer
                 JobResult result = null;
                 ReturnCode code = ReturnCode.OK;
 
-                    TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);
-                    TaskManager.Write("VPS_CREATE_CONVERT_VHD");
-                    TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
-                    TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
-                    TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
-                    try
-                    {
-                        // convert VHD
-                        VirtualHardDiskType vhdType = (VirtualHardDiskType)Enum.Parse(typeof(VirtualHardDiskType), settings["VirtualDiskType"], true);
-                        result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath, vhdType);
+                TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);
+                TaskManager.Write("VPS_CREATE_CONVERT_VHD");
+                TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
+                TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
+                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                try
+                {
+                    // convert VHD
+                    VirtualHardDiskType vhdType = (VirtualHardDiskType)Enum.Parse(typeof(VirtualHardDiskType), settings["VirtualDiskType"], true);
+                    result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath, vhdType);
 
-                        // check return
-                        if (result.ReturnValue != ReturnCode.JobStarted)
-                        {
-                            TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_START", result.ReturnValue.ToString());
-                            return;
-                        }
-
-                        // wait for completion
-                        if (!JobCompleted(vs, result.Job))
-                        {
-                            TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
+                    // check return
+                    if (result.ReturnValue != ReturnCode.JobStarted)
                     {
-                        TaskManager.WriteError(ex, "VPS_CREATE_CONVERT_VHD_ERROR");
+                        TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_START", result.ReturnValue.ToString());
                         return;
                     }
-                    #endregion
+
+                    // wait for completion
+                    if (!JobCompleted(vs, result.Job))
+                    {
+                        TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TaskManager.WriteError(ex, "VPS_CREATE_CONVERT_VHD_ERROR");
+                    return;
+                }
+                #endregion
 
                 #region Get VHD info
                 VirtualHardDiskInfo vhdInfo = null;
@@ -1731,14 +1728,22 @@ namespace SolidCP.EnterpriseServer
             // load package
             PackageInfo package = PackageController.GetPackage(packageId);
             UserInfo user = UserController.GetUser(package.UserId);
+            // get 1 IP of VM
+            PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
+                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, 1, true).Items;
+
             str = Utils.ReplaceStringVariable(str, "space_id", packageId.ToString());
             str = Utils.ReplaceStringVariable(str, "space_name", package.PackageName);
             str = Utils.ReplaceStringVariable(str, "user_id", user.UserId.ToString());
             str = Utils.ReplaceStringVariable(str, "username", user.Username);
+            str = Utils.ReplaceStringVariable(str, "ip_last_1_octect", GetIPv4LastOctetsFromPackage(1,packageId,ips));
+            str = Utils.ReplaceStringVariable(str, "ip_last_2_octects", GetIPv4LastOctetsFromPackage(2, packageId, ips));
+            str = Utils.ReplaceStringVariable(str, "ip_last_3_octects", GetIPv4LastOctetsFromPackage(3, packageId, ips));
+            str = Utils.ReplaceStringVariable(str, "ip_last_4_octects", GetIPv4LastOctetsFromPackage(4, packageId, ips));
 
             return EvaluateRandomSymbolsVariables(str);
         }
-
+                
         private static string EvaluateRandomSymbolsVariables(string str)
         {
             str = Utils.ReplaceStringVariable(str, "guid", Guid.NewGuid().ToString("N"));
@@ -1746,6 +1751,29 @@ namespace SolidCP.EnterpriseServer
 
             return str;
         }
+
+        private static string GetIPv4LastOctetsFromPackage(ushort octets, int packageId)
+        {
+            return GetIPv4LastOctetsFromPackage(octets, packageId, null);
+        }
+        private static string GetIPv4LastOctetsFromPackage(ushort octets, int packageId, PackageIPAddress[] ips)
+        {
+            int maxItems = 1;
+            string ExternalIP = "127.0.0.1"; //just a default IP
+            if(ips == null || ips.Length == 0)
+                ips = ServerController.GetPackageIPAddresses(packageId, 0,
+                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;
+            if(ips.Length > 0)
+                ExternalIP = ips[0].ExternalIP;            
+
+            byte[] Bytes = System.Net.IPAddress.Parse(ExternalIP).GetAddressBytes();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 4 - octets; i < 4; i++)
+                sb.AppendFormat("{0}-", Bytes[i]);
+            sb.Length--; //delete the last symbol "-"
+
+            return sb.ToString();
+        } 
         #endregion
 
         #region VPS – General

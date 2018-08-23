@@ -72,6 +72,11 @@
 			                                        ControlToValidate="txtDomain" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
 			                                    </asp:RegularExpressionValidator>
                                                 </div>
+
+                                        <div class="col-sm-10">
+                                            <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="true"
+                                                Text="Generate Auto HostName" meta:resourcekey="chkAutoHostName" />
+                                        </div>
                                  </div>
                                 <div class="form-group">
                                 <asp:Label ID="locOperatingSystem" meta:resourcekey="locOperatingSystem" runat="server" Text="Operating system:" CssClass="col-sm-2"  AssociatedControlID="listOperatingSystems"></asp:Label>

@@ -629,7 +629,7 @@
 		        <asp:Localize ID="locHostnamePattern" runat="server" meta:resourcekey="locHostnamePattern" Text="VPS host name pattern:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox Width="200px" CssClass="form-control" Runat="server" ID="txtHostnamePattern"></asp:TextBox>
+                <asp:TextBox CssClass="form-control" Runat="server" ID="txtHostnamePattern"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="HostnamePatternValidator" runat="server" ControlToValidate="txtHostnamePattern"
                     Text="*" meta:resourcekey="HostnamePatternValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>

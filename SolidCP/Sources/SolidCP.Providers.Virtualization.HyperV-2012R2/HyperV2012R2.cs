@@ -1269,6 +1269,8 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Path", sourcePath);
                 cmd.Parameters.Add("DestinationPath", destinationPath);
                 cmd.Parameters.Add("VHDType", diskType.ToString());
+                //if(BlockSizeMB>0)
+                //    cmd.Parameters.Add("BlockSizeBytes", BlockSizeMB.ToString()+"MB");
 
                 PowerShell.Execute(cmd, true, true);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);

@@ -121,6 +121,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.RegularExpressionValidator valNewDomainFormat;
         
         /// <summary>
+        /// chkAutoHostName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkAutoHostName;
+        
+        /// <summary>
         /// locOperatingSystem control.
         /// </summary>
         /// <remarks>

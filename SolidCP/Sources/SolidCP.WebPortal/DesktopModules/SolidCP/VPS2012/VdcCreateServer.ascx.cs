@@ -66,6 +66,7 @@ namespace SolidCP.Portal.VPS2012
         }
         private readonly string sessionisUnassignedPackageIPs = "isUnassignedPackageIPs"
                                     + new Random((int)DateTime.Now.Ticks & 0x0000FFFF).Next(0, int.MaxValue);
+
         private void ToggleWizardSteps()
         {
             Session.Timeout = 10;
@@ -314,6 +315,19 @@ namespace SolidCP.Portal.VPS2012
 
         private void ToggleControls()
         {
+            txtHostname.Enabled = txtDomain.Enabled = true;
+            string defaultHostname = "The-name-will-be";
+            if (chkAutoHostName.Checked)
+            {
+                txtHostname.Text = defaultHostname;
+                txtDomain.Text = "generated.automatically";
+                txtHostname.Enabled = txtDomain.Enabled = false;
+            }else if(string.Equals(txtHostname.Text, defaultHostname))
+            {
+                txtHostname.Text = "";
+                txtDomain.Text = "";
+            }
+
             if (ViewState["Password"] != null)
                 password.Password = ViewState["Password"].ToString();
 
@@ -469,7 +483,7 @@ namespace SolidCP.Portal.VPS2012
                 this.SaveSettingsControls(ref virtualMachine);
 
                 // collect and prepare data
-                virtualMachine.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
+                virtualMachine.Name = chkAutoHostName.Checked ? "" : String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
                 virtualMachine.PackageId = PanelSecurity.PackageId;
                 virtualMachine.CpuCores = Utils.ParseInt(ddlCpu.SelectedValue);
                 virtualMachine.RamSize = Utils.ParseInt(txtRam.Text.Trim());
