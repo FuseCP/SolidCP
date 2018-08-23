@@ -83,6 +83,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult ModifyKVPItems(string vmId, KvpExchangeDataItem[] items);
 
         // Storage
+        bool IsEmptyFolders(string path);
         bool FileExists(string path);
         VirtualHardDiskInfo GetVirtualHardDiskInfo(string vhdPath);
         MountedDiskInfo MountVirtualHardDisk(string vhdPath);

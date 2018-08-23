@@ -3716,7 +3716,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Tools
-        public static ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        public static ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath) //TODO: Is possible to rework method (Duplicated in server)?
         {
             ResultObject res = new ResultObject();
 
@@ -3827,11 +3827,12 @@ namespace SolidCP.EnterpriseServer
                 #region delete files
                 if (!saveFiles)
                 {
-                    TaskManager.Write("VPS_DELETE_FILES", vm.RootFolderPath);
-                    //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
+                    TaskManager.Write("VPS_DELETE_FILES", vm.RootFolderPath);                    
                     try
-                    {
-                        vs.DeleteRemoteFile(vm.RootFolderPath);//TODO: replace by powershell with checking folders size ???
+                    {                       
+                        if (vs.IsEmptyFolders(vm.RootFolderPath)) //Prevent a possible hack to delete all files from the Main server :D
+                            //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
+                            vs.DeleteRemoteFile(vm.RootFolderPath);//TODO: replace by powershell ???
                     }
                     catch (Exception ex)
                     {
@@ -3853,10 +3854,11 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
+        ////TODO: Change signature of method.
         public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            // VPS - REINSTALL
+            //TODO: Move here all the methods that we use to reinstall.
             return 0;
         }
         #endregion

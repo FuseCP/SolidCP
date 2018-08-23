@@ -651,6 +651,12 @@ namespace SolidCP.Server
 
         #region Storage
         [WebMethod, SoapHeader("settings")]
+        public bool IsEmptyFolders(string path)
+        {
+            return VirtualizationProvider.IsEmptyFolders(path);
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public bool FileExists(string path)
         {
             return VirtualizationProvider.FileExists(path);
