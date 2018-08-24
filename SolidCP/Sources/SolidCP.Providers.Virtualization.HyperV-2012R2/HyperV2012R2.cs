@@ -1718,7 +1718,7 @@ namespace SolidCP.Providers.Virtualization
                     VersionsConfig = new double[] { 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
                     break;
                 default:    //If we don't know or Windwos too old (Windows 2012R2)
-                    VersionsConfig = new double[] { 0.0 };
+                    VersionsConfig = new double[] { -1.0 };
                     break;
             }       
             
