@@ -191,7 +191,32 @@
 	 </table>
 </fieldset>
 <br />
-
+<fieldset>
+    <legend>
+        <asp:Localize ID="locConfigVersion" runat="server" meta:resourcekey="locConfigVersion" Text="Virtual Machines Configuration Version"></asp:Localize>
+    </legend>
+    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+	    <tr><td class="SubHead" style="width:200px;">
+                        <asp:Localize ID="locHyperVConfig" runat="server" meta:resourcekey="locHyperVConfig" Text="HyperV Config Version:"></asp:Localize>
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ddlHyperVConfig" runat="server" CssClass="form-control" Width="450"
+                            DataValueField="ConfigVersion" DataTextField="Name" SelectedIndex='<%# Eval("HyperVConfigurationVersion") %>'>
+                                <asp:ListItem Text="Default Windows Version" Value="0.0"></asp:ListItem>
+                                <asp:ListItem Text="5.0 (Windows 2012R2)" Value="5.0"></asp:ListItem>
+                                <asp:ListItem Text="8.0 (Windows 2016 (version 1607))" Value="8.0"></asp:ListItem>
+                                <asp:ListItem Text="8.1 (Windows 10 (version 1703))" Value="8.1"></asp:ListItem>
+                                <asp:ListItem Text="8.2 (Windows 10 (version 1709))" Value="8.2"></asp:ListItem>
+                        </asp:DropDownList>
+                        
+                    </td>
+                </tr>
+	</table>
+	<p style="margin: 10px;">
+	    <asp:Localize ID="locConfigVersionText" runat="server" meta:resourcekey="locConfigVersionText" Text="Help text goes here..."></asp:Localize>
+	</p>
+</fieldset>
+<br />
 <fieldset>
     <legend>
         <asp:Localize ID="locTemplates" runat="server" meta:resourcekey="locTemplates" Text="OS Templates"></asp:Localize>

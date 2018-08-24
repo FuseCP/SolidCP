@@ -80,6 +80,9 @@ namespace SolidCP.Portal.ProviderControls
             txtCpuReserve.Text = settings["CpuReserve"];
             txtCpuWeight.Text = settings["CpuWeight"];
 
+            // Default Windows Configure Version
+            ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
+
             // OS Templates
             txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
             repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
@@ -163,6 +166,9 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuLimit"] = txtCpuLimit.Text.Trim();
             settings["CpuReserve"] = txtCpuReserve.Text.Trim();
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
+
+            // Default Windows Configure Version
+            settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;
 
             // OS Templates
             settings["OsTemplates"] = GetConfigXml(GetOsTemplates());

@@ -170,11 +170,11 @@ namespace SolidCP.Providers.Virtualization
                     vm.Name = result[0].GetString("Name");
                     vm.State = result[0].GetEnum<VirtualMachineState>("State");
                     vm.CpuUsage = ConvertNullableToInt32(result[0].GetProperty("CpuUsage"));
-                    vm.Version = Convert.ToDouble(ConvertNullableToDouble(result[0].GetProperty("Version")));
+                    vm.Version = string.IsNullOrEmpty(result[0].GetString("Version")) ? "0.0": result[0].GetString("Version");
                     // This does not truly give the RAM usage, only the memory assigned to the VPS - True for Version 5.0
                     // Lets handle detection of total memory and usage else where. SetUsagesFromKVP method have been made for it.
 
-                    if (vm.Version > Constants.ConfigurationVersion)
+                    if (Convert.ToDouble(vm.Version) > Convert.ToDouble(Constants.ConfigurationVersion))
                         vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryDemand")) / Constants.Size1M);
                     else
                         vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryAssigned")) / Constants.Size1M);
@@ -364,6 +364,8 @@ namespace SolidCP.Providers.Virtualization
                 cmdNew.Parameters.Add("Generation", vm.Generation > 1 ? vm.Generation : 1);
                 cmdNew.Parameters.Add("VHDPath", vm.VirtualHardDrivePath);
                 cmdNew.Parameters.Add("Path", msHyperVFolderPath);
+                if(CheckVersionConfigSupport(ConvertNullableToDouble(vm.Version)))
+                    cmdNew.Parameters.Add("Version", vm.Version);
                 PowerShell.Execute(cmdNew, true, true);
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
@@ -1685,6 +1687,44 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Private Methods
+        private bool CheckVersionConfigSupport(double version)
+        {
+            int CurrentBuild;
+            try
+            {
+                CurrentBuild = ConvertNullableToInt32(Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", ""));
+            }
+            catch
+            {
+                CurrentBuild = 0;
+            }
+
+            double[] VersionsConfig;
+            switch(CurrentBuild)
+            {
+                //case 9600: //Server 2012R2/Windows 8.1
+                //    VersionsConfig = new double[] { 5.0 };
+                //    break;
+                case 10586: //Windows 10 1511
+                    VersionsConfig = new double[] { 7.0, 6.2, 5.0 };
+                    break;
+                case 14393: //Windows Server 2016/Windows 10 1607
+                    VersionsConfig = new double[] { 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 15063: //Windows 10 1703
+                    VersionsConfig = new double[] { 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 16299: //Windows 10 1709
+                    VersionsConfig = new double[] { 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                default:    //If we don't know or Windwos too old (Windows 2012R2)
+                    VersionsConfig = new double[] { 0.0 };
+                    break;
+            }       
+            
+            return Array.IndexOf(VersionsConfig, version) != -1;
+        }
+
         internal double ConvertNullableToDouble(object value)
         {
             return value == null ? 0 : Convert.ToDouble(value);

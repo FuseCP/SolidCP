@@ -517,7 +517,8 @@ namespace SolidCP.EnterpriseServer
                 vm.AdministratorPassword = CryptoUtils.Encrypt(password);
                 vm.PackageId = packageId;
                 vm.VirtualMachineId = null; // from service
-                vm.ServiceId = serviceId;
+                vm.ServiceId = serviceId;                
+                vm.Version = string.IsNullOrEmpty(settings["HyperVConfigurationVersion"]) ? "0.0" : settings["HyperVConfigurationVersion"];
 
                 vm.CurrentTaskId = Guid.NewGuid().ToString("N"); // generate creation task id
                 vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;

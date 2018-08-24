@@ -534,4 +534,7 @@ Example: vm-[USERNAME]-[USER_ID].domain.local</value>
   <data name="btnSetReplicaServerText.Text" xml:space="preserve">
     <value>Set</value>
   </data>
+  <data name="locConfigVersionText.Text" xml:space="preserve">
+    <value>You can find more information here https://docs.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/upgrade-virtual-machine-version-in-hyper-v-on-windows-or-windows-server#BKMK_SupportedConfigVersions</value>
+  </data>
 </root>
