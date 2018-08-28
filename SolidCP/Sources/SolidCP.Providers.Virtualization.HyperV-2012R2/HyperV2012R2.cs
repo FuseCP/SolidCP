@@ -870,6 +870,11 @@ namespace SolidCP.Providers.Virtualization
             return GetSwitches(computerName, "External");
         }
 
+        public List<VirtualSwitch> GetInternalSwitches(string computerName)
+        {
+            return GetSwitches(computerName, "Internal");
+        }
+
         private List<VirtualSwitch> GetSwitches(string computerName, string type)
         {
             HostedSolutionLog.LogStart("GetSwitches");
@@ -879,12 +884,27 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                
-                Command cmd = new Command("Get-VMSwitch");
 
+                StringBuilder scriptCommand = new StringBuilder("Get-VMSwitch");
+                string stringFormat = " -{0} {1}";
+                if (!string.IsNullOrEmpty(computerName))
+                    scriptCommand.AppendFormat(stringFormat, "ComputerName", computerName);
+                if (!string.IsNullOrEmpty(type))
+                {
+                    scriptCommand.AppendFormat(stringFormat, "SwitchType", type);
+                    scriptCommand.AppendFormat(" | {0}", "Select Name"); //Trying to improve the command (Sometimes it helps)
+                }
+                else
+                {
+                    scriptCommand.AppendFormat(" | {0}", "Select Name, SwitchType");
+                } 
+
+                Command cmd = new Command(scriptCommand.ToString(), true);
+
+                //Command cmd = new Command("Get-VMSwitch");
                 // Not needed as the PowerShellManager adds the computer name
-                if (!string.IsNullOrEmpty(computerName)) cmd.Parameters.Add("ComputerName", computerName);
-                if (!string.IsNullOrEmpty(type)) cmd.Parameters.Add("SwitchType", type);
+                //if (!string.IsNullOrEmpty(computerName)) cmd.Parameters.Add("ComputerName", computerName);
+                //if (!string.IsNullOrEmpty(type)) cmd.Parameters.Add("SwitchType", type);
 
                 Collection<PSObject> result = PowerShell.Execute(cmd, false, true);
 
@@ -893,7 +913,7 @@ namespace SolidCP.Providers.Virtualization
                     VirtualSwitch sw = new VirtualSwitch();
                     sw.SwitchId = current.GetProperty("Name").ToString();
                     sw.Name = current.GetProperty("Name").ToString();
-                    sw.SwitchType = current.GetProperty("SwitchType").ToString();
+                    sw.SwitchType = !string.IsNullOrEmpty(type) ? type : current.GetProperty("SwitchType").ToString();
                     switches.Add(sw);
                 }
             }
