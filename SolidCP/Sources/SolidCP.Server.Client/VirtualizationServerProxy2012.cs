@@ -2143,20 +2143,22 @@ namespace SolidCP.Providers.Virtualization2012 {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/ConvertVirtualHardDisk", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType) {
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes) {
             object[] results = this.Invoke("ConvertVirtualHardDisk", new object[] {
                         sourcePath,
                         destinationPath,
-                        diskType});
+                        diskType,
+                        blockSizeBytes});
             return ((JobResult)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("ConvertVirtualHardDisk", new object[] {
                         sourcePath,
                         destinationPath,
-                        diskType}, callback, asyncState);
+                        diskType,
+                        blockSizeBytes}, callback, asyncState);
         }
         
         /// <remarks/>
@@ -2166,19 +2168,20 @@ namespace SolidCP.Providers.Virtualization2012 {
         }
         
         /// <remarks/>
-        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType) {
-            this.ConvertVirtualHardDiskAsync(sourcePath, destinationPath, diskType, null);
+        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes) {
+            this.ConvertVirtualHardDiskAsync(sourcePath, destinationPath, diskType, blockSizeBytes, null);
         }
         
         /// <remarks/>
-        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType, object userState) {
+        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, object userState) {
             if ((this.ConvertVirtualHardDiskOperationCompleted == null)) {
                 this.ConvertVirtualHardDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnConvertVirtualHardDiskOperationCompleted);
             }
             this.InvokeAsync("ConvertVirtualHardDisk", new object[] {
                         sourcePath,
                         destinationPath,
-                        diskType}, this.ConvertVirtualHardDiskOperationCompleted, userState);
+                        diskType,
+                        blockSizeBytes}, this.ConvertVirtualHardDiskOperationCompleted, userState);
         }
         
         private void OnConvertVirtualHardDiskOperationCompleted(object arg) {

@@ -46,6 +46,7 @@ namespace SolidCP.Providers.Virtualization
         public bool LegacyNetworkAdapter { get; set; }
         public bool RemoteDesktop { get; set; }
         public int DiskSize { get; set; }
+        public uint VhdBlockSizeBytes { get; set; }
         public int ProcessVolume { get; set; }
         public string[] SysprepFiles { get; set; }
         public bool ProvisionAdministratorPassword { get; set; }

@@ -1292,7 +1292,7 @@ namespace SolidCP.Providers.Virtualization
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted); 
         }
 
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType)
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
         {
             // check source file
             if (!FileExists(sourcePath))
@@ -1313,8 +1313,8 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Path", sourcePath);
                 cmd.Parameters.Add("DestinationPath", destinationPath);
                 cmd.Parameters.Add("VHDType", diskType.ToString());
-                //if(BlockSizeMB>0)
-                //    cmd.Parameters.Add("BlockSizeBytes", BlockSizeMB.ToString()+"MB");
+                if (blockSizeBytes > 0)
+                    cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
 
                 PowerShell.Execute(cmd, true, true);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);

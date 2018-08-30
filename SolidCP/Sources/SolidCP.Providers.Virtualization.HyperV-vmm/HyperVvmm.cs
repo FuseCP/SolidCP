@@ -1214,7 +1214,7 @@ namespace SolidCP.Providers.Virtualization
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted); 
         }
 
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType)
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
         {
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
         }

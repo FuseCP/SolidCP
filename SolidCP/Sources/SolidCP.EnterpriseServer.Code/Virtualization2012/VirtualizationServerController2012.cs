@@ -893,7 +893,7 @@ namespace SolidCP.EnterpriseServer
                 {
                     // convert VHD
                     VirtualHardDiskType vhdType = (VirtualHardDiskType)Enum.Parse(typeof(VirtualHardDiskType), settings["VirtualDiskType"], true);
-                    result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath, vhdType);
+                    result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath, vhdType, osTemplate.VhdBlockSizeBytes);
 
                     // check return
                     if (result.ReturnValue != ReturnCode.JobStarted)

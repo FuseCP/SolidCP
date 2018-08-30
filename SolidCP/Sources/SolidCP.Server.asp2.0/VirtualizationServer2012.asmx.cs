@@ -731,12 +731,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType)
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
         {
             try
             {
                 Log.WriteStart("'{0}' ConvertVirtualHardDisk", ProviderSettings.ProviderName);
-                JobResult result = VirtualizationProvider.ConvertVirtualHardDisk(sourcePath, destinationPath, diskType);
+                JobResult result = VirtualizationProvider.ConvertVirtualHardDisk(sourcePath, destinationPath, diskType, blockSizeBytes);
                 Log.WriteEnd("'{0}' ConvertVirtualHardDisk", ProviderSettings.ProviderName);
                 return result;
             }

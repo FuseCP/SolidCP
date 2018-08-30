@@ -266,7 +266,7 @@
                         <asp:Localize ID="locTemplateGeneration" runat="server" meta:resourcekey="locTemplateGeneration" Text="Generation of VM:"></asp:Localize>
                     </td>
                     <td>
-                        <asp:DropDownList ID="ddlTemplateGeneration" runat="server" CssClass="form-control" Width="450"
+                        <asp:DropDownList ID="ddlTemplateGeneration" runat="server" CssClass="form-control" Width="350"
                             DataValueField="TemplateGenerationId" DataTextField="Name" SelectedIndex='<%# Eval("Generation") %>'>
                                 <asp:ListItem Text="Select a VM Generation" Value="0"></asp:ListItem>
                                 <asp:ListItem Text="First" Value="1"></asp:ListItem>
@@ -305,6 +305,18 @@
                         <asp:TextBox Width="470px" CssClass="form-control" runat="server" ID="txtSysprep" Text='<%# Eval("SysprepFiles") != null ? string.Join(";", (string[])Eval("SysprepFiles")) : "" %>'></asp:TextBox>
                     </td>
                 </tr>
+                <tr>
+	                <td class="SubHead">
+		                <asp:Localize ID="locVhdBlockSizeBytes" runat="server" meta:resourcekey="locVhdBlockSizeBytes" Text="VHD Block Size (Bytes):"></asp:Localize>
+	                </td>
+	                <td>
+		                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtVhdBlockSizeBytes" Text='<%# Eval("VhdBlockSizeBytes") %>'></asp:TextBox>
+	                </td>
+                    <td>
+		                <asp:Localize ID="LocBlockSizeDesc" runat="server" meta:resourcekey="LocBlockSizeDesc" Text="Default value is 0. Examples: 512KB, 1MB, 32MB, etc."></asp:Localize>
+	                </td>
+                </tr>
+
             </table>
         </ItemTemplate>
         <SeparatorTemplate>
