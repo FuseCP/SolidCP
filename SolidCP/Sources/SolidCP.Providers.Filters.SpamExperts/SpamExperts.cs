@@ -132,7 +132,7 @@ namespace SolidCP.Providers.Filters
         {
             SpamExpertsResult result;
 
-            Log.WriteStart("AddDomain");
+            Log.WriteStart("AddDomainFilter");
 
             if (String.IsNullOrEmpty(password))
                 password = emptyPassword;
@@ -146,10 +146,12 @@ namespace SolidCP.Providers.Filters
                 string list = "[\"" + String.Join("\",\"", destinations) + "\"]";
                 result = ExecCommand("domain/add", "domain", domain, "destinations", list);
             }
+            if (result.Status == SpamExpertsStatus.Success)
+            {
+                result = ExecCommand("domainuser/add", "domain", domain, "password", password, "email", email);
+            }
 
-            result = ExecCommand("domainuser/add", "domain", domain, "password", password, "email", email);
-
-            Log.WriteEnd("AddDomain");
+            Log.WriteEnd("AddDomainFilter");
 
             return result;
         }
@@ -158,14 +160,14 @@ namespace SolidCP.Providers.Filters
         {
             SpamExpertsResult result;
 
-            Log.WriteStart("SetDomainUser");
+            Log.WriteStart("SetDomainFilterUser");
 
             if (String.IsNullOrEmpty(password))
                 password = emptyPassword;
 
             result = ExecCommand("domainuser/add", "domain", domain, "password", password, "email", email);
 
-            Log.WriteEnd("SetDomainUser");
+            Log.WriteEnd("SetDomainFilterUser");
 
             return result;
         }
@@ -174,100 +176,104 @@ namespace SolidCP.Providers.Filters
 
         public SpamExpertsResult DeleteDomainFilter(string domain)
         {
-            Log.WriteStart("DeleteDomain");
+            Log.WriteStart("DeleteDomainFilter");
 
             var result = ExecCommand("domainuser/remove", "username", domain);
             result = ExecCommand("domain/remove", "domain", domain);
 
-            Log.WriteEnd("DeleteDomain");
+            Log.WriteEnd("DeleteDomainFilter");
 
             return result;
         }
 
         public SpamExpertsResult AddEmailFilter(string name, string domain, string password)
         {
-            Log.WriteStart("AddEmail");
+            Log.WriteStart("AddEmailFilter");
 
             if (String.IsNullOrEmpty(password))
                 password = emptyPassword;
 
             var result = ExecCommand("emailusers/add", "username", name, "password", password, "domain", domain);
 
-            Log.WriteEnd("AddEmail");
+            Log.WriteEnd("AddEmailFilter");
 
             return result;
         }
 
         public SpamExpertsResult DeleteEmailFilter(string email)
         {
-            Log.WriteStart("DeleteEmail");
+            Log.WriteStart("DeleteEmailFilter");
 
             var result = ExecCommand("emailusers/remove", "username", email);
 
-            Log.WriteEnd("DeleteEmail");
+            Log.WriteEnd("DeleteEmailFilter");
 
             return result;
         }
 
         public SpamExpertsResult SetEmailFilterUserPassword(string email, string password)
         {
-            Log.WriteStart("SetEmailPassword");
+            Log.WriteStart("SetEmailFilterUserPassword");
 
             if (String.IsNullOrEmpty(password))
                 password = emptyPassword;
 
             var result = ExecCommand("emailusers/setpassword", "username", email, "password", password);
 
-            Log.WriteEnd("SetEmailPassword");
+            Log.WriteEnd("SetEmailFilterUserPassword");
 
             return result;
         }
 
         public SpamExpertsResult SetDomainFilterUserPassword(string name, string password)
         {
-            Log.WriteStart("SetDomainUserPassword");
+            Log.WriteStart("SetDomainFilterUserPassword");
 
             if (String.IsNullOrEmpty(password))
                 password = emptyPassword;
 
-            Log.WriteEnd("SetDomainUserPassword");
-
             var result = ExecCommand("domainuser/setpassword", "username", name, "password", password);
+
+            Log.WriteEnd("SetDomainFilterUserPassword");
 
             return result;
         }
 
         public SpamExpertsResult SetDomainFilterDestinations(string domain, string[] destinations)
         {
+            Log.WriteStart("SetDomainFilterDestinations");
             if (destinations == null) destinations = new string[] { };
 
             string list = "[\"" + String.Join("\",\"", destinations) + "\"]";
             var result = ExecCommand("domain/edit", "domain", domain, "destinations", list);
+
+            Log.WriteEnd("SetDomainFilterDestinations");
+
             return result;
         }
 
-        public SpamExpertsResult SetDomainFilterAdminContact(string domain, string email)
+        public SpamExpertsResult AddDomainFilterAlias(string domain, string alias)
         {
             SpamExpertsResult res = null;
 
-            Log.WriteStart("SetDomainAdminContact");
+            Log.WriteStart("AddDomainFilterAlias");
 
-            res = ExecCommand("domainadmincontact/set", "domain", domain, "email", email);
+            res = ExecCommand("domainalias/add", "domain", domain, "alias", alias);
 
-            Log.WriteEnd("SetDomainAdminContact");
+            Log.WriteEnd("AddDomainFilterAlias");
 
             return res;
         }
 
-        public SpamExpertsResult SetDomainFilterContact(string domain, string email)
+        public SpamExpertsResult DeleteDomainFilterAlias(string domain, string alias)
         {
             SpamExpertsResult res = null;
 
-            Log.WriteStart("SetDomainAdminContact");
+            Log.WriteStart("DeleteDomainFilterAlias");
 
-            res = ExecCommand("domaincontact/set", "domain", domain, "email", email);
+            res = ExecCommand("domainalias/remove", "domain", domain, "alias", alias);
 
-            Log.WriteEnd("SetDomainAdminContact");
+            Log.WriteEnd("DeleteDomainFilterAlias");
 
             return res;
         }

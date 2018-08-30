@@ -45,7 +45,7 @@ namespace SolidCP.EnterpriseServer
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name = "SpamExpertsSoap", Namespace = "http://smbsaas/solidcp/server/")]
-    public partial class SpamExperts : WebServicesClientProtocol
+    public partial class esSpamExperts : WebServicesClientProtocol
     {
 
         public ServiceProviderSettingsSoapHeader ServiceProviderSettingsSoapHeaderValue;
@@ -66,12 +66,14 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback SetDomainFilterUserOperationCompleted;
 
-        private System.Threading.SendOrPostCallback SetDomainFilterAdminContactOperationCompleted;
+        private System.Threading.SendOrPostCallback AddDomainFilterAliasOperationCompleted;
 
-        private System.Threading.SendOrPostCallback SetDomainFilterContactOperationCompleted;
+        private System.Threading.SendOrPostCallback DeleteDomainFilterAliasOperationCompleted;
+
+        private System.Threading.SendOrPostCallback IsSpamExpertsEnabledOperationCompleted;
 
         /// <remarks/>
-        public SpamExperts()
+        public esSpamExperts()
         {
             this.Url = "http://localhost/EnterpriseServer/SpamExperts.asmx";
         }
@@ -101,10 +103,13 @@ namespace SolidCP.EnterpriseServer
         public event SetDomainFilterUserCompletedEventHandler SetDomainFilterUserCompleted;
 
         /// <remarks/>
-        public event SetDomainFilterAdminContactCompletedEventHandler SetDomainFilterAdminContactCompleted;
+        public event AddDomainFilterAliasCompletedEventHandler AddDomainFilterAliasCompleted;
 
         /// <remarks/>
-        public event SetDomainFilterContactCompletedEventHandler SetDomainFilterContactCompleted;
+        public event DeleteDomainFilterAliasCompletedEventHandler DeleteDomainFilterAliasCompleted;
+
+        /// <remarks/>
+        public event IsSpamExpertsEnabledCompletedEventHandler IsSpamExpertsEnabledCompleted;
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
@@ -538,107 +543,156 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/SetDomainFilterAdminContact", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public SpamExpertsResult SetDomainFilterAdminContact(string domain, string email)
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/AddDomainFilterAlias", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public SpamExpertsResult AddDomainFilterAlias(string domain, string alias)
         {
-            object[] results = this.Invoke("SetDomainFilterAdminContact", new object[] {
+            object[] results = this.Invoke("AddDomainFilterAlias", new object[] {
                         domain,
-                        email});
+                        alias});
             return ((SpamExpertsResult)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginSetDomainFilterAdminContact(string domain, string email, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginAddDomainFilterAlias(string domain, string alias, System.AsyncCallback callback, object asyncState)
         {
-            return this.BeginInvoke("SetDomainFilterAdminContact", new object[] {
+            return this.BeginInvoke("AddDomainFilterAlias", new object[] {
                         domain,
-                        email}, callback, asyncState);
+                        alias}, callback, asyncState);
         }
 
         /// <remarks/>
-        public SpamExpertsResult EndSetDomainFilterAdminContact(System.IAsyncResult asyncResult)
+        public SpamExpertsResult EndAddDomainFilterAlias(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
             return ((SpamExpertsResult)(results[0]));
         }
 
         /// <remarks/>
-        public void SetDomainFilterAdminContactAsync(string domain, string email)
+        public void AddDomainFilterAliasAsync(string domain, string alias)
         {
-            this.SetDomainFilterAdminContactAsync(domain, email, null);
+            this.AddDomainFilterAliasAsync(domain, alias, null);
         }
 
         /// <remarks/>
-        public void SetDomainFilterAdminContactAsync(string domain, string email, object userState)
+        public void AddDomainFilterAliasAsync(string domain, string alias, object userState)
         {
-            if ((this.SetDomainFilterAdminContactOperationCompleted == null))
+            if ((this.AddDomainFilterAliasOperationCompleted == null))
             {
-                this.SetDomainFilterAdminContactOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetDomainFilterAdminContactOperationCompleted);
+                this.AddDomainFilterAliasOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddDomainFilterAliasOperationCompleted);
             }
-            this.InvokeAsync("SetDomainFilterAdminContact", new object[] {
+            this.InvokeAsync("AddDomainFilterAlias", new object[] {
                         domain,
-                        email}, this.SetDomainFilterAdminContactOperationCompleted, userState);
+                        alias}, this.AddDomainFilterAliasOperationCompleted, userState);
         }
 
-        private void OnSetDomainFilterAdminContactOperationCompleted(object arg)
+        private void OnAddDomainFilterAliasOperationCompleted(object arg)
         {
-            if ((this.SetDomainFilterAdminContactCompleted != null))
+            if ((this.AddDomainFilterAliasCompleted != null))
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.SetDomainFilterAdminContactCompleted(this, new SetDomainFilterAdminContactCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.AddDomainFilterAliasCompleted(this, new AddDomainFilterAliasCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/SetDomainFilterContact", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public SpamExpertsResult SetDomainFilterContact(string domain, string email)
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteDomainFilterAlias", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public SpamExpertsResult DeleteDomainFilterAlias(string domain, string alias)
         {
-            object[] results = this.Invoke("SetDomainFilterContact", new object[] {
+            object[] results = this.Invoke("DeleteDomainFilterAlias", new object[] {
                         domain,
-                        email});
+                        alias});
             return ((SpamExpertsResult)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginSetDomainFilterContact(string domain, string email, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginDeleteDomainFilterAlias(string domain, string alias, System.AsyncCallback callback, object asyncState)
         {
-            return this.BeginInvoke("SetDomainFilterContact", new object[] {
+            return this.BeginInvoke("DeleteDomainFilterAlias", new object[] {
                         domain,
-                        email}, callback, asyncState);
+                        alias}, callback, asyncState);
         }
 
         /// <remarks/>
-        public SpamExpertsResult EndSetDomainFilterContact(System.IAsyncResult asyncResult)
+        public SpamExpertsResult EndDeleteDomainFilterAlias(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
             return ((SpamExpertsResult)(results[0]));
         }
 
         /// <remarks/>
-        public void SetDomainFilterContactAsync(string domain, string email)
+        public void DeleteDomainFilterAliasAsync(string domain, string alias)
         {
-            this.SetDomainFilterContactAsync(domain, email, null);
+            this.DeleteDomainFilterAliasAsync(domain, alias, null);
         }
 
         /// <remarks/>
-        public void SetDomainFilterContactAsync(string domain, string email, object userState)
+        public void DeleteDomainFilterAliasAsync(string domain, string alias, object userState)
         {
-            if ((this.SetDomainFilterContactOperationCompleted == null))
+            if ((this.DeleteDomainFilterAliasOperationCompleted == null))
             {
-                this.SetDomainFilterContactOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetDomainFilterContactOperationCompleted);
+                this.DeleteDomainFilterAliasOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteDomainFilterAliasOperationCompleted);
             }
-            this.InvokeAsync("SetDomainFilterContact", new object[] {
+            this.InvokeAsync("DeleteDomainFilterAlias", new object[] {
                         domain,
-                        email}, this.SetDomainFilterContactOperationCompleted, userState);
+                        alias}, this.DeleteDomainFilterAliasOperationCompleted, userState);
         }
 
-        private void OnSetDomainFilterContactOperationCompleted(object arg)
+        private void OnDeleteDomainFilterAliasOperationCompleted(object arg)
         {
-            if ((this.SetDomainFilterContactCompleted != null))
+            if ((this.DeleteDomainFilterAliasCompleted != null))
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.SetDomainFilterContactCompleted(this, new SetDomainFilterContactCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.DeleteDomainFilterAliasCompleted(this, new DeleteDomainFilterAliasCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/IsSpamExpertsEnabled", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool IsSpamExpertsEnabled(int packageId)
+        {
+            object[] results = this.Invoke("IsSpamExpertsEnabled", new object[] {
+                        packageId});
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginIsSpamExpertsEnabled(int packageId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("IsSpamExpertsEnabled", new object[] {
+                        packageId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public bool EndIsSpamExpertsEnabled(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public void IsSpamExpertsEnabledAsync(int packageId)
+        {
+            this.IsSpamExpertsEnabledAsync(packageId, null);
+        }
+
+        /// <remarks/>
+        public void IsSpamExpertsEnabledAsync(int packageId, object userState)
+        {
+            if ((this.IsSpamExpertsEnabledOperationCompleted == null))
+            {
+                this.IsSpamExpertsEnabledOperationCompleted = new System.Threading.SendOrPostCallback(this.OnIsSpamExpertsEnabledOperationCompleted);
+            }
+            this.InvokeAsync("IsSpamExpertsEnabled", new object[] {
+                        packageId}, this.IsSpamExpertsEnabledOperationCompleted, userState);
+        }
+
+        private void OnIsSpamExpertsEnabledOperationCompleted(object arg)
+        {
+            if ((this.IsSpamExpertsEnabledCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.IsSpamExpertsEnabledCompleted(this, new IsSpamExpertsEnabledCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -891,18 +945,18 @@ namespace SolidCP.EnterpriseServer
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void SetDomainFilterAdminContactCompletedEventHandler(object sender, SetDomainFilterAdminContactCompletedEventArgs e);
+    public delegate void AddDomainFilterAliasCompletedEventHandler(object sender, AddDomainFilterAliasCompletedEventArgs e);
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetDomainFilterAdminContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    public partial class AddDomainFilterAliasCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
     {
 
         private object[] results;
 
-        internal SetDomainFilterAdminContactCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+        internal AddDomainFilterAliasCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
@@ -921,18 +975,18 @@ namespace SolidCP.EnterpriseServer
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void SetDomainFilterContactCompletedEventHandler(object sender, SetDomainFilterContactCompletedEventArgs e);
+    public delegate void DeleteDomainFilterAliasCompletedEventHandler(object sender, DeleteDomainFilterAliasCompletedEventArgs e);
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetDomainFilterContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    public partial class DeleteDomainFilterAliasCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
     {
 
         private object[] results;
 
-        internal SetDomainFilterContactCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+        internal DeleteDomainFilterAliasCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
@@ -945,6 +999,36 @@ namespace SolidCP.EnterpriseServer
             {
                 this.RaiseExceptionIfNecessary();
                 return ((SpamExpertsResult)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void IsSpamExpertsEnabledCompletedEventHandler(object sender, IsSpamExpertsEnabledCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class IsSpamExpertsEnabledCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal IsSpamExpertsEnabledCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public bool Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
             }
         }
     }

@@ -63,5 +63,41 @@ namespace SolidCP.EnterpriseServer
         {
             SpamExpertsController.DeleteDomainFilter(id);
         }
+
+        [WebMethod]
+        public int AddDomainFilterAlias(DomainInfo domain, string alias)
+        {
+            return SpamExpertsController.AddDomainFilterAlias(domain, alias);
+        }
+
+        [WebMethod]
+        public void DeleteDomainFilterAlias(DomainInfo domain, string alias)
+        {
+            SpamExpertsController.DeleteDomainFilterAlias(domain, alias);
+        }
+
+        [WebMethod]
+        public int AddEmailFilter(int packageId, string username, string password, string domain)
+        {
+            return SpamExpertsController.AddEmailFilter(packageId, username, password, domain);
+        }
+
+        [WebMethod]
+        public void DeleteEmailFilter(int packageId, string email)
+        {
+            SpamExpertsController.DeleteEmailFilter(packageId, email);
+        }
+
+        [WebMethod]
+        public void SetEmailFilterPassword(int packageId, string email, string password)
+        {
+            SpamExpertsController.SetEmailFilterPassword(packageId, email, password);
+        }
+
+        [WebMethod]
+        public bool IsSpamExpertsEnabled(int packageId)
+        {
+            return SpamExpertsController.IsSpamExpertsEnabled(packageId);
+        }
     }
 }

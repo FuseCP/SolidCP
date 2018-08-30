@@ -170,18 +170,6 @@ namespace SolidCP.EnterpriseServer
 
             int res = OrganizationController.DeleteOrganization(itemId);
 
-            // Hook
-            if (res >= 0)
-            {
-                // users
-                foreach (string user in usersList)
-                    SEPlugin.SE.DeleteEmail(user);
-
-                //domain
-                //foreach(string domain in domainsList)
-                //    SolidCP.SE.SE.DeleteDomain(domain);
-            }
-
             return res;
         }
 
@@ -309,11 +297,6 @@ namespace SolidCP.EnterpriseServer
         {
             string accountName;
             int res =  OrganizationController.CreateUser(itemId, displayName, name, domain, password, subscriberNumber, true, sendNotification, to, out accountName);
-
-            // Hook
-            if (res > 0)
-                SEPlugin.SE.AddEmail(name, domain, password);
-
             return res;
         }
 
@@ -322,11 +305,6 @@ namespace SolidCP.EnterpriseServer
         public int ImportUser(int itemId, string accountName, string displayName, string name, string domain, string password, string subscriberNumber)
         {
             int res = OrganizationController.ImportUser(itemId, accountName, displayName, name, domain, password, subscriberNumber);
-
-            // Hook
-            if (res > 0)
-                SEPlugin.SE.AddEmail(name, domain, password);
-
             return res;
         }
 
@@ -384,10 +362,6 @@ namespace SolidCP.EnterpriseServer
 
             int res = OrganizationController.SetUserPassword(itemId, accountId, password);
 
-            // Hook
-            if ((res >= 0) && (user != null))
-                SEPlugin.SE.SetEmailPassword(user.PrimaryEmailAddress, password);
-
             return res;
         }
 
@@ -419,11 +393,6 @@ namespace SolidCP.EnterpriseServer
             OrganizationUser user = OrganizationController.GetAccount(itemId, accountId);
 
             int res = OrganizationController.DeleteUser(itemId, accountId);
-
-            // Hook
-            if ((res >= 0) && (user != null))
-                SEPlugin.SE.DeleteEmail(user.PrimaryEmailAddress);
-
             return res;
         }
 

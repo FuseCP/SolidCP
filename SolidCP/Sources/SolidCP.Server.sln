@@ -199,6 +199,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.HyperVvmm", "SolidCP.Providers.Virtualization.HyperV-vmm\SolidCP.Providers.Virtualization.HyperVvmm.csproj", "{9AFE3602-946D-4092-B2E6-2D8CD66DC0BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Filters.MailCleaner", "SolidCP.Providers.Filters.MailCleaner\SolidCP.Providers.Filters.MailCleaner.csproj", "{039CEDCD-1CF6-4E60-851A-119970D9BCE7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7} = {E91E52F3-9555-4D00-B577-2B1DBDD87CA7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.SimpleDNS60", "SolidCP.Providers.DNS.SimpleDNS60\SolidCP.Providers.DNS.SimpleDNS60.csproj", "{E4AD974D-7951-4AE1-AE72-72E11663F17B}"
 EndProject

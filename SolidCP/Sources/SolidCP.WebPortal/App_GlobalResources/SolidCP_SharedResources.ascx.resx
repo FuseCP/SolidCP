@@ -2022,8 +2022,8 @@
   <data name="ResourceGroup.MsSQL2017" xml:space="preserve">
     <value>SQL Server 2017</value>
   </data>
-  <data name="ResourceGroup.Filters" xml:space="preserve">
-    <value>Exchange anti-spam Filter</value>
+  <data name="ResourceGroup.MailFilters" xml:space="preserve">
+    <value>Mail Filters</value>
   </data>
   <data name="Quota.OS.MinimumTaskInterval" xml:space="preserve">
     <value>Minimum Tasks Interval, minutes</value>
@@ -6336,9 +6336,6 @@
   </data>
   <data name="Quota.Filters.Enable" xml:space="preserve">
     <value>Enable Spam Filter</value>
-  </data>
-  <data name="ResourceGroup.Mail_Filters" xml:space="preserve">
-    <value>Anti-Spam Filter</value>
   </data>
   <data name="Error.SERVERSEDITEVENTVIEWER_SELECTED" xml:space="preserve">
     <value>Error while getting the event log entries.</value>

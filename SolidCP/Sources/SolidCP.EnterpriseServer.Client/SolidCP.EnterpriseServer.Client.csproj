@@ -65,14 +65,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
     </Reference>
+    <Reference Include="SolidCP.Providers.Base, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
-    <Reference Include="SolidCP.Providers.Base">
-      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\VersionInfo.cs">

@@ -244,13 +244,8 @@ namespace SolidCP.EnterpriseServer
             string name, string domain, string password, bool sendSetupInstructions, string setupInstructionMailAddress, int mailboxPlanId, 
             int archivedPlanId, string subscriberNumber, bool EnableArchiving)
         {
-            int res = ExchangeServerController.CreateMailbox(itemId, accountId, accountType, accountName, displayName, name, domain, password, 
+            int res = ExchangeServerController.CreateMailbox(itemId, accountId, accountType, accountName, displayName, name, domain, password,
                 sendSetupInstructions, setupInstructionMailAddress, mailboxPlanId, archivedPlanId, subscriberNumber, EnableArchiving);
-
-			//SEPlugin.SE.
-            if (res > 0)
-                SEPlugin.SE.AddEmail(name, domain, password);
-
             return res;
         }
 

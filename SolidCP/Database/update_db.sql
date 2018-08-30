@@ -20549,8 +20549,13 @@ GO
 
 IF EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = N'Exchange_anti_spam_Filters')
 BEGIN
-	UPDATE [dbo].[ResourceGroups] SET [GroupName] = 'Mail Filters' WHERE [GroupName] = 'Exchange_anti_spam_Filters'
+	UPDATE [dbo].[ResourceGroups] SET [GroupName] = 'MailFilters' WHERE [GroupName] = 'Exchange_anti_spam_Filters'
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = N'Filters.EnableEmailUsers')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (448, 61, 2, N'Filters.EnableEmailUsers', N'Enable Per-Mailbox Login', 1, 0, NULL, NULL)
+END
+GO
 

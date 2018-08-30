@@ -49,10 +49,10 @@ namespace SolidCP.Providers.Filters
         SpamExpertsResult SetDomainFilterUserPassword(string name, string password);
 
         SpamExpertsResult SetDomainFilterDestinations(string name, string[] destinations);
-        
-        SpamExpertsResult SetDomainFilterAdminContact(string domain, string email);
-        SpamExpertsResult SetDomainFilterContact(string domain, string email);
 
         SpamExpertsResult SetDomainFilterUser(string domain, string password, string email);
+        SpamExpertsResult AddDomainFilterAlias(string domain, string alias);
+
+        SpamExpertsResult DeleteDomainFilterAlias(string domain, string alias);
     }
 }
