@@ -200,6 +200,7 @@ $dSCPiisSSLDateCheckFile  = "C:\SolidCP\SSL_Fix_DO_NOT_DELETE.txt"              
 $dSCPFileURL              = "http://installer.solidcp.com/Files/XML/Downloads/Download-Links.xml"    # XML Feed for files that are downloaded as part of the PowerShell Auto Installation Script
 $dSCPFileDownloadLinks    = ([xml](New-Object System.Net.WebClient).DownloadString("$dSCPFileURL"))  # Download the XML Feed for files and store as a variable
 (Import-Module ServerManager) | Out-Null                                                             # Import the "ServerManager" module
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12                      # Set powershell to use TLS 1.2
 ####################################################################################################
 # Main menu starts here
 Function SolidCPmenu() {
