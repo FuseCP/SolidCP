@@ -119,7 +119,7 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Fields
-
+        private static object _mountVHDlocker = new object();
         private PowerShellManager _powerShell;
         protected PowerShellManager PowerShell
         {
@@ -1214,8 +1214,30 @@ namespace SolidCP.Providers.Virtualization
                 throw;
             }
         }
-
         public MountedDiskInfo MountVirtualHardDisk(string vhdPath)
+        {
+            bool lockTaken = false;
+            int timeout = 1000*60*1; 
+            MountedDiskInfo result;
+            try //A simple queue to prevent problems with multiple installations.
+            {
+                System.Threading.Monitor.TryEnter(_mountVHDlocker, timeout, ref lockTaken); //Wait 1 minute if the thread has been blocked too long.
+                if (!lockTaken)
+                {
+                    HostedSolutionLog.LogWarning(string.Format("MountVirtualHardDisk: Too long, maybe lost it - {0}", vhdPath));
+                }                    
+                result = MountVirtualHardDiskEx(vhdPath);
+            }
+            finally
+            {
+                if (lockTaken)
+                    System.Threading.Monitor.Exit(_mountVHDlocker);
+            }
+
+            return result;
+        }
+
+        private MountedDiskInfo MountVirtualHardDiskEx(string vhdPath)
         {
             vhdPath = FileUtils.EvaluateSystemVariables(vhdPath);
 
