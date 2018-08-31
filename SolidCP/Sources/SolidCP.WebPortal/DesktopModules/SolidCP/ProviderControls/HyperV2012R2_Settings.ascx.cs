@@ -478,6 +478,7 @@ namespace SolidCP.Portal.ProviderControls
                             VhdBlockSizeBytes = Utils.ConvertMBytesToBytes(VhdBlockSizeBytes);
                             break;
                         default:
+                            VhdBlockSizeBytes = 0;
                             break;
                     }
                 }
