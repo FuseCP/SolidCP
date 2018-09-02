@@ -100,6 +100,20 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
+        private bool IsMailConfigured(UserInfo user)
+        {
+            UserSettings userSettings = ES.Services.Users.GetUserSettings(user.UserId, UserSettings.VPS_SUMMARY_LETTER);
+            bool isPossibleSendMail = 
+                (
+                    !string.IsNullOrEmpty(userSettings["From"]) &&
+                    !string.IsNullOrEmpty(userSettings["Subject"]) &&
+                        (
+                            !string.IsNullOrEmpty(userSettings["HtmlBody"]) ||
+                            !string.IsNullOrEmpty(userSettings["TextBody"])
+                        )
+                );
+            return isPossibleSendMail;
+        }
 
         private void BindFormControls()
         {
@@ -124,10 +138,10 @@ namespace SolidCP.Portal.VPS2012
             PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
             if (package != null)
             {
-                UserInfo user = ES.Services.Users.GetUserById(package.UserId);
+                UserInfo user = ES.Services.Users.GetUserById(package.UserId);                
                 if (user != null)
-                {
-                    chkSendSummary.Checked = true;
+                {                    
+                    chkSendSummary.Checked = IsMailConfigured(user);
                     txtSummaryEmail.Text = user.Email;
                 }
             }
