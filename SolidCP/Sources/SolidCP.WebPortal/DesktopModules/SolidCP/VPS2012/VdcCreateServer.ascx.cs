@@ -66,6 +66,7 @@ namespace SolidCP.Portal.VPS2012
         }
         private readonly string sessionisUnassignedPackageIPs = "isUnassignedPackageIPs"
                                     + new Random((int)DateTime.Now.Ticks & 0x0000FFFF).Next(0, int.MaxValue);
+
         private void ToggleWizardSteps()
         {
             Session.Timeout = 10;
@@ -99,6 +100,20 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
+        private bool IsMailConfigured(UserInfo user)
+        {
+            UserSettings userSettings = ES.Services.Users.GetUserSettings(user.UserId, UserSettings.VPS_SUMMARY_LETTER);
+            bool isPossibleSendMail = 
+                (
+                    !string.IsNullOrEmpty(userSettings["From"]) &&
+                    !string.IsNullOrEmpty(userSettings["Subject"]) &&
+                        (
+                            !string.IsNullOrEmpty(userSettings["HtmlBody"]) ||
+                            !string.IsNullOrEmpty(userSettings["TextBody"])
+                        )
+                );
+            return isPossibleSendMail;
+        }
 
         private void BindFormControls()
         {
@@ -123,10 +138,10 @@ namespace SolidCP.Portal.VPS2012
             PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
             if (package != null)
             {
-                UserInfo user = ES.Services.Users.GetUserById(package.UserId);
+                UserInfo user = ES.Services.Users.GetUserById(package.UserId);                
                 if (user != null)
-                {
-                    chkSendSummary.Checked = true;
+                {                    
+                    chkSendSummary.Checked = IsMailConfigured(user);
                     txtSummaryEmail.Text = user.Email;
                 }
             }
@@ -213,6 +228,9 @@ namespace SolidCP.Portal.VPS2012
                     BindExternalUnallottedIps();
                 else
                     BindExternalIps();
+
+                //GenerateMac
+                txtExternalMACAddress.Text = ES.Services.VPS2012.GenerateMacAddress();
             }
 
             // private network
@@ -314,6 +332,19 @@ namespace SolidCP.Portal.VPS2012
 
         private void ToggleControls()
         {
+            txtHostname.Enabled = txtDomain.Enabled = true;
+            string defaultHostname = "The-name-will-be";
+            if (chkAutoHostName.Checked)
+            {
+                txtHostname.Text = defaultHostname;
+                txtDomain.Text = "generated.automatically";
+                txtHostname.Enabled = txtDomain.Enabled = false;
+            }else if(string.Equals(txtHostname.Text, defaultHostname))
+            {
+                txtHostname.Text = "";
+                txtDomain.Text = "";
+            }
+
             if (ViewState["Password"] != null)
                 password.Password = ViewState["Password"].ToString();
 
@@ -338,7 +369,7 @@ namespace SolidCP.Portal.VPS2012
                 listVlanLists.SelectedIndex = listVlanLists.Items.Count - 1;
             }
 
-
+            ExternalMACAddressRow.Visible = !emptyIps && (PanelSecurity.LoggedUser.Role != UserRole.User);
             ExternalAddressesNumberRow.Visible = radioExternalRandom.Checked;
             ExternalAddressesListRow.Visible = radioExternalSelected.Checked;
 
@@ -438,6 +469,8 @@ namespace SolidCP.Portal.VPS2012
             SummExternalAddressesNumberRow.Visible = radioExternalRandom.Checked && isSelectedAndChecked;
             litExternalAddressesNumber.Text = PortalAntiXSS.Encode(txtExternalAddressesNumber.Text.Trim());
             SummExternalAddressesListRow.Visible = radioExternalSelected.Checked && isSelectedAndChecked;
+            SummExternalAddressMAC.Visible = isSelectedAndChecked && (PanelSecurity.LoggedUser.Role != UserRole.User);
+            litSummExternalAddressMAC.Text = PortalAntiXSS.Encode(txtExternalMACAddress.Text.Trim()).Replace(" ", "").Replace(":", "").Replace("-", "");
 
             List<string> ipAddresses = new List<string>();
             foreach (ListItem li in listExternalAddresses.Items)
@@ -469,7 +502,7 @@ namespace SolidCP.Portal.VPS2012
                 this.SaveSettingsControls(ref virtualMachine);
 
                 // collect and prepare data
-                virtualMachine.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
+                virtualMachine.Name = chkAutoHostName.Checked ? "" : String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
                 virtualMachine.PackageId = PanelSecurity.PackageId;
                 virtualMachine.CpuCores = Utils.ParseInt(ddlCpu.SelectedValue);
                 virtualMachine.RamSize = Utils.ParseInt(txtRam.Text.Trim());
@@ -486,6 +519,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ResetAllowed = chkReset.Checked;
                 virtualMachine.ReinstallAllowed = chkReinstall.Checked;
                 virtualMachine.ExternalNetworkEnabled = false; //setting up after
+                virtualMachine.ExternalNicMacAddress = txtExternalMACAddress.Text.Trim().Replace(" ", "").Replace(":", "").Replace("-", "");
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
 
 

@@ -391,6 +391,42 @@ namespace SolidCP.Portal.ProviderControls {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator CpuWeightValidator;
         
         /// <summary>
+        /// locConfigVersion control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locConfigVersion;
+        
+        /// <summary>
+        /// locHyperVConfig control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locHyperVConfig;
+        
+        /// <summary>
+        /// ddlHyperVConfig control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlHyperVConfig;
+        
+        /// <summary>
+        /// locConfigVersionText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locConfigVersionText;
+        
+        /// <summary>
         /// locTemplates control.
         /// </summary>
         /// <remarks>

@@ -76,7 +76,7 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled)
+        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot)
         {
             // for Win2012R2+ and Win8.1+
             if (vm.Generation == 2)
@@ -84,6 +84,11 @@ namespace SolidCP.Providers.Virtualization
                 Command cmd = new Command("Set-VMFirmware");
 
                 cmd.Parameters.Add("VMName", vm.Name);
+                if (EnableSecureBoot)
+                    cmd.Parameters.Add("EnableSecureBoot", "On");
+                else
+                    cmd.Parameters.Add("EnableSecureBoot", "Off");
+
                 if (bootFromCD)
                     cmd.Parameters.Add("FirstBootDevice", DvdDriveHelper.GetPS(powerShell, vm.Name));
                 else

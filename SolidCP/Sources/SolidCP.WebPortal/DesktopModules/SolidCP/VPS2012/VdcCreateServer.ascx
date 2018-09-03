@@ -72,6 +72,11 @@
 			                                        ControlToValidate="txtDomain" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
 			                                    </asp:RegularExpressionValidator>
                                                 </div>
+
+                                        <div class="col-sm-10">
+                                            <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="true"
+                                                Text="Generate Auto HostName" meta:resourcekey="chkAutoHostName" />
+                                        </div>
                                  </div>
                                 <div class="form-group">
                                 <asp:Label ID="locOperatingSystem" meta:resourcekey="locOperatingSystem" runat="server" Text="Operating system:" CssClass="col-sm-2"  AssociatedControlID="listOperatingSystems"></asp:Label>
@@ -284,6 +289,25 @@
                                                         meta:resourcekey="locHoldCtrl" Text="* Hold CTRL key to select multiple addresses"></asp:Localize>
                                             </td>
                                         </tr>
+                                        <tr id="ExternalMACAddressRow" runat="server">
+	                                        <td style="padding-left: 30px;">
+                                                <div class="col-sm-10 form-inline">
+		                                            <asp:Localize ID="locExternalMACAddress" runat="server"
+				                                            meta:resourcekey="locExternalMACAddress" Text="MAC:"></asp:Localize>
+
+		                                            <asp:TextBox ID="txtExternalMACAddress" runat="server" CssClass="form-control form-control" Width="145" Text=""></asp:TextBox>
+		
+		                                            <asp:RequiredFieldValidator id="MACAddressValidator" ControlToValidate="txtExternalMACAddress" 
+		                                            ErrorMessage="MAC Address is incorrect." Display="Dynamic" Width="100%" runat="server" 
+                                                        meta:resourcekey="MACAddressValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+		                                            <asp:RegularExpressionValidator ID="valMACformat" runat="server" ControlToValidate="txtExternalMACAddress" 
+		                                            ErrorMessage="MAC Address format is incorrect." Display="Dynamic" Width="100%" ValidationExpression="((\d|([a-f]|[A-F])){2}[:\-]?){5}(\d|([a-f]|[A-F])){2}" 
+                                                        meta:resourcekey="valMACformat" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RegularExpressionValidator>
+                                                </div>
+	                                        </td>
+                                        </tr>
                                     </table>
                                     <br />
                             </asp:WizardStep>
@@ -488,6 +512,11 @@
                                             <td><asp:Localize ID="locExternalAddressesList" runat="server"
                                                 meta:resourcekey="locExternalAddressesList" Text="IP addresses list:" /></td>
                                             <td><asp:Literal ID="litExternalAddresses" runat="server"></asp:Literal></td>
+                                        </tr>
+                                        <tr id="SummExternalAddressMAC" runat="server">
+                                            <td><asp:Localize ID="locSummExternalAddressMAC" runat="server"
+                                                meta:resourcekey="locSummExternalAddressMAC" Text="MAC:" /></td>
+                                            <td><asp:Literal ID="litSummExternalAddressMAC" runat="server"></asp:Literal></td>
                                         </tr>
                                         
                                         <tr>

@@ -107,6 +107,8 @@ namespace SolidCP.Providers.Virtualization2012 {
 
         private System.Threading.SendOrPostCallback FileExistsOperationCompleted;
 
+        private System.Threading.SendOrPostCallback IsEmptyFoldersOperationCompleted;
+
         private System.Threading.SendOrPostCallback MountVirtualHardDiskOperationCompleted;
         
         private System.Threading.SendOrPostCallback UnmountVirtualHardDiskOperationCompleted;
@@ -272,6 +274,9 @@ namespace SolidCP.Providers.Virtualization2012 {
 
         /// <remarks/>
         public event FileExistsCompletedEventHandler FileExistsCompleted;
+
+        /// <remarks/>
+        public event IsEmptyFoldersCompletedEventHandler IsEmptyFoldersCompleted;
 
         /// <remarks/>
         public event MountVirtualHardDiskCompletedEventHandler MountVirtualHardDiskCompleted;
@@ -1958,6 +1963,56 @@ namespace SolidCP.Providers.Virtualization2012 {
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/IsEmptyFolders", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool IsEmptyFolders(string path)
+        {
+            object[] results = this.Invoke("IsEmptyFolders", new object[] {
+                        path});
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginIsEmptyFolders(string path, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("IsEmptyFolders", new object[] {
+                        path}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public bool EndIsEmptyFolders(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public void IsEmptyFoldersAsync(string path)
+        {
+            this.IsEmptyFoldersAsync(path, null);
+        }
+
+        /// <remarks/>
+        public void IsEmptyFoldersAsync(string path, object userState)
+        {
+            if ((this.IsEmptyFoldersOperationCompleted == null))
+            {
+                this.IsEmptyFoldersOperationCompleted = new System.Threading.SendOrPostCallback(this.OnIsEmptyFoldersOperationCompleted);
+            }
+            this.InvokeAsync("IsEmptyFolders", new object[] {
+                        path}, this.IsEmptyFoldersOperationCompleted, userState);
+        }
+
+        private void OnIsEmptyFoldersOperationCompleted(object arg)
+        {
+            if ((this.IsEmptyFoldersCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.IsEmptyFoldersCompleted(this, new IsEmptyFoldersCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/MountVirtualHardDisk", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public MountedDiskInfo MountVirtualHardDisk(string vhdPath) {
             object[] results = this.Invoke("MountVirtualHardDisk", new object[] {
@@ -2088,20 +2143,22 @@ namespace SolidCP.Providers.Virtualization2012 {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/ConvertVirtualHardDisk", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType) {
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes) {
             object[] results = this.Invoke("ConvertVirtualHardDisk", new object[] {
                         sourcePath,
                         destinationPath,
-                        diskType});
+                        diskType,
+                        blockSizeBytes});
             return ((JobResult)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("ConvertVirtualHardDisk", new object[] {
                         sourcePath,
                         destinationPath,
-                        diskType}, callback, asyncState);
+                        diskType,
+                        blockSizeBytes}, callback, asyncState);
         }
         
         /// <remarks/>
@@ -2111,19 +2168,20 @@ namespace SolidCP.Providers.Virtualization2012 {
         }
         
         /// <remarks/>
-        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType) {
-            this.ConvertVirtualHardDiskAsync(sourcePath, destinationPath, diskType, null);
+        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes) {
+            this.ConvertVirtualHardDiskAsync(sourcePath, destinationPath, diskType, blockSizeBytes, null);
         }
         
         /// <remarks/>
-        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType, object userState) {
+        public void ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, object userState) {
             if ((this.ConvertVirtualHardDiskOperationCompleted == null)) {
                 this.ConvertVirtualHardDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnConvertVirtualHardDiskOperationCompleted);
             }
             this.InvokeAsync("ConvertVirtualHardDisk", new object[] {
                         sourcePath,
                         destinationPath,
-                        diskType}, this.ConvertVirtualHardDiskOperationCompleted, userState);
+                        diskType,
+                        blockSizeBytes}, this.ConvertVirtualHardDiskOperationCompleted, userState);
         }
         
         private void OnConvertVirtualHardDiskOperationCompleted(object arg) {
@@ -3984,12 +4042,42 @@ namespace SolidCP.Providers.Virtualization2012 {
         }
 
         /// <remarks/>
-        public VirtualHardDiskInfo Result
+        public bool Result
         {
             get
             {
                 this.RaiseExceptionIfNecessary();
-                return ((VirtualHardDiskInfo)(this.results[0]));
+                return ((bool)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void IsEmptyFoldersCompletedEventHandler(object sender, IsEmptyFoldersCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class IsEmptyFoldersCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal IsEmptyFoldersCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public bool Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
             }
         }
     }
