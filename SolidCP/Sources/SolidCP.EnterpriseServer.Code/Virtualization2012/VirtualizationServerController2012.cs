@@ -753,7 +753,18 @@ namespace SolidCP.EnterpriseServer
 
                         // connect to network
                         vm.ExternalSwitchId = settings["ExternalNetworkId"];
-                        vm.ExternalNicMacAddress = GenerateMacAddress();
+
+                        bool generateMAC = true;
+                        if (!string.IsNullOrEmpty(vm.ExternalNicMacAddress))
+                        {
+                            generateMAC = false;
+                            vm.ExternalNicMacAddress = vm.ExternalNicMacAddress.Replace(" ", "").Replace(":", "").Replace("-", "");
+                            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^[a-fA-F0-9]{12}$");
+                            if (!regex.IsMatch(vm.ExternalNicMacAddress))
+                                generateMAC = true;
+                        }
+                        if (generateMAC)
+                            vm.ExternalNicMacAddress = GenerateMacAddress();
                     }
                     else
                     {
@@ -4092,7 +4103,7 @@ namespace SolidCP.EnterpriseServer
             return jobCompleted;
         }
 
-        private static string GenerateMacAddress()
+        public static string GenerateMacAddress()
         {
             return MS_MAC_PREFIX + Utils.GetRandomHexString(3);
         }

@@ -228,6 +228,9 @@ namespace SolidCP.Portal.VPS2012
                     BindExternalUnallottedIps();
                 else
                     BindExternalIps();
+
+                //GenerateMac
+                txtExternalMACAddress.Text = ES.Services.VPS2012.GenerateMacAddress();
             }
 
             // private network
@@ -366,7 +369,7 @@ namespace SolidCP.Portal.VPS2012
                 listVlanLists.SelectedIndex = listVlanLists.Items.Count - 1;
             }
 
-
+            ExternalMACAddressRow.Visible = !emptyIps && (PanelSecurity.LoggedUser.Role != UserRole.User);
             ExternalAddressesNumberRow.Visible = radioExternalRandom.Checked;
             ExternalAddressesListRow.Visible = radioExternalSelected.Checked;
 
@@ -466,6 +469,8 @@ namespace SolidCP.Portal.VPS2012
             SummExternalAddressesNumberRow.Visible = radioExternalRandom.Checked && isSelectedAndChecked;
             litExternalAddressesNumber.Text = PortalAntiXSS.Encode(txtExternalAddressesNumber.Text.Trim());
             SummExternalAddressesListRow.Visible = radioExternalSelected.Checked && isSelectedAndChecked;
+            SummExternalAddressMAC.Visible = isSelectedAndChecked && (PanelSecurity.LoggedUser.Role != UserRole.User);
+            litSummExternalAddressMAC.Text = PortalAntiXSS.Encode(txtExternalMACAddress.Text.Trim()).Replace(" ", "").Replace(":", "").Replace("-", "");
 
             List<string> ipAddresses = new List<string>();
             foreach (ListItem li in listExternalAddresses.Items)
@@ -514,6 +519,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ResetAllowed = chkReset.Checked;
                 virtualMachine.ReinstallAllowed = chkReinstall.Checked;
                 virtualMachine.ExternalNetworkEnabled = false; //setting up after
+                virtualMachine.ExternalNicMacAddress = txtExternalMACAddress.Text.Trim().Replace(" ", "").Replace(":", "").Replace("-", "");
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
 
 

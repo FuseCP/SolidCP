@@ -751,6 +751,51 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Localize locHoldCtrl;
         
         /// <summary>
+        /// ExternalMACAddressRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow ExternalMACAddressRow;
+        
+        /// <summary>
+        /// locExternalMACAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locExternalMACAddress;
+        
+        /// <summary>
+        /// txtExternalMACAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtExternalMACAddress;
+        
+        /// <summary>
+        /// MACAddressValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator MACAddressValidator;
+        
+        /// <summary>
+        /// valMACformat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valMACformat;
+        
+        /// <summary>
         /// stepPrivateNetwork control.
         /// </summary>
         /// <remarks>
@@ -1343,6 +1388,33 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litExternalAddresses;
+        
+        /// <summary>
+        /// SummExternalAddressMAC control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow SummExternalAddressMAC;
+        
+        /// <summary>
+        /// locSummExternalAddressMAC control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSummExternalAddressMAC;
+        
+        /// <summary>
+        /// litSummExternalAddressMAC control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litSummExternalAddressMAC;
         
         /// <summary>
         /// locPrivateNetwork2 control.
