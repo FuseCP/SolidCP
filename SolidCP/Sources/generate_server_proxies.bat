@@ -2,9 +2,9 @@
 :.NET Framework (SDK) version 2.0 (x64) https://www.microsoft.com/en-us/download/details.aspx?id=15354 (manully unzip setup.exe and click install.msi)
 :(WSE) 3.0 for Microsoft .NET https://www.microsoft.com/en-us/download/details.aspx?id=14089
 : Put your future functions in your "*.asmx.cs" files, and then rebuild your project
-: Installed SolidCP EnterpriseServer && Server (and ofcourse update it with last your bin libs)
+: Install SolidCP EnterpriseServer && Server (and ofcourse update it with last your bin libs)
 : Works on the OS Windows 2012R2 (possibly on Windows 10/2016)
-: I recommend generating one file at a time, to prevent conflicts. (delete "REM" before the files you want to generate)
+: I recommend generating one file at a time (or group of files), to prevent conflicts. (delete "REM" before the files you want to generate) <--- delete this comment after generating all the files.
 SET WSDL="%ProgramFiles(x86)%\Microsoft WSE\v3.0\Tools\WseWsdl3.exe"
 SET WSE_CLEAN=..\Tools\WseClean.exe
 SET SERVER_URL=http://127.0.0.1:9003
@@ -29,12 +29,6 @@ REM %WSE_CLEAN% .\SolidCP.Server.Client\ExchangeServerProxy.cs
 
 REM %WSDL% %SERVER_URL%/EnterpriseStorage.asmx /out:.\SolidCP.Server.Client\EnterpriseStorageProxy.cs /namespace:SolidCP.Providers.EnterpriseStorage /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\EnterpriseStorageProxy.cs
-
-:START 
-:This file no longer exists
-:REM %WSDL% %SERVER_URL%/ExchangeServerHostedEdition.asmx /out:.\SolidCP.Server.Client\ExchangeServerHostedEditionProxy.cs /namespace:SolidCP.Providers.ExchangeHostedEdition /type:webClient /fields
-:REM %WSE_CLEAN% .\SolidCP.Server.Client\ExchangeServerHostedEditionProxy.cs
-:END
 
 REM %WSDL% %SERVER_URL%/FTPServer.asmx /out:.\SolidCP.Server.Client\FtpServerProxy.cs /namespace:SolidCP.Providers.EnterpriseStorage /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\FtpServerProxy.cs
