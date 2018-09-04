@@ -1,7 +1,8 @@
 :If you want to generate files, you need:
 :.NET Framework (SDK) version 2.0 (x64) https://www.microsoft.com/en-us/download/details.aspx?id=15354 (manully unzip setup.exe and click install.msi)
 :(WSE) 3.0 for Microsoft .NET https://www.microsoft.com/en-us/download/details.aspx?id=14089
-: Installed SolidCP EnterpriseServer && Server
+: Put your future functions in your "*.asmx.cs" files, and then rebuild your project
+: Installed SolidCP EnterpriseServer && Server (and ofcourse update it with last your bin libs)
 : Works on the OS Windows 2012R2 (possibly on Windows 10/2016)
 : I recommend generating one file at a time, to prevent conflicts. (delete "REM" before the files you want to generate)
 SET WSDL="%ProgramFiles(x86)%\Microsoft WSE\v3.0\Tools\WseWsdl3.exe"
