@@ -119,7 +119,7 @@ namespace SolidCP.Portal.VPS2012
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));
                 litUptime.Text = uptime.ToString();
                 litStatus.Text = GetLocalizedString("State." + vm.State);
-                litCreated.Text = string.IsNullOrEmpty(vm.CreationTime) ? vm.CreatedDate.ToString() : vm.CreationTime;
+                litCreated.Text = vm.CreatedDate.ToString();
                 litHeartbeat.Text = GetLocalizedString("Heartbeat." + vm.Heartbeat);
 
                 // CPU

@@ -41,12 +41,10 @@ namespace SolidCP.Providers.Virtualization
         public string Path { get; set; }
         public string Name { get; set; }
         public int Generation { get; set; }
-        public bool EnableSecureBoot { get; set; } = true; //by default is true
         public string Description { get; set; }
         public bool LegacyNetworkAdapter { get; set; }
         public bool RemoteDesktop { get; set; }
         public int DiskSize { get; set; }
-        public uint VhdBlockSizeBytes { get; set; }
         public int ProcessVolume { get; set; }
         public string[] SysprepFiles { get; set; }
         public bool ProvisionAdministratorPassword { get; set; }
@@ -55,6 +53,5 @@ namespace SolidCP.Providers.Virtualization
         public string DeployScriptParams { get; set; }
 
         public VirtualNetworkInfo[] Networks { get; set; }
-        
     }
 }

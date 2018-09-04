@@ -191,32 +191,7 @@
 	 </table>
 </fieldset>
 <br />
-<fieldset>
-    <legend>
-        <asp:Localize ID="locConfigVersion" runat="server" meta:resourcekey="locConfigVersion" Text="Virtual Machines Configuration Version"></asp:Localize>
-    </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
-	    <tr><td class="SubHead" style="width:200px;">
-                        <asp:Localize ID="locHyperVConfig" runat="server" meta:resourcekey="locHyperVConfig" Text="HyperV Config Version:"></asp:Localize>
-                    </td>
-                    <td>
-                        <asp:DropDownList ID="ddlHyperVConfig" runat="server" CssClass="form-control" Width="450"
-                            DataValueField="ConfigVersion" DataTextField="Name" SelectedIndex='<%# Eval("HyperVConfigurationVersion") %>'>
-                                <asp:ListItem Text="Default Windows Version" Value="0.0"></asp:ListItem>
-                                <asp:ListItem Text="5.0 - Windows 2012R2" Value="5.0"></asp:ListItem>
-                                <asp:ListItem Text="8.0 - Windows 2016 (version 1607)" Value="8.0"></asp:ListItem>
-                                <asp:ListItem Text="8.1 - Windows 10 (version 1703)" Value="8.1"></asp:ListItem>
-                                <asp:ListItem Text="8.2 - Windows 10 (version 1709)" Value="8.2"></asp:ListItem>
-                        </asp:DropDownList>
-                        
-                    </td>
-                </tr>
-	</table>
-	<p style="margin: 10px;">
-	    <asp:Localize ID="locConfigVersionText" runat="server" meta:resourcekey="locConfigVersionText" Text="Help text goes here..."></asp:Localize>
-	</p>
-</fieldset>
-<br />
+
 <fieldset>
     <legend>
         <asp:Localize ID="locTemplates" runat="server" meta:resourcekey="locTemplates" Text="OS Templates"></asp:Localize>
@@ -256,7 +231,6 @@
                         <asp:CheckBox ID="chkCanSetComputerName" runat="server" Checked='<%# Eval("ProvisionComputerName") %>' meta:resourcekey="chkCanSetComputerName" Text="Can set a computer name" /><br />
                         <asp:CheckBox ID="chkCanSetAdminPass" runat="server" Checked='<%# Eval("ProvisionAdministratorPassword") %>' meta:resourcekey="chkCanSetAdminPass" Text="Can set an Administrator password" /><br />
                         <asp:CheckBox ID="chkCanSetNetwork" runat="server" Checked='<%# Eval("ProvisionNetworkAdapters") %>' meta:resourcekey="chkCanSetNetwork" Text="Can set Ip addresses" /><br />
-                        <asp:CheckBox ID="chkEnableSecureBoot" runat="server" Checked='<%# Eval("EnableSecureBoot") %>' meta:resourcekey="chkEnableSecureBoot" Text="Enable Secure Boot (Second Generation only)" /><br />
                     </td>
                     <td rowspan="3">
                         <CPCC:StyleButton id="btnRemoveOsTemplate" CssClass="btn btn-danger" runat="server" CausesValidation="false" CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemoveOsTemplate_OnCommand"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnRemoveOsTemplateText"/> </CPCC:StyleButton>
@@ -266,7 +240,7 @@
                         <asp:Localize ID="locTemplateGeneration" runat="server" meta:resourcekey="locTemplateGeneration" Text="Generation of VM:"></asp:Localize>
                     </td>
                     <td>
-                        <asp:DropDownList ID="ddlTemplateGeneration" runat="server" CssClass="form-control" Width="350"
+                        <asp:DropDownList ID="ddlTemplateGeneration" runat="server" CssClass="form-control" Width="450"
                             DataValueField="TemplateGenerationId" DataTextField="Name" SelectedIndex='<%# Eval("Generation") %>'>
                                 <asp:ListItem Text="Select a VM Generation" Value="0"></asp:ListItem>
                                 <asp:ListItem Text="First" Value="1"></asp:ListItem>
@@ -305,18 +279,6 @@
                         <asp:TextBox Width="470px" CssClass="form-control" runat="server" ID="txtSysprep" Text='<%# Eval("SysprepFiles") != null ? string.Join(";", (string[])Eval("SysprepFiles")) : "" %>'></asp:TextBox>
                     </td>
                 </tr>
-                <tr>
-	                <td class="SubHead">
-		                <asp:Localize ID="locVhdBlockSizeBytes" runat="server" meta:resourcekey="locVhdBlockSizeBytes" Text="VHD Block Size (Bytes):"></asp:Localize>
-	                </td>
-	                <td>
-		                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtVhdBlockSizeBytes" Text='<%# Eval("VhdBlockSizeBytes") %>'></asp:TextBox>
-	                </td>
-                    <td>
-		                <asp:Localize ID="LocBlockSizeDesc" runat="server" meta:resourcekey="LocBlockSizeDesc" Text="Default value is 0. Examples: 512KB, 1MB, 32MB, etc."></asp:Localize>
-	                </td>
-                </tr>
-
             </table>
         </ItemTemplate>
         <SeparatorTemplate>
@@ -666,7 +628,7 @@
 		        <asp:Localize ID="locHostnamePattern" runat="server" meta:resourcekey="locHostnamePattern" Text="VPS host name pattern:"></asp:Localize>
 		    </td>
 		    <td>
-                <asp:TextBox CssClass="form-control" Runat="server" ID="txtHostnamePattern"></asp:TextBox>
+                <asp:TextBox Width="200px" CssClass="form-control" Runat="server" ID="txtHostnamePattern"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="HostnamePatternValidator" runat="server" ControlToValidate="txtHostnamePattern"
                     Text="*" meta:resourcekey="HostnamePatternValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>

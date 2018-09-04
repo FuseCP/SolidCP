@@ -94,15 +94,6 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.DropDownList ddlStatus;
         
         /// <summary>
-        /// tblRowAddons1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow tblRowAddons1;
-        
-        /// <summary>
         /// btnAddAddon control.
         /// </summary>
         /// <remarks>
@@ -119,15 +110,6 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButton rbPlanQuotas;
-        
-        /// <summary>
-        /// tblRowAddons2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow tblRowAddons2;
         
         /// <summary>
         /// rbPackageQuotas control.

@@ -47,17 +47,15 @@ namespace SolidCP.Portal
         {
             try
             {
-                rbPlanQuotas.Visible = rbPackageQuotas.Visible = false; //TODO: at this moment not work, look at line 255 - if (rbPackageQuotas.Checked).
-                
+                rbPlanQuotas.Visible = rbPackageQuotas.Visible = false; //TODO: at this moment not work, look at line 251 - if (rbPackageQuotas.Checked).
                 if (!IsPostBack)
                 {
                     rbPlanQuotas.Checked = true;
                     chkRedirectToCreateVPS.Checked = chkRedirectToCreateVPS.Visible = false;
                     chkIntegratedOUProvisioning.Visible = false;
                     ftpAccountName.SetUserPolicy(PanelSecurity.SelectedUserId, UserSettings.FTP_POLICY, "UserNamePolicy");
-                    BindParentSettings(PanelSecurity.SelectedUserId);
                     BindHostingPlans(PanelSecurity.SelectedUserId);
-                    BindHostingPlan();                    
+                    BindHostingPlan();
                 }
             }
             catch (Exception ex)
@@ -69,14 +67,6 @@ namespace SolidCP.Portal
             }
         }
 
-        private void BindParentSettings(int userId) //Obvious options, which by default must be disabled/enabled
-        {
-            UserInfo[] users = ES.Services.Users.GetUserParents(userId);
-            UserSettings parentSettings = ES.Services.Users.GetUserSettings(users.LastOrDefault().UserId, UserSettings.PACKAGE_SUMMARY_LETTER);
-            chkPackageLetter.Checked = Utils.ParseBool(parentSettings["EnableLetter"], false); //TODO: Hide the option at all (chkPackageLetter.Enabled)?
-            //something else?
-        }
-
         private void BindHostingPlans(int userId)
         {
             ddlPlans.DataSource = ES.Services.Packages.GetUserAvailableHostingPlans(userId);
@@ -86,13 +76,7 @@ namespace SolidCP.Portal
 
             if (ES.Services.Packages.GetUserAvailableHostingAddons(userId).Length == 0)
             {
-                btnAddAddon.Visible 
-                    = rbPlanQuotas.Visible 
-                    = rbPackageQuotas.Visible 
-                    = repHostingAddons.Visible 
-                    = tblRowAddons1.Visible
-                    = tblRowAddons2.Visible
-                    = false;
+                btnAddAddon.Visible = rbPlanQuotas.Visible = rbPackageQuotas.Visible = false;
             }
         }
 
@@ -124,8 +108,12 @@ namespace SolidCP.Portal
                 HostingPlanContext cntx = PackagesHelper.GetCachedHostingPlanContext(planId);                
 
                 if (cntx != null)
-                {                    
-                    chkRedirectToCreateVPS.Checked = chkRedirectToCreateVPS.Visible = cntx.Groups.ContainsKey(ResourceGroups.VPS2012);
+                {
+                    string resourceGroup = "VPS2012";
+                    if (cntx.Groups.ContainsKey(resourceGroup))                    
+                        chkRedirectToCreateVPS.Checked = chkRedirectToCreateVPS.Visible = true;
+                    else
+                        chkRedirectToCreateVPS.Checked = chkRedirectToCreateVPS.Visible = false;
                     systemEnabled = cntx.Groups.ContainsKey(ResourceGroups.Os);
                     webEnabled = cntx.Groups.ContainsKey(ResourceGroups.Web);
 
@@ -134,6 +122,7 @@ namespace SolidCP.Portal
                         lblHostName.Visible = txtHostName.Visible = true;
                         UserSettings settings = ES.Services.Users.GetUserSettings(PanelSecurity.LoggedUserId, UserSettings.WEB_POLICY);
                         txtHostName.Text = String.IsNullOrEmpty(settings["HostName"]) ? "" : settings["HostName"];
+
                     }
                     else
                     {

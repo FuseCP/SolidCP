@@ -399,18 +399,12 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS - External Network
         [WebMethod]
-        public string GenerateMacAddress()
-        {
-            return VirtualizationServerController2012.GenerateMacAddress();
-        }
-
-        [WebMethod]
         public int GetExternalNetworkVLAN(int itemId)
         {
             return VirtualizationServerController2012.GetExternalNetworkVLAN(itemId);
         }
 
-        [WebMethod]
+    [WebMethod]
         public NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
         {
             return VirtualizationServerController2012.GetExternalNetworkAdapterDetails(itemId);
