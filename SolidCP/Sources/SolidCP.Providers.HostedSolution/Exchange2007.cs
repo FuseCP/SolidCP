@@ -276,7 +276,7 @@ namespace SolidCP.Providers.HostedSolution
             return GetMailboxMailFlowSettingsInternal(accountName);
         }
 
-        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, bool saveSentItems,
+        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems,
             string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
@@ -2468,7 +2468,7 @@ namespace SolidCP.Providers.HostedSolution
             return info;
         }
 
-        private void SetMailboxMailFlowSettingsInternal(string accountName, bool enableForwarding, bool saveSentItems,
+        private void SetMailboxMailFlowSettingsInternal(string accountName, bool enableForwarding, int saveSentItems,
             string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {

@@ -110,15 +110,20 @@ namespace SolidCP.Providers
                 // set service item properties
                 foreach (string pair in sobj.Properties)
                 {
-                    int idx = pair.IndexOf('=');
-                    string name = pair.Substring(0, idx);
-                    string val = pair.Substring(idx + 1);
-                    if (hash.ContainsKey(name))
+                    try //TODO: that try catch is a dirty fix. Without it we get that issue System.ArgumentException: Object of type 'System.String' cannot be converted to type 'SolidCP.Providers.Virtualization.VirtualHardDiskInfo[]'.
+                        //possible that method works only with simple objects.
                     {
-                        // set value
-                        PropertyInfo propInfo = hash[name];
-                        propInfo.SetValue(item, Cast(val, propInfo.PropertyType), null);
+                        int idx = pair.IndexOf('=');
+                        string name = pair.Substring(0, idx);
+                        string val = pair.Substring(idx + 1);
+                        if (hash.ContainsKey(name))
+                        {
+                            // set value
+                            PropertyInfo propInfo = hash[name];
+                            propInfo.SetValue(item, Cast(val, propInfo.PropertyType), null);
+                        }
                     }
+                    catch { }
                 }
             }
 

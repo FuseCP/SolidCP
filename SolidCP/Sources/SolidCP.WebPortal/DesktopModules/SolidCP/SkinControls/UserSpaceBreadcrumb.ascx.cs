@@ -79,6 +79,7 @@ namespace SolidCP.Portal.SkinControls
 
         private void BindUserSpace()
         {
+            //cmdSave.Attributes.Add("AutoPostback", "true");
             spanSpace.Visible = false;
             pnlViewSpace.Visible = false;
             pnlEditSpace.Visible = false;
@@ -215,9 +216,9 @@ namespace SolidCP.Portal.SkinControls
             {
                 return;
             }
-
+            cmdSpaceName.Text = txtName.Text;
             // refresh page
-            Response.Redirect(Request.Url.ToString());
+            //Response.Redirect(Request.Url.ToString());
         }
 
         

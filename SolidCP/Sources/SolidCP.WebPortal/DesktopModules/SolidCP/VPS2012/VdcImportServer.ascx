@@ -256,10 +256,10 @@
                         </asp:Panel>
                     </asp:Panel>
                     
-                    <p>
+                    <div class="text-right">
                         <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel"/> </CPCC:StyleButton>&nbsp;
                         <CPCC:StyleButton id="btnImport" CssClass="btn btn-success" runat="server" OnClick="btnImport_Click" ValidationGroup="ImportWizard"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnImportText"/> </CPCC:StyleButton>
-                    </p>
+                    </div>
                         
 			    </div>
 		    </div>

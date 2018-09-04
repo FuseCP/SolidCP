@@ -36,7 +36,7 @@
                             <asp:Localize ID="locAdminOptions" runat="server" meta:resourcekey="locAdminOptions" Text="Administrator options"></asp:Localize>
                         </legend>
 
-                            <table cellspacing="5">
+                            <table style="border-collapse: separate; border-spacing: 5px 1px;">
 				                <tr>
 				                    <td>
 				                        <asp:CheckBox ID="chkSaveFiles" runat="server"
@@ -61,10 +61,10 @@
 				            </table>
 				     </fieldset>
 				    
-                    <p>
+                    <div class="text-right">
                         <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel"/> </CPCC:StyleButton>&nbsp;
                         <CPCC:StyleButton id="btnDelete" CssClass="btn btn-danger" runat="server" OnClick="btnDelete_Click" ValidationGroup="Tools"> <i class="fa fa-trash-o">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnDeleteText"/> </CPCC:StyleButton>
-                    </p>
+                    </div>
 			    </div>
 		    </div>
 	    </div>

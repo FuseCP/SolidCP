@@ -47,6 +47,10 @@ namespace SolidCP.Portal.VPS2012
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool isAdmin = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+            if (!isAdmin)
+                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+
             if (!IsPostBack)
             {
                 // bind hyper-V services
@@ -180,8 +184,8 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
             list.Items.Clear();
-            //IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, pool);
-            IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(-1, serviceId.ToString(), pool);
+            IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, pool);
+            //IPAddressInfo[] ips = ES.Services.Servers.GetUnallottedIPAddresses(-1, serviceId.ToString(), pool); //??? why do we do that??
             foreach (IPAddressInfo ip in ips)
             {
                 if (ip.VLAN == adaptervlan)

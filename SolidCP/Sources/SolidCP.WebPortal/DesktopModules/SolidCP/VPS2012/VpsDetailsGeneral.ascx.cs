@@ -119,7 +119,7 @@ namespace SolidCP.Portal.VPS2012
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));
                 litUptime.Text = uptime.ToString();
                 litStatus.Text = GetLocalizedString("State." + vm.State);
-                litCreated.Text = vm.CreatedDate.ToString();
+                litCreated.Text = string.IsNullOrEmpty(vm.CreationTime) ? vm.CreatedDate.ToString() : vm.CreationTime;
                 litHeartbeat.Text = GetLocalizedString("Heartbeat." + vm.Heartbeat);
 
                 // CPU
@@ -134,7 +134,16 @@ namespace SolidCP.Portal.VPS2012
                     if (vm.DynamicMemory != null && vm.DynamicMemory.Enabled)
                         totalRam = vm.DynamicMemory.Maximum;
 
-                    int ramPercent = Convert.ToInt32((float)vm.RamUsage / (float)totalRam * 100);
+                    int ramPercent; 
+                    try
+                    {
+                        ramPercent = Convert.ToInt32(vm.RamUsage / (float)totalRam * 100); //It is possible to get an Overflow exception
+                    }
+                    catch
+                    {
+                        ramPercent = 100;
+                    }
+                    
                     ramGauge.Total = totalRam;
                     ramGauge.Progress = vm.RamUsage;
                     litRamPercentage.Text = String.Format(GetLocalizedString("MemoryPercentage.Text"), ramPercent);
@@ -157,7 +166,16 @@ namespace SolidCP.Portal.VPS2012
 
                     int usedHdd = sizeHdd - freeHdd;
 
-                    int hddPercent = Convert.ToInt32((float)usedHdd / (float)sizeHdd * 100);
+                    int hddPercent;
+                    try
+                    {
+                        hddPercent = Convert.ToInt32(usedHdd / (float)sizeHdd * 100); //It is possible to get an Overflow exception
+                    }
+                    catch
+                    {
+                        hddPercent = 100;
+                    }
+
                     hddGauge.Total = sizeHdd;
                     hddGauge.Progress = usedHdd;
                     litHddPercentage.Text = String.Format(GetLocalizedString("HddPercentage.Text"), hddPercent);

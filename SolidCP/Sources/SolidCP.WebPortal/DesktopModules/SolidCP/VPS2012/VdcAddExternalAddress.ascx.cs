@@ -42,6 +42,8 @@ namespace SolidCP.Portal.VPS2012
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
+            allocateAddresses.Visible = manageAllowed;
         }
     }
 }

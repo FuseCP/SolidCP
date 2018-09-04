@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
@@ -46,15 +47,17 @@ namespace SolidCP.Portal
         {
             try
             {
+                rbPlanQuotas.Visible = rbPackageQuotas.Visible = false; //TODO: at this moment not work, look at line 255 - if (rbPackageQuotas.Checked).
+                
                 if (!IsPostBack)
                 {
+                    rbPlanQuotas.Checked = true;
+                    chkRedirectToCreateVPS.Checked = chkRedirectToCreateVPS.Visible = false;
                     chkIntegratedOUProvisioning.Visible = false;
                     ftpAccountName.SetUserPolicy(PanelSecurity.SelectedUserId, UserSettings.FTP_POLICY, "UserNamePolicy");
+                    BindParentSettings(PanelSecurity.SelectedUserId);
                     BindHostingPlans(PanelSecurity.SelectedUserId);
-                    BindHostingPlan();
-
-
-
+                    BindHostingPlan();                    
                 }
             }
             catch (Exception ex)
@@ -66,12 +69,31 @@ namespace SolidCP.Portal
             }
         }
 
+        private void BindParentSettings(int userId) //Obvious options, which by default must be disabled/enabled
+        {
+            UserInfo[] users = ES.Services.Users.GetUserParents(userId);
+            UserSettings parentSettings = ES.Services.Users.GetUserSettings(users.LastOrDefault().UserId, UserSettings.PACKAGE_SUMMARY_LETTER);
+            chkPackageLetter.Checked = Utils.ParseBool(parentSettings["EnableLetter"], false); //TODO: Hide the option at all (chkPackageLetter.Enabled)?
+            //something else?
+        }
+
         private void BindHostingPlans(int userId)
         {
             ddlPlans.DataSource = ES.Services.Packages.GetUserAvailableHostingPlans(userId);
             ddlPlans.DataBind();
 
             ddlPlans.Items.Insert(0, new ListItem(GetLocalizedString("SelectHostingPlan.Text"), ""));
+
+            if (ES.Services.Packages.GetUserAvailableHostingAddons(userId).Length == 0)
+            {
+                btnAddAddon.Visible 
+                    = rbPlanQuotas.Visible 
+                    = rbPackageQuotas.Visible 
+                    = repHostingAddons.Visible 
+                    = tblRowAddons1.Visible
+                    = tblRowAddons2.Visible
+                    = false;
+            }
         }
 
         private void BindHostingPlan()
@@ -99,9 +121,11 @@ namespace SolidCP.Portal
             // load hosting context
             if (planId > 0)
             {
-                HostingPlanContext cntx = PackagesHelper.GetCachedHostingPlanContext(planId);
+                HostingPlanContext cntx = PackagesHelper.GetCachedHostingPlanContext(planId);                
+
                 if (cntx != null)
-                {
+                {                    
+                    chkRedirectToCreateVPS.Checked = chkRedirectToCreateVPS.Visible = cntx.Groups.ContainsKey(ResourceGroups.VPS2012);
                     systemEnabled = cntx.Groups.ContainsKey(ResourceGroups.Os);
                     webEnabled = cntx.Groups.ContainsKey(ResourceGroups.Web);
 
@@ -110,7 +134,6 @@ namespace SolidCP.Portal
                         lblHostName.Visible = txtHostName.Visible = true;
                         UserSettings settings = ES.Services.Users.GetUserSettings(PanelSecurity.LoggedUserId, UserSettings.WEB_POLICY);
                         txtHostName.Text = String.IsNullOrEmpty(settings["HostName"]) ? "" : settings["HostName"];
-
                     }
                     else
                     {
@@ -219,8 +242,139 @@ namespace SolidCP.Portal
                 return;
             }
 
-            // go to space home
-            Response.Redirect(PortalUtils.GetSpaceHomePageUrl(result.Result));
+            // Save addons
+            try
+            {
+                int spaceId = result.Result;
+                foreach (RepeaterItem item in repHostingAddons.Items)
+                {
+                    PackageAddonInfo addon = new PackageAddonInfo();
+                    addon.PackageAddonId = 0; //PanelRequest.PackageAddonID;
+                    addon.PackageId = spaceId; //PanelSecurity.PackageId;
+                    addon.Comments = "";
+                    addon.PlanId = Utils.ParseInt(GetDropDownListSelectedValue(item, "ddlPlan"), 0);
+                    addon.StatusId = Utils.ParseInt(ddlStatus.SelectedValue, 0);
+                    addon.PurchaseDate = DateTime.Now;
+                    addon.Quantity = Utils.ParseInt(GetTextBoxText(item, "txtQuantity"), 1);
+                    PackageResult addonResult = ES.Services.Packages.AddPackageAddon(addon);
+                }
+
+                if (rbPackageQuotas.Checked)
+                {
+                    //TODO: add logic to recalculate quota
+                    //If checked rbPackageQuotas take all addons quota, sum it and replace to main hosting quota
+                    //You can look the idea from SpaceEditDetails, but in SpaceEditDetails it is manually, need automatic here
+                    //At this moment here is a lot of work, maybe later.
+                }
+
+                //PackageContext cntx = PackagesHelper.GetCachedPackageContext(spaceId);
+                //string resourceGroup = "VPS2012";
+                //if (cntx != null && cntx.Groups.ContainsKey(resourceGroup))
+                //{
+                //    string pageId = "SpaceVPS2012";
+                //    string pageUrl = PortalUtils.NavigatePageURL(
+                //pageId, PortalUtils.SPACE_ID_PARAM, spaceId.ToString(), null);
+                //    Response.Redirect(pageUrl);
+                //}               
+                    
+            }
+            catch
+            {
+                //If something happens here, just ignore it. Addons not so important that a Hosting Space
+            }
+
+            if (chkRedirectToCreateVPS.Checked)
+            {
+                string pageId = "SpaceVPS2012";
+                string pageUrl = PortalUtils.NavigatePageURL(
+                            pageId, PortalUtils.SPACE_ID_PARAM, result.Result.ToString(), null);
+                Response.Redirect(pageUrl);
+            }
+            else
+            {
+                // go to space home
+                Response.Redirect(PortalUtils.GetSpaceHomePageUrl(result.Result));
+            }            
+        }
+
+        // Hosting Addons Remove
+        protected void btnRemoveAddAddon_OnCommand(object sender, CommandEventArgs e)
+        {
+            //rbPlanQuotas.Checked = true;
+            var addons = GetAddons();
+            addons.RemoveAt(Convert.ToInt32(e.CommandArgument));
+            RebindAddons(addons);
+        }
+
+        // Hosting Addons add
+        protected void btnAddAddon_Click(object sender, EventArgs e)
+        {
+            //rbPlanQuotas.Checked = true;
+            var addons = GetAddons();
+            addons.Add(new PackageAddonInfo());
+            RebindAddons(addons);
+        }
+        
+        private List<PackageAddonInfo> GetAddons()
+        {
+            var result = new List<PackageAddonInfo>();
+            
+            foreach (RepeaterItem item in repHostingAddons.Items)
+            {                
+                var addon = new PackageAddonInfo();                              
+                addon.PackageAddonId = GetDropDownListSelectedValue(item, "ddlPlan");
+                addon.Quantity = Utils.ParseInt(GetTextBoxText(item, "txtQuantity"), 1);
+                result.Add(addon);
+            }
+
+            return result;
+        }
+
+        private HostingPlanInfo[] GetHostingPlanAddonsInfo()
+        {
+            UserInfo user = UsersHelper.GetUser(PanelSecurity.SelectedUserId);
+            HostingPlanInfo[] hpi = ES.Services.Packages.GetUserAvailableHostingAddons(user.UserId);
+
+            for (int i = 0; i < hpi.Length; i++)
+            {
+                hpi[i].PlanDescription = PortalAntiXSS.DecodeOld(hpi[i].PlanDescription);
+                hpi[i].PlanName = PortalAntiXSS.DecodeOld(hpi[i].PlanName);
+            }
+
+            return hpi;
+        }
+
+        private void RebindAddons(List<PackageAddonInfo> addons)
+        {
+            repHostingAddons.DataSource = addons;
+            repHostingAddons.DataBind();
+            int i = 0;
+            HostingPlanInfo[] hpi = GetHostingPlanAddonsInfo();
+            foreach (RepeaterItem item in repHostingAddons.Items)
+            {
+                SetDropDownListSelectedIndex(item, "ddlPlan", hpi);
+                (item.FindControl("ddlPlan") as DropDownList).SelectedValue = addons[i].PackageAddonId.ToString();
+                //(item.FindControl("txtQuantity") as TextBox).Text = addons[i].Quantity.ToString();
+                i++;
+            }
+        }
+        private void SetDropDownListSelectedIndex(RepeaterItem item, string name, object[] source)
+        {
+            (item.FindControl(name) as DropDownList).DataSource = source;
+            (item.FindControl(name) as DropDownList).DataBind();
+            (item.FindControl(name) as DropDownList).Items.Insert(0, new ListItem(GetLocalizedString("SelectHostingPlan.Text"), "-1"));
+        }
+        private int GetDropDownListSelectedValue(RepeaterItem item, string name)
+        {
+            return Convert.ToInt32((item.FindControl(name) as DropDownList).SelectedValue);
+        }
+        private string GetTextBoxText(RepeaterItem item, string name)
+        {
+            return (item.FindControl(name) as TextBox).Text;
+        }
+        private void UnCkeckRadioButton(RepeaterItem item, string name)
+        {
+            (item.FindControl(name) as RadioButton).Checked = false;
         }
 
         private string GetOrgId(string orgIdPolicy, string domainName, int packageId)

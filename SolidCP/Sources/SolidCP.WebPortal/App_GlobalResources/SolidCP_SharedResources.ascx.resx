@@ -6352,4 +6352,13 @@
   <data name="Warning.VPS_CHANGE_HDD_SIZE" xml:space="preserve">
     <value>You can't reduce hdd size!</value>
   </data>
+  <data name="Warning.VPS_REINSTALL_NO_TEMPLATE" xml:space="preserve">
+    <value>Opps, unfortunately, there is no virtual machine template, contact the administrator.</value>
+  </data>
+  <data name="Warning.VPS_REINSTALL_NO_HOSTNAME" xml:space="preserve">
+    <value>Opps, unfortunately, there is incorect virtual machine hostname, contact the administrator.</value>
+  </data>
+  <data name="Error.HDD_VM_FILE_EXIST_ERROR" xml:space="preserve">
+    <value>Error the name with this file already exists: {1}</value>
+  </data>
 </root>

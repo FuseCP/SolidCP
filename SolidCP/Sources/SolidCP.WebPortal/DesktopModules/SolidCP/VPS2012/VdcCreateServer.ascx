@@ -72,6 +72,11 @@
 			                                        ControlToValidate="txtDomain" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
 			                                    </asp:RegularExpressionValidator>
                                                 </div>
+
+                                        <div class="col-sm-10">
+                                            <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="true"
+                                                Text="Generate Auto HostName" meta:resourcekey="chkAutoHostName" />
+                                        </div>
                                  </div>
                                 <div class="form-group">
                                 <asp:Label ID="locOperatingSystem" meta:resourcekey="locOperatingSystem" runat="server" Text="Operating system:" CssClass="col-sm-2"  AssociatedControlID="listOperatingSystems"></asp:Label>
@@ -136,13 +141,14 @@
                                         TargetControlID="QOSManag" meta:resourcekey="secHddQOS" Text="Virtual Hard Disk Drive Quality of Service management">
                                     </scp:CollapsiblePanel>
                                     <asp:Panel ID="QOSManag" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                                        <div class="form-group">
-                                            <div class="col-sm-10-inline">
+                                       <div class="form-group">
+                                            <div class="col-sm-10">
                                         <asp:Localize ID="locHddIOPSTitle" runat="server" meta:resourcekey="locHddIOPSTitle" 
                             Text="Specify Quality of Service management for this virtual hard disk. Minimum and maximum IOPS are measured in 8KB increments. Default value is 0." />
-		                               </div>
+		                                    </div>
+                                            <div class="col-sm-10 form-inline"> 
                                             <asp:Label ID="lblHddMinIOPS" meta:resourcekey="lblHddMinIOPS" runat="server" Text="Minimum:" CssClass="col-sm-2" AssociatedControlID="txtHddMinIOPS"/>
-                                            <div class="col-sm-10 form-inline">                                                
+                                                                                           
                                                 <asp:TextBox ID="txtHddMinIOPS" runat="server" CssClass="form-control form-control" Width="150" Text="0"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="RequireHddMinIOPSValidator" runat="server" Text="*" Display="Dynamic"
                                                      ControlToValidate="txtHddMinIOPS" meta:resourcekey="RequireHddMinIOPSValidator" SetFocusOnError="true"
@@ -150,8 +156,9 @@
                                                 <asp:Localize ID="locHddMinIOPS" runat="server" meta:resourcekey="locHddMinIOPS" Text="IOPS"/>                         
                                             </div>
 
+                                            <div class="col-sm-10 form-inline">  
                                             <asp:Label ID="lblHddMaxIOPS" meta:resourcekey="lblHddMaxIOPS" runat="server" Text="Maximum:" CssClass="col-sm-2" AssociatedControlID="txtHddMaxIOPS"/>
-                                            <div class="col-sm-10 form-inline">                                  
+                                                                            
                                                 <asp:TextBox ID="txtHddMaxIOPS" runat="server" CssClass="form-control form-control" Width="150" Text="0"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="RequireHddMaxIOPSValidator" runat="server" Text="*" Display="Dynamic"
                                                      ControlToValidate="txtHddMaxIOPS" meta:resourcekey="RequireHddMaxIOPSValidator" SetFocusOnError="true"
@@ -282,6 +289,25 @@
                                                         meta:resourcekey="locHoldCtrl" Text="* Hold CTRL key to select multiple addresses"></asp:Localize>
                                             </td>
                                         </tr>
+                                        <tr id="ExternalMACAddressRow" runat="server">
+	                                        <td style="padding-left: 30px;">
+                                                <div class="col-sm-10 form-inline">
+		                                            <asp:Localize ID="locExternalMACAddress" runat="server"
+				                                            meta:resourcekey="locExternalMACAddress" Text="MAC:"></asp:Localize>
+
+		                                            <asp:TextBox ID="txtExternalMACAddress" runat="server" CssClass="form-control form-control" Width="145" Text=""></asp:TextBox>
+		
+		                                            <asp:RequiredFieldValidator id="MACAddressValidator" ControlToValidate="txtExternalMACAddress" 
+		                                            ErrorMessage="MAC Address is incorrect." Display="Dynamic" Width="100%" runat="server" 
+                                                        meta:resourcekey="MACAddressValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+		                                            <asp:RegularExpressionValidator ID="valMACformat" runat="server" ControlToValidate="txtExternalMACAddress" 
+		                                            ErrorMessage="MAC Address format is incorrect." Display="Dynamic" Width="100%" ValidationExpression="((\d|([a-f]|[A-F])){2}[:\-]?){5}(\d|([a-f]|[A-F])){2}" 
+                                                        meta:resourcekey="valMACformat" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RegularExpressionValidator>
+                                                </div>
+	                                        </td>
+                                        </tr>
                                     </table>
                                     <br />
                             </asp:WizardStep>
@@ -336,7 +362,7 @@
                                     </table>
                                     <br />
                                     
-                                    <table cellspacing="3">
+                                    <table style="border-collapse: separate; border-spacing: 3px;">
                                         <tr>
                                             <td><asp:Localize ID="locPrivateNetworkFormat" runat="server"
                                             meta:resourcekey="locPrivateNetworkFormat" Text="Network addresses format:"></asp:Localize></td>
@@ -356,7 +382,7 @@
                             
                             
                             <asp:WizardStep ID="stepSummary" runat="server" meta:resourcekey="stepSummary" Title="Summary">
-                                    <table cellspacing="6">
+                                    <table style="border-collapse: separate; border-spacing: 6px 1px;">
                                         <tr>
                                             <td colspan="2" class="NormalBold">
                                                 <asp:Localize ID="locNameStepTitle2" runat="server"
@@ -403,11 +429,11 @@
                                             <td><asp:Literal ID="litHdd" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
-                                            <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HHD minimum IOPS:" /></td>
+                                            <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HDD minimum IOPS:" /></td>
                                             <td><asp:Literal ID="litHddIOPSmin" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
-                                            <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HHD maximum IOPS:" /></td>
+                                            <td><asp:Localize ID="locHddIOPSmax" runat="server" meta:resourcekey="locHddIOPSmax" Text="HDD maximum IOPS:" /></td>
                                             <td><asp:Literal ID="litHddIOPSmax" runat="server"></asp:Literal></td>
                                         </tr>
                                         <tr>
@@ -474,7 +500,7 @@
                                         </tr>
                                         <tr>
                                             <td><asp:Localize ID="locExternalNetworkEnabled" runat="server"
-                                                meta:resourcekey="locExternalNetworkEnabled" Text="External network enabled:" /></asp:Localize></td>
+                                                meta:resourcekey="locExternalNetworkEnabled" Text="External network enabled:" /></td>
                                             <td><scp:CheckBoxOption id="optionExternalNetwork" runat="server" Value="True" /></td>
                                         </tr>
                                         <tr id="SummExternalAddressesNumberRow" runat="server">
@@ -486,6 +512,11 @@
                                             <td><asp:Localize ID="locExternalAddressesList" runat="server"
                                                 meta:resourcekey="locExternalAddressesList" Text="IP addresses list:" /></td>
                                             <td><asp:Literal ID="litExternalAddresses" runat="server"></asp:Literal></td>
+                                        </tr>
+                                        <tr id="SummExternalAddressMAC" runat="server">
+                                            <td><asp:Localize ID="locSummExternalAddressMAC" runat="server"
+                                                meta:resourcekey="locSummExternalAddressMAC" Text="MAC:" /></td>
+                                            <td><asp:Literal ID="litSummExternalAddressMAC" runat="server"></asp:Literal></td>
                                         </tr>
                                         
                                         <tr>
@@ -499,7 +530,7 @@
                                         </tr>
                                         <tr>
                                             <td><asp:Localize ID="locPrivateNetworkEnabled" runat="server"
-                                                meta:resourcekey="locPrivateNetworkEnabled" Text="Private network enabled:" /></asp:Localize></td>
+                                                meta:resourcekey="locPrivateNetworkEnabled" Text="Private network enabled:" /></td>
                                             <td><scp:CheckBoxOption id="optionPrivateNetwork" runat="server" Value="True" /></td>
                                         </tr>
                                         <tr id="SummPrivateAddressesNumberRow" runat="server">

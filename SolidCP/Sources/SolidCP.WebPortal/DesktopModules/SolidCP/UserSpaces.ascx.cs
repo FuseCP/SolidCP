@@ -71,7 +71,7 @@ namespace SolidCP.Portal
                 if(!IsPostBack) 
                 {
                     myPackages = new PackagesHelper().GetMyPackages();
-                    myPackages.Tables[0].DefaultView.Sort = "DefaultTopPackage DESC, PackageId ASC";
+                    myPackages.Tables[0].DefaultView.Sort = "DefaultTopPackage DESC, PackageName ASC";//"DefaultTopPackage DESC, PackageId ASC";
                     ddlPackageSelect.DataSource = myPackages.Tables[0].DefaultView;
                     ddlPackageSelect.DataTextField = myPackages.Tables[0].Columns[2].ColumnName;
                     ddlPackageSelect.DataValueField = myPackages.Tables[0].Columns[0].ColumnName;
@@ -110,6 +110,8 @@ namespace SolidCP.Portal
                 ResellerPackagesPanel.Visible = true;
                 gvPackages.PageSize = UsersHelper.GetDisplayItemsPerPage();
                 gvPackages.Columns[1].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+                if (!IsPostBack)
+                    gvPackages.Sort("PackageName", SortDirection.Ascending);
             }
 
             // toggle button

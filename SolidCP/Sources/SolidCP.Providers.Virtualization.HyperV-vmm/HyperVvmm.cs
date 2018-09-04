@@ -1214,7 +1214,7 @@ namespace SolidCP.Providers.Virtualization
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted); 
         }
 
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType)
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
         {
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
         }
@@ -1845,6 +1845,12 @@ namespace SolidCP.Providers.Virtualization
             return true;
         }
 
+        public bool IsEmptyFolders(string path)
+        {
+            Command cmdScript = new Command("dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname", true);
+            Collection<PSObject> result = PowerShell.Execute(cmdScript, true);
+            return result.Count < 1;
+        }
         public void DeleteFile(string path)
         {
             if (path.StartsWith(@"\\"))

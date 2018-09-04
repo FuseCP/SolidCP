@@ -291,7 +291,7 @@ namespace SolidCP.Providers.HostedSolution
             return GetMailboxMailFlowSettingsInternal(accountName);
         }
 
-        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, bool saveSentItems,
+        public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems,
             string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
@@ -2814,7 +2814,20 @@ namespace SolidCP.Providers.HostedSolution
                     info.ForwardingAccount = GetExchangeAccount(runSpace, forwardingAddress);
                     info.DoNotDeleteOnForward = (bool)GetPSObjectProperty(mailbox, "DeliverToMailboxAndForward");
                 }
-                info.SaveSentItems = (bool)GetPSObjectProperty(mailbox, "MessageCopyForSentAsEnabled");
+
+                bool MailboxSaveSentItems = (bool)GetPSObjectProperty(mailbox, "MessageCopyForSendOnBehalfEnabled");
+
+                if (MailboxSaveSentItems)
+                {
+                    // Enabled
+                    info.SaveSentItems = 1;
+                }
+                else
+                {
+                    // Disabled
+                    info.SaveSentItems = 0;
+                }
+
                 info.SendOnBehalfAccounts = GetSendOnBehalfAccounts(runSpace, mailbox);
                 info.AcceptAccounts = GetAcceptedAccounts(runSpace, mailbox);
                 info.RejectAccounts = GetRejectedAccounts(runSpace, mailbox);
@@ -2834,7 +2847,7 @@ namespace SolidCP.Providers.HostedSolution
             return info;
         }
 
-        private void SetMailboxMailFlowSettingsInternal(string accountName, bool enableForwarding, bool saveSentItems,
+        private void SetMailboxMailFlowSettingsInternal(string accountName, bool enableForwarding, int saveSentItems,
             string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts,
             string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
         {
@@ -2861,9 +2874,12 @@ namespace SolidCP.Providers.HostedSolution
                     cmd.Parameters.Add("DeliverToMailboxAndForward", false);
                 }
 
-                if (saveSentItems)
+                if (saveSentItems == 1)
                 {
-                    cmd.Parameters.Add("MessageCopyForSentAsEnabled ", true);
+                    cmd.Parameters.Add("MessageCopyForSendOnBehalfEnabled", true);
+                } else if (saveSentItems == 2)
+                {
+                    cmd.Parameters.Add("MessageCopyForSendOnBehalfEnabled", false);
                 }
 
                 cmd.Parameters.Add("GrantSendOnBehalfTo", SetSendOnBehalfAccounts(runSpace, sendOnBehalfAccounts));

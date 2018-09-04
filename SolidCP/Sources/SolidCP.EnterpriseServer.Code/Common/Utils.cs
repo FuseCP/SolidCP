@@ -56,6 +56,13 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
+        public static double ParseDouble(string val, double defaultValue)
+        {
+            double result = defaultValue;
+            try { result = Double.Parse(val); }
+            catch { /* do nothing */ }
+            return result;
+        }
 
         public static bool ParseBool(object val, bool defaultValue)
         {

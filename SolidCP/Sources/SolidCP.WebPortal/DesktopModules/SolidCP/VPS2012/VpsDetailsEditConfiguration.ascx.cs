@@ -46,6 +46,10 @@ namespace SolidCP.Portal.VPS2012
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
+            if (!manageAllowed) //block access for user if they don't have permission.
+                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+
             if (!IsPostBack)
             {
                 BindConfiguration();
@@ -172,7 +176,7 @@ namespace SolidCP.Portal.VPS2012
             if (!Page.IsValid)
                 return;
 
-            if (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim()))
+            if (!chkIgnoreHddWarning.Checked && (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim())))
             {
                 messageBox.ShowWarningMessage("VPS_CHANGE_HDD_SIZE");
                 return;
@@ -192,25 +196,40 @@ namespace SolidCP.Portal.VPS2012
 
                 // the custom provider control
                 this.SaveSettingsControls(ref virtualMachine);
+                virtualMachine.CpuCores = Utils.ParseInt(ddlCpu.SelectedValue);
+                virtualMachine.RamSize = Utils.ParseInt(txtRam.Text.Trim());
+                virtualMachine.HddSize = Utils.ParseInt(txtHdd.Text.Trim());
+                virtualMachine.SnapshotsNumber = Utils.ParseInt(txtSnapshots.Text.Trim());
+                virtualMachine.HddMinimumIOPS = Utils.ParseInt(txtHddMinIOPS.Text.Trim());
+                virtualMachine.HddMaximumIOPS = Utils.ParseInt(txtHddMaxIOPS.Text.Trim());
+                virtualMachine.DvdDriveInstalled = chkDvdInstalled.Checked;
+                virtualMachine.BootFromCD = chkBootFromCd.Checked;
+                virtualMachine.NumLockEnabled = chkNumLock.Checked;
+                virtualMachine.StartTurnOffAllowed = chkStartShutdown.Checked;
+                virtualMachine.PauseResumeAllowed = chkPauseResume.Checked;
+                virtualMachine.RebootAllowed = chkReboot.Checked;
+                virtualMachine.ResetAllowed = chkReset.Checked;
+                virtualMachine.ReinstallAllowed = chkReinstall.Checked;
+                virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
+                virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
 
-                ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,
-                    Utils.ParseInt(ddlCpu.SelectedValue),
-                    Utils.ParseInt(txtRam.Text.Trim()),
-                    Utils.ParseInt(txtHdd.Text.Trim()),                    
-                    Utils.ParseInt(txtSnapshots.Text.Trim()),
-                    Utils.ParseInt(txtHddMinIOPS.Text.Trim()),
-                    Utils.ParseInt(txtHddMaxIOPS.Text.Trim()),
-                    chkDvdInstalled.Checked,
-                    chkBootFromCd.Checked,
-                    chkNumLock.Checked,
-                    chkStartShutdown.Checked,
-                    chkPauseResume.Checked,
-                    chkReboot.Checked,
-                    chkReset.Checked,
-                    chkReinstall.Checked,
-                    chkExternalNetworkEnabled.Checked,
-                    chkPrivateNetworkEnabled.Checked,
-                    virtualMachine);
+                ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineResource(PanelRequest.ItemID, virtualMachine);
+                //ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,
+                //    Utils.ParseInt(ddlCpu.SelectedValue),
+                //    Utils.ParseInt(txtRam.Text.Trim()),
+                //    Utils.ParseInt(txtHdd.Text.Trim()),                    
+                //    Utils.ParseInt(txtSnapshots.Text.Trim()),
+                //    chkDvdInstalled.Checked,
+                //    chkBootFromCd.Checked,
+                //    chkNumLock.Checked,
+                //    chkStartShutdown.Checked,
+                //    chkPauseResume.Checked,
+                //    chkReboot.Checked,
+                //    chkReset.Checked,
+                //    chkReinstall.Checked,
+                //    chkExternalNetworkEnabled.Checked,
+                //    chkPrivateNetworkEnabled.Checked,
+                //    virtualMachine);
 
                 if (res.IsSuccess)
                 {

@@ -282,6 +282,7 @@ namespace SolidCP.EnterpriseServer
             Dictionary<int, List<ServiceProviderItem>> orderedItems =
                 PackageController.OrderServiceItemsByServices(items);
 
+            int maxItems = 100000000;
             // delete service items by service sets
             foreach (int serviceId in orderedItems.Keys)
             {
@@ -291,7 +292,7 @@ namespace SolidCP.EnterpriseServer
                 if (service.ProviderId == 103 /*Organizations*/)
                 {
                     int itemid = orderedItems[serviceId][0].Id;
-                    OrganizationUsersPaged users = OrganizationController.GetOrganizationUsersPaged(itemid, null, null, null, 0, 100000000);
+                    OrganizationUsersPaged users = OrganizationController.GetOrganizationUsersPaged(itemid, null, null, null, 0, maxItems);
                     foreach (OrganizationUser user in users.PageUsers)
                         usersList.Add(user.PrimaryEmailAddress);
 
@@ -301,8 +302,30 @@ namespace SolidCP.EnterpriseServer
             foreach (DomainInfo domain in domains)
                 domainsList.Add(domain.DomainName);
 
+            //Get VPS Package IPs
+            PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
+                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;            
+            List<int> ipsIdList = new List<int>();
+            foreach (PackageIPAddress ip in ips)
+                ipsIdList.Add(ip.AddressID);            
 
+            //Delete Package
             int res = PackageController.DeletePackage(packageId);
+
+            if (res >= 0)
+            {
+                // users
+                foreach (string user in usersList)
+                    SEPlugin.SE.DeleteEmail(user);
+
+                //domain
+                foreach (string domain in domainsList)
+                    SEPlugin.SE.DeleteDomain(domain);
+
+                //return IPs back to ParentPackage
+                ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
+            }
+
             return res;
         }
 

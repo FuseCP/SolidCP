@@ -81,12 +81,12 @@
 								</td>
 							</tr>
 					    </table>
-                        <table id="tablesavesentitems" runat="server" style="width:100%;margin-top:10px;">
-					    <tr>
-					        <td align="center">
-					            <asp:CheckBox ID="chkSaveSentItems" runat="server" meta:resourcekey="chkSaveSentItems" Text="Save sent items" />
-					        </td>
-					    </tr>
+                      <table id="tablesavesentitems" runat="server" style="width:100%;margin-top:10px;">
+    					    <tr>
+	   				            <td align="left">
+                                   <asp:CheckBox ID="chkSaveSentItems" runat="server" meta:resourcekey="chkSaveSentItems" Text="Save sent items" />
+			    		        </td>
+		    			    </tr>
 					</table>
 					</asp:Panel>
 					

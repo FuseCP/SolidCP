@@ -93,6 +93,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public int GetExchangeServiceID(int itemId)
+        {
+            return ExchangeServerController.GetExchServiceId(itemId);
+        }
+
+        [WebMethod]
         public int DeleteOrganization(int itemId)
         {
             return ExchangeServerController.DeleteOrganization(itemId);
@@ -313,7 +319,7 @@ namespace SolidCP.EnterpriseServer
 
         [WebMethod]
         public int SetMailboxMailFlowSettings(int itemId, int accountId,
-            bool enableForwarding, bool SaveSentItems, string forwardingAccountName, bool forwardToBoth,
+            bool enableForwarding, int SaveSentItems, string forwardingAccountName, bool forwardToBoth,
             string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts,
             bool requireSenderAuthentication)
         {

@@ -62,10 +62,9 @@ namespace SolidCP.Portal.ExchangeServer
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            var serviceId = ES.Services.EnterpriseStorage.GetEnterpriseStorageServiceId(PanelRequest.ItemID);
-
+            int serviceId = ES.Services.ExchangeServer.GetExchangeServiceID(PanelRequest.ItemID);
             StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettingsRDS(serviceId));
-            var AllowSentItems = Utils.ParseBool(settings["Ex2016CU6orhigher"], false);
+            var AllowSentItems = Utils.ParseBool(settings["ex2016cu6orhigher"], false);
             if (!AllowSentItems)
             {
                 tablesavesentitems.Visible = false;
@@ -97,7 +96,20 @@ namespace SolidCP.Portal.ExchangeServer
                 chkDoNotDeleteOnForward.Checked = mailbox.DoNotDeleteOnForward;
 
                 accessAccounts.SetAccounts(mailbox.SendOnBehalfAccounts);
-                chkSaveSentItems.Checked = mailbox.SaveSentItems;
+
+
+                if (mailbox.SaveSentItems == 1)
+                {
+                    // Enabled
+                    chkSaveSentItems.Checked = true;
+                }
+                else
+                {
+                    // Disabled
+                    chkSaveSentItems.Checked = false;
+                }
+
+
                 acceptAccounts.SetAccounts(mailbox.AcceptAccounts);
                 chkSendersAuthenticated.Checked = mailbox.RequireSenderAuthentication;
                 rejectAccounts.SetAccounts(mailbox.RejectAccounts);
@@ -123,11 +135,31 @@ namespace SolidCP.Portal.ExchangeServer
 
             try
             {
+                int SaveSentItems = 0;
+                if (!tablesavesentitems.Visible)
+                {
+                    // Not CU6
+                    SaveSentItems = 0;
+                }
+                else
+                {
+                    if (chkSaveSentItems.Checked)
+                    {
+                        // Enabled
+                        SaveSentItems = 1;
+                    }
+                    else
+                    {
+                        // Disabled
+                        SaveSentItems = 2;
+                    }
+                }
+
                 int result = ES.Services.ExchangeServer.SetMailboxMailFlowSettings(
                     PanelRequest.ItemID, PanelRequest.AccountID,
 
                     chkEnabledForwarding.Checked,
-                    chkSaveSentItems.Checked,
+                    SaveSentItems,
                     forwardingAddress.GetAccount(),
                     chkDoNotDeleteOnForward.Checked,
 

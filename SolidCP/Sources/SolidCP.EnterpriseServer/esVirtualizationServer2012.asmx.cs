@@ -196,16 +196,26 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
+        {
+            return VirtualizationServerController2012.CreateNewVirtualMachine(VMSettings, osTemplateFile, password, summaryLetterEmail,
+            externalAddressesNumber, randomExternalAddresses, externalAddresses,
+            privateAddressesNumber, randomPrivateAddresses, privateAddresses);
+        }
+
+        [WebMethod]
         public IntResult CreateVirtualMachine(int packageId,
                 string hostname, string osTemplateFile, string password, string summaryLetterEmail,
-                int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS, bool dvdInstalled, bool bootFromCD, bool numLock,
+                int cpuCores, int ramMB, int hddGB, int snapshots, bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                 bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
                 bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, VirtualMachine otherSettings)
         {
             return VirtualizationServerController2012.CreateVirtualMachine(packageId,
                 hostname, osTemplateFile, password, summaryLetterEmail,
-                cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS, dvdInstalled, bootFromCD, numLock,
+                cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
                 privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses,  otherSettings);
@@ -291,14 +301,19 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS – Edit Configuration
         [WebMethod]
-        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots, int hddMinimumIOPS, int hddMaximumIOPS,
+        public ResultObject UpdateVirtualMachineResource(int itemId, VirtualMachine vmSettings)
+        {
+            return VirtualizationServerController2012.UpdateVirtualMachineResource(itemId, vmSettings);
+        }
+        [WebMethod]
+        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
                     bool dvdInstalled, bool bootFromCD, bool numLock,
                     bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                     bool externalNetworkEnabled,
                     bool privateNetworkEnabled, VirtualMachine otherSettings)
         {
             return VirtualizationServerController2012.UpdateVirtualMachineConfiguration(
-                    itemId, cpuCores, ramMB, hddGB, snapshots, hddMinimumIOPS, hddMaximumIOPS,
+                    itemId, cpuCores, ramMB, hddGB, snapshots,
                     dvdInstalled, bootFromCD, numLock,
                     startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                     externalNetworkEnabled, privateNetworkEnabled,
@@ -384,12 +399,18 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS - External Network
         [WebMethod]
+        public string GenerateMacAddress()
+        {
+            return VirtualizationServerController2012.GenerateMacAddress();
+        }
+
+        [WebMethod]
         public int GetExternalNetworkVLAN(int itemId)
         {
             return VirtualizationServerController2012.GetExternalNetworkVLAN(itemId);
         }
 
-    [WebMethod]
+        [WebMethod]
         public NetworkAdapterDetails GetExternalNetworkAdapterDetails(int itemId)
         {
             return VirtualizationServerController2012.GetExternalNetworkAdapterDetails(itemId);

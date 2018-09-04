@@ -46,12 +46,15 @@ namespace SolidCP.Providers.Virtualization
         public string VirtualMachineId { get; set; }
         public string Hostname { get; set; }
         public string Domain { get; set; }
-        public double Version { get; set; }
+        [Persistent]
+        public string Version { get; set; }
 
         public VirtualMachineState State { get; set; }
         public long Uptime { get; set; }
         public OperationalStatus Heartbeat { get; set; }
 
+        [Persistent]
+        public string CreationTime { get; set; }
         [Persistent]
         public string RootFolderPath { get; set; }
         [Persistent]
@@ -149,6 +152,8 @@ namespace SolidCP.Providers.Virtualization
 
         [Persistent]
         public int Generation { get; set; }
+        [Persistent]
+        public bool EnableSecureBoot { get; set; }
 
         [Persistent]
         public int ProcessorCount { get; set; }

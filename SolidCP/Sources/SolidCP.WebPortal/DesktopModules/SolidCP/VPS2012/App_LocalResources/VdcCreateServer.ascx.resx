@@ -391,10 +391,10 @@
     <value>Minimum:</value>
   </data>
   <data name="locHddIOPSmax.Text" xml:space="preserve">
-    <value>HHD maximum IOPS:</value>
+    <value>HDD maximum IOPS:</value>
   </data>
   <data name="locHddIOPSmin.Text" xml:space="preserve">
-    <value>HHD minimum IOPS:</value>
+    <value>HDD minimum IOPS:</value>
   </data>
   <data name="locHddIOPSTitle.Text" xml:space="preserve">
     <value>Specify Quality of Service management for this virtual hard disk. &lt;br&gt;Minimum and maximum IOPS are measured in 8KB increments. &lt;br&gt;Default value is 0.</value>

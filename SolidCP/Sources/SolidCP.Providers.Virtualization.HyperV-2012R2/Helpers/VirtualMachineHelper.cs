@@ -78,8 +78,18 @@ namespace SolidCP.Providers.Virtualization
             if (force) cmd.Parameters.Add("Force");
             if (!string.IsNullOrEmpty(server)) cmd.Parameters.Add("ComputerName", server);
             //if (!string.IsNullOrEmpty(reason)) cmd.Parameters.Add("Reason", reason);
-
-            powerShell.Execute(cmd, false);
+            try
+            {
+                powerShell.Execute(cmd, false, true);
+            }
+            catch
+            {
+                cmd = new Command("Stop-VM");
+                cmd.Parameters.Add("Name", vmName);
+                cmd.Parameters.Add("TurnOff");
+                powerShell.Execute(cmd, false);
+            }
+            
         }
     }
 }
