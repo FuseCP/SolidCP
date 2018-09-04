@@ -119,7 +119,7 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Fields
-
+        private static object _mountVHDlocker = new object();
         private PowerShellManager _powerShell;
         protected PowerShellManager PowerShell
         {
@@ -170,11 +170,11 @@ namespace SolidCP.Providers.Virtualization
                     vm.Name = result[0].GetString("Name");
                     vm.State = result[0].GetEnum<VirtualMachineState>("State");
                     vm.CpuUsage = ConvertNullableToInt32(result[0].GetProperty("CpuUsage"));
-                    vm.Version = Convert.ToDouble(ConvertNullableToDouble(result[0].GetProperty("Version")));
+                    vm.Version = string.IsNullOrEmpty(result[0].GetString("Version")) ? "0.0": result[0].GetString("Version");
                     // This does not truly give the RAM usage, only the memory assigned to the VPS - True for Version 5.0
                     // Lets handle detection of total memory and usage else where. SetUsagesFromKVP method have been made for it.
 
-                    if (vm.Version > Constants.ConfigurationVersion)
+                    if (Convert.ToDouble(vm.Version) > Convert.ToDouble(Constants.ConfigurationVersion))
                         vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryDemand")) / Constants.Size1M);
                     else
                         vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryAssigned")) / Constants.Size1M);
@@ -243,8 +243,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 HostedSolutionLog.LogInfo("Before Get-VM command");
-
-                //Command cmd = new Command("Get-VM"); //never not do that for getting all VMs without "Select"!!
+                //TODO: Check different structure of Keeping data.
                 Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
 
                 Collection <PSObject> result = PowerShell.Execute(cmd, true);
@@ -365,6 +364,8 @@ namespace SolidCP.Providers.Virtualization
                 cmdNew.Parameters.Add("Generation", vm.Generation > 1 ? vm.Generation : 1);
                 cmdNew.Parameters.Add("VHDPath", vm.VirtualHardDrivePath);
                 cmdNew.Parameters.Add("Path", msHyperVFolderPath);
+                if(CheckVersionConfigSupport(ConvertNullableToDouble(vm.Version)))
+                    cmdNew.Parameters.Add("Version", vm.Version);
                 PowerShell.Execute(cmdNew, true, true);
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
@@ -415,7 +416,7 @@ namespace SolidCP.Providers.Virtualization
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
-                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled);
+                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot);
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
@@ -869,6 +870,11 @@ namespace SolidCP.Providers.Virtualization
             return GetSwitches(computerName, "External");
         }
 
+        public List<VirtualSwitch> GetInternalSwitches(string computerName)
+        {
+            return GetSwitches(computerName, "Internal");
+        }
+
         private List<VirtualSwitch> GetSwitches(string computerName, string type)
         {
             HostedSolutionLog.LogStart("GetSwitches");
@@ -878,12 +884,27 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                
-                Command cmd = new Command("Get-VMSwitch");
 
+                StringBuilder scriptCommand = new StringBuilder("Get-VMSwitch");
+                string stringFormat = " -{0} {1}";
+                if (!string.IsNullOrEmpty(computerName))
+                    scriptCommand.AppendFormat(stringFormat, "ComputerName", computerName);
+                if (!string.IsNullOrEmpty(type))
+                {
+                    scriptCommand.AppendFormat(stringFormat, "SwitchType", type);
+                    scriptCommand.AppendFormat(" | {0}", "Select Name"); //Trying to improve the command (Sometimes it helps)
+                }
+                else
+                {
+                    scriptCommand.AppendFormat(" | {0}", "Select Name, SwitchType");
+                } 
+
+                Command cmd = new Command(scriptCommand.ToString(), true);
+
+                //Command cmd = new Command("Get-VMSwitch");
                 // Not needed as the PowerShellManager adds the computer name
-                if (!string.IsNullOrEmpty(computerName)) cmd.Parameters.Add("ComputerName", computerName);
-                if (!string.IsNullOrEmpty(type)) cmd.Parameters.Add("SwitchType", type);
+                //if (!string.IsNullOrEmpty(computerName)) cmd.Parameters.Add("ComputerName", computerName);
+                //if (!string.IsNullOrEmpty(type)) cmd.Parameters.Add("SwitchType", type);
 
                 Collection<PSObject> result = PowerShell.Execute(cmd, false, true);
 
@@ -892,7 +913,7 @@ namespace SolidCP.Providers.Virtualization
                     VirtualSwitch sw = new VirtualSwitch();
                     sw.SwitchId = current.GetProperty("Name").ToString();
                     sw.Name = current.GetProperty("Name").ToString();
-                    sw.SwitchType = current.GetProperty("SwitchType").ToString();
+                    sw.SwitchType = !string.IsNullOrEmpty(type) ? type : current.GetProperty("SwitchType").ToString();
                     switches.Add(sw);
                 }
             }
@@ -1193,8 +1214,30 @@ namespace SolidCP.Providers.Virtualization
                 throw;
             }
         }
-
         public MountedDiskInfo MountVirtualHardDisk(string vhdPath)
+        {
+            bool lockTaken = false;
+            int timeout = 1000*60*1; 
+            MountedDiskInfo result;
+            try //A simple queue to prevent problems with multiple installations.
+            {
+                System.Threading.Monitor.TryEnter(_mountVHDlocker, timeout, ref lockTaken); //Wait 1 minute if the thread has been blocked too long.
+                if (!lockTaken)
+                {
+                    HostedSolutionLog.LogWarning(string.Format("MountVirtualHardDisk: Too long, maybe lost it - {0}", vhdPath));
+                }                    
+                result = MountVirtualHardDiskEx(vhdPath);
+            }
+            finally
+            {
+                if (lockTaken)
+                    System.Threading.Monitor.Exit(_mountVHDlocker);
+            }
+
+            return result;
+        }
+
+        private MountedDiskInfo MountVirtualHardDiskEx(string vhdPath)
         {
             vhdPath = FileUtils.EvaluateSystemVariables(vhdPath);
 
@@ -1249,7 +1292,7 @@ namespace SolidCP.Providers.Virtualization
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted); 
         }
 
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType)
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
         {
             // check source file
             if (!FileExists(sourcePath))
@@ -1270,6 +1313,8 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Path", sourcePath);
                 cmd.Parameters.Add("DestinationPath", destinationPath);
                 cmd.Parameters.Add("VHDType", diskType.ToString());
+                if (blockSizeBytes > 0)
+                    cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
 
                 PowerShell.Execute(cmd, true, true);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
@@ -1645,11 +1690,15 @@ namespace SolidCP.Providers.Virtualization
                 }
                 #endregion
 
-                #region Delete virtual machine 
-                //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
+                #region Delete virtual machine folder
                 try
                 {
-                    DeleteFile(vm.RootFolderPath);//TODO: replace by powershell with checking folders size ???
+                    //DeleteFile(vm.RootFolderPath); //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended
+                    if (IsEmptyFolders(vm.RootFolderPath))
+                        DeleteFolder(vm.RootFolderPath);
+                    else
+                        HostedSolutionLog.LogWarning(String.Format("Cannot delete virtual machine folder '{0}' it is not Empty!",
+                        vm.RootFolderPath));
                 }
                 catch (Exception ex)
                 {
@@ -1680,6 +1729,44 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Private Methods
+        private bool CheckVersionConfigSupport(double version)
+        {
+            int CurrentBuild;
+            try
+            {
+                CurrentBuild = ConvertNullableToInt32(Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", ""));
+            }
+            catch
+            {
+                CurrentBuild = 0;
+            }
+
+            double[] VersionsConfig;
+            switch(CurrentBuild)
+            {
+                //case 9600: //Server 2012R2/Windows 8.1
+                //    VersionsConfig = new double[] { 5.0 };
+                //    break;
+                case 10586: //Windows 10 1511
+                    VersionsConfig = new double[] { 7.0, 6.2, 5.0 };
+                    break;
+                case 14393: //Windows Server 2016/Windows 10 1607
+                    VersionsConfig = new double[] { 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 15063: //Windows 10 1703
+                    VersionsConfig = new double[] { 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 16299: //Windows 10 1709
+                    VersionsConfig = new double[] { 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                default:    //If we don't know or Windwos too old (Windows 2012R2)
+                    VersionsConfig = new double[] { -1.0 };
+                    break;
+            }       
+            
+            return Array.IndexOf(VersionsConfig, version) != -1;
+        }
+
         internal double ConvertNullableToDouble(object value)
         {
             return value == null ? 0 : Convert.ToDouble(value);
@@ -1945,6 +2032,13 @@ namespace SolidCP.Providers.Virtualization
                 objFile.InvokeMethod("Copy", new object[] { destinationFileName });
             }
             return true;
+        }
+
+        public bool IsEmptyFolders(string path)
+        {
+            Command cmdScript = new Command("dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname", true);
+            Collection<PSObject> result = PowerShell.Execute(cmdScript, true);
+            return result.Count < 1;
         }
 
         public void DeleteFile(string path)

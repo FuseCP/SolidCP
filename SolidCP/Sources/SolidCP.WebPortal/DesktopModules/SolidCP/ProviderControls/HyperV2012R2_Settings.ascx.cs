@@ -80,6 +80,9 @@ namespace SolidCP.Portal.ProviderControls
             txtCpuReserve.Text = settings["CpuReserve"];
             txtCpuWeight.Text = settings["CpuWeight"];
 
+            // Default Windows Configure Version
+            ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
+
             // OS Templates
             txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
             repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
@@ -163,6 +166,9 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuLimit"] = txtCpuLimit.Text.Trim();
             settings["CpuReserve"] = txtCpuReserve.Text.Trim();
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
+
+            // Default Windows Configure Version
+            settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;
 
             // OS Templates
             settings["OsTemplates"] = GetConfigXml(GetOsTemplates());
@@ -426,6 +432,10 @@ namespace SolidCP.Portal.ProviderControls
                 template.ProcessVolume = processVolume;
                 template.Generation = GetDropDownListSelectedIndex(item, "ddlTemplateGeneration");
 
+                if (template.Generation != 1)
+                    template.EnableSecureBoot = GetCheckBoxValue(item, "chkEnableSecureBoot");
+                else
+                    template.EnableSecureBoot = false;
                 template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
                 template.RemoteDesktop = true; // obsolete
                 template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");
@@ -435,11 +445,51 @@ namespace SolidCP.Portal.ProviderControls
                 var syspreps = GetTextBoxText(item, "txtSysprep").Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries);
                 template.SysprepFiles = syspreps.Select(s=>s.Trim()).ToArray();
 
+                template.VhdBlockSizeBytes = GetBlockSizeBytes(item, "txtVhdBlockSizeBytes");
+
                 result.Add(template);
             }
 
             return result;
         }
+
+        private uint GetBlockSizeBytes(RepeaterItem item, string name)
+        {
+            uint VhdBlockSizeBytes;
+            string blockSize = GetTextBoxText(item, name);
+            if (Utils.IsDigitsOnly(blockSize))
+            {
+                VhdBlockSizeBytes = Convert.ToUInt32(blockSize);
+            }
+            else
+            {
+                string multiple = blockSize.Substring(blockSize.Length - 2);
+                blockSize = blockSize.Remove(blockSize.Length - 2);
+
+                try
+                {
+                    VhdBlockSizeBytes = Convert.ToUInt32(blockSize);
+                    switch (multiple.ToUpper())
+                    {
+                        case "KB":
+                            VhdBlockSizeBytes = Utils.ConvertKBytesToBytes(VhdBlockSizeBytes);
+                            break;
+                        case "MB":
+                            VhdBlockSizeBytes = Utils.ConvertMBytesToBytes(VhdBlockSizeBytes);
+                            break;
+                        default:
+                            VhdBlockSizeBytes = 0;
+                            break;
+                    }
+                }
+                catch
+                {
+                    VhdBlockSizeBytes = 0;
+                }
+            }
+            return VhdBlockSizeBytes;
+        }
+        
         private void RebindOsTemplate(List<LibraryItem> templates)
         {
             repOsTemplates.DataSource = templates;

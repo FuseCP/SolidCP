@@ -83,12 +83,13 @@ namespace SolidCP.Providers.Virtualization
         JobResult ModifyKVPItems(string vmId, KvpExchangeDataItem[] items);
 
         // Storage
+        bool IsEmptyFolders(string path);
         bool FileExists(string path);
         VirtualHardDiskInfo GetVirtualHardDiskInfo(string vhdPath);
         MountedDiskInfo MountVirtualHardDisk(string vhdPath);
         ReturnCode UnmountVirtualHardDisk(string vhdPath);
         JobResult ExpandVirtualHardDisk(string vhdPath, UInt64 sizeGB);
-        JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType);
+        JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes);
         void ExpandDiskVolume(string diskAddress, string volumeName);
         void DeleteRemoteFile(string path);
         string ReadRemoteFile(string path);

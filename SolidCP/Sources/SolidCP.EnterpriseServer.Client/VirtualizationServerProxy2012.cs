@@ -168,6 +168,8 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback GetReplicationOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GenerateMacAddressOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetReplicationInfoOperationCompleted;
 
         private System.Threading.SendOrPostCallback SetVmReplicationOperationCompleted;
@@ -381,6 +383,9 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event GetReplicationCompletedEventHandler GetReplicationCompleted;
+
+        /// <remarks/>
+        public event GenerateMacAddressCompletedEventHandler GenerateMacAddressCompleted;
 
         /// <remarks/>
         public event GetReplicationInfoCompletedEventHandler GetReplicationInfoCompleted;
@@ -4308,6 +4313,52 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GenerateMacAddress", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GenerateMacAddress()
+        {
+            object[] results = this.Invoke("GenerateMacAddress", new object[0]);
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGenerateMacAddress(System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GenerateMacAddress", new object[0], callback, asyncState);
+        }
+
+        /// <remarks/>
+        public string EndGenerateMacAddress(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GenerateMacAddressAsync()
+        {
+            this.GenerateMacAddressAsync(null);
+        }
+
+        /// <remarks/>
+        public void GenerateMacAddressAsync(object userState)
+        {
+            if ((this.GenerateMacAddressOperationCompleted == null))
+            {
+                this.GenerateMacAddressOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGenerateMacAddressOperationCompleted);
+            }
+            this.InvokeAsync("GenerateMacAddress", new object[0], this.GenerateMacAddressOperationCompleted, userState);
+        }
+
+        private void OnGenerateMacAddressOperationCompleted(object arg)
+        {
+            if ((this.GenerateMacAddressCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GenerateMacAddressCompleted(this, new GenerateMacAddressCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetVmReplication", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject SetVmReplication(int itemId, VmReplication replication)
         {
@@ -6492,6 +6543,36 @@ namespace SolidCP.EnterpriseServer
             {
                 this.RaiseExceptionIfNecessary();
                 return ((ReplicationDetailInfo)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GenerateMacAddressCompletedEventHandler(object sender, GenerateMacAddressCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GenerateMacAddressCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GenerateMacAddressCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public string Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
             }
         }
     }

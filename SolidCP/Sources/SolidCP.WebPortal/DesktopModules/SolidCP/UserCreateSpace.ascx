@@ -37,7 +37,7 @@
             </asp:DropDownList>
         </td>
     </tr>
-    <tr>
+    <tr id="tblRowAddons1" runat="server">
         <td rowspan="2"><div class="FormButtonsBar">
             <asp:Button ID="btnAddAddon" runat="server" meta:resourcekey="btnAddAddon" Text="Add Add-on" CssClass="Button2" OnClick="btnAddAddon_Click" />
             </div>
@@ -47,7 +47,7 @@
                                 meta:resourcekey="rbPlanQuotas" Text="Use quotas defined on plan level" />
         </td>
     </tr>
-    <tr>
+    <tr id="tblRowAddons2" runat="server">
         <td>
             <asp:RadioButton ID="rbPackageQuotas" runat="server" GroupName="OverrideQuotas" AutoPostBack="true"
                                 meta:resourcekey="rbPackageQuotas" Text="Override quotas on space level" />                      
