@@ -315,12 +315,12 @@ namespace SolidCP.EnterpriseServer
             if (res >= 0)
             {
                 // users
-                foreach (string user in usersList)
-                    SEPlugin.SE.DeleteEmail(user);
+                //foreach (string user in usersList)
+                    //SEPlugin.SE.DeleteEmail(user);
 
                 //domain
-                foreach (string domain in domainsList)
-                    SEPlugin.SE.DeleteDomain(domain);
+                //foreach (string domain in domainsList)
+                    //SEPlugin.SE.DeleteDomain(domain);
 
                 //return IPs back to ParentPackage
                 ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
