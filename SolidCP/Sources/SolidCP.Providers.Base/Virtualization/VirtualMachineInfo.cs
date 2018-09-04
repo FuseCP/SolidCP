@@ -46,8 +46,6 @@ namespace SolidCP.Providers.Virtualization
         public Guid VmGuid { get; set; }
 
         [Persistent]
-        public string CreationTime { get; set; }
-        [Persistent]
         public Guid TemplateId { get; set; }
         [Persistent]
         public string TemplateName { get; set; }
@@ -71,8 +69,6 @@ namespace SolidCP.Providers.Virtualization
         public string JoinDomainUserName { get; set; }
         public string JoinDomainPassword { get; set; }
         public bool MergeAnswerFile { get; set; }
-        [Persistent]
-        public int Generation { get; set; }
         [Persistent]
         public int CPUCount { get; set; }
         [Persistent]
@@ -144,8 +140,6 @@ namespace SolidCP.Providers.Virtualization
         public bool ResetAllowed { get; set; }
         [Persistent]
         public bool ReinstallAllowed { get; set; }
-        [Persistent]
-        public bool EnableSecureBoot { get; set; }
 
         [Persistent]
         public ConcreteJob CurrentJob { get; set; }

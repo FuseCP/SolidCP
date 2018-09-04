@@ -651,12 +651,6 @@ namespace SolidCP.Server
 
         #region Storage
         [WebMethod, SoapHeader("settings")]
-        public bool IsEmptyFolders(string path)
-        {
-            return VirtualizationProvider.IsEmptyFolders(path);
-        }
-
-        [WebMethod, SoapHeader("settings")]
         public bool FileExists(string path)
         {
             return VirtualizationProvider.FileExists(path);
@@ -731,12 +725,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
+        public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType)
         {
             try
             {
                 Log.WriteStart("'{0}' ConvertVirtualHardDisk", ProviderSettings.ProviderName);
-                JobResult result = VirtualizationProvider.ConvertVirtualHardDisk(sourcePath, destinationPath, diskType, blockSizeBytes);
+                JobResult result = VirtualizationProvider.ConvertVirtualHardDisk(sourcePath, destinationPath, diskType);
                 Log.WriteEnd("'{0}' ConvertVirtualHardDisk", ProviderSettings.ProviderName);
                 return result;
             }

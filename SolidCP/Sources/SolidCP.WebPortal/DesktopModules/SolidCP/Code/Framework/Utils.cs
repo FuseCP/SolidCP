@@ -54,34 +54,12 @@ namespace SolidCP.Portal
     public static class Utils
     {
         public const string ModuleName = "SolidCP";
-        public const int Size1G = 0x40000000;
-        public const int Size1M = 0x100000;
-        public const int Size1K = 1024;
+
         public const Int32 MAX_DIR_LENGTH = 248;
         public const Int32 MAX_FILE_LENGTH = 260;
 
         public const int CHANGE_PASSWORD_REDIRECT_TIMEOUT = 7000;
 
-        public static uint ConvertKBytesToBytes(uint val)
-        {
-            return val * Size1K;
-        }
-        public static uint ConvertMBytesToBytes(uint val)
-        {
-            return val * Size1M;
-        }
-        public static uint ConvertGBytesToBytes(uint val)
-        {
-            return val * Size1G;
-        }
-        public static bool IsDigitsOnly(string str)
-        {
-            foreach (char c in str)
-                if (c < '0' || c > '9')
-                    return false;
-
-            return true;
-        }
         public static DateTime ParseDate(string val)
         {
             // Perf: allow only non-empty strings to go through

@@ -21,7 +21,7 @@ namespace SolidCP.Providers.Virtualization
         public const Int64 Size1G = 0x40000000;
         public const Int64 Size1M = 0x100000;
         public const Int64 Size1K = 1024;
-        public const string ConfigurationVersion = "5.0"; //HyperV2012R2 (Windows 2012R2)
+        public const double ConfigurationVersion = 5.0; //HyperV2012R2 (possible to get and in HyperV2016)
 
         public const string KVP_RAM_SUMMARY_KEY = "VM-RAM-Summary";
         public const string KVP_HDD_SUMMARY_KEY = "VM-HDD-Summary";
