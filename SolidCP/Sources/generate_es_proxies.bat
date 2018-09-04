@@ -5,7 +5,6 @@
 : Installed SolidCP EnterpriseServer && Server (and ofcourse update it with last your bin libs)
 : Works on the OS Windows 2012R2 (possibly on Windows 10/2016)
 : I recommend generating one file at a time, to prevent conflicts. (delete "REM" before the files you want to generate)
-:TODO: Is possible to set for all files different namespace to prevent files generation problem?
 SET WSDL="%ProgramFiles(x86)%\Microsoft WSE\v3.0\Tools\WseWsdl3.exe"
 SET WSE_CLEAN=..\Tools\WseClean.exe
 SET SERVER_URL=http://127.0.0.1:9002
