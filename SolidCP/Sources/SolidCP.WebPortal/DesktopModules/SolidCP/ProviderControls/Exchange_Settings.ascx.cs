@@ -45,7 +45,7 @@ namespace SolidCP.Portal.ProviderControls
     {
 	    public const string HubTransportsData = "HubTransportsData";
         public const string ClientAccessData = "ClientAccessData";
-        public const string SEDestinations = "sedestinations";
+        public const string MailFilterDestinations = "MailFilterDestinations";
         public const int EXCHANGE2010_PROVIDER_ID = 32;
         public const int EXCHANGE2010SP2_PROVIDER_ID = 90;
         public const int EXCHANGE2013_PROVIDER_ID = 91;
@@ -72,30 +72,21 @@ namespace SolidCP.Portal.ProviderControls
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            List<String> sed = ViewState[SEDestinations] as List<String>;
+            List<String> sed = ViewState[MailFilterDestinations] as List<String>;
             if (sed == null)
             {
                 sed = new List<string>();
 
                 StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettings(PanelRequest.ServiceId));
-
-                bool SpamExpertsEnable = Convert.ToBoolean(ConfigurationManager.AppSettings["SpamExpertsEnable"]);
-                if (SpamExpertsEnable == true)
+                string strList = settings[MailFilterDestinations];
+                if (strList != null)
                 {
-                    string strList = settings[SEDestinations];
-                    if (strList != null)
-                    {
-                        string[] list = strList.Split(',');
-                        sed.AddRange(list);
-                    }
-                    ViewState[SEDestinations] = sed;
-                    gvSEDestinations.DataSource = sed;
-                    gvSEDestinations.DataBind();
+                    string[] list = strList.Split(',');
+                    sed.AddRange(list);
                 }
-                else
-                {
-                    SeDiv.Visible = false;
-                }
+                ViewState[MailFilterDestinations] = sed;
+                gvSEDestinations.DataSource = sed;
+                gvSEDestinations.DataBind();
             }
 
         }
@@ -226,6 +217,8 @@ namespace SolidCP.Portal.ProviderControls
                 txtArchivingDatabase.Text = settings["ArchivingDatabase"];
                 chkEx2016CU6orhigher.Checked = Utils.ParseBool(settings["Ex2016CU6orhigher"], false);
 
+                chkSEEnable.Checked = Utils.ParseBool(settings["EnableMailFilter"], false);
+
             UpdateHubTransportsGrid();
             UpdateClientAccessGrid();
 
@@ -250,6 +243,7 @@ namespace SolidCP.Portal.ProviderControls
             settings["PowerShellUrl"] = txtPowerShellUrl.Text;
             settings["ArchivingDatabase"] = txtArchivingDatabase.Text;
             settings["Ex2016CU6orhigher"] = chkEx2016CU6orhigher.Checked.ToString();
+            settings["EnableMailFilter"] = chkSEEnable.Checked.ToString();
         }
 
 		public void BindExchangeServices(DropDownList ddl, bool isHubservice)
@@ -382,8 +376,6 @@ namespace SolidCP.Portal.ProviderControls
             }
         }
 
-        // RB Added for SpamExperts
-
         protected void gvSEDestinations_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             switch (e.CommandName)
@@ -393,13 +385,13 @@ namespace SolidCP.Portal.ProviderControls
                     {
                         string item = e.CommandArgument.ToString();
 
-                        List<String> itemList = ViewState[SEDestinations] as List<String>;
+                        List<String> itemList = ViewState[MailFilterDestinations] as List<String>;
                         if (itemList == null) return;
 
                         int i = itemList.FindIndex(x => x == item);
                         if (i >= 0) itemList.RemoveAt(i);
 
-                        ViewState[SEDestinations] = itemList;
+                        ViewState[MailFilterDestinations] = itemList;
                         gvSEDestinations.DataSource = itemList;
                         gvSEDestinations.DataBind();
                         SaveSEDestinations();
@@ -414,11 +406,11 @@ namespace SolidCP.Portal.ProviderControls
 
         protected void bntAddSEDestination_Click(object sender, EventArgs e)
         {
-            List<String> res = ViewState[SEDestinations] as List<String>;
+            List<String> res = ViewState[MailFilterDestinations] as List<String>;
             if (res == null) res = new List<String>();
 
             res.Add(tbSEDestinations.Text);
-            ViewState[SEDestinations] = res;
+            ViewState[MailFilterDestinations] = res;
             gvSEDestinations.DataSource = res;
             gvSEDestinations.DataBind();
             SaveSEDestinations();
@@ -426,11 +418,11 @@ namespace SolidCP.Portal.ProviderControls
 
         protected void SaveSEDestinations()
         {
-            List<String> res = ViewState[SEDestinations] as List<String>;
+            List<String> res = ViewState[MailFilterDestinations] as List<String>;
             if (res == null) return;
 
             StringDictionary settings = new StringDictionary();
-            settings.Add(SEDestinations, string.Join(",", res.ToArray()));
+            settings.Add(MailFilterDestinations, string.Join(",", res.ToArray()));
 
             int result = ES.Services.Servers.UpdateServiceSettings(PanelRequest.ServiceId,
                         ConvertDictionaryToArray(settings));

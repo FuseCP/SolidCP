@@ -328,6 +328,8 @@
     <Compile Include="SharePoint\SharePointSiteCollectionListPaged.cs" />
     <Compile Include="SharePoint\SharePointEnterpriseSiteDiskSpace.cs" />
     <Compile Include="SharePoint\SharePointSiteDiskSpace.cs" />
+    <Compile Include="SpamExperts\ISpamExperts.cs" />
+    <Compile Include="SpamExperts\SpamExpertsResult.cs" />
     <Compile Include="Statistics\IStatisticsServer.cs" />
     <Compile Include="Statistics\StatsServer.cs" />
     <Compile Include="Statistics\StatsSite.cs" />

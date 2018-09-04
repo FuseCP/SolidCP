@@ -332,5 +332,8 @@ order by rg.groupOrder
         public const string RDS_USERS = "RDS.Users";
         public const string RDS_SERVERS = "RDS.Servers";
         public const string RDS_COLLECTIONS = "RDS.Collections";
+
+        public const string FILTERS_ENABLE = "Filters.Enable";
+        public const string FILTERS_ENABLE_EMAIL_USERS = "Filters.EnableEmailUsers";
     }
 }

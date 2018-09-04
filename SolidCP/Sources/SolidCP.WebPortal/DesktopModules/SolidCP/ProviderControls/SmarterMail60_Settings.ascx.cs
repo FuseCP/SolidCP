@@ -31,15 +31,54 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Web.UI.WebControls;
 using SolidCP.Providers.Common;
 
 namespace SolidCP.Portal.ProviderControls
 {
     public partial class SmarterMail60_Settings : SolidCPControlBase, IHostingServiceProviderSettings
     {
+        public const string MailFilterDestinations = "MailFilterDestinations";
+
+        private string[] ConvertDictionaryToArray(StringDictionary settings)
+        {
+            List<string> list = new List<string>();
+            foreach (string key in settings.Keys)
+                list.Add(key + "=" + settings[key]);
+            return list.ToArray();
+        }
+
+        private StringDictionary ConvertArrayToDictionary(string[] settings)
+        {
+            StringDictionary list = new StringDictionary();
+            foreach (string setting in settings)
+            {
+                int idx = setting.IndexOf('=');
+                list.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
+            }
+            return list;
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            List<String> sed = ViewState[MailFilterDestinations] as List<String>;
+            if (sed == null)
+            {
+                sed = new List<string>();
+
+                StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettings(PanelRequest.ServiceId));
+                string strList = settings[MailFilterDestinations];
+                if (strList != null)
+                {
+                    string[] list = strList.Split(',');
+                    sed.AddRange(list);
+                }
+                ViewState[MailFilterDestinations] = sed;
+                gvSEDestinations.DataSource = sed;
+                gvSEDestinations.DataBind();
+            }
         }
 
         public void BindSettings(StringDictionary settings)
@@ -53,6 +92,7 @@ namespace SolidCP.Portal.ProviderControls
             cbImportDomainAdmin.Checked = Utils.ParseBool(settings[Constants.ImportDomainAdmin], false);
             cbInheritDefaultLimits.Checked = Utils.ParseBool(settings[Constants.InheritDomainDefaultLimits], false);
             cbEnableDomainAdmin.Checked = Utils.ParseBool(settings[Constants.EnableDomainAdministrators], false);
+            chkSEEnable.Checked = Utils.ParseBool(settings["EnableMailFilter"], false);
         }
 
         public void SaveSettings(StringDictionary settings)
@@ -65,6 +105,59 @@ namespace SolidCP.Portal.ProviderControls
             settings[Constants.ImportDomainAdmin] = cbImportDomainAdmin.Checked.ToString();
             settings[Constants.InheritDomainDefaultLimits] = cbInheritDefaultLimits.Checked.ToString();
             settings[Constants.EnableDomainAdministrators] = cbEnableDomainAdmin.Checked.ToString();
+            settings["EnableMailFilter"] = chkSEEnable.Checked.ToString();
+        }
+
+        protected void gvSEDestinations_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            switch (e.CommandName)
+            {
+                case "DeleteItem":
+                    try
+                    {
+                        string item = e.CommandArgument.ToString();
+
+                        List<String> itemList = ViewState[MailFilterDestinations] as List<String>;
+                        if (itemList == null) return;
+
+                        int i = itemList.FindIndex(x => x == item);
+                        if (i >= 0) itemList.RemoveAt(i);
+
+                        ViewState[MailFilterDestinations] = itemList;
+                        gvSEDestinations.DataSource = itemList;
+                        gvSEDestinations.DataBind();
+                        SaveSEDestinations();
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    break;
+            }
+        }
+
+        protected void bntAddSEDestination_Click(object sender, EventArgs e)
+        {
+            List<String> res = ViewState[MailFilterDestinations] as List<String>;
+            if (res == null) res = new List<String>();
+
+            res.Add(tbSEDestinations.Text);
+            ViewState[MailFilterDestinations] = res;
+            gvSEDestinations.DataSource = res;
+            gvSEDestinations.DataBind();
+            SaveSEDestinations();
+        }
+
+        protected void SaveSEDestinations()
+        {
+            List<String> res = ViewState[MailFilterDestinations] as List<String>;
+            if (res == null) return;
+
+            StringDictionary settings = new StringDictionary();
+            settings.Add(MailFilterDestinations, string.Join(",", res.ToArray()));
+
+            int result = ES.Services.Servers.UpdateServiceSettings(PanelRequest.ServiceId,
+                        ConvertDictionaryToArray(settings));
         }
     }
 }

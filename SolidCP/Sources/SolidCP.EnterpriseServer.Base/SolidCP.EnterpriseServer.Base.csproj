@@ -133,7 +133,7 @@
     <Compile Include="Servers\IPAddressesPaged.cs" />
     <Compile Include="Servers\IPAddressPool.cs" />
     <Compile Include="Servers\ServiceGroupIds.cs" />
-    <Compile Include="SpamExperts\SpamExperts.cs" />
+    <Compile Include="SpamExperts\SpamExpertsRoute.cs" />
     <Compile Include="System\SystemSettings.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
     <Compile Include="Tasks\BackgroundTaskLogRecord.cs" />

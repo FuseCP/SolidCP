@@ -278,21 +278,6 @@ namespace SolidCP.EnterpriseServer
         public int ChangeUserPassword(int userId, string password)
         {
             int res = UserController.ChangeUserPassword(userId, password);
-
-            if (res >= 0)
-            {
-                List<PackageInfo> packageList = PackageController.GetMyPackages(userId);
-                foreach (PackageInfo package in packageList)
-                {
-                    List<DomainInfo> domains = ServerController.GetDomains(package.PackageId, false);
-                    foreach (DomainInfo domain in domains)
-                    {
-                        // Hook
-                        SEPlugin.SE.SetDomainUserPassword(domain.DomainName, password);
-                    }
-                }
-            }
-
             return res;
         }
 
