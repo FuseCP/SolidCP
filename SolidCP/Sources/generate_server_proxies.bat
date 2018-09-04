@@ -12,6 +12,7 @@ SET SERVER_URL=http://127.0.0.1:9003
 REM %WSDL% %SERVER_URL%/AutoDiscovery.asmx /out:.\SolidCP.Server.Client\AutoDiscoveryProxy.cs /namespace:SolidCP.AutoDiscovery /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\AutoDiscoveryProxy.cs
 
+:Perhaps the BlackBerryProxy file has a problem with the namespace. After generation, you will know exactly
 REM %WSDL% %SERVER_URL%/BlackBerry.asmx /out:.\SolidCP.Server.Client\BlackBerryProxy.cs /namespace:SolidCP.Providers.HostedSolution /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\BlackBerryProxy.cs
 
@@ -30,33 +31,38 @@ REM %WSE_CLEAN% .\SolidCP.Server.Client\ExchangeServerProxy.cs
 REM %WSDL% %SERVER_URL%/EnterpriseStorage.asmx /out:.\SolidCP.Server.Client\EnterpriseStorageProxy.cs /namespace:SolidCP.Providers.EnterpriseStorage /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\EnterpriseStorageProxy.cs
 
-REM %WSDL% %SERVER_URL%/FTPServer.asmx /out:.\SolidCP.Server.Client\FtpServerProxy.cs /namespace:SolidCP.Providers.EnterpriseStorage /type:webClient /fields
+REM %WSDL% %SERVER_URL%/FTPServer.asmx /out:.\SolidCP.Server.Client\FtpServerProxy.cs /namespace:SolidCP.Providers.FTP /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\FtpServerProxy.cs
 
 REM %WSDL% %SERVER_URL%/HeliconZoo.asmx /out:.\SolidCP.Server.Client\HeliconZooProxy.cs /namespace:SolidCP.Providers.HeliconZoo /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\HeliconZooProxy.cs
 
+:Perhaps the HostedSharePointServerProxy file has a problem with the namespace. After generation, you will know exactly
 REM %WSDL% %SERVER_URL%/HostedSharePointServer.asmx /out:.\SolidCP.Server.Client\HostedSharePointServerProxy.cs /namespace:SolidCP.Providers.HostedSolution /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\HostedSharePointServerProxy.cs
 
+:Perhaps the HostedSharePointServerEntProxy file has a problem with the namespace. After generation, you will know exactly
 REM %WSDL% %SERVER_URL%/HostedSharePointServerEnt.asmx /out:.\SolidCP.Server.Client\HostedSharePointServerEntProxy.cs /namespace:SolidCP.Providers.HostedSolution /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\HostedSharePointServerEntProxy.cs
 
 REM %WSDL% %SERVER_URL%/LyncServer.asmx /out:.\SolidCP.Server.Client\LyncServerProxy.cs /namespace:SolidCP.Providers.Lync /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\LyncServerProxy.cs
 
-REM %WSDL% %SERVER_URL%/MailServer.asmx /out:.\SolidCP.Server.Client\MailServerProxy.cs /namespace:SolidCP.Providers.Lync /type:webClient /fields
+REM %WSDL% %SERVER_URL%/MailServer.asmx /out:.\SolidCP.Server.Client\MailServerProxy.cs /namespace:SolidCP.Providers.Mail /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\MailServerProxy.cs
 
+:Perhaps the OCSEdgeServerProxy file has a problem with the namespace. After generation, you will know exactly
 REM %WSDL% %SERVER_URL%/OCSEdgeServer.asmx /out:.\SolidCP.Server.Client\OCSEdgeServerProxy.cs /namespace:SolidCP.Providers.OCS /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\OCSEdgeServerProxy.cs
 
+:Perhaps the OCSServerProxy file has a problem with the namespace. After generation, you will know exactly
 REM %WSDL% %SERVER_URL%/OCSServer.asmx /out:.\SolidCP.Server.Client\OCSServerProxy.cs /namespace:SolidCP.Providers.OCS /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\OCSServerProxy.cs
 
 REM %WSDL% %SERVER_URL%/OperatingSystem.asmx /out:.\SolidCP.Server.Client\OperatingSystemProxy.cs /namespace:SolidCP.Providers.OS /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\OperatingSystemProxy.cs
 
+:Perhaps the Organizations file has a problem with the namespace. After generation, you will know exactly
 REM %WSDL% %SERVER_URL%/Organizations.asmx /out:.\SolidCP.Server.Client\OrganizationProxy.cs /namespace:SolidCP.Providers.HostedSolution /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\OrganizationProxy.cs
 
@@ -66,13 +72,13 @@ REM %WSE_CLEAN% .\SolidCP.Server.Client\RemoteDesktopServicesProxy.cs
 REM %WSDL% %SERVER_URL%/ServiceProvider.asmx /out:.\SolidCP.Server.Client\ServiceProviderProxy.cs /namespace:SolidCP.Providers /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\ServiceProviderProxy.cs
 
-REM %WSDL% %SERVER_URL%/SfBServer.asmx /out:.\SolidCP.Server.Client\SfBServerProxy.cs /namespace:SolidCP.Providers /type:webClient /fields
+REM %WSDL% %SERVER_URL%/SfBServer.asmx /out:.\SolidCP.Server.Client\SfBServerProxy.cs /namespace:SolidCP.SfB /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\SfBServerProxy.cs
 
 REM %WSDL% %SERVER_URL%/SharePointServer.asmx /out:.\SolidCP.Server.Client\SharePointServerProxy.cs /namespace:SolidCP.Providers.SharePoint /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\SharePointServerProxy.cs
 
-REM %WSDL% %SERVER_URL%/StatisticsServer.asmx /out:.\SolidCP.Server.Client\StatisticsServerProxy.cs /namespace:SolidCP.Providers.StorageSpaces /type:webClient /fields
+REM %WSDL% %SERVER_URL%/StatisticsServer.asmx /out:.\SolidCP.Server.Client\StatisticsServerProxy.cs /namespace:SolidCP.Providers.Statistics /type:webClient /fields
 REM %WSE_CLEAN% .\SolidCP.Server.Client\StatisticsServerProxy.cs
 
 REM %WSDL% %SERVER_URL%/StorageSpaceServices.asmx /out:.\SolidCP.Server.Client\StorageSpacesProxy.cs /namespace:SolidCP.Providers.StorageSpaces /type:webClient /fields
