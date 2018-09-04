@@ -28,6 +28,7 @@ v1.2.3  28th December 2016:  Added PreLoad for all SolidCP Components to speed u
 v1.2.4  17th January  2017:  Increased the Exchange Send and Receive Connectors sizes to the maximum as they are low by default, they can now be set via Mailbox Plans in the portal
 v1.2.5  5th  February 2017:  Improved the installation speed on Microsoft Windows Server 2016
 v1.2.6  9th  March    2017:  Fixed installation issues on some Exchange Server 2016 setups
+v1.2.7  30th August   2018:  Added TLS1.2 mode to support new security requirements for GitHub
 
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
@@ -200,6 +201,7 @@ $dSCPiisSSLDateCheckFile  = "C:\SolidCP\SSL_Fix_DO_NOT_DELETE.txt"              
 $dSCPFileURL              = "http://installer.solidcp.com/Files/XML/Downloads/Download-Links.xml"    # XML Feed for files that are downloaded as part of the PowerShell Auto Installation Script
 $dSCPFileDownloadLinks    = ([xml](New-Object System.Net.WebClient).DownloadString("$dSCPFileURL"))  # Download the XML Feed for files and store as a variable
 (Import-Module ServerManager) | Out-Null                                                             # Import the "ServerManager" module
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12                      # Set powershell to use TLS 1.2
 ####################################################################################################
 # Main menu starts here
 Function SolidCPmenu() {
