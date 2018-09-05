@@ -36,6 +36,8 @@ using System.Web.Mvc;
 using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.HostedSolution;
+using SolidCP.EnterpriseServer.VirtualizationServer;
+using SolidCP.EnterpriseServer.VirtualizationServerForPrivateCloud;
 using SolidCP.WebDav.Core.Config;
 using SolidCP.WebDav.Core.Security.Cryptography;
 
