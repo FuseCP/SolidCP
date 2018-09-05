@@ -199,6 +199,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.HyperVvmm", "SolidCP.Providers.Virtualization.HyperV-vmm\SolidCP.Providers.Virtualization.HyperVvmm.csproj", "{9AFE3602-946D-4092-B2E6-2D8CD66DC0BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Filters.MailCleaner", "SolidCP.Providers.Filters.MailCleaner\SolidCP.Providers.Filters.MailCleaner.csproj", "{039CEDCD-1CF6-4E60-851A-119970D9BCE7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7} = {E91E52F3-9555-4D00-B577-2B1DBDD87CA7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.SimpleDNS60", "SolidCP.Providers.DNS.SimpleDNS60\SolidCP.Providers.DNS.SimpleDNS60.csproj", "{E4AD974D-7951-4AE1-AE72-72E11663F17B}"
 EndProject
@@ -212,6 +215,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.LetsEncrypt", "SolidCP.Providers.Web.LetsEncrypt\SolidCP.Providers.Web.LetsEncrypt.csproj", "{4E59EF03-997A-4B41-8CA7-01A5DB5613FF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.FTP.CerberusFTP6", "SolidCP.Providers.FTP.CerberusFTP6\SolidCP.Providers.FTP.CerberusFTP6.csproj", "{084AD513-34BC-4349-A38F-3EF65B32A96F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Filters.SpamExperts", "SolidCP.Providers.Filters.SpamExperts\SolidCP.Providers.Filters.SpamExperts.csproj", "{04295037-6790-4E42-A5BD-5C03FAED08C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1045,6 +1050,18 @@ Global
 		{084AD513-34BC-4349-A38F-3EF65B32A96F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{084AD513-34BC-4349-A38F-3EF65B32A96F}.Release|x86.ActiveCfg = Release|Any CPU
 		{084AD513-34BC-4349-A38F-3EF65B32A96F}.Release|x86.Build.0 = Release|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Debug|x86.Build.0 = Debug|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|x86.ActiveCfg = Release|Any CPU
+		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

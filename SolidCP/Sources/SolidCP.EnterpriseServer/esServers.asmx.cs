@@ -627,26 +627,6 @@ namespace SolidCP.EnterpriseServer
         public int AddDomain(DomainInfo domain)
         {
             int res = ServerController.AddDomain(domain);
-
-            PackageInfo pi = PackageController.GetPackage(domain.PackageId);
-            UserInfoInternal customer = UserHelper.GetUser(pi.UserId);
-
-            // Hook
-            if (res > 0)
-            {
-                string[] destinations = null;
-                int serviceId = PackageController.GetPackageServiceId(domain.PackageId, ResourceGroups.Exchange);
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
-                if (settings != null)
-                {
-                    string list = settings["sedestinations"];
-                    if (!String.IsNullOrEmpty(list))
-                        destinations = list.Split(',');
-                }
-
-                SEPlugin.SE.AddDomain(domain.DomainName, customer.Password, customer.Email, destinations);
-            }
-
             return res;
         }
 
@@ -659,26 +639,6 @@ namespace SolidCP.EnterpriseServer
             int res = ServerController.AddDomainWithProvisioning(packageId, domainName, domainType,
                         createWebSite, pointWebSiteId, pointMailDomainId,
                         createDnsZone, createPreviewDomain, allowSubDomains, hostName);
-
-            PackageInfo pi = PackageController.GetPackage(packageId);
-            UserInfoInternal customer = UserHelper.GetUser(pi.UserId);
-
-            // Hook
-            if (res > 0)
-            {
-                string[] destinations = null;
-                int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Exchange);
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
-                if (settings != null)
-                {
-                    string list = settings["sedestinations"];
-                    if (!String.IsNullOrEmpty(list))
-                        destinations = list.Split(',');
-                }
-
-                SEPlugin.SE.AddDomain(domainName, customer.Password, customer.Email, destinations);
-            }
-
             return res;
         }
 
@@ -697,11 +657,6 @@ namespace SolidCP.EnterpriseServer
                 domainname = domain.DomainName;
 
             int res = ServerController.DeleteDomain(domainId);
-
-            // Hook
-            if (!String.IsNullOrEmpty(domainname) && (res >= 0))
-                SEPlugin.SE.DeleteDomain(domainname);
-
             return res;
         }
 
@@ -715,11 +670,6 @@ namespace SolidCP.EnterpriseServer
 
 
             int res = ServerController.DetachDomain(domainId);
-
-            // Hook
-            if (!String.IsNullOrEmpty(domainname) && (res >= 0))
-                SEPlugin.SE.DeleteDomain(domainname);
-
             return res;
         }
 

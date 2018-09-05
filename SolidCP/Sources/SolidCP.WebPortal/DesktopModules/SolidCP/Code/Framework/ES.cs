@@ -265,6 +265,11 @@ namespace SolidCP.Portal
             get { return GetCachedProxy<esStorageSpaces>(); }
         }
 
+        public esSpamExperts SpamExperts
+        {
+            get { return GetCachedProxy<esSpamExperts>(); }
+        }
+
 
         protected ES()
         {

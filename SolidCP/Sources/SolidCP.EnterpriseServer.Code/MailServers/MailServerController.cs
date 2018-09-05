@@ -32,10 +32,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
+using System.IO;
+using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Code.MailServers;
 using SolidCP.Providers;
 using SolidCP.Providers.Mail;
@@ -146,12 +150,21 @@ namespace SolidCP.EnterpriseServer
 				// add service item
 				mail.CreateAccount(item);
 
-				// save item
-				item.Password = CryptoUtils.Encrypt(item.Password);
+                // save item
+                string newPassword = item.Password;
+                item.Password = CryptoUtils.Encrypt(item.Password);
 				item.ServiceId = serviceId;
 				itemId = PackageController.AddPackageItem(item);
 
-				TaskManager.ItemId = itemId;
+                // check if spamexperts filter per-mailbox is set
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+                    string username = item.Name.Split('@').GetValue(0).ToString();
+                    SpamExpertsController.AddEmailFilter(item.PackageId, username, newPassword, domainName);
+                }
+
+                TaskManager.ItemId = itemId;
 
 			}
 			catch (Exception ex)
@@ -202,9 +215,10 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				// restore original props
-				if (item.Password == "")
-					item.Password = CryptoUtils.Decrypt(origItem.Password);
+                // restore original props
+                if (item.Password == "")
+                    item.Password = CryptoUtils.Decrypt(origItem.Password);
+  
 
 				// get service
 				MailServer mail = new MailServer();
@@ -223,10 +237,20 @@ namespace SolidCP.EnterpriseServer
 				// update service item
 				mail.UpdateAccount(item);
 
-				// update meta item
-				item.Password = CryptoUtils.Encrypt(item.Password);
+                string newPassword = item.Password;
+                // update meta item
+                item.Password = CryptoUtils.Encrypt(item.Password);
 				PackageController.UpdatePackageItem(item);
-				return 0;
+
+                // check if spamexperts filter per-mailbox is set
+                int serviceId = PackageController.GetPackageServiceId(item.PackageId, ResourceGroups.Mail);
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+                    SpamExpertsController.SetEmailFilterPassword(item.PackageId, item.Name, newPassword);
+                }
+
+                return 0;
 			}
 			catch (Exception ex)
 			{
@@ -270,7 +294,15 @@ namespace SolidCP.EnterpriseServer
 
 				// delete meta item
 				PackageController.DeletePackageItem(origItem.Id);
-				return 0;
+
+
+                // check if spamexperts filter per-mailbox is set
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(origItem.ServiceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+                    SpamExpertsController.DeleteEmailFilter(origItem.PackageId, origItem.Name);
+                }
+                return 0;
 			}
 			catch (Exception ex)
 			{
@@ -1041,8 +1073,8 @@ namespace SolidCP.EnterpriseServer
 			// create domain
 			try
 			{
-				// check service items
-				MailServer mail = new MailServer();
+                // check service items
+                MailServer mail = new MailServer();
 				ServiceProviderProxy.Init(mail, item.ServiceId);
 				if (mail.DomainExists(item.Name))
 					return BusinessErrorCodes.ERROR_MAIL_DOMAIN_EXISTS;
@@ -1076,9 +1108,22 @@ namespace SolidCP.EnterpriseServer
 						AddMailDomainPointer(itemId, previewDomain.DomainId);
 					}
 				}
+                
 
 				TaskManager.ItemId = itemId;
-				
+
+                // check if spamexperts filter is needed
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(item.ServiceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+
+                    SpamExpertsRoute route = new SpamExpertsRoute();
+                    route.PackageId = item.PackageId;
+                    route.DomainName = item.Name;
+                    route.Route = settings["MailFilterDestinations"];
+                    SpamExpertsController.AddDomainFilter(route);
+                }
+
                 return itemId;
 			}
 			catch (Exception ex)
@@ -1173,7 +1218,14 @@ namespace SolidCP.EnterpriseServer
 				{
 					domain.MailDomainId = 0;
 					ServerController.UpdateDomain(domain);
-				}
+
+                    // check if spamexperts filter needs removal
+                    StringDictionary settings = ServerController.GetServiceSettingsAdmin(origItem.ServiceId);
+                    if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                    {
+                        SpamExpertsController.DeleteDomainFilter(domain);
+                    }
+                }
 
 				return 0;
 			}
@@ -1251,7 +1303,15 @@ namespace SolidCP.EnterpriseServer
 				domain.MailDomainId = itemId;
 				ServerController.UpdateDomain(domain);
 
-				return 0;
+                // check if spamexperts alias needs to be added
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(mailDomain.ServiceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+                    DomainInfo topDomain = ServerController.GetDomain(mailDomain.Name, true, false);
+                    SpamExpertsController.AddDomainFilterAlias(topDomain, domain.DomainName);
+                }
+
+                return 0;
 			}
 			catch (Exception ex)
 			{
@@ -1298,7 +1358,14 @@ namespace SolidCP.EnterpriseServer
 				domain.MailDomainId = 0;
 				ServerController.UpdateDomain(domain);
 
-				return 0;
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(mailDomain.ServiceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+                    DomainInfo topDomain = ServerController.GetDomain(mailDomain.Name, true, false);
+                    SpamExpertsController.DeleteDomainFilterAlias(topDomain, domain.DomainName);
+                }
+
+                return 0;
 			}
 			catch (Exception ex)
 			{

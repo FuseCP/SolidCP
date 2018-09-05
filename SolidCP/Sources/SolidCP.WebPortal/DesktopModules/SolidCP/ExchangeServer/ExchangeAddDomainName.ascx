@@ -20,6 +20,15 @@
                 <asp:DropDownList id="ddlDomains" runat="server" CssClass="form-control" DataTextField="DomainName" DataValueField="DomainID" style="vertical-align:middle;"></asp:DropDownList>
             </td>
         </tr>
+         <tr>
+            <td class="FormLabel150">
+                <asp:Localize ID="locAddAsAlias" runat="server" meta:resourcekey="locAddAsAlias" Text="Add domain as alias to mail filter instead of Exchange:"></asp:Localize>
+            </td>
+            <td>
+                <asp:CheckBox id="chkAddAsAlias" runat="server" CssClass="form-control" style="vertical-align:middle;"></asp:CheckBox>
+                <asp:Label id="lblMainDomain" runat="server" Visible="false"></asp:Label>
+            </td>
+        </tr>
     </table>
 </div>
 

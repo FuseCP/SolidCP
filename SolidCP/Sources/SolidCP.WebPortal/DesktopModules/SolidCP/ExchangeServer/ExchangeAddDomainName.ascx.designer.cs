@@ -67,13 +67,40 @@ namespace SolidCP.Portal.ExchangeServer {
         protected global::System.Web.UI.WebControls.DropDownList ddlDomains;
         
         /// <summary>
+        /// locAddAsAlias control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locAddAsAlias;
+        
+        /// <summary>
+        /// chkAddAsAlias control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkAddAsAlias;
+        
+        /// <summary>
+        /// lblMainDomain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMainDomain;
+        
+        /// <summary>
         /// btnCancel control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancel;
+        protected global::CPCC.StyleButton btnCancel;
         
         /// <summary>
         /// btnAdd control.
@@ -82,7 +109,7 @@ namespace SolidCP.Portal.ExchangeServer {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnAdd;
+        protected global::CPCC.StyleButton btnAdd;
         
         /// <summary>
         /// ValidationSummary1 control.

@@ -528,6 +528,17 @@ namespace SolidCP.EnterpriseServer
                                 ServerController.AddServiceDNSRecords(org.PackageId, ResourceGroups.BlackBerry, domain, "");
                                 ServerController.AddServiceDNSRecords(org.PackageId, ResourceGroups.OCS, domain, "");
                             }
+                            // check if spamexperts filter is needed
+                            StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(serviceId);
+                            if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
+                            {
+
+                                SpamExpertsRoute route = new SpamExpertsRoute();
+                                route.PackageId = org.PackageId;
+                                route.DomainName = domain.DomainName;
+                                route.Route = exSettings["MailFilterDestinations"];
+                                SpamExpertsController.AddDomainFilter(route);
+                            }
                         }
                     }
 
@@ -670,6 +681,17 @@ namespace SolidCP.EnterpriseServer
                     org.AddressBookPolicy,
                     acceptedDomains.ToArray());
 
+                // check if spamexperts filter needs to be removed
+                StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(exchangeServiceId);
+                foreach (var dom in acceptedDomains)
+                {
+                    
+                    if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
+                    {
+                        DomainInfo domain = ServerController.GetDomain(dom.DomainId);
+                        SpamExpertsController.DeleteDomainFilter(domain);
+                    }
+                }
                 return successful ? 0 : BusinessErrorCodes.ERROR_EXCHANGE_DELETE_SOME_PROBLEMS;
             }
             catch (Exception ex)
@@ -1662,6 +1684,18 @@ namespace SolidCP.EnterpriseServer
                     {
                         ServerController.AddServiceDNSRecords(org.PackageId, ResourceGroups.Exchange, domain, "");
                     }
+
+                    // check if spamexperts filter is needed
+                    StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(org.ServiceId);
+                    if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
+                    {
+
+                        SpamExpertsRoute route = new SpamExpertsRoute();
+                        route.PackageId = org.PackageId;
+                        route.DomainName = domain.DomainName;
+                        route.Route = exSettings["MailFilterDestinations"];
+                        SpamExpertsController.AddDomainFilter(route);
+                    }
                 }
 
                 return 0;
@@ -1790,12 +1824,19 @@ namespace SolidCP.EnterpriseServer
 
                 }
 
-                //Add the service records
+                //Delete the service records
                 if (domain != null)
                 {
                     if (domain.ZoneItemId != 0)
                     {
                         ServerController.RemoveServiceDNSRecords(org.PackageId, ResourceGroups.Exchange, domain, "", false);
+                    }
+
+                    // check if spamexperts filter needs to be removed
+                    StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(exchangeServiceId);
+                    if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
+                    {
+                        SpamExpertsController.DeleteDomainFilter(domain);
                     }
                 }
 
@@ -2055,6 +2096,12 @@ namespace SolidCP.EnterpriseServer
                     TaskManager.WriteError(ex);
                 }
 
+                // check if spamexperts filter per-mailbox is set
+                if (primSettings != null && Convert.ToBoolean(primSettings["EnableMailFilter"]))
+                {
+                    SpamExpertsController.AddEmailFilter(org.PackageId, name, password, domain);
+                }
+
                 // Log Extension
                 LogExtension.WriteVariables(new {email, samAccountName, accountId});
 
@@ -2251,6 +2298,13 @@ namespace SolidCP.EnterpriseServer
 
                 // unregister account
                 DeleteAccount(itemId, accountId);
+
+                // check if spamexperts filter per-mailbox is set
+                StringDictionary settings = ServerController.GetServiceSettingsAdmin(org.ServiceId);
+                if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                {
+                    SpamExpertsController.DeleteEmailFilter(org.PackageId, account.UserPrincipalName);
+                }
 
                 return 0;
             }

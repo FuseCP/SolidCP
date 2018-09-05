@@ -38,6 +38,7 @@ using System.Collections.Generic;
 
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.HostedSolution;
+using System.Collections.Specialized;
 
 namespace SolidCP.Portal.ExchangeServer
 {
@@ -49,13 +50,19 @@ namespace SolidCP.Portal.ExchangeServer
 
             Organization[] orgs = ES.Services.Organizations.GetOrganizations(PanelSecurity.PackageId, false);
 
-            List<OrganizationDomainName> list = new List<OrganizationDomainName>();
+            bool isSEEnabled = ES.Services.SpamExperts.IsSpamExpertsEnabled(PanelSecurity.PackageId);
 
+            List<OrganizationDomainName> list = new List<OrganizationDomainName>();
             foreach (Organization o in orgs)
             {
                 OrganizationDomainName[] tmpList = ES.Services.Organizations.GetOrganizationDomains(o.Id);
 
-                foreach (OrganizationDomainName name in tmpList) list.Add(name);
+                foreach (OrganizationDomainName name in tmpList)
+                {
+                    if (name.IsDefault)
+                        lblMainDomain.Text = name.DomainName;
+                    list.Add(name);
+                }
             }
 
             foreach (DomainInfo d in domains)
@@ -72,17 +79,21 @@ namespace SolidCP.Portal.ExchangeServer
                         }
 
                     }
-                    if (bAdd) ddlDomains.Items.Add(d.DomainName.ToLower());
+                    if (bAdd)
+                    {
+                        ddlDomains.Items.Add(d.DomainName.ToLower());
+                    }
                 }
             }
 
             if (ddlDomains.Items.Count == 0)
             {
-                ddlDomains.Visible= btnAdd.Enabled = false;
+                ddlDomains.Visible = btnAdd.Enabled = false;
             }
-
-            
-
+            else
+            {
+                locAddAsAlias.Visible = chkAddAsAlias.Visible = isSEEnabled;
+            }
         }
 
         protected void btnAdd_Click(object sender, EventArgs e)
@@ -104,16 +115,26 @@ namespace SolidCP.Portal.ExchangeServer
 
             try
             {
-
-                int result = ES.Services.Organizations.AddOrganizationDomain(PanelRequest.ItemID,
-                    ddlDomains.SelectedValue.Trim());
-
-                if (result < 0)
+                if (chkAddAsAlias.Enabled)
                 {
-                    messageBox.ShowResultMessage(result);
-                    return;
+                    var res = ES.Services.SpamExperts.AddDomainFilterAlias(lblMainDomain.Text, ddlDomains.SelectedValue.Trim());
+                    if (res.Status != Providers.Filters.SpamExpertsStatus.Success)
+                    {
+                        messageBox.ShowErrorMessage(res.Result);
+                        return;
+                    }
                 }
+                else
+                {
+                    int result = ES.Services.Organizations.AddOrganizationDomain(PanelRequest.ItemID,
+                        ddlDomains.SelectedValue.Trim());
 
+                    if (result < 0)
+                    {
+                        messageBox.ShowResultMessage(result);
+                        return;
+                    }
+                }
                 //Add Mail Cleaner
                 Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(ddlDomains.SelectedValue);
 

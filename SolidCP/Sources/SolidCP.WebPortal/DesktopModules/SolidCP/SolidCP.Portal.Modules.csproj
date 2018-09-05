@@ -64,6 +64,14 @@
       <HintPath>..\..\..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="SolidCP.EnterpriseServer.Client, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -81,14 +89,6 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
-    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.2.2.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Client, Version=1.2.2.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
-    </Reference>
     <Reference Include="SolidCP.Providers.Base, Version=1.2.2.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
@@ -243,6 +243,13 @@
     </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.designer.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SpamExperts_Settings.ascx.cs">
+      <DependentUpon>SpamExperts_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SpamExperts_Settings.ascx.designer.cs">
+      <DependentUpon>SpamExperts_Settings.ascx</DependentUpon>
     </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_Settings.ascx.cs">
       <DependentUpon>CerberusFTP6_Settings.ascx</DependentUpon>
@@ -5433,6 +5440,7 @@
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
+    <Content Include="ProviderControls\SpamExperts_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
     <Content Include="ProviderControls\Proxmox_Settings.ascx" />
     <Content Include="Proxmox\RemoteControl\Connect.aspx" />
@@ -8884,7 +8892,9 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

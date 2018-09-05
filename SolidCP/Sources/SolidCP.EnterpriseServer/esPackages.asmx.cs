@@ -315,12 +315,12 @@ namespace SolidCP.EnterpriseServer
             if (res >= 0)
             {
                 // users
-                foreach (string user in usersList)
-                    SEPlugin.SE.DeleteEmail(user);
+                //foreach (string user in usersList)
+                    //SEPlugin.SE.DeleteEmail(user);
 
                 //domain
-                foreach (string domain in domainsList)
-                    SEPlugin.SE.DeleteDomain(domain);
+                //foreach (string domain in domainsList)
+                    //SEPlugin.SE.DeleteDomain(domain);
 
                 //return IPs back to ParentPackage
                 ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
@@ -525,24 +525,6 @@ namespace SolidCP.EnterpriseServer
             PackageResult res = PackageController.AddPackageWithResources(userId, planId, spaceName, statusId, sendLetter,
                 createResources, domainName, tempDomain, createWebSite,
                 createFtpAccount, ftpAccountName, createMailAccount, hostName);
-
-            UserInfoInternal customer = UserHelper.GetUser(userId);
-
-            if (res.Result >= 0)
-            {
-                string[] destinations = null;
-                int serviceId = PackageController.GetPackageServiceId(res.Result, ResourceGroups.Exchange);
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
-                if (settings != null)
-                {
-                    string list = settings["sedestinations"];
-                    if (!String.IsNullOrEmpty(list))
-                        destinations = list.Split(',');
-                }
-
-                SEPlugin.SE.AddDomain(domainName, customer.Password, customer.Email, destinations);
-            }
-
             return res;
         }
 
