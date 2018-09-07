@@ -1369,6 +1369,11 @@ namespace SolidCP.Providers.Virtualization
             throw new NotImplementedException();
         }
 
+        public void ClearOldJobs()
+        {
+            throw new NotImplementedException();
+        }
+
         public ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState)
         {
             throw new NotImplementedException();

@@ -41,6 +41,7 @@ namespace SolidCP.Providers.Virtualization
     {
         public string Id { get; set; }
         public ConcreteJobState JobState { get; set; }
+        public List<ConcreteJob> ChildJobs { get; set; }
         public bool Cancellable { get; set; }
         public string Caption { get; set; }
         public string Description { get; set; }

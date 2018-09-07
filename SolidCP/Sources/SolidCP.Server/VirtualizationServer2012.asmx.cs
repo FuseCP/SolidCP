@@ -849,6 +849,22 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public void ClearOldJobs()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' ClearOldJobs", ProviderSettings.ProviderName);
+                VirtualizationProvider.ClearOldJobs();
+                Log.WriteEnd("'{0}' ClearOldJobs", ProviderSettings.ProviderName);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' ClearOldJobs", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState)
         {
             try

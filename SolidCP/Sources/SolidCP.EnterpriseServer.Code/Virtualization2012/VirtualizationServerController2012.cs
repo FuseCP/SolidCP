@@ -899,7 +899,7 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.Write("VPS_CREATE_CONVERT_VHD");
                 TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
                 TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = -1;
                 try
                 {
                     // convert VHD
@@ -4084,11 +4084,18 @@ namespace SolidCP.EnterpriseServer
         {
             TaskManager.IndicatorMaximum = 100;
             bool jobCompleted = true;
-
+            short timeout = 60;
+            while(job.JobState == ConcreteJobState.NotStarted && timeout > 0) //Often jobs are only initialized, need to wait a little, that it started.
+            {
+                timeout--;
+                System.Threading.Thread.Sleep(2000);
+                job = vs.GetJob(job.Id);
+            }
+            
             while (job.JobState == ConcreteJobState.Starting ||
                 job.JobState == ConcreteJobState.Running)
             {
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(10000);
                 job = vs.GetJob(job.Id);
                 TaskManager.IndicatorCurrent = job.PercentComplete;
             }
@@ -4098,7 +4105,8 @@ namespace SolidCP.EnterpriseServer
                 jobCompleted = false;
             }
 
-            TaskManager.IndicatorCurrent = 0; // reset indicator
+            TaskManager.IndicatorCurrent = 0;   // reset indicator
+            vs.ClearOldJobs();
 
             return jobCompleted;
         }

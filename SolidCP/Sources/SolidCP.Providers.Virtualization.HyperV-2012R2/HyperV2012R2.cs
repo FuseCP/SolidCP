@@ -123,9 +123,15 @@ namespace SolidCP.Providers.Virtualization
         private PowerShellManager _powerShell;
         protected PowerShellManager PowerShell
         {
-            get { return _powerShell ?? (_powerShell = new PowerShellManager(ServerNameSettings)); }
+            get { return _powerShell ?? (_powerShell = new PowerShellManager(ServerNameSettings, false)); }
         }
-        
+
+        private static PowerShellManager _powerShellAsync;
+        protected PowerShellManager PowerShellWithJobs
+        {
+            get { return _powerShellAsync ?? (_powerShellAsync = new PowerShellManager(ServerNameSettings, true)); }
+        }
+
         private Wmi _wmi;
         private Wmi wmi
         {
@@ -1316,8 +1322,9 @@ namespace SolidCP.Providers.Virtualization
                 if (blockSizeBytes > 0)
                     cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
 
-                PowerShell.Execute(cmd, true, true);
-                return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+                //PowerShell.Execute(cmd, true, true);
+                //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+                return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
             }
             catch (Exception ex)
             {
@@ -1444,36 +1451,40 @@ namespace SolidCP.Providers.Virtualization
         #region Jobs
         public ConcreteJob GetJob(string jobId)
         {
-            throw new NotImplementedException();
+            if (!PowerShellWithJobs.IsStaticObj)
+                throw new Exception("GetJob error: You can't get jobs from non static object");
 
-            //HostedSolutionLog.LogStart("GetJob");
-            //HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
+            HostedSolutionLog.LogStart("GetJob");
+            HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
 
-            //Runspace runSpace = null;
-            //ConcreteJob job;
+            ConcreteJob job;
 
-            //try
-            //{
-            //    Command cmd = new Command("Get-Job");
+            try
+            {
+                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
+                job = JobHelper.CreateFromPSObject(result);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetJob", ex);
+                throw;
+            }
 
-            //    if (!string.IsNullOrEmpty(jobId)) cmd.Parameters.Add("Id", jobId);
-
-            //    Collection<PSObject> result = PowerShell.Execute(cmd, true);
-            //    job = JobHelper.CreateFromPSObject(result);
-            //}
-            //catch (Exception ex)
-            //{
-            //    HostedSolutionLog.LogError("GetJob", ex);
-            //    throw;
-            //}
-
-            //HostedSolutionLog.LogEnd("GetJob");
-            //return job;
+            HostedSolutionLog.LogEnd("GetJob");
+            return job;
         }
 
         public List<ConcreteJob> GetAllJobs()
         {
             throw new NotImplementedException();
+        }
+
+        public void ClearOldJobs()
+        {
+            if (!PowerShellWithJobs.IsStaticObj)
+                throw new Exception("GetJob error: You can't execute this method from non static object");
+
+            PowerShellWithJobs.ClearOldJobs();
         }
 
         public ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState)
