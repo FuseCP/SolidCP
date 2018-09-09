@@ -83,7 +83,7 @@ namespace SolidCP.Providers.Virtualization
             if (isStatic)
                 throw new Exception("Invoke error: You can't execute this method from a static object!");
 
-            return ExecuteEx(cmd, addComputerNameParameter, withExceptions);
+            return ExecuteInternal(cmd, addComputerNameParameter, withExceptions);
         }
 
         ///<summary>
@@ -123,7 +123,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 System.Threading.Monitor.TryEnter(psLocker, timeoutMs, ref lockTaken);
                 if (!lockTaken)   { HostedSolutionLog.LogWarning("ExecuteFromStaticObj too long"); }
-                results = ExecuteEx(cmd, addComputerNameParameter, withExceptions);
+                results = ExecuteInternal(cmd, addComputerNameParameter, withExceptions);
             }
             finally
             {
@@ -132,7 +132,7 @@ namespace SolidCP.Providers.Virtualization
             }
             return results;
         }
-        private Collection<PSObject> ExecuteEx(Command cmd, bool addComputerNameParameter, bool withExceptions)//, bool asJobScript, bool ignoreStaticCheck)
+        private Collection<PSObject> ExecuteInternal(Command cmd, bool addComputerNameParameter, bool withExceptions)//, bool asJobScript, bool ignoreStaticCheck)
         {
             //if (!ignoreStaticCheck)
             //    if (isStatic && !asJobScript)

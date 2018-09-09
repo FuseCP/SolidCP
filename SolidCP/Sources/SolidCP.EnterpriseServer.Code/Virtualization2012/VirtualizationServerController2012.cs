@@ -895,8 +895,13 @@ namespace SolidCP.EnterpriseServer
                 JobResult result = null;
                 ReturnCode code = ReturnCode.OK;
 
-                TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);
+                TaskManager.Write("VPS_CREATE_OS_GENERATION", osTemplate.Generation.ToString());
+                if (osTemplate.Generation > 1)
+                    TaskManager.Write("VPS_CREATE_OS_SECUREBOOT", osTemplate.EnableSecureBoot ? "Enabled": "Disabled");
+                TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);                
                 TaskManager.Write("VPS_CREATE_CONVERT_VHD");
+                if (osTemplate.VhdBlockSizeBytes > 0)
+                    TaskManager.Write("VPS_CREATE_CONVERT_SET_VHD_BLOCKSIZE", osTemplate.VhdBlockSizeBytes.ToString());
                 TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
                 TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
                 TaskManager.IndicatorCurrent = -1;
@@ -4095,7 +4100,7 @@ namespace SolidCP.EnterpriseServer
             while (job.JobState == ConcreteJobState.Starting ||
                 job.JobState == ConcreteJobState.Running)
             {
-                System.Threading.Thread.Sleep(10000);
+                System.Threading.Thread.Sleep(3000);
                 job = vs.GetJob(job.Id);
                 TaskManager.IndicatorCurrent = job.PercentComplete;
             }

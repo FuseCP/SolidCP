@@ -56,7 +56,7 @@ namespace SolidCP.Providers.Virtualization
             job.ElapsedTime = objJob[0].GetProperty<DateTime?>("PSEndTime") ?? DateTime.Now;
 
             // PercentComplete
-            job.PercentComplete = 0;
+            job.PercentComplete = -1;
             var progress = (PSDataCollection<ProgressRecord>)objJob[0].GetProperty("Progress");
             if (progress != null && progress.Count > 0)
             {
@@ -64,7 +64,17 @@ namespace SolidCP.Providers.Virtualization
             }                
             else if (job.ChildJobs != null && !String.IsNullOrEmpty(job.ChildJobs[0].Id))   //ChildJobs can be get if we wrap an command in Job, and ChildJob will be a main process.
             {
-                job.PercentComplete = job.ChildJobs[0].PercentComplete; //Important! If we wrap a command that does not have a native "asJob", we can not get the progress bar (always will be 0)!
+                job.PercentComplete = job.ChildJobs[0].PercentComplete; //Important! If we wrap a command that does not have a native "asJob", we can not get the progress bar!
+            }
+
+            if (job.PercentComplete < 0) //Ok, we will make a fake progress bar.
+            {
+                int possibleElapseMin = 5;
+                job.PercentComplete = JobFakePercentComplete(job.StartTime, possibleElapseMin);
+                if (job.PercentComplete > 90) //If this is true, maybe we didn't guess with the possibleElapseMin, so double it! (:
+                {
+                    job.PercentComplete = JobFakePercentComplete(job.StartTime, possibleElapseMin * 2) - 10; //never show 100% >:)
+                }
             }
 
             // Errors
@@ -76,6 +86,16 @@ namespace SolidCP.Providers.Virtualization
             }
 
             return job;
+        }
+
+        private static int JobFakePercentComplete(DateTime jobStartTime, int fakeElapseMin) //if we can't get a progress bar, we will make a fake progress bar.
+        {            
+            DateTime endDateTime = jobStartTime.AddMinutes(fakeElapseMin);
+            double timeSpanStart = Math.Abs((endDateTime - jobStartTime).TotalSeconds);
+            double timeSpanNow = Math.Abs((jobStartTime - DateTime.Now).TotalSeconds);
+            int FakePercentComplete = 100 - (int)(Math.Abs((timeSpanNow - timeSpanStart) / timeSpanStart) * 100);
+
+            return FakePercentComplete;
         }
 
         private static List<ConcreteJob> GetChildJobs(List<Job> objJobs)
@@ -94,7 +114,7 @@ namespace SolidCP.Providers.Virtualization
                 childJob.Description = job.Command;
                 childJob.StartTime = job.PSBeginTime ?? DateTime.Now;
                 childJob.ElapsedTime = job.PSEndTime ?? DateTime.Now;
-                childJob.PercentComplete = (job.Progress.Count > 0) ? job.Progress[job.Progress.Count - 1].PercentComplete : 0;
+                childJob.PercentComplete = (job.Progress.Count > 0) ? job.Progress[job.Progress.Count - 1].PercentComplete : -1;
                 childJobs.Add(childJob);
             }
 
