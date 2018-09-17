@@ -3871,13 +3871,61 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        ////TODO: Change signature of method.
-        public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        //TODO: Replace in Portal
+        public static IntResult ReinstallVirtualMachine(VirtualMachine VMSettings, int itemId, string adminPassword, string[] privIps, 
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            //TODO: Move here all the methods that we use to reinstall.
-            return 0;
+            IntResult result = new IntResult();
+            string osTemplateFile = VMSettings.OperatingSystemTemplate;            
+            List<int> extIps = new List<int>();
+
+            byte externalAddressesNumber = 0;
+            if (VMSettings.ExternalNetworkEnabled)
+            {
+                List<int> ipAddressesID = new List<int>();
+                externalAddressesNumber = 1;
+                NetworkAdapterDetails nic = GetExternalNetworkAdapterDetails(itemId);
+                if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
+                {                    
+                    foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
+                        ipAddressesID.Add(ip.AddressId);                    
+                }
+
+                List<PackageIPAddress> uips = ServerController.GetItemIPAddresses(itemId, IPAddressPool.VpsExternalNetwork);                              
+                foreach (PackageIPAddress uip in uips)
+                    foreach (int ip in ipAddressesID)
+                        if (ip == uip.AddressID) 
+                        {
+                            extIps.Add(uip.PackageAddressID);
+                            break;
+                        }                
+            }
+
+            byte privateAddressesNumber = 0;
+            if (VMSettings.PrivateNetworkEnabled && (privIps != null && privIps.Length>0))
+                privateAddressesNumber = 1;
+
+            ResultObject res = DeleteVirtualMachine(itemId, saveVirtualDisk, exportVps, exportPath);
+
+            if (res.IsSuccess)
+            {
+                System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
+                result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);
+            }
+            else
+            {
+                result.ErrorCodes = res.ErrorCodes;
+            }
+
+            return result;
         }
+        //TODO: Add another reinstall method.
+        //public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        //    bool saveVirtualDisk, bool exportVps, string exportPath)
+        //{
+
+        //    return 0;
+        //}
         #endregion
 
         #region Help

@@ -239,7 +239,67 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("GetVirtualMachine");
             return vm;
         }
-        
+
+        public List<VirtualMachine> GetVirtualMachineByID(string vmId)
+        {
+            List<VirtualMachine> vmachines;
+            try
+            {
+                Command command = new Command("Get-VM");
+                command.Parameters.Add("Id", vmId);
+                vmachines = GetVirtualMachinesInternal(command);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachinesByID", ex);
+                throw;
+            }
+
+            return vmachines;
+        }
+
+        public List<VirtualMachine> GetVirtualMachinesByName(string vmName)
+        {
+            List<VirtualMachine> vmachines;
+            try
+            {
+                Command command = new Command("Get-VM");
+                command.Parameters.Add("Name", vmName);
+                vmachines = GetVirtualMachinesInternal(command);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachinesByName", ex);
+                throw;
+            }
+
+            return vmachines;
+        }
+
+        protected List<VirtualMachine> GetVirtualMachinesInternal(Command cmd)
+        {
+            List<VirtualMachine> vmachines = new List<VirtualMachine>();
+            try
+            {
+                Collection<PSObject> result = PowerShell.Execute(cmd, true, true);
+                foreach (PSObject current in result)
+                {
+                    var vm = new VirtualMachine();
+                    vm.VirtualMachineId = current.GetProperty("Id").ToString();
+                    vm.Name = current.GetString("Name");
+                    vm.State = current.GetEnum<VirtualMachineState>("State");
+                    vmachines.Add(vm);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return vmachines;
+        }
+
+
         public List<VirtualMachine> GetVirtualMachines()
         {
             HostedSolutionLog.LogStart("GetVirtualMachines");
@@ -395,7 +455,8 @@ namespace SolidCP.Providers.Virtualization
                 PowerShell.Execute(cmdSet, true);
 
                 // Get created machine Id
-                var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
+                //var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
+                var createdMachine = GetVirtualMachinesByName(vm.Name).FirstOrDefault(m => m.Name == vm.Name);
                 if (createdMachine == null)
                     throw new Exception("Can't find created machine");
                 vm.VirtualMachineId = createdMachine.VirtualMachineId;
