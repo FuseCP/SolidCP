@@ -3920,12 +3920,12 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
         //TODO: Add another reinstall method.
-        //public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
-        //    bool saveVirtualDisk, bool exportVps, string exportPath)
-        //{
+        public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+            bool saveVirtualDisk, bool exportVps, string exportPath)
+        {
 
-        //    return 0;
-        //}
+            return 0;
+        }
         #endregion
 
         #region Help
