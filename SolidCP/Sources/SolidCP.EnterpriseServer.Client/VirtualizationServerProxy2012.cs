@@ -149,6 +149,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback DeleteVirtualMachineOperationCompleted;
 
+        private System.Threading.SendOrPostCallback DeleteVirtualMachineAsynchronousOperationCompleted;
+
         private System.Threading.SendOrPostCallback ReinstallVirtualMachineOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetVirtualMachineSummaryTextOperationCompleted;
@@ -354,6 +356,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         public event DeleteVirtualMachineCompletedEventHandler DeleteVirtualMachineCompleted;
+
+        /// <remarks/>
+        public event DeleteVirtualMachineAsynchronousCompletedEventHandler DeleteVirtualMachineAsynchronousCompleted;
 
         /// <remarks/>
         public event ReinstallVirtualMachineCompletedEventHandler ReinstallVirtualMachineCompleted;
@@ -3797,6 +3802,64 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachineAsynchronous", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            object[] results = this.Invoke("DeleteVirtualMachineAsynchronous", new object[] {
+                        itemId,
+                        saveFiles,
+                        exportVps,
+                        exportPath});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeleteVirtualMachineAsynchronous", new object[] {
+                        itemId,
+                        saveFiles,
+                        exportVps,
+                        exportPath}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndDeleteVirtualMachineAsynchronous(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineAsynchronousAsync(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            this.DeleteVirtualMachineAsynchronousAsync(itemId, saveFiles, exportVps, exportPath, null);
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineAsynchronousAsync(int itemId, bool saveFiles, bool exportVps, string exportPath, object userState)
+        {
+            if ((this.DeleteVirtualMachineAsynchronousOperationCompleted == null))
+            {
+                this.DeleteVirtualMachineAsynchronousOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineAsynchronousOperationCompleted);
+            }
+            this.InvokeAsync("DeleteVirtualMachineAsynchronous", new object[] {
+                        itemId,
+                        saveFiles,
+                        exportVps,
+                        exportPath}, this.DeleteVirtualMachineAsynchronousOperationCompleted, userState);
+        }
+
+        private void OnDeleteVirtualMachineAsynchronousOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachineAsynchronousCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteVirtualMachineAsynchronousCompleted(this, new DeleteVirtualMachineAsynchronousCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
         {
@@ -6206,6 +6269,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         private object[] results;
 
         internal DeleteVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeleteVirtualMachineAsynchronousCompletedEventHandler(object sender, DeleteVirtualMachineAsynchronousCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeleteVirtualMachineAsynchronousCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeleteVirtualMachineAsynchronousCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;

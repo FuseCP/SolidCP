@@ -495,6 +495,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachineAsynchronous(itemId, saveFiles, exportVps, exportPath);
+        }
+
+        [WebMethod]
         public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
