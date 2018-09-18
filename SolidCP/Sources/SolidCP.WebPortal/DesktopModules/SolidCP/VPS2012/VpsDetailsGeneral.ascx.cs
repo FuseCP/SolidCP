@@ -70,12 +70,6 @@ namespace SolidCP.Portal.VPS2012
                 return;
             }
 
-            if (item.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted)
-            {
-                //ES.Services.Packages. DeletePackageItem(PanelRequest.ItemID);
-                Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
-            }
-
             VirtualMachine vm = null;
             try
             {
