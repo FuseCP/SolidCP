@@ -56,8 +56,8 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
-        private readonly string sessionVMsettings = "VirtualMachine" + PanelRequest.ItemID;
-        private readonly string sessionIpAddresses = "IpAddresses" + PanelRequest.ItemID;
+        //private readonly string sessionVMsettings = "VirtualMachine" + PanelRequest.ItemID;
+        private readonly string sessionIpAddresses = "IpAddresses" + PanelRequest.ItemID;   //TODO: Add the ability to change IP?
         private void BindConfiguration()
         {
             Session.Timeout = 10;
@@ -77,7 +77,7 @@ namespace SolidCP.Portal.VPS2012
                 return;
             }
 
-            Session[sessionVMsettings] = vm;
+            //Session[sessionVMsettings] = vm;
             // check package quotas
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
 
@@ -188,67 +188,100 @@ namespace SolidCP.Portal.VPS2012
                 litPrivateAddresses.Text = PortalAntiXSS.Encode(String.Join(", ", ipPrivateAddresses.ToArray()));
             }
         }
+
+        //TODO: delete if new will work correct
+        #region Old Reinstall Methods
         private void TryToCreateServer()
+        {
+            //try
+            //{
+            //    VirtualMachine vm = (VirtualMachine)Session[sessionVMsettings];
+            //    // create virtual machine
+            //    vm.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
+            //    vm.PackageId = PanelSecurity.PackageId;
+            //    string adminPassword = password.Password;
+            //    string[] privIps = Utils.ParseDelimitedString(litPrivateAddresses.Text, '\n', '\r', ' ', '\t'); //possible doesn't work :)
+            //    IntResult createResult = ES.Services.VPS2012.CreateNewVirtualMachine(vm,
+            //        listOperatingSystems.SelectedValue, adminPassword, null,
+            //        Utils.ParseInt(hiddenTxtExternalAddressesNumber.Value.Trim()), false, GetExternalAddressesID().ToArray(),
+            //        Utils.ParseInt(hiddenTxtPrivateAddressesNumber.Value.Trim()), false, privIps
+            //        );
+            //    if (createResult.IsSuccess)
+            //    {
+            //        Response.Redirect(EditUrl("ItemID", createResult.Value.ToString(), "vps_general",
+            //            "SpaceID=" + PanelSecurity.PackageId.ToString()));
+            //    }
+            //    else
+            //    {
+            //        messageBox.ShowMessage(createResult, "VPS_ERROR_CREATE", "VPS");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    messageBox.ShowErrorMessage("VPS_ERROR_CREATE", ex);
+            //}
+        }
+
+        private bool TryToDeleteServerIsSuccess()
+        {
+            bool isOK = false;
+            //if ((VirtualMachine)Session[sessionVMsettings] == null) //if we lost the saved settings
+            //        return isOK;
+
+            //// delete machine
+            //try
+            //{
+            //    bool saveFiles = false, exportFiles = false; //not today
+            //    ResultObject res = ES.Services.VPS2012.DeleteVirtualMachine(PanelRequest.ItemID,
+            //        saveFiles, exportFiles, "");
+
+            //    if (res.IsSuccess)
+            //    {
+            //        System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
+            //        // ready for creating machine
+            //        isOK = true;
+            //    }
+            //    else
+            //    {
+            //        // show error
+            //        messageBox.ShowMessage(res, "VPS_ERROR_DELETE", "VPS");
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    messageBox.ShowErrorMessage("VPS_ERROR_DELETE", ex);
+            //}
+            return isOK;
+        }
+        #endregion
+        private void TryToReinstall()
         {
             try
             {
-                VirtualMachine vm = (VirtualMachine)Session[sessionVMsettings];
+                VirtualMachine vm = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
+
                 // create virtual machine
+                vm.OperatingSystemTemplate = listOperatingSystems.SelectedValue;
                 vm.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
                 vm.PackageId = PanelSecurity.PackageId;
                 string adminPassword = password.Password;
                 string[] privIps = Utils.ParseDelimitedString(litPrivateAddresses.Text, '\n', '\r', ' ', '\t'); //possible doesn't work :)
-                IntResult createResult = ES.Services.VPS2012.CreateNewVirtualMachine(vm,
-                    listOperatingSystems.SelectedValue, adminPassword, null,
-                    Utils.ParseInt(hiddenTxtExternalAddressesNumber.Value.Trim()), false, GetExternalAddressesID().ToArray(),
-                    Utils.ParseInt(hiddenTxtPrivateAddressesNumber.Value.Trim()), false, privIps
-                    );
-                if (createResult.IsSuccess)
+                ResultObject reinstallResult = ES.Services.VPS2012.ReinstallVirtualMachine(PanelRequest.ItemID, vm, adminPassword, privIps, false, false, "");
+                
+                if (reinstallResult.IsSuccess)
                 {
-                    Response.Redirect(EditUrl("ItemID", createResult.Value.ToString(), "vps_general",
-                        "SpaceID=" + PanelSecurity.PackageId.ToString()));
+                    Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+                    return;
                 }
                 else
                 {
-                    messageBox.ShowMessage(createResult, "VPS_ERROR_CREATE", "VPS");
+                    messageBox.ShowMessage(reinstallResult, "VPS_ERROR_CREATE", "VPS");
                 }
             }
             catch (Exception ex)
             {
                 messageBox.ShowErrorMessage("VPS_ERROR_CREATE", ex);
             }
-        }
-
-        private bool TryToDeleteServerIsSuccess()
-        {
-            bool isOK = false;
-            if ((VirtualMachine)Session[sessionVMsettings] == null) //if we lost the saved settings
-                return isOK;
-
-            // delete machine
-            try
-            {
-                bool saveFiles = false, exportFiles = false; //not today
-                ResultObject res = ES.Services.VPS2012.DeleteVirtualMachine(PanelRequest.ItemID,
-                    saveFiles, exportFiles, "");
-
-                if (res.IsSuccess)
-                {
-                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
-                    // ready for creating machine
-                    isOK = true;
-                }
-                else
-                {
-                    // show error
-                    messageBox.ShowMessage(res, "VPS_ERROR_DELETE", "VPS");
-                }
-            }
-            catch (Exception ex)
-            {
-                messageBox.ShowErrorMessage("VPS_ERROR_DELETE", ex);
-            }
-            return isOK;
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
@@ -270,10 +303,12 @@ namespace SolidCP.Portal.VPS2012
                 if (Page.IsValid)
                 {
                     btnReinstall.Enabled = false;
-                    if (TryToDeleteServerIsSuccess())
-                    {
-                        TryToCreateServer();
-                    }
+                    TryToReinstall();
+                    //if (TryToDeleteServerIsSuccess())
+                    //{
+                    //    TryToCreateServer();
+                    //}
+
                 }
             }
         }

@@ -3861,45 +3861,47 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
+        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             object[] results = this.Invoke("ReinstallVirtualMachine", new object[] {
                         itemId,
+                        VMSettings,
                         adminPassword,
-                        preserveVirtualDiskFiles,
+                        privIps,
                         saveVirtualDisk,
                         exportVps,
                         exportPath});
-            return ((int)(results[0]));
+            return ((ResultObject)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("ReinstallVirtualMachine", new object[] {
                         itemId,
+                        VMSettings,
                         adminPassword,
-                        preserveVirtualDiskFiles,
+                        privIps,
                         saveVirtualDisk,
                         exportVps,
                         exportPath}, callback, asyncState);
         }
 
         /// <remarks/>
-        public int EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
+        public ResultObject EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
-            return ((int)(results[0]));
+            return ((ResultObject)(results[0]));
         }
 
         /// <remarks/>
-        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
+        public void ReinstallVirtualMachineAsync(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            this.ReinstallVirtualMachineAsync(itemId, adminPassword, preserveVirtualDiskFiles, saveVirtualDisk, exportVps, exportPath, null);
+            this.ReinstallVirtualMachineAsync(itemId, VMSettings, adminPassword, privIps, saveVirtualDisk, exportVps, exportPath, null);
         }
 
         /// <remarks/>
-        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, object userState)
+        public void ReinstallVirtualMachineAsync(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath, object userState)
         {
             if ((this.ReinstallVirtualMachineOperationCompleted == null))
             {
@@ -3907,8 +3909,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
             }
             this.InvokeAsync("ReinstallVirtualMachine", new object[] {
                         itemId,
+                        VMSettings,
                         adminPassword,
-                        preserveVirtualDiskFiles,
+                        privIps,
                         saveVirtualDisk,
                         exportVps,
                         exportPath}, this.ReinstallVirtualMachineOperationCompleted, userState);
@@ -6335,12 +6338,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public int Result
+        public ResultObject Result
         {
             get
             {
                 this.RaiseExceptionIfNecessary();
-                return ((int)(this.results[0]));
+                return ((ResultObject)(this.results[0]));
             }
         }
     }

@@ -501,11 +501,11 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, adminPassword, preserveVirtualDiskFiles,
-                saveVirtualDisk, exportVps, exportPath);
+            return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, VMSettings, adminPassword, privIps,
+            saveVirtualDisk, exportVps, exportPath);
         }
         #endregion
 

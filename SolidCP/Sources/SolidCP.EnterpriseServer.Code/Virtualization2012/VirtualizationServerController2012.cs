@@ -4055,15 +4055,70 @@ namespace SolidCP.EnterpriseServer
             }            
         }
 
-
-        //TODO: Replace in Portal        
-        public static IntResult ReinstallVirtualMachine(VirtualMachine VMSettings, int itemId, string adminPassword, string[] privIps, 
+        public static ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, 
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            IntResult result = new IntResult();
-            string osTemplateFile = VMSettings.OperatingSystemTemplate;            
-            List<int> extIps = new List<int>();
+            ResultObject res = new IntResult();
+            
+            if (string.IsNullOrEmpty(VMSettings.OperatingSystemTemplatePath)) //check if we lose VMSettings 
+            {
+                int PackageId = VMSettings.PackageId;
+                VMSettings = GetVirtualMachineByItemId(itemId);
+                if (VMSettings == null)
+                {
+                    res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
+                    return res;
+                }
+                VMSettings.OperatingSystemTemplate = Path.GetFileName(VMSettings.OperatingSystemTemplatePath);
+                VMSettings.PackageId = PackageId;
+            }
 
+            try
+            {
+                #region Start Asynchronous task
+                try
+                {
+                    VirtualizationAsyncWorker2012 worker = new VirtualizationAsyncWorker2012
+                    {
+                        ThreadUserId = SecurityContext.User.UserId,
+                        Vm = VMSettings,
+                        ItemId = itemId,
+                        AdminPassword = adminPassword,
+                        PrivIps = privIps,
+                        SaveFiles = saveVirtualDisk,
+                        ExportVps = exportVps,
+                        ExportPath = exportPath,                        
+                    };
+                    worker.ReinstallVPSAsync();
+                }
+                catch (Exception ex)
+                {
+                    res.AddError(VirtualizationErrorCodes.CREATE_TASK_START_ERROR, ex);
+                    return res;
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                res.AddError(VirtualizationErrorCodes.DELETE_ERROR, ex);
+                return res;
+            }
+
+            res.IsSuccess = true;
+            return res;
+        }
+        //
+        internal static void ReinstallVirtualMachineInternal(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+            bool saveVirtualDisk, bool exportVps, string exportPath)
+        {
+            TaskManager.StartTask("VPS2012", "REINSTALL");
+
+            IntResult result = new IntResult();
+            string osTemplateFile = VMSettings.OperatingSystemTemplate;
+            TaskManager.Write(String.Format("VPS Operating System Template {0}", osTemplateFile));
+
+            #region Setup IPs
+            List<int> extIps = new List<int>();
             byte externalAddressesNumber = 0;
             if (VMSettings.ExternalNetworkEnabled)
             {
@@ -4071,46 +4126,59 @@ namespace SolidCP.EnterpriseServer
                 externalAddressesNumber = 1;
                 NetworkAdapterDetails nic = GetExternalNetworkAdapterDetails(itemId);
                 if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
-                {                    
+                {
                     foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
-                        ipAddressesID.Add(ip.AddressId);                    
+                    {
+                        ipAddressesID.Add(ip.AddressId);
+                    }                        
                 }
-
-                List<PackageIPAddress> uips = ServerController.GetItemIPAddresses(itemId, IPAddressPool.VpsExternalNetwork);                              
-                foreach (PackageIPAddress uip in uips)
-                    foreach (int ip in ipAddressesID)
-                        if (ip == uip.AddressID) 
-                        {
-                            extIps.Add(uip.PackageAddressID);
-                            break;
-                        }                
+                extIps = ipAddressesID;
+                //TODO: not needed at the moment, thanks a bug for this :)
+                //List<PackageIPAddress> uips = ServerController.GetItemIPAddresses(itemId, IPAddressPool.VpsExternalNetwork);
+                //foreach (PackageIPAddress uip in uips)
+                //    foreach (int ip in ipAddressesID)
+                //        if (ip == uip.AddressID)
+                //        {
+                //            TaskManager.Write(String.Format("PackageAddressID {0}", uip.AddressID));                                                        
+                //            extIps.Add(uip.AddressID); //PIP.PackageAddressID AS AddressID (install_db.sql line 22790), really? It looks like a bug... 
+                //                                       //but ok, just for furture if someone fix it, here too need change to uip.PackageAddressID
+                //            break;
+                //        }
             }
 
             byte privateAddressesNumber = 0;
-            if (VMSettings.PrivateNetworkEnabled && (privIps != null && privIps.Length>0))
-                privateAddressesNumber = 1;
+            if (VMSettings.PrivateNetworkEnabled && (privIps != null && privIps.Length > 0))
+                privateAddressesNumber = 1;            
+            #endregion
 
-            ResultObject res = DeleteVirtualMachine(itemId, saveVirtualDisk, exportVps, exportPath); //TODO: Add Async worker.
+            ResultObject res = DeleteVirtualMachineAsynchronous(itemId, saveVirtualDisk, exportVps, exportPath);
 
             if (res.IsSuccess)
             {
-                System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
-                result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);
+                int timeOut = 240;
+                while ((VirtualMachine)PackageController.GetPackageItem(itemId) != null && timeOut > 0)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    timeOut--;
+                }
+                if (timeOut > 0)
+                {
+                    TaskManager.Write(String.Format("The old VPS was deleted."));
+                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
+                    TaskManager.Write(String.Format("Begin to create a new VPS"));
+                    result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);                    
+                }
             }
-            else
-            {
-                result.ErrorCodes = res.ErrorCodes;
-            }
-
-            return result;
+            TaskManager.CompleteTask();
         }
+
         //TODO: Add another reinstall method.
-        public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
-            bool saveVirtualDisk, bool exportVps, string exportPath)
-        {
+        //public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        //    bool saveVirtualDisk, bool exportVps, string exportPath)
+        //{
 
-            return 0;
-        }
+        //    return 0;
+        //}
         #endregion
 
         #region Help

@@ -22,6 +22,11 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         public string ExportPath { get; set; }
         #endregion
 
+        #region VPS Reinstall Properties
+        public string AdminPassword { get; set; }
+        public string[] PrivIps { get; set; }
+        #endregion
+
 
         public VirtualizationAsyncWorker2012()
         {
@@ -35,13 +40,30 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             Thread t = new Thread(new ThreadStart(DeleteVPS));
             t.Start();
         }
-        public void DeleteVPS()
+        private void DeleteVPS()
         {
             // impersonate thread
             if (ThreadUserId != -1)
                 SecurityContext.SetThreadPrincipal(ThreadUserId);
 
             VirtualizationServerController2012.DeleteVirtualMachineInternal(ItemId, Vm, SaveFiles, ExportVps, ExportPath);
+        }
+        #endregion
+
+        #region Reinstall VPS
+        public void ReinstallVPSAsync()
+        {
+            // start asynchronously
+            Thread t = new Thread(new ThreadStart(ReinstallVPS));
+            t.Start();
+        }
+        private void ReinstallVPS()
+        {
+            // impersonate thread
+            if (ThreadUserId != -1)
+                SecurityContext.SetThreadPrincipal(ThreadUserId);
+
+            VirtualizationServerController2012.ReinstallVirtualMachineInternal(ItemId, Vm, AdminPassword,PrivIps, SaveFiles, ExportVps, ExportPath);
         }
         #endregion
     }
