@@ -6370,4 +6370,7 @@
   <data name="TaskActivity.VPS_CREATE_OS_SECUREBOOT" xml:space="preserve">
     <value>SecureBoot: {0} </value>
   </data>
+  <data name="VPS.VPS_MAINTENANCE_MODE_IS_ENABLE" xml:space="preserve">
+    <value>Maintenance mode is enable, please contact the administrator for assistance.</value>
+  </data>
 </root>

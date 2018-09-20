@@ -59,6 +59,7 @@ namespace SolidCP.EnterpriseServer
         private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
         private const Int64 Size1G = 0x40000000;
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
+        private const string MAINTENANCE_MODE_EMABLED = "enabled";
 
         // default server creation (if "Unlimited" was specified in the hosting plan)
         private const int DEFAULT_PASSWORD_LENGTH = 12;
@@ -336,7 +337,7 @@ namespace SolidCP.EnterpriseServer
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
         {
             // result object
-            IntResult res = new IntResult();
+            IntResult res = new IntResult();            
 
             // meta item
             VirtualMachine vm = null;
@@ -478,9 +479,17 @@ namespace SolidCP.EnterpriseServer
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(serviceId);
                 #endregion
-                               
+
+                #region Maintenance Mode Check
+                if (IsMaintenanceMode(settings))
+                {
+                    res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                    return res;
+                }                
+                #endregion
+
                 #region Check host name
-                                
+
                 if (string.IsNullOrEmpty(VMSettings.Name))
                 {
                     string hostnamePattern = settings["HostnamePattern"];                    
@@ -3744,13 +3753,21 @@ namespace SolidCP.EnterpriseServer
         {
             ResultObject res = new ResultObject();
 
+            #region Maintenance Mode Check
+            if (IsMaintenanceMode(itemId))
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                return res;
+            }
+            #endregion
+
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
             if (vm == null)
             {
                 res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
                 return res;
-            }
+            }           
 
             #region Check account and space statuses
             // check account
@@ -3882,6 +3899,14 @@ namespace SolidCP.EnterpriseServer
         {
             ResultObject res = new ResultObject();
 
+            #region Maintenance Mode Check
+            if (IsMaintenanceMode(itemId))
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                return res;
+            }
+            #endregion
+
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
             if (vm == null)
@@ -3890,7 +3915,7 @@ namespace SolidCP.EnterpriseServer
                 return res;
             }
 
-            #region Check account and space statuses
+             #region Check account and space statuses
             // check account
             if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
                 return res;
@@ -4066,7 +4091,15 @@ namespace SolidCP.EnterpriseServer
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             ResultObject res = new IntResult();
-            
+
+            #region Maintenance Mode Check
+            if (IsMaintenanceMode(itemId))
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                return res;
+            }
+            #endregion
+
             if (string.IsNullOrEmpty(VMSettings.OperatingSystemTemplatePath)) //check if we lose VMSettings 
             {
                 int PackageId = VMSettings.PackageId;
@@ -4331,6 +4364,31 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Helper methods
+        private static bool IsMaintenanceMode(int itemId)
+        {
+            return IsMaintenanceMode(itemId, null);
+        }
+        private static bool IsMaintenanceMode(StringDictionary settings)
+        {
+            return IsMaintenanceMode(-1, settings);
+        }
+        private static bool IsMaintenanceMode(int itemId, StringDictionary settings)
+        {
+            if(settings == null && itemId != -1)
+            {
+                // service ID
+                int serviceId = GetServiceId(PackageController.GetPackageItem(itemId).PackageId);
+
+                // load service settings
+                settings = ServerController.GetServiceSettings(serviceId);
+            }            
+
+            bool isMaintenanceMode = settings["MaintenanceMode"] == MAINTENANCE_MODE_EMABLED;
+
+            // Administrator ignore that rule
+            return UserController.GetUserInternally(SecurityContext.User.UserId).Role != UserRole.Administrator && isMaintenanceMode;
+        }
+
         private static int GetServiceId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);

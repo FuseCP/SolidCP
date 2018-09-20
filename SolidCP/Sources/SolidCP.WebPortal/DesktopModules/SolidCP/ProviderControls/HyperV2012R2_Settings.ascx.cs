@@ -63,6 +63,9 @@ namespace SolidCP.Portal.ProviderControls
             // bind networks
             BindNetworksList();
 
+            // Maintenance Mode
+            radioMaintenanceMode.SelectedIndex = string.IsNullOrEmpty(radioMaintenanceMode.SelectedValue) ? 0 : radioMaintenanceMode.SelectedIndex;
+
             // Guacamole
             txtGuacamoleConnectScript.Text = settings["GuacamoleConnectScript"];
             txtGuacamoleConnectPassword.Text = settings["GuacamoleConnectPassword"];
@@ -154,6 +157,9 @@ namespace SolidCP.Portal.ProviderControls
         void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
         {
             settings["ServerName"] = txtServerName.Text.Trim();
+
+            // MaintenanceMode
+            settings["MaintenanceMode"] = radioMaintenanceMode.SelectedValue;
 
             // Guacamole
             settings["GuacamoleConnectScript"] = txtGuacamoleConnectScript.Text.Trim();
