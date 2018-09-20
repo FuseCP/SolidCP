@@ -96,6 +96,10 @@ namespace SolidCP.Portal.ProviderControls
             // VHD type
             radioVirtualDiskType.SelectedValue = settings["VirtualDiskType"];
 
+            // Switch Type
+            radioSwitchType.SelectedValue = settings["SwitchType"];
+            radioSwitchType.SelectedIndex = string.IsNullOrEmpty(radioSwitchType.SelectedValue) ? 0 : radioSwitchType.SelectedIndex;
+
             // External network
             ddlExternalNetworks.SelectedValue = settings["ExternalNetworkId"];
             externalPreferredNameServer.Text = settings["ExternalPreferredNameServer"];
@@ -181,6 +185,9 @@ namespace SolidCP.Portal.ProviderControls
             // VHD type
             settings["VirtualDiskType"] = radioVirtualDiskType.SelectedValue;
 
+            // Switch Type
+            settings["SwitchType"] = radioSwitchType.SelectedValue;
+
             // External network
             settings["ExternalNetworkId"] = ddlExternalNetworks.SelectedValue;
             settings["ExternalPreferredNameServer"] = externalPreferredNameServer.Text;
@@ -224,7 +231,12 @@ namespace SolidCP.Portal.ProviderControls
         {
             try
             {
-                VirtualSwitch[] switches = ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim());
+                List<VirtualSwitch> switches;
+
+                if (radioSwitchType.SelectedValue == "internal")
+                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetInternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+                else
+                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
 
                 ddlExternalNetworks.DataSource = switches;
                 ddlExternalNetworks.DataBind();
@@ -341,6 +353,11 @@ namespace SolidCP.Portal.ProviderControls
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
+        }
+
+        protected void radioSwitchType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindNetworksList();
         }
 
         protected void btnConnect_Click(object sender, EventArgs e)

@@ -3730,6 +3730,13 @@ namespace SolidCP.EnterpriseServer
             ServiceProviderProxy.Init(vs, serviceId);
             return vs.GetExternalSwitches(computerName);
         }
+
+        public static VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        {
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetInternalSwitches(computerName);
+        }
         #endregion
 
         #region Tools

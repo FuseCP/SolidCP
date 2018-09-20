@@ -834,6 +834,11 @@ namespace SolidCP.Providers.Virtualization
             return GetSwitches(computerName, "Public");
         }
 
+        public List<VirtualSwitch> GetInternalSwitches(string computerName)
+        {
+            return GetSwitches(computerName, "Internal");
+        }
+
         private List<VirtualSwitch> GetSwitches(string computerName, string type)
         {
             HostedSolutionLog.LogStart("GetSwitches");

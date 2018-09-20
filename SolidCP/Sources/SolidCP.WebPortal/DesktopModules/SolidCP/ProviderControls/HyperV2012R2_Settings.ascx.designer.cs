@@ -769,6 +769,24 @@ namespace SolidCP.Portal.ProviderControls {
         protected global::System.Web.UI.WebControls.Localize locExternalNetwork;
         
         /// <summary>
+        /// locSwitchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSwitchType;
+        
+        /// <summary>
+        /// radioSwitchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList radioSwitchType;
+        
+        /// <summary>
         /// locExternalNetworkName control.
         /// </summary>
         /// <remarks>

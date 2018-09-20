@@ -485,6 +485,12 @@ namespace SolidCP.EnterpriseServer
         {
             return VirtualizationServerController2012.GetExternalSwitches(serviceId, computerName);
         }
+
+        [WebMethod]
+        public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        {
+            return VirtualizationServerController2012.GetInternalSwitches(serviceId, computerName);
+        }
         #endregion
 
         #region Tools

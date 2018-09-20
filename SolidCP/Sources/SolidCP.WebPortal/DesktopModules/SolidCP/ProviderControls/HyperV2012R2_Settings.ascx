@@ -504,6 +504,18 @@
         <asp:Localize ID="locExternalNetwork" runat="server" meta:resourcekey="locExternalNetwork" Text="External Network"></asp:Localize>
     </legend>
     <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+        <tr>
+            <td class="SubHead" style="width:200px;" valign="top">
+		        <asp:Localize ID="locSwitchType" runat="server" meta:resourcekey="locSwitchType" Text="Switch Type:"></asp:Localize>
+		    </td>
+	        <td>
+		        <asp:RadioButtonList ID="radioSwitchType" runat="server" AutoPostBack="true" 
+			        onselectedindexchanged="radioSwitchType_SelectedIndexChanged">
+			        <asp:ListItem Value="external" meta:resourcekey="radioSwitchTypeExternal" Selected="True">External</asp:ListItem>
+			        <asp:ListItem Value="internal" meta:resourcekey="radioSwitchTypeInternal">Internal (Not recommended)</asp:ListItem>
+		        </asp:RadioButtonList>
+	        </td>
+        </tr>
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locExternalNetworkName" runat="server" meta:resourcekey="locExternalNetworkName" Text="Connect to Network:"></asp:Localize>

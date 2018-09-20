@@ -147,6 +147,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetInternalSwitchesOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteVirtualMachineOperationCompleted;
 
         private System.Threading.SendOrPostCallback DeleteVirtualMachineAsynchronousOperationCompleted;
@@ -353,6 +355,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
+
+        /// <remarks/>
+        public event GetInternalSwitchesCompletedEventHandler GetInternalSwitchesCompleted;
 
         /// <remarks/>
         public event DeleteVirtualMachineCompletedEventHandler DeleteVirtualMachineCompleted;
@@ -3744,6 +3749,58 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetInternalSwitches", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        {
+            object[] results = this.Invoke("GetInternalSwitches", new object[] {
+                        serviceId,
+                        computerName});
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetInternalSwitches(int serviceId, string computerName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetInternalSwitches", new object[] {
+                        serviceId,
+                        computerName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] EndGetInternalSwitches(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetInternalSwitchesAsync(int serviceId, string computerName)
+        {
+            this.GetInternalSwitchesAsync(serviceId, computerName, null);
+        }
+
+        /// <remarks/>
+        public void GetInternalSwitchesAsync(int serviceId, string computerName, object userState)
+        {
+            if ((this.GetInternalSwitchesOperationCompleted == null))
+            {
+                this.GetInternalSwitchesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInternalSwitchesOperationCompleted);
+            }
+            this.InvokeAsync("GetInternalSwitches", new object[] {
+                        serviceId,
+                        computerName}, this.GetInternalSwitchesOperationCompleted, userState);
+        }
+
+        private void OnGetInternalSwitchesOperationCompleted(object arg)
+        {
+            if ((this.GetInternalSwitchesCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetInternalSwitchesCompleted(this, new GetInternalSwitchesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath)
         {
@@ -6242,6 +6299,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         private object[] results;
 
         internal GetExternalSwitchesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualSwitch[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetInternalSwitchesCompletedEventHandler(object sender, GetInternalSwitchesCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetInternalSwitchesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetInternalSwitchesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
