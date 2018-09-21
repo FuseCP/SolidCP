@@ -49,6 +49,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.ValidationSummary validatorsSummary;
         
         /// <summary>
+        /// reinstallForms control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl reinstallForms;
+        
+        /// <summary>
         /// locSubTitle control.
         /// </summary>
         /// <remarks>
@@ -83,6 +92,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel VirtualMachineSettingsPanel;
+        
+        /// <summary>
+        /// hostnameSetting control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl hostnameSetting;
         
         /// <summary>
         /// locHostname control.

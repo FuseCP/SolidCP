@@ -47,7 +47,9 @@ namespace SolidCP.Portal.VPS2012
         protected void Page_Load(object sender, EventArgs e)
         {
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
-            if (!manageAllowed) //block access for user if they don't have permission.
+            bool reinstallAlloew = VirtualMachines2012Helper.IsReinstallAllowed(PanelSecurity.PackageId);
+
+            if (!manageAllowed && !reinstallAlloew) //block access for user if they don't have permission.
                 Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
 
             if (!IsPostBack)
@@ -68,21 +70,36 @@ namespace SolidCP.Portal.VPS2012
             if (vm == null)
             {
                 messageBox.ShowErrorMessage("VPS_LOAD_VM_META_ITEM");
+                reinstallForms.Visible = false;
                 return;
             }
             if (!String.IsNullOrEmpty(vm.CurrentTaskId))
             {
                 messageBox.ShowWarningMessage("VPS_PROVISIONING_PROCESS");
+                reinstallForms.Visible = false;
                 btnReinstall.Enabled = false;
                 return;
             }
 
-            //Session[sessionVMsettings] = vm;
             // check package quotas
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
 
+            vm.CreationTime = string.IsNullOrEmpty(vm.CreationTime) ? DateTime.Now.ToString() : vm.CreationTime;
+            DateTime dateTimePlusHours = DateTime.Parse(vm.CreationTime).AddHours(9);
+            bool IsNotReinstallPossible = !(dateTimePlusHours <= DateTime.Now); //TODO: add possible to change that check.
+            if (IsNotReinstallPossible && !manageAllowed)
+            {
+                messageBox.ShowWarningMessage("VPS_REINSTALL_LIMIT", 
+                    "You will be able to reinstall the server after - " + dateTimePlusHours.ToString());
+                reinstallForms.Visible = false;
+                btnReinstall.Enabled = false;
+                return;
+            }
+
+            //Session[sessionVMsettings] = vm;          
+
             //bind hostname
-            VirtualMachineSettingsPanel.Visible = manageAllowed;
+            hostnameSetting.Visible = manageAllowed;
             int dotIdx = vm.Name.IndexOf(".");
             if (dotIdx > -1)
             {

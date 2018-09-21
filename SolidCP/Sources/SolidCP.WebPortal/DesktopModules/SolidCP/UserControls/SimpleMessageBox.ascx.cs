@@ -111,6 +111,13 @@ namespace SolidCP.Portal.UserControls
 				GetLocalizedMessage("WarningDescription.", messageKey), null);
         }
 
+        public void ShowWarningMessage(string messageKey, string description)
+        {
+            RenderMessage(MessageBoxType.Warning,
+                GetLocalizedMessage("Warning.", messageKey),
+                                                description, null);
+        }
+
         public void ShowSuccessMessage(string messageKey)
         {
 			RenderMessage(MessageBoxType.Information,
