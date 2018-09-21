@@ -90,7 +90,7 @@ namespace SolidCP.Portal.VPS2012
             if (IsNotReinstallPossible && !manageAllowed)
             {
                 messageBox.ShowWarningMessage("VPS_REINSTALL_LIMIT", 
-                    "You will be able to reinstall the server after - " + dateTimePlusHours.ToString());
+                    "You will be able to reinstall the server after - " + dateTimePlusHours.ToUniversalTime().ToString() + " UTC");
                 reinstallForms.Visible = false;
                 btnReinstall.Enabled = false;
                 return;
