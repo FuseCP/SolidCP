@@ -64,7 +64,9 @@ namespace SolidCP.Portal.ProviderControls
             BindNetworksList();
 
             // Maintenance Mode
-            radioMaintenanceMode.SelectedIndex = string.IsNullOrEmpty(radioMaintenanceMode.SelectedValue) ? 0 : radioMaintenanceMode.SelectedIndex;
+            radioMaintenanceMode.SelectedValue = settings["MaintenanceMode"];
+            radioMaintenanceMode.SelectedIndex = string.IsNullOrEmpty(radioMaintenanceMode.SelectedValue) 
+                ? 0 : radioMaintenanceMode.SelectedIndex;
 
             // Guacamole
             txtGuacamoleConnectScript.Text = settings["GuacamoleConnectScript"];
@@ -101,7 +103,8 @@ namespace SolidCP.Portal.ProviderControls
 
             // Switch Type
             radioSwitchType.SelectedValue = settings["SwitchType"];
-            radioSwitchType.SelectedIndex = string.IsNullOrEmpty(radioSwitchType.SelectedValue) ? 0 : radioSwitchType.SelectedIndex;
+            radioSwitchType.SelectedIndex = string.IsNullOrEmpty(radioSwitchType.SelectedValue) 
+                ? 0 : radioSwitchType.SelectedIndex;
 
             // External network
             ddlExternalNetworks.SelectedValue = settings["ExternalNetworkId"];

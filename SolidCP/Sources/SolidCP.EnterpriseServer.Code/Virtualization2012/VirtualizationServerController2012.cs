@@ -730,7 +730,9 @@ namespace SolidCP.EnterpriseServer
                 string summaryLetterEmail)
         {
             // start task
-            TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId);
+            //TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId);
+            int maximumExecutionSeconds = 60 * 60 * 2; //2 hours for this task. Anyway the Powershell cmd vhd convert has max 1 hour limit.
+            TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
 
             try
             {
@@ -4204,9 +4206,16 @@ namespace SolidCP.EnterpriseServer
                 if (timeOut > 0)
                 {
                     TaskManager.Write(String.Format("The old VPS was deleted."));
-                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.
-                    TaskManager.Write(String.Format("Begin to create a new VPS"));
-                    result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);                    
+                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.                    
+                    result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);
+                    if (result.IsSuccess)
+                    {
+                        TaskManager.Write(String.Format("Begin to create a new VPS"));
+                    }
+                    else
+                    {
+                        TaskManager.WriteWarning("Error creating server: {0}", result.ErrorCodes.ToArray());
+                    }
                 }
             }
             TaskManager.CompleteTask();
