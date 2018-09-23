@@ -2389,13 +2389,6 @@ namespace SolidCP.Providers.HostedSolution
             HostedSolutionLog.DebugInfo("domain : {0}", domain);
             HostedSolutionLog.DebugInfo("RootDomain : {0}", RootDomain);
 
-
-            //This is a tempoary solution. This should be released with a checking loop
-            HostedSolutionLog.DebugInfo("10sec delay starting");
-            int milliseconds = 10000;
-            Thread.Sleep(milliseconds);
-            HostedSolutionLog.DebugInfo("10sec delay completed");
-
             if (string.IsNullOrEmpty(organizationId))
                 throw new ArgumentNullException("organizationId");
 
@@ -2408,10 +2401,27 @@ namespace SolidCP.Providers.HostedSolution
                 ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
                 ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
                 HostedSolutionLog.DebugInfo("AddOUSecurityfromUser Path: {0}  RootDomain: {1}  OrgID: {2}", Path, RootDomain, organizationId);
-                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
-                //HostedSolutionLog.DebugInfo("AddOUSecurityfromUser Path: {0}  RootDomain: {1}  OrgID: {2}", Path, RootDomain, organizationId);
-                //ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                var groupAccount = ActiveDirectoryUtils.GetObjectTargetAccountName(organizationId, RootDomain);
+                for (int i = 0; i <= 25; i++)
+                {
+                    if (ActiveDirectoryUtils.AccountExists(groupAccount))
+                    {
+                        HostedSolutionLog.DebugInfo($"ACL delay was {i * 2} seconds");
+                        ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                        break;
+                    }
 
+                    if (i == 25)
+                        throw new Exception($"Can not find {groupAccount} group to set ACL permissions.");
+
+                    Thread.Sleep(2000);
+                }
+
+                // Add privileged servers group
+                var privilegedGroup = ActiveDirectoryUtils.GetObjectTargetAccountName("Privileged Servers", RootDomain);
+                if (!ActiveDirectoryUtils.AccountExists(privilegedGroup))
+                    ActiveDirectoryUtils.CreateGroup(RootDomain, "Privileged Servers");
+                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, privilegedGroup, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }
             catch (Exception e)
             {
