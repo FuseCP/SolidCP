@@ -283,6 +283,7 @@ namespace SolidCP.EnterpriseServer
                 PackageController.OrderServiceItemsByServices(items);
 
             int maxItems = 100000000;
+            bool mailFilterEnabled = false;
             // delete service items by service sets
             foreach (int serviceId in orderedItems.Keys)
             {
@@ -293,21 +294,28 @@ namespace SolidCP.EnterpriseServer
                 {
                     int itemid = orderedItems[serviceId][0].Id;
                     OrganizationUsersPaged users = OrganizationController.GetOrganizationUsersPaged(itemid, null, null, null, 0, maxItems);
-                    foreach (OrganizationUser user in users.PageUsers)
-                        usersList.Add(user.PrimaryEmailAddress);
-
+                    StringDictionary settings = ServerController.GetServiceSettings(serviceId);
+                    if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                    {
+                        mailFilterEnabled = true;
+                        foreach (OrganizationUser user in users.PageUsers)
+                            SpamExpertsController.DeleteEmailFilter(packageId, user.PrimaryEmailAddress);
+                    }
                 }
             }
-            List<DomainInfo> domains = ServerController.GetDomains(packageId);
-            foreach (DomainInfo domain in domains)
-                domainsList.Add(domain.DomainName);
+            if (mailFilterEnabled)
+            {
+                List<DomainInfo> domains = ServerController.GetDomains(packageId);
+                foreach (DomainInfo domain in domains)
+                    SpamExpertsController.DeleteDomainFilter(domain);
+            }
 
             //Get VPS Package IPs
             PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
                                 IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;            
             List<int> ipsIdList = new List<int>();
             foreach (PackageIPAddress ip in ips)
-                ipsIdList.Add(ip.AddressID);            
+                ipsIdList.Add(ip.AddressID);
 
             //Delete Package
             int res = PackageController.DeletePackage(packageId);

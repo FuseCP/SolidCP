@@ -529,7 +529,7 @@ namespace SolidCP.EnterpriseServer
                                 ServerController.AddServiceDNSRecords(org.PackageId, ResourceGroups.OCS, domain, "");
                             }
                             // check if spamexperts filter is needed
-                            StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(serviceId);
+                            StringDictionary exSettings = ServerController.GetServiceSettings(serviceId);
                             if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
                             {
 
@@ -682,7 +682,7 @@ namespace SolidCP.EnterpriseServer
                     acceptedDomains.ToArray());
 
                 // check if spamexperts filter needs to be removed
-                StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(exchangeServiceId);
+                StringDictionary exSettings = ServerController.GetServiceSettings(exchangeServiceId);
                 foreach (var dom in acceptedDomains)
                 {
                     
@@ -1686,7 +1686,7 @@ namespace SolidCP.EnterpriseServer
                     }
 
                     // check if spamexperts filter is needed
-                    StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(org.ServiceId);
+                    StringDictionary exSettings = ServerController.GetServiceSettings(org.ServiceId);
                     if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
                     {
 
@@ -1833,7 +1833,7 @@ namespace SolidCP.EnterpriseServer
                     }
 
                     // check if spamexperts filter needs to be removed
-                    StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(exchangeServiceId);
+                    StringDictionary exSettings = ServerController.GetServiceSettings(exchangeServiceId);
                     if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
                     {
                         SpamExpertsController.DeleteDomainFilter(domain);
@@ -2300,7 +2300,7 @@ namespace SolidCP.EnterpriseServer
                 DeleteAccount(itemId, accountId);
 
                 // check if spamexperts filter per-mailbox is set
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(org.ServiceId);
+                StringDictionary settings = ServerController.GetServiceSettings(org.ServiceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     SpamExpertsController.DeleteEmailFilter(org.PackageId, account.UserPrincipalName);

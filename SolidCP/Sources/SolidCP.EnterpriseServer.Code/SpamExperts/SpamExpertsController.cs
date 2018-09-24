@@ -162,7 +162,7 @@ namespace SolidCP.EnterpriseServer
             int serviceId = GetServiceId(packageId);
             if (IsPackageServiceEnabled(packageId, serviceId))
             {
-                StringDictionary exSettings = ServerController.GetServiceSettingsAdmin(serviceId);
+                StringDictionary exSettings = ServerController.GetServiceSettings(serviceId);
                 return (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]));
             }
             return false;
