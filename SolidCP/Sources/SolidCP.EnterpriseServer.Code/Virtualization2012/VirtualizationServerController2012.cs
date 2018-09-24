@@ -59,6 +59,7 @@ namespace SolidCP.EnterpriseServer
         private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
         private const Int64 Size1G = 0x40000000;
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
+        private const string MAINTENANCE_MODE_EMABLED = "enabled";
 
         // default server creation (if "Unlimited" was specified in the hosting plan)
         private const int DEFAULT_PASSWORD_LENGTH = 12;
@@ -336,7 +337,7 @@ namespace SolidCP.EnterpriseServer
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
         {
             // result object
-            IntResult res = new IntResult();
+            IntResult res = new IntResult();            
 
             // meta item
             VirtualMachine vm = null;
@@ -478,9 +479,17 @@ namespace SolidCP.EnterpriseServer
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(serviceId);
                 #endregion
-                               
+
+                #region Maintenance Mode Check
+                if (IsMaintenanceMode(settings))
+                {
+                    res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                    return res;
+                }                
+                #endregion
+
                 #region Check host name
-                                
+
                 if (string.IsNullOrEmpty(VMSettings.Name))
                 {
                     string hostnamePattern = settings["HostnamePattern"];                    
@@ -721,7 +730,9 @@ namespace SolidCP.EnterpriseServer
                 string summaryLetterEmail)
         {
             // start task
-            TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId);
+            //TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId);
+            int maximumExecutionSeconds = 60 * 60 * 2; //2 hours for this task. Anyway the Powershell cmd vhd convert has max 1 hour limit.
+            TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
 
             try
             {
@@ -895,11 +906,16 @@ namespace SolidCP.EnterpriseServer
                 JobResult result = null;
                 ReturnCode code = ReturnCode.OK;
 
-                TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);
+                TaskManager.Write("VPS_CREATE_OS_GENERATION", osTemplate.Generation.ToString());
+                if (osTemplate.Generation > 1)
+                    TaskManager.Write("VPS_CREATE_OS_SECUREBOOT", osTemplate.EnableSecureBoot ? "Enabled": "Disabled");
+                TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);                
                 TaskManager.Write("VPS_CREATE_CONVERT_VHD");
+                if (osTemplate.VhdBlockSizeBytes > 0)
+                    TaskManager.Write("VPS_CREATE_CONVERT_SET_VHD_BLOCKSIZE", osTemplate.VhdBlockSizeBytes.ToString());
                 TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
                 TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = -1;
                 try
                 {
                     // convert VHD
@@ -3725,6 +3741,13 @@ namespace SolidCP.EnterpriseServer
             ServiceProviderProxy.Init(vs, serviceId);
             return vs.GetExternalSwitches(computerName);
         }
+
+        public static VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        {
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetInternalSwitches(computerName);
+        }
         #endregion
 
         #region Tools
@@ -3732,13 +3755,21 @@ namespace SolidCP.EnterpriseServer
         {
             ResultObject res = new ResultObject();
 
+            #region Maintenance Mode Check
+            if (IsMaintenanceMode(itemId))
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                return res;
+            }
+            #endregion
+
             // load service item
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
             if (vm == null)
             {
                 res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
                 return res;
-            }
+            }           
 
             #region Check account and space statuses
             // check account
@@ -3866,13 +3897,337 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        ////TODO: Change signature of method.
-        public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        public static ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            ResultObject res = new ResultObject();
+
+            #region Maintenance Mode Check
+            if (IsMaintenanceMode(itemId))
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                return res;
+            }
+            #endregion
+
+            // load service item
+            VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+            if (vm == null)
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
+                return res;
+            }
+
+             #region Check account and space statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+                return res;
+
+            // check package
+            if (!SecurityContext.CheckPackage(res, vm.PackageId, DemandPackage.IsActive))
+                return res;
+            #endregion
+
+            try
+            {
+                vm.CurrentTaskId = Guid.NewGuid().ToString("N"); // generate deletion task id
+                vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Deleted;
+                PackageController.UpdatePackageItem(vm);
+
+                #region Start Asynchronous task
+                try
+                {
+                    VirtualizationAsyncWorker2012 worker = new VirtualizationAsyncWorker2012
+                    {
+                        ThreadUserId = SecurityContext.User.UserId,
+                        Vm = vm,
+                        ItemId = itemId,
+                        SaveFiles = saveFiles,
+                        ExportVps = exportVps,
+                        ExportPath = exportPath
+                    };
+                    worker.DeleteVPSAsync();
+                }
+                catch (Exception ex)
+                {
+                    res.AddError(VirtualizationErrorCodes.CREATE_TASK_START_ERROR, ex);
+                    return res;
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                res.AddError(VirtualizationErrorCodes.DELETE_ERROR, ex);
+                return res;
+            }          
+
+            res.IsSuccess = true;
+            return res;
+        }
+
+        internal static void DeleteVirtualMachineInternal(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath)
+        {
+            string taskId = vm.CurrentTaskId;
+            // start task
+            TaskManager.StartTask(taskId, "VPS", "DELETE", vm.Name, vm.Id, vm.PackageId);            
+            
+            try
+            {
+                // get proxy
+                VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+
+                // check VM state
+                VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+
+                JobResult result = null;
+                vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
+
+                if (vps != null)
+                {
+                    #region turn off machine (if required)
+                    // stop virtual machine
+                    if (vps.State != VirtualMachineState.Off)
+                    {
+                        TaskManager.Write("VPS_DELETE_TURN_OFF");
+                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+
+                        // check result
+                        if (result.ReturnValue != ReturnCode.JobStarted)
+                        {
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR + ":", result.ReturnValue.ToString());
+                            return;
+                        }
+                        // wait for completion
+                        if (!JobCompleted(vs, result.Job)) //TODO:
+                        {
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":", result.Job.ErrorDescription.ToString());
+                            return;
+                        }
+                    }
+                    #endregion
+
+                    #region export machine
+                    if (exportVps && !String.IsNullOrEmpty(exportPath))
+                    {
+                        TaskManager.Write("VPS_DELETE_EXPORT");
+                        result = vs.ExportVirtualMachine(vm.VirtualMachineId, exportPath);
+
+                        // check result
+                        if (result.ReturnValue != ReturnCode.JobStarted)
+                        {
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR + ":", result.ReturnValue.ToString());
+                            return;
+                        }
+
+                        // wait for completion
+                        if (!JobCompleted(vs, result.Job))
+                        {
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":", result.Job.ErrorDescription.ToString());
+                            return;
+                        }
+                    }
+                    #endregion
+
+                    #region delete machine
+                    TaskManager.Write("VPS_DELETE_DELETE");
+                    result = saveFiles ? vs.DeleteVirtualMachine(vm.VirtualMachineId) : vs.DeleteVirtualMachineExtended(vm.VirtualMachineId);
+
+                    // check result
+                    if (result.ReturnValue != ReturnCode.JobStarted)
+                    {
+                        TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR + ":", result.ReturnValue.ToString());
+                        return;
+                    }
+                    // wait for completion
+                    if (!JobCompleted(vs, result.Job))
+                    {
+                        TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":", result.Job.ErrorDescription.ToString());
+                        return;
+                    }
+                    #endregion
+                }
+
+                // mark as deleted
+                vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Deleted;
+
+                #region delete Empty folders
+                if (!saveFiles)
+                {
+                    TaskManager.Write("VPS_DELETE_FILES", vm.RootFolderPath);
+                    try
+                    {
+                        if (vs.IsEmptyFolders(vm.RootFolderPath)) //Prevent a possible hack to delete all files from the Main server :D
+                            //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
+                            vs.DeleteRemoteFile(vm.RootFolderPath);//TODO: replace by powershell ???
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskManager.WriteError(ex, VirtualizationErrorCodes.DELETE_VM_FILES_ERROR + ":");
+                    }
+                }
+                #endregion                
+            }
+            catch (Exception ex)
+            {
+                TaskManager.WriteError(ex, VirtualizationErrorCodes.DELETE_ERROR + ":");
+                return;
+            }
+            finally
+            {
+                if(vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted)
+                {
+                    PackageController.DeletePackageItem(itemId);
+                }
+                else
+                {
+                    vm.CurrentTaskId = null;
+                    vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Error;
+                    PackageController.UpdatePackageItem(vm); //to access the audit log.
+                }
+
+                // complete task
+                TaskManager.CompleteTask();
+            }            
+        }
+
+        public static ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, 
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            //TODO: Move here all the methods that we use to reinstall.
-            return 0;
+            ResultObject res = new IntResult();
+
+            #region Maintenance Mode Check
+            if (IsMaintenanceMode(itemId))
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.MAINTENANCE_MODE_IS_ENABLE);
+                return res;
+            }
+            #endregion
+
+            if (string.IsNullOrEmpty(VMSettings.OperatingSystemTemplatePath)) //check if we lose VMSettings 
+            {
+                int PackageId = VMSettings.PackageId;
+                VMSettings = GetVirtualMachineByItemId(itemId);
+                if (VMSettings == null)
+                {
+                    res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
+                    return res;
+                }
+                VMSettings.OperatingSystemTemplate = Path.GetFileName(VMSettings.OperatingSystemTemplatePath);
+                VMSettings.PackageId = PackageId;
+            }
+
+            try
+            {
+                #region Start Asynchronous task
+                try
+                {
+                    VirtualizationAsyncWorker2012 worker = new VirtualizationAsyncWorker2012
+                    {
+                        ThreadUserId = SecurityContext.User.UserId,
+                        Vm = VMSettings,
+                        ItemId = itemId,
+                        AdminPassword = adminPassword,
+                        PrivIps = privIps,
+                        SaveFiles = saveVirtualDisk,
+                        ExportVps = exportVps,
+                        ExportPath = exportPath,                        
+                    };
+                    worker.ReinstallVPSAsync();
+                }
+                catch (Exception ex)
+                {
+                    res.AddError(VirtualizationErrorCodes.CREATE_TASK_START_ERROR, ex);
+                    return res;
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                res.AddError(VirtualizationErrorCodes.DELETE_ERROR, ex);
+                return res;
+            }
+
+            res.IsSuccess = true;
+            return res;
         }
+        //
+        internal static void ReinstallVirtualMachineInternal(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+            bool saveVirtualDisk, bool exportVps, string exportPath)
+        {
+            TaskManager.StartTask("VPS2012", "REINSTALL");
+
+            IntResult result = new IntResult();
+            string osTemplateFile = VMSettings.OperatingSystemTemplate;
+            TaskManager.Write(String.Format("VPS Operating System Template {0}", osTemplateFile));
+
+            #region Setup IPs
+            List<int> extIps = new List<int>();
+            byte externalAddressesNumber = 0;
+            if (VMSettings.ExternalNetworkEnabled)
+            {
+                List<int> ipAddressesID = new List<int>();
+                externalAddressesNumber = 1;
+                NetworkAdapterDetails nic = GetExternalNetworkAdapterDetails(itemId);
+                if (nic.IPAddresses != null && nic.IPAddresses.GetLength(0) > 0)
+                {
+                    foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
+                    {
+                        ipAddressesID.Add(ip.AddressId);
+                    }                        
+                }
+                extIps = ipAddressesID;
+                //TODO: not needed at the moment, thanks a bug for this :)
+                //List<PackageIPAddress> uips = ServerController.GetItemIPAddresses(itemId, IPAddressPool.VpsExternalNetwork);
+                //foreach (PackageIPAddress uip in uips)
+                //    foreach (int ip in ipAddressesID)
+                //        if (ip == uip.AddressID)
+                //        {
+                //            TaskManager.Write(String.Format("PackageAddressID {0}", uip.AddressID));                                                        
+                //            extIps.Add(uip.AddressID); //PIP.PackageAddressID AS AddressID (install_db.sql line 22790), really? It looks like a bug... 
+                //                                       //but ok, just for furture if someone fix it, here too need change to uip.PackageAddressID
+                //            break;
+                //        }
+            }
+
+            byte privateAddressesNumber = 0;
+            if (VMSettings.PrivateNetworkEnabled && (privIps != null && privIps.Length > 0))
+                privateAddressesNumber = 1;            
+            #endregion
+
+            ResultObject res = DeleteVirtualMachineAsynchronous(itemId, saveVirtualDisk, exportVps, exportPath);
+
+            if (res.IsSuccess)
+            {
+                int timeOut = 240;
+                while ((VirtualMachine)PackageController.GetPackageItem(itemId) != null && timeOut > 0)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                    timeOut--;
+                }
+                if (timeOut > 0)
+                {
+                    TaskManager.Write(String.Format("The old VPS was deleted."));
+                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.                    
+                    result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);
+                    if (result.IsSuccess)
+                    {
+                        TaskManager.Write(String.Format("Begin to create a new VPS"));
+                    }
+                    else
+                    {
+                        TaskManager.WriteWarning("Error creating server: {0}", result.ErrorCodes.ToArray());
+                    }
+                }
+            }
+            TaskManager.CompleteTask();
+        }
+
+        //TODO: Add another reinstall method.
+        //public static int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        //    bool saveVirtualDisk, bool exportVps, string exportPath)
+        //{
+
+        //    return 0;
+        //}
         #endregion
 
         #region Help
@@ -4018,6 +4373,31 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Helper methods
+        private static bool IsMaintenanceMode(int itemId)
+        {
+            return IsMaintenanceMode(itemId, null);
+        }
+        private static bool IsMaintenanceMode(StringDictionary settings)
+        {
+            return IsMaintenanceMode(-1, settings);
+        }
+        private static bool IsMaintenanceMode(int itemId, StringDictionary settings)
+        {
+            if(settings == null && itemId != -1)
+            {
+                // service ID
+                int serviceId = GetServiceId(PackageController.GetPackageItem(itemId).PackageId);
+
+                // load service settings
+                settings = ServerController.GetServiceSettings(serviceId);
+            }            
+
+            bool isMaintenanceMode = settings["MaintenanceMode"] == MAINTENANCE_MODE_EMABLED;
+
+            // Administrator ignore that rule
+            return UserController.GetUserInternally(SecurityContext.User.UserId).Role != UserRole.Administrator && isMaintenanceMode;
+        }
+
         private static int GetServiceId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
@@ -4084,11 +4464,18 @@ namespace SolidCP.EnterpriseServer
         {
             TaskManager.IndicatorMaximum = 100;
             bool jobCompleted = true;
-
+            short timeout = 60;
+            while(job.JobState == ConcreteJobState.NotStarted && timeout > 0) //Often jobs are only initialized, need to wait a little, that it started.
+            {
+                timeout--;
+                System.Threading.Thread.Sleep(2000);
+                job = vs.GetJob(job.Id);
+            }
+            
             while (job.JobState == ConcreteJobState.Starting ||
                 job.JobState == ConcreteJobState.Running)
             {
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(3000);
                 job = vs.GetJob(job.Id);
                 TaskManager.IndicatorCurrent = job.PercentComplete;
             }
@@ -4098,7 +4485,8 @@ namespace SolidCP.EnterpriseServer
                 jobCompleted = false;
             }
 
-            TaskManager.IndicatorCurrent = 0; // reset indicator
+            TaskManager.IndicatorCurrent = 0;   // reset indicator
+            vs.ClearOldJobs();
 
             return jobCompleted;
         }

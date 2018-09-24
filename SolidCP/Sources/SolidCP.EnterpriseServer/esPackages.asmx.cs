@@ -436,7 +436,6 @@ namespace SolidCP.EnterpriseServer
         {
             return PackageController.DeletePackageAddon(packageAddonId);
         }
-
         #endregion
 
         #region Package Items

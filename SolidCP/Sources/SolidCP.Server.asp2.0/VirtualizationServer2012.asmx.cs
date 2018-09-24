@@ -441,6 +441,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public List<VirtualSwitch> GetInternalSwitches(string computerName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetInternalSwitches", ProviderSettings.ProviderName);
+                List<VirtualSwitch> result = VirtualizationProvider.GetInternalSwitches(computerName);
+                Log.WriteEnd("'{0}' GetInternalSwitches", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetInternalSwitches", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public List<VirtualSwitch> GetSwitches()
         {
             try
@@ -844,6 +861,22 @@ namespace SolidCP.Server
             catch (Exception ex)
             {
                 Log.WriteError(String.Format("'{0}' GetAllJobs", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public void ClearOldJobs()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' ClearOldJobs", ProviderSettings.ProviderName);
+                VirtualizationProvider.ClearOldJobs();
+                Log.WriteEnd("'{0}' ClearOldJobs", ProviderSettings.ProviderName);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' ClearOldJobs", ProviderSettings.ProviderName), ex);
                 throw;
             }
         }

@@ -65,6 +65,7 @@ namespace SolidCP.Providers.Virtualization
 
         // Virtual Switches
         List<VirtualSwitch> GetExternalSwitches(string computerName);
+        List<VirtualSwitch> GetInternalSwitches(string computerName);
         List<VirtualSwitch> GetSwitches();
         bool SwitchExists(string switchId);
         VirtualSwitch CreateSwitch(string name);
@@ -98,6 +99,7 @@ namespace SolidCP.Providers.Virtualization
         // Jobs
         ConcreteJob GetJob(string jobId);
         List<ConcreteJob> GetAllJobs();
+        void ClearOldJobs();
         ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState);
 
         // Configuration

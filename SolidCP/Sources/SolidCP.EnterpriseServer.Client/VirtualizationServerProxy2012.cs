@@ -147,7 +147,11 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetInternalSwitchesOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteVirtualMachineOperationCompleted;
+
+        private System.Threading.SendOrPostCallback DeleteVirtualMachineAsynchronousOperationCompleted;
 
         private System.Threading.SendOrPostCallback ReinstallVirtualMachineOperationCompleted;
 
@@ -353,7 +357,13 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
 
         /// <remarks/>
+        public event GetInternalSwitchesCompletedEventHandler GetInternalSwitchesCompleted;
+
+        /// <remarks/>
         public event DeleteVirtualMachineCompletedEventHandler DeleteVirtualMachineCompleted;
+
+        /// <remarks/>
+        public event DeleteVirtualMachineAsynchronousCompletedEventHandler DeleteVirtualMachineAsynchronousCompleted;
 
         /// <remarks/>
         public event ReinstallVirtualMachineCompletedEventHandler ReinstallVirtualMachineCompleted;
@@ -3739,6 +3749,58 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetInternalSwitches", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        {
+            object[] results = this.Invoke("GetInternalSwitches", new object[] {
+                        serviceId,
+                        computerName});
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetInternalSwitches(int serviceId, string computerName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetInternalSwitches", new object[] {
+                        serviceId,
+                        computerName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] EndGetInternalSwitches(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetInternalSwitchesAsync(int serviceId, string computerName)
+        {
+            this.GetInternalSwitchesAsync(serviceId, computerName, null);
+        }
+
+        /// <remarks/>
+        public void GetInternalSwitchesAsync(int serviceId, string computerName, object userState)
+        {
+            if ((this.GetInternalSwitchesOperationCompleted == null))
+            {
+                this.GetInternalSwitchesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInternalSwitchesOperationCompleted);
+            }
+            this.InvokeAsync("GetInternalSwitches", new object[] {
+                        serviceId,
+                        computerName}, this.GetInternalSwitchesOperationCompleted, userState);
+        }
+
+        private void OnGetInternalSwitchesOperationCompleted(object arg)
+        {
+            if ((this.GetInternalSwitchesCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetInternalSwitchesCompleted(this, new GetInternalSwitchesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject DeleteVirtualMachine(int itemId, bool saveFiles, bool exportVps, string exportPath)
         {
@@ -3797,46 +3859,106 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachineAsynchronous", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
         {
-            object[] results = this.Invoke("ReinstallVirtualMachine", new object[] {
+            object[] results = this.Invoke("DeleteVirtualMachineAsynchronous", new object[] {
                         itemId,
-                        adminPassword,
-                        preserveVirtualDiskFiles,
-                        saveVirtualDisk,
+                        saveFiles,
                         exportVps,
                         exportPath});
-            return ((int)(results[0]));
+            return ((ResultObject)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginDeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeleteVirtualMachineAsynchronous", new object[] {
+                        itemId,
+                        saveFiles,
+                        exportVps,
+                        exportPath}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndDeleteVirtualMachineAsynchronous(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineAsynchronousAsync(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            this.DeleteVirtualMachineAsynchronousAsync(itemId, saveFiles, exportVps, exportPath, null);
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineAsynchronousAsync(int itemId, bool saveFiles, bool exportVps, string exportPath, object userState)
+        {
+            if ((this.DeleteVirtualMachineAsynchronousOperationCompleted == null))
+            {
+                this.DeleteVirtualMachineAsynchronousOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineAsynchronousOperationCompleted);
+            }
+            this.InvokeAsync("DeleteVirtualMachineAsynchronous", new object[] {
+                        itemId,
+                        saveFiles,
+                        exportVps,
+                        exportPath}, this.DeleteVirtualMachineAsynchronousOperationCompleted, userState);
+        }
+
+        private void OnDeleteVirtualMachineAsynchronousOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachineAsynchronousCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteVirtualMachineAsynchronousCompleted(this, new DeleteVirtualMachineAsynchronousCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
+        {
+            object[] results = this.Invoke("ReinstallVirtualMachine", new object[] {
+                        itemId,
+                        VMSettings,
+                        adminPassword,
+                        privIps,
+                        saveVirtualDisk,
+                        exportVps,
+                        exportPath});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("ReinstallVirtualMachine", new object[] {
                         itemId,
+                        VMSettings,
                         adminPassword,
-                        preserveVirtualDiskFiles,
+                        privIps,
                         saveVirtualDisk,
                         exportVps,
                         exportPath}, callback, asyncState);
         }
 
         /// <remarks/>
-        public int EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
+        public ResultObject EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
-            return ((int)(results[0]));
+            return ((ResultObject)(results[0]));
         }
 
         /// <remarks/>
-        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath)
+        public void ReinstallVirtualMachineAsync(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            this.ReinstallVirtualMachineAsync(itemId, adminPassword, preserveVirtualDiskFiles, saveVirtualDisk, exportVps, exportPath, null);
+            this.ReinstallVirtualMachineAsync(itemId, VMSettings, adminPassword, privIps, saveVirtualDisk, exportVps, exportPath, null);
         }
 
         /// <remarks/>
-        public void ReinstallVirtualMachineAsync(int itemId, string adminPassword, bool preserveVirtualDiskFiles, bool saveVirtualDisk, bool exportVps, string exportPath, object userState)
+        public void ReinstallVirtualMachineAsync(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath, object userState)
         {
             if ((this.ReinstallVirtualMachineOperationCompleted == null))
             {
@@ -3844,8 +3966,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
             }
             this.InvokeAsync("ReinstallVirtualMachine", new object[] {
                         itemId,
+                        VMSettings,
                         adminPassword,
-                        preserveVirtualDiskFiles,
+                        privIps,
                         saveVirtualDisk,
                         exportVps,
                         exportPath}, this.ReinstallVirtualMachineOperationCompleted, userState);
@@ -6194,6 +6317,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetInternalSwitchesCompletedEventHandler(object sender, GetInternalSwitchesCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetInternalSwitchesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetInternalSwitchesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualSwitch[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteVirtualMachineCompletedEventHandler(object sender, DeleteVirtualMachineCompletedEventArgs e);
 
     /// <remarks/>
@@ -6206,6 +6359,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         private object[] results;
 
         internal DeleteVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeleteVirtualMachineAsynchronousCompletedEventHandler(object sender, DeleteVirtualMachineAsynchronousCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeleteVirtualMachineAsynchronousCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeleteVirtualMachineAsynchronousCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
@@ -6242,12 +6425,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public int Result
+        public ResultObject Result
         {
             get
             {
                 this.RaiseExceptionIfNecessary();
-                return ((int)(this.results[0]));
+                return ((ResultObject)(this.results[0]));
             }
         }
     }

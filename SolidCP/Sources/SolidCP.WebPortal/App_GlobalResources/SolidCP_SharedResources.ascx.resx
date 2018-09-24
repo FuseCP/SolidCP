@@ -6361,4 +6361,19 @@
   <data name="Error.HDD_VM_FILE_EXIST_ERROR" xml:space="preserve">
     <value>Error the name with this file already exists: {1}</value>
   </data>
+  <data name="TaskActivity.VPS_CREATE_CONVERT_SET_VHD_BLOCKSIZE" xml:space="preserve">
+    <value>Set the template block size to: {0} Bytes</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_OS_GENERATION" xml:space="preserve">
+    <value>OS Template Generation: {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_OS_SECUREBOOT" xml:space="preserve">
+    <value>SecureBoot: {0} </value>
+  </data>
+  <data name="VPS.VPS_MAINTENANCE_MODE_IS_ENABLE" xml:space="preserve">
+    <value>Maintenance mode is enable, please contact the administrator for assistance.</value>
+  </data>
+  <data name="Warning.VPS_REINSTALL_LIMIT" xml:space="preserve">
+    <value>You can not reinstall the server so often. Please try again later.</value>
+  </data>
 </root>

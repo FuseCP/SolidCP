@@ -537,4 +537,7 @@ Example: vm-[USERNAME]-[USER_ID].domain.local</value>
   <data name="locConfigVersionText.Text" xml:space="preserve">
     <value>You can find more information here https://docs.microsoft.com/en-us/windows-server/virtualization/hyper-v/deploy/upgrade-virtual-machine-version-in-hyper-v-on-windows-or-windows-server#BKMK_SupportedConfigVersions</value>
   </data>
+  <data name="locMaintenanceModeText.Text" xml:space="preserve">
+    <value>If the maintenance mode is enabled, you disable the installation or reinstallation of the servers for clients.</value>
+  </data>
 </root>
