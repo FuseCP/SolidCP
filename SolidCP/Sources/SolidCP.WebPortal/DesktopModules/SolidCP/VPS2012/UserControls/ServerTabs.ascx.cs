@@ -92,7 +92,7 @@ namespace SolidCP.Portal.VPS2012.UserControls
         private void BindTabs()
         {
             // load item
-            VirtualMachine vm = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
+            VirtualMachine vm = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);            
 
             if (!String.IsNullOrEmpty(vm.CurrentTaskId))
             {

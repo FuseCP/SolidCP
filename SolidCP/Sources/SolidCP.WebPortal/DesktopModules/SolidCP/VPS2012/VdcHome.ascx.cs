@@ -63,14 +63,29 @@ namespace SolidCP.Portal.VPS2012
 
             // check package quotas
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
+            bool reinstallAlloew = VirtualMachines2012Helper.IsReinstallAllowed(PanelSecurity.PackageId);
 
             btnCreate.Visible = manageAllowed;
             btnImport.Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
             gvServers.Columns[6].Visible = manageAllowed; // delete column
+            gvServers.Columns[7].Visible = reinstallAlloew; // reinstall column
 
             // admin operations column
-            gvServers.Columns[7].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+            gvServers.Columns[8].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
 
+        }
+
+        private VirtualMachine _vm;
+        public bool IsServerDeleting(string itemID)
+        {
+            bool isDeleting = false;
+            _vm = _vm ?? (VirtualMachines2012Helper.GetCachedVirtualMachine(Convert.ToInt32(itemID)));
+            if(_vm != null)
+            {
+                if (_vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted)
+                    isDeleting = true;
+            }
+            return isDeleting;
         }
 
         public string GetServerEditUrl(string itemID)

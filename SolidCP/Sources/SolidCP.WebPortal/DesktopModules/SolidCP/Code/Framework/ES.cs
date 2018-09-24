@@ -37,6 +37,10 @@ using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base;
+using SolidCP.EnterpriseServer.VirtualizationServer;
+using SolidCP.EnterpriseServer.VirtualizationServer2012;
+using SolidCP.EnterpriseServer.VirtualizationServerProxmox;
+using SolidCP.EnterpriseServer.VirtualizationServerForPrivateCloud;
 
 namespace SolidCP.Portal
 {

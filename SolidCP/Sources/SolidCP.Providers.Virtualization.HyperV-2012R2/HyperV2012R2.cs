@@ -123,9 +123,15 @@ namespace SolidCP.Providers.Virtualization
         private PowerShellManager _powerShell;
         protected PowerShellManager PowerShell
         {
-            get { return _powerShell ?? (_powerShell = new PowerShellManager(ServerNameSettings)); }
+            get { return _powerShell ?? (_powerShell = new PowerShellManager(ServerNameSettings, false)); }
         }
-        
+
+        private static PowerShellManager _powerShellAsync;
+        protected PowerShellManager PowerShellWithJobs
+        {
+            get { return _powerShellAsync ?? (_powerShellAsync = new PowerShellManager(ServerNameSettings, true)); }
+        }
+
         private Wmi _wmi;
         private Wmi wmi
         {
@@ -233,7 +239,67 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("GetVirtualMachine");
             return vm;
         }
-        
+
+        public List<VirtualMachine> GetVirtualMachineByID(string vmId)
+        {
+            List<VirtualMachine> vmachines;
+            try
+            {
+                Command command = new Command("Get-VM");
+                command.Parameters.Add("Id", vmId);
+                vmachines = GetVirtualMachinesInternal(command);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachinesByID", ex);
+                throw;
+            }
+
+            return vmachines;
+        }
+
+        public List<VirtualMachine> GetVirtualMachinesByName(string vmName)
+        {
+            List<VirtualMachine> vmachines;
+            try
+            {
+                Command command = new Command("Get-VM");
+                command.Parameters.Add("Name", vmName);
+                vmachines = GetVirtualMachinesInternal(command);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachinesByName", ex);
+                throw;
+            }
+
+            return vmachines;
+        }
+
+        protected List<VirtualMachine> GetVirtualMachinesInternal(Command cmd)
+        {
+            List<VirtualMachine> vmachines = new List<VirtualMachine>();
+            try
+            {
+                Collection<PSObject> result = PowerShell.Execute(cmd, true, true);
+                foreach (PSObject current in result)
+                {
+                    var vm = new VirtualMachine();
+                    vm.VirtualMachineId = current.GetProperty("Id").ToString();
+                    vm.Name = current.GetString("Name");
+                    vm.State = current.GetEnum<VirtualMachineState>("State");
+                    vmachines.Add(vm);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return vmachines;
+        }
+
+
         public List<VirtualMachine> GetVirtualMachines()
         {
             HostedSolutionLog.LogStart("GetVirtualMachines");
@@ -389,7 +455,8 @@ namespace SolidCP.Providers.Virtualization
                 PowerShell.Execute(cmdSet, true);
 
                 // Get created machine Id
-                var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
+                //var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
+                var createdMachine = GetVirtualMachinesByName(vm.Name).FirstOrDefault(m => m.Name == vm.Name);
                 if (createdMachine == null)
                     throw new Exception("Can't find created machine");
                 vm.VirtualMachineId = createdMachine.VirtualMachineId;
@@ -1316,8 +1383,9 @@ namespace SolidCP.Providers.Virtualization
                 if (blockSizeBytes > 0)
                     cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
 
-                PowerShell.Execute(cmd, true, true);
-                return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+                //PowerShell.Execute(cmd, true, true);
+                //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+                return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
             }
             catch (Exception ex)
             {
@@ -1444,36 +1512,40 @@ namespace SolidCP.Providers.Virtualization
         #region Jobs
         public ConcreteJob GetJob(string jobId)
         {
-            throw new NotImplementedException();
+            if (!PowerShellWithJobs.IsStaticObj)
+                throw new Exception("GetJob error: You can't get jobs from non static object");
 
-            //HostedSolutionLog.LogStart("GetJob");
-            //HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
+            HostedSolutionLog.LogStart("GetJob");
+            HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
 
-            //Runspace runSpace = null;
-            //ConcreteJob job;
+            ConcreteJob job;
 
-            //try
-            //{
-            //    Command cmd = new Command("Get-Job");
+            try
+            {
+                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
+                job = JobHelper.CreateFromPSObject(result);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetJob", ex);
+                throw;
+            }
 
-            //    if (!string.IsNullOrEmpty(jobId)) cmd.Parameters.Add("Id", jobId);
-
-            //    Collection<PSObject> result = PowerShell.Execute(cmd, true);
-            //    job = JobHelper.CreateFromPSObject(result);
-            //}
-            //catch (Exception ex)
-            //{
-            //    HostedSolutionLog.LogError("GetJob", ex);
-            //    throw;
-            //}
-
-            //HostedSolutionLog.LogEnd("GetJob");
-            //return job;
+            HostedSolutionLog.LogEnd("GetJob");
+            return job;
         }
 
         public List<ConcreteJob> GetAllJobs()
         {
             throw new NotImplementedException();
+        }
+
+        public void ClearOldJobs()
+        {
+            if (!PowerShellWithJobs.IsStaticObj)
+                throw new Exception("GetJob error: You can't execute this method from non static object");
+
+            PowerShellWithJobs.ClearOldJobs();
         }
 
         public ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState)

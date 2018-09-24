@@ -103,6 +103,42 @@ namespace SolidCP.Portal.ProviderControls {
         protected global::System.Web.UI.WebControls.Label locErrorReadingNetworksList;
         
         /// <summary>
+        /// locMaintenanceMode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locMaintenanceMode;
+        
+        /// <summary>
+        /// locStatusMaintenanceMode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locStatusMaintenanceMode;
+        
+        /// <summary>
+        /// radioMaintenanceMode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList radioMaintenanceMode;
+        
+        /// <summary>
+        /// locMaintenanceModeText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locMaintenanceModeText;
+        
+        /// <summary>
         /// locGuacamole control.
         /// </summary>
         /// <remarks>
@@ -767,6 +803,24 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locExternalNetwork;
+        
+        /// <summary>
+        /// locSwitchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSwitchType;
+        
+        /// <summary>
+        /// radioSwitchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList radioSwitchType;
         
         /// <summary>
         /// locExternalNetworkName control.

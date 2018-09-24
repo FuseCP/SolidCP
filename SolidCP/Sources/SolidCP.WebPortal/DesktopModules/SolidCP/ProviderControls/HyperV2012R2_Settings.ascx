@@ -36,7 +36,28 @@
 </fieldset>
 <br />
 
-
+<fieldset>
+    <legend>
+        <asp:Localize ID="locMaintenanceMode" runat="server" meta:resourcekey="locMaintenanceMode" Text="Maintenance Mode:"></asp:Localize>
+    </legend>
+    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+	    <tr>
+			<td class="SubHead" style="width:200px;" valign="top">
+				<asp:Localize ID="locStatusMaintenanceMode" runat="server" meta:resourcekey="locStatusMaintenanceMode" Text="Maintenance mode status:"></asp:Localize>
+			</td>
+			<td>
+				<asp:RadioButtonList ID="radioMaintenanceMode" runat="server">
+					<asp:ListItem Value="disabled" meta:resourcekey="radioMaintenanceModeDisable" Selected="True">Disabled</asp:ListItem>
+					<asp:ListItem Value="enabled" meta:resourcekey="radioMaintenanceModeEnable">Enabled</asp:ListItem>
+				</asp:RadioButtonList>
+			</td>
+		</tr>
+	</table>
+	<p style="margin: 10px;">
+	    <asp:Localize ID="locMaintenanceModeText" runat="server" meta:resourcekey="locMaintenanceModeText" Text="Help text goes here..."></asp:Localize>
+	</p>
+</fieldset>
+<br />
 
 <fieldset>
     <legend>
@@ -504,6 +525,18 @@
         <asp:Localize ID="locExternalNetwork" runat="server" meta:resourcekey="locExternalNetwork" Text="External Network"></asp:Localize>
     </legend>
     <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+        <tr>
+            <td class="SubHead" style="width:200px;" valign="top">
+		        <asp:Localize ID="locSwitchType" runat="server" meta:resourcekey="locSwitchType" Text="Switch Type:"></asp:Localize>
+		    </td>
+	        <td>
+		        <asp:RadioButtonList ID="radioSwitchType" runat="server" AutoPostBack="true" 
+			        onselectedindexchanged="radioSwitchType_SelectedIndexChanged">
+			        <asp:ListItem Value="external" meta:resourcekey="radioSwitchTypeExternal" Selected="True">External</asp:ListItem>
+			        <asp:ListItem Value="internal" meta:resourcekey="radioSwitchTypeInternal">Internal (Not recommended)</asp:ListItem>
+		        </asp:RadioButtonList>
+	        </td>
+        </tr>
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locExternalNetworkName" runat="server" meta:resourcekey="locExternalNetworkName" Text="Connect to Network:"></asp:Localize>
