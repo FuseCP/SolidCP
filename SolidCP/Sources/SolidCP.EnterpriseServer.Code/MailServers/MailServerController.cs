@@ -157,7 +157,7 @@ namespace SolidCP.EnterpriseServer
 				itemId = PackageController.AddPackageItem(item);
 
                 // check if spamexperts filter per-mailbox is set
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
+                StringDictionary settings = ServerController.GetServiceSettings(serviceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     string username = item.Name.Split('@').GetValue(0).ToString();
@@ -244,7 +244,7 @@ namespace SolidCP.EnterpriseServer
 
                 // check if spamexperts filter per-mailbox is set
                 int serviceId = PackageController.GetPackageServiceId(item.PackageId, ResourceGroups.Mail);
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(serviceId);
+                StringDictionary settings = ServerController.GetServiceSettings(serviceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     SpamExpertsController.SetEmailFilterPassword(item.PackageId, item.Name, newPassword);
@@ -297,7 +297,7 @@ namespace SolidCP.EnterpriseServer
 
 
                 // check if spamexperts filter per-mailbox is set
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(origItem.ServiceId);
+                StringDictionary settings = ServerController.GetServiceSettings(origItem.ServiceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     SpamExpertsController.DeleteEmailFilter(origItem.PackageId, origItem.Name);
@@ -1113,7 +1113,7 @@ namespace SolidCP.EnterpriseServer
 				TaskManager.ItemId = itemId;
 
                 // check if spamexperts filter is needed
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(item.ServiceId);
+                StringDictionary settings = ServerController.GetServiceSettings(item.ServiceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
 
@@ -1220,7 +1220,7 @@ namespace SolidCP.EnterpriseServer
 					ServerController.UpdateDomain(domain);
 
                     // check if spamexperts filter needs removal
-                    StringDictionary settings = ServerController.GetServiceSettingsAdmin(origItem.ServiceId);
+                    StringDictionary settings = ServerController.GetServiceSettings(origItem.ServiceId);
                     if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                     {
                         SpamExpertsController.DeleteDomainFilter(domain);
@@ -1304,7 +1304,7 @@ namespace SolidCP.EnterpriseServer
 				ServerController.UpdateDomain(domain);
 
                 // check if spamexperts alias needs to be added
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(mailDomain.ServiceId);
+                StringDictionary settings = ServerController.GetServiceSettings(mailDomain.ServiceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     DomainInfo topDomain = ServerController.GetDomain(mailDomain.Name, true, false);
@@ -1358,7 +1358,7 @@ namespace SolidCP.EnterpriseServer
 				domain.MailDomainId = 0;
 				ServerController.UpdateDomain(domain);
 
-                StringDictionary settings = ServerController.GetServiceSettingsAdmin(mailDomain.ServiceId);
+                StringDictionary settings = ServerController.GetServiceSettings(mailDomain.ServiceId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     DomainInfo topDomain = ServerController.GetDomain(mailDomain.Name, true, false);
