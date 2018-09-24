@@ -2300,7 +2300,7 @@ namespace SolidCP.EnterpriseServer
                 DeleteAccount(itemId, accountId);
 
                 // check if spamexperts filter per-mailbox is set
-                StringDictionary settings = ServerController.GetServiceSettings(org.ServiceId);
+                StringDictionary settings = ServerController.GetServiceSettings(serviceExchangeId);
                 if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
                 {
                     SpamExpertsController.DeleteEmailFilter(org.PackageId, account.UserPrincipalName);
