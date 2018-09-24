@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SolidCP.Providers.HostedSolution;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace SolidCP.Providers.Virtualization
         {
             return new JobResult
             {
-                Job = new ConcreteJob {JobState = ConcreteJobState.Completed},
+                Job = new ConcreteJob { JobState = ConcreteJobState.Completed },
                 ReturnValue = returnCode
             };
         }
@@ -48,16 +49,33 @@ namespace SolidCP.Providers.Virtualization
             ConcreteJob job = new ConcreteJob();
             job.Id = objJob[0].GetProperty<int>("Id").ToString();
             job.JobState = objJob[0].GetEnum<ConcreteJobState>("JobStateInfo");
+            job.ChildJobs = GetChildJobs(objJob[0].GetProperty<List<Job>>("ChildJobs"));
             job.Caption = objJob[0].GetProperty<string>("Name");
             job.Description = objJob[0].GetProperty<string>("Command");
-            job.StartTime = objJob[0].GetProperty<DateTime>("PSBeginTime");
+            job.StartTime = objJob[0].GetProperty<DateTime?>("PSBeginTime") ?? DateTime.Now;
             job.ElapsedTime = objJob[0].GetProperty<DateTime?>("PSEndTime") ?? DateTime.Now;
 
             // PercentComplete
-            job.PercentComplete = 0;
+            job.PercentComplete = -1;
             var progress = (PSDataCollection<ProgressRecord>)objJob[0].GetProperty("Progress");
             if (progress != null && progress.Count > 0)
-                job.PercentComplete = progress[0].PercentComplete;
+            {
+                job.PercentComplete = progress[progress.Count - 1].PercentComplete;
+            }                
+            else if (job.ChildJobs != null && !String.IsNullOrEmpty(job.ChildJobs[0].Id))   //ChildJobs can be get if we wrap an command in Job, and ChildJob will be a main process.
+            {
+                job.PercentComplete = job.ChildJobs[0].PercentComplete; //Important! If we wrap a command that does not have a native "asJob", we can not get the progress bar!
+            }
+
+            if (job.PercentComplete < 0) //Ok, we will make a fake progress bar.
+            {
+                int possibleElapseMin = 5;
+                job.PercentComplete = JobFakePercentComplete(job.StartTime, possibleElapseMin);
+                if (job.PercentComplete > 90) //If this is true, maybe we didn't guess with the possibleElapseMin, so double it! (:
+                {
+                    job.PercentComplete = JobFakePercentComplete(job.StartTime, possibleElapseMin * 2) - 10; //never show 100% >:)
+                }
+            }
 
             // Errors
             var errors = (PSDataCollection<ErrorRecord>)objJob[0].GetProperty("Error");
@@ -69,6 +87,38 @@ namespace SolidCP.Providers.Virtualization
 
             return job;
         }
-        
+
+        private static int JobFakePercentComplete(DateTime jobStartTime, int fakeElapseMin) //if we can't get a progress bar, we will make a fake progress bar.
+        {            
+            DateTime endDateTime = jobStartTime.AddMinutes(fakeElapseMin);
+            double timeSpanStart = Math.Abs((endDateTime - jobStartTime).TotalSeconds);
+            double timeSpanNow = Math.Abs((jobStartTime - DateTime.Now).TotalSeconds);
+            int FakePercentComplete = 100 - (int)(Math.Abs((timeSpanNow - timeSpanStart) / timeSpanStart) * 100);
+
+            return FakePercentComplete;
+        }
+
+        private static List<ConcreteJob> GetChildJobs(List<Job> objJobs)
+        {
+            if (objJobs.Count == 0)
+                return null;
+
+            List<ConcreteJob> childJobs = new List<ConcreteJob>();
+            foreach (Job job in objJobs)
+            {
+                ConcreteJob childJob = new ConcreteJob();
+                childJob.Id = job.Id.ToString();
+                childJob.JobState = (ConcreteJobState)Enum.Parse(typeof(ConcreteJobState), job.JobStateInfo.State.ToString());
+                childJob.ChildJobs = null;
+                childJob.Caption = job.Name;
+                childJob.Description = job.Command;
+                childJob.StartTime = job.PSBeginTime ?? DateTime.Now;
+                childJob.ElapsedTime = job.PSEndTime ?? DateTime.Now;
+                childJob.PercentComplete = (job.Progress.Count > 0) ? job.Progress[job.Progress.Count - 1].PercentComplete : -1;
+                childJobs.Add(childJob);
+            }
+
+            return childJobs;
+        }
     }
 }

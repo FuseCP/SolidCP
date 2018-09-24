@@ -148,6 +148,11 @@ namespace SolidCP.EnterpriseServer
             StartTask(taskId, source, taskName, itemName, itemId, 0, packageId, -1, new List<BackgroundTaskParameter>());
         }
 
+        public static void StartTask(string taskId, string source, string taskName, object itemName, int itemId, int packageId, int maximumExecutionSeconds)
+        {
+            StartTask(taskId, source, taskName, itemName, itemId, 0, packageId, maximumExecutionSeconds, new List<BackgroundTaskParameter>());
+        }
+
         public static void StartTask(string source, string taskName, object itemName, int itemId,
             int scheduleId, int packageId, int maximumExecutionTime, List<BackgroundTaskParameter> parameters)
         {

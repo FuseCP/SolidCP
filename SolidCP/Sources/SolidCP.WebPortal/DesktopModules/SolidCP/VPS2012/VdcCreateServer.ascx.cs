@@ -64,12 +64,9 @@ namespace SolidCP.Portal.VPS2012
             ToggleControls();
 
         }
-        private readonly string sessionisUnassignedPackageIPs = "isUnassignedPackageIPs"
-                                    + new Random((int)DateTime.Now.Ticks & 0x0000FFFF).Next(0, int.MaxValue);
-
+        
         private void ToggleWizardSteps()
         {
-            Session.Timeout = 10;
             // external network
             if (!PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED))
             {
@@ -223,7 +220,6 @@ namespace SolidCP.Portal.VPS2012
                 }
 
                 // bind external network ips 4 selected vlan
-                Session[sessionisUnassignedPackageIPs] = isUnassignedPackageIPs;
                 if (isUnassignedPackageIPs)
                     BindExternalUnallottedIps();
                 else
@@ -558,7 +554,6 @@ namespace SolidCP.Portal.VPS2012
                 //    externalenabled, Utils.ParseInt(txtExternalAddressesNumber.Text.Trim()), radioExternalRandom.Checked, extIps.ToArray(),
                 //    chkPrivateNetworkEnabled.Checked, Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim()), radioPrivateRandom.Checked, privIps,
                 //    virtualMachine);
-                //Session.Abandon();
                 if (res.IsSuccess)
                 {
                     Response.Redirect(EditUrl("ItemID", res.Value.ToString(), "vps_general",
@@ -598,10 +593,11 @@ namespace SolidCP.Portal.VPS2012
 
         protected void VlanLists_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if ((bool)Session[sessionisUnassignedPackageIPs])
-                BindExternalUnallottedIps();
+            PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
+            if (ips.Length > 0)
+                BindExternalIps();            
             else
-                BindExternalIps();
+                BindExternalUnallottedIps();
         }
 
 

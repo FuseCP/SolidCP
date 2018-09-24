@@ -62,6 +62,28 @@ namespace SolidCP.Portal
             }
             return manageAllowed;
         }
+        public static bool IsReinstallAllowed(int packageId)
+        {
+            bool reinstallAllowed = false;
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(packageId);
+            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_REINSTALL_ALLOWED))
+                reinstallAllowed = !cntx.Quotas[Quotas.VPS2012_REINSTALL_ALLOWED].QuotaExhausted;
+
+            if (PanelSecurity.EffectiveUser.Role == UserRole.Administrator)
+                reinstallAllowed = true;
+            else if (PanelSecurity.EffectiveUser.Role == UserRole.Reseller)
+            {
+                // check if the reseller is allowed to manage on its parent level
+                PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
+                if (package.UserId != PanelSecurity.EffectiveUserId)
+                {
+                    cntx = PackagesHelper.GetCachedPackageContext(package.ParentPackageId);
+                    if (cntx != null && cntx.Quotas.ContainsKey(Quotas.VPS2012_REINSTALL_ALLOWED))
+                        reinstallAllowed = !cntx.Quotas[Quotas.VPS2012_REINSTALL_ALLOWED].QuotaExhausted;
+                }
+            }
+            return reinstallAllowed;
+        }
 
         // TODO: Move this method to the corresponding extension later.
         public static VirtualMachine GetCachedVirtualMachine(int itemId)

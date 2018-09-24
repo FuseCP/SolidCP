@@ -35,6 +35,7 @@
     public class VirtualizationErrorCodes
     {
         // common
+        public const string MAINTENANCE_MODE_IS_ENABLE = "VPS_MAINTENANCE_MODE_IS_ENABLE";
         public const string JOB_START_ERROR = "VPS_JOB_START_ERROR";
         public const string JOB_FAILED_ERROR = "VPS_JOB_FAILED_ERROR";
 

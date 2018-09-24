@@ -63,6 +63,11 @@ namespace SolidCP.Portal.ProviderControls
             // bind networks
             BindNetworksList();
 
+            // Maintenance Mode
+            radioMaintenanceMode.SelectedValue = settings["MaintenanceMode"];
+            radioMaintenanceMode.SelectedIndex = string.IsNullOrEmpty(radioMaintenanceMode.SelectedValue) 
+                ? 0 : radioMaintenanceMode.SelectedIndex;
+
             // Guacamole
             txtGuacamoleConnectScript.Text = settings["GuacamoleConnectScript"];
             txtGuacamoleConnectPassword.Text = settings["GuacamoleConnectPassword"];
@@ -95,6 +100,11 @@ namespace SolidCP.Portal.ProviderControls
 
             // VHD type
             radioVirtualDiskType.SelectedValue = settings["VirtualDiskType"];
+
+            // Switch Type
+            radioSwitchType.SelectedValue = settings["SwitchType"];
+            radioSwitchType.SelectedIndex = string.IsNullOrEmpty(radioSwitchType.SelectedValue) 
+                ? 0 : radioSwitchType.SelectedIndex;
 
             // External network
             ddlExternalNetworks.SelectedValue = settings["ExternalNetworkId"];
@@ -151,6 +161,9 @@ namespace SolidCP.Portal.ProviderControls
         {
             settings["ServerName"] = txtServerName.Text.Trim();
 
+            // MaintenanceMode
+            settings["MaintenanceMode"] = radioMaintenanceMode.SelectedValue;
+
             // Guacamole
             settings["GuacamoleConnectScript"] = txtGuacamoleConnectScript.Text.Trim();
             settings["GuacamoleConnectPassword"] = txtGuacamoleConnectPassword.Text.Trim();
@@ -180,6 +193,9 @@ namespace SolidCP.Portal.ProviderControls
 
             // VHD type
             settings["VirtualDiskType"] = radioVirtualDiskType.SelectedValue;
+
+            // Switch Type
+            settings["SwitchType"] = radioSwitchType.SelectedValue;
 
             // External network
             settings["ExternalNetworkId"] = ddlExternalNetworks.SelectedValue;
@@ -224,7 +240,12 @@ namespace SolidCP.Portal.ProviderControls
         {
             try
             {
-                VirtualSwitch[] switches = ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim());
+                List<VirtualSwitch> switches;
+
+                if (radioSwitchType.SelectedValue == "internal")
+                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetInternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+                else
+                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
 
                 ddlExternalNetworks.DataSource = switches;
                 ddlExternalNetworks.DataBind();
@@ -341,6 +362,11 @@ namespace SolidCP.Portal.ProviderControls
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
+        }
+
+        protected void radioSwitchType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindNetworksList();
         }
 
         protected void btnConnect_Click(object sender, EventArgs e)

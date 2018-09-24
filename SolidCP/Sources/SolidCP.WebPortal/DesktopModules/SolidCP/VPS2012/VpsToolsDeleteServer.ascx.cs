@@ -99,8 +99,8 @@ namespace SolidCP.Portal.VPS2012
             // delete machine
             try
             {
-                ResultObject res = ES.Services.VPS2012.DeleteVirtualMachine(PanelRequest.ItemID,
-                    chkSaveFiles.Checked, chkExport.Checked, txtExportPath.Text.Trim());
+                //ResultObject res = ES.Services.VPS2012.DeleteVirtualMachine(PanelRequest.ItemID, chkSaveFiles.Checked, chkExport.Checked, txtExportPath.Text.Trim());
+                ResultObject res = ES.Services.VPS2012.DeleteVirtualMachineAsynchronous(PanelRequest.ItemID, chkSaveFiles.Checked, chkExport.Checked, txtExportPath.Text.Trim());
 
                 if (res.IsSuccess)
                 {

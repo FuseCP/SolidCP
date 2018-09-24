@@ -485,6 +485,12 @@ namespace SolidCP.EnterpriseServer
         {
             return VirtualizationServerController2012.GetExternalSwitches(serviceId, computerName);
         }
+
+        [WebMethod]
+        public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
+        {
+            return VirtualizationServerController2012.GetInternalSwitches(serviceId, computerName);
+        }
         #endregion
 
         #region Tools
@@ -495,11 +501,17 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public int ReinstallVirtualMachine(int itemId, string adminPassword, bool preserveVirtualDiskFiles,
+        public ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachineAsynchronous(itemId, saveFiles, exportVps, exportPath);
+        }
+
+        [WebMethod]
+        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, adminPassword, preserveVirtualDiskFiles,
-                saveVirtualDisk, exportVps, exportPath);
+            return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, VMSettings, adminPassword, privIps,
+            saveVirtualDisk, exportVps, exportPath);
         }
         #endregion
 

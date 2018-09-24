@@ -40,8 +40,8 @@
 						        <ItemStyle></ItemStyle>
 						        <ItemTemplate>
 						            <asp:Image runat="server" SkinID="Vps2012_16" />
-							        <asp:hyperlink id="lnk1" runat="server"
-								        NavigateUrl='<%# GetServerEditUrl(Eval("ItemID").ToString()) %>'>
+							        <asp:hyperlink id="lnk1" runat="server" style='<%# IsServerDeleting(Eval("ItemID").ToString()) ? "text-decoration: line-through !important;" : "" %>'
+								        NavigateUrl='<%# IsServerDeleting(Eval("ItemID").ToString()) ? "" : GetServerEditUrl(Eval("ItemID").ToString()) %>'>
 								        <%# Eval("ItemName") %>
 							        </asp:hyperlink>
 						        </ItemTemplate>
@@ -71,14 +71,17 @@
 					        </asp:TemplateField>
 						    <asp:TemplateField>
 							    <ItemTemplate>
-								    <CPCC:StyleButton id="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Eval("ItemID") %>'> &nbsp;<i class="fa fa-trash-o"></i>&nbsp; </CPCC:StyleButton>
-                                    &nbsp;
-                                    <CPCC:StyleButton id="cmdReinstall" CssClass="btn btn-success" runat="server" CommandName="ReinstallItem" CommandArgument='<%# Eval("ItemID") %>'> &nbsp;<i class="fa fa-refresh"></i>&nbsp; </CPCC:StyleButton>
-							    </ItemTemplate>
+								    <CPCC:StyleButton id="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Eval("ItemID") %>' Enabled='<%# !IsServerDeleting(Eval("ItemID").ToString())%>'> &nbsp;<i class="fa fa-trash-o"></i>&nbsp; </CPCC:StyleButton>
+                                    </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField>
+                                <ItemTemplate>
+                                    <CPCC:StyleButton id="cmdReinstall" CssClass="btn btn-success" runat="server" CommandName="ReinstallItem" CommandArgument='<%# Eval("ItemID") %>' Enabled='<%# !IsServerDeleting(Eval("ItemID").ToString())%>'> &nbsp;<i class="fa fa-refresh"></i>&nbsp; </CPCC:StyleButton>							    
+                                </ItemTemplate>
 						    </asp:TemplateField>
                             <asp:TemplateField>
 			                    <ItemTemplate>
-				                    <CPCC:StyleButton id="cmdMove" CssClass="btn btn-warning" runat="server" CommandName="Move" CommandArgument='<%# Eval("ItemID") %>'> <i class="fa fa-clone">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="cmdMoveText"/> </CPCC:StyleButton>
+				                    <CPCC:StyleButton id="cmdMove" CssClass="btn btn-warning" runat="server" CommandName="Move" CommandArgument='<%# Eval("ItemID") %>' Enabled='<%# !IsServerDeleting(Eval("ItemID").ToString())%>'> <i class="fa fa-clone">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="cmdMoveText"/> </CPCC:StyleButton>
 					                &nbsp;
 				                    <CPCC:StyleButton ID="cmdDetach" runat="server" 
  					                    CommandName="Detach" CommandArgument='<%# Eval("ItemID") %>'
