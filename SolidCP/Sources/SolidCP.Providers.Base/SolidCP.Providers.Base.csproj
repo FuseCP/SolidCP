@@ -103,6 +103,10 @@
     <Compile Include="EnterpriseStorage\EsFolder.cs" />
     <Compile Include="EnterpriseStorage\IEnterpriseStorage.cs" />
     <Compile Include="HeliconZoo\IHeliconZooServer.cs" />
+    <Compile Include="HostedSolution\ACL\AclTestIssues.cs" />
+    <Compile Include="HostedSolution\ACL\AclTestResult.cs" />
+    <Compile Include="HostedSolution\ACL\AdIdentities.cs" />
+    <Compile Include="HostedSolution\ACL\AdProperties.cs" />
     <Compile Include="HostedSolution\BaseReport.cs" />
     <Compile Include="HostedSolution\BaseStatistics.cs" />
     <Compile Include="HostedSolution\BlackBerryErrorsCodes.cs" />

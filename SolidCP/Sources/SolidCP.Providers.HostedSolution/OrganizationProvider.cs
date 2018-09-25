@@ -52,6 +52,7 @@ using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.OS;
 using System.Reflection;
 using System.Threading;
+using SolidCP.Providers.HostedSolution.ACL;
 
 namespace SolidCP.Providers.HostedSolution
 {
@@ -74,7 +75,7 @@ namespace SolidCP.Providers.HostedSolution
             get { return ProviderSettings["RootOU"]; }
         }
 
-        private string RootDomain
+        internal string RootDomain
         {
             get { return ServerSettings.ADRootDomain; }
         }
@@ -108,7 +109,7 @@ namespace SolidCP.Providers.HostedSolution
             return sb.ToString();
         }
 
-        private string GetOrganizationPath(string organizationId)
+        internal string GetOrganizationPath(string organizationId)
         {
             StringBuilder sb = new StringBuilder();
             // append provider
@@ -177,6 +178,17 @@ namespace SolidCP.Providers.HostedSolution
             return sb.ToString();
         }
 
+        private string GetDomainOU()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            AppendProtocol(sb);
+            AppendDomainController(sb);
+            AppendDomainPath(sb, RootDomain);
+
+            return sb.ToString();
+        }
+
         private string GetRootOU()
         {
             StringBuilder sb = new StringBuilder();
@@ -184,6 +196,46 @@ namespace SolidCP.Providers.HostedSolution
             AppendProtocol(sb);
             AppendDomainController(sb);
             AppendOUPath(sb, RootOU);
+            AppendDomainPath(sb, RootDomain);
+
+            return sb.ToString();
+        }
+
+        private string GetConfigurationOU()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            AppendProtocol(sb);
+            AppendDomainController(sb);
+            AppendCNPath(sb, "Configuration");
+            AppendDomainPath(sb, RootDomain);
+
+            return sb.ToString();
+        }
+
+        private string GetSchemaOU()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            AppendProtocol(sb);
+            AppendDomainController(sb);
+            AppendCNPath(sb, "Schema");
+            AppendCNPath(sb, "Configuration");
+            AppendDomainPath(sb, RootDomain);
+
+            return sb.ToString();
+        }
+
+        private string GetDirectoryServiceOU()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            AppendProtocol(sb);
+            AppendDomainController(sb);
+            AppendCNPath(sb, "Directory Service");
+            AppendCNPath(sb, "Windows NT");
+            AppendCNPath(sb, "Services");
+            AppendCNPath(sb, "Configuration");
             AppendDomainPath(sb, RootDomain);
 
             return sb.ToString();
@@ -762,7 +814,7 @@ namespace SolidCP.Providers.HostedSolution
 
                 var result = ExecuteShellCommand(runspace, cmd);
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -2375,62 +2427,104 @@ namespace SolidCP.Providers.HostedSolution
 
         #endregion
 
-        #region OU Security
+        #region ACL Security
 
-        public int SetOUSecurity(string domain, string organizationId)
+        public AclTestResult[] GetAdAclIssues()
         {
-            return SetOUSecurityInternal(domain, organizationId);
-        }
-
-        internal int SetOUSecurityInternal(string domain, string organizationId)
-        {
-            HostedSolutionLog.LogStart("SetOUSecurityInternal");
-            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
-            HostedSolutionLog.DebugInfo("domain : {0}", domain);
-            HostedSolutionLog.DebugInfo("RootDomain : {0}", RootDomain);
-
-            if (string.IsNullOrEmpty(organizationId))
-                throw new ArgumentNullException("organizationId");
-
-            string groupPath = null;
+            HostedSolutionLog.LogStart("GetAdAclIssues");
 
             try
             {
-                string Path = GetOrganizationPath(organizationId);
-                HostedSolutionLog.DebugInfo("Path: {0}", Path);
-                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListObject, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
-                ActiveDirectoryUtils.RemoveOUSecurityfromSid(Path, WellKnownSidType.AuthenticatedUserSid, ActiveDirectoryRights.ListChildren, AccessControlType.Allow, ActiveDirectorySecurityInheritance.None);
-                HostedSolutionLog.DebugInfo("AddOUSecurityfromUser Path: {0}  RootDomain: {1}  OrgID: {2}", Path, RootDomain, organizationId);
-                var groupAccount = ActiveDirectoryUtils.GetObjectTargetAccountName(organizationId, RootDomain);
-                for (int i = 0; i <= 25; i++)
-                {
-                    if (ActiveDirectoryUtils.AccountExists(groupAccount))
-                    {
-                        HostedSolutionLog.DebugInfo($"ACL delay was {i * 2} seconds");
-                        ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, organizationId, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
-                        break;
-                    }
-
-                    if (i == 25)
-                        throw new Exception($"Can not find {groupAccount} group to set ACL permissions.");
-
-                    Thread.Sleep(2000);
-                }
-
-                // Add privileged servers group
-                var privilegedGroup = ActiveDirectoryUtils.GetObjectTargetAccountName("Privileged Servers", RootDomain);
-                if (!ActiveDirectoryUtils.AccountExists(privilegedGroup))
-                    ActiveDirectoryUtils.CreateGroup(RootDomain, "Privileged Servers");
-                ActiveDirectoryUtils.AddOUSecurityfromUser(Path, RootDomain, privilegedGroup, ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
+                return GetAdAclCheckers().Select(c => c.GetAclIssues()).ToArray();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                HostedSolutionLog.LogError(e);
+                HostedSolutionLog.LogError(ex);
+                throw;
             }
+            finally
+            {
+                HostedSolutionLog.LogEnd("GetAdAclIssues");
+            }
+        }
 
-            HostedSolutionLog.LogEnd("SetOUSecurityInternal");
+        public void FixAdAclIssue(string ouPath)
+        {
+            HostedSolutionLog.LogStart("FixAdAclIssue");
 
-            return Errors.OK;
+            try
+            {
+                GetAdAclCheckers().FirstOrDefault(c => c.OuPath == ouPath)?.FixAclIssues();
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError(ex);
+                throw;
+            }
+            finally
+            {
+                HostedSolutionLog.LogEnd("FixAdAclIssue");
+            }
+        }
+
+        private List<IAclChecker> GetAdAclCheckers()
+        {
+            var aclCheckers = new List<IAclChecker>
+            {
+                new DirectoryServiceAclChecker(GetDirectoryServiceOU()),
+                new RootDomainAclChecker(RootDomain, GetDomainOU(), RootDomain),
+                new AdAclExchangeChecker("Configuration", GetConfigurationOU(), RootDomain, GetDomainOU()),
+                new AdAclExchangeChecker("Schema", GetSchemaOU(), RootDomain, GetDomainOU()),
+            };
+
+            var orgRootChildrenCheckers = new DirectoryEntry(GetDomainOU())
+                .Children
+                .Cast<DirectoryEntry>()
+                .Where(e => !e.Path.Contains("CN=LostAndFound,")) // access is closed to it
+                .Select(e => (IAclChecker)new AdAclChecker(e.Name, e.Path, RootDomain, GetDomainOU(), GetRootOU()));
+            aclCheckers.AddRange(orgRootChildrenCheckers);
+
+            return aclCheckers;
+        }
+
+        public AclTestResult GetAclIssues(string organizationId)
+        {
+            HostedSolutionLog.LogStart("GetAclIssues");
+            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
+
+            try
+            {
+                return new OrgAclChecker(this, organizationId, RootDomain, GetDomainOU()).GetAclIssues();
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError(ex);
+                throw;
+            }
+            finally
+            {
+                HostedSolutionLog.LogEnd("GetAclIssues");
+            }
+        }
+
+        public void FixAclIssues(string organizationId)
+        {
+            HostedSolutionLog.LogStart("FixAclIssues");
+            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
+
+            try
+            {
+                new OrgAclChecker(this, organizationId, RootDomain, GetDomainOU()).FixAclIssues();
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError(ex);
+                throw;
+            }
+            finally
+            {
+                HostedSolutionLog.LogEnd("FixAclIssues");
+            }
         }
 
         #endregion

@@ -37,6 +37,7 @@ using System.Web.Services;
 using System.Web.Services.Protocols;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
+using SolidCP.Providers.HostedSolution.ACL;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Server.Utils;
@@ -284,11 +285,28 @@ namespace SolidCP.Server
             return Organization.GetOrganizationUserWithExtraData(loginName, organizationId);
         }
 
+        [WebMethod, SoapHeader("settings")]
+        public AclTestResult[] GetAdAclIssues()
+        {
+            return Organization.GetAdAclIssues();
+        }
 
         [WebMethod, SoapHeader("settings")]
-        public int SetOUSecurity(string domain, string organizationId)
+        public void FixAdAclIssue(string ouPath)
         {
-            return Organization.SetOUSecurity(domain, organizationId);
+            Organization.FixAdAclIssue(ouPath);
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public AclTestResult GetAclIssues(string organizationId)
+        {
+            return Organization.GetAclIssues(organizationId);
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public void FixAclIssues(string organizationId)
+        {
+            Organization.FixAclIssues(organizationId);
         }
     }
 }

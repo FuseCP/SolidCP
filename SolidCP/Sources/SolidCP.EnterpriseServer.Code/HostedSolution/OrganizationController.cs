@@ -453,7 +453,16 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // Change to OU security for dSHeuristics
-                orgProxy.SetOUSecurity(org.DistinguishedName, organizationId);
+                try
+                {
+                    TaskManager.Write("Fix Acl Security of OU");
+                    orgProxy.FixAclIssues(org.OrganizationId);
+                }
+                catch (Exception ex)
+                {
+                    TaskManager.WriteError(ex, "Fix Acl Security of created org ou");
+                    throw;
+                }
 
                 // register organization domain service item
                 OrganizationDomain orgDomain = new OrganizationDomain

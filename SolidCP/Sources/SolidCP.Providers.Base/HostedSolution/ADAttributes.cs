@@ -67,6 +67,11 @@ namespace SolidCP.Providers.HostedSolution
         public const string DistinguishedName = "distinguishedName";
         public const string SID = "objectSid";
         public const string PwdLastSet = "pwdLastSet";
+        public const string PasswordExpirationDateTime = "msDS-UserPasswordExpiryTimeComputed";
+        public const string PasswordNeverExpires = "PasswordNeverExpires";
         public const string UserAccountControl = "UserAccountControl";
+        public const string Description = "description";
+        public const string dSHeuristics = "dSHeuristics";
+        public const string ProxyAddresses = "ProxyAddresses";
     }
 }
