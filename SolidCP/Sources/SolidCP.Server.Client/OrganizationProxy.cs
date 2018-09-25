@@ -23,8 +23,6 @@ namespace SolidCP.Providers.HostedSolution {
     using System.Web.Services.Protocols;
     using System;
     using System.Diagnostics;
-    using SolidCP.Providers.HostedSolution.ACL;
-
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
@@ -101,13 +99,7 @@ namespace SolidCP.Providers.HostedSolution {
         
         private System.Threading.SendOrPostCallback GetOrganizationUserWithExtraDataOperationCompleted;
 
-        private System.Threading.SendOrPostCallback GetAdAclIssuesOperationCompleted;
-
-        private System.Threading.SendOrPostCallback FixAdAclIssueOperationCompleted;
-
-        private System.Threading.SendOrPostCallback GetAclIssuesOperationCompleted;
-
-        private System.Threading.SendOrPostCallback FixAclIssuesOperationCompleted;
+        private System.Threading.SendOrPostCallback SetOUAclPermissionsOperationCompleted;
 
         /// <remarks/>
         public Organizations() {
@@ -211,16 +203,7 @@ namespace SolidCP.Providers.HostedSolution {
         public event GetOrganizationUserWithExtraDataCompletedEventHandler GetOrganizationUserWithExtraDataCompleted;
 
         /// <remarks/>
-        public event GetAdAclIssuesCompletedEventHandler GetAdAclIssuesCompleted;
-
-        /// <remarks/>
-        public event FixAdAclIssueCompletedEventHandler FixAdAclIssueCompleted;
-
-        /// <remarks/>
-        public event GetAclIssuesCompletedEventHandler GetAclIssuesCompleted;
-
-        /// <remarks/>
-        public event FixAclIssuesCompletedEventHandler FixAclIssuesCompleted;
+        public event SetOUAclPermissionsCompletedEventHandler SetOUAclPermissionsCompleted;
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
@@ -1847,194 +1830,49 @@ namespace SolidCP.Providers.HostedSolution {
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetAdAclIssues", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public AclTestResult[] GetAdAclIssues()
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetOUAclPermissions", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SetOUAclPermissions(string organizationId)
         {
-            object[] results = this.Invoke("GetAdAclIssues", new object[0]);
-            return ((AclTestResult[])(results[0]));
-        }
-
-        /// <remarks/>
-        public System.IAsyncResult BeginGetAdAclIssues(System.AsyncCallback callback, object asyncState)
-        {
-            return this.BeginInvoke("GetAdAclIssues", new object[0], callback, asyncState);
-        }
-
-        /// <remarks/>
-        public AclTestResult[] EndGetAdAclIssues(System.IAsyncResult asyncResult)
-        {
-            object[] results = this.EndInvoke(asyncResult);
-            return ((AclTestResult[])(results[0]));
-        }
-
-        /// <remarks/>
-        public void GetAdAclIssuesAsync()
-        {
-            this.GetAdAclIssuesAsync(null);
-        }
-
-        /// <remarks/>
-        public void GetAdAclIssuesAsync(object userState)
-        {
-            if ((this.GetAdAclIssuesOperationCompleted == null))
-            {
-                this.GetAdAclIssuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAdAclIssuesOperationCompleted);
-            }
-            this.InvokeAsync("GetAdAclIssues", new object[0], this.GetAdAclIssuesOperationCompleted, userState);
-        }
-
-        private void OnGetAdAclIssuesOperationCompleted(object arg)
-        {
-            if ((this.GetAdAclIssuesCompleted != null))
-            {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetAdAclIssuesCompleted(this, new GetAdAclIssuesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/FixAdAclIssue", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void FixAdAclIssue(string ouPath)
-        {
-            this.Invoke("FixAdAclIssue", new object[] {
-                        ouPath});
-        }
-
-        /// <remarks/>
-        public System.IAsyncResult BeginFixAdAclIssue(string ouPath, System.AsyncCallback callback, object asyncState)
-        {
-            return this.BeginInvoke("FixAdAclIssue", new object[] {
-                        ouPath}, callback, asyncState);
-        }
-
-        /// <remarks/>
-        public void EndFixAdAclIssue(System.IAsyncResult asyncResult)
-        {
-            this.EndInvoke(asyncResult);
-        }
-
-        /// <remarks/>
-        public void FixAdAclIssueAsync(string ouPath)
-        {
-            this.FixAdAclIssueAsync(ouPath, null);
-        }
-
-        /// <remarks/>
-        public void FixAdAclIssueAsync(string ouPath, object userState)
-        {
-            if ((this.FixAdAclIssueOperationCompleted == null))
-            {
-                this.FixAdAclIssueOperationCompleted = new System.Threading.SendOrPostCallback(this.OnFixAdAclIssueOperationCompleted);
-            }
-            this.InvokeAsync("FixAdAclIssue", new object[] {
-                        ouPath}, this.FixAdAclIssueOperationCompleted, userState);
-        }
-
-        private void OnFixAdAclIssueOperationCompleted(object arg)
-        {
-            if ((this.FixAdAclIssueCompleted != null))
-            {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.FixAdAclIssueCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetAclIssues", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public AclTestResult GetAclIssues(string organizationId)
-        {
-            object[] results = this.Invoke("GetAclIssues", new object[] {
-                        organizationId});
-            return ((AclTestResult)(results[0]));
-        }
-
-        /// <remarks/>
-        public System.IAsyncResult BeginGetAclIssues(string organizationId, System.AsyncCallback callback, object asyncState)
-        {
-            return this.BeginInvoke("GetAclIssues", new object[] {
-                        organizationId }, callback, asyncState);
-        }
-
-        /// <remarks/>
-        public AclTestResult EndGetAclIssues(System.IAsyncResult asyncResult)
-        {
-            object[] results = this.EndInvoke(asyncResult);
-            return ((AclTestResult)(results[0]));
-        }
-
-        /// <remarks/>
-        public void GetAclIssuesAsync(string organizationId)
-        {
-            this.GetAclIssuesAsync(organizationId, null);
-        }
-
-        /// <remarks/>
-        public void GetAclIssuesAsync(string organizationId, object userState)
-        {
-            if ((this.GetAclIssuesOperationCompleted == null))
-            {
-                this.GetAclIssuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAclIssuesOperationCompleted);
-            }
-            this.InvokeAsync("GetAclIssues", new object[] {
-                        organizationId }, this.GetAclIssuesOperationCompleted, userState);
-        }
-
-        private void OnGetAclIssuesOperationCompleted(object arg)
-        {
-            if ((this.GetAclIssuesCompleted != null))
-            {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetAclIssuesCompleted(this, new GetAclIssuesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/FixAclIssues", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void FixAclIssues(string organizationId)
-        {
-            this.Invoke("FixAclIssues", new object[] {
+            this.Invoke("SetOUAclPermissions", new object[] {
                         organizationId });
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginFixAclIssues(string organizationId, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginSetOUAclPermissions(string organizationId, System.AsyncCallback callback, object asyncState)
         {
-            return this.BeginInvoke("FixAclIssues", new object[] {
+            return this.BeginInvoke("SetOUAclPermissions", new object[] {
                         organizationId }, callback, asyncState);
         }
 
         /// <remarks/>
-        public void EndFixAclIssues(System.IAsyncResult asyncResult)
+        public void EndSetOUAclPermissions(System.IAsyncResult asyncResult)
         {
             this.EndInvoke(asyncResult);
         }
 
         /// <remarks/>
-        public void FixAclIssuesAsync(string organizationId)
+        public void SetOUAclPermissionsAsync(string organizationId)
         {
-            this.FixAclIssuesAsync(organizationId, null);
+            this.SetOUAclPermissionsAsync(organizationId, null);
         }
 
         /// <remarks/>
-        public void FixAclIssuesAsync(string organizationId, object userState)
+        public void SetOUAclPermissionsAsync(string organizationId, object userState)
         {
-            if ((this.FixAclIssuesOperationCompleted == null))
+            if ((this.SetOUAclPermissionsOperationCompleted == null))
             {
-                this.FixAclIssuesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnFixAclIssuesOperationCompleted);
+                this.SetOUAclPermissionsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetOUAclPermissionsOperationCompleted);
             }
-            this.InvokeAsync("FixAclIssues", new object[] {
-                        organizationId }, this.FixAclIssuesOperationCompleted, userState);
+            this.InvokeAsync("SetOUAclPermissions", new object[] {
+                        organizationId }, this.SetOUAclPermissionsOperationCompleted, userState);
         }
 
-        private void OnFixAclIssuesOperationCompleted(object arg)
+        private void OnSetOUAclPermissionsOperationCompleted(object arg)
         {
-            if ((this.FixAclIssuesCompleted != null))
+            if ((this.SetOUAclPermissionsCompleted != null))
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.FixAclIssuesCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.SetOUAclPermissionsCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -2483,69 +2321,5 @@ namespace SolidCP.Providers.HostedSolution {
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void GetAdAclIssuesCompletedEventHandler(object sender, GetAdAclIssuesCompletedEventArgs e);
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetAdAclIssuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
-    {
-
-        private object[] results;
-
-        internal GetAdAclIssuesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
-                base(exception, cancelled, userState)
-        {
-            this.results = results;
-        }
-
-        /// <remarks/>
-        public AclTestResult[] Result
-        {
-            get
-            {
-                this.RaiseExceptionIfNecessary();
-                return ((AclTestResult[])(this.results[0]));
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void FixAdAclIssueCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void GetAclIssuesCompletedEventHandler(object sender, GetAclIssuesCompletedEventArgs e);
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetAclIssuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
-    {
-
-        private object[] results;
-
-        internal GetAclIssuesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
-                base(exception, cancelled, userState)
-        {
-            this.results = results;
-        }
-
-        /// <remarks/>
-        public AclTestResult Result
-        {
-            get
-            {
-                this.RaiseExceptionIfNecessary();
-                return ((AclTestResult)(this.results[0]));
-            }
-        }
-    }
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-    public delegate void FixAclIssuesCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+    public delegate void SetOUAclPermissionsCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }

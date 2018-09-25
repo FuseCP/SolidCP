@@ -52,7 +52,6 @@ using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.OS;
 using System.Reflection;
 using System.Threading;
-using SolidCP.Providers.HostedSolution.ACL;
 
 namespace SolidCP.Providers.HostedSolution
 {
@@ -2429,72 +2428,14 @@ namespace SolidCP.Providers.HostedSolution
 
         #region ACL Security
 
-        public AclTestResult[] GetAdAclIssues()
+        public void SetOUAclPermissions(string organizationId)
         {
-            HostedSolutionLog.LogStart("GetAdAclIssues");
-
-            try
-            {
-                return GetAdAclCheckers().Select(c => c.GetAclIssues()).ToArray();
-            }
-            catch (Exception ex)
-            {
-                HostedSolutionLog.LogError(ex);
-                throw;
-            }
-            finally
-            {
-                HostedSolutionLog.LogEnd("GetAdAclIssues");
-            }
-        }
-
-        public void FixAdAclIssue(string ouPath)
-        {
-            HostedSolutionLog.LogStart("FixAdAclIssue");
-
-            try
-            {
-                GetAdAclCheckers().FirstOrDefault(c => c.OuPath == ouPath)?.FixAclIssues();
-            }
-            catch (Exception ex)
-            {
-                HostedSolutionLog.LogError(ex);
-                throw;
-            }
-            finally
-            {
-                HostedSolutionLog.LogEnd("FixAdAclIssue");
-            }
-        }
-
-        private List<IAclChecker> GetAdAclCheckers()
-        {
-            var aclCheckers = new List<IAclChecker>
-            {
-                new DirectoryServiceAclChecker(GetDirectoryServiceOU()),
-                new RootDomainAclChecker(RootDomain, GetDomainOU(), RootDomain),
-                new AdAclExchangeChecker("Configuration", GetConfigurationOU(), RootDomain, GetDomainOU()),
-                new AdAclExchangeChecker("Schema", GetSchemaOU(), RootDomain, GetDomainOU()),
-            };
-
-            var orgRootChildrenCheckers = new DirectoryEntry(GetDomainOU())
-                .Children
-                .Cast<DirectoryEntry>()
-                .Where(e => !e.Path.Contains("CN=LostAndFound,")) // access is closed to it
-                .Select(e => (IAclChecker)new AdAclChecker(e.Name, e.Path, RootDomain, GetDomainOU(), GetRootOU()));
-            aclCheckers.AddRange(orgRootChildrenCheckers);
-
-            return aclCheckers;
-        }
-
-        public AclTestResult GetAclIssues(string organizationId)
-        {
-            HostedSolutionLog.LogStart("GetAclIssues");
+            HostedSolutionLog.LogStart("SetOUAclPermissions");
             HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
 
             try
             {
-                return new OrgAclChecker(this, organizationId, RootDomain, GetDomainOU()).GetAclIssues();
+                 ADPermission.SetOUAclPermissions(this, organizationId, RootDomain, GetDomainOU());
             }
             catch (Exception ex)
             {
@@ -2503,27 +2444,7 @@ namespace SolidCP.Providers.HostedSolution
             }
             finally
             {
-                HostedSolutionLog.LogEnd("GetAclIssues");
-            }
-        }
-
-        public void FixAclIssues(string organizationId)
-        {
-            HostedSolutionLog.LogStart("FixAclIssues");
-            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
-
-            try
-            {
-                new OrgAclChecker(this, organizationId, RootDomain, GetDomainOU()).FixAclIssues();
-            }
-            catch (Exception ex)
-            {
-                HostedSolutionLog.LogError(ex);
-                throw;
-            }
-            finally
-            {
-                HostedSolutionLog.LogEnd("FixAclIssues");
+                HostedSolutionLog.LogEnd("SetOUAclPermissions");
             }
         }
 

@@ -158,13 +158,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="ACL\AclCheckerHelper.cs" />
-    <Compile Include="ACL\AdAclChecker.cs" />
-    <Compile Include="ACL\AdAclExchangeChecker.cs" />
-    <Compile Include="ACL\DirectoryServiceAclChecker.cs" />
-    <Compile Include="ACL\IAclChecker.cs" />
-    <Compile Include="ACL\OrgAclChecker.cs" />
-    <Compile Include="ACL\RootDomainAclChecker.cs" />
+    <Compile Include="ADPermission.cs" />
     <Compile Include="BlackBerry5Provider.cs" />
     <Compile Include="BlackBerryProvider.cs" />
     <Compile Include="Exchange2010.cs" />

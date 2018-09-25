@@ -38,7 +38,6 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Globalization;
 using System.Text;
-using SolidCP.Providers.HostedSolution.ACL;
 using System.Linq;
 
 namespace SolidCP.Providers.HostedSolution
@@ -709,16 +708,16 @@ namespace SolidCP.Providers.HostedSolution
 
             if (isOu)
             {
-                AddPropertyAccess(orgPath, identity, AdProperties.ReadCn);
-                AddPropertyAccess(orgPath, identity, AdProperties.ReadGpLink);
-                AddPropertyAccess(orgPath, identity, AdProperties.ReadGpOption);
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadCn);
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadGpLink);
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadGpOption);
             }
             else
             {
-                AddPropertyAccess(orgPath, identity, AdProperties.ReadCanonicalName);
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadCanonicalName);
             }
 
-            AddPropertyAccess(orgPath, identity, AdProperties.ReadDistinguishedName);
+            AddPropertyAccess(orgPath, identity, ADAttributes.ReadDistinguishedName);
         }
 
 

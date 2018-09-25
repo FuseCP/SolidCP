@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -30,9 +30,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace SolidCP.Providers.HostedSolution.ACL
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SolidCP.Providers.HostedSolution
 {
-    public enum AclTestIssues
+    public enum AclPermission
     {
         InheritanceEnabled,
         EveryoneAllowed,
@@ -67,5 +70,17 @@ namespace SolidCP.Providers.HostedSolution.ACL
         AuthenticatedUsersReadGeneric,
         PrivelegedServersNotExists,
         PrivelegedServersReadGeneric,
+    }
+
+    public class ADPermissions
+    {
+        public string Name { get; set; }
+
+        public string OuPath { get; set; }
+
+        public List<AclPermission> AclPermissions { get; set; } = new List<AclPermission>();
+
+        public bool HasCorrectPermissions => !AclPermissions.Any();
+
     }
 }

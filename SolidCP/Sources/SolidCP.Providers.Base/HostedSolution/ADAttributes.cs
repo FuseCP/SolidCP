@@ -72,6 +72,12 @@ namespace SolidCP.Providers.HostedSolution
         public const string UserAccountControl = "UserAccountControl";
         public const string Description = "description";
         public const string dSHeuristics = "dSHeuristics";
-        public const string ProxyAddresses = "ProxyAddresses";
+
+        // ACL Attributes
+        public const string ReadCn = @"bf96793f-0de6-11d0-a285-00aa003049e2";
+        public const string ReadCanonicalName = @"9a7ad945-ca53-11d1-bbd0-0080c76670c0";
+        public const string ReadDistinguishedName = @"bf9679e4-0de6-11d0-a285-00aa003049e2";
+        public const string ReadGpLink = @"f30e3bbe-9ff0-11d1-b603-0000f80367c1";
+        public const string ReadGpOption = @"f30e3bbf-9ff0-11d1-b603-0000f80367c1";
     }
 }

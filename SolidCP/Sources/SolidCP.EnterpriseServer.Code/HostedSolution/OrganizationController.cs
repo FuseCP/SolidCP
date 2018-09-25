@@ -455,12 +455,11 @@ namespace SolidCP.EnterpriseServer
                 // Change to OU security for dSHeuristics
                 try
                 {
-                    TaskManager.Write("Fix Acl Security of OU");
-                    orgProxy.FixAclIssues(org.OrganizationId);
+                    orgProxy.SetOUAclPermissions(org.OrganizationId);
                 }
                 catch (Exception ex)
                 {
-                    TaskManager.WriteError(ex, "Fix Acl Security of created org ou");
+                    TaskManager.WriteError(ex, "SetAclPermissions");
                     throw;
                 }
 

@@ -31,7 +31,6 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System.Collections.Generic;
-using SolidCP.Providers.HostedSolution.ACL;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
 
@@ -109,13 +108,7 @@ namespace SolidCP.Providers.HostedSolution
         bool CheckPhoneNumberIsInUse(string phoneNumber, string userSamAccountName = null);
 
         OrganizationUser GetOrganizationUserWithExtraData(string loginName, string organizationId);
-        AclTestResult[] GetAdAclIssues();
 
-        void FixAdAclIssue(string ouPath);
-
-        AclTestResult GetAclIssues(string organizationId);
-
-        void FixAclIssues(string organizationId);
-
+        void SetOUAclPermissions(string organizationId);
     }
 }
