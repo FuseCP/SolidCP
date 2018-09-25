@@ -20559,3 +20559,4 @@ BEGIN
 END
 GO
 
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'PowerDNS'

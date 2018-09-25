@@ -775,7 +775,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static StringDictionary GetServiceSettingsRDS(int serviceId)
+		public static StringDictionary GetServiceSettings(int serviceId)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.IsActive);
@@ -797,11 +797,6 @@ namespace SolidCP.EnterpriseServer
 			bool isDemoAccount = (SecurityContext.CheckAccount(DemandAccount.NotDemo) < 0);
 
 			return GetServiceSettings(serviceId, !isDemoAccount);
-		}
-
-		internal static StringDictionary GetServiceSettings(int serviceId)
-		{
-			return GetServiceSettings(serviceId, true);
 		}
 
 		internal static StringDictionary GetServiceSettings(int serviceId, bool decryptPassword)

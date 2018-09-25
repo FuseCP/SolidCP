@@ -311,6 +311,31 @@ namespace SolidCP.Providers.HostedSolution
             return null;
         }
 
+        public static string GetObjectTargetAccountName(string accountName, string domain)
+        {
+            return $"{domain}\\{accountName}";
+        }
+
+
+        public static bool AccountExists(string name)
+        {
+            bool bRet = false;
+
+            try
+            {
+                NTAccount acct = new NTAccount(name);
+                SecurityIdentifier id = (SecurityIdentifier)acct.Translate(typeof(SecurityIdentifier));
+
+                bRet = id.IsAccountSid();
+            }
+            catch (IdentityNotMappedException)
+            {
+                /* Invalid account */
+            }
+
+            return bRet;
+        }
+
         public static string ConvertADPathToCanonicalName(string name)
         {
 

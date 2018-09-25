@@ -271,7 +271,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public string[] GetServiceSettingsRDS(int serviceId)
         {
-            return ConvertDictionaryToArray(ServerController.GetServiceSettingsRDS(serviceId));
+            return ConvertDictionaryToArray(ServerController.GetServiceSettings(serviceId));
         }
 
         [WebMethod]
