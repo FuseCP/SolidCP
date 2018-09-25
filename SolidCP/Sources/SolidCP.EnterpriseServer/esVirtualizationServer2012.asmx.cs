@@ -487,6 +487,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
+        {
+            return VirtualizationServerController2012.GetExternalSwitchesWMI(serviceId, computerName);
+        }
+
+        [WebMethod]
         public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
         {
             return VirtualizationServerController2012.GetInternalSwitches(serviceId, computerName);

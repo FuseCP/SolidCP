@@ -65,6 +65,7 @@ namespace SolidCP.Providers.Virtualization
 
         // Virtual Switches
         List<VirtualSwitch> GetExternalSwitches(string computerName);
+        List<VirtualSwitch> GetExternalSwitchesWMI(string computerName);
         List<VirtualSwitch> GetInternalSwitches(string computerName);
         List<VirtualSwitch> GetSwitches();
         bool SwitchExists(string switchId);

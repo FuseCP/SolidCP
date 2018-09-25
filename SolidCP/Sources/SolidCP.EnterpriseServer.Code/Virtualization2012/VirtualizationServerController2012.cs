@@ -3742,6 +3742,13 @@ namespace SolidCP.EnterpriseServer
             return vs.GetExternalSwitches(computerName);
         }
 
+        public static VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
+        {
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetExternalSwitchesWMI(computerName);
+        }
+
         public static VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();

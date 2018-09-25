@@ -106,6 +106,8 @@ namespace SolidCP.Portal.ProviderControls
             radioSwitchType.SelectedIndex = string.IsNullOrEmpty(radioSwitchType.SelectedValue) 
                 ? 0 : radioSwitchType.SelectedIndex;
 
+            chkGetSwitchesByPS.Checked = Utils.ParseBool(settings["UsePowerShellToGetExternalSW"], false);
+
             // External network
             ddlExternalNetworks.SelectedValue = settings["ExternalNetworkId"];
             externalPreferredNameServer.Text = settings["ExternalPreferredNameServer"];
@@ -196,6 +198,7 @@ namespace SolidCP.Portal.ProviderControls
 
             // Switch Type
             settings["SwitchType"] = radioSwitchType.SelectedValue;
+            settings["UsePowerShellToGetExternalSW"] = chkGetSwitchesByPS.Checked.ToString();
 
             // External network
             settings["ExternalNetworkId"] = ddlExternalNetworks.SelectedValue;
@@ -238,14 +241,20 @@ namespace SolidCP.Portal.ProviderControls
 
         private void BindNetworksList()
         {
+            chkGetSwitchesByPS.Enabled = true;
             try
             {
                 List<VirtualSwitch> switches;
-
+                
                 if (radioSwitchType.SelectedValue == "internal")
+                {
                     switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetInternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
-                else
+                    chkGetSwitchesByPS.Enabled = false;
+                }                    
+                else if (chkGetSwitchesByPS.Checked)
                     switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+                else
+                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitchesWMI(PanelRequest.ServiceId, txtServerName.Text.Trim()));
 
                 ddlExternalNetworks.DataSource = switches;
                 ddlExternalNetworks.DataBind();

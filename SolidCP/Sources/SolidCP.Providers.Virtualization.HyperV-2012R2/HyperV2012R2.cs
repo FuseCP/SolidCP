@@ -1055,6 +1055,55 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("DeleteSwitch");
             return ReturnCode.OK;
         }
+
+        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName) //TODO: rework.
+        {
+            // "\\\\.\\ROOT\\virtualization\\v2" @"root\virtualization\v2"
+            Wmi cwmi = new Wmi(computerName, @"root\virtualization\v2");
+
+            Dictionary<string, string> switches = new Dictionary<string, string>();
+            List<VirtualSwitch> list = new List<VirtualSwitch>();
+            Dictionary<string, string> adapters = new Dictionary<string, string>();
+
+            // load external adapters
+            ManagementObjectCollection objAdapters = cwmi.GetWmiObjects("Msvm_EthernetSwitchPort");
+            foreach (ManagementObject objAdapter in objAdapters)
+            {
+                if (objAdapter["ElementName"].ToString().EndsWith("_External"))
+                    adapters.Add((string)objAdapter["SystemName"], "1");
+            }
+
+            // get Ethernet Switch Info
+            ManagementObjectCollection objConnections = cwmi.GetWmiObjects("Msvm_EthernetSwitchInfo");
+            foreach (ManagementObject objConnection in objConnections)
+            {
+                ManagementObject objswitchId = new ManagementObject(new ManagementPath((string)objConnection["Antecedent"]));
+                string switchId = (string)objswitchId["Name"];
+
+                if (adapters.ContainsKey(switchId))
+                {
+                    // get switch port
+                    ManagementObject objPort = new ManagementObject(new ManagementPath((string)objConnection["Dependent"]));
+                    if (switches.ContainsKey(switchId))
+                        continue;
+
+                    //add info about switch
+                    ManagementObject objSwitch = cwmi.GetRelatedWmiObject(objPort, "Msvm_VirtualEthernetSwitch");
+                    switches.Add(switchId, (string)objSwitch["ElementName"]);
+                }
+            }
+
+            foreach (string switchId in switches.Keys)
+            {
+                VirtualSwitch sw = new VirtualSwitch();
+                //sw.SwitchId = switchId;
+                sw.SwitchId = sw.Name = switches[switchId];
+                sw.SwitchType = "External";
+                list.Add(sw);
+            }
+
+            return list;
+        }
         #endregion
 
         #region KVP

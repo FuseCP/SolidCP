@@ -529,7 +529,7 @@
             <td class="SubHead" style="width:200px;" valign="top">
 		        <asp:Localize ID="locSwitchType" runat="server" meta:resourcekey="locSwitchType" Text="Switch Type:"></asp:Localize>
 		    </td>
-	        <td>
+	        <td colspan="2">
 		        <asp:RadioButtonList ID="radioSwitchType" runat="server" AutoPostBack="true" 
 			        onselectedindexchanged="radioSwitchType_SelectedIndexChanged">
 			        <asp:ListItem Value="external" meta:resourcekey="radioSwitchTypeExternal" Selected="True">External</asp:ListItem>
@@ -545,12 +545,15 @@
                 <asp:DropDownList ID="ddlExternalNetworks" runat="server" CssClass="form-control" Width="450"
                     DataValueField="SwitchId" DataTextField="Name"></asp:DropDownList>
             </td>
+            <td>
+                <asp:CheckBox ID="chkGetSwitchesByPS" runat="server" AutoPostBack="true" meta:resourcekey="chkGetSwitchesByPS" Text="Use an alternative method to get external switches. (slow)" />
+            </td>
 	    </tr>
 	    <tr>
 		    <td class="SubHead">
 		        <asp:Localize ID="locPreferredNameServer" runat="server" meta:resourcekey="locPreferredNameServer" Text="Preferred Name Server:"></asp:Localize>
 		    </td>
-		    <td>
+		    <td colspan="2">
 		        <scp:EditIPAddressControl id="externalPreferredNameServer" runat="server" Required="true" />
             </td>
 	    </tr>
@@ -558,12 +561,12 @@
 		    <td class="SubHead">
 		        <asp:Localize ID="locAlternateNameServer" runat="server" meta:resourcekey="locAlternateNameServer" Text="Alternate Name Server:"></asp:Localize>
 		    </td>
-		    <td>
+		    <td colspan="2">
 		        <scp:EditIPAddressControl id="externalAlternateNameServer" runat="server" />
             </td>
 	    </tr>
 	    <tr>
-	        <td colspan="2">
+	        <td colspan="3">
 	            <asp:CheckBox ID="chkAssignIPAutomatically" runat="server" meta:resourcekey="chkAssignIPAutomatically" Text="Assign IP addresses to the space on creation" />
 	        </td>
 	    </tr>
