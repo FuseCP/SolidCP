@@ -280,7 +280,7 @@ namespace SolidCP.Portal.VPS2012
                 // create virtual machine
                 vm.OperatingSystemTemplate = listOperatingSystems.SelectedValue;
                 vm.Name = String.Format("{0}.{1}", txtHostname.Text.Trim(), txtDomain.Text.Trim());
-                vm.PackageId = PanelSecurity.PackageId;
+                //vm.PackageId = PanelSecurity.PackageId; //TODO: An idea to change HyperV logic of showing VMs (maybe in 2019?).
                 string adminPassword = password.Password;
                 string[] privIps = Utils.ParseDelimitedString(litPrivateAddresses.Text, '\n', '\r', ' ', '\t'); //possible doesn't work :)
                 ResultObject reinstallResult = ES.Services.VPS2012.ReinstallVirtualMachine(PanelRequest.ItemID, vm, adminPassword, privIps, false, false, "");
