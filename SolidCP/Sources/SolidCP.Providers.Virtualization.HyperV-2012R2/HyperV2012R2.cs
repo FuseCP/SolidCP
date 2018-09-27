@@ -1850,7 +1850,7 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Private Methods
-        private bool CheckVersionConfigSupport(double version)
+        private bool CheckVersionConfigSupport(double version) //TODO: rework.
         {
             int CurrentBuild;
             try
@@ -1879,6 +1879,9 @@ namespace SolidCP.Providers.Virtualization
                     break;
                 case 16299: //Windows 10 1709
                     VersionsConfig = new double[] { 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 17134: //Windows 10 1803
+                    VersionsConfig = new double[] { 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
                     break;
                 default:    //If we don't know or Windwos too old (Windows 2012R2)
                     VersionsConfig = new double[] { -1.0 };
