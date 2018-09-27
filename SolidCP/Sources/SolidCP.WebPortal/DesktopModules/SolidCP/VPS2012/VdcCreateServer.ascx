@@ -75,7 +75,7 @@
 
                                         <div class="col-sm-10">
                                             <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="true"
-                                                Text="Generate Auto HostName" meta:resourcekey="chkAutoHostName" />
+                                                Text="Generate hostname automatically" meta:resourcekey="chkAutoHostName" />
                                         </div>
                                  </div>
                                 <div class="form-group">

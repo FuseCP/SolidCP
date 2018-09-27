@@ -7,7 +7,7 @@
     <legend>
         <asp:Localize ID="locHyperVServer" runat="server" meta:resourcekey="locHyperVServer" Text="Hyper-V Server"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
 	    <tr>
 		    <td colspan="2">
 		        <asp:RadioButtonList ID="radioServer" runat="server" AutoPostBack="true" 
@@ -40,9 +40,9 @@
     <legend>
         <asp:Localize ID="locMaintenanceMode" runat="server" meta:resourcekey="locMaintenanceMode" Text="Maintenance Mode:"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr>
-			<td class="SubHead" style="width:200px;" valign="top">
+			<td class="SubHead" style="width:200px; vertical-align: top;">
 				<asp:Localize ID="locStatusMaintenanceMode" runat="server" meta:resourcekey="locStatusMaintenanceMode" Text="Maintenance mode status:"></asp:Localize>
 			</td>
 			<td>
@@ -63,9 +63,7 @@
     <legend>
         <asp:Localize ID="locGuacamole" runat="server" meta:resourcekey="locGuacamole" Text="Guacamole"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" style="margin: 10px;">
-
-
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
 
 	    <tr>
 		    <td class="SubHead" style="width:250px;">
@@ -138,7 +136,7 @@
     <legend>
         <asp:Localize ID="locGeneralSettings" runat="server" meta:resourcekey="locGeneralSettings" Text="General Settings"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locVpsRootFolder" runat="server" meta:resourcekey="locVpsRootFolder" Text="VPS root folder:"></asp:Localize>
@@ -176,17 +174,17 @@
     <legend>
         <asp:Localize ID="locProcessorSettings" runat="server" meta:resourcekey="locProcessorSettings" Text="Processor Resource Settings"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locCpuReserve" runat="server" meta:resourcekey="locCpuReserve" Text="Virtual machine reserve:"></asp:Localize>
 		    </td>
 		    <td>
                 <asp:TextBox Width="50px" CssClass="form-control" Runat="server" ID="txtCpuReserve"></asp:TextBox>
-                %
                 <asp:RequiredFieldValidator ID="CpuReserveValidator" runat="server" ControlToValidate="txtCpuReserve"
                     Text="*" meta:resourcekey="CpuReserveValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>
+            <td>%</td>
 	    </tr>
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
@@ -194,16 +192,16 @@
 		    </td>
 		    <td>
                 <asp:TextBox Width="50px" CssClass="form-control" Runat="server" ID="txtCpuLimit"></asp:TextBox>
-                %
                 <asp:RequiredFieldValidator ID="CpuLimitValidator" runat="server" ControlToValidate="txtCpuLimit"
                     Text="*" meta:resourcekey="CpuLimitValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>
+            <td>%</td>
 	    </tr>
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locCpuWeight" runat="server" meta:resourcekey="locCpuWeight" Text="Relative weight:"></asp:Localize>
 		    </td>
-		    <td>
+		    <td colspan="2">
                 <asp:TextBox Width="50px" CssClass="form-control" Runat="server" ID="txtCpuWeight"></asp:TextBox>
                 <asp:RequiredFieldValidator ID="CpuWeightValidator" runat="server" ControlToValidate="txtCpuWeight"
                     Text="*" meta:resourcekey="CpuWeightValidator" Display="Dynamic" SetFocusOnError="true" />
@@ -216,7 +214,7 @@
     <legend>
         <asp:Localize ID="locConfigVersion" runat="server" meta:resourcekey="locConfigVersion" Text="Virtual Machines Configuration Version"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr><td class="SubHead" style="width:200px;">
                         <asp:Localize ID="locHyperVConfig" runat="server" meta:resourcekey="locHyperVConfig" Text="HyperV Config Version:"></asp:Localize>
                     </td>
@@ -243,7 +241,7 @@
     <legend>
         <asp:Localize ID="locTemplates" runat="server" meta:resourcekey="locTemplates" Text="OS Templates"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
           <tr>
 		    <td class="SubHead">
 		        <asp:Localize ID="locOSTemplatesPath" runat="server" meta:resourcekey="locOSTemplatesPath" Text="OS Templates path:"></asp:Localize>
@@ -262,7 +260,7 @@
         <HeaderTemplate>
         </HeaderTemplate>
         <ItemTemplate>
-            <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+            <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
                 <tr>
                     <td class="SubHead" style="width: 200px;">
                         <asp:Localize ID="locTemplateName" runat="server" meta:resourcekey="locTemplateName" Text="Name:"></asp:Localize>
@@ -353,7 +351,7 @@
     <legend>
         <asp:Localize ID="locDvdLibrary" runat="server" meta:resourcekey="locDvdLibrary" Text="DVD Library"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
         <tr>
             <td class="SubHead" style="width: 200px;">
                 <asp:Localize ID="locDvdIsoPath" runat="server" meta:resourcekey="locDvdIsoPath" Text="Path to DVD ISO files:"></asp:Localize>
@@ -372,7 +370,7 @@
         <HeaderTemplate>
         </HeaderTemplate>
         <ItemTemplate>
-            <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+            <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
                 <tr>
                     <td class="SubHead" style="width: 200px;">
                         <asp:Localize ID="locDvdName" runat="server" meta:resourcekey="locDvdName" Text="Name:"></asp:Localize>
@@ -420,83 +418,87 @@
     <legend>
         <asp:Localize ID="locReplication" runat="server" meta:resourcekey="locReplication" Text="Replication"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
-        <table cellpadding="2" cellspacing="0" style="margin: 10px;">
-            <tr>
-                <td colspan="2">
-                    <asp:RadioButtonList ID="ReplicationModeList" runat="server" AutoPostBack="true"
-                        OnSelectedIndexChanged="radioServer_SelectedIndexChanged">
-                        <asp:ListItem Value="None" meta:resourcekey="ReplicationModeDisabled" Selected="True">No Hyper-v Replication</asp:ListItem>
-                        <asp:ListItem Value="ReplicationEnabled" meta:resourcekey="ReplicationModeEnabled">Enable Hyper-V Replication</asp:ListItem>
-                        <asp:ListItem Value="IsReplicaServer" meta:resourcekey="ReplicationModeIsReplicaServer">This is a Replica Server</asp:ListItem>
-                    </asp:RadioButtonList>
-                </td>
-            </tr>
-            <tr id="EnableReplicaRow" runat="server">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
+        <tr>
+            <td>
+                <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
+                <tr>
+                    <td colspan="2">
+                        <asp:RadioButtonList ID="ReplicationModeList" runat="server" AutoPostBack="true"
+                            OnSelectedIndexChanged="radioServer_SelectedIndexChanged">
+                            <asp:ListItem Value="None" meta:resourcekey="ReplicationModeDisabled" Selected="True">No Hyper-v Replication</asp:ListItem>
+                            <asp:ListItem Value="ReplicationEnabled" meta:resourcekey="ReplicationModeEnabled">Enable Hyper-V Replication</asp:ListItem>
+                            <asp:ListItem Value="IsReplicaServer" meta:resourcekey="ReplicationModeIsReplicaServer">This is a Replica Server</asp:ListItem>
+                        </asp:RadioButtonList>
+                    </td>
+                </tr>
+                <tr id="EnableReplicaRow" runat="server">
+                    <td class="SubHead" style="padding-left: 20px;" colspan="2">
+                        <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
+                            <tr>
+                                <td style="width: 180px">
+                                    <asp:Localize ID="locReplicaServer" runat="server" meta:resourcekey="locReplicaServer" Text="Replication Server:"></asp:Localize>
+                                </td>
+                                <td>
+                                    <asp:DropDownList ID="ddlReplicaServer" runat="server" Width="300px"></asp:DropDownList>
+
+                                    <asp:RequiredFieldValidator ID="ReplicaServerValidator" runat="server" ControlToValidate="ddlReplicaServer"
+                                        Text="*" meta:resourcekey="ReplicaServerValidator" Display="Dynamic" SetFocusOnError="true" />
+                                </td>
+                            </tr>
+                            <tr id="EnableReplicaErrorTr" runat="server" visible="False">
+                                <td colspan="2">
+                                    <asp:Label ID="locEnableReplicaError" runat="server" meta:resourcekey="locEnableReplicaError" ForeColor="Red"></asp:Label>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr id="IsReplicaServerRow" runat="server">
                 <td class="SubHead" style="padding-left: 20px;" colspan="2">
-                    <table cellpadding="2" cellspacing="0" style="margin: 10px;">
+                    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
                         <tr>
-                            <td style="width: 180px">
-                                <asp:Localize ID="locReplicaServer" runat="server" meta:resourcekey="locReplicaServer" Text="Replication Server:"></asp:Localize>
+                            <td style="width: 200px;">
+                                <asp:Localize ID="locReplicaPath" runat="server" meta:resourcekey="locReplicaPath" Text="Path to Replications:"></asp:Localize>
                             </td>
                             <td>
-                                <asp:DropDownList ID="ddlReplicaServer" runat="server" Width="300px"></asp:DropDownList>
-
-                                <asp:RequiredFieldValidator ID="ReplicaServerValidator" runat="server" ControlToValidate="ddlReplicaServer"
-                                    Text="*" meta:resourcekey="ReplicaServerValidator" Display="Dynamic" SetFocusOnError="true" />
+                                <asp:TextBox Width="300px" CssClass="form-control" runat="server" ID="txtReplicaPath"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="ReplicaPathValidator" runat="server" ControlToValidate="txtReplicaPath"
+                                    Text="*" meta:resourcekey="ReplicaPathValidator" Display="Dynamic" SetFocusOnError="true" />
                             </td>
                         </tr>
-                        <tr id="EnableReplicaErrorTr" runat="server" visible="False">
+                        <tr>
+                            <td style="width: 200px">
+                                <asp:Localize ID="locCertThumbnail" runat="server" meta:resourcekey="locCertThumbnail" Text="SSL Certificate Thumbnail:"></asp:Localize>
+                            </td>
+                            <td> 
+                                <asp:DropDownList ID="ddlCertThumbnail" runat="server" Width="500px"></asp:DropDownList>
+                                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtCertThumbnail"></asp:TextBox>
+                                <CPCC:StyleButton id="btnSetReplicaServer" CssClass="btn btn-success" runat="server" OnClick="btnSetReplicaServer_Click" CausesValidation="false"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnSetReplicaServerText"/> </CPCC:StyleButton>
+                                <asp:RequiredFieldValidator ID="CertificateThumbnailValidator" runat="server" ControlToValidate="txtCertThumbnail"
+                                    Text="*" meta:resourcekey="CertificateThumbnailValidator" Display="Dynamic" SetFocusOnError="true" />
+                                <asp:RequiredFieldValidator ID="CertificateDdlThumbnailValidator" runat="server" ControlToValidate="ddlCertThumbnail"
+                                    Text="*" meta:resourcekey="CertificateThumbnailValidator" Display="Dynamic" SetFocusOnError="true" />
+                            </td>
+                        </tr>
+                        <tr id="ReplicaPathErrorTr" runat="server" Visible="False">
                             <td colspan="2">
-                                <asp:Label ID="locEnableReplicaError" runat="server" meta:resourcekey="locEnableReplicaError" ForeColor="Red"></asp:Label>
+                                <asp:Label ID="locErrorPathReplica" runat="server"
+                                    meta:resourcekey="locErrorPathReplica" ForeColor="Red"></asp:Label>
+                            </td>
+                        </tr>
+                        <tr id="ReplicaErrorTr" runat="server" Visible="False">
+                            <td colspan="2">
+                                <asp:Label ID="locErrorSetReplica" runat="server"
+                                    meta:resourcekey="locErrorSetReplica" ForeColor="Red"></asp:Label>
                             </td>
                         </tr>
                     </table>
-                </td>
-            </tr>
-            <tr id="IsReplicaServerRow" runat="server">
-            <td class="SubHead" style="padding-left: 20px;" colspan="2">
-                <table cellpadding="2" cellspacing="0" style="margin: 10px;">
-                    <tr>
-                        <td style="width: 200px;">
-                            <asp:Localize ID="locReplicaPath" runat="server" meta:resourcekey="locReplicaPath" Text="Path to Replications:"></asp:Localize>
-                        </td>
-                        <td>
-                            <asp:TextBox Width="300px" CssClass="form-control" runat="server" ID="txtReplicaPath"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="ReplicaPathValidator" runat="server" ControlToValidate="txtReplicaPath"
-                                Text="*" meta:resourcekey="ReplicaPathValidator" Display="Dynamic" SetFocusOnError="true" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width: 200px">
-                            <asp:Localize ID="locCertThumbnail" runat="server" meta:resourcekey="locCertThumbnail" Text="SSL Certificate Thumbnail:"></asp:Localize>
-                        </td>
-                        <td> 
-                            <asp:DropDownList ID="ddlCertThumbnail" runat="server" Width="500px"></asp:DropDownList>
-                            <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtCertThumbnail"></asp:TextBox>
-                            <CPCC:StyleButton id="btnSetReplicaServer" CssClass="btn btn-success" runat="server" OnClick="btnSetReplicaServer_Click" CausesValidation="false"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnSetReplicaServerText"/> </CPCC:StyleButton>
-                            <asp:RequiredFieldValidator ID="CertificateThumbnailValidator" runat="server" ControlToValidate="txtCertThumbnail"
-                                Text="*" meta:resourcekey="CertificateThumbnailValidator" Display="Dynamic" SetFocusOnError="true" />
-                            <asp:RequiredFieldValidator ID="CertificateDdlThumbnailValidator" runat="server" ControlToValidate="ddlCertThumbnail"
-                                Text="*" meta:resourcekey="CertificateThumbnailValidator" Display="Dynamic" SetFocusOnError="true" />
-                        </td>
-                    </tr>
-                    <tr id="ReplicaPathErrorTr" runat="server" Visible="False">
-                        <td colspan="2">
-                            <asp:Label ID="locErrorPathReplica" runat="server"
-                                meta:resourcekey="locErrorPathReplica" ForeColor="Red"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr id="ReplicaErrorTr" runat="server" Visible="False">
-                        <td colspan="2">
-                            <asp:Label ID="locErrorSetReplica" runat="server"
-                                meta:resourcekey="locErrorSetReplica" ForeColor="Red"></asp:Label>
-                        </td>
-                    </tr>
-                </table>
+                    </td>
+                </tr>
+	        </table>
             </td>
-        </tr>
-	</table>
+        </tr>        
 	</table>
 </fieldset>
 <br />
@@ -505,9 +507,9 @@
     <legend>
         <asp:Localize ID="locVhd" runat="server" meta:resourcekey="locVhd" Text="Virtual Hard Drive"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr>
-		    <td class="SubHead" style="width:200px;" valign="top">
+		    <td class="SubHead" style="width:200px; vertical-align: top;">
 		        <asp:Localize ID="locDiskType" runat="server" meta:resourcekey="locDiskType" Text="Disk Type:"></asp:Localize>
 		    </td>
 		    <td>
@@ -525,9 +527,9 @@
     <legend>
         <asp:Localize ID="locExternalNetwork" runat="server" meta:resourcekey="locExternalNetwork" Text="External Network"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
         <tr>
-            <td class="SubHead" style="width:200px;" valign="top">
+            <td class="SubHead" style="width:200px; vertical-align: top;">
 		        <asp:Localize ID="locSwitchType" runat="server" meta:resourcekey="locSwitchType" Text="Switch Type:"></asp:Localize>
 		    </td>
 	        <td colspan="2">
@@ -582,7 +584,7 @@
     <legend>
         <asp:Localize ID="locManagementNetwork" runat="server" meta:resourcekey="locManagementNetwork" Text="Management Network"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr>
 		    <td style="width:200px;">
 		        <asp:Localize ID="locManagementNetworkName" runat="server" meta:resourcekey="locManagementNetworkName" Text="Connect to Network:"></asp:Localize>
@@ -636,7 +638,7 @@
     <legend>
         <asp:Localize ID="locPrivateNetwork" runat="server" meta:resourcekey="locPrivateNetwork" Text="Private Network"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locIPFormat" runat="server" meta:resourcekey="locIPFormat" Text="IP addresses format:"></asp:Localize>
@@ -697,7 +699,7 @@
     <legend>
         <asp:Localize ID="locHostname" runat="server" meta:resourcekey="locHostname" Text="Host name"></asp:Localize>
     </legend>
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
 	    <tr>
 		    <td class="SubHead" style="width:200px;">
 		        <asp:Localize ID="locHostnamePattern" runat="server" meta:resourcekey="locHostnamePattern" Text="VPS host name pattern:"></asp:Localize>
@@ -720,7 +722,7 @@
         <asp:Localize ID="locStartAction" runat="server" meta:resourcekey="locStartAction" Text="Automatic Start Action"></asp:Localize>
     </legend>
     
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
         <tr>
             <td>
                 <asp:Localize ID="locStartOptionsText" runat="server" meta:resourcekey="locStartOptionsText" Text="What do you want VPS to do when the physical computer starts?"></asp:Localize>
@@ -758,7 +760,7 @@
         <asp:Localize ID="locStopAction" runat="server" meta:resourcekey="locStopAction" Text="Automatic Stop Action"></asp:Localize>
     </legend>
     
-    <table cellpadding="2" cellspacing="0" width="100%" style="margin: 10px;">
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
         <tr>
             <td>
                 <asp:Localize ID="locStopActionText" runat="server" meta:resourcekey="locStopActionText" Text="What do you want VPS to do when the physical shuts down?"></asp:Localize>
