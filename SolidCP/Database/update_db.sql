@@ -1,11 +1,3 @@
---
---
---
--- Please do NOT add to this file. It is going to be architved after 1.3.0 release
---
---
---
-
 USE [${install.database}]
 GO
 -- update database version
@@ -20543,7 +20535,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SpamExperts Mail Filter')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1602, 61, N'SpamExperts', N'SpamExperts Mail Filter', N'SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts', N'SpamExperts',	NULL)
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1602, 61, N'SpamExperts', N'SpamExperts Mail Filter', N'SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts', N'SpamExperts',	1)
 END
 GO
 
@@ -20560,3 +20552,18 @@ END
 GO
 
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'PowerDNS'
+
+-- Server 2019
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2019')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1800, 1, N'Windows2019', N'Windows Server 2019', N'SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019', N'Windows2012', null)
+END
+GO
+
+-- HyperV2019
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2019')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1801, 33, N'HyperV2019', N'Microsoft Hyper-V 2019', N'SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019', N'HyperV2012R2', 1)
+END
+GO

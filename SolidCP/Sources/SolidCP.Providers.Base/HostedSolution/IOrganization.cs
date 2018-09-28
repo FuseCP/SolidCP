@@ -109,6 +109,6 @@ namespace SolidCP.Providers.HostedSolution
 
         OrganizationUser GetOrganizationUserWithExtraData(string loginName, string organizationId);
 
-        int SetOUSecurity(string domain, string organizationId);
+        void SetOUAclPermissions(string organizationId);
     }
 }

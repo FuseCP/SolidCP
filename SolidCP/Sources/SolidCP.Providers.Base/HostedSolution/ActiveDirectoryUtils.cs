@@ -38,6 +38,7 @@ using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Globalization;
 using System.Text;
+using System.Linq;
 
 namespace SolidCP.Providers.HostedSolution
 {
@@ -309,31 +310,6 @@ namespace SolidCP.Providers.HostedSolution
             }
 
             return null;
-        }
-
-        public static string GetObjectTargetAccountName(string accountName, string domain)
-        {
-            return $"{domain}\\{accountName}";
-        }
-
-
-        public static bool AccountExists(string name)
-        {
-            bool bRet = false;
-
-            try
-            {
-                NTAccount acct = new NTAccount(name);
-                SecurityIdentifier id = (SecurityIdentifier)acct.Translate(typeof(SecurityIdentifier));
-
-                bRet = id.IsAccountSid();
-            }
-            catch (IdentityNotMappedException)
-            {
-                /* Invalid account */
-            }
-
-            return bRet;
         }
 
         public static string ConvertADPathToCanonicalName(string name)
@@ -637,6 +613,144 @@ namespace SolidCP.Providers.HostedSolution
             ou.CommitChanges();
             ou.Close();
         }
+
+        #region ACL
+
+        public static bool IsInheritanceEnabled(string objectPath)
+        {
+            return !new DirectoryEntry(objectPath).ObjectSecurity.AreAccessRulesProtected;
+        }
+
+        public static void DisableInheritance(string objectPath)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            obj.ObjectSecurity.SetAccessRuleProtection(true, true);
+            obj.CommitChanges();
+        }
+
+        public static bool IsIdentityAllowed(string objectPath, IdentityReference identity)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            return GetRules(obj.ObjectSecurity, identity).Any();
+        }
+
+        public static int GetIdentityAllowedCount(string objectPath, IdentityReference identity)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            return GetRules(obj.ObjectSecurity, identity).Count();
+        }
+
+        public static bool IsIdentityExistsNotInherited(string objectPath, IdentityReference identity)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            return GetRules(obj.ObjectSecurity, identity).Any(r => !r.IsInherited);
+        }
+
+        public static void RemoveIdentityAllows(string objectPath, IdentityReference identity)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            //obj.ObjectSecurity.PurgeAccessRules(identity);
+            var rulesForDelete = GetRules(obj.ObjectSecurity, identity).ToList();
+            rulesForDelete.ForEach(r => obj.ObjectSecurity.RemoveAccessRule(r));
+            obj.CommitChanges();
+        }
+
+        public static void RemoveIdentityNotInheritedRules(string objectPath, IdentityReference identity)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            var rulesForDelete = GetRules(obj.ObjectSecurity, identity).Where(r => !r.IsInherited).ToList();
+            rulesForDelete.ForEach(r => obj.ObjectSecurity.RemoveAccessRule(r));
+            obj.CommitChanges();
+        }
+
+        public static bool HasPermission(string objectPath, IdentityReference identity, ActiveDirectoryRights permission)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            return GetRules(obj.ObjectSecurity, identity).Any(r => r.ActiveDirectoryRights == permission);
+        }
+
+        public static void AddPermission(string objectPath, IdentityReference identity, ActiveDirectoryRights permission, ActiveDirectorySecurityInheritance inheritance = ActiveDirectorySecurityInheritance.All)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            var rule = new ActiveDirectoryAccessRule(identity, permission, AccessControlType.Allow, inheritance);
+            obj.ObjectSecurity.AddAccessRule(rule);
+            obj.CommitChanges();
+        }
+
+        public static bool HasPropertyAccess(string objectPath, IdentityReference identity, string propertyGuid)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            return GetRules(obj.ObjectSecurity, identity).Any(r => r.ActiveDirectoryRights == ActiveDirectoryRights.ReadProperty && r.ObjectType == new Guid(propertyGuid));
+        }
+
+        public static void AddPropertyAccess(string objectPath, IdentityReference identity, string propertyGuid)
+        {
+            var obj = new DirectoryEntry(objectPath);
+            var rule = new ActiveDirectoryAccessRule(identity, ActiveDirectoryRights.ReadProperty, AccessControlType.Allow, new Guid(propertyGuid), ActiveDirectorySecurityInheritance.All);
+            obj.ObjectSecurity.AddAccessRule(rule);
+            obj.CommitChanges();
+        }
+
+        private static IEnumerable<ActiveDirectoryAccessRule> GetRules(ActiveDirectorySecurity security, IdentityReference identity)
+        {
+            return security
+                .GetAccessRules(true, true, typeof(SecurityIdentifier))
+                .Cast<ActiveDirectoryAccessRule>()
+                .Where(r => r.IdentityReference.Value == GetIdentitySid(identity))
+                .Where(r => r.AccessControlType == AccessControlType.Allow);
+        }
+
+        public static void AddOrgPermisionsToIdentity(string orgPath, IdentityReference identity, bool isOu = true)
+        {
+            RemoveIdentityAllows(orgPath, identity);
+
+            AddPermission(orgPath, identity, ActiveDirectoryRights.ListObject);
+
+            if (isOu)
+            {
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadCn);
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadGpLink);
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadGpOption);
+            }
+            else
+            {
+                AddPropertyAccess(orgPath, identity, ADAttributes.ReadCanonicalName);
+            }
+
+            AddPropertyAccess(orgPath, identity, ADAttributes.ReadDistinguishedName);
+        }
+
+
+        public static string GetObjectTargetAccountName(string accountName, string domain)
+        {
+            return $"{domain}\\{accountName}";
+        }
+
+        private static string GetIdentitySid(IdentityReference identity)
+        {
+            return identity.Translate(typeof(SecurityIdentifier)).Value;
+        }
+
+        public static bool AccountExists(string name)
+        {
+            bool bRet = false;
+
+            try
+            {
+                NTAccount acct = new NTAccount(name);
+                SecurityIdentifier id = (SecurityIdentifier)acct.Translate(typeof(SecurityIdentifier));
+
+                bRet = id.IsAccountSid();
+            }
+            catch (IdentityNotMappedException)
+            {
+                /* Invalid account */
+            }
+
+            return bRet;
+        }
+
+        #endregion
 
     }
 }

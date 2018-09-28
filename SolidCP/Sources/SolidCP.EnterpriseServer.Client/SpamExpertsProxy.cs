@@ -75,7 +75,7 @@ namespace SolidCP.EnterpriseServer
         /// <remarks/>
         public esSpamExperts()
         {
-            this.Url = "http://localhost/EnterpriseServer/SpamExperts.asmx";
+            this.Url = "http://localhost/EnterpriseServer/esSpamExperts.asmx";
         }
 
         /// <remarks/>

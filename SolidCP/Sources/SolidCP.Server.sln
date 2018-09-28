@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching Application Block", "Caching Application Block", "{C8E6F2E4-A5B8-486A-A56E-92D864524682}"
 	ProjectSection(SolutionItems) = preProject
@@ -217,6 +217,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.FTP.CerberusFTP6", "SolidCP.Providers.FTP.CerberusFTP6\SolidCP.Providers.FTP.CerberusFTP6.csproj", "{084AD513-34BC-4349-A38F-3EF65B32A96F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Filters.SpamExperts", "SolidCP.Providers.Filters.SpamExperts\SolidCP.Providers.Filters.SpamExperts.csproj", "{04295037-6790-4E42-A5BD-5C03FAED08C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2019", "SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj", "{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.HyperV2019", "SolidCP.Providers.Virtualization.HyperV-2019\SolidCP.Providers.Virtualization.HyperV2019.csproj", "{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EE40516B-93DF-4CAB-80C4-64DCE0B751CC} = {EE40516B-93DF-4CAB-80C4-64DCE0B751CC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1062,6 +1069,30 @@ Global
 		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{04295037-6790-4E42-A5BD-5C03FAED08C2}.Release|x86.Build.0 = Release|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Debug|x86.Build.0 = Debug|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}.Release|x86.Build.0 = Release|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Debug|x86.Build.0 = Debug|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Release|x86.ActiveCfg = Release|Any CPU
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
