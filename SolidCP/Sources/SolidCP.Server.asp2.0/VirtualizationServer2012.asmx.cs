@@ -441,6 +441,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
+                List<VirtualSwitch> result = VirtualizationProvider.GetExternalSwitches(computerName);
+                Log.WriteEnd("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public List<VirtualSwitch> GetInternalSwitches(string computerName)
         {
             try

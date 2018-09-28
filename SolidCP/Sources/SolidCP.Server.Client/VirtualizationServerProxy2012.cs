@@ -77,6 +77,8 @@ namespace SolidCP.Providers.Virtualization2012
 
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetExternalSwitchesWMIOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetInternalSwitchesOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetSwitchesOperationCompleted;
@@ -232,6 +234,9 @@ namespace SolidCP.Providers.Virtualization2012
 
         /// <remarks/>
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
+
+        /// <remarks/>
+        public event GetExternalSwitchesWMICompletedEventHandler GetExternalSwitchesWMICompleted;
 
         /// <remarks/>
         public event GetInternalSwitchesCompletedEventHandler GetInternalSwitchesCompleted;
@@ -1485,6 +1490,56 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetExternalSwitchesCompleted(this, new GetExternalSwitchesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetExternalSwitchesWMI", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualSwitch[] GetExternalSwitchesWMI(string computerName)
+        {
+            object[] results = this.Invoke("GetExternalSwitchesWMI", new object[] {
+                        computerName});
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetExternalSwitchesWMI(string computerName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetExternalSwitchesWMI", new object[] {
+                        computerName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] EndGetExternalSwitchesWMI(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetExternalSwitchesWMIAsync(string computerName)
+        {
+            this.GetExternalSwitchesWMIAsync(computerName, null);
+        }
+
+        /// <remarks/>
+        public void GetExternalSwitchesWMIAsync(string computerName, object userState)
+        {
+            if ((this.GetExternalSwitchesWMIOperationCompleted == null))
+            {
+                this.GetExternalSwitchesWMIOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExternalSwitchesWMIOperationCompleted);
+            }
+            this.InvokeAsync("GetExternalSwitchesWMI", new object[] {
+                        computerName}, this.GetExternalSwitchesWMIOperationCompleted, userState);
+        }
+
+        private void OnGetExternalSwitchesWMIOperationCompleted(object arg)
+        {
+            if ((this.GetExternalSwitchesWMICompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetExternalSwitchesWMICompleted(this, new GetExternalSwitchesWMICompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -4258,6 +4313,36 @@ namespace SolidCP.Providers.Virtualization2012
         private object[] results;
 
         internal GetExternalSwitchesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualSwitch[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetExternalSwitchesWMICompletedEventHandler(object sender, GetExternalSwitchesWMICompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetExternalSwitchesWMICompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetExternalSwitchesWMICompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;

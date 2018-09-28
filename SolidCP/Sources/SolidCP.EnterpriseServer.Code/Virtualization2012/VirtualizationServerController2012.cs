@@ -734,6 +734,7 @@ namespace SolidCP.EnterpriseServer
             int maximumExecutionSeconds = 60 * 60 * 2; //2 hours for this task. Anyway the Powershell cmd vhd convert has max 1 hour limit.
             TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
 
+            bool isDiskConverted = false;
             try
             {
                 // set Error flag
@@ -935,12 +936,14 @@ namespace SolidCP.EnterpriseServer
                         TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
                         return;
                     }
+
+                    isDiskConverted = true; //We are sure that the disc was copied.
                 }
                 catch (Exception ex)
                 {
                     TaskManager.WriteError(ex, "VPS_CREATE_CONVERT_VHD_ERROR");
                     return;
-                }
+                }                
                 #endregion
 
                 #region Get VHD info
@@ -1010,16 +1013,36 @@ namespace SolidCP.EnterpriseServer
                     TaskManager.Write("VPS_CREATE_EXPAND_VHD_SKIP");
                 }
                 #endregion
-                
+
                 #region Process VHD contents
-                   // mount VHD
-                   if ((expanded && osTemplate.ProcessVolume != -1)
-                       || (osTemplate.SysprepFiles != null && osTemplate.SysprepFiles.Length > 0))
+                // mount VHD
+                if ((expanded && osTemplate.ProcessVolume != -1)
+                    || (osTemplate.SysprepFiles != null && osTemplate.SysprepFiles.Length > 0))
+                {
+                    try
                     {
-                        try
+                        #region Mount VHD
+                        byte attemps = 3;
+                        MountedDiskInfo mountedInfo = null;
+
+                        while (attemps > 0)
                         {
-                            #region Mount VHD
-                        MountedDiskInfo mountedInfo = vs.MountVirtualHardDisk(vm.VirtualHardDrivePath);
+                            try
+                            {
+                                //TODO: Is possible to lose vm.VirtualHardDrivePath ? Add Check?
+                                mountedInfo = vs.MountVirtualHardDisk(vm.VirtualHardDrivePath);
+                                attemps = 0;
+                            }
+                            catch (Exception ex)
+                            {
+                                attemps--;
+                                if (attemps == 0)
+                                    throw ex;
+
+                                Thread.Sleep(5000); //wait and try again.                                
+                            }
+                        }
+                        
                         if (mountedInfo == null)
                         {
                             // mount returned NULL
@@ -1028,7 +1051,7 @@ namespace SolidCP.EnterpriseServer
                         }
                         #endregion
 
-                            #region Expand volume
+                        #region Expand volume
                         if (expanded && osTemplate.ProcessVolume != -1 && mountedInfo.DiskVolumes.Length > 0)
                         {
                             try
@@ -1046,7 +1069,7 @@ namespace SolidCP.EnterpriseServer
                         }
                         #endregion
 
-                            #region Sysprep
+                        #region Sysprep
                         if (mountedInfo.DiskVolumes.Length > 0
                             && osTemplate.ProcessVolume != -1
                             && osTemplate.SysprepFiles != null && osTemplate.SysprepFiles.Length > 0)
@@ -1086,7 +1109,7 @@ namespace SolidCP.EnterpriseServer
                         }
                         #endregion
 
-                            #region Unmount VHD
+                        #region Unmount VHD
                         try
                         {
                             code = vs.UnmountVirtualHardDisk(vm.VirtualHardDrivePath);
@@ -1102,16 +1125,16 @@ namespace SolidCP.EnterpriseServer
                             return;
                         }
                         #endregion
-                        }
-                        catch (Exception ex)
-                        {
-                            // error mounting
-                            TaskManager.WriteError(ex, "VPS_CREATE_MOUNT_VHD");
-                            return;
-                        }
-                     } // end if (expanded ...
-                    #endregion
-                 
+                    }
+                    catch (Exception ex)
+                    {
+                        // error mounting
+                        TaskManager.WriteError(ex, "VPS_CREATE_MOUNT_VHD");
+                        return;
+                    }
+                } // end if (expanded ...
+                #endregion
+
                 #region Create Virtual Machine
                 TaskManager.Write("VPS_CREATE_CPU_CORES", vm.CpuCores.ToString());
                 TaskManager.Write("VPS_CREATE_RAM_SIZE", vm.RamSize.ToString());
@@ -1241,7 +1264,19 @@ namespace SolidCP.EnterpriseServer
                 if (vm.ProvisioningStatus == VirtualMachineProvisioningStatus.OK)
                     TaskManager.Write("VPS_CREATE_SUCCESS");
                 else if (vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Error)
+                {
                     TaskManager.Write("VPS_CREATE_ERROR_END");
+                    if (isDiskConverted)
+                    {
+                        //TODO: Add deletion of the broken file. (2019)
+                        //// get proxy
+                        //VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+                        //if (vs.IsEmptyFolders(vm.RootFolderPath))
+                        //{
+                        //    vs.DeleteRemoteFile(vm.RootFolderPath);
+                        //}
+                    }
+                }                    
 
                 // complete task
                 TaskManager.CompleteTask();
@@ -3742,6 +3777,13 @@ namespace SolidCP.EnterpriseServer
             return vs.GetExternalSwitches(computerName);
         }
 
+        public static VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
+        {
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetExternalSwitchesWMI(computerName);
+        }
+
         public static VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
@@ -3914,6 +3956,11 @@ namespace SolidCP.EnterpriseServer
             if (vm == null)
             {
                 res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
+                return res;
+            }
+            else if (vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted) //If someone tries to send 1 request twice.
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.DELETE_ERROR);
                 return res;
             }
 

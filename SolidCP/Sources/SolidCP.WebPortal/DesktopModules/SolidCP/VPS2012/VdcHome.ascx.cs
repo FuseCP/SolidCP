@@ -75,11 +75,10 @@ namespace SolidCP.Portal.VPS2012
 
         }
 
-        private VirtualMachine _vm;
         public bool IsServerDeleting(string itemID)
         {
             bool isDeleting = false;
-            _vm = _vm ?? (VirtualMachines2012Helper.GetCachedVirtualMachine(Convert.ToInt32(itemID)));
+            VirtualMachine _vm = VirtualMachines2012Helper.GetCachedVirtualMachine(Convert.ToInt32(itemID));
             if(_vm != null)
             {
                 if (_vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted)
