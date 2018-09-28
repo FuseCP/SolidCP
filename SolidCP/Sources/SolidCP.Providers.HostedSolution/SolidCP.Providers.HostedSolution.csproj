@@ -158,6 +158,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ADPermission.cs" />
     <Compile Include="BlackBerry5Provider.cs" />
     <Compile Include="BlackBerryProvider.cs" />
     <Compile Include="Exchange2010.cs" />

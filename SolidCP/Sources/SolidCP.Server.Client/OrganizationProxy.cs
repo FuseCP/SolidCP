@@ -23,8 +23,7 @@ namespace SolidCP.Providers.HostedSolution {
     using System.Web.Services.Protocols;
     using System;
     using System.Diagnostics;
-    
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -100,7 +99,7 @@ namespace SolidCP.Providers.HostedSolution {
         
         private System.Threading.SendOrPostCallback GetOrganizationUserWithExtraDataOperationCompleted;
 
-        private System.Threading.SendOrPostCallback SetOUSecurityOperationCompleted;
+        private System.Threading.SendOrPostCallback SetOUAclPermissionsOperationCompleted;
 
         /// <remarks/>
         public Organizations() {
@@ -202,9 +201,9 @@ namespace SolidCP.Providers.HostedSolution {
         
         /// <remarks/>
         public event GetOrganizationUserWithExtraDataCompletedEventHandler GetOrganizationUserWithExtraDataCompleted;
-        
+
         /// <remarks/>
-        public event SetOUSecurityCompletedEventHandler SetOUSecurityCompleted;
+        public event SetOUAclPermissionsCompletedEventHandler SetOUAclPermissionsCompleted;
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
@@ -792,58 +791,6 @@ namespace SolidCP.Providers.HostedSolution {
             }
         }
 
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetOUSecurity", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public int SetOUSecurity(string domain, string organizationId)
-        {
-            object[] results = this.Invoke("SetOUSecurity", new object[] {
-                        domain,
-                        organizationId});
-            return ((int)(results[0]));
-        }
-
-        /// <remarks/>
-        public System.IAsyncResult BeginSetOUSecurity(string domain, string organizationId, System.AsyncCallback callback, object asyncState)
-        {
-            return this.BeginInvoke("SetOUSecurity", new object[] {
-                        domain,
-                        organizationId}, callback, asyncState);
-        }
-
-        /// <remarks/>
-        public int EndSetOUSecurity(System.IAsyncResult asyncResult)
-        {
-            object[] results = this.EndInvoke(asyncResult);
-            return ((int)(results[0]));
-        }
-
-        /// <remarks/>
-        public void SetOUSecurityAsync(string domain, string organizationId)
-        {
-            this.SetOUSecurityAsync(domain, organizationId, null);
-        }
-
-        /// <remarks/>
-        public void SetOUSecurityAsync(string domain, string organizationId, object userState)
-        {
-            if ((this.SetOUSecurityOperationCompleted == null))
-            {
-                this.SetOUSecurityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetOUSecurityOperationCompleted);
-            }
-            this.InvokeAsync("SetOUSecurity", new object[] {
-                        domain,
-                        organizationId }, this.SetOUSecurityOperationCompleted, userState);
-        }
-
-        private void OnSetOUSecurityOperationCompleted(object arg)
-        {
-            if ((this.SetOUSecurityCompleted != null))
-            {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.SetOUSecurityCompleted(this, new SetOUSecurityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
@@ -1880,7 +1827,56 @@ namespace SolidCP.Providers.HostedSolution {
                 this.GetOrganizationUserWithExtraDataCompleted(this, new GetOrganizationUserWithExtraDataCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetOUAclPermissions", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SetOUAclPermissions(string organizationId)
+        {
+            this.Invoke("SetOUAclPermissions", new object[] {
+                        organizationId });
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginSetOUAclPermissions(string organizationId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("SetOUAclPermissions", new object[] {
+                        organizationId }, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public void EndSetOUAclPermissions(System.IAsyncResult asyncResult)
+        {
+            this.EndInvoke(asyncResult);
+        }
+
+        /// <remarks/>
+        public void SetOUAclPermissionsAsync(string organizationId)
+        {
+            this.SetOUAclPermissionsAsync(organizationId, null);
+        }
+
+        /// <remarks/>
+        public void SetOUAclPermissionsAsync(string organizationId, object userState)
+        {
+            if ((this.SetOUAclPermissionsOperationCompleted == null))
+            {
+                this.SetOUAclPermissionsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetOUAclPermissionsOperationCompleted);
+            }
+            this.InvokeAsync("SetOUAclPermissions", new object[] {
+                        organizationId }, this.SetOUAclPermissionsOperationCompleted, userState);
+        }
+
+        private void OnSetOUAclPermissionsOperationCompleted(object arg)
+        {
+            if ((this.SetOUAclPermissionsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetOUAclPermissionsCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+
         /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
@@ -2324,32 +2320,6 @@ namespace SolidCP.Providers.HostedSolution {
     }
 
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
-    public delegate void SetOUSecurityCompletedEventHandler(object sender, SetOUSecurityCompletedEventArgs e);
-
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SetOUSecurityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
-    {
-
-        private object[] results;
-
-        internal SetOUSecurityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
-                base(exception, cancelled, userState)
-        {
-            this.results = results;
-        }
-
-        /// <remarks/>
-        public int Result
-        {
-            get
-            {
-                this.RaiseExceptionIfNecessary();
-                return ((int)(this.results[0]));
-            }
-        }
-    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void SetOUAclPermissionsCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }

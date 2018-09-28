@@ -88,6 +88,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="HostedSolution\ADPermissions.cs" />
     <Compile Include="Common\LogExtension\LogExtensionHelper.cs" />
     <Compile Include="Common\LogExtension\Attributes\LogParentPropertyAttribute.cs" />
     <Compile Include="Common\LogExtension\Attributes\LogPropertyAttribute.cs" />
