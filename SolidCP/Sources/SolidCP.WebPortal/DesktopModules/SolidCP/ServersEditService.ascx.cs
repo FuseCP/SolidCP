@@ -98,8 +98,20 @@ namespace SolidCP.Portal
         private void BindService()
         {
 			litGroup.Text = PanelFormatter.GetLocalizedResourceGroupName(resourceGroup.GroupName);
-            litProvider.Text = provider.DisplayName;
 
+            if(ResourceGroups.VPS2012 == resourceGroup.GroupName) //HyperV_v2
+            {
+                textProvider.Visible = false;
+                ddlProviders.DataSource = ES.Services.Servers.GetProvidersByGroupId(provider.GroupId);
+                ddlProviders.DataBind();
+                ddlProviders.SelectedValue = provider.ProviderId.ToString();
+            }
+            else
+            {
+                selectProvider.Visible = false;
+                litProvider.Text = provider.DisplayName;
+            }
+            
             txtServiceName.Text = service.ServiceName;
             txtQuotaValue.Text = service.ServiceQuotaValue.ToString();
             Utils.SelectListItem(ddlClusters, service.ClusterId);
@@ -235,6 +247,10 @@ namespace SolidCP.Portal
             service = new ServiceInfo();
             service.ServiceId = PanelRequest.ServiceId;
             service.ServiceName = txtServiceName.Text.Trim();
+            if (ddlProviders.Items.Count > 0)
+                service.ProviderId = Utils.ParseInt(ddlProviders.SelectedValue, 0);
+            else
+                service.ProviderId = 0; //just to be sure that here is 0
             service.ServiceQuotaValue = Utils.ParseInt(txtQuotaValue.Text, 0);
             service.ClusterId = Utils.ParseInt(ddlClusters.SelectedValue, 0);
             service.Comments = txtComments.Text;
