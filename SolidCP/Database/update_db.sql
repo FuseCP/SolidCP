@@ -3833,6 +3833,35 @@ INSERT [dbo].[Quotas]  ([QuotaID], [GroupID],[QuotaOrder], [QuotaName], [QuotaDe
 END
 GO
 
+-- UpdateService         //TODO: Add the ability to transfer to another node (ServerID)
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServiceFully')
+DROP PROCEDURE UpdateServiceFully
+GO
+
+CREATE PROCEDURE [dbo].[UpdateServiceFully]
+(
+	@ServiceID int,
+  @ProviderID int,
+	@ServiceName nvarchar(50),
+	@Comments ntext,
+	@ServiceQuotaValue int,
+	@ClusterID int
+)
+AS
+
+IF @ClusterID = 0 SET @ClusterID = NULL
+
+UPDATE Services
+SET
+  ProviderID = @ProviderID,
+	ServiceName = @ServiceName,
+	ServiceQuotaValue = @ServiceQuotaValue,
+	Comments = @Comments,
+	ClusterID = @ClusterID
+WHERE ServiceID = @ServiceID
+
+RETURN
+GO
 
 -- Lync
 

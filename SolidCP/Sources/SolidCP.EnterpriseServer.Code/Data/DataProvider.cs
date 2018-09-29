@@ -1054,6 +1054,18 @@ namespace SolidCP.EnterpriseServer
 
             return Convert.ToInt32(prmServiceId.Value);
         }
+        public static void UpdateServiceFully(int serviceId, int providerId, string serviceName, int serviceQuotaValue,
+            int clusterId, string comments)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "UpdateServiceFully",
+                new SqlParameter("@ProviderID", providerId),
+                new SqlParameter("@ServiceName", serviceName),
+                new SqlParameter("@ServiceID", serviceId),
+                new SqlParameter("@ServiceQuotaValue", serviceQuotaValue),
+                new SqlParameter("@ClusterId", clusterId),
+                new SqlParameter("@Comments", comments));
+        }
 
         public static void UpdateService(int serviceId, string serviceName, int serviceQuotaValue,
             int clusterId, string comments)
