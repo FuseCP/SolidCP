@@ -544,7 +544,7 @@ namespace SolidCP.EnterpriseServer
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/AddDomainFilterAlias", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public SpamExpertsResult AddDomainFilterAlias(string domain, string alias)
+        public SpamExpertsResult AddDomainFilterAlias(DomainInfo domain, string alias)
         {
             object[] results = this.Invoke("AddDomainFilterAlias", new object[] {
                         domain,
@@ -553,7 +553,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginAddDomainFilterAlias(string domain, string alias, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginAddDomainFilterAlias(DomainInfo domain, string alias, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("AddDomainFilterAlias", new object[] {
                         domain,
@@ -568,13 +568,13 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public void AddDomainFilterAliasAsync(string domain, string alias)
+        public void AddDomainFilterAliasAsync(DomainInfo domain, string alias)
         {
             this.AddDomainFilterAliasAsync(domain, alias, null);
         }
 
         /// <remarks/>
-        public void AddDomainFilterAliasAsync(string domain, string alias, object userState)
+        public void AddDomainFilterAliasAsync(DomainInfo domain, string alias, object userState)
         {
             if ((this.AddDomainFilterAliasOperationCompleted == null))
             {
@@ -597,7 +597,7 @@ namespace SolidCP.EnterpriseServer
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteDomainFilterAlias", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public SpamExpertsResult DeleteDomainFilterAlias(string domain, string alias)
+        public SpamExpertsResult DeleteDomainFilterAlias(DomainInfo domain, string alias)
         {
             object[] results = this.Invoke("DeleteDomainFilterAlias", new object[] {
                         domain,
@@ -606,7 +606,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteDomainFilterAlias(string domain, string alias, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginDeleteDomainFilterAlias(DomainInfo domain, string alias, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("DeleteDomainFilterAlias", new object[] {
                         domain,
@@ -621,13 +621,13 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public void DeleteDomainFilterAliasAsync(string domain, string alias)
+        public void DeleteDomainFilterAliasAsync(DomainInfo domain, string alias)
         {
             this.DeleteDomainFilterAliasAsync(domain, alias, null);
         }
 
         /// <remarks/>
-        public void DeleteDomainFilterAliasAsync(string domain, string alias, object userState)
+        public void DeleteDomainFilterAliasAsync(DomainInfo domain, string alias, object userState)
         {
             if ((this.DeleteDomainFilterAliasOperationCompleted == null))
             {
@@ -650,18 +650,18 @@ namespace SolidCP.EnterpriseServer
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/IsSpamExpertsEnabled", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public bool IsSpamExpertsEnabled(int packageId)
+        public bool IsSpamExpertsEnabled(int packageId, string group)
         {
             object[] results = this.Invoke("IsSpamExpertsEnabled", new object[] {
-                        packageId});
+                        packageId, group});
             return ((bool)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginIsSpamExpertsEnabled(int packageId, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginIsSpamExpertsEnabled(int packageId, string group, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("IsSpamExpertsEnabled", new object[] {
-                        packageId}, callback, asyncState);
+                        packageId, group}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -672,20 +672,20 @@ namespace SolidCP.EnterpriseServer
         }
 
         /// <remarks/>
-        public void IsSpamExpertsEnabledAsync(int packageId)
+        public void IsSpamExpertsEnabledAsync(int packageId, string group)
         {
-            this.IsSpamExpertsEnabledAsync(packageId, null);
+            this.IsSpamExpertsEnabledAsync(packageId, group, null);
         }
 
         /// <remarks/>
-        public void IsSpamExpertsEnabledAsync(int packageId, object userState)
+        public void IsSpamExpertsEnabledAsync(int packageId, string group, object userState)
         {
             if ((this.IsSpamExpertsEnabledOperationCompleted == null))
             {
                 this.IsSpamExpertsEnabledOperationCompleted = new System.Threading.SendOrPostCallback(this.OnIsSpamExpertsEnabledOperationCompleted);
             }
             this.InvokeAsync("IsSpamExpertsEnabled", new object[] {
-                        packageId}, this.IsSpamExpertsEnabledOperationCompleted, userState);
+                        packageId, group}, this.IsSpamExpertsEnabledOperationCompleted, userState);
         }
 
         private void OnIsSpamExpertsEnabledOperationCompleted(object arg)

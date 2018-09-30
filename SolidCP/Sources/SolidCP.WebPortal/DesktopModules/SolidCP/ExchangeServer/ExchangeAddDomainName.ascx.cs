@@ -50,7 +50,10 @@ namespace SolidCP.Portal.ExchangeServer
 
             Organization[] orgs = ES.Services.Organizations.GetOrganizations(PanelSecurity.PackageId, false);
 
-            bool isSEEnabled = ES.Services.SpamExperts.IsSpamExpertsEnabled(PanelSecurity.PackageId);
+            bool isSEEnabled = ES.Services.SpamExperts.IsSpamExpertsEnabled(PanelSecurity.PackageId, ResourceGroups.Exchange);
+
+            //currently adding SE domain aliases is disabled
+            isSEEnabled = false;
 
             List<OrganizationDomainName> list = new List<OrganizationDomainName>();
             foreach (Organization o in orgs)
@@ -60,7 +63,7 @@ namespace SolidCP.Portal.ExchangeServer
                 foreach (OrganizationDomainName name in tmpList)
                 {
                     if (name.IsDefault)
-                        lblMainDomain.Text = name.DomainName;
+                        lblMainDomain.Text = name.DomainId.ToString();
                     list.Add(name);
                 }
             }
@@ -115,9 +118,10 @@ namespace SolidCP.Portal.ExchangeServer
 
             try
             {
-                if (chkAddAsAlias.Enabled)
+                if (chkAddAsAlias.Checked)
                 {
-                    var res = ES.Services.SpamExperts.AddDomainFilterAlias(lblMainDomain.Text, ddlDomains.SelectedValue.Trim());
+                    DomainInfo domain = ES.Services.Servers.GetDomain(int.Parse(lblMainDomain.Text));
+                    var res = ES.Services.SpamExperts.AddDomainFilterAlias(domain, ddlDomains.SelectedValue.Trim());
                     if (res.Status != Providers.Filters.SpamExpertsStatus.Success)
                     {
                         messageBox.ShowErrorMessage(res.Result);

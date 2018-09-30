@@ -116,20 +116,12 @@ namespace SolidCP.Portal.ExchangeServer
 
                 try
                 {
-                    if (ES.Services.SpamExperts.IsSpamExpertsEnabled(PanelSecurity.PackageId))
+                    int result = ES.Services.Organizations.DeleteOrganizationDomain(PanelRequest.ItemID, domainId);
+                    if (result < 0)
                     {
-          
-                        // get default domainname
-                    }
-                    else
-                    {
-                        int result = ES.Services.Organizations.DeleteOrganizationDomain(PanelRequest.ItemID, domainId);
-                        if (result < 0)
-                        {
-                            Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "check_domain",
-                                "SpaceID=" + PanelSecurity.PackageId, "DomainID=" + domainId));
-                            return;
-                        }
+                        Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "check_domain",
+                            "SpaceID=" + PanelSecurity.PackageId, "DomainID=" + domainId));
+                        return;
                     }
                     //Delete Domain to Mail Cleaner
                     Knom.Helpers.Net.APIMailCleanerHelper.DomainRemove(DomainName);
