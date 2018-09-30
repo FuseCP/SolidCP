@@ -53,7 +53,7 @@ namespace SolidCP.EnterpriseServer
     {
 
         [WebMethod]
-        public int AddDomainFilter(SpamExpertsRoute route)
+        public SpamExpertsResult AddDomainFilter(SpamExpertsRoute route)
         {
             return SpamExpertsController.AddDomainFilter(route);
         }
@@ -65,7 +65,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public int AddDomainFilterAlias(DomainInfo domain, string alias)
+        public SpamExpertsResult AddDomainFilterAlias(DomainInfo domain, string alias)
         {
             return SpamExpertsController.AddDomainFilterAlias(domain, alias);
         }
@@ -77,7 +77,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public int AddEmailFilter(int packageId, string username, string password, string domain)
+        public SpamExpertsResult AddEmailFilter(int packageId, string username, string password, string domain)
         {
             return SpamExpertsController.AddEmailFilter(packageId, username, password, domain);
         }
@@ -95,9 +95,9 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public bool IsSpamExpertsEnabled(int packageId)
+        public bool IsSpamExpertsEnabled(int packageId, string group)
         {
-            return SpamExpertsController.IsSpamExpertsEnabled(packageId);
+            return SpamExpertsController.IsSpamExpertsEnabled(packageId, group);
         }
     }
 }

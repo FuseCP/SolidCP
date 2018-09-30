@@ -65,17 +65,16 @@ namespace SolidCP.EnterpriseServer
             return (serviceId != 0 && Convert.ToBoolean(quota.QuotaAllocatedValue));
         }
 
-        public static int AddDomainFilter(SpamExpertsRoute route)
+        public static SpamExpertsResult AddDomainFilter(SpamExpertsRoute route)
         {
             int serviceId = GetServiceId(route.PackageId);
 
-            if (!IsPackageServiceEnabled(route.PackageId,serviceId))
-                return -1;
+            if (!IsPackageServiceEnabled(route.PackageId, serviceId))
+                return new SpamExpertsResult(SpamExpertsStatus.Error,"Service not enabled");
 
             SpamExperts server = GetServer(serviceId);
 
-            var res = server.AddDomainFilter(route.DomainName, "", "postmaster@" + route.DomainName, route.Destinations);
-            return (int)res.Status;
+            return server.AddDomainFilter(route.DomainName, "", "postmaster@" + route.DomainName, route.Destinations);
         }
 
         public static void DeleteDomainFilter(DomainInfo domain)
@@ -89,17 +88,16 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddDomainFilterAlias(DomainInfo domain, string alias)
+        public static SpamExpertsResult AddDomainFilterAlias(DomainInfo domain, string alias)
         {
             int serviceId = GetServiceId(domain.PackageId);
 
             if (!IsPackageServiceEnabled(domain.PackageId, serviceId))
-                return -1;
+                return new SpamExpertsResult(SpamExpertsStatus.Error, "Service not enabled");
 
             SpamExperts server = GetServer(serviceId);
 
-            var res = server.AddDomainFilterAlias(domain.DomainName, alias);
-            return (int)res.Status;
+            return server.AddDomainFilterAlias(domain.DomainName, alias);
         }
 
         public static void DeleteDomainFilterAlias(DomainInfo domain, string alias)
@@ -113,20 +111,19 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static int AddEmailFilter(int packageId, string username, string password, string domain)
+        public static SpamExpertsResult AddEmailFilter(int packageId, string username, string password, string domain)
         {
             int serviceId = GetServiceId(packageId);
 
             if (!IsPackageServiceEnabled(packageId, serviceId))
-                return -1;
+                return new SpamExpertsResult(SpamExpertsStatus.Error, "Service not enabled");
             if (Convert.ToBoolean(PackageController.GetPackageQuota(packageId, Quotas.FILTERS_ENABLE_EMAIL_USERS).QuotaAllocatedValue))
             {
                 SpamExperts server = GetServer(serviceId);
 
-                var res = server.AddEmailFilter(username, domain, password);
-                return (int)res.Status;
+                return server.AddEmailFilter(username, domain, password);
             }
-            return -1;
+            return new SpamExpertsResult(SpamExpertsStatus.Error, "Service not enabled for users");
         }
 
         public static void DeleteEmailFilter(int packageId, string email)
@@ -157,12 +154,13 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public static bool IsSpamExpertsEnabled(int packageId)
+        public static bool IsSpamExpertsEnabled(int packageId, string group)
         {
             int serviceId = GetServiceId(packageId);
             if (IsPackageServiceEnabled(packageId, serviceId))
             {
-                StringDictionary exSettings = ServerController.GetServiceSettings(serviceId);
+                int mailServiceId = PackageController.GetPackageServiceId(packageId, group);
+                StringDictionary exSettings = ServerController.GetServiceSettings(mailServiceId);
                 return (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]));
             }
             return false;

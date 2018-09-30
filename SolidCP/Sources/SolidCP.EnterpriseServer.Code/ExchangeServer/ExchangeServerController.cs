@@ -1686,7 +1686,7 @@ namespace SolidCP.EnterpriseServer
                     }
 
                     // check if spamexperts filter is needed
-                    StringDictionary exSettings = ServerController.GetServiceSettings(org.ServiceId);
+                    StringDictionary exSettings = ServerController.GetServiceSettings(exchangeServiceId);
                     if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
                     {
 
