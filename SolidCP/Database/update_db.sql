@@ -20596,3 +20596,30 @@ BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1801, 33, N'HyperV2019', N'Microsoft Hyper-V 2019', N'SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019', N'HyperV2012R2', 1)
 END
 GO
+
+-- MySQL 8.0
+
+INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (90, N'MySQL8', 12, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.0')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(304, 90, N'MySQL', N'MySQL Server 8.0', N'SolidCP.Providers.Database.MySqlServer80, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'MySQL Server 5.7'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '304')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'InternalAddress', N'localhost,3306')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'RootPassword', N'')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'sslmode', N'True')
+END
+GO
+

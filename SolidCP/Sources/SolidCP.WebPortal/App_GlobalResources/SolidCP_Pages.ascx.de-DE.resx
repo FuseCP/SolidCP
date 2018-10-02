@@ -327,6 +327,12 @@
   <data name="PageTitle.SpaceMySql5" xml:space="preserve">
     <value>{user} - {space} - MySQL 5.0</value>
   </data>
+  <data name="PageName.SpaceMySql8" xml:space="preserve">
+    <value>MySQL 8.0</value>
+  </data>
+  <data name="PageTitle.SpaceMySql8" xml:space="preserve">
+    <value>{user} - {space} - MySQL 8.0</value>
+  </data>
   <data name="PageName.SpaceMariaDB" xml:space="preserve">
     <value>MariaDB</value>
   </data>
