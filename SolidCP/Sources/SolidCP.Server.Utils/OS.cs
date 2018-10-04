@@ -423,7 +423,7 @@ namespace SolidCP.Server.Utils
 
         public static int GetReleaseId()
         {
-            return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", null));
+            return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
         }
 
 		/// <summary>
