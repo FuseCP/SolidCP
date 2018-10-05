@@ -453,8 +453,11 @@ namespace SolidCP.Server.Utils
             //        return true;
             foreach (ManagementObject objMO in objMOC)
             {
+                var id = objMO.Properties["ID"].Value.ToString().ToLower();
                 var name = objMO.Properties["Name"].Value.ToString().ToLower();
-                if (name.Contains("file server resource manager")
+                if (id.Contains("72") || id.Contains("104"))
+                    return true;
+                else if (name.Contains("file server resource manager")
                     || name.Contains("ressourcen-manager für dateiserver"))
                     return true;
             }
