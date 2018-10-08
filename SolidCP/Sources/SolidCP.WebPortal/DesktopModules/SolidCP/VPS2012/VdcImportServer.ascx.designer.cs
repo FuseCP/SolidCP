@@ -67,6 +67,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHyperVService;
         
         /// <summary>
+        /// VMsRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow VMsRow;
+        
+        /// <summary>
         /// locVirtualMachine control.
         /// </summary>
         /// <remarks>
@@ -445,6 +454,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.CheckBox AllowReset;
         
         /// <summary>
+        /// AllowReinstall control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox AllowReinstall;
+        
+        /// <summary>
         /// secExternalNetwork control.
         /// </summary>
         /// <remarks>
@@ -595,7 +613,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnCancel;
+        protected global::CPCC.StyleButton btnCancel;
         
         /// <summary>
         /// btnImport control.
@@ -604,6 +622,6 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnImport;
+        protected global::CPCC.StyleButton btnImport;
     }
 }
