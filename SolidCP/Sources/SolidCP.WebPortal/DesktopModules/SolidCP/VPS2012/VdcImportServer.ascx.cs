@@ -57,14 +57,14 @@ namespace SolidCP.Portal.VPS2012
                 BindHyperVServices();
 
                 // bind virtual machines
-                BindVirtualMachines();
+                //BindVirtualMachines();
 
                 // bind OS templates
-                BindOsTemplates();
+                //BindOsTemplates();
 
                 // bind IP addresses
-                BindExternalAddresses();
-                BindManagementAddresses();
+                //BindExternalAddresses();
+                //BindManagementAddresses();
             }
 
             ToggleControls();
@@ -72,6 +72,8 @@ namespace SolidCP.Portal.VPS2012
 
         private void ToggleControls()
         {
+            VMsRow.Visible = (HyperVServices.SelectedValue != "");
+            secOsTemplate.Visible = OsTemplatePanel.Visible = (VirtualMachines.SelectedValue != "");
             AdminPasswordPanel.Visible = EnableRemoteDesktop.Checked;
             RequiredAdminPassword.Enabled = EnableRemoteDesktop.Checked;
             VirtualMachinePanel.Visible = (VirtualMachines.SelectedValue != "");
@@ -79,7 +81,7 @@ namespace SolidCP.Portal.VPS2012
             ManagementAddressesRow.Visible = (ManagementAdapters.SelectedIndex != 0);
         }
 
-        public void BindHyperVServices()
+        private void BindHyperVServices()
         {
             // bind
             HyperVServices.DataSource = ES.Services.Servers.GetRawServicesByGroupName(ResourceGroups.VPS2012).Tables[0].DefaultView;
@@ -89,7 +91,7 @@ namespace SolidCP.Portal.VPS2012
             HyperVServices.Items.Insert(0, new ListItem(GetLocalizedString("SelectHyperVService.Text"), ""));
         }
 
-        public void BindVirtualMachines()
+        private void BindVirtualMachines()
         {
             // clear list
             VirtualMachines.Items.Clear();
@@ -106,7 +108,7 @@ namespace SolidCP.Portal.VPS2012
             VirtualMachines.Items.Insert(0, new ListItem(GetLocalizedString("SelectVirtualMachine.Text"), ""));
         }
 
-        public void BindOsTemplates()
+        private void BindOsTemplates()
         {
             // clear list
             OsTemplates.Items.Clear();
@@ -120,7 +122,7 @@ namespace SolidCP.Portal.VPS2012
             OsTemplates.Items.Insert(0, new ListItem(GetLocalizedString("SelectOsTemplate.Text"), ""));
         }
 
-        public void BindVirtualMachineDetails()
+        private void BindVirtualMachineDetails()
         {
             int serviceId = Utils.ParseInt(HyperVServices.SelectedValue, 0);
             string vmId = VirtualMachines.SelectedValue;
@@ -154,21 +156,22 @@ namespace SolidCP.Portal.VPS2012
             }
         }
 
-        public void BindExternalAddresses()
+        private void BindExternalAddresses()
         {
             BindAddresses(ExternalAddresses, IPAddressPool.VpsExternalNetwork, ExternalAdapters.SelectedValue);
         }
 
-        public void BindManagementAddresses()
+        private void BindManagementAddresses()
         {
             BindAddresses(ManagementAddresses, IPAddressPool.VpsManagementNetwork, ExternalAdapters.SelectedValue);
         }
 
-        public void BindAddresses(ListBox list, IPAddressPool pool, string selectedmac)
+        private void BindAddresses(ListBox list, IPAddressPool pool, string selectedmac)
         {
             int serviceId = Utils.ParseInt(HyperVServices.SelectedValue, 0);
             string vmId = VirtualMachines.SelectedValue;
             int adaptervlan = 0;
+
             if (serviceId > 0 && vmId != "")
             {
                 VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineExtendedInfo(serviceId, vmId);
@@ -222,7 +225,7 @@ namespace SolidCP.Portal.VPS2012
                     Utils.ParseInt(HyperVServices.SelectedValue),
                     VirtualMachines.SelectedValue,
                     OsTemplates.SelectedValue, adminPassword.Text,
-                    AllowStartShutdown.Checked, AllowPause.Checked, AllowReboot.Checked, AllowReset.Checked, false,
+                    AllowStartShutdown.Checked, AllowPause.Checked, AllowReboot.Checked, AllowReset.Checked, AllowReinstall.Checked,
                     ExternalAdapters.SelectedValue, extIps.ToArray(),
                     ManagementAdapters.SelectedValue, manIp);
 

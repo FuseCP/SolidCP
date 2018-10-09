@@ -36,7 +36,7 @@
                                 </asp:RequiredFieldValidator>
                             </td>
                         </tr>
-                        <tr>
+                        <tr id="VMsRow" runat="server">
                             <td class="FormLabel150">
                                 <asp:Localize ID="locVirtualMachine" runat="server" meta:resourcekey="locVirtualMachine" Text="Virtual machine:"></asp:Localize>
                             </td>
@@ -190,6 +190,11 @@
                                     </td>
                                     <td>
                                         <asp:CheckBox ID="AllowReset" runat="server" meta:resourcekey="AllowReset" />
+                                    </td>                                    
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <asp:CheckBox ID="AllowReinstall" runat="server" Text="Re-install" meta:resourcekey="AllowReinstall" />
                                     </td>
                                 </tr>
                             </table>
@@ -206,7 +211,8 @@
                                     </td>
                                     <td>
                                         <asp:DropDownList ID="ExternalAdapters" runat="server" CssClass="form-control"
-                                            DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"></asp:DropDownList>
+                                            DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"
+                                            onselectedindexchanged="ExternalAdapters_SelectedIndexChanged"></asp:DropDownList>
                                     </td>
                                 </tr>
                                 <tr id="ExternalAddressesRow" runat="server">
@@ -236,7 +242,8 @@
                                     </td>
                                     <td>
                                         <asp:DropDownList ID="ManagementAdapters" runat="server" CssClass="form-control"
-                                            DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"></asp:DropDownList>
+                                            DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"
+                                            onselectedindexchanged="ManagementAdapters_SelectedIndexChanged"></asp:DropDownList>
                                     </td>
                                 </tr>
                                 <tr id="ManagementAddressesRow" runat="server">
