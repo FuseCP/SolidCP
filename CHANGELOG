@@ -1,6 +1,39 @@
 Version 1.4.2
 - Hosted Organization fix for asp.net v2.0 module.
-
+- (VPS2012/2016/2019) Moved VM generation to template. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added RAM and HDD tracking for VM (Linux support). - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added re-installation of VMs. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added vhd file check. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added random symbols folder generator. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added TimeStamp for Re-install. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added Secure boot option to template. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added automatic generation of VM hostname (HyperV service settings). - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added VM config version chooser (HyperV service settings). - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added a simple install/reinstall queue for VMs. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added VHDX block size control to template. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added custom MAC address. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added progress indicator when creating a VM. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added asynchronous VM deletion. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added maintenance mode (HyperV service settings). - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added an alternative more faster method for getting VM switches. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added the ability to change the provider in HyperV settings. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Added support for External Network over Internal (not recommended option). - With thanks to Genadij Judin
+- Added the ability to add addons when creating a hosting. Part 1. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed when the VM did not shut down when hosting was suspended. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed importing VMs. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed critical vulnerability. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed a rare old bug when viewing server information. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed spam error. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed infinite shutdown/reboot of the VM. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed a bug, where VM folders remained. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed mounting disk phase. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Fixed: VLAN never works for server import. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Simple Hyper-V optimization. - With thanks to Genadij Judin
+- Fixed bug with deleting hosting space with VM element. - With thanks to Genadij Judin
+- Fixed bug with deleting IP-address when removing Hosting Space. - With thanks to Genadij Judin
+- HTML cosmetic fixes. - With thanks to Genadij Judin
+- The SolidCP has become more friendly when creating VMs. - With thanks to Genadij Judin
+- Default sorting of hosting space is set by name. - With thanks to Genadij Judin
 
 Version 1.4.1:
 - Fix for Sharepoint Enterprise regroup
