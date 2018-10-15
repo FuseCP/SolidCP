@@ -20541,8 +20541,8 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '711' AND [ItemTypeID] = '73')
 BEGIN
-	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '73' WHERE QuotaID = '711' & [QuotaName] = N'MsSQL2017.Databases'
-	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '74' WHERE QuotaID = '712' & [QuotaName] = N'MsSQL2017.Users'
+	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '73' WHERE QuotaID = '711' AND [QuotaName] = N'MsSQL2017.Databases'
+	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '74' WHERE QuotaID = '712' AND [QuotaName] = N'MsSQL2017.Users'
 END
 GO
 

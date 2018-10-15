@@ -1,39 +1,54 @@
 Version 1.4.2
+Thank you to all contributors on this release with a special thanks to Genadij Judin and Frans Rampen on large contributions in this release.
 - Hosted Organization fix for asp.net v2.0 module.
-- (VPS2012/2016/2019) Moved VM generation to template. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added RAM and HDD tracking for VM (Linux support). - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added re-installation of VMs. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added vhd file check. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added random symbols folder generator. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added TimeStamp for Re-install. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added Secure boot option to template. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added automatic generation of VM hostname (HyperV service settings). - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added VM config version chooser (HyperV service settings). - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added a simple install/reinstall queue for VMs. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added VHDX block size control to template. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added custom MAC address. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added progress indicator when creating a VM. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added asynchronous VM deletion. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added maintenance mode (HyperV service settings). - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added an alternative more faster method for getting VM switches. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added the ability to change the provider in HyperV settings. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Added support for External Network over Internal (not recommended option). - With thanks to Genadij Judin
-- Added the ability to add addons when creating a hosting. Part 1. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed when the VM did not shut down when hosting was suspended. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed importing VMs. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed critical vulnerability. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed a rare old bug when viewing server information. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed spam error. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed infinite shutdown/reboot of the VM. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed a bug, where VM folders remained. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed mounting disk phase. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Fixed: VLAN never works for server import. - With thanks to Genadij Judin
-- (VPS2012/2016/2019) Simple Hyper-V optimization. - With thanks to Genadij Judin
-- Fixed bug with deleting hosting space with VM element. - With thanks to Genadij Judin
-- Fixed bug with deleting IP-address when removing Hosting Space. - With thanks to Genadij Judin
-- HTML cosmetic fixes. - With thanks to Genadij Judin
-- The SolidCP has become more friendly when creating VMs. - With thanks to Genadij Judin
-- Default sorting of hosting space is set by name. - With thanks to Genadij Judin
+- (VPS2012/2016/2019) Moved VM generation to template.
+- (VPS2012/2016/2019) Added RAM and HDD tracking for VM (Linux support).
+- (VPS2012/2016/2019) Added re-installation of VMs.
+- (VPS2012/2016/2019) Added vhd file check.
+- (VPS2012/2016/2019) Added random symbols folder generator.
+- (VPS2012/2016/2019) Added TimeStamp for Re-install.
+- (VPS2012/2016/2019) Added Secure boot option to template.
+- (VPS2012/2016/2019) Added automatic generation of VM hostname (HyperV service settings).
+- (VPS2012/2016/2019) Added VM config version chooser (HyperV service settings).
+- (VPS2012/2016/2019) Added a simple install/reinstall queue for VMs.
+- (VPS2012/2016/2019) Added VHDX block size control to template.
+- (VPS2012/2016/2019) Added custom MAC address.
+- (VPS2012/2016/2019) Added progress indicator when creating a VM.
+- (VPS2012/2016/2019) Added asynchronous VM deletion.
+- (VPS2012/2016/2019) Added maintenance mode (HyperV service settings).
+- (VPS2012/2016/2019) Added an alternative more faster method for getting VM switches.
+- (VPS2012/2016/2019) Added the ability to change the provider in HyperV settings.
+- (VPS2012/2016/2019) Added support for External Network over Internal (not recommended option).
+- Added the ability to add addons when creating a hosting. Part 1.
+- (VPS2012/2016/2019) Fixed when the VM did not shut down when hosting was suspended.
+- (VPS2012/2016/2019) Fixed importing VMs.
+- (VPS2012/2016/2019) Fixed critical vulnerability.
+- (VPS2012/2016/2019) Fixed a rare old bug when viewing server information.
+- (VPS2012/2016/2019) Fixed spam error.
+- (VPS2012/2016/2019) Fixed infinite shutdown/reboot of the VM.
+- (VPS2012/2016/2019) Fixed a bug, where VM folders remained.
+- (VPS2012/2016/2019) Fixed mounting disk phase.
+- (VPS2012/2016/2019) Fixed: VLAN never works for server import.
+- (VPS2012/2016/2019) Simple Hyper-V optimization.
+- Fixed bug with deleting hosting space with VM element.
+- Fixed bug with deleting IP-address when removing Hosting Space.
+- HTML cosmetic fixes.
+- The SolidCP has become more friendly when creating VMs.
+- Default sorting of hosting space is set by name.
+- RDS 2016 & RDS 2019 Providers.
+- Fix for the FSRM detection on machines not in English.
+- Added mySQL 8 support.
+- Spamexperts Full revamp.
+- Changes to ensure IIS8 and PowerDNS are picked correctly on auto search.
+- Added Cerberus FTP Provider.
+- Exchange 2016 CU6+ Keep sent on behalf items.
+- Fixes for the MSFTP100 provider.
+- Fix for VPS2012 CPU Quota showing when not enabled on hosting space overview.
+- MySQL check if SslMode has not been set and default to false.
+- Fix for a problem in MsSQL 2017 Quotas.
+- Fixes for SQL 2016 on Quota overview.
+- Server 2019 support - Based on version 1809 (Build 17763) which has now been withdrawn.
+- Fixed Account suspension bug
 
 Version 1.4.1:
 - Fix for Sharepoint Enterprise regroup
