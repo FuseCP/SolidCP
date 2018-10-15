@@ -21,4 +21,4 @@ IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.
 	Echo Found VS 2015
 )
 
-%SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Debug /p:Version="1.4.1" /p:FileVersion="1.4.1" /p:VersionLabel="1.4.1" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%
+%SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Debug /p:Version="1.4.2" /p:FileVersion="1.4.2" /p:VersionLabel="1.4.2" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%

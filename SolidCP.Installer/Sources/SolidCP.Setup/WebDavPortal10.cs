@@ -39,6 +39,35 @@ using SolidCP.Setup.Actions;
 namespace SolidCP.Setup
 {
     /// <summary>
+    /// Release 1.4.2
+    /// </summary>
+    public class WebDavPortal142 : WebDavPortal
+    {
+        public static new object Install(object obj)
+        {
+            //
+            return WebDavPortal.InstallBase(obj, "1.0.1");
+        }
+
+        public static new object Uninstall(object obj)
+        {
+            return WebDavPortal.Uninstall(obj);
+        }
+
+        public static new object Setup(object obj)
+        {
+            return WebDavPortal.Setup(obj);
+        }
+
+        public static new object Update(object obj)
+        {
+            return WebDavPortal.UpdateBase(obj,
+                minimalInstallerVersion: "1.0.1",
+                versionToUpgrade: "1.4.1,1.4.0",
+                updateSql: false);
+        }
+    }
+    /// <summary>
     /// Release 1.4.1
     /// </summary>
     public class WebDavPortal141 : WebDavPortal
