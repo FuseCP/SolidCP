@@ -34,6 +34,19 @@ Version 1.4.2
 - HTML cosmetic fixes. - With thanks to Genadij Judin
 - The SolidCP has become more friendly when creating VMs. - With thanks to Genadij Judin
 - Default sorting of hosting space is set by name. - With thanks to Genadij Judin
+- RDS 2016 & RDS 2019 Providers
+- Fix for the FSRM detection on machines not in English
+- Adding MySQL 8 support
+- Spamexperts revamp - With thanks to Frans Rampen
+- Server 2019 support
+- Changes to ensure IIS8 and PowerDNS are picked correctly on auto search.
+- Added Cerberus FTP Provider  - With thanks to Frans Rampen
+- Exchange 2016 CU6+ Keep sent on behalf items
+- Fixes for the MSFTP100 provider
+- Fix for VPS2012 CPU Quota showing when not enabled on hosting space overview
+- MySQL check if SslMode has not been set and default to false.
+- Fix for a problem in MsSQL 2017 Quotas
+- Fixes for SQL 2016 on Quota overview
 
 Version 1.4.1:
 - Fix for Sharepoint Enterprise regroup
