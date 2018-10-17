@@ -95,12 +95,13 @@ namespace SolidCP.Portal
             int ownerId = PanelSecurity.SelectedUserId;
             DataSet l_oPackageData = ES.Services.Packages.GetRawPackageItems(PanelSecurity.PackageId);
 
-            PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
-            if ((PackageStatus)package.StatusId != PackageStatus.Active)
-            {
-                ShowErrorMessage("PACKAGE_CHANGE_STATUS");
-                return;
-            }
+            //old temp fix, not need more.
+            //PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
+            //if ((PackageStatus)package.StatusId != PackageStatus.Active)
+            //{
+            //    ShowErrorMessage("PACKAGE_CHANGE_STATUS");
+            //    return;
+            //}
 
             // delete package
             if (chkConfirm.Checked)
