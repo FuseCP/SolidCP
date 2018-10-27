@@ -40,9 +40,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SolidCP.Providers.FTP.CerberusFTP6")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SolidCP.Providers.FTP.CerberusFTP6")]
-[assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

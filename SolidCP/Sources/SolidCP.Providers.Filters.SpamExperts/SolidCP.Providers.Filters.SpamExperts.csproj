@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\VersionInfo.cs">
+      <Link>VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="SpamExperts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
