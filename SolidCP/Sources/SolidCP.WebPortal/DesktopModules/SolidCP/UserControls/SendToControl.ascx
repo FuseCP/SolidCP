@@ -2,17 +2,13 @@
 <div>
     <div>
         <fieldset>
-                <div>
-                    <div>
-                        <div id="SendPasswordResetEmailDiv" class="form-group" runat="server">
-                            <asp:Label runat="server" CssClass="control-label col-sm-2" AssociatedControlID="chkSendPasswordResetEmail" style="white-space:nowrap;">
+                <div class="form-group">
+                    <div class="col-sm-10 col-sm-offset-2">
+                        <div id="SendPasswordResetEmailDiv" class="input-group" runat="server">
+                            <asp:CheckBox ID="chkSendPasswordResetEmail" runat="server" AutoPostBack="true" OnCheckedChanged="chkSendPasswordResetEmail_StateChanged" />
+                            <asp:Label runat="server" AssociatedControlID="chkSendPasswordResetEmail" style="white-space:nowrap;">
                                 <asp:Localize ID="Localize1" runat="server" meta:resourcekey="chkSendPasswordResetEmailLabel" Text="Send Password Request." />
                             </asp:Label>
-                            <div class="col-sm-10">
-                                <div class="input-group">
-                                    <asp:CheckBox ID="chkSendPasswordResetEmail" runat="server" AutoPostBack="true" OnCheckedChanged="chkSendPasswordResetEmail_StateChanged" CssClass="btn button-primary" />
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

@@ -22,15 +22,6 @@ namespace SolidCP.Portal.UserControls {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl SendPasswordResetEmailDiv;
         
         /// <summary>
-        /// Localize1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize Localize1;
-        
-        /// <summary>
         /// chkSendPasswordResetEmail control.
         /// </summary>
         /// <remarks>
@@ -38,6 +29,15 @@ namespace SolidCP.Portal.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkSendPasswordResetEmail;
+        
+        /// <summary>
+        /// Localize1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize Localize1;
         
         /// <summary>
         /// SendToBody control.
