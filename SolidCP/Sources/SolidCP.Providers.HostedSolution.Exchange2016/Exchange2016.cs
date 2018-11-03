@@ -2877,9 +2877,11 @@ namespace SolidCP.Providers.HostedSolution
                 if (saveSentItems == 1)
                 {
                     cmd.Parameters.Add("MessageCopyForSendOnBehalfEnabled", true);
+                    cmd.Parameters.Add("MessageCopyForSentAsEnabled", true);
                 } else if (saveSentItems == 2)
                 {
                     cmd.Parameters.Add("MessageCopyForSendOnBehalfEnabled", false);
+                    cmd.Parameters.Add("MessageCopyForSentAsEnabled", false);
                 }
 
                 cmd.Parameters.Add("GrantSendOnBehalfTo", SetSendOnBehalfAccounts(runSpace, sendOnBehalfAccounts));
