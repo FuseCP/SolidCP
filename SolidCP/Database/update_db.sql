@@ -20640,3 +20640,13 @@ INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName]
 VALUES(1503, 45, N'RemoteDesktopServices2019', N'Remote Desktop Services Windows 2019', N'SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
 END
 GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1570')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1570, 50, N'MariaDB', N'MariaDB 10.3', N'SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1570'
+END
+GO
