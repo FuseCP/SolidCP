@@ -84,7 +84,7 @@
                       <table id="tablesavesentitems" runat="server" style="width:100%;margin-top:10px;">
     					    <tr>
 	   				            <td align="left">
-                                   <asp:CheckBox ID="chkSaveSentItems" runat="server" meta:resourcekey="chkSaveSentItems" Text="Save sent items" />
+                                   <asp:CheckBox ID="chkSaveSentItems" runat="server" meta:resourcekey="chkSaveSentItems" Text="Copy items sent as and on behalf of this mailbox" />
 			    		        </td>
 		    			    </tr>
 					</table>
