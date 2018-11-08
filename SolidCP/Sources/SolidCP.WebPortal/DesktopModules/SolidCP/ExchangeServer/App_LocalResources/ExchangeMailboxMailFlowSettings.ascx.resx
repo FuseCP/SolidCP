@@ -177,4 +177,7 @@
   <data name="SaveSentItems.Text" xml:space="preserve">
     <value>Save sent items</value>
   </data>
+  <data name="chkSaveSentItems.Text" xml:space="preserve">
+    <value>Copy items sent as and on behalf of this mailbox</value>
+  </data>
 </root>
