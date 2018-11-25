@@ -202,7 +202,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                ExecuteFromStaticObj(new Command("Stop-Job -State Blocked", true), true, true); //first we have to stop blocked jobs
+                ExecuteFromStaticObj(new Command("Stop-Job -State Blocked", true), false, true); //first we have to stop blocked jobs
                 //int hours = 3;
                 Command cmd = new Command("Get-Job | " +
                     "Where-Object { (($_.State -NE 'Running') -AND ($_.State -NE 'Blocked')) -AND ($_.PSEndTime.AddHours(3) -lt (Get-Date)) } " +
