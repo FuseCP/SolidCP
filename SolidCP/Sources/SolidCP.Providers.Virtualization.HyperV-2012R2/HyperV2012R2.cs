@@ -310,8 +310,15 @@ namespace SolidCP.Providers.Virtualization
             {
                 HostedSolutionLog.LogInfo("Before Get-VM command");
                 //TODO: Check different structure of Keeping data.
-                Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
+                //Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
 
+                StringBuilder scriptCommand = new StringBuilder("Get-VM");
+                string stringFormat = " -{0} {1}";
+                if (!string.IsNullOrEmpty(ServerNameSettings))
+                    scriptCommand.AppendFormat(stringFormat, "ComputerName", ServerNameSettings);                
+                scriptCommand.AppendFormat(" | {0}", "Select Id, Name, ReplicationState");
+
+                Command cmd = new Command(scriptCommand.ToString(), true);
                 Collection <PSObject> result = PowerShell.Execute(cmd, true);
 
                 HostedSolutionLog.LogInfo("After Get-VM command");

@@ -208,7 +208,7 @@ namespace SolidCP.Providers.Virtualization
                     "Where-Object { (($_.State -NE 'Running') -AND ($_.State -NE 'Blocked')) -AND ($_.PSEndTime.AddHours(3) -lt (Get-Date)) } " +
                     "| Remove-Job", true);
 
-                ExecuteFromStaticObj(cmd, true, true);
+                ExecuteFromStaticObj(cmd, false, true);
             }
             catch (Exception ex)
             {
@@ -228,7 +228,7 @@ namespace SolidCP.Providers.Virtualization
             cmd.Parameters.Add("Id", jobId);
             cmd.Parameters.Add("Keep");
 
-            return ExecuteFromStaticObj(cmd, true, true);
+            return ExecuteFromStaticObj(cmd, false, true);
         }
 
         ///<summary>
@@ -243,7 +243,7 @@ namespace SolidCP.Providers.Virtualization
                 throw new NullReferenceException("jobId is null");
             cmd.Parameters.Add("Id", jobId);
 
-            return ExecuteFromStaticObj(cmd, true, true); //only for Get-Job or different commands, that can't be packed as Job
+            return ExecuteFromStaticObj(cmd, false, true); //only for Get-Job or different commands, that can't be packed as Job
         }
 
         ///<summary>
@@ -253,7 +253,7 @@ namespace SolidCP.Providers.Virtualization
         {
             //ClearOldJobs();
             Command cmd = new Command("Get-Job");
-            return ExecuteFromStaticObj(cmd, true, true);
+            return ExecuteFromStaticObj(cmd, false, true);
         }
         #endregion
 
