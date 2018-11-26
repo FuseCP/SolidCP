@@ -319,7 +319,7 @@ namespace SolidCP.Providers.Virtualization
                 scriptCommand.AppendFormat(" | {0}", "Select Id, Name, ReplicationState");
 
                 Command cmd = new Command(scriptCommand.ToString(), true);
-                Collection <PSObject> result = PowerShell.Execute(cmd, true);
+                Collection<PSObject> result = PowerShell.Execute(cmd, false, true);
 
                 HostedSolutionLog.LogInfo("After Get-VM command");
                 foreach (PSObject current in result)
