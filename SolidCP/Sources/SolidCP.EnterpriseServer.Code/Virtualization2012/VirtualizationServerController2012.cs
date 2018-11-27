@@ -2313,7 +2313,7 @@ namespace SolidCP.EnterpriseServer
             {
                 newRam = vmSettings.DynamicMemory.Maximum;
 
-                if (vm.RamSize > vmSettings.DynamicMemory.Maximum || vm.RamSize < vmSettings.DynamicMemory.Minimum)
+                if (vmSettings.RamSize > vmSettings.DynamicMemory.Maximum || vmSettings.RamSize < vmSettings.DynamicMemory.Minimum)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
             }
 
