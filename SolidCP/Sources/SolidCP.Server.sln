@@ -229,6 +229,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDesktopServices.Windows2019", "SolidCP.Providers.TerminalServices.Windows2019\SolidCP.Providers.RemoteDesktopServices.Windows2019.csproj", "{6654341F-B39E-4BF4-BB09-D932EF5BFE9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.SimpleDNS80", "SolidCP.Providers.DNS.SimpleDNS80\SolidCP.Providers.DNS.SimpleDNS80.csproj", "{6ABF020A-1BC1-4833-A5B4-017A23428AC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1121,6 +1123,18 @@ Global
 		{6654341F-B39E-4BF4-BB09-D932EF5BFE9B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6654341F-B39E-4BF4-BB09-D932EF5BFE9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{6654341F-B39E-4BF4-BB09-D932EF5BFE9B}.Release|x86.Build.0 = Release|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Debug|x86.Build.0 = Debug|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|x86.ActiveCfg = Release|Any CPU
+		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

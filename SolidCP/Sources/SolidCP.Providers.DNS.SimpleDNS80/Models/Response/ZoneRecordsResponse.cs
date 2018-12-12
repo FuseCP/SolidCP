@@ -31,12 +31,11 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     public partial class ZoneRecordsResponse
     {
         [JsonProperty("Name")]

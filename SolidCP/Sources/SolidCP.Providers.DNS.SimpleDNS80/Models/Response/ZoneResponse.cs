@@ -30,11 +30,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
 {
-    using System.Collections.Generic;
-    using Newtonsoft.Json;
-
     public partial class ZoneResponse
     {
         [JsonProperty("Name")]
