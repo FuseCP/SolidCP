@@ -54,7 +54,7 @@ namespace SolidCP.Providers.DNS
         #region Properties
         private int ExpireLimit => ProviderSettings.GetInt("ExpireLimit");
 
-        private int MinimumTTL => ProviderSettings.GetInt("MinimumTTL");
+        public int MinimumTTL => ProviderSettings.GetInt("MinimumTTL");
 
         private int RefreshInterval => ProviderSettings.GetInt("RefreshInterval");
 
@@ -295,7 +295,7 @@ namespace SolidCP.Providers.DNS
                 //Build up the content
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
                 //PUT the content to the API
-                var response = client.PatchAsync(new Uri(endpoint), content).Result;
+                var response = client.PatchAsync(new Uri($"{SimpleDnsUrl}/v2/{endpoint}"), content).Result;
                 //Check if the PUT was successful
                 var responseContent = response.Content.ReadAsStringAsync().Result;
                 //Check if there was an error from the API
@@ -488,11 +488,11 @@ namespace SolidCP.Providers.DNS
             var content = new List<ZoneRecordsResponse>
             {
                 //Add DnsRecord to it
-                record.ToZoneRecordsResponse()
+                record.ToZoneRecordsResponse(MinimumTTL)
             };
 
             //Call API to PATCH record
-            ApiPatch($"/zones/{zoneName}/records", content.ToJson());
+            ApiPatch($"zones/{zoneName}/records", content.ToJson());
         }
 
         public void AddZoneRecords(string zoneName, DnsRecord[] records)
@@ -504,7 +504,7 @@ namespace SolidCP.Providers.DNS
                 return;
 
             //Declare content to be patched
-            var content = records.Select(record => record.ToZoneRecordsResponse()).ToList();
+            var content = records.Select(record => record.ToZoneRecordsResponse(MinimumTTL)).ToList();
 
             //Call API to PATCH records
             ApiPatch($"/zones/{zoneName}/records", content.ToJson());
@@ -519,7 +519,7 @@ namespace SolidCP.Providers.DNS
                 throw new ArgumentNullException(nameof(record));
 
             //Convert the record to the delete model
-            var deleteRequest = (ZoneRecordsDeleteRequest)record.ToZoneRecordsResponse();
+            var deleteRequest = (ZoneRecordsDeleteRequest)record.ToZoneRecordsResponse(MinimumTTL);
             deleteRequest.Remove = true;
 
             //Call API to PATCH record
@@ -537,7 +537,7 @@ namespace SolidCP.Providers.DNS
             var deleteRequests = new List<ZoneRecordsDeleteRequest>();
             foreach (var record in records)
             {
-                var dr = (ZoneRecordsDeleteRequest) record.ToZoneRecordsResponse();
+                var dr = (ZoneRecordsDeleteRequest) record.ToZoneRecordsResponse(MinimumTTL);
                 dr.Remove = true;
                 deleteRequests.Add(dr);
             }

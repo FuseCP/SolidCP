@@ -77,7 +77,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
             return dnsRecords.ToArray();
         }
 
-        public static ZoneRecordsResponse ToZoneRecordsResponse(this DnsRecord record)
+        public static ZoneRecordsResponse ToZoneRecordsResponse(this DnsRecord record, int minimumTTL)
         {
             //Declare the result
             var response = new ZoneRecordsResponse();
@@ -85,13 +85,20 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
             //Build up the response
             response.Name = record.RecordName;
             response.Type = record.RecordType.ToString();
-            response.Ttl = Convert.ToInt32(record.RecordText.Split('\t')[1]);
-            if (record.MxPriority != default(int))
-                response.Data = $"{record.MxPriority} {record.RecordData}";
-            else if (record.SrvPriority != default(int))
-                response.Data = $"{record.SrvPriority} {record.SrvWeight} {record.SrvPort} {record.RecordData}";
-            else
-                response.Data = record.RecordData ?? "";
+            response.Ttl = record.RecordText == null ? minimumTTL : Convert.ToInt32(record.RecordText.Split('\t')[1]);
+            // ReSharper disable once SwitchStatementMissingSomeCases
+            switch (record.RecordType)
+            {
+                case DnsRecordType.MX:
+                    response.Data = $"{record.MxPriority} {record.RecordData}";
+                    break;
+                case DnsRecordType.SRV:
+                    response.Data = $"{record.SrvPriority} {record.SrvWeight} {record.SrvPort} {record.RecordData}";
+                    break;
+                default:
+                    response.Data = record.RecordData ?? "";
+                    break;
+            }
             //Return the response
             return response;
         }
