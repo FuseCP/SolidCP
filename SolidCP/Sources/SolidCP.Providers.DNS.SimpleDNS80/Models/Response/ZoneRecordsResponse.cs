@@ -91,8 +91,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
             else if (record.SrvPriority != default(int))
                 response.Data = $"{record.SrvPriority} {record.SrvWeight} {record.SrvPort} {record.RecordData}";
             else
-                response.Data = record.RecordData;
-
+                response.Data = record.RecordData ?? "";
             //Return the response
             return response;
         }
@@ -153,7 +152,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
 
             //Build up the rest of the record
             //If data is already set, don't change it
-            if (!string.IsNullOrWhiteSpace(resultRecord.RecordData))
+            if (string.IsNullOrWhiteSpace(resultRecord.RecordData))
                 resultRecord.RecordData = record.Data;
             //Build the remaining fields of the record
             resultRecord.RecordName = record.Name;

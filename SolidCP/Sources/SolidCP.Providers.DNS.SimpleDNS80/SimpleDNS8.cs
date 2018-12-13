@@ -38,6 +38,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using SolidCP.Providers.DNS.SimpleDNS80;
 using SolidCP.Providers.DNS.SimpleDNS80.Models;
 using SolidCP.Providers.DNS.SimpleDNS80.Models.Request;
 using SolidCP.Providers.DNS.SimpleDNS80.Models.Response;
@@ -46,7 +47,7 @@ using SolidCP.Server.Utils;
 // ReSharper disable InconsistentNaming
 // ReSharper disable InvertIf
 
-namespace SolidCP.Providers.DNS.SimpleDNS80
+namespace SolidCP.Providers.DNS
 {
     public class SimpleDNS8 : HostingServiceProviderBase, IDnsServer
     {
@@ -338,6 +339,15 @@ namespace SolidCP.Providers.DNS.SimpleDNS80
 
         #endregion
 
+        #region Public Methods
+
+        public SimpleDNS8()
+        {
+            
+        }
+
+        #endregion
+
         public override bool IsInstalled()
         {
             //Call statistics endpoint
@@ -433,8 +443,6 @@ namespace SolidCP.Providers.DNS.SimpleDNS80
             //Null checking
             if (string.IsNullOrWhiteSpace(zoneName))
                 throw new ArgumentNullException(nameof(zoneName));
-            if (string.IsNullOrWhiteSpace(host))
-                throw new ArgumentNullException(nameof(host));
             if (string.IsNullOrWhiteSpace(primaryNsServer))
                 throw new ArgumentNullException(nameof(primaryNsServer));
             if (string.IsNullOrWhiteSpace(primaryPerson))
@@ -493,7 +501,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS80
             if (string.IsNullOrWhiteSpace(zoneName))
                 throw new ArgumentNullException(nameof(zoneName));
             if (records.Length == 0 || records[0] == null)
-                throw new ArgumentNullException(nameof(records));
+                return;
 
             //Declare content to be patched
             var content = records.Select(record => record.ToZoneRecordsResponse()).ToList();
