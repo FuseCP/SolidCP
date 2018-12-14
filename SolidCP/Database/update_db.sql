@@ -149,6 +149,13 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+-- SimpleDNS 8.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1901')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1901, 7, N'SimpleDNS', N'SimpleDNS Plus 8.x', N'SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80', N'SimpleDNS', NULL)
+END
+GO
+
 -- MSSQL 2016 / Maria DB quota fix:
 
 UPDATE [Quotas] SET [ItemTypeID] = '71' WHERE [QuotaID] = '701' AND [ItemTypeID] = '39'
@@ -17227,6 +17234,12 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+-- SimpleDNS 8.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1901' AND DisplayName = 'SimpleDNS Plus 8.x')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1901, 7, N'SimpleDNS', N'SimpleDNS Plus 8.x', N'SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80', N'SimpleDNS', NULL)
+END
+GO
 
 -- Proxmox Provider
 
