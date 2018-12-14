@@ -488,7 +488,7 @@ namespace SolidCP.Providers.DNS
             var content = new List<ZoneRecordsResponse>
             {
                 //Add DnsRecord to it
-                record.ToZoneRecordsResponse(MinimumTTL)
+                record.ToZoneRecordsResponse(MinimumTTL, zoneName)
             };
 
             //Call API to PATCH record
@@ -504,10 +504,10 @@ namespace SolidCP.Providers.DNS
                 return;
 
             //Declare content to be patched
-            var content = records.Select(record => record.ToZoneRecordsResponse(MinimumTTL)).ToList();
+            var content = records.Select(record => record.ToZoneRecordsResponse(MinimumTTL, zoneName)).ToList();
 
             //Call API to PATCH records
-            ApiPatch($"/zones/{zoneName}/records", content.ToJson());
+            ApiPatch($"zones/{zoneName}/records", content.ToJson());
         }
 
         public void DeleteZoneRecord(string zoneName, DnsRecord record)
@@ -518,12 +518,15 @@ namespace SolidCP.Providers.DNS
             if (record == null)
                 throw new ArgumentNullException(nameof(record));
 
-            //Convert the record to the delete model
-            var deleteRequest = (ZoneRecordsDeleteRequest)record.ToZoneRecordsResponse(MinimumTTL);
-            deleteRequest.Remove = true;
+            //Declare content to be patched
+            var content = new List<ZoneRecordsDeleteRequest>
+            {
+                //Convert record into delete request
+                new ZoneRecordsDeleteRequest(record.ToZoneRecordsResponse(MinimumTTL, zoneName))
+            };
 
             //Call API to PATCH record
-            ApiPatch($"/zones/{zoneName}/records", deleteRequest.ToJson());
+            ApiPatch($"zones/{zoneName}/records", content.ToJson());
         }
 
         public void DeleteZoneRecords(string zoneName, DnsRecord[] records)
@@ -534,16 +537,11 @@ namespace SolidCP.Providers.DNS
             if (records.Length == 0 || records[0] == null)
                 throw new ArgumentNullException(nameof(records));
 
-            var deleteRequests = new List<ZoneRecordsDeleteRequest>();
-            foreach (var record in records)
-            {
-                var dr = (ZoneRecordsDeleteRequest) record.ToZoneRecordsResponse(MinimumTTL);
-                dr.Remove = true;
-                deleteRequests.Add(dr);
-            }
+            //Build up list of delete requests
+            var deleteRequests = records.Select(record => new ZoneRecordsDeleteRequest(record.ToZoneRecordsResponse(MinimumTTL, zoneName))).ToList();
 
             //Call API to PATCH record
-            ApiPatch($"/zones/{zoneName}/records", deleteRequests.ToJson());
+            ApiPatch($"zones/{zoneName}/records", deleteRequests.ToJson());
         }
     }
 }

@@ -77,10 +77,14 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
             return dnsRecords.ToArray();
         }
 
-        public static ZoneRecordsResponse ToZoneRecordsResponse(this DnsRecord record, int minimumTTL)
+        public static ZoneRecordsResponse ToZoneRecordsResponse(this DnsRecord record, int minimumTTL, string zoneName)
         {
             //Declare the result
             var response = new ZoneRecordsResponse();
+
+            //Check that the record is in SDNS format
+            if (!record.RecordName.Contains(zoneName))
+                record.RecordName = $"{record.RecordName}.{zoneName}";
 
             //Build up the response
             response.Name = record.RecordName;
@@ -139,9 +143,6 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
                 case "NS":
                     resultRecord.RecordType = DnsRecordType.NS;
                     break;
-                case "PTR":
-                    resultRecord.RecordType = DnsRecordType.PTR;
-                    break;
                 case "SOA":
                     resultRecord.RecordType = DnsRecordType.SOA;
                     break;
@@ -151,6 +152,9 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
                     resultRecord.SrvWeight = Convert.ToInt32(record.Data.Split(' ')[1]);
                     resultRecord.SrvPort = Convert.ToInt32(record.Data.Split(' ')[2]);
                     resultRecord.RecordData = record.Data.Split(' ')[3];
+                    break;
+                case "TXT":
+                    resultRecord.RecordType = DnsRecordType.TXT;
                     break;
                 default:
                     resultRecord.RecordType = DnsRecordType.Other;

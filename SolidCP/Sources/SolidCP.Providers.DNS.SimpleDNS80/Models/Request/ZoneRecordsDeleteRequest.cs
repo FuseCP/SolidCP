@@ -37,6 +37,16 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Request
 {
     public class ZoneRecordsDeleteRequest : ZoneRecordsResponse
     {
+        public ZoneRecordsDeleteRequest(ZoneRecordsResponse baseResponse)
+        {
+            Name = baseResponse.Name;
+            Type = baseResponse.Type;
+            Ttl = baseResponse.Ttl;
+            Data = baseResponse.Data;
+            Comment = baseResponse.Comment;
+            Remove = true;
+        }
+
         [JsonProperty("Remove")]
         public bool Remove { get; set; }
     }

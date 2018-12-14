@@ -76,6 +76,7 @@
                     <asp:DropDownList ID="ddlRecordType" runat="server" SelectedValue='<%# Bind("RecordType") %>' CssClass="form-control" Width="110px" AutoPostBack="True" OnSelectedIndexChanged="ddlRecordType_SelectedIndexChanged">
                         <asp:ListItem>A</asp:ListItem>
 	                    <asp:ListItem>AAAA</asp:ListItem>
+                        <asp:ListItem>CAA</asp:ListItem>
                         <asp:ListItem>MX</asp:ListItem>
                         <asp:ListItem>NS</asp:ListItem>
                         <asp:ListItem>TXT</asp:ListItem>
