@@ -34,13 +34,14 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.IO;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
-
+using Newtonsoft.Json;
 using SolidCP.EnterpriseServer;
 
 namespace SolidCP.Portal
@@ -112,6 +113,16 @@ namespace SolidCP.Portal
                     EditDnsRecords.Visible = (cntx.Quotas.ContainsKey(Quotas.DNS_EDITOR)
                         && cntx.Quotas[Quotas.DNS_EDITOR].QuotaAllocatedValue != 0)
                         || PanelSecurity.LoggedUser.Role == UserRole.Administrator;
+
+                    //DNS Export
+                    ExportDnsRecords.Visible = (cntx.Quotas.ContainsKey(Quotas.DNS_EDITOR)
+                                                && cntx.Quotas[Quotas.DNS_EDITOR].QuotaAllocatedValue != 0)
+                                               || PanelSecurity.LoggedUser.Role == UserRole.Administrator;
+
+                    //DNS Import
+                    ImportDnsRecords.Visible = (cntx.Quotas.ContainsKey(Quotas.DNS_EDITOR)
+                                                && cntx.Quotas[Quotas.DNS_EDITOR].QuotaAllocatedValue != 0)
+                                               || PanelSecurity.LoggedUser.Role == UserRole.Administrator;
                 }
 
                 // Preview Domain
@@ -356,6 +367,44 @@ namespace SolidCP.Portal
                 ShowErrorMessage("DOMAIN_CREATE_INSTANT_ALIAS", ex);
                 return;
             }
+        }
+
+        protected void ExportDnsRecords_OnClick(object sender, EventArgs e)
+        {
+            try
+            {
+                //Get the DNS records for the current domain
+                var records = ES.Services.Servers.GetDnsZoneRecords(PanelRequest.DomainID);
+                //Serialize the records into JSON format
+                var json = JsonConvert.SerializeObject(records, Formatting.Indented);
+                //Start the response
+                Response.Clear();
+                //Add the headers
+                Response.AddHeader("Content-Disposition", "attachment; filename=zone.json");
+                //Write contents to temporary file
+                var tempFile = Path.GetTempFileName();
+                using (var sw = new StreamWriter(tempFile))
+                    sw.Write(json);
+                //Read into memory
+                var buffer = File.ReadAllBytes(tempFile);
+                //Output the bytes
+                Response.BinaryWrite(buffer);
+                //End the response
+                Response.End();
+                //Clean up the temporary file
+                File.Delete(tempFile);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("DOMAIN_EXPORT", ex);
+            }
+        }
+
+        protected void ImportDnsRecords_OnClick(object sender, EventArgs e)
+        {
+            //Redirect to the import view
+            Response.Redirect(EditUrl("DomainID", PanelRequest.DomainID.ToString(), "import_zones",
+                "SpaceID=" + PanelSecurity.PackageId.ToString()));
         }
     }
 }
