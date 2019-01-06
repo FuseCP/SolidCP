@@ -442,7 +442,8 @@ namespace SolidCP.Providers.Virtualization
                 PowerShell.Execute(cmdNew, true, true);
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
-                NetworkAdapterHelper.Delete(PowerShell, vm.Name, "000000000000");
+                if(vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled) //leave the adapter as default if we do not configure a new one (bugfix for Windows Server 2019, ******* MS!)
+                    NetworkAdapterHelper.Delete(PowerShell, vm.Name, "000000000000");
 
                 // Set VM
                 Command cmdSet = new Command("Set-VM");
@@ -1889,6 +1890,9 @@ namespace SolidCP.Providers.Virtualization
                     break;
                 case 17134: //Windows 10 1803
                     VersionsConfig = new double[] { 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 17763: //Windows Server 2019/Windows 10 1809
+                    VersionsConfig = new double[] { 9.0, 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
                     break;
                 default:    //If we don't know or Windwos too old (Windows 2012R2)
                     VersionsConfig = new double[] { -1.0 };
