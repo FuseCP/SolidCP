@@ -20599,7 +20599,10 @@ GO
 
 -- MySQL 8.0
 
+IF EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = N'MySQL8')
+BEGIN
 INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (90, N'MySQL8', 12, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
+END
 GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.0')
