@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching Application Block", "Caching Application Block", "{C8E6F2E4-A5B8-486A-A56E-92D864524682}"
 	ProjectSection(SolutionItems) = preProject
@@ -172,6 +172,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Database.MariaDB", "SolidCP.Providers.Database.MariaDB\SolidCP.Providers.Database.MariaDB.csproj", "{FE00ABFA-44B3-48E3-8FD0-C8946357B267}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.Exchange2016", "SolidCP.Providers.HostedSolution.Exchange2016\SolidCP.Providers.HostedSolution.Exchange2016.csproj", "{EFDE132E-70D9-484A-A66E-F54248A8A2C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.Exchange2019", "SolidCP.Providers.HostedSolution.Exchange2019\SolidCP.Providers.HostedSolution.Exchange2019.csproj", "{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2016", "SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj", "{4396082E-EC55-4741-A183-D0E374ADC2FD}"
 EndProject
@@ -905,6 +907,18 @@ Global
 		{EFDE132E-70D9-484A-A66E-F54248A8A2C1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EFDE132E-70D9-484A-A66E-F54248A8A2C1}.Release|x86.ActiveCfg = Release|Any CPU
 		{EFDE132E-70D9-484A-A66E-F54248A8A2C1}.Release|x86.Build.0 = Release|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Debug|x86.Build.0 = Debug|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Release|x86.ActiveCfg = Release|Any CPU
+		{DFB0EEE9-389B-43B0-BCB3-46E639F31B3D}.Release|x86.Build.0 = Release|Any CPU
 		{4396082E-EC55-4741-A183-D0E374ADC2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4396082E-EC55-4741-A183-D0E374ADC2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4396082E-EC55-4741-A183-D0E374ADC2FD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
