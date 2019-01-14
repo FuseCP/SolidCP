@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -67,12 +67,12 @@ using Microsoft.Web.Administration;
 
 namespace SolidCP.Providers.HostedSolution
 {
-    public class Exchange2016 : HostingServiceProviderBase, IExchangeServer
+    public class Exchange2019 : HostingServiceProviderBase, IExchangeServer
     {
 
         static private Hashtable htBbalancer = new Hashtable();
 
-        static Exchange2016()
+        static Exchange2019()
         {
             AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolveExchangeAssembly);
             ExchangeRegistryPath = "SOFTWARE\\Microsoft\\ExchangeServer\\v15\\Setup";
