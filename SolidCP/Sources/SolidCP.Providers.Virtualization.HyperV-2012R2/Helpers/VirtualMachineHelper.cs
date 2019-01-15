@@ -24,12 +24,60 @@ namespace SolidCP.Providers.Virtualization
             Collection<PSObject> result = powerShell.Execute(cmd, true);
             if (result != null && result.Count > 0)
             {
-                var statusString = result[0].GetProperty("PrimaryOperationalStatus");
+                //var statusString = result[0].GetProperty("PrimaryOperationalStatus");
+                string statusString = TryToGetStatusString(result, "PrimaryOperationalStatus");
 
                 if (statusString != null)
-                    status = (OperationalStatus)Enum.Parse(typeof(OperationalStatus), statusString.ToString());
+                    status = (OperationalStatus)Enum.Parse(typeof(OperationalStatus), statusString); //statusString.ToString()
             }
             return status;
+        }
+
+        private static string TryToGetStatusString(Collection<PSObject> result, string propertyName, bool isLast = false) //burn in hell MS for your bugs!
+        {
+            string status = null;
+            try
+            {
+                var statusString = result[0].GetProperty(propertyName);
+                if (statusString != null)
+                    status = statusString.ToString();
+            }
+            catch
+            {
+                if(!isLast)
+                    status = ConvertToOperationalStatusTypeString(TryToGetStatusString(result, "PrimaryStatusDescription", true));
+                else
+                    HostedSolution.HostedSolutionLog.LogWarning("GetVMHeartBeatStatus: can not get OperationalStatus");
+            }
+            
+            return status;
+        }
+
+        private static string ConvertToOperationalStatusTypeString(string str)
+        {
+            switch (str)
+            {
+                case "OK":
+                    {
+                        str = "Ok";
+                        break;
+                    }
+                case "No Contact":
+                    {
+                        str = "NoContact";
+                        break;
+                    }
+                case "Lost Communication":
+                    {
+                        str = "LostCommunication";
+                        break;
+                    }
+                default:
+                    {
+                        break;
+                    }
+            }
+            return str;
         }
 
         public static int GetVMProcessors(PowerShellManager powerShell, string name)

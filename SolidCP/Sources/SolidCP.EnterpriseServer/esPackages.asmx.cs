@@ -331,7 +331,8 @@ namespace SolidCP.EnterpriseServer
                     //SEPlugin.SE.DeleteDomain(domain);
 
                 //return IPs back to ParentPackage
-                ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
+                if(package.ParentPackageId != 1) // 1 is System (serveradmin), we don't want assign IP to the serveradmin.
+                    ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
             }
 
             return res;
