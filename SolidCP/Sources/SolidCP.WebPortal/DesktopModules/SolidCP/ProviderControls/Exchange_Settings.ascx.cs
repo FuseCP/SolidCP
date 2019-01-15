@@ -50,6 +50,7 @@ namespace SolidCP.Portal.ProviderControls
         public const int EXCHANGE2010SP2_PROVIDER_ID = 90;
         public const int EXCHANGE2013_PROVIDER_ID = 91;
         public const int EXCHANGE2016_PROVIDER_ID = 92;
+        public const int EXCHANGE2019_PROVIDER_ID = 93;
 
         private string[] ConvertDictionaryToArray(StringDictionary settings)
         {
@@ -163,6 +164,20 @@ namespace SolidCP.Portal.ProviderControls
                             break;
 
                     case EXCHANGE2016_PROVIDER_ID:
+                        clusteredMailboxServer.Visible = false;
+                        txtMailboxClusterName.Text = "";
+
+                        storageGroup.Visible = false;
+                        txtStorageGroup.Text = "";
+
+                        locMailboxDatabase.Visible = false;
+                        powershellUrl1.Visible = powershellUrl2.Visible = true;
+
+                        archivingGroup.Visible = true;
+                        Ex2016CU6orhigher.Visible = true;
+                        break;
+
+                    case EXCHANGE2019_PROVIDER_ID:
                         clusteredMailboxServer.Visible = false;
                         txtMailboxClusterName.Text = "";
 
