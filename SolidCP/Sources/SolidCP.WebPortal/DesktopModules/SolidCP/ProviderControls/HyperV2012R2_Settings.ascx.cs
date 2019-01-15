@@ -130,6 +130,8 @@ namespace SolidCP.Portal.ProviderControls
 
             // host name
             txtHostnamePattern.Text = settings["HostnamePattern"];
+            if (string.IsNullOrEmpty(txtHostnamePattern.Text))
+                txtHostnamePattern.Text = "[NetBIOSName].domain.local";
 
             // start action
             radioStartAction.SelectedValue = settings["StartAction"];

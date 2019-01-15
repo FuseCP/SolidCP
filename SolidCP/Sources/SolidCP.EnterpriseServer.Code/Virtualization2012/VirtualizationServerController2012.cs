@@ -32,7 +32,6 @@
 
 using System;
 using System.Data;
-using System.Xml;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
@@ -44,8 +43,6 @@ using System.Text;
 using System.Collections;
 using System.Net.Mail;
 using System.Diagnostics;
-﻿using System.Linq;
-﻿using System.Net;
 ﻿using SolidCP.EnterpriseServer.Code.Virtualization2012;
 ﻿using SolidCP.Providers.Virtualization2012;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
@@ -59,6 +56,7 @@ namespace SolidCP.EnterpriseServer
         private const string SHUTDOWN_REASON_CHANGE_CONFIG = "SolidCP - changing VPS configuration";
         private const Int64 Size1G = 0x40000000;
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
+        private const string SCP_HOSTNAME_PREFIX = "SCP-"; //min and max are 4 symbols! ([0-9][A-z] and -)
         private const string MAINTENANCE_MODE_EMABLED = "enabled";
 
         // default server creation (if "Unlimited" was specified in the hosting plan)
@@ -495,7 +493,7 @@ namespace SolidCP.EnterpriseServer
                     string hostnamePattern = settings["HostnamePattern"];                    
                     if (hostnamePattern.IndexOf("[") == -1) //If we do not find a pattern, replace the string with the default value
                     {
-                        hostnamePattern = "ip-[ip_last_4_octects]-id[space_id].hostname.local";
+                        hostnamePattern = "[netbiosname].localhost.local";
                     }
                     VMSettings.Name = EvaluateSpaceVariables(hostnamePattern, packageId);
                 }
@@ -1556,6 +1554,27 @@ namespace SolidCP.EnterpriseServer
 
             // build task parameters
             Dictionary<string, string> props = new Dictionary<string, string>();
+            
+            #region Check Hostname
+            //Check Hostname
+            string hostname, domain;
+            int dotIdx = computerName.IndexOf(".");
+            if (dotIdx > -1)
+            {
+                hostname = computerName.Substring(0, dotIdx);
+                domain = computerName.Substring(dotIdx);
+            }
+            else
+            {
+                hostname = computerName;
+                domain = "";
+            }
+
+            if (hostname.Length > 15) //MAX hostname size is 15!
+            {
+                computerName = hostname.Substring(0, hostname.Length - (hostname.Length - 15)) + domain;
+            }
+            #endregion
 
             props["FullComputerName"] = computerName;
 
@@ -1811,6 +1830,7 @@ namespace SolidCP.EnterpriseServer
         {
             str = Utils.ReplaceStringVariable(str, "guid", Guid.NewGuid().ToString("N"));
             str = Utils.ReplaceStringVariable(str, "mac", GenerateMacAddress());
+            str = Utils.ReplaceStringVariable(str, "netbiosname", GenerateFakeNetBIOS());
 
             return str;
         }
@@ -4474,13 +4494,18 @@ namespace SolidCP.EnterpriseServer
             int dotIdx = vm.Name.IndexOf(".");
             if (dotIdx > -1)
             {
-                vm.Hostname = vm.Name.Substring(0, dotIdx);
+                vm.Hostname = vm.Name.Substring(0, dotIdx);                
                 vm.Domain = vm.Name.Substring(dotIdx + 1);
             }
             else
             {
                 vm.Hostname = vm.Name;
                 vm.Domain = "";
+            }
+
+            if (vm.Hostname.Length > 15) //MAX hostname size is 15!
+            {
+                vm.Hostname = vm.Hostname.Substring(0, vm.Hostname.Length - (vm.Hostname.Length - 15));
             }
 
             // check if task was aborted during provisioning
@@ -4541,6 +4566,11 @@ namespace SolidCP.EnterpriseServer
         public static string GenerateMacAddress()
         {
             return MS_MAC_PREFIX + Utils.GetRandomHexString(3);
+        }
+
+        public static string GenerateFakeNetBIOS()
+        {
+            return SCP_HOSTNAME_PREFIX + Utils.GetRandomString(11);
         }
 
         #endregion
