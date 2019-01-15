@@ -162,8 +162,11 @@ namespace SolidCP.Portal.ProviderControls
         }
 
         void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
-        {
-            settings["ServerName"] = txtServerName.Text.Trim();
+        {            
+            if (radioServer.SelectedIndex == 0)
+                settings["ServerName"] = "";
+            else
+                settings["ServerName"] = txtServerName.Text.Trim();
 
             // MaintenanceMode
             settings["MaintenanceMode"] = radioMaintenanceMode.SelectedValue;
