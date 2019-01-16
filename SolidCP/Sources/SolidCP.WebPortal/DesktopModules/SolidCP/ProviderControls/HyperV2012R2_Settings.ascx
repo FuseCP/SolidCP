@@ -333,7 +333,7 @@
 		                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtVhdBlockSizeBytes" Text='<%# Eval("VhdBlockSizeBytes") %>'></asp:TextBox>
 	                </td>
                     <td>
-		                <asp:Localize ID="LocBlockSizeDesc" runat="server" meta:resourcekey="LocBlockSizeDesc" Text="Default value is 0. Examples: 512KB, 1MB, 32MB, etc."></asp:Localize>
+		                <asp:Localize ID="LocBlockSizeDesc" runat="server" meta:resourcekey="LocBlockSizeDesc" Text="Default value is 0. Examples: 1024KB, 1MB, 32MB, etc."></asp:Localize>
 	                </td>
                 </tr>
 

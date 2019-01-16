@@ -526,6 +526,9 @@ namespace SolidCP.Portal.ProviderControls
                 {
                     VhdBlockSizeBytes = 0;
                 }
+
+                if (VhdBlockSizeBytes != 0 && VhdBlockSizeBytes < Utils.MinBlockSizeBytes)
+                    VhdBlockSizeBytes = Utils.MinBlockSizeBytes;
             }
             return VhdBlockSizeBytes;
         }

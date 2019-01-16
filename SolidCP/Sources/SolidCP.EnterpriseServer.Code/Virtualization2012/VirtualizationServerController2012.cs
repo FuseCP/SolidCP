@@ -1136,6 +1136,8 @@ namespace SolidCP.EnterpriseServer
                 #region Create Virtual Machine
                 TaskManager.Write("VPS_CREATE_CPU_CORES", vm.CpuCores.ToString());
                 TaskManager.Write("VPS_CREATE_RAM_SIZE", vm.RamSize.ToString());
+                TaskManager.Write("VPS_CREATE_VHD_MIN_IOPS", vm.HddMinimumIOPS.ToString());
+                TaskManager.Write("VPS_CREATE_VHD_MAX_IOPS", vm.HddMaximumIOPS.ToString());
                 TaskManager.Write("VPS_CREATE_CREATE_VM");
                 TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
                 // create virtual machine
