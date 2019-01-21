@@ -329,10 +329,20 @@ namespace SolidCP.EnterpriseServer
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
                 privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses, vmSettings);
         }
-
-        public static IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail, 
+        public static IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
             int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
             int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
+        {
+            return CreateNewVirtualMachineInternal(VMSettings, osTemplateFile, password, summaryLetterEmail,
+            externalAddressesNumber, randomExternalAddresses, externalAddresses,
+            privateAddressesNumber, randomPrivateAddresses, privateAddresses,
+            true);
+        }
+
+        private static IntResult CreateNewVirtualMachineInternal(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail, 
+            int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+            bool createMetaItem)
         {
             // result object
             IntResult res = new IntResult();            
@@ -359,23 +369,25 @@ namespace SolidCP.EnterpriseServer
                 List<string> quotaResults = new List<string>();
                 PackageContext cntx = PackageController.GetPackageContext(packageId);
 
-                // dynamic memory
-                var newRam = VMSettings.RamSize;
-                if (VMSettings.DynamicMemory != null && VMSettings.DynamicMemory.Enabled)
+                if (createMetaItem) //don't need check Quota of some parameters if we reinstall server.
                 {
-                    newRam = VMSettings.DynamicMemory.Maximum;
+                    // dynamic memory
+                    var newRam = VMSettings.RamSize;
+                    if (VMSettings.DynamicMemory != null && VMSettings.DynamicMemory.Enabled)
+                    {
+                        newRam = VMSettings.DynamicMemory.Maximum;
 
-                    if (VMSettings.RamSize > VMSettings.DynamicMemory.Maximum || VMSettings.RamSize < VMSettings.DynamicMemory.Minimum)
-                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
+                        if (VMSettings.RamSize > VMSettings.DynamicMemory.Maximum || VMSettings.RamSize < VMSettings.DynamicMemory.Minimum)
+                            quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
+                    }
+
+                    QuotaHelper.CheckListsQuota(cntx, quotaResults, Quotas.VPS2012_SERVERS_NUMBER, VirtualizationErrorCodes.QUOTA_EXCEEDED_SERVERS_NUMBER);
+
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, VMSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, VMSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, VMSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
                 }
-
-                QuotaHelper.CheckListsQuota(cntx, quotaResults, Quotas.VPS2012_SERVERS_NUMBER, VirtualizationErrorCodes.QUOTA_EXCEEDED_SERVERS_NUMBER);
-
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, VMSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, VMSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
-                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, VMSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
-
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, VMSettings.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, VMSettings.BootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
 
@@ -387,6 +399,7 @@ namespace SolidCP.EnterpriseServer
 
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, VMSettings.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, VMSettings.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+
 
                 // check external addresses number
                 if (!randomExternalAddresses && externalAddresses != null)
@@ -504,8 +517,11 @@ namespace SolidCP.EnterpriseServer
                                                                                       typeof(VirtualMachine));
                     if (item != null)
                     {
-                        res.ErrorCodes.Add(VirtualizationErrorCodes.HOST_NAMER_IS_ALREADY_USED);
-                        return res;
+                        if(item.Id != VMSettings.Id)
+                        {
+                            res.ErrorCodes.Add(VirtualizationErrorCodes.HOST_NAMER_IS_ALREADY_USED);
+                            return res;
+                        }                        
                     }
                 }
                 catch (Exception ex)
@@ -513,7 +529,6 @@ namespace SolidCP.EnterpriseServer
                     res.AddError(VirtualizationErrorCodes.CANNOT_CHECK_HOST_EXISTS, ex);
                     return res;
                 }
-
                 #endregion
 
                 #region Create meta item
@@ -530,22 +545,6 @@ namespace SolidCP.EnterpriseServer
                 vm.CurrentTaskId = Guid.NewGuid().ToString("N"); // generate creation task id
                 vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
 
-                //vm.Generation = otherSettings.Generation; get from Template
-                //vm.CpuCores = cpuCores;
-                //vm.RamSize = ramMB;
-                //vm.HddSize = hddGB;
-                //vm.HddMinimumIOPS = hddMinimumIOPS;
-                //vm.HddMaximumIOPS = hddMaximumIOPS;
-                //vm.SnapshotsNumber = snapshots;
-                //vm.DvdDriveInstalled = dvdInstalled;
-                //vm.BootFromCD = bootFromCD;
-                //vm.NumLockEnabled = numLock;
-                //vm.StartTurnOffAllowed = startShutdownAllowed;
-                //vm.PauseResumeAllowed = pauseResumeAllowed;
-                //vm.RebootAllowed = rebootAllowed;
-                //vm.ResetAllowed = resetAllowed;
-                //vm.ReinstallAllowed = reinstallAllowed;
-                //vm.defaultaccessvlan = otherSettings.defaultaccessvlan;
 
                 // dynamic memory
                 if (VMSettings.DynamicMemory != null && VMSettings.DynamicMemory.Enabled)
@@ -558,6 +557,7 @@ namespace SolidCP.EnterpriseServer
                 //vm.PrivateNetworkEnabled = privateNetworkEnabled;
                 vm.ManagementNetworkEnabled = !String.IsNullOrEmpty(manageNic.NetworkId);
 
+                #region load OS templates
                 // load OS templates
                 LibraryItem osTemplate = null;
 
@@ -592,7 +592,9 @@ namespace SolidCP.EnterpriseServer
                     res.AddError(VirtualizationErrorCodes.GET_OS_TEMPLATES_ERROR, ex);
                     return res;
                 }
+                #endregion
 
+                #region setup VM paths
                 // setup VM paths
                 string templatesPath = settings["OsTemplatesPath"];
                 string rootFolderPattern = settings["RootFolder"];
@@ -613,6 +615,7 @@ namespace SolidCP.EnterpriseServer
                 vm.OperatingSystemTemplatePath = correctVhdPath;
                 string msHddHyperVFolderName = "Virtual Hard Disks\\" + vm.Name;
                 vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, msHddHyperVFolderName + Path.GetExtension(correctVhdPath));
+                #endregion
 
                 // check hdd file
                 try
@@ -627,10 +630,13 @@ namespace SolidCP.EnterpriseServer
                     return res;
                 }
 
-                // save meta-item
+                // save/update meta-item
                 try
                 {
-                    vm.Id = PackageController.AddPackageItem(vm);
+                    if(createMetaItem)
+                        vm.Id = PackageController.AddPackageItem(vm);
+                    else
+                        PackageController.UpdatePackageItem(vm);
                 }
                 catch (Exception ex)
                 {
@@ -731,7 +737,7 @@ namespace SolidCP.EnterpriseServer
             //TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId);
             int maximumExecutionSeconds = 60 * 60 * 2; //2 hours for this task. Anyway the Powershell cmd vhd convert has max 1 hour limit.
             TaskManager.StartTask(taskId, "VPS2012", "CREATE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
-
+            
             bool isDiskConverted = false;
             try
             {
@@ -3960,8 +3966,12 @@ namespace SolidCP.EnterpriseServer
             TaskManager.CompleteResultTask();
             return res;
         }
-
         public static ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath)
+        {
+            return DeleteVirtualMachineAsynchronous(itemId, saveFiles, exportVps, exportPath, false);
+        }
+
+        private static ResultObject DeleteVirtualMachineAsynchronous(int itemId, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
         {
             ResultObject res = new ResultObject();
 
@@ -3980,7 +3990,7 @@ namespace SolidCP.EnterpriseServer
                 res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
                 return res;
             }
-            else if (vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted) //If someone tries to send 1 request twice.
+            else if (vm.ProvisioningStatus == VirtualMachineProvisioningStatus.DeletionProgress) //If someone tries to send 1 request twice.
             {
                 res.ErrorCodes.Add(VirtualizationErrorCodes.DELETE_ERROR);
                 return res;
@@ -3999,7 +4009,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 vm.CurrentTaskId = Guid.NewGuid().ToString("N"); // generate deletion task id
-                vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Deleted;
+                vm.ProvisioningStatus = VirtualMachineProvisioningStatus.DeletionProgress;
                 PackageController.UpdatePackageItem(vm);
 
                 #region Start Asynchronous task
@@ -4012,7 +4022,8 @@ namespace SolidCP.EnterpriseServer
                         ItemId = itemId,
                         SaveFiles = saveFiles,
                         ExportVps = exportVps,
-                        ExportPath = exportPath
+                        ExportPath = exportPath,
+                        KeepPackageItem = keepPackageItem
                     };
                     worker.DeleteVPSAsync();
                 }
@@ -4033,11 +4044,12 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        internal static void DeleteVirtualMachineInternal(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath)
+        internal static void DeleteVirtualMachineInternal(int itemId, VirtualMachine vm, bool saveFiles, bool exportVps, string exportPath, bool keepPackageItem)
         {
             string taskId = vm.CurrentTaskId;
             // start task
-            TaskManager.StartTask(taskId, "VPS", "DELETE", vm.Name, vm.Id, vm.PackageId);            
+            int maximumExecutionSeconds = 60 * 20;
+            TaskManager.StartTask(taskId, "VPS", "DELETE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);            
             
             try
             {
@@ -4048,7 +4060,7 @@ namespace SolidCP.EnterpriseServer
                 VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
 
                 JobResult result = null;
-                vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
+                //vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
 
                 if (vps != null)
                 {
@@ -4125,8 +4137,10 @@ namespace SolidCP.EnterpriseServer
                     try
                     {
                         if (vs.IsEmptyFolders(vm.RootFolderPath)) //Prevent a possible hack to delete all files from the Main server :D
-                            //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
+                        { //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended, left only for deleting folder :)
                             vs.DeleteRemoteFile(vm.RootFolderPath);//TODO: replace by powershell ???
+                            TaskManager.Write(String.Format("The VM files were deleted."));
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -4142,9 +4156,18 @@ namespace SolidCP.EnterpriseServer
             }
             finally
             {
-                if(vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted)
+                bool isSuccessDeleted = vm.ProvisioningStatus == VirtualMachineProvisioningStatus.Deleted;
+
+                if(keepPackageItem && isSuccessDeleted) //For reinstall.
+                {
+                    vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Deleted;
+                    PackageController.UpdatePackageItem(vm);
+                    TaskManager.Write(String.Format("Preparing VM to reinstalling."));
+                }
+                else if (isSuccessDeleted) //Pernament delete server and all data
                 {
                     PackageController.DeletePackageItem(itemId);
+                    TaskManager.Write(String.Format("The VM was deleted."));
                 }
                 else
                 {
@@ -4158,10 +4181,10 @@ namespace SolidCP.EnterpriseServer
             }            
         }
 
-        public static ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, 
+        public static IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, 
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            ResultObject res = new IntResult();
+            IntResult res = new IntResult();
 
             #region Maintenance Mode Check
             if (IsMaintenanceMode(itemId))
@@ -4186,6 +4209,9 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
+                VMSettings.CurrentTaskId = Guid.NewGuid().ToString("N"); // generate reinstall task id
+                VMSettings.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
+                PackageController.UpdatePackageItem(VMSettings);
                 #region Start Asynchronous task
                 try
                 {
@@ -4216,13 +4242,18 @@ namespace SolidCP.EnterpriseServer
             }
 
             res.IsSuccess = true;
+            res.Value = VMSettings.Id;
             return res;
         }
         //
         internal static void ReinstallVirtualMachineInternal(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            TaskManager.StartTask("VPS2012", "REINSTALL");
+            string taskId = VMSettings.CurrentTaskId;
+            // start task
+            int maximumExecutionSeconds = 60 * 30; //30 min for this task.
+            TaskManager.StartTask(taskId, "VPS2012", "REINSTALL", VMSettings.Name, VMSettings.Id, VMSettings.PackageId, maximumExecutionSeconds);
+            //TaskManager.StartTask("VPS2012", "REINSTALL");
 
             IntResult result = new IntResult();
             string osTemplateFile = VMSettings.OperatingSystemTemplate;
@@ -4259,24 +4290,42 @@ namespace SolidCP.EnterpriseServer
 
             byte privateAddressesNumber = 0;
             if (VMSettings.PrivateNetworkEnabled && (privIps != null && privIps.Length > 0))
-                privateAddressesNumber = 1;            
+                privateAddressesNumber = 1;
+            List<int> ipLanAddressesID = new List<int>();
+            NetworkAdapterDetails nicLan = GetPrivateNetworkAdapterDetails(itemId);
+            if (nicLan.IPAddresses != null && nicLan.IPAddresses.GetLength(0) > 0)
+            {
+                foreach (NetworkAdapterIPAddress ip in nicLan.IPAddresses)
+                {
+                    ipLanAddressesID.Add(ip.AddressId);
+                }
+            }
             #endregion
-
-            ResultObject res = DeleteVirtualMachineAsynchronous(itemId, saveVirtualDisk, exportVps, exportPath);
+            bool keepMetaItem = true;
+            ResultObject res = DeleteVirtualMachineAsynchronous(itemId, saveVirtualDisk, exportVps, exportPath, keepMetaItem);
+            //DeleteVirtualMachineInternal(itemId, saveVirtualDisk, exportVps, exportPath, keepMetaItem);
 
             if (res.IsSuccess)
             {
                 int timeOut = 240;
-                while ((VirtualMachine)PackageController.GetPackageItem(itemId) != null && timeOut > 0)
+                while (((VirtualMachine)PackageController.GetPackageItem(itemId)).ProvisioningStatus != VirtualMachineProvisioningStatus.Deleted && timeOut > 0)
                 {
+                    TaskManager.IndicatorCurrent += 10;
                     System.Threading.Thread.Sleep(1000);
                     timeOut--;
                 }
                 if (timeOut > 0)
                 {
+                    
+                    if (keepMetaItem) //Clean assigned IPs from VM item
+                    {
+                        DeleteVirtualMachineExternalIPAddresses(itemId, extIps.ToArray(), false);
+                        DeleteVirtualMachinePrivateIPAddresses(itemId, ipLanAddressesID.ToArray(), false);
+                    }
                     TaskManager.Write(String.Format("The old VPS was deleted."));
-                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.                    
-                    result = CreateNewVirtualMachine(VMSettings, osTemplateFile, adminPassword, null, externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps);
+                    System.Threading.Thread.Sleep(1000); //give a little time to delete, just for sure.       
+                    result = CreateNewVirtualMachineInternal(VMSettings, osTemplateFile, adminPassword, null, 
+                        externalAddressesNumber, false, extIps.ToArray(), privateAddressesNumber, false, privIps, false);
                     if (result.IsSuccess)
                     {
                         TaskManager.Write(String.Format("Begin to create a new VPS"));
@@ -4491,6 +4540,20 @@ namespace SolidCP.EnterpriseServer
             VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
             if (vm == null)
                 return null;
+
+            //Wait next Task.
+            int attempts = 20;
+            while (!String.IsNullOrEmpty(vm.CurrentTaskId)
+                && TaskManager.GetTask(vm.CurrentTaskId) == null)
+            {
+                if (attempts > 0)
+                    Thread.Sleep(5000);
+
+                attempts--;
+                vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+                if (vm == null)
+                    return null;
+            }
 
             // host name
             int dotIdx = vm.Name.IndexOf(".");

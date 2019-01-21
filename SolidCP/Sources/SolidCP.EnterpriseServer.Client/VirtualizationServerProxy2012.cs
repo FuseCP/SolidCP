@@ -3975,7 +3975,7 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
+        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             object[] results = this.Invoke("ReinstallVirtualMachine", new object[] {
                         itemId,
@@ -3985,7 +3985,7 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         saveVirtualDisk,
                         exportVps,
                         exportPath});
-            return ((ResultObject)(results[0]));
+            return ((IntResult)(results[0]));
         }
 
         /// <remarks/>
@@ -4002,10 +4002,10 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public ResultObject EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
+        public IntResult EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
-            return ((ResultObject)(results[0]));
+            return ((IntResult)(results[0]));
         }
 
         /// <remarks/>
@@ -6512,12 +6512,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public ResultObject Result
+        public IntResult Result
         {
             get
             {
                 this.RaiseExceptionIfNecessary();
-                return ((ResultObject)(this.results[0]));
+                return ((IntResult)(this.results[0]));
             }
         }
     }

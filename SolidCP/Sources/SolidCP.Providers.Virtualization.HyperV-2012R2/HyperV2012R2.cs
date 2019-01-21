@@ -2172,7 +2172,7 @@ namespace SolidCP.Providers.Virtualization
         public bool IsEmptyFolders(string path)
         {
             Command cmdScript = new Command("dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname", true);
-            Collection<PSObject> result = PowerShell.Execute(cmdScript, true);
+            Collection<PSObject> result = PowerShell.Execute(cmdScript, false);
             return result.Count < 1;
         }
 

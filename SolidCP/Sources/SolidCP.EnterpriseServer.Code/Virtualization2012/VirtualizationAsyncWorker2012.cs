@@ -20,6 +20,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         public bool SaveFiles { get; set; }
         public bool ExportVps { get; set; }
         public string ExportPath { get; set; }
+        public bool KeepPackageItem { get; set; } //Need for reinstall keep SQL data.
         #endregion
 
         #region VPS Reinstall Properties
@@ -46,7 +47,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             if (ThreadUserId != -1)
                 SecurityContext.SetThreadPrincipal(ThreadUserId);
 
-            VirtualizationServerController2012.DeleteVirtualMachineInternal(ItemId, Vm, SaveFiles, ExportVps, ExportPath);
+            VirtualizationServerController2012.DeleteVirtualMachineInternal(ItemId, Vm, SaveFiles, ExportVps, ExportPath, KeepPackageItem);
         }
         #endregion
 
