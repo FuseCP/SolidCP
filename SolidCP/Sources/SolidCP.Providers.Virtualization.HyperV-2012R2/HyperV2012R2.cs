@@ -687,7 +687,7 @@ namespace SolidCP.Providers.Virtualization
             }
             if (withExternalData)
             {
-                HardDriveHelper.Delete(PowerShell, vm.Disks);
+                HardDriveHelper.Delete(PowerShell, vm.Disks, ServerNameSettings);
                 SnapshotHelper.Delete(PowerShell, vm.Name);                
                 //something else???
             }            
