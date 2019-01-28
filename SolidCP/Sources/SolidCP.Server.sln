@@ -194,6 +194,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSol
 		{A06DE5E4-4331-47E1-8F46-7B846146B559} = {A06DE5E4-4331-47E1-8F46-7B846146B559}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.SfB2019", "SolidCP.Providers.HostedSolution.SfB2019\SolidCP.Providers.HostedSolution.SfB2019.csproj", "{E019EC98-BE91-485B-82C1-4D744AF58B84}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A06DE5E4-4331-47E1-8F46-7B846146B559} = {A06DE5E4-4331-47E1-8F46-7B846146B559}
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.SharePoint2016Ent", "SolidCP.Providers.HostedSolution.SharePoint2016Ent\SolidCP.Providers.HostedSolution.SharePoint2016Ent.csproj", "{6747AC3C-8FDB-4B28-8965-E927B19B24E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.SharePoint2016", "SolidCP.Providers.HostedSolution.SharePoint2016\SolidCP.Providers.HostedSolution.SharePoint2016.csproj", "{3C19CF95-D300-4445-B795-F714AE72CEFB}"
@@ -967,6 +972,18 @@ Global
 		{EAFFF2B5-95C2-4F1F-A85C-43E2C14DF731}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EAFFF2B5-95C2-4F1F-A85C-43E2C14DF731}.Release|x86.ActiveCfg = Release|Any CPU
 		{EAFFF2B5-95C2-4F1F-A85C-43E2C14DF731}.Release|x86.Build.0 = Release|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Debug|x86.Build.0 = Debug|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Release|x86.ActiveCfg = Release|Any CPU
+		{E019EC98-BE91-485B-82C1-4D744AF58B84}.Release|x86.Build.0 = Release|Any CPU
 		{6747AC3C-8FDB-4B28-8965-E927B19B24E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6747AC3C-8FDB-4B28-8965-E927B19B24E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6747AC3C-8FDB-4B28-8965-E927B19B24E7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
