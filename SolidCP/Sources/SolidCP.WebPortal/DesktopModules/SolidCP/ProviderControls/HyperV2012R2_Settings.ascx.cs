@@ -37,6 +37,7 @@ using System.Data;
 using System.Linq;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Base.Virtualization;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.Virtualization;
 
@@ -59,7 +60,7 @@ namespace SolidCP.Portal.ProviderControls
         {
             txtServerName.Text = settings["ServerName"];
             radioServer.SelectedIndex = (txtServerName.Text == "") ? 0 : 1;
-
+            
             // bind networks
             BindNetworksList();
 
@@ -92,6 +93,7 @@ namespace SolidCP.Portal.ProviderControls
             txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
             repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
             repOsTemplates.DataBind();
+            //onupdate select value
 
             // DVD library
             txtDvdLibraryPath.Text = settings["DvdLibraryPath"];
@@ -487,6 +489,11 @@ namespace SolidCP.Portal.ProviderControls
 
                 template.VhdBlockSizeBytes = GetBlockSizeBytes(item, "txtVhdBlockSizeBytes");
 
+                string timeZone = GetDropDownListSelectedValue(item, "ddlTemplateTimeZone");
+                template.TimeZoneId = string.IsNullOrEmpty(timeZone) ? GetTextBoxText(item, "txtManualTempplateTimeZone") : timeZone;
+                template.CDKey = GetTextBoxText(item, "txtTemplateCDKey");
+
+
                 result.Add(template);
             }
 
@@ -547,6 +554,10 @@ namespace SolidCP.Portal.ProviderControls
         private int GetDropDownListSelectedIndex(RepeaterItem item, string name)
         {
             return (item.FindControl(name) as DropDownList).SelectedIndex;
+        }
+        private string GetDropDownListSelectedValue(RepeaterItem item, string name)
+        {
+            return (item.FindControl(name) as DropDownList).SelectedValue;
         }
 
         private string GetTextBoxText(RepeaterItem item, string name)

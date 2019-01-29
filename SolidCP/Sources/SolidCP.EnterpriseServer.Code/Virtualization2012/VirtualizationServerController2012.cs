@@ -1104,6 +1104,8 @@ namespace SolidCP.EnterpriseServer
 
                                     // write remote file
                                     vs.WriteRemoteFile(path, contents);
+
+                                    TaskManager.Write("OS Time Zone: {0}", osTemplate.TimeZoneId);
                                 }
                                 catch (Exception ex)
                                 {
@@ -4474,6 +4476,20 @@ namespace SolidCP.EnterpriseServer
 
             // load private NIC
             items["management_nic"] = GetManagementNetworkAdapterDetails(itemId);
+
+            // load template item
+            LibraryItem osTemplate = null;
+            try
+            {
+                LibraryItem[] osTemplates = GetOperatingSystemTemplates(vm.PackageId);
+                foreach (LibraryItem item in osTemplates)
+                    if (string.Compare(item.Path, Path.GetFileName(vm.OperatingSystemTemplatePath), true) == 0)
+                    {
+                        osTemplate = item;
+                        break;
+                    }
+            }catch { }
+            items["os_template"] = osTemplate;
 
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
