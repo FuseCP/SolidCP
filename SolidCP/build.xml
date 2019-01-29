@@ -192,6 +192,7 @@
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.Crm.*"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.SqlServer.BatchParser.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.Database.MariaDB.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.FTP.CerberusFTP6.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.EnterpriseStorage.Windows2012.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.StorageSpaces.Windows2012.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.Web.IIs70.dll"/>
