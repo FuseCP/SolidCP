@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -30,24 +30,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Newtonsoft.Json;
 
-namespace SolidCP.Providers.DNS
+namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Request
 {
-    public enum DnsRecordType
+    public partial class SecondaryZoneRequest
     {
-        A,
-		AAAA,
-        NS,
-        MX,
-        CNAME,
-        SOA,
-        TXT,
-        SRV,
-        CAA,
-        Other
+        [JsonProperty("Type")]
+        public string Type { get; set; }
+
+        [JsonProperty("PrimaryIP")]
+        public string PrimaryIp { get; set; }
+    }
+
+    public partial class SecondaryZoneRequest
+    {
+        public static SecondaryZoneRequest FromJson(string json) => JsonConvert.DeserializeObject<SecondaryZoneRequest>(json, Converter.Settings);
     }
 }
-

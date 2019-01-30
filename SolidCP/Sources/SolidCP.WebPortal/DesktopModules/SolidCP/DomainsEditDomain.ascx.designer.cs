@@ -199,7 +199,25 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton EditDnsRecords;
+        protected global::CPCC.StyleButton EditDnsRecords;
+        
+        /// <summary>
+        /// ExportDnsRecords control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton ExportDnsRecords;
+        
+        /// <summary>
+        /// ImportDnsRecords control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton ImportDnsRecords;
         
         /// <summary>
         /// DisableDns control.
@@ -208,7 +226,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton DisableDns;
+        protected global::CPCC.StyleButton DisableDns;
         
         /// <summary>
         /// locDnsEnabled control.
@@ -235,7 +253,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton EnableDns;
+        protected global::CPCC.StyleButton EnableDns;
         
         /// <summary>
         /// locDnsDisabled control.
@@ -280,7 +298,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton CreatePreviewDomain;
+        protected global::CPCC.StyleButton CreatePreviewDomain;
         
         /// <summary>
         /// locPreviewDomainDisabled control.
@@ -307,7 +325,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton DeletePreviewDomain;
+        protected global::CPCC.StyleButton DeletePreviewDomain;
         
         /// <summary>
         /// locPreviewDomainEnabled control.
@@ -433,7 +451,7 @@ namespace SolidCP.Portal {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-       protected global::CPCC.StyleButton btnDelete;
+        protected global::CPCC.StyleButton btnDelete;
         
         /// <summary>
         /// buttonPanel control.

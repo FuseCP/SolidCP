@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -30,24 +30,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Newtonsoft.Json;
+using SolidCP.Providers.DNS.SimpleDNS80.Models.Response;
 
-namespace SolidCP.Providers.DNS
+namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Request
 {
-    public enum DnsRecordType
+    public class ZoneRecordsDeleteRequest : ZoneRecordsResponse
     {
-        A,
-		AAAA,
-        NS,
-        MX,
-        CNAME,
-        SOA,
-        TXT,
-        SRV,
-        CAA,
-        Other
+        public ZoneRecordsDeleteRequest(ZoneRecordsResponse baseResponse)
+        {
+            Name = baseResponse.Name;
+            Type = baseResponse.Type;
+            Ttl = baseResponse.Ttl;
+            Data = baseResponse.Data;
+            Comment = baseResponse.Comment;
+            Remove = true;
+        }
+
+        [JsonProperty("Remove")]
+        public bool Remove { get; set; }
     }
 }
-

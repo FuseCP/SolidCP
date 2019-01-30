@@ -280,6 +280,8 @@ namespace SolidCP.Providers.DNS
 					AddNsRecord(zoneName, record.RecordName, record.RecordData);
 				else if (record.RecordType == DnsRecordType.TXT)
 					AddTxtRecord(zoneName, record.RecordName, record.RecordData);
+				else if (record.RecordType == DnsRecordType.SRV)
+					AddSrvRecord(zoneName, record.RecordName, record.RecordData, record.SrvPriority, record.SrvWeight, record.SrvPort);
 			}
 			catch (Exception ex)
 			{
@@ -539,6 +541,42 @@ namespace SolidCP.Providers.DNS
 
 		#endregion
 
+		#region SRV records
+		private void AddSrvRecord(string zoneName, string host, string srvTarget, int srvPriority, int srvWeight, int srvPort)
+		{
+			// get all zone records
+			List<DnsRecord> records = GetZoneRecordsArrayList(zoneName);
+
+			// delete MX record
+			//DeleteMXRecordInternal(records, zoneName, mailServer);
+
+			//check if user tries to add existent zone record
+			foreach (DnsRecord dnsRecord in records)
+			{
+				// in SRV, I may have the same prio/weight several times, but not the same host/port combo
+				if ((dnsRecord.RecordType == DnsRecordType.SRV) &&
+					(String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0) &&
+					(String.Compare(dnsRecord.RecordData, srvTarget, StringComparison.OrdinalIgnoreCase) == 0)
+					&& dnsRecord.SrvPort == srvPort)
+					return;
+			}
+
+			// add new SRV record
+			DnsRecord record = new DnsRecord();
+			record.RecordType = DnsRecordType.SRV;
+			record.RecordName = host;
+			record.SrvPriority = srvPriority;
+			record.SrvWeight = srvWeight;
+			record.SrvPort = srvPort;
+			record.RecordData = srvTarget;
+			records.Add(record);
+
+			// update zone
+			UpdateZone(zoneName, records);
+		}
+
+		#endregion
+
 		#region SOA record
 		public virtual void UpdateSoaRecord(string zoneName, string host, string primaryNsServer,
 			string primaryPerson)
@@ -704,6 +742,20 @@ namespace SolidCP.Providers.DNS
 					r.RecordText = zfLine;
 					records.Add(r);
 				}
+				else if (recordType == "SRV") // SRV record
+				{
+					string[] dataColumns = recordData.Split(' ');
+
+					DnsRecord r = new DnsRecord();
+					r.RecordType = DnsRecordType.SRV;
+					r.RecordName = CorrectRecordName(zoneName, recordName);
+					r.SrvPriority = Int32.Parse(dataColumns[0]);
+					r.SrvWeight = Int32.Parse(dataColumns[1]);
+					r.SrvPort = Int32.Parse(dataColumns[2]);
+					r.RecordData = CorrectRecordData(zoneName, dataColumns[3]);
+					r.RecordText = zfLine;
+					records.Add(r);
+				}
 
 				//Debug.WriteLine(zfLine);
 			}
@@ -803,6 +855,16 @@ namespace SolidCP.Providers.DNS
 					type = "TXT";
 					host = rr.RecordName;
 					data = "\"" + rr.RecordData + "\"";
+				}
+				else if (rr.RecordType == DnsRecordType.SRV)
+				{
+					type = "SRV";
+					host = rr.RecordName;
+					data = String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0} {1} {2} {3}",
+						new object[] { rr.SrvPriority,
+						rr.SrvWeight,
+						rr.SrvPort,
+						BuildRecordData(zoneName, rr.RecordData) } );
 				}
 
 				// add line to the zone file
@@ -959,7 +1021,12 @@ namespace SolidCP.Providers.DNS
             }
             else
             {
-                FileUtils.ExecuteSystemCommand(BindReloadBatch, "");
+				string arguments = Args;
+				if (zoneName.Length > 0)
+				{
+					arguments += " " + zoneName;
+				}
+				FileUtils.ExecuteSystemCommand(BindReloadBatch, arguments);
             }
 		}
 
