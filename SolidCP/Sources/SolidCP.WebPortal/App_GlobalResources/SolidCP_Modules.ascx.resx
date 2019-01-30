@@ -942,4 +942,7 @@
   <data name="ModuleTitle.AutoUpdateServers" xml:space="preserve">
     <value>Auto Update Servers</value>
   </data>
+  <data name="ModuleTitle.DomainsImportZone" xml:space="preserve">
+    <value>Import DNS Zone</value>
+  </data>
 </root>

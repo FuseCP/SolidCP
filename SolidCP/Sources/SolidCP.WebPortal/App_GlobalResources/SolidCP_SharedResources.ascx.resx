@@ -6406,4 +6406,16 @@
   <data name="Warning.VPS_REINSTALL_LIMIT" xml:space="preserve">
     <value>You can not reinstall the server so often. Please try again later.</value>
   </data>
+  <data name="Error.DOMAIN_EXPORT" xml:space="preserve">
+    <value>Error exporting DNS zone</value>
+  </data>
+  <data name="Error.DOMAIN_IMPORT" xml:space="preserve">
+    <value>Failed to import zone file</value>
+  </data>
+  <data name="Error.DOMAIN_IMPORT_NO_FILE" xml:space="preserve">
+    <value>No file selected</value>
+  </data>
+  <data name="Success.DOMAIN_IMPORT" xml:space="preserve">
+    <value>Successfully imported zone file</value>
+  </data>
 </root>
