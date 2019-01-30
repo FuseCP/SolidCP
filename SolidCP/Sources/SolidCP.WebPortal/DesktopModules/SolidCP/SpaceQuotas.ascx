@@ -115,6 +115,10 @@
         <td class="SubHead" nowrap><asp:Label ID="lblMySQL5Databases" runat="server" meta:resourcekey="lblMySQL5Databases" Text="MySQL5 Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamysql5databases" runat="server" QuotaName="MySQL5.Databases" DisplayGauge="True"/></td>
     </tr>
+        <tr ID="pnlMySQL8Databases" runat="server">
+        <td class="SubHead" nowrap><asp:Label ID="lblMySQL8Databases" runat="server" meta:resourcekey="lblMySQL8Databases" Text="MySQL8 Databases:"></asp:Label></td>
+        <td class="Normal"><scp:Quota ID="quotamysql8databases" runat="server" QuotaName="MySQL8.Databases" DisplayGauge="True"/></td>
+    </tr>
         <tr ID="pnlMariaDBDatabases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMariaDBDatabases" runat="server" meta:resourcekey="lblMariaDBDatabases" Text="MariaDB Databases:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotamariadbdatabases" runat="server" QuotaName="MariaDB.Databases" DisplayGauge="True"/></td>
