@@ -6412,4 +6412,16 @@
   <data name="TaskActivity.VPS_CREATE_VHD_MIN_IOPS" xml:space="preserve">
     <value>Minimum VHD IOPS: {0} </value>
   </data>
+  <data name="Error.DOMAIN_EXPORT" xml:space="preserve">
+    <value>Error exporting DNS zone</value>
+  </data>
+  <data name="Error.DOMAIN_IMPORT" xml:space="preserve">
+    <value>Failed to import zone file</value>
+  </data>
+  <data name="Error.DOMAIN_IMPORT_NO_FILE" xml:space="preserve">
+    <value>No file selected</value>
+  </data>
+  <data name="Success.DOMAIN_IMPORT" xml:space="preserve">
+    <value>Successfully imported zone file</value>
+  </data>
 </root>

@@ -43,6 +43,7 @@ using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
 using SolidCP.Providers;
 using System.Reflection;
+using MySql.Data.MySqlClient;
 
 namespace SolidCP.Providers.Database {
     public class MySqlServer80 : MySqlServer {
@@ -73,5 +74,58 @@ namespace SolidCP.Providers.Database {
 
             return split[0].Equals("8") & split[1].Equals("0");
         }
+
+        public override void CreateUser(SqlUser user, string password)
+        {
+            if (user.Databases == null)
+                user.Databases = new string[0];
+
+            /*if (!((Regex.IsMatch(user.Name, @"[^\w\.-]")) && (user.Name.Length > 16)))
+            {
+                Exception ex = new Exception("INVALID_USERNAME");
+                throw ex;
+            }
+            */
+            ExecuteNonQuery(String.Format(
+                                "CREATE USER '{0}'@'%' IDENTIFIED BY '{1}'",
+                                user.Name, password));
+
+            if (OldPassword)
+                ChangeUserPassword(user.Name, password);
+
+            // add access to databases
+            foreach (string database in user.Databases)
+                AddUserToDatabase(database, user.Name);
+        }
+
+        private void AddUserToDatabase(string databaseName, string user)
+        {
+            // grant database access
+            ExecuteNonQuery(String.Format("GRANT ALL PRIVILEGES ON {0}.* TO '{1}'@'%'",
+                    databaseName, user));
+        }
+
+        public override void ExecuteSqlNonQuery(string databaseName, string commandText)
+        {
+            commandText = "USE " + databaseName + ";\n" + commandText;
+            ExecuteNonQuery(commandText);
+        }
+
+
+        private int ExecuteNonQuery(string commandText)
+        {
+            return ExecuteNonQuery(commandText, ConnectionString);
+        }
+
+        private int ExecuteNonQuery(string commandText, string connectionString)
+        {
+            MySqlConnection conn = new MySqlConnection(connectionString);
+            MySqlCommand cmd = new MySqlCommand(commandText, conn);
+            conn.Open();
+            int ret = cmd.ExecuteNonQuery();
+            conn.Close();
+            return ret;
+        }
+
     }
 }

@@ -697,6 +697,33 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.Quota quotamysql5databases;
         
         /// <summary>
+        /// pnlMySQL8Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMySQL8Databases;
+        
+        /// <summary>
+        /// lblMySQL8Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMySQL8Databases;
+        
+        /// <summary>
+        /// quotamysql8databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota quotamysql8databases;
+        
+        /// <summary>
         /// pnlMariaDBDatabases control.
         /// </summary>
         /// <remarks>

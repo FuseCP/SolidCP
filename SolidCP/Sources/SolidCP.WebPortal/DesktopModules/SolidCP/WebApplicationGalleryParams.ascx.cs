@@ -188,6 +188,8 @@ namespace SolidCP.Portal
                 PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
 
                 // add SQL Server engines
+                if (cntx.Groups.ContainsKey(ResourceGroups.MySql8))
+                    AddDatabaseEngine(DeploymentParameterWellKnownTag.MySql, ResourceGroups.MySql8, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MySql8));
                 if (cntx.Groups.ContainsKey(ResourceGroups.MySql5))
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.MySql, ResourceGroups.MySql5, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MySql5));
                 if (cntx.Groups.ContainsKey(ResourceGroups.MySql4))
