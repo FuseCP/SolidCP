@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -30,24 +30,49 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
+using Newtonsoft.Json;
 
-namespace SolidCP.Providers.DNS
+namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
 {
-    public enum DnsRecordType
+    public partial class StatisticsResponse
     {
-        A,
-		AAAA,
-        NS,
-        MX,
-        CNAME,
-        SOA,
-        TXT,
-        SRV,
-        CAA,
-        Other
+        [JsonProperty("Sections")]
+        public List<Section> Sections { get; set; }
+
+        [JsonProperty("ReqPerSec")]
+        public List<long> ReqPerSec { get; set; }
+    }
+
+    public partial class Section
+    {
+        [JsonProperty("ID")]
+        public string Id { get; set; }
+
+        [JsonProperty("Text")]
+        public string Text { get; set; }
+
+        [JsonProperty("Items")]
+        public List<Item> Items { get; set; }
+    }
+
+    public partial class Item
+    {
+        [JsonProperty("ID")]
+        public string Id { get; set; }
+
+        [JsonProperty("Text")]
+        public string Text { get; set; }
+
+        [JsonProperty("Value")]
+        public long Value { get; set; }
+
+        [JsonProperty("ValueText", NullValueHandling = NullValueHandling.Ignore)]
+        public string ValueText { get; set; }
+    }
+
+    public partial class StatisticsResponse
+    {
+        public static StatisticsResponse FromJson(string json) => JsonConvert.DeserializeObject<StatisticsResponse>(json, Converter.Settings);
     }
 }
-

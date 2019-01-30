@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -30,24 +30,46 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Globalization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SolidCP.Providers.DNS.SimpleDNS80.Models.Request;
+using SolidCP.Providers.DNS.SimpleDNS80.Models.Response;
 
-namespace SolidCP.Providers.DNS
+namespace SolidCP.Providers.DNS.SimpleDNS80.Models
 {
-    public enum DnsRecordType
+    public static class Serialize
     {
-        A,
-		AAAA,
-        NS,
-        MX,
-        CNAME,
-        SOA,
-        TXT,
-        SRV,
-        CAA,
-        Other
+        public static string ToJson(this StatisticsResponse self) =>
+            JsonConvert.SerializeObject(self, Converter.Settings);
+
+        public static string ToJson(this SecondaryZoneRequest self) =>
+            JsonConvert.SerializeObject(self, Converter.Settings);
+
+        public static string ToJson(this List<ZoneRecordsResponse> self) =>
+            JsonConvert.SerializeObject(self, Converter.Settings);
+
+        public static string ToJson(this ZoneRecordsResponse self) =>
+            JsonConvert.SerializeObject(self, Converter.Settings);
+
+        public static string ToJson(this ZoneRecordsDeleteRequest self) =>
+            JsonConvert.SerializeObject(self, Converter.Settings);
+
+        public static string ToJson(this List<ZoneRecordsDeleteRequest> self) =>
+            JsonConvert.SerializeObject(self, Converter.Settings);
+    }
+
+    internal static class Converter
+    {
+        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Converters =
+            {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
     }
 }
-
