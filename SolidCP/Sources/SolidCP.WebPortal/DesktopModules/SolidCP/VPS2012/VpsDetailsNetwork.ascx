@@ -30,10 +30,10 @@
                     <scp:CollapsiblePanel id="secRealNetwork" runat="server"
                         TargetControlID="RealNetworkPanel" meta:resourcekey="secRealNetwork" Text="Virtual Machine Networks details">
                     </scp:CollapsiblePanel>
-                    <asp:Panel ID="RealNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <div class="form-group">
-                            <asp:Repeater ID="repVMNetwork" runat="server">
-                                <ItemTemplate>
+                    <asp:Panel ID="RealNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">                        
+                        <asp:Repeater ID="repVMNetwork" runat="server">
+                            <ItemTemplate>
+                                <div class="form-group">
                                     <asp:Label ID="locAdapterName" meta:resourcekey="locAdapterName" runat="server" Text="Adapter Name:" CssClass="col-sm-1" AssociatedControlID="litAdapterName"></asp:Label>
                                     <div class="col-sm-20 form-inline">
                                         <asp:Literal ID="litAdapterName" runat="server" meta:resourcekey="litAdaperName" Text=<%# Eval("Name") %>></asp:Literal>
@@ -50,10 +50,10 @@
                                             </Columns>
                                         </asp:GridView>
                                     </div>
-                                </ItemTemplate>
-                            </asp:Repeater>
-                            <asp:Literal ID="VMNetworkError" runat="server" Visible="false"></asp:Literal>
-                        </div>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                        <asp:Literal ID="VMNetworkError" runat="server" Visible="false"></asp:Literal>                        
                         <br />
                     </asp:Panel>
 				    
