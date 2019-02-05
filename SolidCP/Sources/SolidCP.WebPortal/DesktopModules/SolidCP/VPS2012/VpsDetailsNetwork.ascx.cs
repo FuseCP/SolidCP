@@ -38,6 +38,8 @@ using System.Web.UI.WebControls;
 using SolidCP.Providers.Virtualization;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
+using System.Text;
+using System.Data;
 
 namespace SolidCP.Portal.VPS2012
 {
@@ -50,6 +52,7 @@ namespace SolidCP.Portal.VPS2012
             if (!IsPostBack)
             {
                 BindVirtualMachine();
+                BindRealAssignedAddresses();
                 BindExternalAddresses();
                 BindPrivateAddresses();
                 ToggleButtons();
@@ -72,6 +75,53 @@ namespace SolidCP.Portal.VPS2012
             {
                 secPrivateNetwork.Visible = false;
                 PrivateNetworkPanel.Visible = false;
+            }
+        }
+
+        private void BindRealAssignedAddresses()
+        {
+            VirtualMachine itemVM = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
+            VirtualMachine vm = null;
+            try
+            {
+                vm = ES.Services.VPS2012.GetVirtualMachineExtendedInfo(itemVM.ServiceId, itemVM.VirtualMachineId);
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_GET_VM_DETAILS", ex);
+            }
+
+            try
+            {
+                repVMNetwork.DataSource = vm.Adapters;//new VirtualMachineNetworkAdapter[vm.Adapters.Length];
+                repVMNetwork.DataBind();
+                BindGridViewOfVmIPs(vm.Adapters);
+            }
+            catch (Exception ex) //TODO: replace by messageBox ????
+            {
+                VMNetworkError.Text = "Error - " + ex;
+                VMNetworkError.Visible = true;
+            }                
+        }
+
+        private void BindGridViewOfVmIPs(VirtualMachineNetworkAdapter[] Adapters)
+        {
+            int i = 0;
+            foreach (RepeaterItem item in repVMNetwork.Items)
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("N", typeof(int));
+                dt.Columns.Add("IP", typeof(string));
+                for (int j = 0; j < Adapters[i].IPAddresses.Length; j++)
+                {
+                    DataRow NewRow = dt.NewRow();
+                    NewRow["N"] = j + 1;
+                    NewRow["IP"] = Adapters[i].IPAddresses[j];
+                    dt.Rows.Add(NewRow);
+                }
+                (item.FindControl("gvVMNetwork") as GridView).DataSource = dt;
+                (item.FindControl("gvVMNetwork") as GridView).DataBind();
+                i++;
             }
         }
 

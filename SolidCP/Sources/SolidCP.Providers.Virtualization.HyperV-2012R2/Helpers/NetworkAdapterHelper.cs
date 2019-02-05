@@ -34,6 +34,11 @@ namespace SolidCP.Providers.Virtualization
                     VirtualMachineNetworkAdapter adapter = new VirtualMachineNetworkAdapter();
 
                     adapter.Name = psAdapter.GetString("Name");
+                    try
+                    {
+                        adapter.IPAddresses = psAdapter.GetProperty<string[]>("IPAddresses");
+                    }
+                    catch (Exception ex) { HostedSolution.HostedSolutionLog.LogError("VirtualMachineNetworkAdapter", ex); }                    
                     adapter.MacAddress = psAdapter.GetString("MacAddress");
                     adapter.SwitchName = psAdapter.GetString("SwitchName");
 
