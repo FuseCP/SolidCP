@@ -687,7 +687,7 @@ namespace SolidCP.Providers.Virtualization
             }
             if (withExternalData)
             {
-                HardDriveHelper.Delete(PowerShell, vm.Disks);
+                HardDriveHelper.Delete(PowerShell, vm.Disks, ServerNameSettings);
                 SnapshotHelper.Delete(PowerShell, vm.Name);                
                 //something else???
             }            
@@ -2171,8 +2171,13 @@ namespace SolidCP.Providers.Virtualization
 
         public bool IsEmptyFolders(string path)
         {
-            Command cmdScript = new Command("dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname", true);
-            Collection<PSObject> result = PowerShell.Execute(cmdScript, true);
+            string cmd;
+            if (!string.IsNullOrEmpty(ServerNameSettings))
+                cmd = "Invoke-Command -ComputerName " + ServerNameSettings + " -ScriptBlock { dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname }";
+            else
+                cmd = "dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname";
+            Command cmdScript = new Command(cmd, true);
+            Collection<PSObject> result = PowerShell.Execute(cmdScript, false);
             return result.Count < 1;
         }
 

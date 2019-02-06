@@ -6406,6 +6406,12 @@
   <data name="Warning.VPS_REINSTALL_LIMIT" xml:space="preserve">
     <value>You can not reinstall the server so often. Please try again later.</value>
   </data>
+  <data name="TaskActivity.VPS_CREATE_VHD_MAX_IOPS" xml:space="preserve">
+    <value>Maximum VHD IOPS: {0} </value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_VHD_MIN_IOPS" xml:space="preserve">
+    <value>Minimum VHD IOPS: {0} </value>
+  </data>
   <data name="Error.DOMAIN_EXPORT" xml:space="preserve">
     <value>Error exporting DNS zone</value>
   </data>

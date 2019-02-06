@@ -27,13 +27,42 @@
 			        <scp:ServerTabs id="tabs" runat="server" SelectedTab="vps_network" />	
                     <scp:SimpleMessageBox id="messageBox" runat="server" />
                     
+                    <scp:CollapsiblePanel id="secRealNetwork" runat="server"
+                        TargetControlID="RealNetworkPanel" meta:resourcekey="secRealNetwork" Text="Virtual Machine Networks details">
+                    </scp:CollapsiblePanel>
+                    <asp:Panel ID="RealNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">                        
+                        <asp:Repeater ID="repVMNetwork" runat="server">
+                            <ItemTemplate>
+                                <div class="form-group">
+                                    <asp:Label ID="locAdapterName" meta:resourcekey="locAdapterName" runat="server" Text="Adapter Name:" CssClass="col-sm-1" AssociatedControlID="litAdapterName"></asp:Label>
+                                    <div class="col-sm-20 form-inline">
+                                        <asp:Literal ID="litAdapterName" runat="server" meta:resourcekey="litAdaperName" Text=<%# Eval("Name") %>></asp:Literal>
+                                    </div>
+                                    <asp:Label ID="locAdapterMAC" meta:resourcekey="locAdapterName" runat="server" Text="Adapter MAC:" CssClass="col-sm-1" AssociatedControlID="litAdapterMAC"></asp:Label>
+                                    <div class="col-sm-20 form-inline">
+                                        <asp:Literal ID="litAdapterMAC" runat="server" meta:resourcekey="litAdapterMAC" Text=<%# Eval("MacAddress") %>></asp:Literal>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <asp:GridView ID="gvVMNetwork" runat="server" CssSelectorClass="NormalGridView" AutoGenerateColumns="false" EmptyDataText="no data">
+                                            <Columns>
+                                                <asp:BoundField DataField="N" HeaderText="N" />
+                                                <asp:BoundField DataField="IP" HeaderText="gvIpAddress" meta:resourcekey="gvIpAddress" />
+                                            </Columns>
+                                        </asp:GridView>
+                                    </div>
+                                </div>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                        <asp:Literal ID="VMNetworkError" runat="server" Visible="false"></asp:Literal>                        
+                        <br />
+                    </asp:Panel>
 				    
 				    <scp:CollapsiblePanel id="secExternalNetwork" runat="server"
                         TargetControlID="ExternalNetworkPanel" meta:resourcekey="secExternalNetwork" Text="External Network">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="ExternalNetworkPanel" runat="server" Height="0" style="overflow:hidden;">
                     
-                        <table cellspacing="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">
                             <tr>
                                 <td><asp:Localize ID="locExtAddress" runat="server"
                                     meta:resourcekey="locExtAddress" Text="Server address:"/></td>
@@ -106,7 +135,7 @@
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="PrivateNetworkPanel" runat="server" Height="0" style="overflow:hidden;">
                     
-                        <table cellspacing="3">
+                        <table style="border-collapse: separate; border-spacing: 3px 1px;">
                             <tr>
                                 <td><asp:Localize ID="locPrivAddress" runat="server"
                                     meta:resourcekey="locPrivAddress" Text="Server address:"/></td>

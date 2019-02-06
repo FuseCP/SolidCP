@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="HyperV2012R2_Settings.ascx.cs" Inherits="SolidCP.Portal.ProviderControls.HyperV2012R2_Settings" %>
 <%@ Register Src="../UserControls/EditIPAddressControl.ascx" TagName="EditIPAddressControl" TagPrefix="scp" %>
+<%@ Register Src="../UserControls/CollapsiblePanel.ascx" TagName="CollapsiblePanel" TagPrefix="scp" %>
 
 <asp:ValidationSummary ID="ValidationSummary" runat="server" ShowMessageBox="true" ShowSummary="false" />
 
@@ -221,14 +222,14 @@
                     <td>
                         <asp:DropDownList ID="ddlHyperVConfig" runat="server" CssClass="form-control" Width="450"
                             DataValueField="ConfigVersion" DataTextField="Name" SelectedIndex='<%# Eval("HyperVConfigurationVersion") %>'>
-                                <asp:ListItem Text="Default Windows Version" Value="0.0"></asp:ListItem>
-                                <asp:ListItem Text="5.0 - Windows Server 2012R2" Value="5.0"></asp:ListItem>
-                                <asp:ListItem Text="8.0 - Windows Server 2016 (version 1607) LTSB" Value="8.0"></asp:ListItem>
-                                <asp:ListItem Text="8.1 - Windows 10 (version 1703)" Value="8.1"></asp:ListItem>
-                                <asp:ListItem Text="8.2 - Windows 10 (version 1709)" Value="8.2"></asp:ListItem>
-                                <asp:ListItem Text="8.3 - Windows 10 (version 1803)" Value="8.3"></asp:ListItem>
-                        </asp:DropDownList>
-                        
+                            <asp:ListItem Text="Default Windows Version" Value="0.0"></asp:ListItem>
+                            <asp:ListItem Text="5.0 - Windows Server 2012R2" Value="5.0"></asp:ListItem>
+                            <asp:ListItem Text="8.0 - Windows Server 2016 (version 1607) LTSB" Value="8.0"></asp:ListItem>
+                            <asp:ListItem Text="8.1 - Windows 10 (version 1703)" Value="8.1"></asp:ListItem>
+                            <asp:ListItem Text="8.2 - Windows 10 (version 1709)" Value="8.2"></asp:ListItem>
+                            <asp:ListItem Text="8.3 - Windows 10 (version 1803)" Value="8.3"></asp:ListItem>
+                            <asp:ListItem Text="9.0 - Windows Server 2019 (version 1809) LTSC" Value="9.0"></asp:ListItem>
+                        </asp:DropDownList>                        
                     </td>
                 </tr>
 	</table>
@@ -251,7 +252,7 @@
                 <asp:RequiredFieldValidator ID="TemplatesPathValidator" runat="server" ControlToValidate="txtOSTemplatesPath"
                     Text="*" meta:resourcekey="TemplatesPathValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>
-	    </tr>
+	    </tr>        
     </table>
     <div style="margin-top: 15px;margin-bottom: 25px;margin-left: 10px;">
         <CPCC:StyleButton id="btnAddOsTemplate" CssClass="btn btn-success" runat="server" OnClick="btnAddOsTemplate_Click" CausesValidation="false"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnAddOsTemplateText"/> </CPCC:StyleButton>
@@ -324,19 +325,52 @@
                     <td colspan="2">
                         <asp:TextBox Width="470px" CssClass="form-control" runat="server" ID="txtSysprep" Text='<%# Eval("SysprepFiles") != null ? string.Join(";", (string[])Eval("SysprepFiles")) : "" %>'></asp:TextBox>
                     </td>
-                </tr>
+                </tr>               
+                
                 <tr>
-	                <td class="SubHead">
-		                <asp:Localize ID="locVhdBlockSizeBytes" runat="server" meta:resourcekey="locVhdBlockSizeBytes" Text="VHD Block Size (Bytes):"></asp:Localize>
-	                </td>
-	                <td>
-		                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtVhdBlockSizeBytes" Text='<%# Eval("VhdBlockSizeBytes") %>'></asp:TextBox>
-	                </td>
-                    <td>
-		                <asp:Localize ID="LocBlockSizeDesc" runat="server" meta:resourcekey="LocBlockSizeDesc" Text="Default value is 0. Examples: 512KB, 1MB, 32MB, etc."></asp:Localize>
-	                </td>
+                    <td colspan="3">
+                        <scp:CollapsiblePanel id="clpAdvancedTemplateSettings" runat="server" IsCollapsed="true"
+	                        TargetControlID="pAdvancedTemplateSettings" meta:resourcekey="clpAdvancedTemplateSettings" Text="Advanced template settings">
+                        </scp:CollapsiblePanel>
+                        <asp:Panel ID="pAdvancedTemplateSettings" runat="server" Height="0" style="overflow:hidden;padding:5px;">
+                            <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
+                                <tr>
+	                                <td class="SubHead">
+		                                <asp:Localize ID="locVhdBlockSizeBytes" runat="server" meta:resourcekey="locVhdBlockSizeBytes" Text="VHD Block Size (Bytes):"></asp:Localize>
+	                                </td>
+	                                <td>
+		                                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtVhdBlockSizeBytes" Text='<%# Eval("VhdBlockSizeBytes") %>'></asp:TextBox>
+	                                </td>
+                                    <td>
+		                                <asp:Localize ID="LocBlockSizeDesc" runat="server" meta:resourcekey="LocBlockSizeDesc" Text="Default value is 0. Examples: 1024KB, 1MB, 32MB, etc."></asp:Localize>
+	                                </td>
+                                </tr>
+                                <tr>
+	                                <td class="SubHead">
+		                                <asp:Localize ID="locTemplateTimeZone" runat="server" meta:resourcekey="locTemplateTimeZone" Text="OS Time Zone (#os_template.TimeZoneId#):"></asp:Localize>
+	                                </td>
+	                                <td>
+                                        <asp:TextBox Width="300px" CssClass="form-control" Runat="server" ID="txtManualTempplateTimeZone" Text='<%# Eval("timeZoneId") %>'></asp:TextBox>
+	                                </td>
+	                                <td>
+                                        <asp:DropDownList ID="ddlTemplateTimeZone" runat="server" CssClass="form-control" Width="450"
+	                                                DataValueField="Key" DataTextField="Value" DataSource='<%# SolidCP.EnterpriseServer.Base.Virtualization.VirtualMachineTimeZoneList.GetList() %>'
+                                            SelectedValue='<%#  SolidCP.EnterpriseServer.Base.Virtualization.VirtualMachineTimeZoneList.IsTimeZoneExist(Eval("timeZoneId").ToString()) ? Eval("timeZoneId") : "" %>'>
+                                        </asp:DropDownList>
+	                                </td>
+                                </tr>
+                                <tr>
+                                    <td class="SubHead">
+	                                    <asp:Localize ID="locCDKey" runat="server" meta:resourcekey="locCDKey" Text="OS CD-key (#os_template.CDKey#):"></asp:Localize>
+                                    </td>
+                                    <td>
+	                                    <asp:TextBox Width="300px" CssClass="form-control" Runat="server" ID="txtTemplateCDKey" Text='<%# Eval("cdKey") %>'></asp:TextBox>
+                                    </td>
+                                </tr>                        
+                            </table>
+                        </asp:Panel>
+                    </td>
                 </tr>
-
             </table>
         </ItemTemplate>
         <SeparatorTemplate>

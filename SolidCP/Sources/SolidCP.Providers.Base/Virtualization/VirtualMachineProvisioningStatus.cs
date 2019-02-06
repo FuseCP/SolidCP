@@ -43,6 +43,7 @@ namespace SolidCP.Providers.Virtualization
         Warning = 2,
         Error = 3,
         InProgress = 4,
-        Deleted = 5
+        DeletionProgress = 5,
+        Deleted = 6
     }
 }

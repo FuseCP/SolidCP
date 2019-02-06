@@ -23,7 +23,8 @@ namespace SolidCP.Providers.Virtualization
         <DeployScriptParams>{10}</DeployScriptParams>
         <provisioning>
             {6}
-            <vmconfig computerName=""{7}"" administratorPassword=""{8}"" networkAdapters=""{9}"" />
+            <vmconfig computerName=""{7}"" administratorPassword=""{8}"" networkAdapters=""{9}"" 
+                cdKey=""{14}"" timeZoneId=""{15}"" />
         </provisioning>
     </item>";
 
@@ -132,6 +133,14 @@ namespace SolidCP.Providers.Virtualization
 
                     if (nodeVmConfig.Attributes["networkAdapters"] != null)
                         item.ProvisionNetworkAdapters = Boolean.Parse(nodeVmConfig.Attributes["networkAdapters"].Value);
+
+                    item.CDKey = "";
+                    if (nodeVmConfig.Attributes["cdKey"] != null)
+                        item.CDKey = nodeVmConfig.Attributes["cdKey"].Value;
+
+                    item.TimeZoneId = ""; //default value
+                    if (nodeVmConfig.Attributes["timeZoneId"] != null)
+                        item.TimeZoneId = nodeVmConfig.Attributes["timeZoneId"].Value;
                 }
 
                 items.Add(item);
@@ -155,7 +164,7 @@ namespace SolidCP.Providers.Virtualization
                     libraryItem.RemoteDesktop, libraryItem.ProcessVolume, libraryItem.Name, libraryItem.Description,
                     sysprep, libraryItem.ProvisionComputerName, libraryItem.ProvisionAdministratorPassword,
                     libraryItem.ProvisionNetworkAdapters, libraryItem.DeployScriptParams, libraryItem.Generation,
-                    libraryItem.EnableSecureBoot, libraryItem.VhdBlockSizeBytes));
+                    libraryItem.EnableSecureBoot, libraryItem.VhdBlockSizeBytes, libraryItem.CDKey, libraryItem.TimeZoneId));
             }
 
             Xml = string.Format(resultTemplate, string.Join("", items.ToArray()));
