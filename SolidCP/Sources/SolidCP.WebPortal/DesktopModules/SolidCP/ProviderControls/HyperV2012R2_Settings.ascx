@@ -583,7 +583,7 @@
                     DataValueField="SwitchId" DataTextField="Name"></asp:DropDownList>
             </td>
             <td>
-                <asp:CheckBox ID="chkGetSwitchesByPS" runat="server" AutoPostBack="true" meta:resourcekey="chkGetSwitchesByPS" Text="Use an alternative method to get external switches. (slow)" />
+                <asp:CheckBox ID="chkGetSwitchesByPS" runat="server" AutoPostBack="true" meta:resourcekey="chkGetSwitchesByPS" Text="Use an alternative method to get external switches. (slow)" OnCheckedChanged="chkGetSwitchesByPS_CheckedChanged" />
             </td>
 	    </tr>
 	    <tr>

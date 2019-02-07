@@ -621,5 +621,10 @@ namespace SolidCP.Portal.ProviderControls
             repDvdLibrary.DataSource = dvds;
             repDvdLibrary.DataBind();
         }
+
+        protected void chkGetSwitchesByPS_CheckedChanged(object sender, EventArgs e)
+        {
+            BindNetworksList();
+        }
     }
 }

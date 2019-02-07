@@ -53,7 +53,9 @@ Start-Sleep -Seconds 5
 #########################################################################################################################################################
 # Start the build process
 Write-Host "`n Starting Build Process`n`n" -ForegroundColor Green
-Invoke-Expression -Command: "& $(((Get-Content "$scriptPath\build-release.bat").Replace('%windir%', $env:windir).Replace('%ProgramFiles(x86)%', ${env:ProgramFiles(x86)}))[4])"
+#Invoke-Expression -Command: "& $(((Get-Content "$scriptPath\build-release.bat").Replace('%windir%', $env:windir).Replace('%ProgramFiles(x86)%', ${env:ProgramFiles(x86)}))[4])"
+$batFilePath = "$scriptPath\build-release.bat"
+Invoke-Expression -Command: "& $batFilePath"
 
 # Check the "msbuild.log" file for any errors and display then on the screen
 if ([bool]((Get-Content "$scriptPath\msbuild.log") -match ' error ')) {

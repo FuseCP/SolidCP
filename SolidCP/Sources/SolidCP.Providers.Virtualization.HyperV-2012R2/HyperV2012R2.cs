@@ -511,6 +511,43 @@ namespace SolidCP.Providers.Virtualization
 
         public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
         {
+            var jobResult = new JobResult();
+
+            short minMinutes = 3, attempts = 3, attempt = 0;
+            bool loop = true;
+            //fix a possible shutdown problem with VPS. 
+            //(If the VM is in a "busy" state, we get an exception when try to turn it off. The maximum "busy" state is ~10 minutes)
+            //If somebody knows how we can check a busy state without an exception please tell me.
+            while (loop)
+            {
+                try
+                {
+                    jobResult = ChangeVirtualMachineStateInternal(vmId, newState);
+                    System.Threading.Thread.Sleep(1000);
+                    loop = false;
+                }
+                catch
+                {
+                    attempt++;
+                    if (attempts >= attempt)
+                    {
+                        System.Threading.Thread.Sleep(60000 * minMinutes * attempt);
+                        HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... I'll try it again. attempt - {0} ", attempt));
+                    }
+                    else
+                    {
+                        HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... I can't turn off the server. Attempts were - {0} ", attempt));
+                        loop = false;
+                        jobResult.ReturnValue = ReturnCode.Timeout;
+                    }                        
+                }
+            }
+
+            return jobResult;
+        }
+
+        public JobResult ChangeVirtualMachineStateInternal(string vmId, VirtualMachineRequestedState newState)
+        {
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
             var jobResult = new JobResult();
 
@@ -518,7 +555,7 @@ namespace SolidCP.Providers.Virtualization
 
             bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused); 
 
-            if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server have problem.
+            if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server has a problem.
                 newState = VirtualMachineRequestedState.TurnOff;
 
             string cmdTxt;
@@ -596,7 +633,7 @@ namespace SolidCP.Providers.Virtualization
                     {
                         cmd = new Command(cmdTxt);
                         paramList.ForEach(p => cmd.Parameters.Add(p));
-                        PowerShell.Execute(cmd, true);
+                        PowerShell.Execute(cmd, true, true);
 
                         if (startVM)
                             ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Start);
