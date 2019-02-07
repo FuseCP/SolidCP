@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -72,18 +72,34 @@ namespace SolidCP.Portal.VPS2012
 
                 txtPrivateAddressesNumber.Text = maxPrivate.ToString();
                 litMaxPrivateAddresses.Text = String.Format(GetLocalizedString("litMaxPrivateAddresses.Text"), maxPrivate);
-                btnAdd.Enabled = maxPrivate > 0;
+                btnAdd.Enabled = btnAddByInject.Enabled = maxPrivate > 0;
             }
         }
 
         protected void btnAdd_Click(object sender, EventArgs e)
+        {
+            AddIP(sender, e, false);
+        }
+
+        protected void btnAddByInject_Click(object sender, EventArgs e)
+        {
+            AddIP(sender, e, true);
+        }
+
+        protected void AddIP(object sender, EventArgs e, bool byNewMethod)
         {
             int number = Utils.ParseInt(txtPrivateAddressesNumber.Text.Trim(), 0);
             string[] privIps = Utils.ParseDelimitedString(txtPrivateAddressesList.Text, '\n', '\r', ' ', '\t');
 
             try
             {
-                ResultObject res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID,
+                ResultObject res = null;
+
+                if(byNewMethod)
+                    res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddressesByInject(PanelRequest.ItemID,
+                    radioPrivateRandom.Checked, number, privIps);
+                else
+                    res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID,
                     radioPrivateRandom.Checked, number, privIps);
 
                 if (res.IsSuccess)

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -1111,6 +1111,132 @@ namespace SolidCP.Providers.Virtualization
             }
 
             return list;
+        }
+
+
+
+        #endregion
+
+        #region IP injection
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            JobResult result = new JobResult();
+
+            ManagementObject virtualSystemManageService = wmi.GetWmiObject("Msvm_VirtualSystemManagementService");
+            //get VM
+            ManagementObject objVM = wmi.GetWmiObject("Msvm_ComputerSystem", "Name = '{0}'", vmId);
+            ManagementObject objVMSystemSettings = GetVirtualMachineSettings(objVM); //cwmi.GetRelatedWmiObject(objVM, "Msvm_VirtualSystemSettingData");
+            ManagementObject objSynEthernerSettingsData = null;
+            if (string.IsNullOrEmpty(guestNetworkAdapterConfiguration.MAC)) //If dont have we just take first an adapter from VM.
+            {
+                objSynEthernerSettingsData = wmi.GetRelatedWmiObject(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData");
+            }
+            else
+            {
+                objSynEthernerSettingsData = 
+                    GetRelatedSelectedWmiObject(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData", "Address", guestNetworkAdapterConfiguration.MAC.ToUpper());
+            }           
+            //get the object with current adapter setting.
+            ManagementObject objGuestNetworkAdapterConfig = GetGuestNetworkAdapterConfiguration(objSynEthernerSettingsData);
+
+            //string[] showIP = (string[])objGuestNetworkAdapterConfig["IPAddresses"];
+            //string[] IPs = { "10.20.30.95", "10.20.30.96" };
+            //string[] subnets = { "255.255.255.0", "255.255.255.0" };
+            //string[] gateways = { "10.20.30.2" };
+            //string[] DNSs = { "8.8.8.8", "8.8.4.4" };
+
+            //TODO: possible need to configure the ProtocolIFType for IPv6 (need to check in future) at this moment we use default that has VM
+            objGuestNetworkAdapterConfig["DHCPEnabled"] = guestNetworkAdapterConfiguration.DHCPEnabled;
+            objGuestNetworkAdapterConfig["IPAddresses"] = guestNetworkAdapterConfiguration.IPAddresses;
+            objGuestNetworkAdapterConfig["Subnets"] = guestNetworkAdapterConfiguration.Subnets;
+            objGuestNetworkAdapterConfig["DefaultGateways"] = guestNetworkAdapterConfiguration.DefaultGateways;
+            objGuestNetworkAdapterConfig["DNSServers"] = guestNetworkAdapterConfiguration.DNSServers;            
+
+            //Convert to XML format
+            string[] networkConfiguration = { objGuestNetworkAdapterConfig.GetText(TextFormat.CimDtd20) };
+
+            result.ReturnValue = SetGuestNetworkAdapterConfiguration(virtualSystemManageService, objVM, networkConfiguration);
+            return result;
+        }
+
+        //TODO: jobs?
+        private ReturnCode SetGuestNetworkAdapterConfiguration(
+            ManagementObject virtualSystemManageService, ManagementObject ComputerSystem, string[] NetworkConfiguration)//, out ManagementPath Job)
+        {
+            ManagementBaseObject inParams = null;
+            inParams = virtualSystemManageService.GetMethodParameters("SetGuestNetworkAdapterConfiguration");
+            inParams["ComputerSystem"] = ComputerSystem.Path;
+            inParams["NetworkConfiguration"] = NetworkConfiguration;
+            ManagementBaseObject outParams = virtualSystemManageService.InvokeMethod("SetGuestNetworkAdapterConfiguration", inParams, null);
+            //Job = null;
+            //if (outParams.Properties["Job"] != null)
+            //{
+            //    Job = new ManagementPath((string)outParams.Properties["Job"].Value);
+            //}
+            return (ReturnCode)Convert.ToUInt32(outParams.Properties["ReturnValue"].Value);
+        }
+
+        private ManagementObject GetGuestNetworkAdapterConfiguration(ManagementObject EthernerSettings)
+        {
+            using (ManagementObjectCollection settingsCollection =
+                    EthernerSettings.GetRelated("Msvm_GuestNetworkAdapterConfiguration", "Msvm_SettingDataComponent",
+                    null, null, null, null, false, null))
+            {
+                ManagementObject guestNetworkAdapterConfiguration =
+                    GetFirstObjectFromCollection(settingsCollection);
+
+                return guestNetworkAdapterConfiguration;
+            }
+        }
+
+        private ManagementObject GetVirtualMachineSettings(ManagementObject virtualMachine)
+        {
+            using (ManagementObjectCollection settingsCollection =
+                    virtualMachine.GetRelated("Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState",
+                    null, null, null, null, false, null))
+            {
+                ManagementObject virtualMachineSettings =
+                    GetFirstObjectFromCollection(settingsCollection);
+
+                return virtualMachineSettings;
+            }
+        }
+
+        private ManagementObject GetRelatedSelectedWmiObject(ManagementObject obj, string className, string byPropertyName, string withValue)
+        {
+            ManagementObjectCollection col = obj.GetRelated(className);
+            return GetSelectedObjectFromCollection(col, byPropertyName, withValue);
+        }
+
+        private ManagementObject GetSelectedObjectFromCollection(ManagementObjectCollection collection, string byPropertyName, string withValue)
+        {
+            if (collection.Count == 0)
+            {
+                throw new ArgumentException("The collection contains no objects", "collection");
+            }
+
+            foreach (ManagementObject managementObject in collection)
+            {
+                if (string.Equals((string)managementObject[byPropertyName], withValue))
+                    return managementObject;
+            }
+
+            return null;
+        }
+
+        private ManagementObject GetFirstObjectFromCollection(ManagementObjectCollection collection)
+        {
+            if (collection.Count == 0)
+            {
+                throw new ArgumentException("The collection contains no objects", "collection");
+            }
+
+            foreach (ManagementObject managementObject in collection)
+            {
+                return managementObject;
+            }
+
+            return null;
         }
         #endregion
 

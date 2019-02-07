@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -71,6 +71,9 @@ namespace SolidCP.Providers.Virtualization
         bool SwitchExists(string switchId);
         VirtualSwitch CreateSwitch(string name);
         ReturnCode DeleteSwitch(string switchId);
+
+        // IP operations
+        JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration);
 
         // DVD operations
         string GetInsertedDVD(string vmId);

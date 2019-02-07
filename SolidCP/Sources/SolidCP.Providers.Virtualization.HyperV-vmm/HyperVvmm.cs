@@ -943,6 +943,13 @@ namespace SolidCP.Providers.Virtualization
         }
         #endregion
 
+        #region IP injection
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
             #region KVP
             public List<KvpExchangeDataItem> GetKVPItems(string vmId)
         {

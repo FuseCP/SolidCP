@@ -375,6 +375,15 @@ namespace SolidCP.Portal.ProviderControls
             if (EnabledReplica) BindReplicaServices();
          }
 
+        protected string SetSelectedValueIfTimeZoneExis(object TimeID)
+        {
+            string str = (TimeID != null) ? TimeID.ToString() : "";
+            if (string.IsNullOrEmpty(str) && !VirtualMachineTimeZoneList.IsTimeZoneExist(str))
+                str = "";
+
+            return str;
+        }
+
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
@@ -543,7 +552,7 @@ namespace SolidCP.Portal.ProviderControls
         private void RebindOsTemplate(List<LibraryItem> templates)
         {
             repOsTemplates.DataSource = templates;
-            repOsTemplates.DataBind();
+            repOsTemplates.DataBind();            
         }
 
         private string GetConfigXml(List<LibraryItem> items)

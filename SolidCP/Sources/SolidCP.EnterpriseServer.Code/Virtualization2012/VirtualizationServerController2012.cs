@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -760,7 +760,7 @@ namespace SolidCP.EnterpriseServer
                     {                        
                         // provision IP addresses
                         ResultObject privResult = AddVirtualMachineInternalIPAddresses(vm.Id, randomExternalAddresses,
-                            externalAddressesNumber, externalAddresses, false, vm.defaultaccessvlan);
+                            externalAddressesNumber, externalAddresses, 0, vm.defaultaccessvlan);
 
                         // set primary IP address
                         NetworkAdapterDetails extNic = GetExternalNetworkAdapterDetails(vm.Id);
@@ -1472,6 +1472,74 @@ namespace SolidCP.EnterpriseServer
 
             res.IsSuccess = true;
             return res;
+        }
+
+        private static JobResult InjectIPadresses(int itemId, string adapterName)
+        {
+            // load item
+            VirtualMachine vm = GetVirtualMachineByItemId(itemId);
+            if (vm == null)
+                return null;
+
+            // get proxy
+            VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+
+            GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration = new GuestNetworkAdapterConfiguration();
+            NetworkAdapterDetails nic = null;
+
+            if (String.Compare(adapterName, "external", true) == 0)
+            {
+                // external
+                nic = GetExternalNetworkAdapterDetails(itemId);
+            }
+            else if (String.Compare(adapterName, "private", true) == 0)
+            {
+                // private
+                nic = GetPrivateNetworkAdapterDetails(itemId);
+            }
+            else
+            {
+                // management
+                nic = GetManagementNetworkAdapterDetails(itemId);
+            }
+
+            // network format
+            if (nic != null && !String.IsNullOrEmpty(nic.MacAddress))
+            {
+                guestNetworkAdapterConfiguration.MAC = nic.MacAddress.Replace(" ", "").Replace(":", "").Replace("-", "");
+                guestNetworkAdapterConfiguration.DHCPEnabled = nic.IsDHCP;
+                if (!nic.IsDHCP)
+                {
+                    string[] ips = new string[nic.IPAddresses.Length];
+                    string[] subnetMasks = new string[nic.IPAddresses.Length];
+                    for (int i = 0; i < ips.Length; i++)
+                    {
+                        ips[i] = nic.IPAddresses[i].IPAddress;
+                        subnetMasks[i] = nic.IPAddresses[i].SubnetMask;
+
+                        // set gateway from the first (primary) IP
+                        if (i == 0)
+                            guestNetworkAdapterConfiguration.DefaultGateways = new string[] { nic.IPAddresses[i].DefaultGateway };
+                    }
+
+                    guestNetworkAdapterConfiguration.IPAddresses = ips;
+                    guestNetworkAdapterConfiguration.Subnets = subnetMasks;
+
+                    // name servers
+                    if (!String.IsNullOrEmpty(nic.AlternateNameServer))
+                        guestNetworkAdapterConfiguration.DNSServers = new string[] { nic.PreferredNameServer, nic.AlternateNameServer };
+                    else
+                        guestNetworkAdapterConfiguration.DNSServers = new string[] { nic.PreferredNameServer };
+                }
+            }
+
+            // DNS
+            if (guestNetworkAdapterConfiguration.DNSServers.Length == 0)
+            {
+                guestNetworkAdapterConfiguration.DNSServers = new string[] { "0.0.0.0" }; // obtain automatically
+            }           
+
+            return vs.InjectIPs(vm.VirtualMachineId, guestNetworkAdapterConfiguration);
         }
 
         private static JobResult SendNetworkAdapterKVP(int itemId, string adapterName)
@@ -3226,13 +3294,60 @@ namespace SolidCP.EnterpriseServer
             }
             return nic;
         }
+        public static ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
+        {
+            ResultObject res = new ResultObject();
+
+            // load service item
+            VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+            if (vm == null)
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
+                return res;
+            }
+
+            #region Check account and space statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+                return res;
+
+            // check package
+            if (!SecurityContext.CheckPackage(res, vm.PackageId, DemandPackage.IsActive))
+                return res;
+            #endregion
+
+            // start task
+            res = TaskManager.StartResultTask<ResultObject>("VPS", "RESTORE_EXTERNAL_IP", vm.Id, vm.Name, vm.PackageId);
+            try
+            {
+                // send KVP config items
+                InjectIPadresses(itemId, "External");
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.RESTORE_VIRTUAL_MACHINE_EXTERNAL_IP_ADDRESS_ERROR, ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressIds)
+        {
+            int provisionKvpType = 2;
+            return AddVirtualMachineInternalIPAddresses(itemId, selectRandom, addressesNumber, addressIds, provisionKvpType, -1);
+        }        
 
         public static ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, bool provisionKvp)
         {
-            return AddVirtualMachineInternalIPAddresses(itemId, selectRandom, addressesNumber, addressIds, provisionKvp, -1);
+            int provisionKvpType = 0;
+            if (provisionKvp)
+                provisionKvpType = 1;
+            return AddVirtualMachineInternalIPAddresses(itemId, selectRandom, addressesNumber, addressIds, provisionKvpType, -1);
         }
 
-        public static ResultObject AddVirtualMachineInternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, bool provisionKvp, int vlan)
+        public static ResultObject AddVirtualMachineInternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressIds, int provisionKvpType, int vlan)
         {
             if (addressIds == null)
                 throw new ArgumentNullException("addressIds");
@@ -3294,8 +3409,25 @@ namespace SolidCP.EnterpriseServer
                     ServerController.AddItemIPAddress(itemId, addressId);
 
                 // send KVP config items
-                if (provisionKvp)
-                    SendNetworkAdapterKVP(itemId, "External");
+                switch (provisionKvpType)
+                {
+                    case 1:
+                        {
+                            SendNetworkAdapterKVP(itemId, "External");
+                            break;
+                        }
+                    case 2:
+                        {
+                            InjectIPadresses(itemId, "External");
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+                //if (provisionKvp)
+                //    SendNetworkAdapterKVP(itemId, "External");
             }
             catch (Exception ex)
             {
@@ -3351,7 +3483,21 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
+        public static ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] packageAddressIds)
+        {
+            int provisionKvpType = 2;
+            return DeleteVirtualMachineExternalIPAddresses(itemId, packageAddressIds, provisionKvpType);
+        }
+
         public static ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, bool provisionKvp)
+        {
+            int provisionKvpType = 0;
+            if (provisionKvp)
+                provisionKvpType = 1;
+            return DeleteVirtualMachineExternalIPAddresses(itemId, packageAddressIds, provisionKvpType);
+        }
+
+        public static ResultObject DeleteVirtualMachineExternalIPAddresses(int itemId, int[] packageAddressIds, int provisionKvpType)
         {
             if (packageAddressIds == null)
                 throw new ArgumentNullException("addressIds");
@@ -3386,8 +3532,25 @@ namespace SolidCP.EnterpriseServer
                     ServerController.DeleteItemIPAddress(itemId, packageAddressId);
 
                 // send KVP config items
-                if(provisionKvp)
-                    SendNetworkAdapterKVP(itemId, "External");
+                switch (provisionKvpType)
+                {
+                    case 1:
+                        {
+                            SendNetworkAdapterKVP(itemId, "External");
+                            break;
+                        }
+                    case 2:
+                        {
+                            InjectIPadresses(itemId, "External");
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+                //if(provisionKvp)
+                //    SendNetworkAdapterKVP(itemId, "External");
             }
             catch (Exception ex)
             {
@@ -3469,7 +3632,60 @@ namespace SolidCP.EnterpriseServer
             return nic;
         }
 
+        public static ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
+        {
+            ResultObject res = new ResultObject();
+
+            // load service item
+            VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+            if (vm == null)
+            {
+                res.ErrorCodes.Add(VirtualizationErrorCodes.CANNOT_FIND_VIRTUAL_MACHINE_META_ITEM);
+                return res;
+            }
+
+            #region Check account and space statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+                return res;
+
+            // check package
+            if (!SecurityContext.CheckPackage(res, vm.PackageId, DemandPackage.IsActive))
+                return res;
+            #endregion
+
+            // start task
+            res = TaskManager.StartResultTask<ResultObject>("VPS", "RESTORE_PRIVATE_IP", vm.Id, vm.Name, vm.PackageId);
+            try
+            {
+                // send KVP config items
+                InjectIPadresses(itemId, "Private");
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.RESTORE_VIRTUAL_MACHINE_PRIVATE_IP_ADDRESS_ERROR, ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        {
+            int provisionKvpType = 2;
+            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType);
+        }
         public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp)
+        {
+            int provisionKvpType = 0;
+            if (provisionKvp)
+                provisionKvpType = 1;
+
+            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType);
+        }
+
+        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType)
         {
             // trace info
             Trace.TraceInformation("Entering AddVirtualMachinePrivateIPAddresses()");
@@ -3566,8 +3782,26 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // send KVP config items
-                if(provisionKvp)
-                    SendNetworkAdapterKVP(itemId, "Private");
+                switch (provisionKvpType)
+                {
+                    case 1:
+                        {
+                            SendNetworkAdapterKVP(itemId, "Private");
+                            break;
+                        }
+                    case 2:
+                        {
+                            InjectIPadresses(itemId, "Private");
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+
+                //if(provisionKvp)
+                //    SendNetworkAdapterKVP(itemId, "Private");
             }
             catch (Exception ex)
             {
@@ -3643,7 +3877,21 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
+        public static ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressIds)
+        {
+            int provisionKvpType = 2;
+            return DeleteVirtualMachinePrivateIPAddresses(itemId, addressIds, provisionKvpType);
+        }
+
         public static ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, bool provisionKvp)
+        {
+            int provisionKvpType = 0;
+            if (provisionKvp)
+                provisionKvpType = 1;
+            return DeleteVirtualMachinePrivateIPAddresses(itemId, addressIds, provisionKvpType);
+        }
+
+        public static ResultObject DeleteVirtualMachinePrivateIPAddresses(int itemId, int[] addressIds, int provisionKvpType)
         {
             if (addressIds == null)
                 throw new ArgumentNullException("addressIds");
@@ -3678,8 +3926,25 @@ namespace SolidCP.EnterpriseServer
                     DataProvider.DeleteItemPrivateIPAddress(SecurityContext.User.UserId, itemId, addressId);
 
                 // send KVP config items
-                if(provisionKvp)
-                    SendNetworkAdapterKVP(itemId, "Private");
+                switch (provisionKvpType)
+                {
+                    case 1:
+                        {
+                            SendNetworkAdapterKVP(itemId, "Private");
+                            break;
+                        }
+                    case 2:
+                        {
+                            InjectIPadresses(itemId, "Private");
+                            break;
+                        }
+                    default:
+                        {
+                            break;
+                        }
+                }
+                //if(provisionKvp)
+                //    SendNetworkAdapterKVP(itemId, "Private");
             }
             catch (Exception ex)
             {

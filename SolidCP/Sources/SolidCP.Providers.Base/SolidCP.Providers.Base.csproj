@@ -359,6 +359,7 @@
     </Compile>
     <Compile Include="Virtualization\Config\ConfigFile.cs" />
     <Compile Include="Virtualization\ControllerType.cs" />
+    <Compile Include="Virtualization\GuestNetworkAdapterConfiguration.cs" />
     <Compile Include="Virtualization\IVirtualizationServer2012.cs" />
     <Compile Include="Virtualization\IVirtualizationServer.cs">
       <SubType>Code</SubType>

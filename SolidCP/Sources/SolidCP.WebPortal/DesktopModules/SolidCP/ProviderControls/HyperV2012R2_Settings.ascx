@@ -355,7 +355,7 @@
 	                                <td>
                                         <asp:DropDownList ID="ddlTemplateTimeZone" runat="server" CssClass="form-control" Width="450"
 	                                                DataValueField="Key" DataTextField="Value" DataSource='<%# SolidCP.EnterpriseServer.Base.Virtualization.VirtualMachineTimeZoneList.GetList() %>'
-                                            SelectedValue='<%#  SolidCP.EnterpriseServer.Base.Virtualization.VirtualMachineTimeZoneList.IsTimeZoneExist(Eval("timeZoneId").ToString()) ? Eval("timeZoneId") : "" %>'>
+                                            SelectedValue='<%#  SetSelectedValueIfTimeZoneExis(Eval("timeZoneId")) %>'>
                                         </asp:DropDownList>
 	                                </td>
                                 </tr>

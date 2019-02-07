@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -414,6 +414,26 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom,
+            int addressesNumber, int[] addressId)
+        {
+            return VirtualizationServerController2012.AddVirtualMachineExternalIPAddressesByInjection(itemId, selectRandom,
+                addressesNumber, addressId);
+        }
+
+        [WebMethod]
+        public ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] addressId)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachineExternalIPAddressesByInjection(itemId, addressId);
+        }
+
+        [WebMethod]
+        public ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
+        {
+            return VirtualizationServerController2012.RestoreVirtualMachineExternalIPAddressesByInjection(itemId);
+        }
+
+        [WebMethod]
         public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom,
             int addressesNumber, int[] addressId)
         {
@@ -442,6 +462,20 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
+        {
+            return VirtualizationServerController2012.RestoreVirtualMachinePrivateIPAddressesByInjection(itemId);
+        }
+
+        [WebMethod]
+        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom,
+            int addressesNumber, string[] addresses)
+        {
+            return VirtualizationServerController2012.AddVirtualMachinePrivateIPAddressesByInject(itemId, selectRandom,
+                addressesNumber, addresses);
+        }
+
+        [WebMethod]
         public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom,
             int addressesNumber, string[] addresses)
         {
@@ -453,6 +487,12 @@ namespace SolidCP.EnterpriseServer
         public ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId)
         {
             return VirtualizationServerController2012.SetVirtualMachinePrimaryPrivateIPAddress(itemId, addressId, true);
+        }
+
+        [WebMethod]
+        public ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressId)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachinePrivateIPAddressesByInject(itemId, addressId);
         }
 
         [WebMethod]
