@@ -117,7 +117,10 @@ namespace SolidCP.Portal.VPS2012
             {
                 if (adapter.IPAddresses != null && adapter.IPAddresses.Length > 0) //if we can get IP information at least from 1 adapter it means that VM support IP Injection.
                 {
-                    btnDeleteExternalByInject.Visible = btnRestoreExternalAddress.Visible = btnRestorePrivateAddress.Visible = true;
+                    btnDeletePrivateByInject.Visible =
+                        btnDeleteExternalByInject.Visible =
+                        btnRestoreExternalAddress.Visible =
+                        btnRestorePrivateAddress.Visible = true;
                     break;
                 }
             }

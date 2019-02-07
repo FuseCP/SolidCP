@@ -83,7 +83,7 @@ namespace SolidCP.Portal.VPS2012
 
         protected void btnAddByInject_Click(object sender, EventArgs e)
         {
-            AddIP(sender, e, false);
+            AddIP(sender, e, true);
         }
 
         protected void AddIP(object sender, EventArgs e, bool byNewMethod)
