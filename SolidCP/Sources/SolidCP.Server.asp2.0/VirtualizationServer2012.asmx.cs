@@ -543,6 +543,25 @@ namespace SolidCP.Server
         }
         #endregion
 
+        #region IP operations
+        [WebMethod, SoapHeader("settings")]
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' InjectIPs", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.InjectIPs(vmId, guestNetworkAdapterConfiguration);
+                Log.WriteEnd("'{0}' InjectIPs", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' InjectIPs", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+        #endregion
+
         #region DVD operations
         [WebMethod, SoapHeader("settings")]
         public string GetInsertedDVD(string vmId)

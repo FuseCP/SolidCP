@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnAdd.Text" xml:space="preserve">
     <value>Hinzufügen</value>
@@ -152,5 +152,8 @@
   </data>
   <data name="locNotEnoughExternalAddresses.Text" xml:space="preserve">
     <value>Der Pool verfügbarer externer IP-Adressen ist leer. Alle IP-Adressen, die dem derzeitigen Hosting-Bereich zugewiesen sind, sind vorhandenen virtuellen Servern zugeordnet. Mehr externe IP-Adressen können vom Host zugewiesen werden.</value>
+  </data>
+  <data name="btnAddByInject.Text" xml:space="preserve">
+    <value>Add and InjectIP (BETA)</value>
   </data>
 </root>

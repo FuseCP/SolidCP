@@ -30,7 +30,15 @@
                     <scp:CollapsiblePanel id="secRealNetwork" runat="server"
                         TargetControlID="RealNetworkPanel" meta:resourcekey="secRealNetwork" Text="Virtual Machine Networks details">
                     </scp:CollapsiblePanel>
-                    <asp:Panel ID="RealNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">                        
+                    <asp:Panel ID="RealNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">    
+                        <div class="form-group">
+                                <div class="col-sm-20 form-inline">
+                                    <asp:Button ID="btnRestoreExternalAddress" runat="server" meta:resourcekey="btnRestoreExternalAddress"
+                                            Text="Restore External IPs" CssClass="btn btn-primary" onclick="btnRestoreExternalAddress_Click" />
+                                    <asp:Button ID="btnRestorePrivateAddress" runat="server" meta:resourcekey="btnRestorePrivateAddress"
+                                            Text="Restore Private IPs" CssClass="btn btn-primary" onclick="btnRestorePrivateByInject_Click" />
+                                </div>
+                        </div>
                         <asp:Repeater ID="repVMNetwork" runat="server">
                             <ItemTemplate>
                                 <div class="form-group">
@@ -38,7 +46,7 @@
                                     <div class="col-sm-20 form-inline">
                                         <asp:Literal ID="litAdapterName" runat="server" meta:resourcekey="litAdaperName" Text=<%# Eval("Name") %>></asp:Literal>
                                     </div>
-                                    <asp:Label ID="locAdapterMAC" meta:resourcekey="locAdapterName" runat="server" Text="Adapter MAC:" CssClass="col-sm-1" AssociatedControlID="litAdapterMAC"></asp:Label>
+                                    <asp:Label ID="locAdapterMAC" meta:resourcekey="locAdapterMAC" runat="server" Text="Adapter MAC:" CssClass="col-sm-1" AssociatedControlID="litAdapterMAC"></asp:Label>
                                     <div class="col-sm-20 form-inline">
                                         <asp:Literal ID="litAdapterMAC" runat="server" meta:resourcekey="litAdapterMAC" Text=<%# Eval("MacAddress") %>></asp:Literal>
                                     </div>
@@ -118,6 +126,9 @@
 				            <asp:Button id="btnDeleteExternal" runat="server" Text="Delete Selected"
 				                meta:resourcekey="btnDeleteExternal" CssClass="SmallButton" CausesValidation="false" 
                                 onclick="btnDeleteExternal_Click"></asp:Button>
+                            <asp:Button id="btnDeleteExternalByInject" runat="server" Text="Delete Selected By Inject"
+				                meta:resourcekey="btnDeleteExternalByInject" CssClass="SmallButton" CausesValidation="false" 
+                                onclick="btnDeleteExternalByInject_Click"></asp:Button>
                         </div>
 
 				        <br />
@@ -195,6 +206,9 @@
 				                <asp:Button id="btnDeletePrivate" runat="server" Text="Delete Selected"
 				                    meta:resourcekey="btnDeletePrivate" CssClass="btn btn-danger" CausesValidation="false" 
                                     onclick="btnDeletePrivate_Click"></asp:Button>
+                                <asp:Button id="btnDeletePrivateByInject" runat="server" Text="Delete Selected By Inject"
+				                    meta:resourcekey="btnDeletePrivateByInject" CssClass="SmallButton" CausesValidation="false" 
+                                    onclick="btnDeletePrivateByInject_Click"></asp:Button>
                             </div>
                             
 				            <br />

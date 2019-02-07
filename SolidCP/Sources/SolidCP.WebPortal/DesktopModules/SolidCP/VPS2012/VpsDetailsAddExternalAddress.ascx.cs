@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -76,7 +76,7 @@ namespace SolidCP.Portal.VPS2012
             bool empty = maxAddresses == 0;
             EmptyExternalAddressesMessage.Visible = empty;
             ExternalAddressesTable.Visible = !empty;
-            btnAdd.Enabled = !empty;
+            btnAdd.Enabled = btnAddByInject.Enabled = !empty;
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
@@ -99,6 +99,15 @@ namespace SolidCP.Portal.VPS2012
 
         protected void btnAdd_Click(object sender, EventArgs e)
         {
+            AddIP(sender, e, false);
+        }
+        protected void btnAddByInject_Click(object sender, EventArgs e)
+        {
+            AddIP(sender, e, true);
+        }
+
+        protected void AddIP(object sender, EventArgs e, bool byNewMethod)
+        {
             int number = Utils.ParseInt(txtExternalAddressesNumber.Text.Trim(), 0);
             List<int> addressIds = new List<int>();
             foreach (ListItem li in listExternalAddresses.Items)
@@ -107,8 +116,13 @@ namespace SolidCP.Portal.VPS2012
 
             try
             {
-                ResultObject res = ES.Services.VPS2012.AddVirtualMachineExternalIPAddresses(PanelRequest.ItemID,
-                    radioExternalRandom.Checked, number, addressIds.ToArray());
+                ResultObject res = null;
+                if (byNewMethod)
+                    res = ES.Services.VPS2012.AddVirtualMachineExternalIPAddressesByInjection(PanelRequest.ItemID,
+                            radioExternalRandom.Checked, number, addressIds.ToArray());
+                else
+                    res = ES.Services.VPS2012.AddVirtualMachineExternalIPAddresses(PanelRequest.ItemID,
+                            radioExternalRandom.Checked, number, addressIds.ToArray());
 
                 if (res.IsSuccess)
                 {
@@ -123,6 +137,6 @@ namespace SolidCP.Portal.VPS2012
             {
                 messageBox.ShowErrorMessage("VPS_ERROR_ADDING_IP_ADDRESS", ex);
             }
-        }
+        }        
     }
 }
