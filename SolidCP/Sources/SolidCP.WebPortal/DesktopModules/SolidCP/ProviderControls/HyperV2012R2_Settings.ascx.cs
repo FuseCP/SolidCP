@@ -384,6 +384,14 @@ namespace SolidCP.Portal.ProviderControls
             return str;
         }
 
+        protected bool IsLegacyAdapterSupport(object val)
+        {
+            bool support = true;
+            if (val != null && Utils.ParseInt(val, 0) > 1)
+                support = false;
+            return support;
+        }
+
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
