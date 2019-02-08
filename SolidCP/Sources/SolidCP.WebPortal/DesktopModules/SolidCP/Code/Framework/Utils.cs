@@ -57,7 +57,7 @@ namespace SolidCP.Portal
         public const int Size1G = 0x40000000;
         public const int Size1M = 0x100000;
         public const int Size1K = 1024;
-        public const int MinBlockSizeBytes = 1048576;
+        public const uint MinBlockSizeBytes = 1048576;
         public const Int32 MAX_DIR_LENGTH = 248;
         public const Int32 MAX_FILE_LENGTH = 260;
 
