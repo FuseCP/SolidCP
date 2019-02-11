@@ -682,6 +682,12 @@ namespace SolidCP.EnterpriseServer
             }
             catch (Exception ex)
             {
+                if (!createMetaItem)
+                {
+                    vm.CurrentTaskId = null;
+                    vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Error;
+                    PackageController.UpdatePackageItem(vm); //to access the audit log.
+                }
                 res.AddError(VirtualizationErrorCodes.CREATE_ERROR, ex);
                 return res;
             }
@@ -3811,7 +3817,7 @@ namespace SolidCP.EnterpriseServer
 
             TaskManager.CompleteResultTask();
             return res;
-        }
+        }        
 
         private static List<string> CheckPrivateIPAddresses(int packageId, string[] addresses)
         {
@@ -4039,7 +4045,7 @@ namespace SolidCP.EnterpriseServer
 				return ip.Cidr.ToString();
 			}
 		}
-		
+
         private static bool CheckPrivateIPAddress(string subnetMask, string ipAddress)
         {
             var mask = IPAddress.Parse(subnetMask);
@@ -4419,7 +4425,7 @@ namespace SolidCP.EnterpriseServer
             catch (Exception ex)
             {
                 TaskManager.WriteError(ex, VirtualizationErrorCodes.DELETE_ERROR + ":");
-                return;
+                //return;
             }
             finally
             {
@@ -4562,9 +4568,12 @@ namespace SolidCP.EnterpriseServer
             NetworkAdapterDetails nicLan = GetPrivateNetworkAdapterDetails(itemId);
             if (nicLan.IPAddresses != null && nicLan.IPAddresses.GetLength(0) > 0)
             {
+                int i = 0;
                 foreach (NetworkAdapterIPAddress ip in nicLan.IPAddresses)
                 {
                     ipLanAddressesID.Add(ip.AddressId);
+                    privIps[i] = ip.IPAddress;
+                    i++;
                 }
             }
             #endregion
@@ -4823,12 +4832,12 @@ namespace SolidCP.EnterpriseServer
                 return null;
 
             //Wait next Task.
-            int attempts = 20;
+            int attempts = 10;
             while (!String.IsNullOrEmpty(vm.CurrentTaskId)
-                && TaskManager.GetTask(vm.CurrentTaskId) == null)
+                && TaskManager.GetTask(vm.CurrentTaskId) == null
+                && attempts > 0)
             {
-                if (attempts > 0)
-                    Thread.Sleep(5000);
+                Thread.Sleep(5000);
 
                 attempts--;
                 vm = (VirtualMachine)PackageController.GetPackageItem(itemId);

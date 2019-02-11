@@ -515,6 +515,29 @@ namespace SolidCP.Providers.Virtualization
 
             short minMinutes = 3, attempts = 3, attempt = 0;
             bool loop = true;
+
+            for(int i = 0; i < 3; i++)
+            {
+                bool isExist = false;
+                try
+                {
+                    if (GetVirtualMachineByID(vmId).Count > 0)
+                        isExist = true;
+                }
+                catch { }    
+                finally
+                {
+                    if (!isExist)
+                    {
+                        loop = false;
+                        HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... The server {0} is not exist. attempt - {1} ", vmId, i));
+                        jobResult.ReturnValue = ReturnCode.OK;
+                    }
+                }
+                
+                System.Threading.Thread.Sleep(2000);
+            }            
+
             //fix a possible shutdown problem with VPS. 
             //(If the VM is in a "busy" state, we get an exception when try to turn it off. The maximum "busy" state is ~10 minutes)
             //If somebody knows how we can check a busy state without an exception please tell me.
