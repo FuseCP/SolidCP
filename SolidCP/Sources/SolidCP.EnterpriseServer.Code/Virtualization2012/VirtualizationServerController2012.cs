@@ -2466,50 +2466,22 @@ namespace SolidCP.EnterpriseServer
                 // get proxy
                 VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
 
-                // stop VPS if required
-                VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                VirtualMachine vps = vs.GetVirtualMachineEx(vm.VirtualMachineId);
 
-                bool wasStarted = false;
+                bool canChangeValueWihoutReboot = false;
 
-                // stop (shut down) virtual machine
-                if (vps.State != VirtualMachineState.Off)
+                if(vps.CpuCores == vmSettings.CpuCores)
                 {
-                    wasStarted = true;
-                    ReturnCode code = vs.ShutDownVirtualMachine(vm.VirtualMachineId, true, SHUTDOWN_REASON_CHANGE_CONFIG);
-                    if (code == ReturnCode.OK)
+                    if(vps.HddSize == vmSettings.HddSize)
                     {
-                        // spin until fully stopped
-                        vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-                        short timeOut = 60 * 10; //10 min
-                        while (vps.State != VirtualMachineState.Off) //TODO: rewrite
+                        if(vmSettings.DynamicMemory != null 
+                            && vps.DynamicMemory.Enabled == vmSettings.DynamicMemory.Enabled 
+                            && vps.DynamicMemory.Enabled == false) //TODO: In future add another checks (security boot, etc)
                         {
-                            timeOut--;
-                            System.Threading.Thread.Sleep(1000); // sleep 1 second
-                            vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-                            if (timeOut == 0)// turnoff
-                            {
-                                ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
-                                                                VirtualMachineRequestedState.TurnOff);
-                                if (!turnOffResult.IsSuccess)
-                                {
-                                    TaskManager.CompleteResultTask(res);
-                                    return turnOffResult;
-                                }
-                            }
+                            canChangeValueWihoutReboot = true;                            
                         }
                     }
-                    else
-                    {
-                        // turn off
-                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
-                        if (!JobCompleted(vs, result.Job))
-                        {
-                            LogJobResult(res, result.Job);
-                            TaskManager.CompleteResultTask(res);
-                            return res;
-                        }
-                    }
-                } // end OFF
+                }
 
                 /////////////////////////////////////////////
                 // update meta-item //TODO: rewrite 
@@ -2520,6 +2492,8 @@ namespace SolidCP.EnterpriseServer
                 vm.HddMinimumIOPS = vmSettings.HddMinimumIOPS;
                 vm.HddMaximumIOPS = vmSettings.HddMaximumIOPS;
                 vm.SnapshotsNumber = vmSettings.SnapshotsNumber;
+
+                vm.Version = vps.Version; //save true VM veriosn.
 
                 vm.BootFromCD = vmSettings.BootFromCD;
                 vm.NumLockEnabled = vmSettings.NumLockEnabled;
@@ -2570,29 +2544,87 @@ namespace SolidCP.EnterpriseServer
                 }
                 #endregion
 
-                // update configuration on virtualization server
-                vm = vs.UpdateVirtualMachine(vm);
+                bool isSuccessChangedWihoutReboot = false;
+                if (canChangeValueWihoutReboot)
+                {
+                    isSuccessChangedWihoutReboot = vs.IsTryToUpdateVirtualMachineWithoutRebootSuccess(vm);
+                    TaskManager.Write(String.Format("Is update without reboot was success - {0}.", isSuccessChangedWihoutReboot));
+                }
+
+                bool wasStarted = false;
+                if (!isSuccessChangedWihoutReboot)
+                {
+                    TaskManager.Write(String.Format("Shutting down the server for updating..."));
+                    // stop VPS if required
+                    // stop (shut down) virtual machine
+                    #region stop VM
+                    if (vps.State != VirtualMachineState.Off)
+                    {
+                        wasStarted = true;
+                        ReturnCode code = vs.ShutDownVirtualMachine(vm.VirtualMachineId, true, SHUTDOWN_REASON_CHANGE_CONFIG);
+                        if (code == ReturnCode.OK)
+                        {
+                            // spin until fully stopped
+                            vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                            short timeOut = 60 * 10; //10 min
+                            while (vps.State != VirtualMachineState.Off) //TODO: rewrite
+                            {
+                                timeOut--;
+                                System.Threading.Thread.Sleep(1000); // sleep 1 second
+                                vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                                if (timeOut == 0)// turnoff
+                                {
+                                    ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
+                                                                    VirtualMachineRequestedState.TurnOff);
+                                    if (!turnOffResult.IsSuccess)
+                                    {
+                                        TaskManager.CompleteResultTask(res);
+                                        return turnOffResult;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // turn off
+                            result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                            if (!JobCompleted(vs, result.Job))
+                            {
+                                LogJobResult(res, result.Job);
+                                TaskManager.CompleteResultTask(res);
+                                return res;
+                            }
+                        }
+                    } // end OFF
+                    #endregion
+
+                    // update configuration on virtualization server
+                    vm = vs.UpdateVirtualMachine(vm);
+                    TaskManager.Write(String.Format("The server configuration has been updated."));
+                }                
 
                 // update meta item
                 PackageController.UpdatePackageItem(vm);
+                TaskManager.Write(String.Format("VM settings have been updated."));
 
                 // unprovision external IP addresses
                 if (!vm.ExternalNetworkEnabled)
                     ServerController.DeleteItemIPAddresses(itemId);
-                else
-                    // send KVP config items
-                    SendNetworkAdapterKVP(itemId, "External");
+                //else //why should we do that??
+                //    // send KVP config items
+                //    SendNetworkAdapterKVP(itemId, "External");
 
                 // unprovision private IP addresses
                 if (!vm.PrivateNetworkEnabled)
                     DataProvider.DeleteItemPrivateIPAddresses(SecurityContext.User.UserId, itemId);
-                else
-                    // send KVP config items
-                    SendNetworkAdapterKVP(itemId, "Private");
+                //else //why should we do that??
+                //    // send KVP config items
+                //    SendNetworkAdapterKVP(itemId, "Private");
 
                 // start if required
-                if (wasStarted)
+                if (wasStarted && !isSuccessChangedWihoutReboot)
                 {
+                    TaskManager.Write(String.Format("Starting the server..."));
                     result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.Start);
                     if (!JobCompleted(vs, result.Job))
                     {

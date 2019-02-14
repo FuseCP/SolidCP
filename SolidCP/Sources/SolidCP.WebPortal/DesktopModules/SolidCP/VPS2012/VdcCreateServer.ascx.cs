@@ -52,6 +52,8 @@ namespace SolidCP.Portal.VPS2012
             if (!manageAllowed) //block access for user if they don't have permission.
                 Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
 
+            //txtHddMinIOPS.Enabled = PanelSecurity.EffectiveUser.Role != UserRole.User;
+
             if (!IsPostBack)
             {
                 BindFormControls();

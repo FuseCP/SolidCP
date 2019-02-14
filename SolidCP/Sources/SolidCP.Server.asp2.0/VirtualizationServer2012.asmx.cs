@@ -282,6 +282,23 @@ namespace SolidCP.Server
                 throw;
             }
         }
+
+        [WebMethod, SoapHeader("settings")]
+        public bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' IsTryToUpdateVirtualMachineWithoutRebootSuccess", ProviderSettings.ProviderName);
+                bool result = VirtualizationProvider.IsTryToUpdateVirtualMachineWithoutRebootSuccess(vm);
+                Log.WriteEnd("'{0}' IsTryToUpdateVirtualMachineWithoutRebootSuccess", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' IsTryToUpdateVirtualMachineWithoutRebootSuccess", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
         #endregion
 
         #region Snapshots

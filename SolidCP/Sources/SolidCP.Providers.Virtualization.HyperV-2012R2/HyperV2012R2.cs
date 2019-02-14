@@ -299,6 +299,31 @@ namespace SolidCP.Providers.Virtualization
             return vmachines;
         }
 
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        {
+            List<VirtualMachineNetworkAdapter> adapters = new List<VirtualMachineNetworkAdapter>();
+            try
+            {
+                Command command = new Command("Get-VMNetworkAdapter");
+                command.Parameters.Add("VMName ", vmName);
+                Collection<PSObject> result = PowerShell.Execute(command, true, true);
+                foreach (PSObject current in result)
+                {
+                    var adapter = new VirtualMachineNetworkAdapter();
+                    adapter.IPAddresses = current.GetProperty<string[]>("IPAddresses");
+                    adapter.Name = current.GetString("Name");
+                    adapter.MacAddress = current.GetString("MacAddress");
+                    adapter.SwitchName = current.GetString("SwitchName");
+                    adapters.Add(adapter);
+                }
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachinesNetwordAdapterSettings", ex);
+            }
+
+            return adapters;
+        }
 
         public List<VirtualMachine> GetVirtualMachines()
         {
@@ -509,6 +534,49 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
+        public bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm)
+        {
+            
+            HostedSolutionLog.LogStart("TryToUpdateVirtualMachineWithoutReboot");
+            HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vm.VirtualMachineId);
+            bool isSuccess = false;
+
+            try
+            {
+                var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
+                
+                double version = ConvertNullableToDouble(vm.Version);
+                if (version >= 5.0)
+                {
+                    DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
+                    HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
+                    NetworkAdapterHelper.Update(PowerShell, vm);
+                    isSuccess = true;
+                    if (version >= 6.2)
+                    {
+                        DynamicMemory dynamicMemory = null; //update pnly static memory
+                        MemoryHelper.Update(PowerShell, realVm, vm.RamSize, dynamicMemory);
+                        isSuccess = true;
+                    }
+                    else if (realVm.RamSize != vm.RamSize) //if 5.0 and RAM not equil we can't update without reboot.
+                    {
+                        isSuccess = false;
+                    }
+                    //TODO: ????
+                }
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("TryToUpdateVirtualMachineWithoutReboot", ex);
+                isSuccess = false;
+                //throw;
+            }
+
+            HostedSolutionLog.LogEnd("TryToUpdateVirtualMachineWithoutReboot");
+
+            return isSuccess;
+        }
+
         public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
         {
             var jobResult = new JobResult();
@@ -516,7 +584,7 @@ namespace SolidCP.Providers.Virtualization
             short minMinutes = 3, attempts = 3, attempt = 0;
             bool loop = true;
 
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < attempts; i++)
             {
                 bool isExist = false;
                 try
@@ -532,6 +600,10 @@ namespace SolidCP.Providers.Virtualization
                         loop = false;
                         HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... The server {0} is not exist. attempt - {1} ", vmId, i));
                         jobResult.ReturnValue = ReturnCode.OK;
+                    }
+                    else
+                    {
+                        i = attempts;
                     }
                 }
                 

@@ -59,6 +59,8 @@ namespace SolidCP.Providers.Virtualization2012
 
         private System.Threading.SendOrPostCallback ExportVirtualMachineOperationCompleted;
 
+        private System.Threading.SendOrPostCallback IsTryToUpdateVirtualMachineWithoutRebootSuccessOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetVirtualMachineSnapshotsOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetSnapshotOperationCompleted;
@@ -209,6 +211,9 @@ namespace SolidCP.Providers.Virtualization2012
 
         /// <remarks/>
         public event ExportVirtualMachineCompletedEventHandler ExportVirtualMachineCompleted;
+
+        /// <remarks/>
+        public event IsTryToUpdateVirtualMachineWithoutRebootSuccessCompletedEventHandler IsTryToUpdateVirtualMachineWithoutRebootSuccessCompleted;
 
         /// <remarks/>
         public event GetVirtualMachineSnapshotsCompletedEventHandler GetVirtualMachineSnapshotsCompleted;
@@ -1032,6 +1037,56 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ExportVirtualMachineCompleted(this, new ExportVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/IsTryToUpdateVirtualMachineWithoutRebootSuccess", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm)
+        {
+            object[] results = this.Invoke("IsTryToUpdateVirtualMachineWithoutRebootSuccess", new object[] {
+                        vm});
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginIsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("IsTryToUpdateVirtualMachineWithoutRebootSuccess", new object[] {
+                        vm}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public bool EndIsTryToUpdateVirtualMachineWithoutRebootSuccess(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((bool)(results[0]));
+        }
+
+        /// <remarks/>
+        public void IsTryToUpdateVirtualMachineWithoutRebootSuccessAsync(VirtualMachine vm)
+        {
+            this.IsTryToUpdateVirtualMachineWithoutRebootSuccessAsync(vm, null);
+        }
+
+        /// <remarks/>
+        public void IsTryToUpdateVirtualMachineWithoutRebootSuccessAsync(VirtualMachine vm, object userState)
+        {
+            if ((this.IsTryToUpdateVirtualMachineWithoutRebootSuccessOperationCompleted == null))
+            {
+                this.IsTryToUpdateVirtualMachineWithoutRebootSuccessOperationCompleted = new System.Threading.SendOrPostCallback(this.OnIsTryToUpdateVirtualMachineWithoutRebootSuccessOperationCompleted);
+            }
+            this.InvokeAsync("IsTryToUpdateVirtualMachineWithoutRebootSuccess", new object[] {
+                        vm}, this.IsTryToUpdateVirtualMachineWithoutRebootSuccessOperationCompleted, userState);
+        }
+
+        private void OnIsTryToUpdateVirtualMachineWithoutRebootSuccessOperationCompleted(object arg)
+        {
+            if ((this.IsTryToUpdateVirtualMachineWithoutRebootSuccessCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.IsTryToUpdateVirtualMachineWithoutRebootSuccessCompleted(this, new IsTryToUpdateVirtualMachineWithoutRebootSuccessCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -4113,6 +4168,36 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 this.RaiseExceptionIfNecessary();
                 return ((JobResult)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void IsTryToUpdateVirtualMachineWithoutRebootSuccessCompletedEventHandler(object sender, IsTryToUpdateVirtualMachineWithoutRebootSuccessCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class IsTryToUpdateVirtualMachineWithoutRebootSuccessCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal IsTryToUpdateVirtualMachineWithoutRebootSuccessCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public bool Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
             }
         }
     }

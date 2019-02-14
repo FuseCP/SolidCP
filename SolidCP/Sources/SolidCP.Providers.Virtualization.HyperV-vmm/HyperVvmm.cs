@@ -447,6 +447,11 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
+        public bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm)
+        {
+            return false;
+        }
+
         public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
         {
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
