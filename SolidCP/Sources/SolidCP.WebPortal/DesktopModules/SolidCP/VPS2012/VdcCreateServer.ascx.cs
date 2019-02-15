@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2018, SolidCP
+﻿// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -52,7 +52,7 @@ namespace SolidCP.Portal.VPS2012
             if (!manageAllowed) //block access for user if they don't have permission.
                 Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
 
-            //txtHddMinIOPS.Enabled = PanelSecurity.EffectiveUser.Role != UserRole.User;
+            secHddQOS.Visible = QOSManag.Visible = PanelSecurity.EffectiveUser.Role != UserRole.User;
 
             if (!IsPostBack)
             {

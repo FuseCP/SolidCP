@@ -222,6 +222,14 @@ namespace SolidCP.Providers.Virtualization
 
                         // network adapters
                         vm.Adapters = NetworkAdapterHelper.Get(PowerShell, vm.Name);
+                        foreach (VirtualMachineNetworkAdapter adapter in vm.Adapters)
+                        {
+                            if(adapter.Name == Constants.EXTERNAL_NETWORK_ADAPTER_NAME)
+                                vm.ExternalNetworkEnabled = true;
+
+                            if (adapter.Name == Constants.PRIVATE_NETWORK_ADAPTER_NAME)
+                                vm.PrivateNetworkEnabled = true;
+                        }
                     }
 
                     vm.DynamicMemory = MemoryHelper.GetDynamicMemory(PowerShell, vm.Name);
@@ -548,15 +556,16 @@ namespace SolidCP.Providers.Virtualization
                 double version = ConvertNullableToDouble(vm.Version);
                 if (version >= 5.0)
                 {
-                    DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
                     HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
-                    NetworkAdapterHelper.Update(PowerShell, vm);
-                    isSuccess = true;
-                    if (version >= 6.2)
+                    isSuccess = true;         
+                    
+                    if (version >= 6.2 && realVm.Generation != 1)
                     {
+                        DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
+                        NetworkAdapterHelper.Update(PowerShell, vm);
+
                         DynamicMemory dynamicMemory = null; //update pnly static memory
                         MemoryHelper.Update(PowerShell, realVm, vm.RamSize, dynamicMemory);
-                        isSuccess = true;
                     }
                     else if (realVm.RamSize != vm.RamSize) //if 5.0 and RAM not equil we can't update without reboot.
                     {
@@ -577,11 +586,11 @@ namespace SolidCP.Providers.Virtualization
             return isSuccess;
         }
 
-        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
+        public JobResult TryToChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
         {
             var jobResult = new JobResult();
 
-            short minMinutes = 3, attempts = 3, attempt = 0;
+            short minMinutes = 2, attempts = 3, attempt = 0;
             bool loop = true;
 
             for(int i = 0; i < attempts; i++)
@@ -598,7 +607,7 @@ namespace SolidCP.Providers.Virtualization
                     if (!isExist)
                     {
                         loop = false;
-                        HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... The server {0} is not exist. attempt - {1} ", vmId, i));
+                        HostedSolutionLog.LogWarning(string.Format("TryToChangeVirtualMachineState: Oops... The server {0} is not exist. attempt - {1} ", vmId, i));
                         jobResult.ReturnValue = ReturnCode.OK;
                     }
                     else
@@ -617,7 +626,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 try
                 {
-                    jobResult = ChangeVirtualMachineStateInternal(vmId, newState);
+                    jobResult = ChangeVirtualMachineState(vmId, newState);
                     System.Threading.Thread.Sleep(1000);
                     loop = false;
                 }
@@ -627,11 +636,11 @@ namespace SolidCP.Providers.Virtualization
                     if (attempts >= attempt)
                     {
                         System.Threading.Thread.Sleep(60000 * minMinutes * attempt);
-                        HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... I'll try it again. attempt - {0} ", attempt));
+                        HostedSolutionLog.LogWarning(string.Format("TryToChangeVirtualMachineState: Oops... I'll try it again. attempt - {0} ", attempt));
                     }
                     else
                     {
-                        HostedSolutionLog.LogWarning(string.Format("ChangeVirtualMachineState: Oops... I can't turn off the server. Attempts were - {0} ", attempt));
+                        HostedSolutionLog.LogWarning(string.Format("TryToChangeVirtualMachineState: Oops... I can't turn off the server. Attempts were - {0} ", attempt));
                         loop = false;
                         jobResult.ReturnValue = ReturnCode.Timeout;
                     }                        
@@ -641,7 +650,7 @@ namespace SolidCP.Providers.Virtualization
             return jobResult;
         }
 
-        public JobResult ChangeVirtualMachineStateInternal(string vmId, VirtualMachineRequestedState newState)
+        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
         {
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
             var jobResult = new JobResult();
@@ -1957,7 +1966,7 @@ namespace SolidCP.Providers.Virtualization
                     if (vps.State == VirtualMachineState.Paused)
                         state = VirtualMachineRequestedState.Resume;
 
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state);
+                    result = TryToChangeVirtualMachineState(vm.VirtualMachineId, state);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1992,7 +2001,7 @@ namespace SolidCP.Providers.Virtualization
 
                     // turn off
                     VirtualMachineRequestedState state = VirtualMachineRequestedState.TurnOff;
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state);
+                    result = TryToChangeVirtualMachineState(vm.VirtualMachineId, state);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -2037,7 +2046,7 @@ namespace SolidCP.Providers.Virtualization
                 #region Turn off (if required)
                 if (vps.State != VirtualMachineState.Off)
                 {
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                    result = TryToChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
                     {

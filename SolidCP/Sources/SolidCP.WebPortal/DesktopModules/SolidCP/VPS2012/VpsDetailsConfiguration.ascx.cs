@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -48,6 +48,8 @@ namespace SolidCP.Portal.VPS2012
         {
             if (!IsPostBack && Request["action"] == "changed")
                 messageBox.ShowSuccessMessage("VPS_CHANGE_VM_CONFIGURATION");
+
+            secHddQOS.Visible = QOSManag.Visible = PanelSecurity.EffectiveUser.Role != UserRole.User;
 
             if (!IsPostBack)
             {
