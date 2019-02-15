@@ -369,15 +369,18 @@ namespace SolidCP.Import.Enterprise
 				return errorCode;
 			
 			string addressListsContainer = null;
-			try
-			{
-				addressListsContainer = ADUtils.GetAddressListsContainer();
-			}
-			catch (Exception ex)
-			{
-				Log.WriteError("Cannot load Exchange 2007 Address Lists Container", ex);
-				return EXCHANGE_CONTAINER_ERROR;
-			}
+            if (Global.IsExchange)
+            {
+                try
+                {
+                    addressListsContainer = ADUtils.GetAddressListsContainer();
+                }
+                catch (Exception ex)
+                {
+                    Log.WriteError("Cannot load Exchange 2007 Address Lists Container", ex);
+                    return EXCHANGE_CONTAINER_ERROR;
+                }
+            }
 
 			Organization org = PopulateOrganization(packageId, organizationId, addressListsContainer);
 
