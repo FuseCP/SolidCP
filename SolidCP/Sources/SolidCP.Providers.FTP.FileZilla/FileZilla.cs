@@ -201,6 +201,7 @@ namespace SolidCP.Providers.FTP
             SetOption(nodePermission, "FileRead", BoolToString(account.CanRead));
             SetOption(nodePermission, "FileWrite", BoolToString(account.CanWrite));
             SetOption(nodePermission, "FileDelete", BoolToString(account.CanWrite));
+            SetOption(nodePermission, "FileAppend", BoolToString(account.CanWrite));  //JSR
             SetOption(nodePermission, "DirCreate", BoolToString(account.CanWrite));
             SetOption(nodePermission, "DirDelete", BoolToString(account.CanWrite));
             SetOption(nodePermission, "DirList", BoolToString(account.CanRead));
@@ -251,6 +252,7 @@ namespace SolidCP.Providers.FTP
                 SetOption(nodePermission, "FileRead", BoolToString(account.CanRead));
                 SetOption(nodePermission, "FileWrite", BoolToString(account.CanWrite));
                 SetOption(nodePermission, "FileDelete", BoolToString(account.CanWrite));
+                SetOption(nodePermission, "FileAppend", BoolToString(account.CanWrite));  //JSR
                 SetOption(nodePermission, "DirCreate", BoolToString(account.CanWrite));
                 SetOption(nodePermission, "DirDelete", BoolToString(account.CanWrite));
                 SetOption(nodePermission, "DirList", BoolToString(account.CanRead));
@@ -434,3 +436,4 @@ namespace SolidCP.Providers.FTP
 
     }
 }
+
