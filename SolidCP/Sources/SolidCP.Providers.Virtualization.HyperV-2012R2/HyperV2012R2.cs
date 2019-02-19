@@ -549,7 +549,7 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vm.VirtualMachineId);
             bool isSuccess = false;
 
-            try
+            try //not all Templates support hot chnage values, we get an exception if it doesn't.
             {
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
                 
@@ -557,21 +557,22 @@ namespace SolidCP.Providers.Virtualization
                 if (version >= 5.0)
                 {
                     HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
-                    isSuccess = true;         
-                    
-                    if (version >= 6.2 && realVm.Generation != 1)
+                    isSuccess = true;        
+                    if(realVm.Generation != 1)
                     {
                         DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
                         NetworkAdapterHelper.Update(PowerShell, vm);
-
-                        DynamicMemory dynamicMemory = null; //update pnly static memory
-                        MemoryHelper.Update(PowerShell, realVm, vm.RamSize, dynamicMemory);
+                        if (version >= 6.2) 
+                        {
+                            DynamicMemory dynamicMemory = null; //update pnly static memory TODO: add dynamic memory resize without reboot.
+                            MemoryHelper.Update(PowerShell, realVm, vm.RamSize, dynamicMemory);
+                        }
+                        else if (realVm.RamSize != vm.RamSize) //if 5.0 and RAM not equil we can't update without reboot.
+                        {
+                            isSuccess = false;
+                        }
+                        //TODO: ????
                     }
-                    else if (realVm.RamSize != vm.RamSize) //if 5.0 and RAM not equil we can't update without reboot.
-                    {
-                        isSuccess = false;
-                    }
-                    //TODO: ????
                 }
             }
             catch (Exception ex)

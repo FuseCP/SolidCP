@@ -58,6 +58,7 @@ namespace SolidCP.EnterpriseServer
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
         private const string SCP_HOSTNAME_PREFIX = "SCP-"; //min and max are 4 symbols! ([0-9][A-z] and -)
         private const string MAINTENANCE_MODE_EMABLED = "enabled";
+        private const short MINIMUM_DYNAMIC_MEMORY_BUFFER = 5;
 
         // default server creation (if "Unlimited" was specified in the hosting plan)
         private const int DEFAULT_PASSWORD_LENGTH = 12;
@@ -2470,15 +2471,15 @@ namespace SolidCP.EnterpriseServer
 
                 bool canChangeValueWihoutReboot = false;
 
-                if(vps.CpuCores == vmSettings.CpuCores)
+                if(vps.CpuCores == vmSettings.CpuCores) //TODO: move checks to IsTryToUpdateVirtualMachineWithoutRebootSuccess ???
                 {
                     if(vps.HddSize == vmSettings.HddSize)
                     {
                         if(vmSettings.DynamicMemory != null 
-                            && vps.DynamicMemory.Enabled == vmSettings.DynamicMemory.Enabled 
-                            && vps.DynamicMemory.Enabled == false) //TODO: In future add another checks (security boot, etc)
+                            && vps.DynamicMemory.Enabled == vmSettings.DynamicMemory.Enabled //TODO: add dynamic memory resize without reboot.
+                            && vps.DynamicMemory.Enabled == false)
                         {
-                            canChangeValueWihoutReboot = true;                            
+                            canChangeValueWihoutReboot = true;            //TODO: In future add another checks (security boot, etc)                  
                         }
                     }
                 }
@@ -2511,7 +2512,11 @@ namespace SolidCP.EnterpriseServer
 
                 // dynamic memory
                 if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
+                {
+                    if (vmSettings.DynamicMemory.Buffer < MINIMUM_DYNAMIC_MEMORY_BUFFER) //minimum is 5.
+                        vmSettings.DynamicMemory.Buffer = MINIMUM_DYNAMIC_MEMORY_BUFFER;
                     vm.DynamicMemory = vmSettings.DynamicMemory;
+                }                    
                 else
                     vm.DynamicMemory = null;
 
