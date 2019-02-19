@@ -573,6 +573,12 @@ namespace SolidCP.Providers.Virtualization
                         }
                         //TODO: ????
                     }
+                    else if (realVm.DvdDriveInstalled != vm.DvdDriveInstalled 
+                        || realVm.ExternalNetworkEnabled != vm.ExternalNetworkEnabled
+                        || realVm.PrivateNicMacAddress != vm.PrivateNicMacAddress)
+                    {
+                        isSuccess = false;
+                    }
                 }
             }
             catch (Exception ex)
