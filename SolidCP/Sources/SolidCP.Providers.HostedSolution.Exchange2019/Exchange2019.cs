@@ -6351,48 +6351,6 @@ namespace SolidCP.Providers.HostedSolution
             ExchangeLog.DebugInfo("  Active Direcory object: {0}", objPath);
             ExchangeLog.DebugInfo("  Security Group: {0}", securityGroupPath);
 
-            if (isAddressBook)
-            {
-                ExchangeLog.DebugInfo("  Updating Security");
-                //"Download Address Book" security permission for offline address book
-                Guid openAddressBookGuid = new Guid("{bd919c7c-2d79-4950-bc9c-e16fd99285e8}");
-
-                DirectoryEntry groupEntry = GetADObject(securityGroupPath);
-                byte[] byteSid = (byte[])GetADObjectProperty(groupEntry, "objectSid");
-
-                DirectoryEntry objEntry = GetADObject(objPath);
-                ActiveDirectorySecurity security = objEntry.ObjectSecurity;
-
-                // Create a SecurityIdentifier object for security group.
-                SecurityIdentifier groupSid = new SecurityIdentifier(byteSid, 0);
-
-                // Create an access rule to allow users in Security Group to open address book. 
-                ActiveDirectoryAccessRule allowOpenAddressBook =
-                    new ActiveDirectoryAccessRule(
-                        groupSid,
-                        ActiveDirectoryRights.ExtendedRight,
-                        AccessControlType.Allow,
-                        openAddressBookGuid);
-
-                // Create an access rule to allow users in Security Group to read object. 
-                ActiveDirectoryAccessRule allowRead =
-                    new ActiveDirectoryAccessRule(
-                        groupSid,
-                        ActiveDirectoryRights.GenericRead,
-                        AccessControlType.Allow);
-
-                // Remove existing rules if exist
-                security.RemoveAccessRuleSpecific(allowOpenAddressBook);
-                security.RemoveAccessRuleSpecific(allowRead);
-
-                // Add a new access rule to allow users in Security Group to open address book. 
-                security.AddAccessRule(allowOpenAddressBook);
-                // Add a new access rule to allow users in Security Group to read object. 
-                security.AddAccessRule(allowRead);
-
-                // Commit the changes.
-                objEntry.CommitChanges();
-            }
 
             ExchangeLog.LogEnd("AdjustADSecurity");
         }

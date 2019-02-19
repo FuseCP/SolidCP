@@ -186,19 +186,20 @@ namespace SolidCP.Providers.Database
 		#region Databases
 		private string GetSafeConnectionString(string databaseName, string username, string password)
         {
-            return String.Format("server={0};port={1};database={2};uid={3};password={4}",
-                ServerName, ServerPort, databaseName, username, password);
+            return String.Format("server={0};port={1};database={2};uid={3};password={4}{5}",
+                ServerName, ServerPort, databaseName, username, password, SslMode);
         }
 
         public virtual bool CheckConnectivity(string databaseName, string username, string password)
         {
             MySqlConnection conn = new MySqlConnection(
-                    String.Format("server={0};port={1};database={2};uid={3};password={4}",
+                    String.Format("server={0};port={1};database={2};uid={3};password={4}{5}",
                                 ServerName,
                                 ServerPort,
                                 databaseName,
                                 username,
-                                password)
+                                password,
+                                SslMode)
                     );
             try
             {

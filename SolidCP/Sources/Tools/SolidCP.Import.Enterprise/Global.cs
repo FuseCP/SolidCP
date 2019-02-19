@@ -65,7 +65,9 @@ namespace SolidCP.Import.Enterprise
             set { netBiosDomain = value; }
         }
 
-		public static PackageInfo Space;
+        public static bool IsExchange;
+
+        public static PackageInfo Space;
 		public static string TempDomain;
 
 		public static string MailboxCluster;
