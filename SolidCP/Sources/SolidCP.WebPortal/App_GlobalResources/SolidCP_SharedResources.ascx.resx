@@ -6436,4 +6436,10 @@
   <data name="VPS.VPS_RESTORE_VIRTUAL_MACHINE_PRIVATE_IP_ADDRESS_ERROR" xml:space="preserve">
     <value>Error restoring private IP address. Check Audit Log for more details.</value>
   </data>
+  <data name="AuditLogTask.VPS_RESTORE_EXTERNAL_IP" xml:space="preserve">
+    <value>Restore external IP</value>
+  </data>
+  <data name="AuditLogTask.VPS_RESTORE_PRIVATE_IP" xml:space="preserve">
+    <value>Restore private IP</value>
+  </data>
 </root>

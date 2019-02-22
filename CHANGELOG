@@ -12,7 +12,7 @@ Version 1.4.3
 - (VPS2012/2016/2019) Fixed: The reinstall method doesn't work for HyperV Remote Host - Genadij
 - (VPS2012/2016/2019) Fixed: Some problems with HyperV remote host.  - Genadij
 - (VPS2012/2016/2019) Fixed: A possible bug when SolidCP cannot change VM state if VM is in a busy state (that bug prevented to delete some VM). - Genadij
-- (VPS2012/2016/2019) Fixed: An issue with updating Dynamic RAM. - Genadij
+- (VPS2012/2016/2019) Fixed: Issues with updating Dynamic RAM. - Genadij
 - (VPS2012/2016/2019) Fixed: Ignore a legacy adapter checkbox for generation 2. - Genadij
 - (VPS2012/2016/2019) Added foolproofs. - Genadij
 - (VPS2012/2016/2019) Added Sysprep TimeZoneId and CDKey variables. - Genadij

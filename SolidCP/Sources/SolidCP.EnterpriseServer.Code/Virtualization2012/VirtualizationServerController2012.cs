@@ -2467,22 +2467,7 @@ namespace SolidCP.EnterpriseServer
                 // get proxy
                 VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
 
-                VirtualMachine vps = vs.GetVirtualMachineEx(vm.VirtualMachineId);
-
-                bool canChangeValueWihoutReboot = false;
-
-                if(vps.CpuCores == vmSettings.CpuCores) //TODO: move checks to IsTryToUpdateVirtualMachineWithoutRebootSuccess ???
-                {
-                    if(vps.HddSize == vmSettings.HddSize)
-                    {
-                        if(vmSettings.DynamicMemory != null 
-                            && vps.DynamicMemory.Enabled == vmSettings.DynamicMemory.Enabled //TODO: add dynamic memory resize without reboot.
-                            && vps.DynamicMemory.Enabled == false)
-                        {
-                            canChangeValueWihoutReboot = true;            //TODO: In future add another checks (security boot, etc)                  
-                        }
-                    }
-                }
+                VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
 
                 /////////////////////////////////////////////
                 // update meta-item //TODO: rewrite 
@@ -2511,6 +2496,7 @@ namespace SolidCP.EnterpriseServer
                 /////////////////////////////////////////////
 
                 // dynamic memory
+                #region dynamic memory
                 if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
                 {
                     if (vmSettings.DynamicMemory.Buffer < MINIMUM_DYNAMIC_MEMORY_BUFFER) //minimum is 5.
@@ -2519,6 +2505,7 @@ namespace SolidCP.EnterpriseServer
                 }                    
                 else
                     vm.DynamicMemory = null;
+                #endregion
 
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
@@ -2550,7 +2537,7 @@ namespace SolidCP.EnterpriseServer
                 #endregion
 
                 bool isSuccessChangedWihoutReboot = false;
-                if (canChangeValueWihoutReboot)
+                if (!vmSettings.NeedReboot)
                 {
                     isSuccessChangedWihoutReboot = vs.IsTryToUpdateVirtualMachineWithoutRebootSuccess(vm);
                     TaskManager.Write(String.Format("Is update without reboot was success - {0}.", isSuccessChangedWihoutReboot));

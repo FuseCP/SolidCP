@@ -214,6 +214,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ReinstallAllowed = chkReinstall.Checked;
                 virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
+                virtualMachine.NeedReboot = chkForceReboot.Checked;
 
                 ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineResource(PanelRequest.ItemID, virtualMachine);
                 //ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,

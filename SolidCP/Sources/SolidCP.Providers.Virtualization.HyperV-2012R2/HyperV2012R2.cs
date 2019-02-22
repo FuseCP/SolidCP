@@ -552,9 +552,22 @@ namespace SolidCP.Providers.Virtualization
             try //not all Templates support hot chnage values, we get an exception if it doesn't.
             {
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
-                
+                bool canChangeValueWihoutReboot = false;
+                if (realVm.CpuCores == vm.CpuCores)
+                {
+                    if (realVm.HddSize == vm.HddSize)
+                    {
+                        if( vm.DynamicMemory == null 
+                            || (realVm.DynamicMemory.Enabled == vm.DynamicMemory.Enabled //TODO: add dynamic memory resize without reboot.
+                                && realVm.DynamicMemory.Enabled == false) )
+                        {
+                            canChangeValueWihoutReboot = true;
+                        }                        
+                    }
+                }
+
                 double version = ConvertNullableToDouble(vm.Version);
-                if (version >= 5.0)
+                if (version >= 5.0 && canChangeValueWihoutReboot)
                 {
                     HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
                     isSuccess = true;        
@@ -573,9 +586,10 @@ namespace SolidCP.Providers.Virtualization
                         }
                         //TODO: ????
                     }
-                    else if (realVm.DvdDriveInstalled != vm.DvdDriveInstalled 
+                    else if (realVm.DvdDriveInstalled != vm.DvdDriveInstalled //Generation 1 doesnt support those things without reboot
                         || realVm.ExternalNetworkEnabled != vm.ExternalNetworkEnabled
-                        || realVm.PrivateNicMacAddress != vm.PrivateNicMacAddress)
+                        || realVm.PrivateNetworkEnabled != vm.PrivateNetworkEnabled
+                        || realVm.RamSize != vm.RamSize)
                     {
                         isSuccess = false;
                     }
