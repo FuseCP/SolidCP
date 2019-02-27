@@ -403,12 +403,11 @@ namespace SolidCP.Portal.VPS2012
 
             try
             {
-                ResultObject res = null; ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
+                ResultObject res = null;
                 if(byNewMethod)
                     res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddressesByInjection(PanelRequest.ItemID, addressIds);
                 else
                     res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
-
 
                 if (res.IsSuccess)
                 {
