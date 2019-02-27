@@ -3443,11 +3443,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "External");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "External");
                             break;
                         }
@@ -3566,11 +3568,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "External");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "External");
                             break;
                         }
@@ -3816,11 +3820,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "Private");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "Private");
                             break;
                         }
@@ -3960,11 +3966,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "Private");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "Private");
                             break;
                         }
