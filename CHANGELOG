@@ -22,7 +22,7 @@ Version 1.4.3
 - (VPS2012/2016/2019) Feature: Possibility to check real assigned VM IPs (part 1) - Genadij
 - (VPS2012/2016/2019) Feature: Inject IPs by native HyperV commands (faster and stable method) (Linux??). - Genadij
 - (VPS2012/2016/2019) Feature: Possible to change some VM values without a reboot. - Genadij
-- (VPS2016/2019) Feature: Possible to change static RAM without a reboot. - Genadij
+- (VPS2016/2019) Feature: Possible to change static/dynamic RAM without a reboot. - Genadij
 - Cerberus dll, Spam Experts dll missing from live build fix
 - Send password request (exchange) gui fix. 
 - Added MessageCopyForSentAsEnabled for exchange 2016

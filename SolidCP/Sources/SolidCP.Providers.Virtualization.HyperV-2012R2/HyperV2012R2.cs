@@ -557,39 +557,57 @@ namespace SolidCP.Providers.Virtualization
                 {
                     if (realVm.HddSize == vm.HddSize)
                     {
-                        if( vm.DynamicMemory == null 
-                            || (realVm.DynamicMemory.Enabled == vm.DynamicMemory.Enabled //TODO: add dynamic memory resize without reboot.
-                                && realVm.DynamicMemory.Enabled == false) )
-                        {
-                            canChangeValueWihoutReboot = true;
-                        }                        
+                        canChangeValueWihoutReboot = true;                       
                     }
                 }
 
-                double version = ConvertNullableToDouble(vm.Version);
+                double version = ConvertNullableToDouble(vm.Version);                
+
                 if (version >= 5.0 && canChangeValueWihoutReboot)
                 {
                     HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
-                    isSuccess = true;        
-                    if(realVm.Generation != 1)
+                    isSuccess = true;
+
+                    bool canNotUpdateForGeneration1 = realVm.DvdDriveInstalled != vm.DvdDriveInstalled //Generation 1 doesnt support those things without reboot
+                        || realVm.ExternalNetworkEnabled != vm.ExternalNetworkEnabled
+                        || realVm.PrivateNetworkEnabled != vm.PrivateNetworkEnabled
+                        || realVm.RamSize != vm.RamSize;
+
+                    if (realVm.Generation != 1)
                     {
                         DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
                         NetworkAdapterHelper.Update(PowerShell, vm);
                         if (version >= 6.2) 
                         {
-                            DynamicMemory dynamicMemory = null; //update pnly static memory TODO: add dynamic memory resize without reboot.
-                            MemoryHelper.Update(PowerShell, realVm, vm.RamSize, dynamicMemory);
+                            bool canUpdateStaticRAM = vm.DynamicMemory == null
+                            || (realVm.DynamicMemory.Enabled == vm.DynamicMemory.Enabled
+                                && realVm.DynamicMemory.Enabled == false);
+
+                            bool canUpdateDynamicRAM = vm.DynamicMemory != null
+                                && realVm.RamSize == vm.RamSize
+                                && realVm.DynamicMemory.Enabled == vm.DynamicMemory.Enabled
+                                && realVm.DynamicMemory.Enabled == true;
+
+                            if (canUpdateStaticRAM)
+                            {
+                                MemoryHelper.Update(PowerShell, realVm, vm.RamSize, null);
+                            }
+                            else if(canUpdateDynamicRAM)
+                            {
+                                MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                            }                            
                         }
                         else if (realVm.RamSize != vm.RamSize) //if 5.0 and RAM not equil we can't update without reboot.
                         {
                             isSuccess = false;
                         }
-                        //TODO: ????
+                        //TODO: SecureBoot, etc????
                     }
-                    else if (realVm.DvdDriveInstalled != vm.DvdDriveInstalled //Generation 1 doesnt support those things without reboot
-                        || realVm.ExternalNetworkEnabled != vm.ExternalNetworkEnabled
-                        || realVm.PrivateNetworkEnabled != vm.PrivateNetworkEnabled
-                        || realVm.RamSize != vm.RamSize)
+                    else if (canNotUpdateForGeneration1)
                     {
                         isSuccess = false;
                     }

@@ -2537,7 +2537,7 @@ namespace SolidCP.EnterpriseServer
                 #endregion
 
                 bool isSuccessChangedWihoutReboot = false;
-                if (!vmSettings.NeedReboot)
+                if (!vmSettings.NeedReboot || vps.State != VirtualMachineState.Off)
                 {
                     isSuccessChangedWihoutReboot = vs.IsTryToUpdateVirtualMachineWithoutRebootSuccess(vm);
                     TaskManager.Write(String.Format("Is update without reboot was success - {0}.", isSuccessChangedWihoutReboot));
