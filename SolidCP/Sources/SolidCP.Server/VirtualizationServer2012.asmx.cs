@@ -562,6 +562,23 @@ namespace SolidCP.Server
 
         #region IP operations
         [WebMethod, SoapHeader("settings")]
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetVirtualMachinesNetwordAdapterSettings", ProviderSettings.ProviderName);
+                List<VirtualMachineNetworkAdapter> result = VirtualizationProvider.GetVirtualMachinesNetwordAdapterSettings(vmName);
+                Log.WriteEnd("'{0}' GetVirtualMachinesNetwordAdapterSettings", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetVirtualMachinesNetwordAdapterSettings", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
         {
             try

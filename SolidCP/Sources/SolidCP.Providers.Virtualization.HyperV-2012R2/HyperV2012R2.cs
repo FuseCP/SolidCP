@@ -214,7 +214,6 @@ namespace SolidCP.Providers.Virtualization
                         if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                         {
                             vm.VirtualHardDrivePath = vm.Disks[0].Path;
-                            //vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G); //TODO: add FileSize in vm class ??? and change in KVP
                             vm.HddSize = Convert.ToInt32(vm.Disks[0].MaxInternalSize / Constants.Size1G);
                             vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
                             vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
@@ -313,21 +312,25 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 Command command = new Command("Get-VMNetworkAdapter");
-                command.Parameters.Add("VMName ", vmName);
+                command.Parameters.Add("VMName", vmName);
                 Collection<PSObject> result = PowerShell.Execute(command, true, true);
+
                 foreach (PSObject current in result)
                 {
-                    var adapter = new VirtualMachineNetworkAdapter();
-                    adapter.IPAddresses = current.GetProperty<string[]>("IPAddresses");
-                    adapter.Name = current.GetString("Name");
-                    adapter.MacAddress = current.GetString("MacAddress");
-                    adapter.SwitchName = current.GetString("SwitchName");
+                    var adapter = new VirtualMachineNetworkAdapter
+                    {
+                        IPAddresses = current.GetProperty<string[]>("IPAddresses"),
+                        Name = current.GetString("Name"),
+                        MacAddress = current.GetString("MacAddress"),
+                        SwitchName = current.GetString("SwitchName")
+                    };
                     adapters.Add(adapter);
                 }
             }
             catch (Exception ex)
             {
                 HostedSolutionLog.LogError("GetVirtualMachinesNetwordAdapterSettings", ex);
+                throw;
             }
 
             return adapters;

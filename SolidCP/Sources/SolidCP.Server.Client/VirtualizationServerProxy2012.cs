@@ -91,6 +91,8 @@ namespace SolidCP.Providers.Virtualization2012
 
         private System.Threading.SendOrPostCallback DeleteSwitchOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetVirtualMachinesNetwordAdapterSettingsOperationCompleted;
+
         private System.Threading.SendOrPostCallback InjectIPsOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetInsertedDVDOperationCompleted;
@@ -259,6 +261,9 @@ namespace SolidCP.Providers.Virtualization2012
 
         /// <remarks/>
         public event DeleteSwitchCompletedEventHandler DeleteSwitchCompleted;
+
+        /// <remarks/>
+        public event GetVirtualMachinesNetwordAdapterSettingsCompletedEventHandler GetVirtualMachinesNetwordAdapterSettingsCompleted;
 
         /// <remarks/>
         public event InjectIPsCompletedEventHandler InjectIPsCompleted;
@@ -1847,6 +1852,56 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteSwitchCompleted(this, new DeleteSwitchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetVirtualMachinesNetwordAdapterSettings", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        {
+            object[] results = this.Invoke("GetVirtualMachinesNetwordAdapterSettings", new object[] {
+                        vmName});
+            return ((VirtualMachineNetworkAdapter[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetVirtualMachinesNetwordAdapterSettings(string vmName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetVirtualMachinesNetwordAdapterSettings", new object[] {
+                        vmName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VirtualMachineNetworkAdapter[] EndGetVirtualMachinesNetwordAdapterSettings(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VirtualMachineNetworkAdapter[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetVirtualMachinesNetwordAdapterSettingsAsync(string vmName)
+        {
+            this.GetVirtualMachinesNetwordAdapterSettingsAsync(vmName, null);
+        }
+
+        /// <remarks/>
+        public void GetVirtualMachinesNetwordAdapterSettingsAsync(string vmName, object userState)
+        {
+            if ((this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted == null))
+            {
+                this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachinesNetwordAdapterSettingsOperationCompleted);
+            }
+            this.InvokeAsync("GetVirtualMachinesNetwordAdapterSettings", new object[] {
+                        vmName}, this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted, userState);
+        }
+
+        private void OnGetVirtualMachinesNetwordAdapterSettingsOperationCompleted(object arg)
+        {
+            if ((this.GetVirtualMachinesNetwordAdapterSettingsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVirtualMachinesNetwordAdapterSettingsCompleted(this, new GetVirtualMachinesNetwordAdapterSettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -4648,6 +4703,36 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 this.RaiseExceptionIfNecessary();
                 return ((ReturnCode)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetVirtualMachinesNetwordAdapterSettingsCompletedEventHandler(object sender, GetVirtualMachinesNetwordAdapterSettingsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVirtualMachinesNetwordAdapterSettingsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetVirtualMachinesNetwordAdapterSettingsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualMachineNetworkAdapter[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualMachineNetworkAdapter[])(this.results[0]));
             }
         }
     }

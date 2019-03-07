@@ -285,6 +285,12 @@ namespace SolidCP.EnterpriseServer
 
         #region VPS - Configuration
         [WebMethod]
+        public VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(int itemId)
+        {
+            return VirtualizationServerController2012.GetVirtualMachinesNetwordAdapterSettings(itemId);
+        }
+
+        [WebMethod]
         public ResultObject ChangeAdministratorPassword(int itemId, string password)
         {
             return VirtualizationServerController2012.ChangeAdministratorPassword(itemId, password);

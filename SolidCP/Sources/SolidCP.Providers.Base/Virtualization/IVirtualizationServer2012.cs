@@ -74,6 +74,7 @@ namespace SolidCP.Providers.Virtualization
         ReturnCode DeleteSwitch(string switchId);
 
         // IP operations
+        List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName);
         JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration);
 
         // DVD operations

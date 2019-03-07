@@ -227,6 +227,11 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<VirtualMachine> GetVirtualMachines()
         {
             HostedSolutionLog.LogStart("GetVirtualMachines");

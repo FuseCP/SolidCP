@@ -2315,6 +2315,16 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS - Configuration
+        public static VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(int itemId)
+        {
+            VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+            if (vm == null)
+                return null;
+
+            VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+            return vs.GetVirtualMachinesNetwordAdapterSettings(vm.Name);
+        }
+
         public static ResultObject ChangeAdministratorPassword(int itemId, string password)
         {
             return ChangeAdministratorPasswordInternal(itemId, password, false);
