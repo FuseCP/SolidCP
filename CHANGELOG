@@ -34,6 +34,7 @@ Version 1.4.3
 - MySQL8 changes for support of older login support
 - Bugfixes for BIND-DNS service: - Wolfgang Voos
 - Changes to Import Enterprise tool to support non Exchange accounts.
+- Fix for Overusage Report
 
 Version 1.4.2
 Thank you to all contributors on this release with a special thanks to Genadij Judin and Frans Rampen on large contributions in this release.
