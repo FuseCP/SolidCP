@@ -290,7 +290,7 @@ function GetSCPserverIPaddresses()  # Function to get a list of the SolidCP Serv
 		$dSCPincludeServerList = Get-Content ".\$dIncludedIPaddressesFile"  # Array with IP Addresses to Include with the upgrade
 	}
 	# Get the list of IP Addresses from the SolidCP Database and store tham as an array, also add the additional IP Addresses and remove the ones to be excluded
-	push-location ; ($script:SCP_ServerIPs = ((Invoke-SQLCmd -query "SELECT [ServerUrl] FROM [$SCP_Database_Name].[dbo].[Servers] WHERE [VirtualServer]='0'" -Server $SCP_Database_Servr).ServerUrl -replace "http://|https://|:9003|(\/.*$)", "" ) + $dSCPincludeServerList | WHERE {$_} | Select -Unique | WHERE {$dSCPexcludeServerList -notcontains $_}) | Out-Null ; Pop-Location
+	push-location ; ($script:SCP_ServerIPs = ((Invoke-SQLCmd -query "SELECT [ServerUrl] FROM [$SCP_Database_Name].[dbo].[Servers] WHERE [VirtualServer]='0'" -Server $SCP_Database_Servr).ServerUrl -replace "^[^_]*\/\/|:.*|\/.*", "" ) + $dSCPincludeServerList | WHERE {$_} | Select -Unique | WHERE {$dSCPexcludeServerList -notcontains $_}) | Out-Null ; Pop-Location
 }
 
 

@@ -937,10 +937,21 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("DeleteSwitch");
             return ReturnCode.OK;
         }
+        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
-        #region KVP
-        public List<KvpExchangeDataItem> GetKVPItems(string vmId)
+        #region IP injection
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+            #region KVP
+            public List<KvpExchangeDataItem> GetKVPItems(string vmId)
         {
             return GetKVPItems(vmId, "GuestExchangeItems");
         }

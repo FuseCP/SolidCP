@@ -506,6 +506,7 @@ namespace SolidCP.EnterpriseServer
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2017)
                     || context.Groups.ContainsKey(ResourceGroups.MySql4)
                     || context.Groups.ContainsKey(ResourceGroups.MySql5)
+                    || context.Groups.ContainsKey(ResourceGroups.MySql8)
                     || context.Groups.ContainsKey(ResourceGroups.MariaDB)))
                     result.ErrorCodes.Add(GalleryErrors.DatabaseRequired);
 
@@ -524,6 +525,7 @@ namespace SolidCP.EnterpriseServer
                 else if ((app.WellKnownDependencies & GalleryApplicationWellKnownDependency.MySQL) == GalleryApplicationWellKnownDependency.MySQL
                     && !(context.Groups.ContainsKey(ResourceGroups.MySql4)
                     || context.Groups.ContainsKey(ResourceGroups.MySql5)
+                    || context.Groups.ContainsKey(ResourceGroups.MySql8)
                     || context.Groups.ContainsKey(ResourceGroups.MariaDB)))
                     result.ErrorCodes.Add(GalleryErrors.MySQLRequired);
 

@@ -77,6 +77,8 @@ namespace SolidCP.Providers.Virtualization2012
 
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetExternalSwitchesWMIOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetInternalSwitchesOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetSwitchesOperationCompleted;
@@ -86,6 +88,8 @@ namespace SolidCP.Providers.Virtualization2012
         private System.Threading.SendOrPostCallback CreateSwitchOperationCompleted;
 
         private System.Threading.SendOrPostCallback DeleteSwitchOperationCompleted;
+
+        private System.Threading.SendOrPostCallback InjectIPsOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetInsertedDVDOperationCompleted;
 
@@ -234,6 +238,9 @@ namespace SolidCP.Providers.Virtualization2012
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
 
         /// <remarks/>
+        public event GetExternalSwitchesWMICompletedEventHandler GetExternalSwitchesWMICompleted;
+
+        /// <remarks/>
         public event GetInternalSwitchesCompletedEventHandler GetInternalSwitchesCompleted;
 
         /// <remarks/>
@@ -247,6 +254,9 @@ namespace SolidCP.Providers.Virtualization2012
 
         /// <remarks/>
         public event DeleteSwitchCompletedEventHandler DeleteSwitchCompleted;
+
+        /// <remarks/>
+        public event InjectIPsCompletedEventHandler InjectIPsCompleted;
 
         /// <remarks/>
         public event GetInsertedDVDCompletedEventHandler GetInsertedDVDCompleted;
@@ -1490,6 +1500,56 @@ namespace SolidCP.Providers.Virtualization2012
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetExternalSwitchesWMI", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualSwitch[] GetExternalSwitchesWMI(string computerName)
+        {
+            object[] results = this.Invoke("GetExternalSwitchesWMI", new object[] {
+                        computerName});
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetExternalSwitchesWMI(string computerName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetExternalSwitchesWMI", new object[] {
+                        computerName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] EndGetExternalSwitchesWMI(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetExternalSwitchesWMIAsync(string computerName)
+        {
+            this.GetExternalSwitchesWMIAsync(computerName, null);
+        }
+
+        /// <remarks/>
+        public void GetExternalSwitchesWMIAsync(string computerName, object userState)
+        {
+            if ((this.GetExternalSwitchesWMIOperationCompleted == null))
+            {
+                this.GetExternalSwitchesWMIOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExternalSwitchesWMIOperationCompleted);
+            }
+            this.InvokeAsync("GetExternalSwitchesWMI", new object[] {
+                        computerName}, this.GetExternalSwitchesWMIOperationCompleted, userState);
+        }
+
+        private void OnGetExternalSwitchesWMIOperationCompleted(object arg)
+        {
+            if ((this.GetExternalSwitchesWMICompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetExternalSwitchesWMICompleted(this, new GetExternalSwitchesWMICompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetInternalSwitches", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public VirtualSwitch[] GetInternalSwitches(string computerName)
         {
@@ -1732,6 +1792,59 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteSwitchCompleted(this, new DeleteSwitchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/InjectIPs", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            object[] results = this.Invoke("InjectIPs", new object[] {
+                        vmId,
+                        guestNetworkAdapterConfiguration});
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginInjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("InjectIPs", new object[] {
+                        vmId,
+                        guestNetworkAdapterConfiguration}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public JobResult EndInjectIPs(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void InjectIPsAsync(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            this.InjectIPsAsync(vmId, guestNetworkAdapterConfiguration, null);
+        }
+
+        /// <remarks/>
+        public void InjectIPsAsync(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration, object userState)
+        {
+            if ((this.InjectIPsOperationCompleted == null))
+            {
+                this.InjectIPsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnInjectIPsOperationCompleted);
+            }
+            this.InvokeAsync("InjectIPs", new object[] {
+                        vmId,
+                        guestNetworkAdapterConfiguration}, this.InjectIPsOperationCompleted, userState);
+        }
+
+        private void OnInjectIPsOperationCompleted(object arg)
+        {
+            if ((this.InjectIPsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.InjectIPsCompleted(this, new InjectIPsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -4276,6 +4389,36 @@ namespace SolidCP.Providers.Virtualization2012
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetExternalSwitchesWMICompletedEventHandler(object sender, GetExternalSwitchesWMICompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetExternalSwitchesWMICompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetExternalSwitchesWMICompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualSwitch[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetInternalSwitchesCompletedEventHandler(object sender, GetInternalSwitchesCompletedEventArgs e);
 
     /// <remarks/>
@@ -4420,6 +4563,36 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 this.RaiseExceptionIfNecessary();
                 return ((ReturnCode)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void InjectIPsCompletedEventHandler(object sender, InjectIPsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class InjectIPsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal InjectIPsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public JobResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((JobResult)(this.results[0]));
             }
         }
     }

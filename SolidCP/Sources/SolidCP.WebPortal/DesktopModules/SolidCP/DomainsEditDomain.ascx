@@ -53,6 +53,17 @@
                         meta:resourcekey="EditDnsRecords" Text="Edit DNS records" 
                         OnClientClick="ShowProgressDialog('Opening DNS Zone Editor...');" 
                         onclick="EditDnsRecords_Click"></CPCC:StyleButton></li>
+                <li>
+                    <CPCC:StyleButton ID="ExportDnsRecords" runat="server" CssClass="btn btn-secondary"
+                        Text="Export DNS records"
+                        OnClick="ExportDnsRecords_OnClick"></CPCC:StyleButton>
+                </li>
+                <li>
+                    <CPCC:StyleButton ID="ImportDnsRecords" runat="server" CssClass="btn btn-secondary"
+                        Text="Import DNS records"
+                        OnClientClick="ShowProgressDialog('Opening DNS Importer');"
+                        OnClick="ImportDnsRecords_OnClick"></CPCC:StyleButton>
+                </li>
                 <li><CPCC:StyleButton ID="DisableDns" CssClass="btn btn-danger" runat="server" meta:resourcekey="DisableDns" 
                         Text="Disable DNS" OnClientClick="ShowProgressDialog('Deleting DNS zone...');" 
                         onclick="DisableDns_Click"></CPCC:StyleButton></li>

@@ -70,6 +70,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="MariaDB103.cs" />
     <Compile Include="MariaDB102.cs" />
     <Compile Include="MariaDB101.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -46,6 +46,7 @@ namespace SolidCP.Providers.DNS
         SOA,
         TXT,
         SRV,
+        CAA,
         Other
     }
 }

@@ -1,11 +1,3 @@
---
---
---
--- Please do NOT add to this file. It is going to be architved after 1.3.0 release
---
---
---
-
 USE [${install.database}]
 GO
 -- update database version
@@ -154,6 +146,13 @@ GO
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1703')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1703, 7, N'SimpleDNS', N'SimpleDNS Plus 6.x', N'SolidCP.Providers.DNS.SimpleDNS6, SolidCP.Providers.DNS.SimpleDNS60', N'SimpleDNS', NULL)
+END
+GO
+
+-- SimpleDNS 8.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1901')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1901, 7, N'SimpleDNS', N'SimpleDNS Plus 8.x', N'SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80', N'SimpleDNS', NULL)
 END
 GO
 
@@ -3841,6 +3840,35 @@ INSERT [dbo].[Quotas]  ([QuotaID], [GroupID],[QuotaOrder], [QuotaName], [QuotaDe
 END
 GO
 
+-- UpdateService         //TODO: Add the ability to transfer to another node (ServerID)
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServiceFully')
+DROP PROCEDURE UpdateServiceFully
+GO
+
+CREATE PROCEDURE [dbo].[UpdateServiceFully]
+(
+	@ServiceID int,
+  @ProviderID int,
+	@ServiceName nvarchar(50),
+	@Comments ntext,
+	@ServiceQuotaValue int,
+	@ClusterID int
+)
+AS
+
+IF @ClusterID = 0 SET @ClusterID = NULL
+
+UPDATE Services
+SET
+  ProviderID = @ProviderID,
+	ServiceName = @ServiceName,
+	ServiceQuotaValue = @ServiceQuotaValue,
+	Comments = @Comments,
+	ClusterID = @ClusterID
+WHERE ServiceID = @ServiceID
+
+RETURN
+GO
 
 -- Lync
 
@@ -17206,6 +17234,12 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+-- SimpleDNS 8.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1901' AND DisplayName = 'SimpleDNS Plus 8.x')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1901, 7, N'SimpleDNS', N'SimpleDNS Plus 8.x', N'SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80', N'SimpleDNS', NULL)
+END
+GO
 
 -- Proxmox Provider
 
@@ -20520,8 +20554,8 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = '711' AND [ItemTypeID] = '73')
 BEGIN
-	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '73' WHERE QuotaID = '711' & [QuotaName] = N'MsSQL2017.Databases'
-	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '74' WHERE QuotaID = '712' & [QuotaName] = N'MsSQL2017.Users'
+	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '73' WHERE QuotaID = '711' AND [QuotaName] = N'MsSQL2017.Databases'
+	UPDATE [dbo].[Quotas] SET [ItemTypeID] = '74' WHERE QuotaID = '712' AND [QuotaName] = N'MsSQL2017.Users'
 END
 GO
 
@@ -20543,7 +20577,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SpamExperts Mail Filter')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1602, 61, N'SpamExperts', N'SpamExperts Mail Filter', N'SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts', N'SpamExperts',	NULL)
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1602, 61, N'SpamExperts', N'SpamExperts Mail Filter', N'SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts', N'SpamExperts',	1)
 END
 GO
 
@@ -20560,3 +20594,134 @@ END
 GO
 
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'PowerDNS'
+
+-- Server 2019
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2019')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1800, 1, N'Windows2019', N'Windows Server 2019', N'SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019', N'Windows2012', null)
+END
+GO
+
+-- HyperV2019
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2019')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1801, 33, N'HyperV2019', N'Microsoft Hyper-V 2019', N'SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019', N'HyperV2012R2', 1)
+END
+GO
+
+-- MySQL 8.0
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ResourceGroups] WHERE [GroupName] = N'MySQL8')
+BEGIN
+INSERT [dbo].[ResourceGroups] ([GroupID], [GroupName], [GroupOrder], [GroupController], [ShowGroup]) VALUES (90, N'MySQL8', 12, N'SolidCP.EnterpriseServer.DatabaseServerController', 1)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.0')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(304, 90, N'MySQL', N'MySQL Server 8.0', N'SolidCP.Providers.Database.MySqlServer80, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'MySQL Server 5.7'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '304')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'InternalAddress', N'localhost,3306')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'RootPassword', N'')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (304, N'sslmode', N'True')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceItemTypes] WHERE [GroupID] = '90')
+BEGIN
+INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (75, 90, N'MySQL8Database', N'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 18, 1, 0, 0, 1, 1, 1, 1)
+INSERT [dbo].[ServiceItemTypes] ([ItemTypeID], [GroupID], [DisplayName], [TypeName], [TypeOrder], [CalculateDiskspace], [CalculateBandwidth], [Suspendable], [Disposable], [Searchable], [Importable], [Backupable]) VALUES (76, 90, N'MySQL8User', N'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 19, 0, 0, 0, 1, 1, 1, 1)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [GroupID] = '90')
+BEGIN
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (110, 90, 1, N'MySQL8.Databases', N'Databases', 2, 0, 23, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (111, 90, 2, N'MySQL8.Users', N'Users', 2, 0, 24, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (112, 90, 4, N'MySQL8.Backup', N'Database Backups', 1, 0, NULL, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (113, 90, 3, N'MySQL8.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (114, 90, 5, N'MySQL8.Restore', N'Database Restores', 1, 0, NULL, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (115, 90, 6, N'MySQL8.Truncate', N'Database Truncate', 1, 0, NULL, NULL, NULL)
+END
+GO
+
+
+
+-- RDS Provider
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2016')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) 
+VALUES(1502, 45, N'RemoteDesktopServices2012', N'Remote Desktop Services Windows 2016', N'SolidCP.Providers.RemoteDesktopServices.Windows2016,SolidCP.Providers.RemoteDesktopServices.Windows2016', N'RDS',	1)
+END
+GO
+
+-- RDS Provider 2019
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2019')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) 
+VALUES(1503, 45, N'RemoteDesktopServices2019', N'Remote Desktop Services Windows 2019', N'SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
+END
+GO
+
+
+-- MariaDB 10.3
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1570')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1570, 50, N'MariaDB', N'MariaDB 10.3', N'SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1570'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1570')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.3')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1570, N'RootPassword', N'')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Hosted Microsoft Exchange Server 2019')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(93, 12, N'Exchange2016', N'Hosted Microsoft Exchange Server 2019', N'SolidCP.Providers.HostedSolution.Exchange2019, SolidCP.Providers.HostedSolution.Exchange2019', N'Exchange',	NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'Hosted Microsoft Exchange Server 2019'
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'SfB2019')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery])
+VALUES (1404, 52, N'SfB2019', N'Microsoft Skype for Business Server 2019', N'SolidCP.Providers.HostedSolution.SfB2019, SolidCP.Providers.HostedSolution.SfB2019', N'SfB', NULL)
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Hosted SharePoint 2019')
+BEGIN
+DECLARE @group_id AS INT
+SELECT @group_id = GroupId FROM [dbo].[ResourceGroups] WHERE GroupName = 'Sharepoint Enterprise Server'
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1711, @group_id, N'HostedSharePoint2019', N'Hosted SharePoint 2019', N'SolidCP.Providers.HostedSolution.HostedSharePointServer2019, SolidCP.Providers.HostedSolution.SharePoint2019', N'HostedSharePoint30', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'Hosted SharePoint 2019'
+END
+GO

@@ -37,6 +37,7 @@ using System.Data;
 using System.Linq;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Base.Virtualization;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.Virtualization;
 
@@ -59,7 +60,7 @@ namespace SolidCP.Portal.ProviderControls
         {
             txtServerName.Text = settings["ServerName"];
             radioServer.SelectedIndex = (txtServerName.Text == "") ? 0 : 1;
-
+            
             // bind networks
             BindNetworksList();
 
@@ -92,6 +93,7 @@ namespace SolidCP.Portal.ProviderControls
             txtOSTemplatesPath.Text = settings["OsTemplatesPath"];
             repOsTemplates.DataSource = new ConfigFile(settings["OsTemplates"]).LibraryItems; //ES.Services.VPS2012.GetOperatingSystemTemplatesByServiceId(PanelRequest.ServiceId).ToList();
             repOsTemplates.DataBind();
+            //onupdate select value
 
             // DVD library
             txtDvdLibraryPath.Text = settings["DvdLibraryPath"];
@@ -105,6 +107,8 @@ namespace SolidCP.Portal.ProviderControls
             radioSwitchType.SelectedValue = settings["SwitchType"];
             radioSwitchType.SelectedIndex = string.IsNullOrEmpty(radioSwitchType.SelectedValue) 
                 ? 0 : radioSwitchType.SelectedIndex;
+
+            chkGetSwitchesByPS.Checked = Utils.ParseBool(settings["UsePowerShellToGetExternalSW"], false);
 
             // External network
             ddlExternalNetworks.SelectedValue = settings["ExternalNetworkId"];
@@ -128,6 +132,8 @@ namespace SolidCP.Portal.ProviderControls
 
             // host name
             txtHostnamePattern.Text = settings["HostnamePattern"];
+            if (string.IsNullOrEmpty(txtHostnamePattern.Text))
+                txtHostnamePattern.Text = "[NetBIOSName].domain.local";
 
             // start action
             radioStartAction.SelectedValue = settings["StartAction"];
@@ -158,8 +164,11 @@ namespace SolidCP.Portal.ProviderControls
         }
 
         void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
-        {
-            settings["ServerName"] = txtServerName.Text.Trim();
+        {            
+            if (radioServer.SelectedIndex == 0)
+                settings["ServerName"] = "";
+            else
+                settings["ServerName"] = txtServerName.Text.Trim();
 
             // MaintenanceMode
             settings["MaintenanceMode"] = radioMaintenanceMode.SelectedValue;
@@ -196,6 +205,7 @@ namespace SolidCP.Portal.ProviderControls
 
             // Switch Type
             settings["SwitchType"] = radioSwitchType.SelectedValue;
+            settings["UsePowerShellToGetExternalSW"] = chkGetSwitchesByPS.Checked.ToString();
 
             // External network
             settings["ExternalNetworkId"] = ddlExternalNetworks.SelectedValue;
@@ -238,14 +248,20 @@ namespace SolidCP.Portal.ProviderControls
 
         private void BindNetworksList()
         {
+            chkGetSwitchesByPS.Enabled = true;
             try
             {
                 List<VirtualSwitch> switches;
-
+                
                 if (radioSwitchType.SelectedValue == "internal")
+                {
                     switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetInternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
-                else
+                    chkGetSwitchesByPS.Enabled = false;
+                }                    
+                else if (chkGetSwitchesByPS.Checked)
                     switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+                else
+                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitchesWMI(PanelRequest.ServiceId, txtServerName.Text.Trim()));
 
                 ddlExternalNetworks.DataSource = switches;
                 ddlExternalNetworks.DataBind();
@@ -358,6 +374,15 @@ namespace SolidCP.Portal.ProviderControls
             if (IsReplicaServer) BindCertificates();
             if (EnabledReplica) BindReplicaServices();
          }
+
+        protected string SetSelectedValueIfTimeZoneExis(object TimeID)
+        {
+            string str = (TimeID != null) ? TimeID.ToString() : "";
+            if (string.IsNullOrEmpty(str) && !VirtualMachineTimeZoneList.IsTimeZoneExist(str))
+                str = "";
+
+            return str;
+        }
 
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -473,6 +498,11 @@ namespace SolidCP.Portal.ProviderControls
 
                 template.VhdBlockSizeBytes = GetBlockSizeBytes(item, "txtVhdBlockSizeBytes");
 
+                string timeZone = GetDropDownListSelectedValue(item, "ddlTemplateTimeZone");
+                template.TimeZoneId = string.IsNullOrEmpty(timeZone) ? GetTextBoxText(item, "txtManualTempplateTimeZone") : timeZone;
+                template.CDKey = GetTextBoxText(item, "txtTemplateCDKey");
+
+
                 result.Add(template);
             }
 
@@ -512,6 +542,9 @@ namespace SolidCP.Portal.ProviderControls
                 {
                     VhdBlockSizeBytes = 0;
                 }
+
+                if (VhdBlockSizeBytes != 0 && VhdBlockSizeBytes < Utils.MinBlockSizeBytes)
+                    VhdBlockSizeBytes = Utils.MinBlockSizeBytes;
             }
             return VhdBlockSizeBytes;
         }
@@ -519,7 +552,7 @@ namespace SolidCP.Portal.ProviderControls
         private void RebindOsTemplate(List<LibraryItem> templates)
         {
             repOsTemplates.DataSource = templates;
-            repOsTemplates.DataBind();
+            repOsTemplates.DataBind();            
         }
 
         private string GetConfigXml(List<LibraryItem> items)
@@ -530,6 +563,10 @@ namespace SolidCP.Portal.ProviderControls
         private int GetDropDownListSelectedIndex(RepeaterItem item, string name)
         {
             return (item.FindControl(name) as DropDownList).SelectedIndex;
+        }
+        private string GetDropDownListSelectedValue(RepeaterItem item, string name)
+        {
+            return (item.FindControl(name) as DropDownList).SelectedValue;
         }
 
         private string GetTextBoxText(RepeaterItem item, string name)

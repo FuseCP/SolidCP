@@ -411,6 +411,12 @@
   <data name="ModuleTitle.MySql5Users" xml:space="preserve">
     <value>MySQL 5 Users</value>
   </data>
+  <data name="ModuleTitle.MySql8Databases" xml:space="preserve">
+    <value>MySQL 8 Databases</value>
+  </data>
+  <data name="ModuleTitle.MySql8Users" xml:space="preserve">
+    <value>MySQL 8 Users</value>
+  </data>
   <data name="ModuleTitle.MariaDBDatabases" xml:space="preserve">
     <value>MariaDB Databases</value>
   </data>
@@ -935,5 +941,8 @@
   </data>
   <data name="ModuleTitle.AutoUpdateServers" xml:space="preserve">
     <value>Auto Update Servers</value>
+  </data>
+  <data name="ModuleTitle.DomainsImportZone" xml:space="preserve">
+    <value>Import DNS Zone</value>
   </data>
 </root>

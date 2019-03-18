@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -310,9 +310,16 @@ namespace SolidCP.Providers.Virtualization
             {
                 HostedSolutionLog.LogInfo("Before Get-VM command");
                 //TODO: Check different structure of Keeping data.
-                Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
+                //Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
 
-                Collection <PSObject> result = PowerShell.Execute(cmd, true);
+                StringBuilder scriptCommand = new StringBuilder("Get-VM");
+                string stringFormat = " -{0} {1}";
+                if (!string.IsNullOrEmpty(ServerNameSettings))
+                    scriptCommand.AppendFormat(stringFormat, "ComputerName", ServerNameSettings);                
+                scriptCommand.AppendFormat(" | {0}", "Select Id, Name, ReplicationState");
+
+                Command cmd = new Command(scriptCommand.ToString(), true);
+                Collection<PSObject> result = PowerShell.Execute(cmd, false, true);
 
                 HostedSolutionLog.LogInfo("After Get-VM command");
                 foreach (PSObject current in result)
@@ -435,7 +442,8 @@ namespace SolidCP.Providers.Virtualization
                 PowerShell.Execute(cmdNew, true, true);
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
-                NetworkAdapterHelper.Delete(PowerShell, vm.Name, "000000000000");
+                if(vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled) //leave the adapter as default if we do not configure a new one (bugfix for Windows Server 2019, ******* MS!)
+                    NetworkAdapterHelper.Delete(PowerShell, vm.Name, "000000000000");
 
                 // Set VM
                 Command cmdSet = new Command("Set-VM");
@@ -679,7 +687,7 @@ namespace SolidCP.Providers.Virtualization
             }
             if (withExternalData)
             {
-                HardDriveHelper.Delete(PowerShell, vm.Disks);
+                HardDriveHelper.Delete(PowerShell, vm.Disks, ServerNameSettings);
                 SnapshotHelper.Delete(PowerShell, vm.Name);                
                 //something else???
             }            
@@ -1054,6 +1062,181 @@ namespace SolidCP.Providers.Virtualization
 
             HostedSolutionLog.LogEnd("DeleteSwitch");
             return ReturnCode.OK;
+        }
+
+        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName) //TODO: rework.
+        {
+            // "\\\\.\\ROOT\\virtualization\\v2" @"root\virtualization\v2"
+            Wmi cwmi = new Wmi(computerName, @"root\virtualization\v2");
+
+            Dictionary<string, string> switches = new Dictionary<string, string>();
+            List<VirtualSwitch> list = new List<VirtualSwitch>();
+            Dictionary<string, string> adapters = new Dictionary<string, string>();
+
+            // load external adapters
+            ManagementObjectCollection objAdapters = cwmi.GetWmiObjects("Msvm_EthernetSwitchPort");
+            foreach (ManagementObject objAdapter in objAdapters)
+            {
+                if (objAdapter["ElementName"].ToString().EndsWith("_External"))
+                    adapters.Add((string)objAdapter["SystemName"], "1");
+            }
+
+            // get Ethernet Switch Info
+            ManagementObjectCollection objConnections = cwmi.GetWmiObjects("Msvm_EthernetSwitchInfo");
+            foreach (ManagementObject objConnection in objConnections)
+            {
+                ManagementObject objswitchId = new ManagementObject(new ManagementPath((string)objConnection["Antecedent"]));
+                string switchId = (string)objswitchId["Name"];
+
+                if (adapters.ContainsKey(switchId))
+                {
+                    // get switch port
+                    ManagementObject objPort = new ManagementObject(new ManagementPath((string)objConnection["Dependent"]));
+                    if (switches.ContainsKey(switchId))
+                        continue;
+
+                    //add info about switch
+                    ManagementObject objSwitch = cwmi.GetRelatedWmiObject(objPort, "Msvm_VirtualEthernetSwitch");
+                    switches.Add(switchId, (string)objSwitch["ElementName"]);
+                }
+            }
+
+            foreach (string switchId in switches.Keys)
+            {
+                VirtualSwitch sw = new VirtualSwitch();
+                //sw.SwitchId = switchId;
+                sw.SwitchId = sw.Name = switches[switchId];
+                sw.SwitchType = "External";
+                list.Add(sw);
+            }
+
+            return list;
+        }
+
+
+
+        #endregion
+
+        #region IP injection
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            JobResult result = new JobResult();
+
+            ManagementObject virtualSystemManageService = wmi.GetWmiObject("Msvm_VirtualSystemManagementService");
+            //get VM
+            ManagementObject objVM = wmi.GetWmiObject("Msvm_ComputerSystem", "Name = '{0}'", vmId);
+            ManagementObject objVMSystemSettings = GetVirtualMachineSettings(objVM); //cwmi.GetRelatedWmiObject(objVM, "Msvm_VirtualSystemSettingData");
+            ManagementObject objSynEthernerSettingsData = null;
+            if (string.IsNullOrEmpty(guestNetworkAdapterConfiguration.MAC)) //If dont have we just take first an adapter from VM.
+            {
+                objSynEthernerSettingsData = wmi.GetRelatedWmiObject(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData");
+            }
+            else
+            {
+                objSynEthernerSettingsData = 
+                    GetRelatedSelectedWmiObject(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData", "Address", guestNetworkAdapterConfiguration.MAC.ToUpper());
+            }           
+            //get the object with current adapter setting.
+            ManagementObject objGuestNetworkAdapterConfig = GetGuestNetworkAdapterConfiguration(objSynEthernerSettingsData);
+
+            //string[] showIP = (string[])objGuestNetworkAdapterConfig["IPAddresses"];
+            //string[] IPs = { "10.20.30.95", "10.20.30.96" };
+            //string[] subnets = { "255.255.255.0", "255.255.255.0" };
+            //string[] gateways = { "10.20.30.2" };
+            //string[] DNSs = { "8.8.8.8", "8.8.4.4" };
+
+            //TODO: possible need to configure the ProtocolIFType for IPv6 (need to check in future) at this moment we use default that has VM
+            objGuestNetworkAdapterConfig["DHCPEnabled"] = guestNetworkAdapterConfiguration.DHCPEnabled;
+            objGuestNetworkAdapterConfig["IPAddresses"] = guestNetworkAdapterConfiguration.IPAddresses;
+            objGuestNetworkAdapterConfig["Subnets"] = guestNetworkAdapterConfiguration.Subnets;
+            objGuestNetworkAdapterConfig["DefaultGateways"] = guestNetworkAdapterConfiguration.DefaultGateways;
+            objGuestNetworkAdapterConfig["DNSServers"] = guestNetworkAdapterConfiguration.DNSServers;            
+
+            //Convert to XML format
+            string[] networkConfiguration = { objGuestNetworkAdapterConfig.GetText(TextFormat.CimDtd20) };
+
+            result.ReturnValue = SetGuestNetworkAdapterConfiguration(virtualSystemManageService, objVM, networkConfiguration);
+            return result;
+        }
+
+        //TODO: jobs?
+        private ReturnCode SetGuestNetworkAdapterConfiguration(
+            ManagementObject virtualSystemManageService, ManagementObject ComputerSystem, string[] NetworkConfiguration)//, out ManagementPath Job)
+        {
+            ManagementBaseObject inParams = null;
+            inParams = virtualSystemManageService.GetMethodParameters("SetGuestNetworkAdapterConfiguration");
+            inParams["ComputerSystem"] = ComputerSystem.Path;
+            inParams["NetworkConfiguration"] = NetworkConfiguration;
+            ManagementBaseObject outParams = virtualSystemManageService.InvokeMethod("SetGuestNetworkAdapterConfiguration", inParams, null);
+            //Job = null;
+            //if (outParams.Properties["Job"] != null)
+            //{
+            //    Job = new ManagementPath((string)outParams.Properties["Job"].Value);
+            //}
+            return (ReturnCode)Convert.ToUInt32(outParams.Properties["ReturnValue"].Value);
+        }
+
+        private ManagementObject GetGuestNetworkAdapterConfiguration(ManagementObject EthernerSettings)
+        {
+            using (ManagementObjectCollection settingsCollection =
+                    EthernerSettings.GetRelated("Msvm_GuestNetworkAdapterConfiguration", "Msvm_SettingDataComponent",
+                    null, null, null, null, false, null))
+            {
+                ManagementObject guestNetworkAdapterConfiguration =
+                    GetFirstObjectFromCollection(settingsCollection);
+
+                return guestNetworkAdapterConfiguration;
+            }
+        }
+
+        private ManagementObject GetVirtualMachineSettings(ManagementObject virtualMachine)
+        {
+            using (ManagementObjectCollection settingsCollection =
+                    virtualMachine.GetRelated("Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState",
+                    null, null, null, null, false, null))
+            {
+                ManagementObject virtualMachineSettings =
+                    GetFirstObjectFromCollection(settingsCollection);
+
+                return virtualMachineSettings;
+            }
+        }
+
+        private ManagementObject GetRelatedSelectedWmiObject(ManagementObject obj, string className, string byPropertyName, string withValue)
+        {
+            ManagementObjectCollection col = obj.GetRelated(className);
+            return GetSelectedObjectFromCollection(col, byPropertyName, withValue);
+        }
+
+        private ManagementObject GetSelectedObjectFromCollection(ManagementObjectCollection collection, string byPropertyName, string withValue)
+        {
+            if (collection.Count == 0)
+            {
+                throw new ArgumentException("The collection contains no objects", "collection");
+            }
+
+            foreach (ManagementObject managementObject in collection)
+            {
+                if (string.Equals((string)managementObject[byPropertyName], withValue))
+                    return managementObject;
+            }
+
+            return null;
+        }
+
+        private ManagementObject GetFirstObjectFromCollection(ManagementObjectCollection collection)
+        {
+            if (collection.Count == 0)
+            {
+                throw new ArgumentException("The collection contains no objects", "collection");
+            }
+
+            foreach (ManagementObject managementObject in collection)
+            {
+                return managementObject;
+            }
+
+            return null;
         }
         #endregion
 
@@ -1801,7 +1984,7 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Private Methods
-        private bool CheckVersionConfigSupport(double version)
+        private bool CheckVersionConfigSupport(double version) //TODO: rework.
         {
             int CurrentBuild;
             try
@@ -1830,6 +2013,12 @@ namespace SolidCP.Providers.Virtualization
                     break;
                 case 16299: //Windows 10 1709
                     VersionsConfig = new double[] { 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 17134: //Windows 10 1803
+                    VersionsConfig = new double[] { 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
+                    break;
+                case 17763: //Windows Server 2019/Windows 10 1809
+                    VersionsConfig = new double[] { 9.0, 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
                     break;
                 default:    //If we don't know or Windwos too old (Windows 2012R2)
                     VersionsConfig = new double[] { -1.0 };
@@ -2108,8 +2297,13 @@ namespace SolidCP.Providers.Virtualization
 
         public bool IsEmptyFolders(string path)
         {
-            Command cmdScript = new Command("dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname", true);
-            Collection<PSObject> result = PowerShell.Execute(cmdScript, true);
+            string cmd;
+            if (!string.IsNullOrEmpty(ServerNameSettings))
+                cmd = "Invoke-Command -ComputerName " + ServerNameSettings + " -ScriptBlock { dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname }";
+            else
+                cmd = "dir @('" + path + "') -Directory -recurse | where { $_.GetFiles()} |  Select Fullname";
+            Command cmdScript = new Command(cmd, true);
+            Collection<PSObject> result = PowerShell.Execute(cmdScript, false);
             return result.Count < 1;
         }
 

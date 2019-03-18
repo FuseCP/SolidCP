@@ -24,7 +24,7 @@
 				<asp:Literal ID="litGroup" runat="server"></asp:Literal>
 			</td>
 		</tr>
-		<tr>
+		<tr id="textProvider" runat="server">
 			<td class="SubHead" height="24">
 				<asp:Label ID="lblProvider" runat="server" meta:resourcekey="lblProvider" Text="Provider:"></asp:Label>
 			</td>
@@ -32,6 +32,14 @@
 				<asp:Literal ID="litProvider" runat="server"></asp:Literal>
 			</td>
 		</tr>
+        <tr id="selectProvider" runat="server">
+		    <td class="SubHead" valign="top">
+			    <asp:Label ID="lblServiceProvider" runat="server" meta:resourcekey="lblServiceProvider" Text="Service provider:"></asp:Label></td>
+		    <td class="NormalBold" valign="top">
+			    <asp:DropDownList id="ddlProviders" CssClass="form-control" runat="server" DataTextField="DisplayName"
+				    DataValueField="ProviderID"></asp:DropDownList>
+			    </td>
+	    </tr>
 		<tr>
 			<td class="SubHead">
 				<asp:Label ID="lblName" runat="server" meta:resourcekey="lblName" Text="Name:"></asp:Label>

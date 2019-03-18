@@ -217,7 +217,7 @@ namespace SolidCP.Import.Enterprise
 			PackageInfo data = node.Tag as PackageInfo;
 			if (data == null || data.PackageId == 0 || data.PackageId == 1)
 			{
-				ShowWarning("Invalid hosting space. Please select hosting space with allowed Exchange organizations.");
+				//ShowWarning("Invalid hosting space. Please select hosting space with allowed Exchange organizations.");
 				return;
 			}
 
@@ -234,7 +234,7 @@ namespace SolidCP.Import.Enterprise
 
 			if (cntx == null)
 			{
-				ShowWarning("Invalid hosting space. Please select hosting space with allowed Exchange organizations.");
+				//ShowWarning("Invalid hosting space. Please select hosting space with allowed Exchange organizations.");
 				return;
 			}
 
@@ -256,11 +256,12 @@ namespace SolidCP.Import.Enterprise
 					continue;
 				}
 			}
-			if (!exchangeEnabled || !orgEnabled)
+			if (!orgEnabled)
 			{
-				ShowWarning("Invalid hosting space. Please select hosting space with allowed Exchange organizations.");
+				ShowWarning("Invalid hosting space. Please select hosting space with allowed organizations.");
 				return;
 			}
+            Global.IsExchange = exchangeEnabled;
 			this.selectedSpace = data;
 			this.DialogResult = DialogResult.OK;
 			this.Close();

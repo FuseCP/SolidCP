@@ -75,7 +75,7 @@
 
                                         <div class="col-sm-10">
                                             <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="true"
-                                                Text="Generate Auto HostName" meta:resourcekey="chkAutoHostName" />
+                                                Text="Generate hostname automatically" meta:resourcekey="chkAutoHostName" />
                                         </div>
                                  </div>
                                 <div class="form-group">
@@ -124,6 +124,10 @@
                                                     <asp:RequiredFieldValidator ID="RequireRamValidator" runat="server" Text="*" Display="Dynamic"
                                                         ControlToValidate="txtRam" meta:resourcekey="RequireRamValidator" SetFocusOnError="true"
                                                         ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                    <asp:RegularExpressionValidator id="valRamSize" runat="server" Text="*" meta:resourcekey="valRamSize"
+														ValidationExpression="^\d*[02468]$"
+														ControlToValidate="txtRam" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
+													</asp:RegularExpressionValidator>
                                                     <asp:Localize ID="locMB" runat="server" meta:resourcekey="locMB" Text="MB"/>
                                             </div>
                                          <asp:Label ID="lblHdd" meta:resourcekey="lblHdd" runat="server" Text="HDD:" CssClass="col-sm-2"  AssociatedControlID="txtHdd"></asp:Label>
@@ -132,6 +136,10 @@
                                                     <asp:RequiredFieldValidator ID="RequireHddValidator" runat="server" Text="*" Display="Dynamic"
                                                         ControlToValidate="txtHdd" meta:resourcekey="RequireHddValidator" SetFocusOnError="true"
                                                         ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                    <asp:RegularExpressionValidator id="valHddSize" runat="server" Text="*" meta:resourcekey="valHddSize"
+														ValidationExpression="^[0-9]+$"
+														ControlToValidate="txtHdd" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
+													</asp:RegularExpressionValidator>
                                                     <asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/>
                                                     </div>
                                             </div>

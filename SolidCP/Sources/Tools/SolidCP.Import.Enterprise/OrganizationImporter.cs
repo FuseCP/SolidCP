@@ -369,15 +369,18 @@ namespace SolidCP.Import.Enterprise
 				return errorCode;
 			
 			string addressListsContainer = null;
-			try
-			{
-				addressListsContainer = ADUtils.GetAddressListsContainer();
-			}
-			catch (Exception ex)
-			{
-				Log.WriteError("Cannot load Exchange 2007 Address Lists Container", ex);
-				return EXCHANGE_CONTAINER_ERROR;
-			}
+            if (Global.IsExchange)
+            {
+                try
+                {
+                    addressListsContainer = ADUtils.GetAddressListsContainer();
+                }
+                catch (Exception ex)
+                {
+                    Log.WriteError("Cannot load Exchange 2007 Address Lists Container", ex);
+                    return EXCHANGE_CONTAINER_ERROR;
+                }
+            }
 
 			Organization org = PopulateOrganization(packageId, organizationId, addressListsContainer);
 
@@ -428,10 +431,18 @@ namespace SolidCP.Import.Enterprise
 		{
 			Organization org = new Organization();
 			org.OrganizationId = organizationId;
-			org.AddressList = string.Format("CN={0} Address List,CN=All Address Lists,{1}", organizationId, addressListsContainer);
-			org.GlobalAddressList = string.Format("CN={0} Global Address List,CN=All Global Address Lists,{1}", organizationId, addressListsContainer);
-			org.OfflineAddressBook = string.Format("CN={0} Offline Address Book,CN=Offline Address Lists,{1}", organizationId, addressListsContainer);
-			org.Database = GetDatabaseName();
+
+            if (Global.IsExchange)
+            {
+                org.AddressList = string.Format("CN={0} Address List,CN=All Address Lists,{1}", organizationId, addressListsContainer);
+                org.GlobalAddressList = string.Format("CN={0} Global Address List,CN=All Global Address Lists,{1}", organizationId, addressListsContainer);
+                org.OfflineAddressBook = string.Format("CN={0} Offline Address Book,CN=Offline Address Lists,{1}", organizationId, addressListsContainer);
+                org.Database = GetDatabaseName();
+
+                PackageSettings settings = PackageController.GetPackageSettings(packageId, PackageSettings.EXCHANGE_SERVER);
+                org.KeepDeletedItemsDays = Utils.ParseInt(settings["KeepDeletedItemsDays"], 14);
+            }
+
 			org.DistinguishedName = ADUtils.RemoveADPrefix(Global.OrgDirectoryEntry.Path);
 			org.SecurityGroup = string.Format("CN={0},{1}", organizationId, org.DistinguishedName);
 
@@ -447,8 +458,6 @@ namespace SolidCP.Import.Enterprise
 			if (org.ProhibitSendReceiveKB > 0) org.ProhibitSendReceiveKB *= 1024;
              */
 
-			PackageSettings settings = PackageController.GetPackageSettings(packageId, PackageSettings.EXCHANGE_SERVER);
-			org.KeepDeletedItemsDays = Utils.ParseInt(settings["KeepDeletedItemsDays"], 14);
 			return org;
 		}
 

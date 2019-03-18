@@ -127,6 +127,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetExternalNetworkAdapterDetailsOperationCompleted;
 
+        private System.Threading.SendOrPostCallback AddVirtualMachineExternalIPAddressesByInjectionOperationCompleted;
+
+        private System.Threading.SendOrPostCallback DeleteVirtualMachineExternalIPAddressesByInjectionOperationCompleted;
+
+        private System.Threading.SendOrPostCallback RestoreVirtualMachineExternalIPAddressesByInjectionOperationCompleted;
+
         private System.Threading.SendOrPostCallback AddVirtualMachineExternalIPAddressesOperationCompleted;
 
         private System.Threading.SendOrPostCallback SetVirtualMachinePrimaryExternalIPAddressOperationCompleted;
@@ -135,9 +141,15 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetPrivateNetworkAdapterDetailsOperationCompleted;
 
+        private System.Threading.SendOrPostCallback RestoreVirtualMachinePrivateIPAddressesByInjectionOperationCompleted;
+
+        private System.Threading.SendOrPostCallback AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted;
+
         private System.Threading.SendOrPostCallback AddVirtualMachinePrivateIPAddressesOperationCompleted;
 
         private System.Threading.SendOrPostCallback SetVirtualMachinePrimaryPrivateIPAddressOperationCompleted;
+
+        private System.Threading.SendOrPostCallback DeleteVirtualMachinePrivateIPAddressesByInjectOperationCompleted;
 
         private System.Threading.SendOrPostCallback DeleteVirtualMachinePrivateIPAddressesOperationCompleted;
 
@@ -146,6 +158,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         private System.Threading.SendOrPostCallback UpdateVirtualMachineUserPermissionsOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetExternalSwitchesWMIOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetInternalSwitchesOperationCompleted;
 
@@ -327,6 +341,15 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         public event GetExternalNetworkAdapterDetailsCompletedEventHandler GetExternalNetworkAdapterDetailsCompleted;
 
         /// <remarks/>
+        public event AddVirtualMachineExternalIPAddressesByInjectionCompletedEventHandler AddVirtualMachineExternalIPAddressesByInjectionCompleted;
+
+        /// <remarks/>
+        public event DeleteVirtualMachineExternalIPAddressesByInjectionCompletedEventHandler DeleteVirtualMachineExternalIPAddressesByInjectionCompleted;
+
+        /// <remarks/>
+        public event RestoreVirtualMachineExternalIPAddressesByInjectionCompletedEventHandler RestoreVirtualMachineExternalIPAddressesByInjectionCompleted;
+
+        /// <remarks/>
         public event AddVirtualMachineExternalIPAddressesCompletedEventHandler AddVirtualMachineExternalIPAddressesCompleted;
 
         /// <remarks/>
@@ -339,10 +362,19 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         public event GetPrivateNetworkAdapterDetailsCompletedEventHandler GetPrivateNetworkAdapterDetailsCompleted;
 
         /// <remarks/>
+        public event RestoreVirtualMachinePrivateIPAddressesByInjectionCompletedEventHandler RestoreVirtualMachinePrivateIPAddressesByInjectionCompleted;
+
+        /// <remarks/>
+        public event AddVirtualMachinePrivateIPAddressesByInjectCompletedEventHandler AddVirtualMachinePrivateIPAddressesByInjectCompleted;
+
+        /// <remarks/>
         public event AddVirtualMachinePrivateIPAddressesCompletedEventHandler AddVirtualMachinePrivateIPAddressesCompleted;
 
         /// <remarks/>
         public event SetVirtualMachinePrimaryPrivateIPAddressCompletedEventHandler SetVirtualMachinePrimaryPrivateIPAddressCompleted;
+
+        /// <remarks/>
+        public event DeleteVirtualMachinePrivateIPAddressesByInjectCompletedEventHandler DeleteVirtualMachinePrivateIPAddressesByInjectCompleted;
 
         /// <remarks/>
         public event DeleteVirtualMachinePrivateIPAddressesCompletedEventHandler DeleteVirtualMachinePrivateIPAddressesCompleted;
@@ -355,6 +387,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
+
+        /// <remarks/>
+        public event GetExternalSwitchesWMICompletedEventHandler GetExternalSwitchesWMICompleted;
 
         /// <remarks/>
         public event GetInternalSwitchesCompletedEventHandler GetInternalSwitchesCompleted;
@@ -3222,6 +3257,168 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachineExternalIPAddressesByInj" +
+            "ection", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressId)
+        {
+            object[] results = this.Invoke("AddVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId,
+                        selectRandom,
+                        addressesNumber,
+                        addressId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginAddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom, int addressesNumber, int[] addressId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("AddVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId,
+                        selectRandom,
+                        addressesNumber,
+                        addressId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndAddVirtualMachineExternalIPAddressesByInjection(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void AddVirtualMachineExternalIPAddressesByInjectionAsync(int itemId, bool selectRandom, int addressesNumber, int[] addressId)
+        {
+            this.AddVirtualMachineExternalIPAddressesByInjectionAsync(itemId, selectRandom, addressesNumber, addressId, null);
+        }
+
+        /// <remarks/>
+        public void AddVirtualMachineExternalIPAddressesByInjectionAsync(int itemId, bool selectRandom, int addressesNumber, int[] addressId, object userState)
+        {
+            if ((this.AddVirtualMachineExternalIPAddressesByInjectionOperationCompleted == null))
+            {
+                this.AddVirtualMachineExternalIPAddressesByInjectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddVirtualMachineExternalIPAddressesByInjectionOperationCompleted);
+            }
+            this.InvokeAsync("AddVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId,
+                        selectRandom,
+                        addressesNumber,
+                        addressId}, this.AddVirtualMachineExternalIPAddressesByInjectionOperationCompleted, userState);
+        }
+
+        private void OnAddVirtualMachineExternalIPAddressesByInjectionOperationCompleted(object arg)
+        {
+            if ((this.AddVirtualMachineExternalIPAddressesByInjectionCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.AddVirtualMachineExternalIPAddressesByInjectionCompleted(this, new AddVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachineExternalIPAddressesBy" +
+            "Injection", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] addressId)
+        {
+            object[] results = this.Invoke("DeleteVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId,
+                        addressId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] addressId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeleteVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId,
+                        addressId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndDeleteVirtualMachineExternalIPAddressesByInjection(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineExternalIPAddressesByInjectionAsync(int itemId, int[] addressId)
+        {
+            this.DeleteVirtualMachineExternalIPAddressesByInjectionAsync(itemId, addressId, null);
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachineExternalIPAddressesByInjectionAsync(int itemId, int[] addressId, object userState)
+        {
+            if ((this.DeleteVirtualMachineExternalIPAddressesByInjectionOperationCompleted == null))
+            {
+                this.DeleteVirtualMachineExternalIPAddressesByInjectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineExternalIPAddressesByInjectionOperationCompleted);
+            }
+            this.InvokeAsync("DeleteVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId,
+                        addressId}, this.DeleteVirtualMachineExternalIPAddressesByInjectionOperationCompleted, userState);
+        }
+
+        private void OnDeleteVirtualMachineExternalIPAddressesByInjectionOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachineExternalIPAddressesByInjectionCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteVirtualMachineExternalIPAddressesByInjectionCompleted(this, new DeleteVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/RestoreVirtualMachineExternalIPAddressesB" +
+            "yInjection", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
+        {
+            object[] results = this.Invoke("RestoreVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginRestoreVirtualMachineExternalIPAddressesByInjection(int itemId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("RestoreVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndRestoreVirtualMachineExternalIPAddressesByInjection(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void RestoreVirtualMachineExternalIPAddressesByInjectionAsync(int itemId)
+        {
+            this.RestoreVirtualMachineExternalIPAddressesByInjectionAsync(itemId, null);
+        }
+
+        /// <remarks/>
+        public void RestoreVirtualMachineExternalIPAddressesByInjectionAsync(int itemId, object userState)
+        {
+            if ((this.RestoreVirtualMachineExternalIPAddressesByInjectionOperationCompleted == null))
+            {
+                this.RestoreVirtualMachineExternalIPAddressesByInjectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRestoreVirtualMachineExternalIPAddressesByInjectionOperationCompleted);
+            }
+            this.InvokeAsync("RestoreVirtualMachineExternalIPAddressesByInjection", new object[] {
+                        itemId}, this.RestoreVirtualMachineExternalIPAddressesByInjectionOperationCompleted, userState);
+        }
+
+        private void OnRestoreVirtualMachineExternalIPAddressesByInjectionOperationCompleted(object arg)
+        {
+            if ((this.RestoreVirtualMachineExternalIPAddressesByInjectionCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.RestoreVirtualMachineExternalIPAddressesByInjectionCompleted(this, new RestoreVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachineExternalIPAddresses", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom, int addressesNumber, int[] addressId)
         {
@@ -3434,6 +3631,115 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/RestoreVirtualMachinePrivateIPAddressesBy" +
+            "Injection", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
+        {
+            object[] results = this.Invoke("RestoreVirtualMachinePrivateIPAddressesByInjection", new object[] {
+                        itemId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginRestoreVirtualMachinePrivateIPAddressesByInjection(int itemId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("RestoreVirtualMachinePrivateIPAddressesByInjection", new object[] {
+                        itemId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndRestoreVirtualMachinePrivateIPAddressesByInjection(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void RestoreVirtualMachinePrivateIPAddressesByInjectionAsync(int itemId)
+        {
+            this.RestoreVirtualMachinePrivateIPAddressesByInjectionAsync(itemId, null);
+        }
+
+        /// <remarks/>
+        public void RestoreVirtualMachinePrivateIPAddressesByInjectionAsync(int itemId, object userState)
+        {
+            if ((this.RestoreVirtualMachinePrivateIPAddressesByInjectionOperationCompleted == null))
+            {
+                this.RestoreVirtualMachinePrivateIPAddressesByInjectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRestoreVirtualMachinePrivateIPAddressesByInjectionOperationCompleted);
+            }
+            this.InvokeAsync("RestoreVirtualMachinePrivateIPAddressesByInjection", new object[] {
+                        itemId}, this.RestoreVirtualMachinePrivateIPAddressesByInjectionOperationCompleted, userState);
+        }
+
+        private void OnRestoreVirtualMachinePrivateIPAddressesByInjectionOperationCompleted(object arg)
+        {
+            if ((this.RestoreVirtualMachinePrivateIPAddressesByInjectionCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.RestoreVirtualMachinePrivateIPAddressesByInjectionCompleted(this, new RestoreVirtualMachinePrivateIPAddressesByInjectionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachinePrivateIPAddressesByInje" +
+            "ct", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        {
+            object[] results = this.Invoke("AddVirtualMachinePrivateIPAddressesByInject", new object[] {
+                        itemId,
+                        selectRandom,
+                        addressesNumber,
+                        addresses});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("AddVirtualMachinePrivateIPAddressesByInject", new object[] {
+                        itemId,
+                        selectRandom,
+                        addressesNumber,
+                        addresses}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndAddVirtualMachinePrivateIPAddressesByInject(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void AddVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        {
+            this.AddVirtualMachinePrivateIPAddressesByInjectAsync(itemId, selectRandom, addressesNumber, addresses, null);
+        }
+
+        /// <remarks/>
+        public void AddVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, object userState)
+        {
+            if ((this.AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted == null))
+            {
+                this.AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddVirtualMachinePrivateIPAddressesByInjectOperationCompleted);
+            }
+            this.InvokeAsync("AddVirtualMachinePrivateIPAddressesByInject", new object[] {
+                        itemId,
+                        selectRandom,
+                        addressesNumber,
+                        addresses}, this.AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted, userState);
+        }
+
+        private void OnAddVirtualMachinePrivateIPAddressesByInjectOperationCompleted(object arg)
+        {
+            if ((this.AddVirtualMachinePrivateIPAddressesByInjectCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.AddVirtualMachinePrivateIPAddressesByInjectCompleted(this, new AddVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachinePrivateIPAddresses", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
         {
@@ -3540,6 +3846,59 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetVirtualMachinePrimaryPrivateIPAddressCompleted(this, new SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteVirtualMachinePrivateIPAddressesByI" +
+            "nject", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressId)
+        {
+            object[] results = this.Invoke("DeleteVirtualMachinePrivateIPAddressesByInject", new object[] {
+                        itemId,
+                        addressId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeleteVirtualMachinePrivateIPAddressesByInject", new object[] {
+                        itemId,
+                        addressId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndDeleteVirtualMachinePrivateIPAddressesByInject(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, int[] addressId)
+        {
+            this.DeleteVirtualMachinePrivateIPAddressesByInjectAsync(itemId, addressId, null);
+        }
+
+        /// <remarks/>
+        public void DeleteVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, int[] addressId, object userState)
+        {
+            if ((this.DeleteVirtualMachinePrivateIPAddressesByInjectOperationCompleted == null))
+            {
+                this.DeleteVirtualMachinePrivateIPAddressesByInjectOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachinePrivateIPAddressesByInjectOperationCompleted);
+            }
+            this.InvokeAsync("DeleteVirtualMachinePrivateIPAddressesByInject", new object[] {
+                        itemId,
+                        addressId}, this.DeleteVirtualMachinePrivateIPAddressesByInjectOperationCompleted, userState);
+        }
+
+        private void OnDeleteVirtualMachinePrivateIPAddressesByInjectOperationCompleted(object arg)
+        {
+            if ((this.DeleteVirtualMachinePrivateIPAddressesByInjectCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteVirtualMachinePrivateIPAddressesByInjectCompleted(this, new DeleteVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -3749,6 +4108,58 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalSwitchesWMI", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
+        {
+            object[] results = this.Invoke("GetExternalSwitchesWMI", new object[] {
+                        serviceId,
+                        computerName});
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetExternalSwitchesWMI(int serviceId, string computerName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetExternalSwitchesWMI", new object[] {
+                        serviceId,
+                        computerName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] EndGetExternalSwitchesWMI(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VirtualSwitch[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetExternalSwitchesWMIAsync(int serviceId, string computerName)
+        {
+            this.GetExternalSwitchesWMIAsync(serviceId, computerName, null);
+        }
+
+        /// <remarks/>
+        public void GetExternalSwitchesWMIAsync(int serviceId, string computerName, object userState)
+        {
+            if ((this.GetExternalSwitchesWMIOperationCompleted == null))
+            {
+                this.GetExternalSwitchesWMIOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetExternalSwitchesWMIOperationCompleted);
+            }
+            this.InvokeAsync("GetExternalSwitchesWMI", new object[] {
+                        serviceId,
+                        computerName}, this.GetExternalSwitchesWMIOperationCompleted, userState);
+        }
+
+        private void OnGetExternalSwitchesWMIOperationCompleted(object arg)
+        {
+            if ((this.GetExternalSwitchesWMICompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetExternalSwitchesWMICompleted(this, new GetExternalSwitchesWMICompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetInternalSwitches", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
         {
@@ -3918,7 +4329,7 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ReinstallVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
+        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             object[] results = this.Invoke("ReinstallVirtualMachine", new object[] {
                         itemId,
@@ -3928,7 +4339,7 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         saveVirtualDisk,
                         exportVps,
                         exportPath});
-            return ((ResultObject)(results[0]));
+            return ((IntResult)(results[0]));
         }
 
         /// <remarks/>
@@ -3945,10 +4356,10 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public ResultObject EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
+        public IntResult EndReinstallVirtualMachine(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
-            return ((ResultObject)(results[0]));
+            return ((IntResult)(results[0]));
         }
 
         /// <remarks/>
@@ -6017,6 +6428,96 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void AddVirtualMachineExternalIPAddressesByInjectionCompletedEventHandler(object sender, AddVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class AddVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal AddVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeleteVirtualMachineExternalIPAddressesByInjectionCompletedEventHandler(object sender, DeleteVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeleteVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeleteVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void RestoreVirtualMachineExternalIPAddressesByInjectionCompletedEventHandler(object sender, RestoreVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class RestoreVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal RestoreVirtualMachineExternalIPAddressesByInjectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void AddVirtualMachineExternalIPAddressesCompletedEventHandler(object sender, AddVirtualMachineExternalIPAddressesCompletedEventArgs e);
 
     /// <remarks/>
@@ -6137,6 +6638,66 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void RestoreVirtualMachinePrivateIPAddressesByInjectionCompletedEventHandler(object sender, RestoreVirtualMachinePrivateIPAddressesByInjectionCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class RestoreVirtualMachinePrivateIPAddressesByInjectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal RestoreVirtualMachinePrivateIPAddressesByInjectionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void AddVirtualMachinePrivateIPAddressesByInjectCompletedEventHandler(object sender, AddVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class AddVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal AddVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void AddVirtualMachinePrivateIPAddressesCompletedEventHandler(object sender, AddVirtualMachinePrivateIPAddressesCompletedEventArgs e);
 
     /// <remarks/>
@@ -6179,6 +6740,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         private object[] results;
 
         internal SetVirtualMachinePrimaryPrivateIPAddressCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeleteVirtualMachinePrivateIPAddressesByInjectCompletedEventHandler(object sender, DeleteVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeleteVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeleteVirtualMachinePrivateIPAddressesByInjectCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
@@ -6317,6 +6908,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetExternalSwitchesWMICompletedEventHandler(object sender, GetExternalSwitchesWMICompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetExternalSwitchesWMICompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetExternalSwitchesWMICompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VirtualSwitch[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VirtualSwitch[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetInternalSwitchesCompletedEventHandler(object sender, GetInternalSwitchesCompletedEventArgs e);
 
     /// <remarks/>
@@ -6425,12 +7046,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public ResultObject Result
+        public IntResult Result
         {
             get
             {
                 this.RaiseExceptionIfNecessary();
-                return ((ResultObject)(this.results[0]));
+                return ((IntResult)(this.results[0]));
             }
         }
     }

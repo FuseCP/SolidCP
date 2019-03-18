@@ -74,11 +74,36 @@ namespace SolidCP.Providers.Utils
         /// <returns>Output of the command being executed.</returns>
         public string Execute(string filePath, string args, string outputFile)
         {
-            // launch system process
-            ProcessStartInfo startInfo = new ProcessStartInfo(filePath, args);
+			// when UseShellExecute is false, we CANNOT start .BAT/.CMD directly - handle this
+			string ext = Path.GetExtension(filePath);
+			string executable = String.Empty;
+			if (".bat".Equals(ext, StringComparison.OrdinalIgnoreCase) 
+				|| ".cmd".Equals(ext, StringComparison.OrdinalIgnoreCase))
+			{
+				// use cmd.exe as executable
+				executable = "cmd.exe";
+				string oldargs = args;
+				string exearg = filePath;
+				if (HasWhiteSpace(exearg))
+				{
+					exearg = "\"" + exearg + "\"";
+				}
+				args = "/c " + exearg;
+				if (!String.IsNullOrEmpty(oldargs))
+				{
+					args += " " + oldargs;
+				}
+			}
+			else
+			{
+				executable = filePath;
+			}
+			// launch system process
+			ProcessStartInfo startInfo = new ProcessStartInfo(executable, args);
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.RedirectStandardOutput = true;
-            startInfo.UseShellExecute = false;
+			// when UseShellExecute is false, we CANNOT start .BAT/.CMD directly
+			startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
 
             // get working directory from executable path
@@ -110,7 +135,27 @@ namespace SolidCP.Providers.Utils
 
             return results;
         }
-    }
+
+		/// <summary>
+		/// Determines whether the string has any white space.
+		/// </summary>
+		/// <param name="input">The string to test for white space.</param>
+		/// <returns>
+		///   <c>true</c> if the string has white space; otherwise, even for empty or NULL string <c>false</c>.
+		/// </returns>
+		private bool HasWhiteSpace(string input)
+		{
+			if (String.IsNullOrEmpty(input))
+				return false;
+
+			for (int i = 0; i < input.Length; i++)
+			{
+				if (char.IsWhiteSpace(input[i]))
+					return true;
+			}
+			return false;
+		}
+	}
 
     /// <summary>
     /// Summary description for FileUtils.

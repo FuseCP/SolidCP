@@ -137,13 +137,26 @@ namespace SolidCP.Providers.Virtualization
 
         public static void Delete(PowerShellManager powerShell, VirtualHardDiskInfo[] disks)
         {
+            Delete(powerShell, disks, null);
+        }
+
+        public static void Delete(PowerShellManager powerShell, VirtualHardDiskInfo[] disks, string serverNameSettings)
+        {
             if (disks != null && disks.GetLength(0) > 0)
             {
                 foreach (VirtualHardDiskInfo disk in disks)
                 {
-                    Command cmd = new Command("Remove-item");
-                    cmd.Parameters.Add("path", disk.Path);
-                    powerShell.Execute(cmd, true);
+                    if (!string.IsNullOrEmpty(serverNameSettings))
+                    {
+                        string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
+                        powerShell.Execute(new Command(cmd, true), false);
+                    }
+                    else
+                    {
+                        Command cmd = new Command("Remove-item");
+                        cmd.Parameters.Add("path", disk.Path);
+                        powerShell.Execute(cmd, false);
+                    }                    
                 }
             }
         }

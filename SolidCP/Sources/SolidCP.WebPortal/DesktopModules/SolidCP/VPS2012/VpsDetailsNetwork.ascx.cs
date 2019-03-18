@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -38,6 +38,8 @@ using System.Web.UI.WebControls;
 using SolidCP.Providers.Virtualization;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
+using System.Text;
+using System.Data;
 
 namespace SolidCP.Portal.VPS2012
 {
@@ -49,6 +51,7 @@ namespace SolidCP.Portal.VPS2012
         {
             if (!IsPostBack)
             {
+                BindRealAssignedAddresses();
                 BindVirtualMachine();
                 BindExternalAddresses();
                 BindPrivateAddresses();
@@ -65,6 +68,7 @@ namespace SolidCP.Portal.VPS2012
             {
                 secExternalNetwork.Visible = false;
                 ExternalNetworkPanel.Visible = false;
+                btnRestoreExternalAddress.Visible = false;
             }
 
             // private network
@@ -72,6 +76,74 @@ namespace SolidCP.Portal.VPS2012
             {
                 secPrivateNetwork.Visible = false;
                 PrivateNetworkPanel.Visible = false;
+                btnRestorePrivateAddress.Visible = false;
+            }
+        }
+
+        private void BindRealAssignedAddresses()
+        {
+            VirtualMachine itemVM = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
+            VirtualMachine _vm = null;
+            try
+            {
+                _vm = ES.Services.VPS2012.GetVirtualMachineExtendedInfo(itemVM.ServiceId, itemVM.VirtualMachineId);
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_GET_VM_DETAILS", ex);
+            }
+
+            try
+            {
+                repVMNetwork.DataSource = _vm.Adapters;//new VirtualMachineNetworkAdapter[vm.Adapters.Length];
+                repVMNetwork.DataBind();
+                BindGridViewOfVmIPs(_vm.Adapters);
+                CheckIfPossibleToDoIpInjection(_vm.Adapters);
+            }
+            catch (Exception ex) //TODO: replace by messageBox ????
+            {
+                VMNetworkError.Text = "Error - " + ex;
+                VMNetworkError.Visible = true;
+            }                
+        }
+
+        private void CheckIfPossibleToDoIpInjection(VirtualMachineNetworkAdapter[] Adapters)
+        {
+            btnDeletePrivateByInject.Visible = 
+                btnDeleteExternalByInject.Visible = 
+                btnRestoreExternalAddress.Visible = 
+                btnRestorePrivateAddress.Visible = false;
+            foreach (VirtualMachineNetworkAdapter adapter in Adapters)
+            {
+                if (adapter.IPAddresses != null && adapter.IPAddresses.Length > 0) //if we can get IP information at least from 1 adapter it means that VM support IP Injection.
+                {
+                    btnDeletePrivateByInject.Visible =
+                        btnDeleteExternalByInject.Visible =
+                        btnRestoreExternalAddress.Visible =
+                        btnRestorePrivateAddress.Visible = true;
+                    break;
+                }
+            }
+        }
+
+        private void BindGridViewOfVmIPs(VirtualMachineNetworkAdapter[] Adapters)
+        {
+            int i = 0;
+            foreach (RepeaterItem item in repVMNetwork.Items)
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("N", typeof(int));
+                dt.Columns.Add("IP", typeof(string));
+                for (int j = 0; j < Adapters[i].IPAddresses.Length; j++)
+                {
+                    DataRow NewRow = dt.NewRow();
+                    NewRow["N"] = j + 1;
+                    NewRow["IP"] = Adapters[i].IPAddresses[j];
+                    dt.Rows.Add(NewRow);
+                }
+                (item.FindControl("gvVMNetwork") as GridView).DataSource = dt;
+                (item.FindControl("gvVMNetwork") as GridView).DataBind();
+                i++;
             }
         }
 
@@ -142,6 +214,52 @@ namespace SolidCP.Portal.VPS2012
             gvPrivateAddresses.Columns[0].Visible = manageAllowed;
         }
 
+        protected void btnRestoreExternalAddress_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ResultObject res = ES.Services.VPS2012.RestoreVirtualMachineExternalIPAddressesByInjection(PanelRequest.ItemID);
+                if (res.IsSuccess)
+                {
+                    BindRealAssignedAddresses();
+                    BindVirtualMachine();
+                    return;
+                }
+                else
+                {
+                    messageBox.ShowMessage(res, "VPS_ERROR_RESTORE_EXTERNAL_IP", "VPS");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_RESTORE_EXTERNAL_IP", ex);
+            }
+        }
+
+        protected void btnRestorePrivateByInject_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ResultObject res = ES.Services.VPS2012.RestoreVirtualMachinePrivateIPAddressesByInjection(PanelRequest.ItemID);
+                if (res.IsSuccess)
+                {
+                    BindRealAssignedAddresses();
+                    BindVirtualMachine();
+                    return;
+                }
+                else
+                {
+                    messageBox.ShowMessage(res, "VPS_ERROR_RESTORE_PRIVATE_IP", "VPS");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                messageBox.ShowErrorMessage("VPS_ERROR_RESTORE_PRIVATE_IP", ex);
+            }
+        }
+
         protected void btnAddExternalAddress_Click(object sender, EventArgs e)
         {
             Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "vps_add_external_ip",
@@ -185,8 +303,17 @@ namespace SolidCP.Portal.VPS2012
                 messageBox.ShowErrorMessage("VPS_ERROR_SETTING_PRIMARY_IP", ex);
             }
         }
+        protected void btnDeletePrivateByInject_Click(object sender, EventArgs e)
+        {
+            DeletePrivate(sender, e, true);
+        }
 
         protected void btnDeletePrivate_Click(object sender, EventArgs e)
+        {
+            DeletePrivate(sender, e, false);
+        }
+
+        protected void DeletePrivate(object sender, EventArgs e, bool byNewMethod)
         {
             int[] addressIds = GetSelectedItems(gvPrivateAddresses);
 
@@ -199,7 +326,11 @@ namespace SolidCP.Portal.VPS2012
 
             try
             {
-                ResultObject res = ES.Services.VPS2012.DeleteVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, addressIds);
+                ResultObject res = null;
+                if (byNewMethod)
+                    res = ES.Services.VPS2012.DeleteVirtualMachinePrivateIPAddressesByInject(PanelRequest.ItemID, addressIds);
+                else
+                    res = ES.Services.VPS2012.DeleteVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, addressIds);
 
                 if (res.IsSuccess)
                 {
@@ -252,6 +383,15 @@ namespace SolidCP.Portal.VPS2012
 
         protected void btnDeleteExternal_Click(object sender, EventArgs e)
         {
+            DeleteExternal(sender, e, false);
+        }
+        protected void btnDeleteExternalByInject_Click(object sender, EventArgs e)
+        {
+            DeleteExternal(sender, e, true);
+        }
+
+        protected void DeleteExternal(object sender, EventArgs e, bool byNewMethod)
+        {
             int[] addressIds = GetSelectedItems(gvExternalAddresses);
 
             // check if at least one is selected
@@ -263,7 +403,12 @@ namespace SolidCP.Portal.VPS2012
 
             try
             {
-                ResultObject res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
+                ResultObject res = null; ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
+                if(byNewMethod)
+                    res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddressesByInjection(PanelRequest.ItemID, addressIds);
+                else
+                    res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
+
 
                 if (res.IsSuccess)
                 {
@@ -280,7 +425,7 @@ namespace SolidCP.Portal.VPS2012
             {
                 messageBox.ShowErrorMessage("VPS_ERROR_DELETING_IP_ADDRESS", ex);
             }
-        }
+        }        
 
         private int[] GetSelectedItems(GridView gv)
         {

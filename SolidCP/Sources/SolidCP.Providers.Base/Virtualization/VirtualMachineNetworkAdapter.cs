@@ -39,6 +39,7 @@ namespace SolidCP.Providers.Virtualization
     public class VirtualMachineNetworkAdapter
     {
         public string Name { get; set; }
+        public string[] IPAddresses { get; set; }
         public string MacAddress { get; set; }
         public string SwitchName { get; set; }
         public int vlan { get; set; }

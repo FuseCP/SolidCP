@@ -1953,10 +1953,22 @@
   <data name="Quota.MySQL5.MaxDatabaseSize" xml:space="preserve">
     <value>Max Database Size, MB</value>
   </data>
+  <data name="Quota.MySQL8.Backup" xml:space="preserve">
+    <value>Database Backups</value>
+  </data>
+  <data name="Quota.MySQL8.Databases" xml:space="preserve">
+    <value>Databases</value>
+  </data>
+  <data name="Quota.MySQL8.MaxDatabaseSize" xml:space="preserve">
+    <value>Max Database Size, MB</value>
+  </data>
   <data name="Quota.MySQL4.MaxDatabaseSize" xml:space="preserve">
     <value>Max Database Size, MB</value>
   </data>
   <data name="Quota.MySQL5.Restore" xml:space="preserve">
+    <value>Database Restores</value>
+  </data>
+  <data name="Quota.MySQL8.Restore" xml:space="preserve">
     <value>Database Restores</value>
   </data>
   <data name="Quota.MySQL4.Truncate" xml:space="preserve">
@@ -1969,6 +1981,12 @@
     <value>Database Truncate</value>
   </data>
   <data name="Quota.MySQL5.Users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="Quota.MySQL8.Truncate" xml:space="preserve">
+    <value>Database Truncate</value>
+  </data>
+  <data name="Quota.MySQL8.Users" xml:space="preserve">
     <value>Users</value>
   </data>
   <data name="Quota.MariaDB.Backup" xml:space="preserve">
@@ -1995,6 +2013,9 @@
   <data name="ReportResourceGroup.MySQL5" xml:space="preserve">
     <value>MySQL 5</value>
   </data>
+  <data name="ReportResourceGroup.MySQL8" xml:space="preserve">
+    <value>MySQL 8</value>
+  </data>
   <data name="ResourceGroup.MsSQL2005" xml:space="preserve">
     <value>SQL Server 2005</value>
   </data>
@@ -2009,6 +2030,9 @@
   </data>
   <data name="ResourceGroup.MySQL5" xml:space="preserve">
     <value>MySQL 5</value>
+  </data>
+  <data name="ResourceGroup.MySQL8" xml:space="preserve">
+    <value>MySQL 8</value>
   </data>
   <data name="ResourceGroup.MsSQL2012" xml:space="preserve">
     <value>SQL Server 2012</value>
@@ -2251,7 +2275,13 @@
     <value>MySQL 5 Database</value>
   </data>
   <data name="ServiceItemType.MySQL5User" xml:space="preserve">
-    <value>MariaDB User</value>
+    <value>MySQL 5 User</value>
+  </data>
+  <data name="ServiceItemType.MySQL8Database" xml:space="preserve">
+    <value>MySQL 8 Database</value>
+  </data>
+  <data name="ServiceItemType.MySQL8User" xml:space="preserve">
+    <value>MySQL 8 User</value>
   </data>
   <data name="ServiceItemType.MariaDBDatabase" xml:space="preserve">
     <value>MariaDB Database</value>
@@ -6375,5 +6405,35 @@
   </data>
   <data name="Warning.VPS_REINSTALL_LIMIT" xml:space="preserve">
     <value>You can not reinstall the server so often. Please try again later.</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_VHD_MAX_IOPS" xml:space="preserve">
+    <value>Maximum VHD IOPS: {0} </value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_VHD_MIN_IOPS" xml:space="preserve">
+    <value>Minimum VHD IOPS: {0} </value>
+  </data>
+  <data name="Error.DOMAIN_EXPORT" xml:space="preserve">
+    <value>Error exporting DNS zone</value>
+  </data>
+  <data name="Error.DOMAIN_IMPORT" xml:space="preserve">
+    <value>Failed to import zone file</value>
+  </data>
+  <data name="Error.DOMAIN_IMPORT_NO_FILE" xml:space="preserve">
+    <value>No file selected</value>
+  </data>
+  <data name="Success.DOMAIN_IMPORT" xml:space="preserve">
+    <value>Successfully imported zone file</value>
+  </data>
+  <data name="Error.VPS_ERROR_RESTORE_EXTERNAL_IP" xml:space="preserve">
+    <value>Cannot restore network adapter external IP address</value>
+  </data>
+  <data name="Error.VPS_ERROR_RESTORE_PRIVATE_IP" xml:space="preserve">
+    <value>Cannot restore network adapter private IP address</value>
+  </data>
+  <data name="VPS.VPS_RESTORE_VIRTUAL_MACHINE_EXTERNAL_IP_ADDRESS_ERROR" xml:space="preserve">
+    <value>Error restoring external IP address. Check Audit Log for more details.</value>
+  </data>
+  <data name="VPS.VPS_RESTORE_VIRTUAL_MACHINE_PRIVATE_IP_ADDRESS_ERROR" xml:space="preserve">
+    <value>Error restoring private IP address. Check Audit Log for more details.</value>
   </data>
 </root>

@@ -16,8 +16,8 @@ Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
 <Assembly: AssemblyCompany("SolidCP"),  _
- Assembly: AssemblyCopyright("Copyright © 2016 SolidCP."),  _
- Assembly: AssemblyVersion("1.4.1"),  _
- Assembly: AssemblyFileVersion("1.4.1"),  _
- Assembly: AssemblyInformationalVersion("1.4.1")> 
+ Assembly: AssemblyCopyright("Copyright © 2018 SolidCP."),  _
+ Assembly: AssemblyVersion("1.4.2"),  _
+ Assembly: AssemblyFileVersion("1.4.2"),  _
+ Assembly: AssemblyInformationalVersion("1.4.2")> 
 

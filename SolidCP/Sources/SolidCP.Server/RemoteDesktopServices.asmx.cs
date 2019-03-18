@@ -769,14 +769,14 @@ namespace SolidCP.Server
         {
             try
             {
-                Log.WriteStart("'{0}' GetServerIp", ProviderSettings.ProviderName);
+                Log.WriteStart("'{0}' GetServerIp for '{1}'", ProviderSettings.ProviderName, hostName);
                 var result = RDSProvider.GetServerIp(hostName);
-                Log.WriteEnd("'{0}' GetServerIp", ProviderSettings.ProviderName);
+                Log.WriteEnd("'{0}' GetServerIp for '{1}'", ProviderSettings.ProviderName, hostName);
                 return result;
             }
             catch (Exception ex)
             {
-                Log.WriteError(String.Format("'{0}' GetServerIp", ProviderSettings.ProviderName), ex);
+                Log.WriteError(String.Format("'{0}' GetServerIp for '{1}'", ProviderSettings.ProviderName, hostName), ex);
                 throw;
             }
         }

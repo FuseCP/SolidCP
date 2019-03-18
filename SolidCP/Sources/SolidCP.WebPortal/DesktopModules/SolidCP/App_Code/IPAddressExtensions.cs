@@ -244,6 +244,8 @@ namespace Knom.Helpers.Net
             if (String.IsNullOrEmpty(l_URL))
                 return;
 
+            // Set to use TLS1.2
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             //"https://10.2.150.107/api/"
             // Create a request for the URL. 
             WebRequest request = WebRequest.Create(l_URL + f_stParam);

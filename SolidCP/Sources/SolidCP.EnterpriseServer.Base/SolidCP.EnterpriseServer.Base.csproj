@@ -176,6 +176,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Virtualization\VirtualizationErrorCodes.cs" />
+    <Compile Include="Virtualization\VirtualMachineTimeZoneList.cs" />
     <Compile Include="Virtualization\VirtualMachineMetaItem.cs">
       <SubType>Code</SubType>
     </Compile>

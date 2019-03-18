@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -441,6 +441,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
+                List<VirtualSwitch> result = VirtualizationProvider.GetExternalSwitches(computerName);
+                Log.WriteEnd("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public List<VirtualSwitch> GetInternalSwitches(string computerName)
         {
             try
@@ -521,6 +538,25 @@ namespace SolidCP.Server
             catch (Exception ex)
             {
                 Log.WriteError(String.Format("'{0}' DeleteSwitch", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+        #endregion
+
+        #region IP operations
+        [WebMethod, SoapHeader("settings")]
+        public JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' InjectIPs", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.InjectIPs(vmId, guestNetworkAdapterConfiguration);
+                Log.WriteEnd("'{0}' InjectIPs", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' InjectIPs", ProviderSettings.ProviderName), ex);
                 throw;
             }
         }

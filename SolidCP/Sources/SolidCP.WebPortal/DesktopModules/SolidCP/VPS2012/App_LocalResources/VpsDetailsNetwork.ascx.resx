@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnAddExternalAddress.Text" xml:space="preserve">
     <value>Add IP...</value>
@@ -191,5 +191,17 @@
   </data>
   <data name="gvSubnetMask.HeaderText" xml:space="preserve">
     <value>Subnet Mask</value>
+  </data>
+  <data name="locAdapterMAC.Text" xml:space="preserve">
+    <value>Adapter MAC:</value>
+  </data>
+  <data name="locAdapterName.Text" xml:space="preserve">
+    <value>Adapter Name:</value>
+  </data>
+  <data name="btnDeleteExternalByInject.Text" xml:space="preserve">
+    <value>Delete By Injection (BETA)</value>
+  </data>
+  <data name="btnDeletePrivateByInject.Text" xml:space="preserve">
+    <value>Delete By Injection (BETA)</value>
   </data>
 </root>

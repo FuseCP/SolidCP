@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -42,9 +42,6 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using Microsoft.Web.Services3;
 using SolidCP.Providers;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.ResultObjects; 
 using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.EnterpriseServer
@@ -417,6 +414,26 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ResultObject AddVirtualMachineExternalIPAddressesByInjection(int itemId, bool selectRandom,
+            int addressesNumber, int[] addressId)
+        {
+            return VirtualizationServerController2012.AddVirtualMachineExternalIPAddressesByInjection(itemId, selectRandom,
+                addressesNumber, addressId);
+        }
+
+        [WebMethod]
+        public ResultObject DeleteVirtualMachineExternalIPAddressesByInjection(int itemId, int[] addressId)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachineExternalIPAddressesByInjection(itemId, addressId);
+        }
+
+        [WebMethod]
+        public ResultObject RestoreVirtualMachineExternalIPAddressesByInjection(int itemId)
+        {
+            return VirtualizationServerController2012.RestoreVirtualMachineExternalIPAddressesByInjection(itemId);
+        }
+
+        [WebMethod]
         public ResultObject AddVirtualMachineExternalIPAddresses(int itemId, bool selectRandom,
             int addressesNumber, int[] addressId)
         {
@@ -445,6 +462,20 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ResultObject RestoreVirtualMachinePrivateIPAddressesByInjection(int itemId)
+        {
+            return VirtualizationServerController2012.RestoreVirtualMachinePrivateIPAddressesByInjection(itemId);
+        }
+
+        [WebMethod]
+        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom,
+            int addressesNumber, string[] addresses)
+        {
+            return VirtualizationServerController2012.AddVirtualMachinePrivateIPAddressesByInject(itemId, selectRandom,
+                addressesNumber, addresses);
+        }
+
+        [WebMethod]
         public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom,
             int addressesNumber, string[] addresses)
         {
@@ -456,6 +487,12 @@ namespace SolidCP.EnterpriseServer
         public ResultObject SetVirtualMachinePrimaryPrivateIPAddress(int itemId, int addressId)
         {
             return VirtualizationServerController2012.SetVirtualMachinePrimaryPrivateIPAddress(itemId, addressId, true);
+        }
+
+        [WebMethod]
+        public ResultObject DeleteVirtualMachinePrivateIPAddressesByInject(int itemId, int[] addressId)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachinePrivateIPAddressesByInject(itemId, addressId);
         }
 
         [WebMethod]
@@ -487,6 +524,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public VirtualSwitch[] GetExternalSwitchesWMI(int serviceId, string computerName)
+        {
+            return VirtualizationServerController2012.GetExternalSwitchesWMI(serviceId, computerName);
+        }
+
+        [WebMethod]
         public VirtualSwitch[] GetInternalSwitches(int serviceId, string computerName)
         {
             return VirtualizationServerController2012.GetInternalSwitches(serviceId, computerName);
@@ -507,7 +550,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public ResultObject ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, VMSettings, adminPassword, privIps,

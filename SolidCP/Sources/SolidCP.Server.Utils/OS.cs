@@ -36,6 +36,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Management;
 using System.Security.Principal;
+using Microsoft.Win32;
 
 namespace SolidCP.Server.Utils
 {
@@ -296,8 +297,9 @@ namespace SolidCP.Server.Utils
             Windows81,
             WindowsServer2012R2,
             WindowsServer2016,
-            Windows10
-		}
+            Windows10,
+            WindowsServer2019
+        }
 
 		/// <summary>
 		/// Determine OS version
@@ -405,16 +407,24 @@ namespace SolidCP.Server.Utils
                             }
                             break;
                         case 10:
-                            if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-                                ret = WindowsVersion.Windows10;
-                            else
-                                ret = WindowsVersion.WindowsServer2016;
+                            int ReleaseId = GetReleaseId();
+                            // Server 2016
+                            if (ReleaseId == 1607 || ReleaseId == 1803 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.WindowsServer2016;
+                            // Server 2019
+                            else if (ReleaseId == 1809) ret = WindowsVersion.WindowsServer2019;
+                            // Windows 10
+                            else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
                             break;
 					}
 					break;
 			}
 			return ret;
 		}
+
+        public static int GetReleaseId()
+        {
+            return Convert.ToInt32(Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
+        }
 
 		/// <summary>
 		/// Returns Windows directory
@@ -443,14 +453,17 @@ namespace SolidCP.Server.Utils
             //        return true;
             foreach (ManagementObject objMO in objMOC)
             {
+                var id = objMO.Properties["ID"].Value.ToString().ToLower();
                 var name = objMO.Properties["Name"].Value.ToString().ToLower();
-                if (name.Contains("file server resource manager")
+                if (id.Contains("72") || id.Contains("104"))
+                    return true;
+                else if (name.Contains("file server resource manager")
                     || name.Contains("ressourcen-manager für dateiserver"))
                     return true;
             }
 
             return false;
         }
-	}
+    }
 }
 

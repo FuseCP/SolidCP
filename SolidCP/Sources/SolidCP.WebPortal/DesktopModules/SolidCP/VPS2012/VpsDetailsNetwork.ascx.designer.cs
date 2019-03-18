@@ -40,6 +40,60 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
         
         /// <summary>
+        /// secRealNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.CollapsiblePanel secRealNetwork;
+        
+        /// <summary>
+        /// RealNetworkPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel RealNetworkPanel;
+        
+        /// <summary>
+        /// btnRestoreExternalAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRestoreExternalAddress;
+        
+        /// <summary>
+        /// btnRestorePrivateAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnRestorePrivateAddress;
+        
+        /// <summary>
+        /// repVMNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repVMNetwork;
+        
+        /// <summary>
+        /// VMNetworkError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal VMNetworkError;
+        
+        /// <summary>
         /// secExternalNetwork control.
         /// </summary>
         /// <remarks>
@@ -146,6 +200,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDeleteExternal;
+        
+        /// <summary>
+        /// btnDeleteExternalByInject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnDeleteExternalByInject;
         
         /// <summary>
         /// locTotalExternal control.
@@ -281,6 +344,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDeletePrivate;
+        
+        /// <summary>
+        /// btnDeletePrivateByInject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnDeletePrivateByInject;
         
         /// <summary>
         /// locTotalPrivate control.

@@ -283,6 +283,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireRamValidator;
         
         /// <summary>
+        /// valRamSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRamSize;
+        
+        /// <summary>
         /// locMB control.
         /// </summary>
         /// <remarks>
@@ -317,6 +326,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddValidator;
+        
+        /// <summary>
+        /// valHddSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valHddSize;
         
         /// <summary>
         /// locGB control.
