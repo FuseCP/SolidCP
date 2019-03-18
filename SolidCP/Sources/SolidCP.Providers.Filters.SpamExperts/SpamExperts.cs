@@ -179,6 +179,7 @@ namespace SolidCP.Providers.Filters
             Log.WriteStart("DeleteDomainFilter");
 
             var result = ExecCommand("domainuser/remove", "username", domain);
+            result = ExecCommand("outgoingusers/remove", "domain", domain);
             result = ExecCommand("domain/remove", "domain", domain);
 
             Log.WriteEnd("DeleteDomainFilter");
