@@ -416,6 +416,9 @@ namespace SolidCP.EnterpriseServer
                 // register domain                
                 DataProvider.AddExchangeOrganizationDomain(itemId, domainId, true);
 
+                // add UPNSuffics
+                orgProxy.CreateOrganizationDomain(org.DistinguishedName, domainName);
+
                 //add to exchangeAcounts
                 AddAccount(itemId, ExchangeAccountType.DefaultSecurityGroup, org.GroupName,
                                 org.GroupName, null, false,
