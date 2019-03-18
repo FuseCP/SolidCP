@@ -35,6 +35,7 @@ Version 1.4.3
 - Bugfixes for BIND-DNS service: - Wolfgang Voos
 - Changes to Import Enterprise tool to support non Exchange accounts.
 - Fix for Overusage Report
+- FileZilla fix to set FileAppend when creating/modifying accounts. NOTE: Filezilla Server needs to support FileAppend which does work on versions 0.9.45 or greater - Jose Ribeiro
 
 Version 1.4.2
 Thank you to all contributors on this release with a special thanks to Genadij Judin and Frans Rampen on large contributions in this release.
