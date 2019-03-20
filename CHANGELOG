@@ -5,20 +5,24 @@ Version 1.4.3
 - Added MariaDB 10.3 Support - Vitor E A Feliciano
 - Added SimpleDNS 8 Support including SRV, CAA records - Pierre Philip du Preez
 - DNS Import/Export feature - Pierre Philip du Preez
-- [HyperV2012R2+] Fixed possible problem with removing VMs hosting space
-- [HyperV2012R2+] Fix for Remote Hosts - Genadij
-- [HyperV2012R2+] Added a new default HostName pattern and prevent some HostName problems - Genadij
-- [HyperV2012R2+] Added a new version of VMConfig in the drop-down selection - Genadij
-- [HyperV2012R2+] Fixed a possible bug with VHD block size.  - Genadij
-- [HyperV2012R2+] Fixed: Reinstall VPS did not return a VM id. Changed the logic of the VM re-installation. - Genadij
-- [HyperV2012R2+] Fixed reinstall method for HyperV Remote Host - Genadij
-- [HyperV2012R2+] Fixed some problems with HyperV remote host.  - Genadij
-- [HyperV2012R2+] Feature: Possibility to check real assigned VM IPs (part 1) - Genadij
-- [HyperV2012R2+] Feature: Inject IPs by native HyperV commands (faster and stable method). - Genadij
-- [HyperV2012R2+] Fixed issue with updating Dynamic RAM. - Genadij
-- [HyperV2012R2+] Added foolproof. - Genadij
-- [HyperV2012R2+] Added Sysprep TimeZoneId and CDKey variables.
-- [Portal] Fixed broken button "Add Os template" (returned null exception) - Genadij
+- (VPS2012/2016/2019) Fixed: A possible problem with removing VMs hosting space - Genadij
+- (VPS2012/2016/2019) Fixed: Remote HyperV Hosts didn't work - Genadij
+- (VPS2012/2016/2019) Fixed: A possible bug with VHD block size.  - Genadij
+- (VPS2012/2016/2019) Fixed: Reinstall VPS did not return a VM id. Changed the logic of the VM re-installation. - Genadij
+- (VPS2012/2016/2019) Fixed: The reinstall method doesn't work for HyperV Remote Host - Genadij
+- (VPS2012/2016/2019) Fixed: Some problems with HyperV remote host.  - Genadij
+- (VPS2012/2016/2019) Fixed: A possible bug when SolidCP cannot change VM state if VM is in a busy state (that bug prevented to delete some VM). - Genadij
+- (VPS2012/2016/2019) Fixed: Issues with updating Dynamic RAM. - Genadij
+- (VPS2012/2016/2019) Fixed: Ignore a legacy adapter checkbox for generation 2. - Genadij
+- (VPS2012/2016/2019) Added foolproofs. - Genadij
+- (VPS2012/2016/2019) Added Sysprep TimeZoneId and CDKey variables. - Genadij
+- (VPS2012/2016/2019) Added a new default HostName pattern and prevent some HostName problems - Genadij
+- (VPS2012/2016/2019) Added a new version of VMConfig in the drop-down selection - Genadij
+- (VPS2012/2016/2019) Feature: The IOPS settings have been hidden from User rights. 
+- (VPS2012/2016/2019) Feature: Possibility to check real assigned VM IPs (part 1) - Genadij
+- (VPS2012/2016/2019) Feature: Inject IPs by native HyperV commands (faster and stable method) (Linux??). - Genadij
+- (VPS2012/2016/2019) Feature: Possible to change some VM values without a reboot. - Genadij
+- (VPS2016/2019) Feature: Possible to change static/dynamic RAM without a reboot. - Genadij
 - Cerberus dll, Spam Experts dll missing from live build fix
 - Send password request (exchange) gui fix. 
 - Added MessageCopyForSentAsEnabled for exchange 2016

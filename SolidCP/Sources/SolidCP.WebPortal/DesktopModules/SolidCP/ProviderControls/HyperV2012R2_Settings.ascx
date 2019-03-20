@@ -272,7 +272,7 @@
                             Text="*" meta:resourcekey="TemplateNameValidator" Display="Dynamic" SetFocusOnError="true" />
                     </td>
                     <td rowspan="3">
-                        <asp:CheckBox ID="chkLegacyNetworkAdapter" runat="server" Checked='<%# Eval("LegacyNetworkAdapter") %>' meta:resourcekey="chkLegacyNetworkAdapter" Text="Use legacy adapter" /><br />
+                        <asp:CheckBox ID="chkLegacyNetworkAdapter" runat="server" Checked='<%# Eval("LegacyNetworkAdapter") %>' meta:resourcekey="chkLegacyNetworkAdapter" Text="Use legacy adapter (First Generation only)" Enabled='<%# IsLegacyAdapterSupport(Eval("Generation")) %>' /><br />
                         <%--<asp:CheckBox ID="chkRemoteDesktop" runat="server" Checked='<%# Eval("RemoteDesktop") %>' meta:resourcekey="chkRemoteDesktop" Text="Remote desktop" /><br/>--%>
                         <asp:CheckBox ID="chkCanSetComputerName" runat="server" Checked='<%# Eval("ProvisionComputerName") %>' meta:resourcekey="chkCanSetComputerName" Text="Can set a computer name" /><br />
                         <asp:CheckBox ID="chkCanSetAdminPass" runat="server" Checked='<%# Eval("ProvisionAdministratorPassword") %>' meta:resourcekey="chkCanSetAdminPass" Text="Can set an Administrator password" /><br />
@@ -293,7 +293,10 @@
                                 <asp:ListItem Text="First" Value="1"></asp:ListItem>
                                 <asp:ListItem Text="Second" Value="2"></asp:ListItem>
                         </asp:DropDownList>
-                        
+                        <asp:RegularExpressionValidator id="valTemplateGeneration" runat="server" Text="*" meta:resourcekey="valTemplateGeneration"
+							ValidationExpression="^[1-9]+$"
+							ControlToValidate="ddlTemplateGeneration" Display="Dynamic" SetFocusOnError="true">
+						</asp:RegularExpressionValidator>
                     </td>
                 </tr>
                 <tr>
@@ -583,7 +586,7 @@
                     DataValueField="SwitchId" DataTextField="Name"></asp:DropDownList>
             </td>
             <td>
-                <asp:CheckBox ID="chkGetSwitchesByPS" runat="server" AutoPostBack="true" meta:resourcekey="chkGetSwitchesByPS" Text="Use an alternative method to get external switches. (slow)" />
+                <asp:CheckBox ID="chkGetSwitchesByPS" runat="server" AutoPostBack="true" meta:resourcekey="chkGetSwitchesByPS" Text="Use an alternative method to get external switches. (slow)" OnCheckedChanged="chkGetSwitchesByPS_CheckedChanged" />
             </td>
 	    </tr>
 	    <tr>

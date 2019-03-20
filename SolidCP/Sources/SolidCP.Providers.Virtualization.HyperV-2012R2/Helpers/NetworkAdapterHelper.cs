@@ -115,7 +115,7 @@ namespace SolidCP.Providers.Virtualization
             else
                 cmd.Parameters.Add("StaticMacAddress", macAddress);
 
-            powerShell.Execute(cmd, true);
+            powerShell.Execute(cmd, true, true);
 
         }
 
@@ -129,7 +129,7 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Access");
                 cmd.Parameters.Add("VlanId", vlan.ToString());
 
-                powerShell.Execute(cmd, true);
+                powerShell.Execute(cmd, true, true);
             }
         }
 
@@ -150,7 +150,7 @@ namespace SolidCP.Providers.Virtualization
             cmd.Parameters.Add("VMName", vmName);
             cmd.Parameters.Add("Name", networkAdapter.Name);
 
-            powerShell.Execute(cmd, true);
+            powerShell.Execute(cmd, true, true);
         }
     }
 }

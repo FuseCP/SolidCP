@@ -58,6 +58,7 @@ namespace SolidCP.EnterpriseServer
         private const string MS_MAC_PREFIX = "00155D"; // IEEE prefix of MS MAC addresses
         private const string SCP_HOSTNAME_PREFIX = "SCP-"; //min and max are 4 symbols! ([0-9][A-z] and -)
         private const string MAINTENANCE_MODE_EMABLED = "enabled";
+        private const short MINIMUM_DYNAMIC_MEMORY_BUFFER = 5;
 
         // default server creation (if "Unlimited" was specified in the hosting plan)
         private const int DEFAULT_PASSWORD_LENGTH = 12;
@@ -682,6 +683,12 @@ namespace SolidCP.EnterpriseServer
             }
             catch (Exception ex)
             {
+                if (!createMetaItem)
+                {
+                    vm.CurrentTaskId = null;
+                    vm.ProvisioningStatus = VirtualMachineProvisioningStatus.Error;
+                    PackageController.UpdatePackageItem(vm); //to access the audit log.
+                }
                 res.AddError(VirtualizationErrorCodes.CREATE_ERROR, ex);
                 return res;
             }
@@ -2308,6 +2315,16 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region VPS - Configuration
+        public static VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(int itemId)
+        {
+            VirtualMachine vm = (VirtualMachine)PackageController.GetPackageItem(itemId);
+            if (vm == null)
+                return null;
+
+            VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+            return vs.GetVirtualMachinesNetwordAdapterSettings(vm.Name);
+        }
+
         public static ResultObject ChangeAdministratorPassword(int itemId, string password)
         {
             return ChangeAdministratorPasswordInternal(itemId, password, false);
@@ -2460,50 +2477,7 @@ namespace SolidCP.EnterpriseServer
                 // get proxy
                 VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
 
-                // stop VPS if required
                 VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-
-                bool wasStarted = false;
-
-                // stop (shut down) virtual machine
-                if (vps.State != VirtualMachineState.Off)
-                {
-                    wasStarted = true;
-                    ReturnCode code = vs.ShutDownVirtualMachine(vm.VirtualMachineId, true, SHUTDOWN_REASON_CHANGE_CONFIG);
-                    if (code == ReturnCode.OK)
-                    {
-                        // spin until fully stopped
-                        vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-                        short timeOut = 60 * 10; //10 min
-                        while (vps.State != VirtualMachineState.Off) //TODO: rewrite
-                        {
-                            timeOut--;
-                            System.Threading.Thread.Sleep(1000); // sleep 1 second
-                            vps = vs.GetVirtualMachine(vm.VirtualMachineId);
-                            if (timeOut == 0)// turnoff
-                            {
-                                ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
-                                                                VirtualMachineRequestedState.TurnOff);
-                                if (!turnOffResult.IsSuccess)
-                                {
-                                    TaskManager.CompleteResultTask(res);
-                                    return turnOffResult;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // turn off
-                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
-                        if (!JobCompleted(vs, result.Job))
-                        {
-                            LogJobResult(res, result.Job);
-                            TaskManager.CompleteResultTask(res);
-                            return res;
-                        }
-                    }
-                } // end OFF
 
                 /////////////////////////////////////////////
                 // update meta-item //TODO: rewrite 
@@ -2514,6 +2488,8 @@ namespace SolidCP.EnterpriseServer
                 vm.HddMinimumIOPS = vmSettings.HddMinimumIOPS;
                 vm.HddMaximumIOPS = vmSettings.HddMaximumIOPS;
                 vm.SnapshotsNumber = vmSettings.SnapshotsNumber;
+
+                vm.Version = vps.Version; //save true VM veriosn.
 
                 vm.BootFromCD = vmSettings.BootFromCD;
                 vm.NumLockEnabled = vmSettings.NumLockEnabled;
@@ -2530,10 +2506,16 @@ namespace SolidCP.EnterpriseServer
                 /////////////////////////////////////////////
 
                 // dynamic memory
+                #region dynamic memory
                 if (vmSettings.DynamicMemory != null && vmSettings.DynamicMemory.Enabled)
+                {
+                    if (vmSettings.DynamicMemory.Buffer < MINIMUM_DYNAMIC_MEMORY_BUFFER) //minimum is 5.
+                        vmSettings.DynamicMemory.Buffer = MINIMUM_DYNAMIC_MEMORY_BUFFER;
                     vm.DynamicMemory = vmSettings.DynamicMemory;
+                }                    
                 else
                     vm.DynamicMemory = null;
+                #endregion
 
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
@@ -2564,29 +2546,87 @@ namespace SolidCP.EnterpriseServer
                 }
                 #endregion
 
-                // update configuration on virtualization server
-                vm = vs.UpdateVirtualMachine(vm);
+                bool isSuccessChangedWihoutReboot = false;
+                if (!vmSettings.NeedReboot || vps.State != VirtualMachineState.Off)
+                {
+                    isSuccessChangedWihoutReboot = vs.IsTryToUpdateVirtualMachineWithoutRebootSuccess(vm);
+                    TaskManager.Write(String.Format("Is update without reboot was success - {0}.", isSuccessChangedWihoutReboot));
+                }
+
+                bool wasStarted = false;
+                if (!isSuccessChangedWihoutReboot)
+                {
+                    TaskManager.Write(String.Format("Shutting down the server for updating..."));
+                    // stop VPS if required
+                    // stop (shut down) virtual machine
+                    #region stop VM
+                    if (vps.State != VirtualMachineState.Off)
+                    {
+                        wasStarted = true;
+                        ReturnCode code = vs.ShutDownVirtualMachine(vm.VirtualMachineId, true, SHUTDOWN_REASON_CHANGE_CONFIG);
+                        if (code == ReturnCode.OK)
+                        {
+                            // spin until fully stopped
+                            vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                            short timeOut = 60 * 10; //10 min
+                            while (vps.State != VirtualMachineState.Off) //TODO: rewrite
+                            {
+                                timeOut--;
+                                System.Threading.Thread.Sleep(1000); // sleep 1 second
+                                vps = vs.GetVirtualMachine(vm.VirtualMachineId);
+                                if (timeOut == 0)// turnoff
+                                {
+                                    ResultObject turnOffResult = ChangeVirtualMachineState(itemId,
+                                                                    VirtualMachineRequestedState.TurnOff);
+                                    if (!turnOffResult.IsSuccess)
+                                    {
+                                        TaskManager.CompleteResultTask(res);
+                                        return turnOffResult;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // turn off
+                            result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                            if (!JobCompleted(vs, result.Job))
+                            {
+                                LogJobResult(res, result.Job);
+                                TaskManager.CompleteResultTask(res);
+                                return res;
+                            }
+                        }
+                    } // end OFF
+                    #endregion
+
+                    // update configuration on virtualization server
+                    vm = vs.UpdateVirtualMachine(vm);
+                    TaskManager.Write(String.Format("The server configuration has been updated."));
+                }                
 
                 // update meta item
                 PackageController.UpdatePackageItem(vm);
+                TaskManager.Write(String.Format("VM settings have been updated."));
 
                 // unprovision external IP addresses
                 if (!vm.ExternalNetworkEnabled)
                     ServerController.DeleteItemIPAddresses(itemId);
-                else
-                    // send KVP config items
-                    SendNetworkAdapterKVP(itemId, "External");
+                //else //why should we do that??
+                //    // send KVP config items
+                //    SendNetworkAdapterKVP(itemId, "External");
 
                 // unprovision private IP addresses
                 if (!vm.PrivateNetworkEnabled)
                     DataProvider.DeleteItemPrivateIPAddresses(SecurityContext.User.UserId, itemId);
-                else
-                    // send KVP config items
-                    SendNetworkAdapterKVP(itemId, "Private");
+                //else //why should we do that??
+                //    // send KVP config items
+                //    SendNetworkAdapterKVP(itemId, "Private");
 
                 // start if required
-                if (wasStarted)
+                if (wasStarted && !isSuccessChangedWihoutReboot)
                 {
+                    TaskManager.Write(String.Format("Starting the server..."));
                     result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.Start);
                     if (!JobCompleted(vs, result.Job))
                     {
@@ -3413,11 +3453,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "External");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "External");
                             break;
                         }
@@ -3536,11 +3578,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "External");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "External");
                             break;
                         }
@@ -3786,11 +3830,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "Private");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "Private");
                             break;
                         }
@@ -3811,7 +3857,7 @@ namespace SolidCP.EnterpriseServer
 
             TaskManager.CompleteResultTask();
             return res;
-        }
+        }        
 
         private static List<string> CheckPrivateIPAddresses(int packageId, string[] addresses)
         {
@@ -3930,11 +3976,13 @@ namespace SolidCP.EnterpriseServer
                 {
                     case 1:
                         {
+                            TaskManager.Write(String.Format("Used KVP"));
                             SendNetworkAdapterKVP(itemId, "Private");
                             break;
                         }
                     case 2:
                         {
+                            TaskManager.Write(String.Format("Used Inject IP"));
                             InjectIPadresses(itemId, "Private");
                             break;
                         }
@@ -4039,7 +4087,7 @@ namespace SolidCP.EnterpriseServer
 				return ip.Cidr.ToString();
 			}
 		}
-		
+
         private static bool CheckPrivateIPAddress(string subnetMask, string ipAddress)
         {
             var mask = IPAddress.Parse(subnetMask);
@@ -4419,7 +4467,7 @@ namespace SolidCP.EnterpriseServer
             catch (Exception ex)
             {
                 TaskManager.WriteError(ex, VirtualizationErrorCodes.DELETE_ERROR + ":");
-                return;
+                //return;
             }
             finally
             {
@@ -4562,9 +4610,12 @@ namespace SolidCP.EnterpriseServer
             NetworkAdapterDetails nicLan = GetPrivateNetworkAdapterDetails(itemId);
             if (nicLan.IPAddresses != null && nicLan.IPAddresses.GetLength(0) > 0)
             {
+                int i = 0;
                 foreach (NetworkAdapterIPAddress ip in nicLan.IPAddresses)
                 {
                     ipLanAddressesID.Add(ip.AddressId);
+                    privIps[i] = ip.IPAddress;
+                    i++;
                 }
             }
             #endregion
@@ -4823,12 +4874,12 @@ namespace SolidCP.EnterpriseServer
                 return null;
 
             //Wait next Task.
-            int attempts = 20;
+            int attempts = 10;
             while (!String.IsNullOrEmpty(vm.CurrentTaskId)
-                && TaskManager.GetTask(vm.CurrentTaskId) == null)
+                && TaskManager.GetTask(vm.CurrentTaskId) == null
+                && attempts > 0)
             {
-                if (attempts > 0)
-                    Thread.Sleep(5000);
+                Thread.Sleep(5000);
 
                 attempts--;
                 vm = (VirtualMachine)PackageController.GetPackageItem(itemId);

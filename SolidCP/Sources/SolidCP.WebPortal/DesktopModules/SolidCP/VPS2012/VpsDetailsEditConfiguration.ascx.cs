@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -49,6 +49,8 @@ namespace SolidCP.Portal.VPS2012
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
             if (!manageAllowed) //block access for user if they don't have permission.
                 Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), ""));
+
+            secHddQOS.Visible = QOSManag.Visible = PanelSecurity.EffectiveUser.Role != UserRole.User;
 
             if (!IsPostBack)
             {
@@ -212,6 +214,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ReinstallAllowed = chkReinstall.Checked;
                 virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
+                virtualMachine.NeedReboot = chkForceReboot.Checked;
 
                 ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineResource(PanelRequest.ItemID, virtualMachine);
                 //ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,

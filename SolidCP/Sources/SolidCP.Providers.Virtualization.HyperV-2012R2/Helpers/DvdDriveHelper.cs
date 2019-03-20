@@ -74,7 +74,7 @@ namespace SolidCP.Providers.Virtualization
 
             cmd.Parameters.Add("VMName", vmName);
 
-            powerShell.Execute(cmd, true);
+            powerShell.Execute(cmd, true, true);
         }
 
         public static void Remove(PowerShellManager powerShell, string vmName)
@@ -87,7 +87,7 @@ namespace SolidCP.Providers.Virtualization
             cmd.Parameters.Add("ControllerNumber", dvd.ControllerNumber);
             cmd.Parameters.Add("ControllerLocation", dvd.ControllerLocation);
 
-            powerShell.Execute(cmd, true);
+            powerShell.Execute(cmd, true, true);
         }
     }
 }

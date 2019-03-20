@@ -163,5 +163,6 @@ namespace SolidCP.Providers.Virtualization
 
         public int defaultaccessvlan { get; set; }
         public VirtualMachineIPAddress PrimaryIP { get; set; }
+        public bool NeedReboot { get; set; } //give access to force reboot a server.
     }
 }

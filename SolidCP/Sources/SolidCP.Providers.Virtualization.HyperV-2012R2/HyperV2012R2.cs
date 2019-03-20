@@ -214,7 +214,6 @@ namespace SolidCP.Providers.Virtualization
                         if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                         {
                             vm.VirtualHardDrivePath = vm.Disks[0].Path;
-                            //vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G); //TODO: add FileSize in vm class ??? and change in KVP
                             vm.HddSize = Convert.ToInt32(vm.Disks[0].MaxInternalSize / Constants.Size1G);
                             vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
                             vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
@@ -222,6 +221,14 @@ namespace SolidCP.Providers.Virtualization
 
                         // network adapters
                         vm.Adapters = NetworkAdapterHelper.Get(PowerShell, vm.Name);
+                        foreach (VirtualMachineNetworkAdapter adapter in vm.Adapters)
+                        {
+                            if(adapter.Name == Constants.EXTERNAL_NETWORK_ADAPTER_NAME)
+                                vm.ExternalNetworkEnabled = true;
+
+                            if (adapter.Name == Constants.PRIVATE_NETWORK_ADAPTER_NAME)
+                                vm.PrivateNetworkEnabled = true;
+                        }
                     }
 
                     vm.DynamicMemory = MemoryHelper.GetDynamicMemory(PowerShell, vm.Name);
@@ -299,6 +306,35 @@ namespace SolidCP.Providers.Virtualization
             return vmachines;
         }
 
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        {
+            List<VirtualMachineNetworkAdapter> adapters = new List<VirtualMachineNetworkAdapter>();
+            try
+            {
+                Command command = new Command("Get-VMNetworkAdapter");
+                command.Parameters.Add("VMName", vmName);
+                Collection<PSObject> result = PowerShell.Execute(command, true, true);
+
+                foreach (PSObject current in result)
+                {
+                    var adapter = new VirtualMachineNetworkAdapter
+                    {
+                        IPAddresses = current.GetProperty<string[]>("IPAddresses"),
+                        Name = current.GetString("Name"),
+                        MacAddress = current.GetString("MacAddress"),
+                        SwitchName = current.GetString("SwitchName")
+                    };
+                    adapters.Add(adapter);
+                }
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachinesNetwordAdapterSettings", ex);
+                throw;
+            }
+
+            return adapters;
+        }
 
         public List<VirtualMachine> GetVirtualMachines()
         {
@@ -509,6 +545,153 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
+        public bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm)
+        {
+            
+            HostedSolutionLog.LogStart("TryToUpdateVirtualMachineWithoutReboot");
+            HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vm.VirtualMachineId);
+            bool isSuccess = false;
+
+            try //not all Templates support hot chnage values, we get an exception if it doesn't.
+            {
+                var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
+                bool canChangeValueWihoutReboot = false;
+                if (realVm.CpuCores == vm.CpuCores)
+                {
+                    if (realVm.HddSize == vm.HddSize)
+                    {
+                        canChangeValueWihoutReboot = true;                       
+                    }
+                }
+
+                double version = ConvertNullableToDouble(vm.Version);                
+
+                if (version >= 5.0 && canChangeValueWihoutReboot)
+                {
+                    HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
+                    isSuccess = true;
+
+                    bool canNotUpdateForGeneration1 = realVm.DvdDriveInstalled != vm.DvdDriveInstalled //Generation 1 doesnt support those things without reboot
+                        || realVm.ExternalNetworkEnabled != vm.ExternalNetworkEnabled
+                        || realVm.PrivateNetworkEnabled != vm.PrivateNetworkEnabled
+                        || realVm.RamSize != vm.RamSize;
+
+                    if (realVm.Generation != 1)
+                    {
+                        DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
+                        NetworkAdapterHelper.Update(PowerShell, vm);
+                        if (version >= 6.2) 
+                        {
+                            bool canUpdateStaticRAM = vm.DynamicMemory == null
+                            || (realVm.DynamicMemory.Enabled == vm.DynamicMemory.Enabled
+                                && realVm.DynamicMemory.Enabled == false);
+
+                            bool canUpdateDynamicRAM = vm.DynamicMemory != null
+                                && realVm.RamSize == vm.RamSize
+                                && realVm.DynamicMemory.Enabled == vm.DynamicMemory.Enabled
+                                && realVm.DynamicMemory.Enabled == true;
+
+                            if (canUpdateStaticRAM)
+                            {
+                                MemoryHelper.Update(PowerShell, realVm, vm.RamSize, null);
+                            }
+                            else if(canUpdateDynamicRAM)
+                            {
+                                MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
+                            }
+                            else
+                            {
+                                isSuccess = false;
+                            }                            
+                        }
+                        else if (realVm.RamSize != vm.RamSize) //if 5.0 and RAM not equil we can't update without reboot.
+                        {
+                            isSuccess = false;
+                        }
+                        //TODO: SecureBoot, etc????
+                    }
+                    else if (canNotUpdateForGeneration1)
+                    {
+                        isSuccess = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("TryToUpdateVirtualMachineWithoutReboot", ex);
+                isSuccess = false;
+                //throw;
+            }
+
+            HostedSolutionLog.LogEnd("TryToUpdateVirtualMachineWithoutReboot");
+
+            return isSuccess;
+        }
+
+        public JobResult TryToChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
+        {
+            var jobResult = new JobResult();
+
+            short minMinutes = 2, attempts = 3, attempt = 0;
+            bool loop = true;
+
+            for(int i = 0; i < attempts; i++)
+            {
+                bool isExist = false;
+                try
+                {
+                    if (GetVirtualMachineByID(vmId).Count > 0)
+                        isExist = true;
+                }
+                catch { }    
+                finally
+                {
+                    if (!isExist)
+                    {
+                        loop = false;
+                        HostedSolutionLog.LogWarning(string.Format("TryToChangeVirtualMachineState: Oops... The server {0} is not exist. attempt - {1} ", vmId, i));
+                        jobResult.ReturnValue = ReturnCode.OK;
+                    }
+                    else
+                    {
+                        i = attempts;
+                    }
+                }
+                
+                System.Threading.Thread.Sleep(2000);
+            }            
+
+            //fix a possible shutdown problem with VPS. 
+            //(If the VM is in a "busy" state, we get an exception when try to turn it off. The maximum "busy" state is ~10 minutes)
+            //If somebody knows how we can check a busy state without an exception please tell me.
+            while (loop)
+            {
+                try
+                {
+                    jobResult = ChangeVirtualMachineState(vmId, newState);
+                    System.Threading.Thread.Sleep(1000);
+                    loop = false;
+                }
+                catch
+                {
+                    attempt++;
+                    if (attempts >= attempt)
+                    {
+                        System.Threading.Thread.Sleep(60000 * minMinutes * attempt);
+                        HostedSolutionLog.LogWarning(string.Format("TryToChangeVirtualMachineState: Oops... I'll try it again. attempt - {0} ", attempt));
+                    }
+                    else
+                    {
+                        HostedSolutionLog.LogWarning(string.Format("TryToChangeVirtualMachineState: Oops... I can't turn off the server. Attempts were - {0} ", attempt));
+                        loop = false;
+                        jobResult.ReturnValue = ReturnCode.Timeout;
+                    }                        
+                }
+            }
+
+            return jobResult;
+        }
+
         public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
         {
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
@@ -518,7 +701,7 @@ namespace SolidCP.Providers.Virtualization
 
             bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused); 
 
-            if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server have problem.
+            if (newState == VirtualMachineRequestedState.ShutDown && !isServerStatusOK)//don't waste our time if we know that server has a problem.
                 newState = VirtualMachineRequestedState.TurnOff;
 
             string cmdTxt;
@@ -596,7 +779,7 @@ namespace SolidCP.Providers.Virtualization
                     {
                         cmd = new Command(cmdTxt);
                         paramList.ForEach(p => cmd.Parameters.Add(p));
-                        PowerShell.Execute(cmd, true);
+                        PowerShell.Execute(cmd, true, true);
 
                         if (startVM)
                             ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Start);
@@ -1825,7 +2008,7 @@ namespace SolidCP.Providers.Virtualization
                     if (vps.State == VirtualMachineState.Paused)
                         state = VirtualMachineRequestedState.Resume;
 
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state);
+                    result = TryToChangeVirtualMachineState(vm.VirtualMachineId, state);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1860,7 +2043,7 @@ namespace SolidCP.Providers.Virtualization
 
                     // turn off
                     VirtualMachineRequestedState state = VirtualMachineRequestedState.TurnOff;
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state);
+                    result = TryToChangeVirtualMachineState(vm.VirtualMachineId, state);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1905,7 +2088,7 @@ namespace SolidCP.Providers.Virtualization
                 #region Turn off (if required)
                 if (vps.State != VirtualMachineState.Off)
                 {
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                    result = TryToChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
                     {

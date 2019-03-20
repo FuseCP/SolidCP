@@ -540,4 +540,7 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="locMaintenanceModeText.Text" xml:space="preserve">
     <value>If the maintenance mode is enabled, you disable the installation or reinstallation of the servers for clients.</value>
   </data>
+  <data name="valTemplateGeneration.ErrorMessage" xml:space="preserve">
+    <value>Choose OS template Generation</value>
+  </data>
 </root>

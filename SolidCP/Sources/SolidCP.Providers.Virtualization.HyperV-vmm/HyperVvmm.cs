@@ -227,6 +227,11 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<VirtualMachine> GetVirtualMachines()
         {
             HostedSolutionLog.LogStart("GetVirtualMachines");
@@ -445,6 +450,11 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogEnd("UpdateVirtualMachine");
            
             return vm;
+        }
+
+        public bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm)
+        {
+            return false;
         }
 
         public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)

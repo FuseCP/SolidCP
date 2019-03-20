@@ -52,6 +52,7 @@ namespace SolidCP.Providers.Virtualization
         JobResult ExportVirtualMachine(string vmId, string exportPath);
         JobResult DeleteVirtualMachine(string vmId);
         JobResult DeleteVirtualMachineExtended(string vmId);
+        bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm);
 
         // Snapshots
         List<VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId);
@@ -73,6 +74,7 @@ namespace SolidCP.Providers.Virtualization
         ReturnCode DeleteSwitch(string switchId);
 
         // IP operations
+        List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName);
         JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration);
 
         // DVD operations

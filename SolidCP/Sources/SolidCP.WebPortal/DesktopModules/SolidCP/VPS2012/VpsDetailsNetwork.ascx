@@ -31,13 +31,11 @@
                         TargetControlID="RealNetworkPanel" meta:resourcekey="secRealNetwork" Text="Virtual Machine Networks details">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="RealNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">    
-                        <div class="form-group">
-                                <div class="col-sm-20 form-inline">
-                                    <asp:Button ID="btnRestoreExternalAddress" runat="server" meta:resourcekey="btnRestoreExternalAddress"
-                                            Text="Restore External IPs" CssClass="btn btn-primary" onclick="btnRestoreExternalAddress_Click" />
-                                    <asp:Button ID="btnRestorePrivateAddress" runat="server" meta:resourcekey="btnRestorePrivateAddress"
-                                            Text="Restore Private IPs" CssClass="btn btn-primary" onclick="btnRestorePrivateByInject_Click" />
-                                </div>
+                        <div style="margin-top: 4px; margin-bottom: 10px;">                                
+                            <asp:Button ID="btnRestoreExternalAddress" runat="server" meta:resourcekey="btnRestoreExternalAddress"
+                                    Text="Restore External IPs" CssClass="btn btn-primary" onclick="btnRestoreExternalAddress_Click" />
+                            <asp:Button ID="btnRestorePrivateAddress" runat="server" meta:resourcekey="btnRestorePrivateAddress"
+                                    Text="Restore Private IPs" CssClass="btn btn-primary" onclick="btnRestorePrivateByInject_Click" />                                
                         </div>
                         <asp:Repeater ID="repVMNetwork" runat="server">
                             <ItemTemplate>
@@ -119,15 +117,15 @@
 				        
 				        <div style="margin-top: 4px;">
 				            <asp:Button ID="btnAddExternalAddress" runat="server" meta:resourcekey="btnAddExternalAddress"
-                                Text="Add" CssClass="SmallButton" onclick="btnAddExternalAddress_Click" />
+                                Text="Add" CssClass="btn btn-primary" onclick="btnAddExternalAddress_Click" />
 				            <asp:Button id="btnSetPrimaryExternal" runat="server" Text="Set As Primary"
-				                meta:resourcekey="btnSetPrimaryExternal" CssClass="SmallButton" 
+				                meta:resourcekey="btnSetPrimaryExternal" CssClass="btn btn-success" 
                                 CausesValidation="false" onclick="btnSetPrimaryExternal_Click"></asp:Button>
 				            <asp:Button id="btnDeleteExternal" runat="server" Text="Delete Selected"
-				                meta:resourcekey="btnDeleteExternal" CssClass="SmallButton" CausesValidation="false" 
+				                meta:resourcekey="btnDeleteExternal" CssClass="btn btn-danger" CausesValidation="false" 
                                 onclick="btnDeleteExternal_Click"></asp:Button>
                             <asp:Button id="btnDeleteExternalByInject" runat="server" Text="Delete Selected By Inject"
-				                meta:resourcekey="btnDeleteExternalByInject" CssClass="SmallButton" CausesValidation="false" 
+				                meta:resourcekey="btnDeleteExternalByInject" CssClass="btn btn-danger" CausesValidation="false" 
                                 onclick="btnDeleteExternalByInject_Click"></asp:Button>
                         </div>
 
@@ -207,7 +205,7 @@
 				                    meta:resourcekey="btnDeletePrivate" CssClass="btn btn-danger" CausesValidation="false" 
                                     onclick="btnDeletePrivate_Click"></asp:Button>
                                 <asp:Button id="btnDeletePrivateByInject" runat="server" Text="Delete Selected By Inject"
-				                    meta:resourcekey="btnDeletePrivateByInject" CssClass="SmallButton" CausesValidation="false" 
+				                    meta:resourcekey="btnDeletePrivateByInject" CssClass="btn btn-danger" CausesValidation="false" 
                                     onclick="btnDeletePrivateByInject_Click"></asp:Button>
                             </div>
                             

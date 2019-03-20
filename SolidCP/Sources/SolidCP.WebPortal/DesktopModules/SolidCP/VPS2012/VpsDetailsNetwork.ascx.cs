@@ -82,11 +82,12 @@ namespace SolidCP.Portal.VPS2012
 
         private void BindRealAssignedAddresses()
         {
-            VirtualMachine itemVM = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
-            VirtualMachine _vm = null;
+            //VirtualMachine itemVM = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
+            //VirtualMachine _vm = null;
+            VirtualMachineNetworkAdapter[] virtualMachineNetworkAdapters = null;
             try
             {
-                _vm = ES.Services.VPS2012.GetVirtualMachineExtendedInfo(itemVM.ServiceId, itemVM.VirtualMachineId);
+                virtualMachineNetworkAdapters = ES.Services.VPS2012.GetVirtualMachinesNetwordAdapterSettings(PanelRequest.ItemID);
             }
             catch (Exception ex)
             {
@@ -95,10 +96,10 @@ namespace SolidCP.Portal.VPS2012
 
             try
             {
-                repVMNetwork.DataSource = _vm.Adapters;//new VirtualMachineNetworkAdapter[vm.Adapters.Length];
+                repVMNetwork.DataSource = virtualMachineNetworkAdapters;//new VirtualMachineNetworkAdapter[vm.Adapters.Length];
                 repVMNetwork.DataBind();
-                BindGridViewOfVmIPs(_vm.Adapters);
-                CheckIfPossibleToDoIpInjection(_vm.Adapters);
+                BindGridViewOfVmIPs(virtualMachineNetworkAdapters);
+                CheckIfPossibleToDoIpInjection(virtualMachineNetworkAdapters);
             }
             catch (Exception ex) //TODO: replace by messageBox ????
             {
@@ -403,12 +404,11 @@ namespace SolidCP.Portal.VPS2012
 
             try
             {
-                ResultObject res = null; ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
+                ResultObject res = null;
                 if(byNewMethod)
                     res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddressesByInjection(PanelRequest.ItemID, addressIds);
                 else
                     res = ES.Services.VPS2012.DeleteVirtualMachineExternalIPAddresses(PanelRequest.ItemID, addressIds);
-
 
                 if (res.IsSuccess)
                 {

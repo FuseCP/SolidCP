@@ -384,6 +384,14 @@ namespace SolidCP.Portal.ProviderControls
             return str;
         }
 
+        protected bool IsLegacyAdapterSupport(object val)
+        {
+            bool support = true;
+            if (val != null && Utils.ParseInt(val, 0) > 1)
+                support = false;
+            return support;
+        }
+
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
@@ -482,12 +490,16 @@ namespace SolidCP.Portal.ProviderControls
                 int.TryParse(GetTextBoxText(item, "txtProcessVolume"), out processVolume);
                 template.ProcessVolume = processVolume;
                 template.Generation = GetDropDownListSelectedIndex(item, "ddlTemplateGeneration");
+                template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
 
                 if (template.Generation != 1)
+                {
                     template.EnableSecureBoot = GetCheckBoxValue(item, "chkEnableSecureBoot");
+                    template.LegacyNetworkAdapter = false; //Generation 2 does not support legacy adapter!
+                }                    
                 else
                     template.EnableSecureBoot = false;
-                template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
+                
                 template.RemoteDesktop = true; // obsolete
                 template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");
                 template.ProvisionAdministratorPassword = GetCheckBoxValue(item, "chkCanSetAdminPass");
@@ -541,11 +553,12 @@ namespace SolidCP.Portal.ProviderControls
                 catch
                 {
                     VhdBlockSizeBytes = 0;
-                }
-
-                if (VhdBlockSizeBytes != 0 && VhdBlockSizeBytes < Utils.MinBlockSizeBytes)
-                    VhdBlockSizeBytes = Utils.MinBlockSizeBytes;
+                }                
             }
+
+            if (VhdBlockSizeBytes != 0 && VhdBlockSizeBytes < Utils.MinBlockSizeBytes)
+                VhdBlockSizeBytes = Utils.MinBlockSizeBytes;
+
             return VhdBlockSizeBytes;
         }
         
@@ -620,6 +633,11 @@ namespace SolidCP.Portal.ProviderControls
         {
             repDvdLibrary.DataSource = dvds;
             repDvdLibrary.DataBind();
+        }
+
+        protected void chkGetSwitchesByPS_CheckedChanged(object sender, EventArgs e)
+        {
+            BindNetworksList();
         }
     }
 }
