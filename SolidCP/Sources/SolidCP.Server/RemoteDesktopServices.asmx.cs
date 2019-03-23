@@ -777,7 +777,8 @@ namespace SolidCP.Server
             catch (Exception ex)
             {
                 Log.WriteError(String.Format("'{0}' GetServerIp for '{1}'", ProviderSettings.ProviderName, hostName), ex);
-                throw;
+                //throw;
+                return "Unable to connect";
             }
         }
     }
