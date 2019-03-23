@@ -41,6 +41,10 @@ Version 1.4.3
 - Fix for Overusage Report
 - FileZilla fix to set FileAppend when creating/modifying accounts. NOTE: Filezilla Server needs to support FileAppend which does work on versions 0.9.45 or greater - Jose Ribeiro
 
+KNOWN Issues:
+
+RDS 2019: Remote Applications tab broken due to RemoteServer powershell module issue https://github.com/PowerShell/xRemoteDesktopSessionHost/issues/56
+
 Version 1.4.2
 Thank you to all contributors on this release with a special thanks to Genadij Judin and Frans Rampen on large contributions in this release.
 - Hosted Organization fix for asp.net v2.0 module.
