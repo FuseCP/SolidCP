@@ -20725,3 +20725,43 @@ BEGIN
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'Hosted SharePoint 2019'
 END
 GO
+
+-- RDS
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'CheckRDSServer')
+DROP PROCEDURE CheckRDSServer
+GO
+
+CREATE PROCEDURE [dbo].[CheckRDSServer]
+(
+	@ServerFQDN nvarchar(100),
+	@Result int OUTPUT
+)
+AS
+
+/*
+@Result values:
+	0 - OK
+	-1 - already exists
+*/
+
+SET @Result = 0 -- OK
+
+-- check if the domain already exists
+IF EXISTS(
+SELECT FqdName FROM RDSServers
+WHERE FqdName = @ServerFQDN
+)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+RETURN
+
+
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO

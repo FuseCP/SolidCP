@@ -1310,9 +1310,16 @@ namespace SolidCP.EnterpriseServer
         {
             var result = TaskManager.StartResultTask<ResultObject>("REMOTE_DESKTOP_SERVICES", "ADD_RDS_SERVER");
 
+            // check if the domain already exists
+            int checkResult = DataProvider.CheckRDSServer(rdsServer.FqdName);
+
+            if (checkResult < 0)
+            {
+                throw TaskManager.WriteError(new Exception(string.Format("RDSH {0} already exists in SolidCP", rdsServer.FqdName)));
+            }
+
             try
             {
-                
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(Convert.ToInt32(rdsControllerServiceID));
 

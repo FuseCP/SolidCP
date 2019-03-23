@@ -41,6 +41,7 @@ Version 1.4.3
 - Fix for Overusage Report
 - FileZilla fix to set FileAppend when creating/modifying accounts. NOTE: Filezilla Server needs to support FileAppend which does work on versions 0.9.45 or greater - Jose Ribeiro
 - (RDS) When RDSH is unavailable it will no longer throw a error on RDS Servers page but show as "Unable to connect" under IP Address
+- (RDS) Duplicate RDS server checks
 
 KNOWN Issues:
 
