@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching Application Block", "Caching Application Block", "{C8E6F2E4-A5B8-486A-A56E-92D864524682}"
 	ProjectSection(SolutionItems) = preProject
@@ -235,8 +235,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualiz
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDesktopServices.Windows2016", "SolidCP.Providers.TerminalServices.Windows2016\SolidCP.Providers.RemoteDesktopServices.Windows2016.csproj", "{0A3E9C71-8046-4154-858D-52D350354B2B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{411EFA7F-DE87-4D37-BD15-95787CF77411} = {411EFA7F-DE87-4D37-BD15-95787CF77411}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDesktopServices.Windows2019", "SolidCP.Providers.TerminalServices.Windows2019\SolidCP.Providers.RemoteDesktopServices.Windows2019.csproj", "{6654341F-B39E-4BF4-BB09-D932EF5BFE9B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{411EFA7F-DE87-4D37-BD15-95787CF77411} = {411EFA7F-DE87-4D37-BD15-95787CF77411}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.SimpleDNS80", "SolidCP.Providers.DNS.SimpleDNS80\SolidCP.Providers.DNS.SimpleDNS80.csproj", "{6ABF020A-1BC1-4833-A5B4-017A23428AC5}"
 EndProject

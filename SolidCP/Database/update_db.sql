@@ -16866,7 +16866,7 @@ UPDATE Providers SET ProviderType = N'SolidCP.Providers.HostedSolution.Lync2013H
 Go
 UPDATE Providers SET ProviderType = N'SolidCP.Providers.RemoteDesktopServices.Windows2012,SolidCP.Providers.RemoteDesktopServices.Windows2012' WHERE ProviderID = 1501
 Go
-UPDATE Providers SET ProviderType = N'SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent' WHERE ProviderID = 1503
+UPDATE Providers SET ProviderType = N'SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent' WHERE ProviderName = 'HostedSharePoint2013Ent'
 Go
 UPDATE ServiceItemTypes SET TypeName = N'SolidCP.Providers.OS.HomeFolder, SolidCP.Providers.Base' WHERE ItemTypeID = 2
 GO
