@@ -166,15 +166,6 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequireHddValidator;
         
         /// <summary>
-        /// hiddenTxtValHdd control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hiddenTxtValHdd;
-        
-        /// <summary>
         /// locGB control.
         /// </summary>
         /// <remarks>
@@ -182,6 +173,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locGB;
+        
+        /// <summary>
+        /// hiddenTxtValHdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hiddenTxtValHdd;
         
         /// <summary>
         /// chkIgnoreHddWarning control.
@@ -325,7 +325,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locSnapshots;
+        protected global::System.Web.UI.WebControls.Label locSnapshots;
         
         /// <summary>
         /// txtSnapshots control.
