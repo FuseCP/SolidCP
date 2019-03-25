@@ -5494,6 +5494,19 @@ namespace SolidCP.EnterpriseServer
 
         #region RDS
 
+        public static int CheckRDSServer(string ServerFQDN)
+        {
+            SqlParameter prmId = new SqlParameter("@Result", SqlDbType.Int);
+            prmId.Direction = ParameterDirection.Output;
+
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "CheckRDSServer",
+                prmId,
+                new SqlParameter("@ServerFQDN", ServerFQDN));
+
+            return Convert.ToInt32(prmId.Value);
+        }
+
         public static IDataReader GetRdsServerSettings(int serverId, string settingsName)
         {
             return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,

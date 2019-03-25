@@ -286,17 +286,23 @@ namespace SolidCP.EnterpriseServer
         {
             int serviceId = RemoteDesktopServicesHelpers.GetRemoteDesktopControllerServiceIDbyFQDN(server.FqdName);
             var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(serviceId);
-            var serverIp = rds.GetServerIp(server.FqdName);
 
-            //var serverIp = GetServerIp(server.FqdName);
-
-            if (serverIp != null)
+            try
             {
-                server.Address = serverIp.ToString();
+                var serverIp = rds.GetServerIp(server.FqdName);
+                if (serverIp != null)
+                {
+                    server.Address = serverIp.ToString();
+                }
+                else
+                {
+                    server.Address = "";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                server.Address = "";
+                server.Address = "RDSGW Unavailable";
+                return server;
             }
 
             return server;

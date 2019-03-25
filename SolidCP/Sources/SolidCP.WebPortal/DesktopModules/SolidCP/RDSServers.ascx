@@ -84,9 +84,10 @@
                         <asp:LinkButton OnClientClick="ShowProgressDialog('Loading ...');return true;" CommandName="EditServer" CommandArgument='<%# Eval("Id")%>' ID="lbEditServer" runat="server" Text='<%#Eval("Name") %>'/>                    
                     </ItemTemplate>                    
                 </asp:TemplateField>
-		        <asp:BoundField DataField="Address" HeaderText="IP Address"><ItemStyle  Width="10%"/></asp:BoundField>
-                <asp:BoundField DataField="ItemName" HeaderText="Organization"><ItemStyle  Width="20%"/></asp:BoundField>
+		        <asp:BoundField DataField="Address" HeaderText="IP Address"><ItemStyle  Width="15%"/></asp:BoundField>
+                <asp:BoundField DataField="ItemName" HeaderText="Organization"><ItemStyle  Width="15%"/></asp:BoundField>
                 <asp:BoundField DataField="ControllerName" HeaderText="Controller"><ItemStyle  Width="15%"/></asp:BoundField>
+                <asp:BoundField DataField="RDSCollectionName" HeaderText="Collection"><ItemStyle  Width="15%"/></asp:BoundField>
                 <asp:TemplateField meta:resourcekey="gvPopupStatus">
                     <ItemStyle Width="15%" HorizontalAlign="Left" />
                     <ItemTemplate>

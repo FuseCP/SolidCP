@@ -16866,7 +16866,7 @@ UPDATE Providers SET ProviderType = N'SolidCP.Providers.HostedSolution.Lync2013H
 Go
 UPDATE Providers SET ProviderType = N'SolidCP.Providers.RemoteDesktopServices.Windows2012,SolidCP.Providers.RemoteDesktopServices.Windows2012' WHERE ProviderID = 1501
 Go
-UPDATE Providers SET ProviderType = N'SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent' WHERE ProviderID = 1503
+UPDATE Providers SET ProviderType = N'SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent' WHERE ProviderName = 'HostedSharePoint2013Ent'
 Go
 UPDATE ServiceItemTypes SET TypeName = N'SolidCP.Providers.OS.HomeFolder, SolidCP.Providers.Base' WHERE ItemTypeID = 2
 GO
@@ -20724,4 +20724,158 @@ ELSE
 BEGIN
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'Hosted SharePoint 2019'
 END
+GO
+
+-- RDS
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'CheckRDSServer')
+DROP PROCEDURE CheckRDSServer
+GO
+
+CREATE PROCEDURE [dbo].[CheckRDSServer]
+(
+	@ServerFQDN nvarchar(100),
+	@Result int OUTPUT
+)
+AS
+
+/*
+@Result values:
+	0 - OK
+	-1 - already exists
+*/
+
+SET @Result = 0 -- OK
+
+-- check if the domain already exists
+IF EXISTS(
+SELECT FqdName FROM RDSServers
+WHERE FqdName = @ServerFQDN
+)
+BEGIN
+	SET @Result = -1
+	RETURN
+END
+
+RETURN
+
+
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetRDSServerById')
+DROP PROCEDURE GetRDSServerById
+GO
+
+
+CREATE PROCEDURE [dbo].[GetRDSServerById]
+(
+	@ID INT
+)
+AS
+SELECT TOP 1
+	RS.Id,
+	RS.ItemID,
+	RS.Name, 
+	RS.FqdName,
+	RS.Description,
+	RS.RdsCollectionId,
+	RS.ConnectionEnabled,
+	SI.ItemName,
+	RC.Name AS "CollectionName"
+	FROM RDSServers AS RS
+	LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = RS.ItemId
+	LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = RdsCollectionId
+	WHERE RS.Id = @Id
+	
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetRDSServersPaged')
+DROP PROCEDURE GetRDSServersPaged
+GO
+
+CREATE PROCEDURE [dbo].[GetRDSServersPaged]
+(
+	@FilterColumn nvarchar(50) = '',
+	@FilterValue nvarchar(50) = '',
+	@ItemID int,
+	@IgnoreItemId bit,
+	@RdsCollectionId int,
+	@IgnoreRdsCollectionId bit,
+	@SortColumn nvarchar(50),
+	@StartRow int,
+	@MaximumRows int,
+	@Controller int,
+	@ControllerName nvarchar(50) = ''
+)
+AS
+-- build query and run it to the temporary table
+DECLARE @sql nvarchar(2000)
+
+SET @sql = '
+
+DECLARE @EndRow int
+SET @EndRow = @StartRow + @MaximumRows
+
+DECLARE @RDSServer TABLE
+(
+	ItemPosition int IDENTITY(0,1),
+	RDSServerId int
+)
+INSERT INTO @RDSServer (RDSServerId)
+SELECT
+	S.ID
+FROM RDSServers AS S
+WHERE 
+	((((@ItemID is Null AND S.ItemID is null ) or (@IgnoreItemId = 1 ))
+		or (@ItemID is not Null AND S.ItemID = @ItemID ))
+	and
+	(((@RdsCollectionId is Null AND S.RDSCollectionId is null) or @IgnoreRdsCollectionId = 1)
+		or (@RdsCollectionId is not Null AND S.RDSCollectionId = @RdsCollectionId)))'
+
+IF @FilterColumn <> '' AND @FilterValue <> ''
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+
+IF @Controller <> ''
+SET @sql = @sql + ' AND Controller = @Controller '
+
+IF @SortColumn <> '' AND @SortColumn IS NOT NULL
+SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
+
+SET @sql = @sql + ' SELECT COUNT(RDSServerId) FROM @RDSServer;
+SELECT
+	ST.ID,
+	ST.ItemID,
+	ST.Name, 
+	ST.FqdName,
+	ST.Description,
+	ST.RdsCollectionId,
+	SI.ItemName,
+	ST.ConnectionEnabled,
+	ST.Controller,
+	SE.ServiceName as ControllerName,
+	RC.Name as CollectionName
+FROM @RDSServer AS S
+INNER JOIN RDSServers AS ST ON S.RDSServerId = ST.ID
+LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = ST.ItemId
+LEFT OUTER JOIN  Services AS SE ON SE.ServiceID = ST.Controller
+LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = ST.RdsCollectionId
+WHERE S.ItemPosition BETWEEN @StartRow AND @EndRow'
+
+exec sp_executesql @sql, N'@StartRow int, @MaximumRows int,  @FilterValue nvarchar(50),  @ItemID int, @RdsCollectionId int, @IgnoreItemId bit, @IgnoreRdsCollectionId bit, @Controller int, @ControllerName nvarchar(50)',
+@StartRow, @MaximumRows,  @FilterValue,  @ItemID, @RdsCollectionId, @IgnoreItemId , @IgnoreRdsCollectionId, @Controller, @ControllerName
+
+RETURN
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
 GO
