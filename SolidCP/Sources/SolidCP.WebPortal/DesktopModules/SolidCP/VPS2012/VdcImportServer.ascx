@@ -142,33 +142,40 @@
                         <scp:CollapsiblePanel id="secBios" runat="server"
                             TargetControlID="BiosPanel" meta:resourcekey="secBios" Text="BIOS">
                         </scp:CollapsiblePanel>
-                        <asp:Panel ID="BiosPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table cellpadding="4" width="100%">
-                                <tr>
-                                    <td style="width:30%;">
-                                        <scp:CheckBoxOption id="BootFromCd" runat="server" Value="False" />
-                                        <asp:Localize ID="locBootFromCd" runat="server" meta:resourcekey="locBootFromCd"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <scp:CheckBoxOption id="NumLockEnabled" runat="server" Value="False" />
-                                        <asp:Localize ID="locNumLockEnabled" runat="server" meta:resourcekey="locNumLockEnabled"></asp:Localize>
-                                    </td>
-                                </tr>
-                            </table>
+                        <asp:Panel ID="BiosPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;width:450px;">                            
+                            <div class="form-group">
+                                <div id="divBootFromCdChkOption" runat="server" class="col-sm-6">
+                                    <scp:CheckBoxOption id="BootFromCd" runat="server" Value="False" />
+                                    <asp:Localize ID="locBootFromCd" runat="server" meta:resourcekey="locBootFromCd"></asp:Localize>
+                                </div>
+                                <div id="divNumLockChkOption" runat="server" class="col-sm-6">
+                                    <scp:CheckBoxOption id="NumLockEnabled" runat="server" Value="False" />
+                                    <asp:Localize ID="locNumLockEnabled" runat="server" meta:resourcekey="locNumLockEnabled"></asp:Localize>
+                                </div>
+
+                                <div id="divBootFromCdChkBox" runat="server" class="col-sm-6">
+                                    <asp:CheckBox ID="chkBootFromCd" runat="server" Text="Boot from CD" meta:resourcekey="chkBootFromCd" />
+                                </div>
+                                <div id="divNumLockChkBox" runat="server" class="col-sm-6">
+                                    <asp:CheckBox ID="chkNumLock" runat="server" Text="Num Lock enabled" meta:resourcekey="chkNumLock" />
+                                </div>
+                            </div>
                         </asp:Panel>
                         
                         <scp:CollapsiblePanel id="secDvd" runat="server"
                             TargetControlID="DvdPanel" meta:resourcekey="secDvd" Text="DVD">
                         </scp:CollapsiblePanel>
                         <asp:Panel ID="DvdPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table cellpadding="4">
-                                <tr>
-                                    <td>
-                                        <scp:CheckBoxOption id="DvdInstalled" runat="server" Value="False" />
+                            <div class="form-group">
+                                <div id="divDvdInstalledChkOption" runat="server" class="col-sm-12 form-inline">
+                                    <scp:CheckBoxOption id="DvdInstalled" runat="server" Value="False" />
                                         <asp:Localize ID="locDvdInstalled" runat="server" meta:resourcekey="locDvdInstalled"></asp:Localize>
-                                    </td>
-                                </tr>
-                            </table>
+                                </div>
+                                <div id="divDvdInstalledChkBox" runat="server" class="col-sm-12 form-inline">
+                                    <asp:CheckBox ID="chkDvdInstalled" runat="server" Checked="False"
+                                        Text="DVD drive installed" meta:resourcekey="chkDvdInstalled" />
+                                </div>
+                            </div>
                         </asp:Panel>
                         
                         <scp:CollapsiblePanel id="secAllowedActions" runat="server"
@@ -262,6 +269,11 @@
                             </table>
                         </asp:Panel>
                     </asp:Panel>
+
+                    <p>
+                        <asp:CheckBox ID="chkIgnoreCheckes" runat="server" CssClass="NormalBold"
+				                    meta:resourcekey="chkIgnoreCheckes" Text="Ignore Quotas checkes" />
+                    </p>
                     
                     <div class="text-right">
                         <CPCC:StyleButton id="btnCancel" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClick="btnCancel_Click"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancel"/> </CPCC:StyleButton>&nbsp;

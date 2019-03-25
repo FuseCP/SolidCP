@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -140,9 +140,10 @@ namespace SolidCP.Portal.VPS2012
                     this.BindSettingsControls(vm);
 
                     // other settings
-                    NumLockEnabled.Value = vm.NumLockEnabled;
-                    BootFromCd.Value = vm.BootFromCD;
-                    DvdInstalled.Value = vm.DvdDriveInstalled;
+                    NumLockEnabled.Value = chkNumLock.Checked = vm.NumLockEnabled;
+                    BootFromCd.Value = chkBootFromCd.Checked = vm.BootFromCD;
+                    DvdInstalled.Value = chkDvdInstalled.Checked = vm.DvdDriveInstalled;
+                    ShowCheckBoxes(false);
 
                     // network adapters
                     ExternalAdapters.DataSource = vm.Adapters;
@@ -154,6 +155,16 @@ namespace SolidCP.Portal.VPS2012
                     ManagementAdapters.Items.Insert(0, new ListItem(GetLocalizedString("SelectNetworkAdapter.Text"), ""));
                 }
             }
+        }
+
+        private void ShowCheckBoxes(bool showCheckBox)
+        {
+            divBootFromCdChkOption.Visible = 
+                divNumLockChkOption.Visible = 
+                divDvdInstalledChkOption.Visible = !showCheckBox;
+            divBootFromCdChkBox.Visible = 
+                divNumLockChkBox.Visible = 
+                divDvdInstalledChkBox.Visible = showCheckBox;
         }
 
         private void BindExternalAddresses()
@@ -225,9 +236,11 @@ namespace SolidCP.Portal.VPS2012
                     Utils.ParseInt(HyperVServices.SelectedValue),
                     VirtualMachines.SelectedValue,
                     OsTemplates.SelectedValue, adminPassword.Text,
+                    chkBootFromCd.Checked, chkDvdInstalled.Checked,
                     AllowStartShutdown.Checked, AllowPause.Checked, AllowReboot.Checked, AllowReset.Checked, AllowReinstall.Checked,
                     ExternalAdapters.SelectedValue, extIps.ToArray(),
-                    ManagementAdapters.SelectedValue, manIp);
+                    ManagementAdapters.SelectedValue, manIp,
+                    chkIgnoreCheckes.Checked);
 
                 if (res.IsSuccess)
                 {
@@ -237,6 +250,7 @@ namespace SolidCP.Portal.VPS2012
                 else
                 {
                     messageBox.ShowMessage(res, "VPS_ERROR_IMPORT", "VPS");
+                    ShowCheckBoxes(true);
                 }
             }
             catch (Exception ex)

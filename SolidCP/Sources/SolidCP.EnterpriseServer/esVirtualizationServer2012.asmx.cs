@@ -224,16 +224,20 @@ namespace SolidCP.EnterpriseServer
         public IntResult ImportVirtualMachine(int packageId,
             int serviceId, string vmId,
             string osTemplateFile, string adminPassword,
+            bool IsBootFromCd, bool IsDvdInstalled,
             bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
             string externalNicMacAddress, int[] externalAddresses,
-            string managementNicMacAddress, int managementAddress)
+            string managementNicMacAddress, int managementAddress,
+            bool ignoreChecks)
         {
             return VirtualizationServerController2012.ImportVirtualMachine(packageId,
                 serviceId, vmId,
                 osTemplateFile, adminPassword,
+                IsBootFromCd, IsDvdInstalled,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNicMacAddress, externalAddresses,
-                managementNicMacAddress, managementAddress);
+                managementNicMacAddress, managementAddress,
+                ignoreChecks);
         }
         #endregion
 

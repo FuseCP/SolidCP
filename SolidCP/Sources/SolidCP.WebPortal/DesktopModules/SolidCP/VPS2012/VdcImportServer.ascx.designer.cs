@@ -328,6 +328,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Panel BiosPanel;
         
         /// <summary>
+        /// divBootFromCdChkOption control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divBootFromCdChkOption;
+        
+        /// <summary>
         /// BootFromCd control.
         /// </summary>
         /// <remarks>
@@ -344,6 +353,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locBootFromCd;
+        
+        /// <summary>
+        /// divNumLockChkOption control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNumLockChkOption;
         
         /// <summary>
         /// NumLockEnabled control.
@@ -364,6 +382,42 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Localize locNumLockEnabled;
         
         /// <summary>
+        /// divBootFromCdChkBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divBootFromCdChkBox;
+        
+        /// <summary>
+        /// chkBootFromCd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkBootFromCd;
+        
+        /// <summary>
+        /// divNumLockChkBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNumLockChkBox;
+        
+        /// <summary>
+        /// chkNumLock control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkNumLock;
+        
+        /// <summary>
         /// secDvd control.
         /// </summary>
         /// <remarks>
@@ -382,6 +436,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Panel DvdPanel;
         
         /// <summary>
+        /// divDvdInstalledChkOption control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDvdInstalledChkOption;
+        
+        /// <summary>
         /// DvdInstalled control.
         /// </summary>
         /// <remarks>
@@ -398,6 +461,24 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locDvdInstalled;
+        
+        /// <summary>
+        /// divDvdInstalledChkBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divDvdInstalledChkBox;
+        
+        /// <summary>
+        /// chkDvdInstalled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkDvdInstalled;
         
         /// <summary>
         /// secAllowedActions control.
@@ -605,6 +686,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredManagementAddresses;
+        
+        /// <summary>
+        /// chkIgnoreCheckes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIgnoreCheckes;
         
         /// <summary>
         /// btnCancel control.
