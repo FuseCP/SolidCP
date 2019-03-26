@@ -46,7 +46,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locHyperVService;
+        protected global::System.Web.UI.WebControls.Label locHyperVService;
         
         /// <summary>
         /// HyperVServices control.
@@ -73,7 +73,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow VMsRow;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl VMsRow;
         
         /// <summary>
         /// locVirtualMachine control.
@@ -82,7 +82,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locVirtualMachine;
+        protected global::System.Web.UI.WebControls.Label locVirtualMachine;
         
         /// <summary>
         /// VirtualMachines control.
@@ -127,7 +127,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locOsTemplate;
+        protected global::System.Web.UI.WebControls.Label locOsTemplate;
         
         /// <summary>
         /// OsTemplates control.
@@ -163,7 +163,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow AdminPasswordPanel;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl AdminPasswordPanel;
         
         /// <summary>
         /// locAdminPassword control.
@@ -172,7 +172,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locAdminPassword;
+        protected global::System.Web.UI.WebControls.Label locAdminPassword;
         
         /// <summary>
         /// adminPassword control.
@@ -235,7 +235,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locCPU;
+        protected global::System.Web.UI.WebControls.Label locCPU;
         
         /// <summary>
         /// CpuCores control.
@@ -253,7 +253,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locRAM;
+        protected global::System.Web.UI.WebControls.Label locRAM;
         
         /// <summary>
         /// RamSize control.
@@ -271,7 +271,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locHDD;
+        protected global::System.Web.UI.WebControls.Label locHDD;
         
         /// <summary>
         /// HddSize control.
@@ -289,7 +289,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locVhdPath;
+        protected global::System.Web.UI.WebControls.Label locVhdPath;
         
         /// <summary>
         /// VhdPath control.
@@ -568,7 +568,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locExternalAdapter;
+        protected global::System.Web.UI.WebControls.Label locExternalAdapter;
         
         /// <summary>
         /// ExternalAdapters control.
@@ -586,7 +586,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow ExternalAddressesRow;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ExternalAddressesRow;
         
         /// <summary>
         /// locExternalAddresses control.
@@ -595,7 +595,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locExternalAddresses;
+        protected global::System.Web.UI.WebControls.Label locExternalAddresses;
         
         /// <summary>
         /// ExternalAddresses control.
@@ -640,7 +640,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locManagementAdapter;
+        protected global::System.Web.UI.WebControls.Label locManagementAdapter;
         
         /// <summary>
         /// ManagementAdapters control.
@@ -658,7 +658,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow ManagementAddressesRow;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl ManagementAddressesRow;
         
         /// <summary>
         /// locManagementAddresses control.
@@ -667,7 +667,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locManagementAddresses;
+        protected global::System.Web.UI.WebControls.Label locManagementAddresses;
         
         /// <summary>
         /// ManagementAddresses control.

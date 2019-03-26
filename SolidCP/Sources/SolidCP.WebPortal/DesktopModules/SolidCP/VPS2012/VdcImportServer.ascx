@@ -19,28 +19,23 @@
                     
                     <asp:ValidationSummary ID="validatorsSummary" runat="server" 
                         ValidationGroup="ImportWizard" ShowMessageBox="True" ShowSummary="False" />
-                        
-                    
-                    <table cellpadding="3">
-                        <tr>
-                            <td class="FormLabel150">
-                                <asp:Localize ID="locHyperVService" runat="server" meta:resourcekey="locHyperVService" Text="Hyper-V Service:"></asp:Localize>
-                            </td>
-                            <td>
-                                <asp:DropDownList ID="HyperVServices" runat="server" CssClass="form-control"
+                    <div class="form-group">
+
+                        <asp:Label ID="locHyperVService" runat="server" CssClass="col-sm-1" AssociatedControlID="HyperVServices" meta:resourcekey="locHyperVService" Text="Hyper-V Service:"></asp:Label>
+                        <div class="col-sm-11">
+                            <asp:DropDownList ID="HyperVServices" runat="server" CssClass="form-control"
                                     DataValueField="ServiceID" DataTextField="FullServiceName" AutoPostBack="true"
                                     onselectedindexchanged="HyperVServices_SelectedIndexChanged"></asp:DropDownList>
                                 <asp:RequiredFieldValidator ID="RequireHyperVService" runat="server"
                                     ControlToValidate="HyperVServices" ValidationGroup="ImportWizard" meta:resourcekey="RequireHyperVService"
                                     Display="Dynamic" SetFocusOnError="true" Text="*">
                                 </asp:RequiredFieldValidator>
-                            </td>
-                        </tr>
-                        <tr id="VMsRow" runat="server">
-                            <td class="FormLabel150">
-                                <asp:Localize ID="locVirtualMachine" runat="server" meta:resourcekey="locVirtualMachine" Text="Virtual machine:"></asp:Localize>
-                            </td>
-                            <td>
+                        </div>
+
+                        <div id="VMsRow" runat="server">
+
+                            <asp:Label ID="locVirtualMachine" runat="server" CssClass="col-sm-1" meta:resourcekey="locVirtualMachine" Text="Virtual machine:"></asp:Label>
+                            <div class="col-sm-11">
                                 <asp:DropDownList ID="VirtualMachines" runat="server" CssClass="form-control"
                                     DataValueField="VirtualMachineId" DataTextField="Name" AutoPostBack="true"
                                     onselectedindexchanged="VirtualMachines_SelectedIndexChanged"></asp:DropDownList>
@@ -48,51 +43,39 @@
                                     ControlToValidate="VirtualMachines" ValidationGroup="ImportWizard" meta:resourcekey="RequiredVirtualMachine"
                                     Display="Dynamic" SetFocusOnError="true" Text="*">
                                 </asp:RequiredFieldValidator>
-                            </td>
-                        </tr>
-                    </table>
+                            </div>
+                        </div>                        
+                    </div>
                     
                     <scp:CollapsiblePanel id="secOsTemplate" runat="server"
                         TargetControlID="OsTemplatePanel" meta:resourcekey="secOsTemplate" Text="OS Template">
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="OsTemplatePanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                        <table>
-                            <tr>
-                                <td class="FormLabel150">
-                                    <asp:Localize ID="locOsTemplate" runat="server" meta:resourcekey="locOsTemplate" Text="OS Template:"></asp:Localize>
-                                </td>
-                                <td>
-                                    <asp:DropDownList ID="OsTemplates" runat="server" CssClass="form-control"
+                        <div class="form-group">
+                            <asp:Label ID="locOsTemplate" runat="server" CssClass="col-sm-1" meta:resourcekey="locOsTemplate" AssociatedControlID="OsTemplates" Text="OS Template:"></asp:Label>
+                            <div class="col-sm-11 form-inline">
+                                <asp:DropDownList ID="OsTemplates" runat="server" CssClass="form-control"
                                         DataValueField="Path" DataTextField="Name"></asp:DropDownList>
                                     <asp:RequiredFieldValidator ID="RequiredOsTemplate" runat="server"
                                         ControlToValidate="OsTemplates" ValidationGroup="ImportWizard" meta:resourcekey="RequiredOsTemplate"
                                         Display="Dynamic" SetFocusOnError="true" Text="*">
                                     </asp:RequiredFieldValidator>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <asp:CheckBox ID="EnableRemoteDesktop" runat="server" AutoPostBack="true"
+                            </div>
+                            <div class="col-sm-12">
+                                <asp:CheckBox ID="EnableRemoteDesktop" runat="server" AutoPostBack="true"
                                         meta:resourcekey="EnableRemoteDesktop" Text="Enable Remote Desktop Web Connection" />
-                                </td>
-                            </tr>
-                            <tr id="AdminPasswordPanel" runat="server" visible="false">
-                                <td class="FormLabel150" valign="top">
-                                    <asp:Localize ID="locAdminPassword" runat="server" meta:resourcekey="locAdminPassword" Text="Administrator password:"></asp:Localize>
-                                </td>
-                                <td>
+                            </div>
+                            <div id="AdminPasswordPanel" runat="server" visible="false">
+                                <asp:Label ID="locAdminPassword" runat="server" CssClass="col-sm-2" meta:resourcekey="locAdminPassword" AssociatedControlID="adminPassword" Text="Administrator password:"></asp:Label>
+                                <div class="col-sm-10 form-inline">
                                     <asp:TextBox ID="adminPassword" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox>
                                     <asp:RequiredFieldValidator ID="RequiredAdminPassword" runat="server"
                                         ControlToValidate="adminPassword" ValidationGroup="ImportWizard" meta:resourcekey="RequiredAdminPassword"
                                         Display="Dynamic" SetFocusOnError="true" Text="*">
                                     </asp:RequiredFieldValidator>
-                                </td>
-                            </tr>
-                        </table>
+                                </div>
+                            </div>
+                        </div>
                     </asp:Panel>
                     
                     <asp:Panel ID="VirtualMachinePanel" runat="server">
@@ -100,41 +83,29 @@
                             TargetControlID="ConfigurationPanel" meta:resourcekey="secConfiguration" Text="Configuration">
                         </scp:CollapsiblePanel>
                         <asp:Panel ID="ConfigurationPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table cellpadding="4">
-                                <scp:Generation runat="server" ID="GenerationSetting" Mode="Summary"/>
-                                <tr>
-                                    <td>
-                                        <asp:Localize ID="locCPU" runat="server" meta:resourcekey="locCPU" Text="CPU:"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <asp:Literal ID="CpuCores" runat="server" Text="0"></asp:Literal>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:Localize ID="locRAM" runat="server" meta:resourcekey="locRAM" Text="RAM:"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <asp:Literal ID="RamSize" runat="server" Text="0"></asp:Literal>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:Localize ID="locHDD" runat="server" meta:resourcekey="locHDD" Text="HDD:"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <asp:Literal ID="HddSize" runat="server" Text="0"></asp:Literal>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:Localize ID="locVhdPath" runat="server" meta:resourcekey="locVhdPath" Text="VHD location:"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <asp:Literal ID="VhdPath" runat="server" Text="0"></asp:Literal>
-                                    </td>
-                                </tr>
-                            </table>
+                            <scp:Generation runat="server" ID="GenerationSetting" Mode="Summary"/>
+
+                            <div class="form-group">
+                                <asp:Label ID="locCPU" runat="server" CssClass="col-sm-1" meta:resourcekey="locCPU" Text="CPU:"></asp:Label>
+                                <div class="col-sm-11">
+                                    <asp:Literal ID="CpuCores" runat="server" Text="0"></asp:Literal>
+                                </div>
+
+                                <asp:Label ID="locRAM" runat="server" CssClass="col-sm-1" meta:resourcekey="locRAM" Text="RAM:"></asp:Label>
+                                <div class="col-sm-11">
+                                    <asp:Literal ID="RamSize" runat="server" Text="0"></asp:Literal>
+                                </div>
+
+                                <asp:Label ID="locHDD" runat="server" CssClass="col-sm-1" meta:resourcekey="locHDD" Text="HDD:"></asp:Label>
+                                <div class="col-sm-11">
+                                    <asp:Literal ID="HddSize" runat="server" Text="0"></asp:Literal>
+                                </div>
+
+                                <asp:Label ID="locVhdPath" runat="server" CssClass="col-sm-1" meta:resourcekey="locVhdPath" Text="VHD location:"></asp:Label>
+                                <div class="col-sm-11">
+                                    <asp:Literal ID="VhdPath" runat="server" Text="0"></asp:Literal>
+                                </div>
+                            </div>
                         </asp:Panel>
                         
                         <scp:DynamicMemoryControl runat="server" ID="DynamicMemorySetting" Mode="Display"/>
@@ -181,92 +152,83 @@
                         <scp:CollapsiblePanel id="secAllowedActions" runat="server"
                             TargetControlID="AllowedActionsPanel" meta:resourcekey="secAllowedActions" Text="Allowed Actions">
                         </scp:CollapsiblePanel>
-                        <asp:Panel ID="AllowedActionsPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table cellpadding="4" width="100%">
-                                <tr>
-                                    <td style="width:30%;">
-                                        <asp:CheckBox ID="AllowStartShutdown" runat="server" meta:resourcekey="AllowStartShutdown" />
-                                    </td>
-                                    <td>
-                                        <asp:CheckBox ID="AllowReboot" runat="server" meta:resourcekey="AllowReboot" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <asp:CheckBox ID="AllowPause" runat="server" meta:resourcekey="AllowPause" />
-                                    </td>
-                                    <td>
-                                        <asp:CheckBox ID="AllowReset" runat="server" meta:resourcekey="AllowReset" />
-                                    </td>                                    
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <asp:CheckBox ID="AllowReinstall" runat="server" Text="Re-install" meta:resourcekey="AllowReinstall" />
-                                    </td>
-                                </tr>
-                            </table>
+                        <asp:Panel ID="AllowedActionsPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;width:450px;">
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <asp:CheckBox ID="AllowStartShutdown" runat="server" meta:resourcekey="AllowStartShutdown" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <asp:CheckBox ID="AllowReboot" runat="server" meta:resourcekey="AllowReboot" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <asp:CheckBox ID="AllowPause" runat="server" meta:resourcekey="AllowPause" />
+                                </div>
+                                <div class="col-sm-6">
+                                    <asp:CheckBox ID="AllowReset" runat="server" meta:resourcekey="AllowReset" />
+                                </div>
+                                <div class="col-sm-12">
+                                    <asp:CheckBox ID="AllowReinstall" runat="server" Text="Re-install" meta:resourcekey="AllowReinstall" />
+                                </div>
+                            </div>
                         </asp:Panel>
                         
                         <scp:CollapsiblePanel id="secExternalNetwork" runat="server"
                             TargetControlID="ExternalNetworkPanel" meta:resourcekey="secExternalNetwork" Text="External Network">
                         </scp:CollapsiblePanel>
                         <asp:Panel ID="ExternalNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table width="100%">
-                                <tr>
-                                    <td class="FormLabel150">
-                                        <asp:Localize ID="locExternalAdapter" runat="server" meta:resourcekey="locExternalAdapter" Text="Connected NIC:"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <asp:DropDownList ID="ExternalAdapters" runat="server" CssClass="form-control"
+
+                            <div class="form-group">
+
+                                <asp:Label ID="locExternalAdapter" runat="server" CssClass="col-sm-1" 
+                                    meta:resourcekey="locExternalAdapter" AssociatedControlID="ExternalAdapters" Text="Connected NIC:"></asp:Label>
+                                <div class="col-sm-11">
+                                    <asp:DropDownList ID="ExternalAdapters" runat="server" CssClass="form-control"
                                             DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"
                                             onselectedindexchanged="ExternalAdapters_SelectedIndexChanged"></asp:DropDownList>
-                                    </td>
-                                </tr>
-                                <tr id="ExternalAddressesRow" runat="server">
-                                    <td valign="top">
-                                        <asp:Localize ID="locExternalAddresses" runat="server" meta:resourcekey="locExternalAddresses" Text="Assign IP addresses:"></asp:Localize>
-                                    </td>
-                                    <td>
+                                </div>
+
+                                <div id="ExternalAddressesRow" runat="server">
+
+                                    <asp:Label ID="locExternalAddresses" runat="server" CssClass="col-sm-1" meta:resourcekey="locExternalAddresses" Text="Assign IP addresses:"></asp:Label>
+                                    <div class="col-sm-11">
                                         <asp:ListBox ID="ExternalAddresses" runat="server" Rows="5"
                                             Width="220" SelectionMode="Multiple"></asp:ListBox>
                                         <asp:RequiredFieldValidator ID="RequiredExternalAddresses" runat="server"
                                             ControlToValidate="ExternalAddresses" ValidationGroup="ImportWizard" meta:resourcekey="RequiredExternalAddresses"
                                             Display="Dynamic" SetFocusOnError="true" Text="*">
                                         </asp:RequiredFieldValidator>
-                                    </td>
-                                </tr>
-                            </table>
+                                    </div>
+                                </div>
+                            </div>
                         </asp:Panel>
                         
                         <scp:CollapsiblePanel id="secManagementNetwork" runat="server"
                             TargetControlID="ManagementNetworkPanel" meta:resourcekey="secManagementNetwork" Text="Management Network">
                         </scp:CollapsiblePanel>
                         <asp:Panel ID="ManagementNetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
-                            <table width="100%">
-                                <tr>
-                                    <td class="FormLabel150">
-                                        <asp:Localize ID="locManagementAdapter" runat="server" meta:resourcekey="locManagementAdapter" Text="Connected NIC:"></asp:Localize>
-                                    </td>
-                                    <td>
-                                        <asp:DropDownList ID="ManagementAdapters" runat="server" CssClass="form-control"
+                            <div class="form-group">
+
+                                <asp:Label ID="locManagementAdapter" runat="server" CssClass="col-sm-1" 
+                                    meta:resourcekey="locManagementAdapter" AssociatedControlID="ManagementAdapters" Text="Connected NIC:"></asp:Label>
+                                <div class="col-sm-11">
+                                    <asp:DropDownList ID="ManagementAdapters" runat="server" CssClass="form-control"
                                             DataValueField="MacAddress" DataTextField="Name" AutoPostBack="true"
                                             onselectedindexchanged="ManagementAdapters_SelectedIndexChanged"></asp:DropDownList>
-                                    </td>
-                                </tr>
-                                <tr id="ManagementAddressesRow" runat="server">
-                                    <td valign="top">
-                                        <asp:Localize ID="locManagementAddresses" runat="server" meta:resourcekey="locManagementAddresses" Text="Assign IP addresses:"></asp:Localize>
-                                    </td>
-                                    <td>
+                                </div>
+
+                                <div id="ManagementAddressesRow" runat="server">
+
+                                    <asp:Label ID="locManagementAddresses" runat="server" CssClass="col-sm-1" meta:resourcekey="locManagementAddresses" Text="Assign IP addresses:"></asp:Label>
+                                    <div class="col-sm-11">
                                         <asp:ListBox ID="ManagementAddresses" runat="server" Rows="5"
                                             Width="220" SelectionMode="Single"></asp:ListBox>
                                         <asp:RequiredFieldValidator ID="RequiredManagementAddresses" runat="server"
                                             ControlToValidate="ManagementAddresses" ValidationGroup="ImportWizard" meta:resourcekey="RequiredManagementAddresses"
                                             Display="Dynamic" SetFocusOnError="true" Text="*">
                                         </asp:RequiredFieldValidator>
-                                    </td>
-                                </tr>
-                            </table>
+                                    </div>
+                                </div>
+                            </div>
                         </asp:Panel>
                     </asp:Panel>
 

@@ -14,6 +14,7 @@ Version 1.4.3
 - (VPS2012/2016/2019) Fixed: A possible bug when SolidCP cannot change VM state if VM is in a busy state (that bug prevented to delete some VM). - Genadij
 - (VPS2012/2016/2019) Fixed: Issues with updating Dynamic RAM. - Genadij
 - (VPS2012/2016/2019) Fixed: Ignore a legacy adapter checkbox for generation 2. - Genadij
+- (VPS2012/2016/2019) Fixed: Server importing did not check quotas.  - Genadij
 - (VPS2012/2016/2019) Added foolproofs. - Genadij
 - (VPS2012/2016/2019) Added Sysprep TimeZoneId and CDKey variables. - Genadij
 - (VPS2012/2016/2019) Added a new default HostName pattern and prevent some HostName problems - Genadij
