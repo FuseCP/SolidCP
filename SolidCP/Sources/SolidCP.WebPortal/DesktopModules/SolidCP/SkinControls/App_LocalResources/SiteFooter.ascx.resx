@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="locPoweredBy.Text" xml:space="preserve">
-    <value>Control Panel Powered by &lt;a href="https://solidcp.com" target="_blank"&gt;SolidCP&lt;/a&gt;. Copyright &amp;copy; 2018 all rights reserved.</value>
+    <value>Control Panel Powered by &lt;a href="https://solidcp.com" target="_blank"&gt;SolidCP&lt;/a&gt;. Copyright &amp;copy; 2019 all rights reserved.</value>
   </data>
   <data name="locVersion.Text" xml:space="preserve">
     <value>Version</value>
