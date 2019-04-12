@@ -123,7 +123,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField>
                         <ItemTemplate>
-                            <CPCC:StyleButton ID="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return ShowProgressDialog('Please wait...');">
+                            <CPCC:StyleButton ID="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return false; return ShowProgressDialog('Please wait...');">
                                 &nbsp;
                                 <i class="fa fa-trash-o"></i>&nbsp;
                             </CPCC:StyleButton>
@@ -159,11 +159,11 @@
                         </asp:UpdatePanel>
                     </div>
 					<div class="popup-buttons text-right">
-                        <CPCC:StyleButton ID="btnCancelDelete" CssClass="btn btn-warning" runat="server" CausesValidation="False">
+                        <CPCC:StyleButton ID="btnCancelDelete" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClientClick="return false;">
                             <i class="fa fa-times">&nbsp;</i>&nbsp;
                             <asp:Localize runat="server" meta:resourcekey="btnCancelText" />
                         </CPCC:StyleButton>&nbsp;
-			            <CPCC:StyleButton ID="btnDeleteUser" CssClass="btn btn-danger" runat="server" OnClick="btnDelete_Click" OnClientClick="return ShowProgressDialog('Deleting user...');">
+			            <CPCC:StyleButton ID="btnDeleteUser" CssClass="btn btn-danger" runat="server" OnClick="btnDelete_Click" OnClientClick="return false; return ShowProgressDialog('Deleting user...');">
                             <i class="fa fa-trash-o">&nbsp;</i>&nbsp;
                             <asp:Localize runat="server" meta:resourcekey="btnDeleteText" />
 			            </CPCC:StyleButton>
