@@ -123,7 +123,7 @@
                     </asp:TemplateField>
                     <asp:TemplateField>
                         <ItemTemplate>
-                            <CPCC:StyleButton ID="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return false; return ShowProgressDialog('Please wait...');">
+                            <CPCC:StyleButton ID="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Container.DataItemIndex %>'>
                                 &nbsp;
                                 <i class="fa fa-trash-o"></i>&nbsp;
                             </CPCC:StyleButton>
