@@ -322,6 +322,6 @@
     <value>&amp;lt;span class='fa fa-ban' aria-hidden='true'&amp;gt;&amp;nbsp;&amp;lt;/span&amp;gt;&amp;nbsp;Disable</value>
   </data>
   <data name="Settingsconfiguremailtemplates.Text" xml:space="preserve">
-    <value>Please do not forget to configure your email templates (From name/  From Email address). &amp;lt;br /&amp;gt;They can be configured at: Serveradmin home - </value>
+    <value>*** Please do not forget to configure your email templates (From name/  From Email address).  They can be configured at:</value>
   </data>
 </root>

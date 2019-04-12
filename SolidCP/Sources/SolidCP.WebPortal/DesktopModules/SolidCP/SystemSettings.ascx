@@ -78,10 +78,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <p><asp:Localize ID="configuremailtemplates" runat="server" meta:resourcekey="Settingsconfiguremailtemplates" />
-                               <asp:HyperLink ID="lnkMailTemplates" runat="server" meta:resourcekey="lnkMailTemplates" Text="Mail Templates"></asp:HyperLink></p>
+                                    <p><asp:Localize ID="configuremailtemplates" runat="server" meta:resourcekey="Settingsconfiguremailtemplates" /><br />
+                               <asp:HyperLink ID="MailTemplates" runat="server" NavigateUrl="/Default.aspx?mid=25&ctl=mail_templates&UserID=1" Text="Serveradmin - Home"></asp:HyperLink></p>
                             </div>
                         </div>
+                            </div>
                         <hr />
                         <CPCC:StyleButton ID="StyleButton1" CssClass="btn btn-success btn-block" runat="server" meta:resourcekey="SettingbtnSaveSettings" OnClick="btnSaveSMTP_Click" />
                     </div>

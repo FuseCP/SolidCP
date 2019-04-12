@@ -112,13 +112,13 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.Localize configuremailtemplates;
         
         /// <summary>
-        /// lnkMailTemplates control.
+        /// MailTemplates control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink lnkMailTemplates;
+        protected global::System.Web.UI.WebControls.HyperLink MailTemplates;
         
         /// <summary>
         /// StyleButton1 control.
