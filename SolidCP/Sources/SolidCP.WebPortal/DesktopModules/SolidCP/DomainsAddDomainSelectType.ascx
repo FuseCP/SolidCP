@@ -14,7 +14,7 @@
          <div class="col-sm-10"><asp:Localize ID="SubDomainDescription" runat="server" meta:resourcekey="SubDomainDescription" /></div>
      </div>
     <div id="ProviderSubDomainPanel" runat="server" class="row form-group">
-        <div class="col-sm-2"><asp:HyperLink ID="ProviderSubDomainLink" CssClass="btn btn-white" runat="server"><i class="fa fa-plus">&nbsp;</i>&nbsp;<asp:Localize runat="server"meta:resourcekey="ProviderSubDomainLink"/></asp:HyperLink></div>
+        <div class="col-sm-2"><asp:HyperLink ID="ProviderSubDomainLink" CssClass="btn btn-primary" runat="server"><i class="fa fa-plus">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="ProviderSubDomainLink"/></asp:HyperLink></div>
         <div class="col-sm-10"><asp:Localize ID="ProviderSubDomainDescription" runat="server" meta:resourcekey="ProviderSubDomainDescription" /></div>
 <!--    
     <p>
