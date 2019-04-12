@@ -75,6 +75,13 @@
                                 </div>
                             </div>
                         </fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <p><asp:Localize ID="configuremailtemplates" runat="server" meta:resourcekey="Settingsconfiguremailtemplates" />
+                               <asp:HyperLink ID="lnkMailTemplates" runat="server" meta:resourcekey="lnkMailTemplates" Text="Mail Templates"></asp:HyperLink></p>
+                            </div>
+                        </div>
                         <hr />
                         <CPCC:StyleButton ID="StyleButton1" CssClass="btn btn-success btn-block" runat="server" meta:resourcekey="SettingbtnSaveSettings" OnClick="btnSaveSMTP_Click" />
                     </div>

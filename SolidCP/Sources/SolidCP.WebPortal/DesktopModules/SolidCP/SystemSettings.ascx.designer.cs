@@ -103,6 +103,24 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.CheckBox chkEnableSsl;
         
         /// <summary>
+        /// configuremailtemplates control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize configuremailtemplates;
+        
+        /// <summary>
+        /// lnkMailTemplates control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkMailTemplates;
+        
+        /// <summary>
         /// StyleButton1 control.
         /// </summary>
         /// <remarks>
