@@ -204,8 +204,16 @@ namespace SolidCP.Portal
 
 		private void BindResellerDomains()
 		{
-			DomainName.DataSource = ES.Services.Servers.GetResellerDomains(PanelSecurity.PackageId);
-			DomainName.DataBind();
+            DomainInfo[] allDomains = ES.Services.Servers.GetResellerDomains(PanelSecurity.PackageId);
+
+            // filter domains
+            List<DomainInfo> domains = new List<DomainInfo>();
+            foreach (DomainInfo domain in allDomains)
+                if (!domain.IsDomainPointer && !domain.IsSubDomain && !domain.IsPreviewDomain)
+                    domains.Add(domain);
+
+            DomainName.DataSource = domains;
+            DomainName.DataBind();
 		}
    
         private void AddDomain()
