@@ -64,8 +64,8 @@
     <ContentTemplate>                 
         <asp:HiddenField runat="server" ID="hdnGridState" Value="false" />
         <asp:HiddenField runat="server" ID="hdnItemId" Value="false" />
-        <asp:GridView id="gvRDSServers" runat="server" AutoGenerateColumns="False"
-	        AllowPaging="True" AllowSorting="True"
+        <asp:GridView id="gvRDSServers" runat="server"
+	        EnablePaging="True" SelectCountMethod="GetRDSServersPagedCount" SelectMethod="GetRDSServersPaged" AllowSorting="True" SortParameterName="sortColumn" TypeName="SolidCP.Portal.RDSHelper" OnSelected="odsRDSServersPaged_Selected"
 	        CssSelectorClass="NormalGridView"
             OnRowCommand="gvRDSServers_RowCommand"
 	        DataSourceID="odsRDSServersPaged" EnableViewState="False"
