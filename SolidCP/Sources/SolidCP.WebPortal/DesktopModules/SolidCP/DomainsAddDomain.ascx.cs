@@ -310,7 +310,14 @@ namespace SolidCP.Portal
 						AddDomain();
 					}
 			}
-		}
+            if (type == DomainType.ProviderSubDomain && !cntx.Quotas[Quotas.OS_SUBDOMAINS].QuotaExhausted)
+            {
+                if (CheckForCorrectIdnDomainUsage(DomainName.Text))
+                {
+                    AddDomain();
+                }
+            }
+        }
 
 	    private bool CheckForCorrectIdnDomainUsage(string domainName)
 	    {
