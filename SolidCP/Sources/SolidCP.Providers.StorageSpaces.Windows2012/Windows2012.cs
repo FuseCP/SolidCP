@@ -38,7 +38,8 @@ namespace SolidCP.Providers.StorageSpaces
             Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
             return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012 ||
                    version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012R2 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2016;
+                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2016 ||
+                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2019;
         }
 
         #region HostingServiceProvider methods
