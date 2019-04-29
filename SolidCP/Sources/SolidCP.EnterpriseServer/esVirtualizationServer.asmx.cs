@@ -42,9 +42,6 @@ using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using Microsoft.Web.Services3;
 using SolidCP.Providers;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.ResultObjects; 
 using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.EnterpriseServer

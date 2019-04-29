@@ -365,6 +365,7 @@ namespace SolidCP.EnterpriseServer
 
                 #endregion                
 
+                //TODO: move to separate method
                 #region Check Quotas
                 // check quotas
                 List<string> quotaResults = new List<string>();
@@ -1301,9 +1302,11 @@ namespace SolidCP.EnterpriseServer
         public static IntResult ImportVirtualMachine(int packageId,
             int serviceId, string vmId,
             string osTemplateFile, string adminPassword,
+            bool IsBootFromCd, bool IsDvdInstalled,
             bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
             string externalNicMacAddress, int[] externalAddresses,
-            string managementNicMacAddress, int managementAddress)
+            string managementNicMacAddress, int managementAddress,
+            bool ignoreChecks)
         {
             // result object
             IntResult res = new IntResult();
@@ -1359,8 +1362,8 @@ namespace SolidCP.EnterpriseServer
                 if (item.RootFolderPath.EndsWith(msHddHyperVFolderName)) //We have to know root folder of VM, not of hdd.
                     item.RootFolderPath = item.RootFolderPath.Substring(0, item.RootFolderPath.Length - msHddHyperVFolderName.Length);
                 item.SnapshotsNumber = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
-                item.DvdDriveInstalled = vm.DvdDriveInstalled;
-                item.BootFromCD = vm.BootFromCD;
+                item.DvdDriveInstalled = IsDvdInstalled; //vm.DvdDriveInstalled;
+                item.BootFromCD = IsBootFromCd; //vm.BootFromCD;
                 item.NumLockEnabled = vm.NumLockEnabled;
                 item.StartTurnOffAllowed = startShutdownAllowed;
                 item.PauseResumeAllowed = pauseResumeAllowed;
@@ -1397,6 +1400,59 @@ namespace SolidCP.EnterpriseServer
                     res.AddError(VirtualizationErrorCodes.GET_OS_TEMPLATES_ERROR, ex);
                     return res;
                 }
+
+                //TODO: move to separate method
+                #region Check Quotas
+                if (!ignoreChecks)
+                {
+                    // check quotas
+                    List<string> quotaResults = new List<string>();
+                    //PackageContext cntx = PackageController.GetPackageContext(packageId);
+
+                    // dynamic memory
+                    var newRam = item.RamSize;
+                    if (item.DynamicMemory != null && item.DynamicMemory.Enabled)
+                    {
+                        newRam = item.DynamicMemory.Maximum;
+
+                        if (item.RamSize > item.DynamicMemory.Maximum || item.RamSize < item.DynamicMemory.Minimum)
+                            quotaResults.Add(VirtualizationErrorCodes.QUOTA_NOT_IN_DYNAMIC_RAM);
+                    }
+
+                    QuotaHelper.CheckListsQuota(cntx, quotaResults, Quotas.VPS2012_SERVERS_NUMBER, VirtualizationErrorCodes.QUOTA_EXCEEDED_SERVERS_NUMBER);
+
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, item.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, item.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, item.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
+
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, item.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_BOOT_CD_ALLOWED, item.BootFromCD, VirtualizationErrorCodes.QUOTA_EXCEEDED_CD_ALLOWED);
+
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_START_SHUTDOWN_ALLOWED, item.StartTurnOffAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_START_SHUTDOWN_ALLOWED);
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PAUSE_RESUME_ALLOWED, item.PauseResumeAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED);
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REBOOT_ALLOWED, item.RebootAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REBOOT_ALLOWED);
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_RESET_ALOWED, item.ResetAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_RESET_ALOWED);
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_REINSTALL_ALLOWED, item.ReinstallAllowed, VirtualizationErrorCodes.QUOTA_EXCEEDED_REINSTALL_ALLOWED);
+
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED, item.ExternalNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_EXTERNAL_NETWORK_ENABLED);
+                    QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED, item.PrivateNetworkEnabled, VirtualizationErrorCodes.QUOTA_EXCEEDED_PRIVATE_NETWORK_ENABLED);
+
+                    // check acceptable values
+                    if (item.RamSize <= 0)
+                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+                    if (item.HddSize <= 0)
+                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+                    if (item.SnapshotsNumber < 0)
+                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
+
+                    if (quotaResults.Count > 0)
+                    {
+                        res.ErrorCodes.AddRange(quotaResults);
+                        return res;
+                    }
+                }                
+                #endregion
 
                 // save item
                 int itemId = PackageController.AddPackageItem(item);

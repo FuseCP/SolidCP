@@ -1722,7 +1722,24 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ImportVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public IntResult ImportVirtualMachine(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress)
+        public IntResult ImportVirtualMachine(
+                    int packageId,
+                    int serviceId,
+                    string vmId,
+                    string osTemplateFile,
+                    string adminPassword,
+                    bool IsBootFromCd,
+                    bool IsDvdInstalled,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    string externalNicMacAddress,
+                    int[] externalAddresses,
+                    string managementNicMacAddress,
+                    int managementAddress,
+                    bool ignoreChecks)
         {
             object[] results = this.Invoke("ImportVirtualMachine", new object[] {
                         packageId,
@@ -1730,6 +1747,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         vmId,
                         osTemplateFile,
                         adminPassword,
+                        IsBootFromCd,
+                        IsDvdInstalled,
                         startShutdownAllowed,
                         pauseResumeAllowed,
                         rebootAllowed,
@@ -1738,7 +1757,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         externalNicMacAddress,
                         externalAddresses,
                         managementNicMacAddress,
-                        managementAddress});
+                        managementAddress,
+                        ignoreChecks});
             return ((IntResult)(results[0]));
         }
 
@@ -1749,6 +1769,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                     string vmId,
                     string osTemplateFile,
                     string adminPassword,
+                    bool IsBootFromCd,
+                    bool IsDvdInstalled,
                     bool startShutdownAllowed,
                     bool pauseResumeAllowed,
                     bool rebootAllowed,
@@ -1758,6 +1780,7 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                     int[] externalAddresses,
                     string managementNicMacAddress,
                     int managementAddress,
+                    bool ignoreChecks,
                     System.AsyncCallback callback,
                     object asyncState)
         {
@@ -1767,6 +1790,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         vmId,
                         osTemplateFile,
                         adminPassword,
+                        IsBootFromCd,
+                        IsDvdInstalled,
                         startShutdownAllowed,
                         pauseResumeAllowed,
                         rebootAllowed,
@@ -1775,7 +1800,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         externalNicMacAddress,
                         externalAddresses,
                         managementNicMacAddress,
-                        managementAddress}, callback, asyncState);
+                        managementAddress,
+                        ignoreChecks}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -1786,13 +1812,48 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public void ImportVirtualMachineAsync(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress)
+        public void ImportVirtualMachineAsync(
+                    int packageId,
+                    int serviceId,
+                    string vmId,
+                    string osTemplateFile,
+                    string adminPassword,
+                    bool IsBootFromCd,
+                    bool IsDvdInstalled,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    string externalNicMacAddress,
+                    int[] externalAddresses,
+                    string managementNicMacAddress,
+                    int managementAddress,
+                    bool ignoreChecks)
         {
-            this.ImportVirtualMachineAsync(packageId, serviceId, vmId, osTemplateFile, adminPassword, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNicMacAddress, externalAddresses, managementNicMacAddress, managementAddress, null);
+            this.ImportVirtualMachineAsync(packageId, serviceId, vmId, osTemplateFile, adminPassword, IsBootFromCd, IsDvdInstalled, startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed, externalNicMacAddress, externalAddresses, managementNicMacAddress, managementAddress, ignoreChecks, null);
         }
 
         /// <remarks/>
-        public void ImportVirtualMachineAsync(int packageId, int serviceId, string vmId, string osTemplateFile, string adminPassword, bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, string externalNicMacAddress, int[] externalAddresses, string managementNicMacAddress, int managementAddress, object userState)
+        public void ImportVirtualMachineAsync(
+                    int packageId,
+                    int serviceId,
+                    string vmId,
+                    string osTemplateFile,
+                    string adminPassword,
+                    bool IsBootFromCd,
+                    bool IsDvdInstalled,
+                    bool startShutdownAllowed,
+                    bool pauseResumeAllowed,
+                    bool rebootAllowed,
+                    bool resetAllowed,
+                    bool reinstallAllowed,
+                    string externalNicMacAddress,
+                    int[] externalAddresses,
+                    string managementNicMacAddress,
+                    int managementAddress,
+                    bool ignoreChecks,
+                    object userState)
         {
             if ((this.ImportVirtualMachineOperationCompleted == null))
             {
@@ -1804,6 +1865,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         vmId,
                         osTemplateFile,
                         adminPassword,
+                        IsBootFromCd,
+                        IsDvdInstalled,
                         startShutdownAllowed,
                         pauseResumeAllowed,
                         rebootAllowed,
@@ -1812,7 +1875,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         externalNicMacAddress,
                         externalAddresses,
                         managementNicMacAddress,
-                        managementAddress}, this.ImportVirtualMachineOperationCompleted, userState);
+                        managementAddress,
+                        ignoreChecks}, this.ImportVirtualMachineOperationCompleted, userState);
         }
 
         private void OnImportVirtualMachineOperationCompleted(object arg)
