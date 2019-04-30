@@ -719,11 +719,11 @@ function UpgradeSCPserver() # Function to upgrade the SolidCP Server Component
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration" "runtime"
 							if ( !(CheckXMLnode "$SCP_Server_Dir\web.config" "//configuration/runtime" "assemblyBinding") ) {
 								ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration/runtime" "assemblyBinding" @("xmlns", "urn:schemas-microsoft-com:asm.v1")
-								((Get-Content "$SCP_Server_Dir\web.config").replace('    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1" />', "    <assemblyBinding xmlns=`"urn:schemas-microsoft-com:asm.v1`">`n      <probing privatePath=`"bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Sharepoint2013;bin/Sharepoint2016;bin/Lync2013;bin/SfB2015;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters`" />`n    </assemblyBinding>") | Set-Content "$dFilePath1")
+								((Get-Content "$SCP_Server_Dir\web.config").replace('    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1" />', "    <assemblyBinding xmlns=`"urn:schemas-microsoft-com:asm.v1`">`n      <probing privatePath=`"bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Exchange2019;bin/Sharepoint2013;bin/Sharepoint2016;bin/Sharepoint2019;bin/Lync2013;bin/SfB2015;bin/SfB2019;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters`" />`n    </assemblyBinding>") | Set-Content "$dFilePath1")
 							}
 							# Update the web.config file to make sure it is up to date with the new Settings
 							[xml]$SCP_Server_XML = Get-Content -Path "$SCP_Server_Dir\web.config"
-							$SCP_Server_XML.configuration.runtime.assemblyBinding.probing.privatePath = "bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Sharepoint2013;bin/Sharepoint2016;bin/Lync2013;bin/SfB2015;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters"
+							$SCP_Server_XML.configuration.runtime.assemblyBinding.probing.privatePath = "bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Exchange2019;bin/Sharepoint2013;bin/Sharepoint2016;bin/Sharepoint2019;bin/Lync2013;bin/SfB2015;bin/SfB2019;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters"
 							$SCP_Server_XML.Save("$SCP_Server_Dir\web.config") | Out-Null
 							Write-Host "`t The `"SolidCP Server`" web.config file has been updated" -ForegroundColor Green
 
