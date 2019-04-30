@@ -40,6 +40,35 @@ namespace SolidCP.Setup
 
 {
     /// <summary>
+    /// Release 1.4.3
+    /// </summary>
+    public class EnterpriseServer143 : EnterpriseServer
+    {
+        public static new object Install(object obj)
+        {
+            //
+            return EnterpriseServer.InstallBase(obj, "1.0.1");
+        }
+
+        public static new DialogResult Uninstall(object obj)
+        {
+            return EnterpriseServer.Uninstall(obj);
+        }
+
+        public static new DialogResult Setup(object obj)
+        {
+            return EnterpriseServer.Setup(obj);
+        }
+
+        public static new DialogResult Update(object obj)
+        {
+            return UpdateBase(obj,
+                 minimalInstallerVersion: "1.0.1",
+                 versionToUpgrade: "1.4.2,1.4.1",
+                 updateSql: true);
+        }
+    }
+    /// <summary>
     /// Release 1.4.2
     /// </summary>
     public class EnterpriseServer142 : EnterpriseServer
