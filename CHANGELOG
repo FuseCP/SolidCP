@@ -3,8 +3,8 @@ Version 1.4.3
 - Added Skype for business 2019
 - Added Sharepoint 2019 support
 - Added MariaDB 10.3 Support - Vitor E A Feliciano
-- Added SimpleDNS 8 Support including SRV, CAA records - Pierre Philip du Preez
-- DNS Import/Export feature - Pierre Philip du Preez
+- Added SimpleDNS 8 Support including SRV, CAA records - Jade - absolutehosting.co.za
+- DNS Import/Export feature - Jade - absolutehosting.co.za
 - (VPS2012/2016/2019) Fixed: A possible problem with removing VMs hosting space - Genadij
 - (VPS2012/2016/2019) Fixed: Remote HyperV Hosts didn't work - Genadij
 - (VPS2012/2016/2019) Fixed: A possible bug with VHD block size.  - Genadij
