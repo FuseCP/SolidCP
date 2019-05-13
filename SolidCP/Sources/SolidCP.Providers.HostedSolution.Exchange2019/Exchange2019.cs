@@ -8193,7 +8193,7 @@ namespace SolidCP.Providers.HostedSolution
                 if (value == 15)
                 {
                     value = (int)rk.GetValue("MsiProductMinor", null);
-                    if (value == 01) bResult = true;
+                    if (value == 02) bResult = true;
                 }
                 rk.Close();
             }
