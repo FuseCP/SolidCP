@@ -123,10 +123,10 @@
                     </asp:TemplateField>
                     <asp:TemplateField>
                         <ItemTemplate>
-                            <CPCC:StyleButton ID="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return ShowProgressDialog('Please wait...');">
+                            <asp:Linkbutton ID="cmdDelete" CssClass="btn btn-danger" runat="server" CommandName="DeleteItem" CommandArgument='<%# Container.DataItemIndex %>' OnClientClick="return ShowProgressDialog('Please wait...');">
                                 &nbsp;
                                 <i class="fa fa-trash-o"></i>&nbsp;
-                            </CPCC:StyleButton>
+                            </asp:Linkbutton>
                         </ItemTemplate>
                     </asp:TemplateField>
                 </Columns>
@@ -151,7 +151,6 @@
                     <div class="widget-content Popup">
                         <asp:UpdatePanel ID="DeleteUserUpdatePanel" runat="server" UpdateMode="Conditional" ChildrenAsTriggers="true">
                             <ContentTemplate>
-                                <asp:HiddenField ID="hdAccountId" runat="server" Value="0" />
                                 <asp:Literal ID="litDeleteUser" runat="server" meta:resourcekey="litDeleteUser"></asp:Literal>
                                 <br />
                                 <asp:CheckBox ID="chkEnableForceArchiveMailbox" runat="server" meta:resourcekey="chkEnableForceArchiveMailbox" Visible="false" Checked="false" />
@@ -159,11 +158,11 @@
                         </asp:UpdatePanel>
                     </div>
 					<div class="popup-buttons text-right">
-                        <CPCC:StyleButton ID="btnCancelDelete" CssClass="btn btn-warning" runat="server" CausesValidation="False">
+                        <CPCC:StyleButton ID="btnCancelDelete" CssClass="btn btn-warning" runat="server" CausesValidation="False" OnClientClick="CloseProgressDialog();">
                             <i class="fa fa-times">&nbsp;</i>&nbsp;
                             <asp:Localize runat="server" meta:resourcekey="btnCancelText" />
                         </CPCC:StyleButton>&nbsp;
-			            <CPCC:StyleButton ID="btnDeleteUser" CssClass="btn btn-danger" runat="server" OnClick="btnDelete_Click" OnClientClick="return ShowProgressDialog('Deleting user...');">
+			            <CPCC:StyleButton ID="btnDeleteUser" CssClass="btn btn-danger" runat="server" OnClick="btnDelete_Click" OnClientClick="closePopup(); return ShowProgressDialog('Deleting user...');">
                             <i class="fa fa-trash-o">&nbsp;</i>&nbsp;
                             <asp:Localize runat="server" meta:resourcekey="btnDeleteText" />
 			            </CPCC:StyleButton>
@@ -171,8 +170,13 @@
                 </div>
             </asp:Panel>
             <asp:Button ID="btnDeleteUserFake" runat="server" Style="display: none;" />
-            <ajaxToolkit:ModalPopupExtender ID="DeleteUserModal" runat="server" TargetControlID="btnDeleteUserFake" EnableViewState="true"
+            <ajaxToolkit:ModalPopupExtender ID="DeleteUserModal" BehaviorID="DeleteUserModal" runat="server" TargetControlID="btnDeleteUserFake" EnableViewState="true"
                 PopupControlID="DeleteUserPanel" BackgroundCssClass="modalBackground" DropShadow="false" CancelControlID="btnCancelDelete" />
+            <script type="text/javascript">
+                function closePopup() {
+                    $find('DeleteUserModal').hide();
+                }
+            </script>
         </ContentTemplate>
         <Triggers>
             <asp:PostBackTrigger ControlID="btnDeleteUser" />

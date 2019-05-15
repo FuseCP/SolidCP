@@ -140,7 +140,7 @@ namespace SolidCP.Portal.HostedSolution
                 var accountId = Utils.ParseInt(gvUsers.DataKeys[rowIndex][0], 0);
                 var accountType = (ExchangeAccountType)gvUsers.DataKeys[rowIndex][1];
                 chkEnableForceArchiveMailbox.Visible = false;
-                hdAccountId.Value = accountId.ToString();
+                Session["delAccId"] = accountId;
             }
 
             if (e.CommandName == "OpenMailProperties")
@@ -356,7 +356,7 @@ namespace SolidCP.Portal.HostedSolution
             try
             {
                 int result = 0;
-                    result = ES.Services.Organizations.DeleteUser(PanelRequest.ItemID, int.Parse(hdAccountId.Value));
+                    result = ES.Services.Organizations.DeleteUser(PanelRequest.ItemID, Convert.ToInt32(Session["delAccId"]));
 
 
                 if (result < 0)
