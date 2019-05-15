@@ -7,31 +7,45 @@ IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\MSBuild\Cur
 	Set SCPMSBuild="%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
 	Set SCPVSVer=16.0
 	Echo Found VS 2019 Community
-) ELSE IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe" (
+	GOTO Build 
+ )
+IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe"
 	Set SCPVSVer=16.0
 	Echo Found VS 2019 Professional
-) ELSE IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" (
+	GOTO Build 
+ )
+IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 	Set SCPVSVer=16.0
 	Echo Found VS 2019 Enterprise
-} ELSE IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" (
+	GOTO Build 
+ )
+IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe"
 	Set SCPVSVer=15.0
 	Echo Found VS 2017 Community
-) ELSE IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe" (
+	GOTO Build 
+ )
+IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe"
 	Set SCPVSVer=15.0
 	Echo Found VS 2017 Professional
-) ELSE IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe" (
+	GOTO Build 
+ )
+IF EXIST "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe"
 	Set SCPVSVer=15.0
 	Echo Found VS 2017 Enterprise
-) ELSE IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
+	GOTO Build 
+ )
+IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe"
 	Set SCPVSVer=14.0
 	Echo Found VS 2015
-)
+	GOTO Build 
+ )
 
+:Build
 %SCPMSBuild% build.xml /target:Build /p:BuildConfiguration=Release /p:Version="1.4.3" /p:FileVersion="1.4.3" /p:VersionLabel="1.4.3" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%
 pause
