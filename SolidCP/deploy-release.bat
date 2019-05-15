@@ -43,13 +43,10 @@ IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe"
 	Set SCPVSVer=14.0
 	Echo Found VS 2015
-<<<<<<< HEAD
 	GOTO Build 
  )
 
 :Build
-=======
-)
 
->>>>>>> f5111ed939d573d3681c39978b57799e014dc924
+)
 %SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Release /p:Version="1.4.3" /p:FileVersion="1.4.3" /p:VersionLabel="1.4.3" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%
