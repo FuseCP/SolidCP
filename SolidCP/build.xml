@@ -772,7 +772,7 @@
 		<MakeDir Directories="$(DatabaseFolder)"/>
 
 		<Exec Command="$(SqlCmd) -Q &quot;IF DB_ID (N'$(DataBaseName)') IS NOT NULL DROP DATABASE $(DataBaseName)&quot;" />
-		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName)&quot;" />
+		<Exec Command="$(SqlCmd) -Q &quot;CREATE DATABASE $(DataBaseName) COLLATE Latin1_General_CI_AS&quot;" />
 
 		<Copy SourceFiles="$(TrunkFolder)\Database\install_db.sql" DestinationFolder="$(DatabaseFolder)" />
 		<Copy SourceFiles="$(TrunkFolder)\Database\update_db.sql" DestinationFolder="$(DatabaseFolder)" />
