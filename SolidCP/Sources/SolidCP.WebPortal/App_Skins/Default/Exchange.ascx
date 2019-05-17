@@ -7,7 +7,7 @@
 <%@ Register TagPrefix="scp" TagName="GlobalSearchTop" Src="~/DesktopModules/SolidCP/SkinControls/GlobalSearch.ascx" %>
 <%@ Register  TagPrefix="scp" TagName="UserSpaceBreadcrumb" Src="~/DesktopModules/SolidCP/SkinControls/UserSpaceBreadcrumb.ascx" %>
 
-<asp:ScriptManager ID="scriptManager" runat="server" EnablePartialRendering="true" EnableScriptGlobalization="true" EnableScriptLocalization="true">
+<asp:ScriptManager ID="scriptManager" runat="server" ScriptMode="Release" EnablePartialRendering="true" EnableScriptGlobalization="true" EnableScriptLocalization="true">
     <Services>
         <asp:ServiceReference Path="~/DesktopModules/SolidCP/TaskManager.asmx" />
     </Services>

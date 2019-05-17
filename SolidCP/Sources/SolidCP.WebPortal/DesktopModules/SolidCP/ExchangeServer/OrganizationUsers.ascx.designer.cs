@@ -175,15 +175,6 @@ namespace SolidCP.Portal.HostedSolution {
         protected global::System.Web.UI.UpdatePanel DeleteUserUpdatePanel;
         
         /// <summary>
-        /// hdAccountId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdAccountId;
-        
-        /// <summary>
         /// litDeleteUser control.
         /// </summary>
         /// <remarks>
