@@ -192,6 +192,7 @@
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.Crm.*"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Microsoft.SqlServer.BatchParser.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.Database.MariaDB.dll"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.DNS.SimpleDNS80.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.FTP.CerberusFTP6.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.EnterpriseStorage.Windows2012.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\SolidCP.Providers.StorageSpaces.Windows2012.dll"/>
@@ -204,7 +205,7 @@
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Crm*\*"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Dns*\*"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Exchange*\*"/>
-			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Filters*\*"/>
+			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Filters*\SolidCP.Providers.Filters.MailCleaner.dll"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\HyperV*\*"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\Ice*\*"/>
 			<Servercopyaspv2BuildExclude Include="$(ServerSrc)\bin\IIs*\*"/>

@@ -296,6 +296,7 @@
     <Content Include="OperatingSystem.asmx" />
     <Content Include="ServiceProvider.asmx" />
     <Content Include="SharePointServer.asmx" />
+    <Content Include="SpamExperts.asmx" />
     <Content Include="StatisticsServer.asmx" />
     <Content Include="StorageSpaceServices.asmx" />
     <Content Include="VirtualizationServer2012.asmx" />
@@ -412,6 +413,10 @@
     </Compile>
     <Compile Include="SharePointServer.asmx.cs">
       <DependentUpon>SharePointServer.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="SpamExperts.asmx.cs">
+      <DependentUpon>SpamExperts.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="StatisticsServer.asmx.cs">
