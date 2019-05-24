@@ -50,9 +50,25 @@ namespace SolidCP.Providers.HostedSolution
 
             ActiveDirectoryUtils.DisableInheritance(OUPath);
 
+            string dSHeuristicsOU = orgProvider.GetdSHeuristicsOU(rootDomain);
+            Log.WriteInfo("dSHeuristicsOU: {0}", dSHeuristicsOU);
+
+            DirectoryEntry GetdSHeuristicspath = new DirectoryEntry(dSHeuristicsOU);
+            object DSObject = ActiveDirectoryUtils.GetADObjectProperty(GetdSHeuristicspath, "dSHeuristics") ?? "notset";
+            string dSHeuristics = DSObject.ToString();
+            Log.WriteInfo("dSHeuristics is : {0}", dSHeuristics);
+
+            if (dSHeuristics is "001")
+            {
+
+                Log.WriteInfo("Removing PreWindows2000Identity from OU");
+                ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, PreWindows2000Identity);
+
+            }
+
+
             ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, EveryoneIdentity);
             ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, AuthenticatedUsersIdentity);
-            ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, PreWindows2000Identity);
 
             var exchServers = ActiveDirectoryUtils.GetObjectTargetAccountName("Recipient Management", rootDomain);
             if (ActiveDirectoryUtils.AccountExists(exchServers))

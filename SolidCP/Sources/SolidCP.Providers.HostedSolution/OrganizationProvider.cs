@@ -284,6 +284,17 @@ namespace SolidCP.Providers.HostedSolution
             }
         }
 
+        public string GetdSHeuristicsOU(string RootDomain)
+        {
+            StringBuilder sb = new StringBuilder();
+            AppendProtocol(sb);
+            AppendDomainController(sb);
+            sb.Append("CN=Directory Service,CN= Windows NT,CN= Services,CN= Configuration,");
+            AppendDomainPath(sb, RootDomain);
+
+            return sb.ToString();
+        }
+
         #endregion
 
 
