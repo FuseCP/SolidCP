@@ -95,9 +95,13 @@
         <td class="SubHead" nowrap><asp:Label ID="lblFtpAccounts" runat="server" meta:resourcekey="lblFtpAccounts" Text="FTP Accounts:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotaFtpAccounts" runat="server" QuotaName="FTP.Accounts" DisplayGauge="True"/></td>
     </tr>
-    <tr ID="pnlDatabases" runat="server">
-        <td class="SubHead" nowrap><asp:Label ID="lblDatabases" runat="server" meta:resourcekey="lblDatabases" Text="Databases 2008:"></asp:Label></td>
-        <td class="Normal"><scp:Quota ID="quotaDatabases" runat="server" QuotaName="MsSQL2008.Databases" DisplayGauge="True"/></td>
+    <tr ID="pnlMsSQL2008Databases" runat="server">
+        <td class="SubHead" nowrap><asp:Label ID="lblMsSQL2008Databases" runat="server" meta:resourcekey="lblMsSQL2008Databases" Text="MsSQL2008 Databases:"></asp:Label></td>
+        <td class="Normal"><scp:Quota ID="quotamssql2008databases" runat="server" QuotaName="MsSQL2008.Databases" DisplayGauge="True"/></td>
+    </tr>
+    <tr ID="pnlMsSQL2012Databases" runat="server">
+        <td class="SubHead" nowrap><asp:Label ID="lblMsSQL2012Databases" runat="server" meta:resourcekey="lblMsSQL2012Databases" Text="MsSQL2012 Databases:"></asp:Label></td>
+        <td class="Normal"><scp:Quota ID="quotamssql2012databases" runat="server" QuotaName="MsSQL2012.Databases" DisplayGauge="True"/></td>
     </tr>
     <tr ID="pnlMsSQL2014Databases" runat="server">
         <td class="SubHead" nowrap><asp:Label ID="lblMsSQL2014Databases" runat="server" meta:resourcekey="lblMsSQL2014Databases" Text="MsSQL2014 Databases:"></asp:Label></td>
