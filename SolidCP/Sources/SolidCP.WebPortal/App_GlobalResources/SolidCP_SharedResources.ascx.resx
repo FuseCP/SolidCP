@@ -6442,4 +6442,10 @@
   <data name="AuditLogTask.VPS_RESTORE_PRIVATE_IP" xml:space="preserve">
     <value>Restore private IP</value>
   </data>
+    <data name="Quota.RDS.DisableUserDeleteServer" xml:space="preserve">
+    <value>Disable user from removing server</value>
+  </data>
+    <data name="Quota.RDS.DisableUserShutdown" xml:space="preserve">
+    <value>Disable user from shutting down RDS Server</value>
+  </data>
 </root>
