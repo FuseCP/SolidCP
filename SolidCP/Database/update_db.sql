@@ -20648,8 +20648,8 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [GroupID] = '90')
 BEGIN
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (110, 90, 1, N'MySQL8.Databases', N'Databases', 2, 0, 23, NULL, NULL)
-INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (111, 90, 2, N'MySQL8.Users', N'Users', 2, 0, 24, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (110, 90, 1, N'MySQL8.Databases', N'Databases', 2, 0, 75, NULL, NULL)
+INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (111, 90, 2, N'MySQL8.Users', N'Users', 2, 0, 76, NULL, NULL)
 INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (112, 90, 4, N'MySQL8.Backup', N'Database Backups', 1, 0, NULL, NULL, NULL)
 INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (113, 90, 3, N'MySQL8.MaxDatabaseSize', N'Max Database Size', 3, 0, NULL, NULL, NULL)
 INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (114, 90, 5, N'MySQL8.Restore', N'Database Restores', 1, 0, NULL, NULL, NULL)
@@ -20878,4 +20878,10 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+
+-- Fix for MySQL8 Quota
+UPDATE [Quotas] SET [ItemTypeID] = '75' WHERE [QuotaID] = '110' AND [ItemTypeID] = '23'
+GO
+UPDATE [Quotas] SET [ItemTypeID] = '76' WHERE [QuotaID] = '111' AND [ItemTypeID] = '24'
 GO
