@@ -562,31 +562,58 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.Quota quotaFtpAccounts;
         
         /// <summary>
-        /// pnlDatabases control.
+        /// pnlMsSQL2008Databases control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlDatabases;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2008Databases;
         
         /// <summary>
-        /// lblDatabases control.
+        /// lblMsSQL2008Databases control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblDatabases;
+        protected global::System.Web.UI.WebControls.Label lblMsSQL2008Databases;
         
         /// <summary>
-        /// quotaDatabases control.
+        /// quotamssql2008databases control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SolidCP.Portal.Quota quotaDatabases;
+        protected global::SolidCP.Portal.Quota quotamssql2008databases;
+        
+        /// <summary>
+        /// pnlMsSQL2012Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2012Databases;
+        
+        /// <summary>
+        /// lblMsSQL2012Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMsSQL2012Databases;
+        
+        /// <summary>
+        /// quotamssql2012databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota quotamssql2012databases;
         
         /// <summary>
         /// pnlMsSQL2014Databases control.
@@ -668,6 +695,33 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2017databases;
+        
+        /// <summary>
+        /// pnlMySQL4Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMySQL4Databases;
+        
+        /// <summary>
+        /// lblMySQL4Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMySQL4Databases;
+        
+        /// <summary>
+        /// quotamysql4databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota quotamysql4databases;
         
         /// <summary>
         /// pnlMySQL5Databases control.
