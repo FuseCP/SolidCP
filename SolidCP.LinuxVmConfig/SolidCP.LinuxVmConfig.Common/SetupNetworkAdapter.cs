@@ -39,6 +39,9 @@ namespace SolidCP.LinuxVmConfig
     public class SetupNetworkAdapter
     {
         internal const string netplanFolder = "/etc/netplan/";
+        internal const string interfacesPath = "/etc/network/interfaces";
+        internal const string hosts = "/etc/hosts";
+
         public static ExecutionResult Run(ref ExecutionContext context)
         {
             ExecutionResult ret = new ExecutionResult();
@@ -232,42 +235,38 @@ namespace SolidCP.LinuxVmConfig
             Log.WriteStart("Enabling DHCP...");
             //netplan configuration (for Ubuntu 18.04+)
             string netplanPath = GetNetplanPath();
-            int startPos = TxtHelper.GetStrPos(netplanPath, new String(' ', 8) + adapter, 0, -1) + 1;
+            int startPos = TxtHelper.GetStrPos(netplanPath, adapter + ":", 0, -1);
             if (startPos != -1)
             {
-                int tmpPos = startPos;
-                int endPos = tmpPos;
-                do
-                {
-                    tmpPos = TxtHelper.GetStrPos(netplanPath, new String(' ', 12), tmpPos + 1, tmpPos + 1);
-                    if (tmpPos != -1) endPos = tmpPos;
-                } while (tmpPos != -1);
+                string firstStr = TxtHelper.GetStr(netplanPath, adapter + ":", startPos, startPos);
+                int spacesCount = GetNetplanSpacesCount(firstStr);
+
+                startPos++;
+                int endPos = GetNetplanEndPos(netplanPath, startPos, spacesCount);
                 List<string> config = new List<string>();
-                string str = new String(' ', 12) + "dhcp4: yes";
-                config.Add(str);
+                config.Add(new String(' ', spacesCount+2) + "dhcp4: yes");
                 TxtHelper.ReplaceAllStr(netplanPath, config, startPos, endPos);
                 ShellHelper.RunCmd("sudo netplan apply");
             }
 
             //iterfaces configuration (for Ubuntu 16.04-)
-            const string interfacesPath = "/etc/network/interfaces";
             startPos = TxtHelper.GetStrPos(interfacesPath, "iface " + adapter, 0, -1);
             if (startPos != -1)
             {
                 int endPos = TxtHelper.GetStrPos(interfacesPath, "auto ", startPos, -1);
                 if (endPos != -1) endPos--;
                 List<string> config = new List<string>();
-                string str = "iface "+adapter+" inet dhcp";
-                config.Add(str);
+                config.Add("iface " + adapter + " inet dhcp");
                 TxtHelper.ReplaceAllStr(interfacesPath, config, startPos, endPos);
                 ret.RebootRequired = true;
-
             }
             Log.WriteEnd("DHCP enabled");
         }
 
         private static void DisableDHCP(ExecutionContext context, String adapter, ExecutionResult ret)
         {
+            List<string> oldIpList = GetAdapterIp(adapter);
+
             string[] ipGateways = ParseArray(context.Parameters["DefaultIPGateway"]);
             string[] ipAddresses = ParseArray(context.Parameters["IPAddress"]);
             string[] subnetMasks = ParseArray(context.Parameters["SubnetMask"]);
@@ -286,38 +285,10 @@ namespace SolidCP.LinuxVmConfig
             if (startPos != -1)
             {
                 string firstStr = TxtHelper.GetStr(netplanPath, adapter + ":", startPos, startPos);
-                int spacesCount = 0;
-                if (firstStr != null)
-                {
-                    for (int i = 0; i < firstStr.Length; i++)
-                    {
-                        if (firstStr[i] == ' ')
-                        {
-                            spacesCount++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    spacesCount = 8;//default
-                }
+                int spacesCount = GetNetplanSpacesCount(firstStr);                
 
                 startPos++;
-                int tmpPos = startPos;
-                int endPos = tmpPos;
-                do
-                {
-                    tmpPos = TxtHelper.GetStrPos(netplanPath, new String(' ', spacesCount+2), tmpPos, tmpPos);
-                    if (tmpPos != -1)
-                    {
-                        endPos = tmpPos;
-                        tmpPos++;
-                    }
-                } while (tmpPos != -1);
+                int endPos = GetNetplanEndPos(netplanPath, startPos, spacesCount);
                 List<string> config = new List<string>();
                 string str = new String(' ', spacesCount+2) + "addresses: [";
                 for (int i = 0; i < ipAddresses.Length; i++)
@@ -327,10 +298,8 @@ namespace SolidCP.LinuxVmConfig
                 }
                 str += "]";
                 config.Add(str);
-                str = new String(' ', spacesCount+2) + "gateway4: " + ipGateways[0];
-                config.Add(str);
-                str = new String(' ', spacesCount+2) + "nameservers:";
-                config.Add(str);
+                config.Add(new String(' ', spacesCount + 2) + "gateway4: " + ipGateways[0]);
+                config.Add(new String(' ', spacesCount + 2) + "nameservers:");
                 if (CheckParameter(context, "PreferredDNSServer"))
                 {
                     string[] dnsServers = ParseArray(context.Parameters["PreferredDNSServer"]);
@@ -343,13 +312,11 @@ namespace SolidCP.LinuxVmConfig
                     str += "]";
                     config.Add(str);
                 }
-                str = new String(' ', spacesCount+2) + "dhcp4: no";
-                config.Add(str);
+                config.Add(new String(' ', spacesCount + 2) + "dhcp4: no");
                 TxtHelper.ReplaceAllStr(netplanPath, config, startPos, endPos);
                 ShellHelper.RunCmd("sudo netplan apply");
             }
             //iterfaces configuration (for Ubuntu 16.04-)
-            const string interfacesPath = "/etc/network/interfaces";
             startPos = TxtHelper.GetStrPos(interfacesPath, "iface " + adapter, 0, -1);
             if (startPos != -1)
             {
@@ -359,16 +326,12 @@ namespace SolidCP.LinuxVmConfig
                 string str;
                 for (int i = 0; i < ipAddresses.Length; i++)
                 {
-                    str = "iface " + adapter + " inet static";
-                    config.Add(str);
-                    str = "address " + ipAddresses[i];
-                    config.Add(str);
-                    str = "netmask " + subnetMasks[i];
-                    config.Add(str);
+                    config.Add("iface " + adapter + " inet static");
+                    config.Add("address " + ipAddresses[i]);
+                    config.Add("netmask " + subnetMasks[i]);
                     config.Add("");
                 }
-                str = "gateway " + ipGateways[0];
-                config.Add(str);
+                config.Add("gateway " + ipGateways[0]);
                 if (CheckParameter(context, "PreferredDNSServer"))
                 {
                     string[] dnsServers = ParseArray(context.Parameters["PreferredDNSServer"]);
@@ -379,10 +342,78 @@ namespace SolidCP.LinuxVmConfig
                         if (t + 1 < dnsServers.Length) str += " ";
                     }
                     config.Add(str);
+                    config.Add("");
                 }
                 TxtHelper.ReplaceAllStr(interfacesPath, config, startPos, endPos);
                 ret.RebootRequired = true;
             }
+
+            foreach (string Ip in oldIpList)
+            {
+                TxtHelper.ReplaceStr(hosts, Ip, ipAddresses[0]);
+            }
+        }
+
+        private static List<string> GetAdapterIp(string adapterName)
+        {
+            ExecutionResult res = ShellHelper.RunCmd("ip addr show "+ adapterName + " | grep \"inet \" | awk '{print $2}' | cut -d/ -f1");
+            if (res.ResultCode == 1) return null;
+            string strIps = res.Value.Trim();
+            List<string> IpList = new List<string>();
+            int startIdx = 0;
+            int idx = -1;
+            do
+            {
+                idx = strIps.IndexOf("\n", startIdx);
+                if (idx != -1)
+                {
+                    string str = strIps.Substring(startIdx, idx - startIdx);
+                    IpList.Add(str);
+                    startIdx = idx + 1;
+                }
+                else
+                {
+                    string str = strIps.Substring(startIdx, strIps.Length - startIdx);
+                    IpList.Add(str);
+                }
+            } while (idx != -1);
+            return IpList;
+        }
+
+        private static int GetNetplanEndPos(string netplanPath, int startPos, int spacesCount)
+        {
+            int tmpPos = startPos;
+            int endPos = tmpPos;
+            do
+            {
+                tmpPos = TxtHelper.GetStrPos(netplanPath, new String(' ', spacesCount + 2), tmpPos, tmpPos);
+                if (tmpPos != -1)
+                {
+                    endPos = tmpPos;
+                    tmpPos++;
+                }
+            } while (tmpPos != -1);
+            return endPos;
+        }
+
+        private static int GetNetplanSpacesCount(string str)
+        {
+            int spacesCount = 0;
+            if (str != null)
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (str[i] == ' ')
+                    {
+                        spacesCount++;
+                    }
+                    else
+                    {
+                        return spacesCount;
+                    }
+                }
+            }
+            return 8;//default
         }
 
         private static string GetSubnetMaskPrefix(string subnetMask)
