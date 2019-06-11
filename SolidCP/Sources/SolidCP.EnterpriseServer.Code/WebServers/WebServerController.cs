@@ -4062,7 +4062,7 @@ namespace SolidCP.EnterpriseServer
 			// Trying to match site's bindings to against either 
 			// external or internal address of the shared ip
 			bool sharedIpMatch = Array.Exists(site.Bindings, 
-				x => sharedIp != null && (x.IP.Equals(sharedIp.ExternalIP) || x.IP.Equals(sharedIp.InternalIP)));
+                x => (sharedIp != null && (x.IP.Equals(sharedIp.ExternalIP) || x.IP.Equals(sharedIp.InternalIP)) || (x.IP.Equals("*") && sharedIpId.Equals(0))));
 
 			// Quering dedicated ips package quota allotted
 			bool dedicatedIpsAllotted = Array.Exists(packageCtx.QuotasArray,
