@@ -38,8 +38,9 @@ namespace SolidCP.LinuxVmConfig
     {
         internal const string cloudCfg = "/etc/cloud/cloud.cfg";
         internal const string hosts = "/etc/hosts";
+        internal const string hostname = "/etc/hostname";
 
-        public static ExecutionResult Run(ref ExecutionContext context)
+        public static ExecutionResult Run(ref ExecutionContext context, OsVersion osVersion)
         {
             ExecutionResult ret = new ExecutionResult();
             ret.ResultCode = 0;
@@ -57,8 +58,7 @@ namespace SolidCP.LinuxVmConfig
                     context.Progress = 100;
                     return ret;
                 }
-                // Call SetComputerEx
-                string computerName = context.Parameters["FullComputerName"];
+                string computerName = context.Parameters["FullComputerName"].ToLower();
                 string netBiosName = computerName;
                 int idx = netBiosName.IndexOf(".");
                 if (idx != -1)
@@ -66,7 +66,7 @@ namespace SolidCP.LinuxVmConfig
                     netBiosName = computerName.Substring(0, idx);
                 }
                 ExecutionResult res;
-                res = ShellHelper.RunCmd("hostname");
+                res = ShellHelper.RunCmd("hostname -s");
                 if (res.ResultCode == 1)
                 {
                     ret.ResultCode = 1;
@@ -75,7 +75,8 @@ namespace SolidCP.LinuxVmConfig
                     return ret;
                 }
                 string hostnameOld = res.Value.Trim();
-                res = ShellHelper.RunCmd("hostname -f");
+
+                res = ShellHelper.RunCmd("hostname");
                 if (res.ResultCode == 1)
                 {
                     ret.ResultCode = 1;
@@ -84,21 +85,18 @@ namespace SolidCP.LinuxVmConfig
                     return ret;
                 }
                 string fullnameOld = res.Value.Trim();
-                res = ShellHelper.RunCmd("sudo hostnamectl set-hostname " + netBiosName);
-                if (res.ResultCode == 1)
-                {
-                    ret.ResultCode = 1;
-                    ret.ErrorMessage = res.ErrorMessage;
-                    context.Progress = 100;
-                    return ret;
-                }
 
+                TxtHelper.ReplaceStr(hostname, computerName, 0);
                 TxtHelper.ReplaceStr(hosts, fullnameOld, computerName);
-                TxtHelper.ReplaceStr(hosts, hostnameOld, netBiosName);
+                TxtHelper.ReplaceStr(hosts, " " + hostnameOld, " " + netBiosName);
+                TxtHelper.ReplaceStr(hosts, "\t" + hostnameOld, "\t" + netBiosName);
 
-                TxtHelper.ReplaceStr(cloudCfg, "preserve_hostname: false", "preserve_hostname: true");
-                TxtHelper.ReplaceStr(cloudCfg, "# preserve_hostname: true", "preserve_hostname: true");
-                TxtHelper.ReplaceStr(cloudCfg, "#preserve_hostname: true", "preserve_hostname: true");
+                if (osVersion == OsVersion.Ubuntu)
+                {
+                    TxtHelper.ReplaceStr(cloudCfg, "preserve_hostname: false", "preserve_hostname: true");
+                    TxtHelper.ReplaceStr(cloudCfg, "# preserve_hostname: true", "preserve_hostname: true");
+                    TxtHelper.ReplaceStr(cloudCfg, "#preserve_hostname: true", "preserve_hostname: true");
+                }
             }catch(Exception ex)
             {
                 ret.ResultCode = 1;

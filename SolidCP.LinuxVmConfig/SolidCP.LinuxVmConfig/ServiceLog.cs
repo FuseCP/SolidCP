@@ -199,19 +199,5 @@ namespace SolidCP.LinuxVmConfig
             }
             catch { }
         }
-
-        /// <summary>
-        /// Opens notepad to view log file.
-        /// </summary>
-        public static void ShowLogFile()
-        {
-            /*try
-            {
-                string path = LogFile;
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-                Process.Start("notepad.exe", path);
-            }
-            catch { }*/
-        }
     }
 }

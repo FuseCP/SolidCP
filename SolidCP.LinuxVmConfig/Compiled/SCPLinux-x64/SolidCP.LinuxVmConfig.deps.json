@@ -1,12 +1,12 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v2.1/ubuntu.16.04-x64",
+    "name": ".NETCoreApp,Version=v2.1/linux-x64",
     "signature": "3f26da4153285049e1735af9ae3d29d317a3dda5"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.1": {},
-    ".NETCoreApp,Version=v2.1/ubuntu.16.04-x64": {
+    ".NETCoreApp,Version=v2.1/linux-x64": {
       "SolidCP.LinuxVmConfig/1.0.0": {
         "dependencies": {
           "Microsoft.NETCore.App": "2.1.9",

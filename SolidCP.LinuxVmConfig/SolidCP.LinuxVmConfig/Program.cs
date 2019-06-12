@@ -72,6 +72,25 @@ namespace SolidCP.LinuxVmConfig
             mainThread.Start();
         }
 
+        private static OsVersion GetOsVersion()
+        {
+            OsVersion osVersion = OsVersion.Ubuntu;
+            ExecutionResult res = ShellHelper.RunCmd("cat /etc/os-release | grep \"ID=\"");
+            if (res.ResultCode != 1)
+            {
+                string osResult = res.Value.Trim();
+                if (osResult.ToLower().Contains("ubuntu"))
+                {
+                    osVersion = OsVersion.Ubuntu;
+                }
+                else if (osResult.ToLower().Contains("centos"))
+                {
+                    osVersion = OsVersion.CentOS;
+                }
+            }
+            return osVersion;
+        }
+
         private static void InstallService()
         {
             const string serviceFileName = "SolidCP.service";
@@ -313,13 +332,13 @@ namespace SolidCP.LinuxVmConfig
                         switch (context.ActivityName)
                         {
                             case "ChangeComputerName":
-                                res=ChangeComputerName.Run(ref context);
+                                res=ChangeComputerName.Run(ref context, GetOsVersion());
                                 break;
                             case "ChangeAdministratorPassword":
-                                res=ChangeAdministratorPassword.Run(ref context);
+                                res=ChangeAdministratorPassword.Run(ref context, GetOsVersion());
                                 break;
                             case "SetupNetworkAdapter":
-                                res=SetupNetworkAdapter.Run(ref context);
+                                res=SetupNetworkAdapter.Run(ref context, GetOsVersion());
                                 break;
                         }
                         context.Progress = 100;

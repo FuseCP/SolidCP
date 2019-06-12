@@ -54,6 +54,48 @@ namespace SolidCP.LinuxVmConfig
             catch (Exception) { }
         }
 
+        public static void ReplaceStr(string filePath, string newStr, int pos)
+        {
+            try
+            {
+                System.Collections.Generic.IEnumerable<string> listIE = File.ReadLines(filePath);
+                List<string> list = new List<string>();
+                int count = -1;
+                foreach (string str in listIE)
+                {
+                    count++;
+                    if (count == pos)
+                    {
+                        list.Add(newStr);
+                    }
+                    else
+                    {
+                        list.Add(str);
+                    }
+                }
+                if (pos == -1) list.Add(newStr);
+                File.WriteAllLines(filePath, list);
+            }
+            catch (Exception) { }
+        }
+
+        public static void DelStr(string filePath, int pos)
+        {
+            try
+            {
+                System.Collections.Generic.IEnumerable<string> listIE = File.ReadLines(filePath);
+                List<string> list = new List<string>();
+                int count = -1;
+                foreach (string str in listIE)
+                {
+                    count++;
+                    if (count != pos) list.Add(str);
+                }
+                File.WriteAllLines(filePath, list);
+            }
+            catch (Exception) { }
+        }
+
         public static int GetStrPos(string filePath, string findStr, int startPos, int endPos)
         {
             int count = -1;

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\SolidCP.LinuxVmConfig.Common\SolidCP.LinuxVmConfig.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
+  </ItemGroup>
+
 </Project>
