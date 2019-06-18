@@ -51,7 +51,9 @@ namespace SolidCP.LinuxVmConfig
                 }
                 File.WriteAllLines(filePath, list);
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Log.WriteError("ReplaceStr error: " + ex.ToString());
+            }
         }
 
         public static void ReplaceStr(string filePath, string newStr, int pos)
@@ -76,7 +78,9 @@ namespace SolidCP.LinuxVmConfig
                 if (pos == -1) list.Add(newStr);
                 File.WriteAllLines(filePath, list);
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Log.WriteError("ReplaceStr error: " + ex.ToString());
+            }
         }
 
         public static void DelStr(string filePath, int pos)
@@ -93,7 +97,9 @@ namespace SolidCP.LinuxVmConfig
                 }
                 File.WriteAllLines(filePath, list);
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Log.WriteError("DelStr error: " + ex.ToString());
+            }
         }
 
         public static int GetStrPos(string filePath, string findStr, int startPos, int endPos)
@@ -107,13 +113,15 @@ namespace SolidCP.LinuxVmConfig
                     count++;
                     if (count < startPos) continue;
                     if (endPos != -1 && count > endPos) break;
-                    if (str.Contains(findStr, StringComparison.Ordinal))
+                    if (str.Contains(findStr))
                     {
                         return count;
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Log.WriteError("GetStrPos error: " + ex.ToString());
+            }
             return -1;
         }
 
@@ -128,13 +136,15 @@ namespace SolidCP.LinuxVmConfig
                     count++;
                     if (count < startPos) continue;
                     if (endPos != -1 && count > endPos) break;
-                    if (str.Contains(findStr, StringComparison.Ordinal))
+                    if (str.Contains(findStr))
                     {
                         return str;
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Log.WriteError("GetStr error: " + ex.ToString());
+            }
             return null;
         }
 
@@ -167,7 +177,9 @@ namespace SolidCP.LinuxVmConfig
                 }
                 File.WriteAllLines(filePath, newList);
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Log.WriteError("ReplaceAllStr error: " + ex.ToString());
+            }
         }
     }
 }

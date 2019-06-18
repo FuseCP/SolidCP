@@ -37,19 +37,31 @@ namespace SolidCP.LinuxVmConfig
 {
     public class ShellHelper
     {
+        internal const string Shell_Linux = "/bin/bash";
+        private static readonly string Shell_FreeBSD = AppDomain.CurrentDomain.BaseDirectory + "sh";//use external shell to out from Linux-emulator
+
         public static ExecutionResult RunCmd(string cmd)
         {
             ExecutionResult ret = new ExecutionResult();
             ret.ResultCode = 0;
             ret.ErrorMessage = null;
-
+            string shellPath = null;
             try
             {
+                if (OsVersion.GetOsVersion() == OsVersionEnum.FreeBSD)
+                {
+                    shellPath = Shell_FreeBSD;
+                }
+                else
+                {
+                    shellPath = Shell_Linux;
+                }
                 string escapedArgs = cmd.Replace("\"", "\\\"");
-                using (Process process = new Process()) {
+                using (Process process = new Process())
+                {
                     process.StartInfo = new ProcessStartInfo
                     {
-                        FileName = "/bin/bash",
+                        FileName = shellPath,
                         Arguments = $"-c \"{escapedArgs}\"",
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
@@ -63,7 +75,7 @@ namespace SolidCP.LinuxVmConfig
                 }
                 return ret;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ret.ResultCode = 1;
                 ret.ErrorMessage = "ShellHelper error: " + ex.ToString();
@@ -79,11 +91,24 @@ namespace SolidCP.LinuxVmConfig
 
             try
             {
-                using (Process process = new Process()) {
+                string shellPath = null;
+                string arguments = null;
+                if (OsVersion.GetOsVersion() == OsVersionEnum.FreeBSD)
+                {
+                    shellPath = Shell_FreeBSD;
+                    arguments = $"-c \"echo \"{password}\" | pw usermod {userName} -h 0\"";
+                }
+                else
+                {
+                    shellPath = Shell_Linux;
+                    arguments = $"-c \"passwd {userName}\"";
+                }
+                using (Process process = new Process())
+                {
                     process.StartInfo = new ProcessStartInfo
                     {
-                        FileName = "/bin/bash",
-                        Arguments = $"-c \"passwd {userName}\"",
+                        FileName = shellPath,
+                        Arguments = arguments,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         RedirectStandardInput = true,
@@ -91,10 +116,13 @@ namespace SolidCP.LinuxVmConfig
                         CreateNoWindow = true,
                     };
                     process.Start();
-                    System.Threading.Thread.Sleep(1000);
-                    process.StandardInput.WriteLine(password);
-                    System.Threading.Thread.Sleep(1000);
-                    process.StandardInput.WriteLine(password);
+                    if (OsVersion.GetOsVersion() != OsVersionEnum.FreeBSD)//Input redirect dont work on FreeBSD
+                    {
+                        System.Threading.Thread.Sleep(1000);
+                        process.StandardInput.WriteLine(password);
+                        System.Threading.Thread.Sleep(1000);
+                        process.StandardInput.WriteLine(password);
+                    }
                     process.WaitForExit();
                 }
                 return ret;

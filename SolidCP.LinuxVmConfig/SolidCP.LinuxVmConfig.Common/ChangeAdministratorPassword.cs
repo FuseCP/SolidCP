@@ -36,7 +36,7 @@ namespace SolidCP.LinuxVmConfig
 {
     public class ChangeAdministratorPassword
     {
-        public static ExecutionResult Run(ref ExecutionContext context, OsVersion osVersion)
+        public static ExecutionResult Run(ref ExecutionContext context)
         {
             ExecutionResult ret = new ExecutionResult();
             ret.ResultCode = 0;

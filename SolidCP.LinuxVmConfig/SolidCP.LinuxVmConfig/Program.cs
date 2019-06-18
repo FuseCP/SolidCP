@@ -47,9 +47,10 @@ namespace SolidCP.LinuxVmConfig
         internal const string CurrentTaskName = "SCP-CurrentTask";
 
         internal const string DEFAULT_KVP_DIRECTORY = "/var/lib/hyperv/";
+        internal const string DEFAULT_KVP_DIRECTORY_FREEBSD = "/var/db/hyperv/pool/";
         internal const string KVP_BASEFILENAME = ".kvp_pool_";
-        internal const string InputKVP = DEFAULT_KVP_DIRECTORY + KVP_BASEFILENAME + "0";
-        internal const string OutputKVP = DEFAULT_KVP_DIRECTORY + KVP_BASEFILENAME + "1";
+        static string InputKVP = DEFAULT_KVP_DIRECTORY + KVP_BASEFILENAME + "0";
+        static string OutputKVP = DEFAULT_KVP_DIRECTORY + KVP_BASEFILENAME + "1";
 
         private static Dictionary<string, string> provisioningModules;
 
@@ -60,6 +61,11 @@ namespace SolidCP.LinuxVmConfig
 
         static void Main(string[] args)
         {
+            if (OsVersion.GetOsVersion() == OsVersionEnum.FreeBSD)
+            {
+                InputKVP = DEFAULT_KVP_DIRECTORY_FREEBSD + KVP_BASEFILENAME + "0";
+                OutputKVP = DEFAULT_KVP_DIRECTORY_FREEBSD + KVP_BASEFILENAME + "1";
+            }
             foreach (var arg in args)
             {
                 if (arg.Trim().Equals("install"))
@@ -72,69 +78,132 @@ namespace SolidCP.LinuxVmConfig
             mainThread.Start();
         }
 
-        private static OsVersion GetOsVersion()
-        {
-            OsVersion osVersion = OsVersion.Ubuntu;
-            ExecutionResult res = ShellHelper.RunCmd("cat /etc/os-release | grep \"ID=\"");
-            if (res.ResultCode != 1)
-            {
-                string osResult = res.Value.Trim();
-                if (osResult.ToLower().Contains("ubuntu"))
-                {
-                    osVersion = OsVersion.Ubuntu;
-                }
-                else if (osResult.ToLower().Contains("centos"))
-                {
-                    osVersion = OsVersion.CentOS;
-                }
-            }
-            return osVersion;
-        }
-
         private static void InstallService()
         {
-            const string serviceFileName = "SolidCP.service";
-            const string serviceSystemPath = "/etc/systemd/system/";
-            string userName = Environment.UserName;
-            string path = Environment.CurrentDirectory;
+            if (OsVersion.GetOsVersion() == OsVersionEnum.FreeBSD)
+            {
+                InstallService_FreeBSD();
+            }
+            else
+            {
+                InstallService_Linux();
+            }
+        }
 
-            ShellHelper.RunCmd("sudo systemctl stop " + serviceFileName);
-            ShellHelper.RunCmd("sudo systemctl disable " + serviceFileName);
+        private static void InstallService_FreeBSD()
+        {
+            const string rcConf = "/etc/rc.conf";
+            const string compatLinux = "/compat/linux";
+            const string serviceName = "solidcp";
+            const string servicesPath = "/etc/rc.d/";
+            string userName = Environment.UserName;
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+
+            List<string> config = new List<string>();
+
+            config.Add("#!/bin/sh");
+            config.Add("");
+            config.Add("# SolidCP LinuxVmConfig Service");
+            config.Add("# PROVIDE: " + serviceName);
+            config.Add("# REQUIRE: DAEMON networking");
+            config.Add("# BEFORE:  LOGIN");
+            config.Add("");
+            config.Add(". /etc/rc.subr");
+            config.Add("");
+            config.Add("name=" + serviceName);
+            config.Add("rcvar=" + serviceName + "_enable");
+            config.Add(serviceName + "_user=\"" + userName + "\"");
+            config.Add("command=\"" + appPath + "SolidCP.LinuxVmConfig" + "\"");
+            config.Add("pidfile=\"/var/run/" + serviceName + ".pid\"");
+            config.Add("");
+            config.Add("start_cmd=\"" + serviceName + "_start\"");
+            config.Add("stop_cmd=\"" + serviceName + "_stop\"");
+            config.Add("status_cmd=\"" + serviceName + "_status\"");
+            config.Add("");
+            config.Add(serviceName + "_start() {");
+            config.Add("   /usr/sbin/daemon -P ${pidfile} -r -f -u $" + serviceName + "_user $command");
+            config.Add("}");
+            config.Add("");
+            config.Add(serviceName + "_stop() {");
+            config.Add("   if [ -e \"${pidfile}\" ]; then");
+            config.Add("      kill -s TERM `cat ${pidfile}`");
+            config.Add("   else");
+            config.Add("      echo \"SolidCP.VmConfig is not running\"");
+            config.Add("   fi");
+            config.Add("}");
+            config.Add("");
+            config.Add(serviceName + "_status() {");
+            config.Add("   if [ -e \"${pidfile}\" ]; then");
+            config.Add("      echo \"SolidCP.VmConfig is running as pid `cat ${pidfile}`\"");
+            config.Add("   else");
+            config.Add("      echo \"SolidCP.VmConfig is not running\"");
+            config.Add("   fi");
+            config.Add("}");
+            config.Add("");
+            config.Add("load_rc_config $name");
+            config.Add("run_rc_command \"$1\"");
+
+            File.WriteAllLines(servicesPath + serviceName, config);
+
+            ShellHelper.RunCmd("chmod +x " + servicesPath + serviceName);
+            ShellHelper.RunCmd("cp -p " + rcConf + " " + compatLinux + rcConf);
+            int pos = TxtHelper.GetStrPos(compatLinux + rcConf, serviceName + "_enable", 0, -1);
+            TxtHelper.ReplaceStr(compatLinux + rcConf, serviceName + "_enable=\"YES\"", pos);
+            ShellHelper.RunCmd("cp -p " + compatLinux + rcConf + " " + rcConf);
+
+            ExecutionResult res = ShellHelper.RunCmd("service " + serviceName + " start");
+            if (res.ResultCode == 1)
+            {
+                ServiceLog.WriteError("Service install error: " + res.ErrorMessage);
+                return;
+            }
+            ServiceLog.WriteInfo(serviceName + " service successfully installed.");
+        }
+
+        private static void InstallService_Linux()
+        {
+            const string serviceName = "solidcp.service";
+            const string servicesPath = "/etc/systemd/system/";
+            string userName = Environment.UserName;
+            string appPath = AppDomain.CurrentDomain.BaseDirectory;
+
+            ShellHelper.RunCmd("systemctl stop " + serviceName);
+            ShellHelper.RunCmd("systemctl disable " + serviceName);
 
             List<string> config = new List<string>();
             config.Add("[Unit]");
             config.Add("Description=SolidCP LinuxVmConfig Service");
             config.Add("[Service]");
-            config.Add("User="+userName);
-            config.Add("WorkingDirectory="+path);
-            config.Add("ExecStart="+path+"/SolidCP.LinuxVmConfig");
+            config.Add("User=" + userName);
+            config.Add("WorkingDirectory=" + appPath);
+            config.Add("ExecStart=" + appPath + "SolidCP.LinuxVmConfig");
             config.Add("SuccessExitStatus=0");
             config.Add("TimeoutStopSec=infinity");
             config.Add("Restart=on-failure");
             config.Add("RestartSec=5");
             config.Add("[Install]");
             config.Add("WantedBy=multi-user.target");
-            File.WriteAllLines(serviceSystemPath + serviceFileName, config);
+            File.WriteAllLines(servicesPath + serviceName, config);
 
-            ExecutionResult res = ShellHelper.RunCmd("sudo systemctl daemon-reload");
+            ExecutionResult res = ShellHelper.RunCmd("systemctl daemon-reload");
             if (res.ResultCode == 1)
             {
                 ServiceLog.WriteError("Service install error: " + res.ErrorMessage);
                 return;
             }
-            res = ShellHelper.RunCmd("sudo systemctl enable "+ serviceFileName);
+            res = ShellHelper.RunCmd("systemctl enable "+ serviceName);
             if (res.ResultCode == 1)
             {
                 ServiceLog.WriteError("Service install error: " + res.ErrorMessage);
                 return;
             }
-            res = ShellHelper.RunCmd("sudo systemctl start " + serviceFileName);
+            res = ShellHelper.RunCmd("systemctl start " + serviceName);
             if (res.ResultCode == 1)
             {
                 ServiceLog.WriteError("Service install error: " + res.ErrorMessage);
                 return;
             }
-            ServiceLog.WriteInfo(serviceFileName + " successfully installed.");
+            ServiceLog.WriteInfo(serviceName + " successfully installed.");
         }
 
         private static void Start()
@@ -332,13 +401,13 @@ namespace SolidCP.LinuxVmConfig
                         switch (context.ActivityName)
                         {
                             case "ChangeComputerName":
-                                res=ChangeComputerName.Run(ref context, GetOsVersion());
+                                res=ChangeComputerName.Run(ref context);
                                 break;
                             case "ChangeAdministratorPassword":
-                                res=ChangeAdministratorPassword.Run(ref context, GetOsVersion());
+                                res=ChangeAdministratorPassword.Run(ref context);
                                 break;
                             case "SetupNetworkAdapter":
-                                res=SetupNetworkAdapter.Run(ref context, GetOsVersion());
+                                res=SetupNetworkAdapter.Run(ref context);
                                 break;
                         }
                         context.Progress = 100;
@@ -445,7 +514,7 @@ namespace SolidCP.LinuxVmConfig
             try
             {
                 ServiceLog.WriteStart("RebootSystem");
-                ShellHelper.RunCmd("sudo reboot");
+                ShellHelper.RunCmd("reboot");
                 ServiceLog.WriteEnd("RebootSystem");
             }
             catch (Exception ex)

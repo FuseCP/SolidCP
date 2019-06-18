@@ -39,8 +39,10 @@ namespace SolidCP.LinuxVmConfig
         internal const string cloudCfg = "/etc/cloud/cloud.cfg";
         internal const string hosts = "/etc/hosts";
         internal const string hostname = "/etc/hostname";
+        internal const string rcConf = "/etc/rc.conf";
+        internal const string compatLinux = "/compat/linux";
 
-        public static ExecutionResult Run(ref ExecutionContext context, OsVersion osVersion)
+        public static ExecutionResult Run(ref ExecutionContext context)
         {
             ExecutionResult ret = new ExecutionResult();
             ret.ResultCode = 0;
@@ -67,35 +69,49 @@ namespace SolidCP.LinuxVmConfig
                 }
                 ExecutionResult res;
                 res = ShellHelper.RunCmd("hostname -s");
-                if (res.ResultCode == 1)
-                {
-                    ret.ResultCode = 1;
-                    ret.ErrorMessage = res.ErrorMessage;
-                    context.Progress = 100;
-                    return ret;
-                }
-                string hostnameOld = res.Value.Trim();
+                string hostNameOld = null;
+                if (res.Value != null) hostNameOld = res.Value.Trim();
 
                 res = ShellHelper.RunCmd("hostname");
-                if (res.ResultCode == 1)
+                string fullNameOld = null;
+                if (res.Value != null) fullNameOld = res.Value.Trim();
+
+                string domain = computerName.Replace(netBiosName + ".", "");
+                string domainOld = null;
+                if (hostNameOld != null && hostNameOld.Length > 0 && fullNameOld != null && fullNameOld.Length > 0)
                 {
-                    ret.ResultCode = 1;
-                    ret.ErrorMessage = res.ErrorMessage;
-                    context.Progress = 100;
-                    return ret;
+                    domainOld = fullNameOld.Replace(hostNameOld + ".", "");
                 }
-                string fullnameOld = res.Value.Trim();
 
-                TxtHelper.ReplaceStr(hostname, computerName, 0);
-                TxtHelper.ReplaceStr(hosts, fullnameOld, computerName);
-                TxtHelper.ReplaceStr(hosts, " " + hostnameOld, " " + netBiosName);
-                TxtHelper.ReplaceStr(hosts, "\t" + hostnameOld, "\t" + netBiosName);
-
-                if (osVersion == OsVersion.Ubuntu)
+                switch (OsVersion.GetOsVersion())
                 {
-                    TxtHelper.ReplaceStr(cloudCfg, "preserve_hostname: false", "preserve_hostname: true");
-                    TxtHelper.ReplaceStr(cloudCfg, "# preserve_hostname: true", "preserve_hostname: true");
-                    TxtHelper.ReplaceStr(cloudCfg, "#preserve_hostname: true", "preserve_hostname: true");
+                    case OsVersionEnum.Ubuntu:
+                        TxtHelper.ReplaceStr(hostname, computerName, 0);
+                        if (domainOld != null && domainOld.Length > 0) TxtHelper.ReplaceStr(hosts, domainOld, domain);
+                        if (hostNameOld != null && hostNameOld.Length > 0) TxtHelper.ReplaceStr(hosts, hostNameOld, netBiosName);
+                        TxtHelper.ReplaceStr(cloudCfg, "preserve_hostname: false", "preserve_hostname: true");
+                        TxtHelper.ReplaceStr(cloudCfg, "# preserve_hostname: true", "preserve_hostname: true");
+                        TxtHelper.ReplaceStr(cloudCfg, "#preserve_hostname: true", "preserve_hostname: true");
+                        break;
+                    case OsVersionEnum.CentOS:
+                        TxtHelper.ReplaceStr(hostname, computerName, 0);
+                        if (domainOld != null && domainOld.Length > 0) TxtHelper.ReplaceStr(hosts, domainOld, domain);
+                        if (hostNameOld != null && hostNameOld.Length > 0) TxtHelper.ReplaceStr(hosts, hostNameOld, netBiosName);
+                        break;
+                    case OsVersionEnum.FreeBSD:
+                        ShellHelper.RunCmd("cp -p " + rcConf + " " + compatLinux + rcConf);
+                        ShellHelper.RunCmd("cp -p " + hosts + " " + compatLinux + hosts);
+                        TxtHelper.ReplaceStr(compatLinux + rcConf, "hostname=\"" + computerName + "\"", TxtHelper.GetStrPos(compatLinux + rcConf, "hostname", 0, -1));
+                        if (domainOld != null && domainOld.Length > 0) TxtHelper.ReplaceStr(compatLinux + hosts, domainOld, domain);
+                        if (hostNameOld != null && hostNameOld.Length > 0) TxtHelper.ReplaceStr(compatLinux + hosts, hostNameOld, netBiosName);
+                        ShellHelper.RunCmd("cp -p " + compatLinux + rcConf + " " + rcConf);
+                        ShellHelper.RunCmd("cp -p " + compatLinux + hosts + " " + hosts);
+                        break;
+                    default:
+                        TxtHelper.ReplaceStr(hostname, computerName, 0);
+                        if (domainOld != null && domainOld.Length > 0) TxtHelper.ReplaceStr(hosts, domainOld, domain);
+                        if (hostNameOld != null && hostNameOld.Length > 0) TxtHelper.ReplaceStr(hosts, hostNameOld, netBiosName);
+                        break;
                 }
             }catch(Exception ex)
             {
