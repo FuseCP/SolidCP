@@ -94,10 +94,23 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
             switch (record.RecordType)
             {
                 case DnsRecordType.MX:
+                    if (!record.RecordData.EndsWith(".") && record.RecordData.Length > 0)
+                    {
+                        response.Data = $"{record.MxPriority} {record.RecordData}.";
+                        break;
+                    }
                     response.Data = $"{record.MxPriority} {record.RecordData}";
                     break;
                 case DnsRecordType.SRV:
                     response.Data = $"{record.SrvPriority} {record.SrvWeight} {record.SrvPort} {record.RecordData}";
+                    break;
+                case DnsRecordType.CNAME:
+                case DnsRecordType.NS:
+                    if (!record.RecordData.EndsWith(".") && record.RecordData.Length > 0) {
+                        response.Data = $"{record.RecordData}.";
+                        break;
+                    }
+                    response.Data = $"{record.RecordData}";
                     break;
                 default:
                     response.Data = record.RecordData ?? "";
@@ -134,14 +147,16 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
                     break;
                 case "CNAME":
                     resultRecord.RecordType = DnsRecordType.CNAME;
+                    resultRecord.RecordData = record.Data.TrimEnd('.');
                     break;
                 case "MX":
                     resultRecord.RecordType = DnsRecordType.MX;
                     resultRecord.MxPriority = Convert.ToInt32(record.Data.Split(' ')[0]);
-                    resultRecord.RecordData = record.Data.Split(' ')[1];
+                    resultRecord.RecordData = record.Data.Split(' ')[1].TrimEnd('.');
                     break;
                 case "NS":
                     resultRecord.RecordType = DnsRecordType.NS;
+                    resultRecord.RecordData = record.Data.TrimEnd('.');
                     break;
                 case "SOA":
                     resultRecord.RecordType = DnsRecordType.SOA;
@@ -151,7 +166,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
                     resultRecord.SrvPriority = Convert.ToInt32(record.Data.Split(' ')[0]);
                     resultRecord.SrvWeight = Convert.ToInt32(record.Data.Split(' ')[1]);
                     resultRecord.SrvPort = Convert.ToInt32(record.Data.Split(' ')[2]);
-                    resultRecord.RecordData = record.Data.Split(' ')[3];
+                    resultRecord.RecordData = record.Data.Split(' ')[3].TrimEnd('.');
                     break;
                 case "TXT":
                     resultRecord.RecordType = DnsRecordType.TXT;

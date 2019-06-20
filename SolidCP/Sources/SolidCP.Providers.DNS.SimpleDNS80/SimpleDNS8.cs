@@ -491,6 +491,8 @@ namespace SolidCP.Providers.DNS
                 record.ToZoneRecordsResponse(MinimumTTL, zoneName)
             };
 
+            Log.WriteInfo("AddZoneRecord content: {0}", content.ToJson());
+
             //Call API to PATCH record
             ApiPatch($"zones/{zoneName}/records", content.ToJson());
         }
