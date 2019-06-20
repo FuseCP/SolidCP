@@ -41,7 +41,8 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 {
 	public partial class AccountsList : SolidCPControlBase
 	{
-		private enum SelectedState
+        private const string DirectionString = "DirectionString";
+        private enum SelectedState
 		{
 			All,
 			Selected,
@@ -244,7 +245,18 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 			BindAccounts(selectedAccounts.ToArray(), true);
 		}
 
-		private void BindPopupAccounts()
+        private SortDirection Direction
+        {
+            get { return ViewState[DirectionString] == null ? SortDirection.Descending : (SortDirection)ViewState[DirectionString]; }
+            set { ViewState[DirectionString] = value; }
+        }
+
+        private static int CompareAccount(ExchangeAccount user1, ExchangeAccount user2)
+        {
+            return string.Compare(user1.DisplayName, user2.DisplayName);
+        }
+
+        private void BindPopupAccounts()
 		{
             List<ExchangeAccountType> types = new List<ExchangeAccountType>();
 
@@ -275,7 +287,17 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 				accounts = updatedAccounts.ToArray();
 			}
 
-			gvPopupAccounts.DataSource = accounts;
+            Array.Sort(accounts, CompareAccount);
+
+            if (Direction == SortDirection.Ascending)
+            {
+                Array.Reverse(accounts);
+                Direction = SortDirection.Descending;
+            }
+            else
+                Direction = SortDirection.Ascending;
+
+            gvPopupAccounts.DataSource = accounts;
 			gvPopupAccounts.DataBind();
 
             if (gvPopupAccounts.Rows.Count > 0)
@@ -390,5 +412,10 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 		{
 			BindPopupAccounts();
 		}
-	}
+
+        protected void OnSorting(object sender, GridViewSortEventArgs e)
+        {
+            BindPopupAccounts();
+        }
+    }
 }

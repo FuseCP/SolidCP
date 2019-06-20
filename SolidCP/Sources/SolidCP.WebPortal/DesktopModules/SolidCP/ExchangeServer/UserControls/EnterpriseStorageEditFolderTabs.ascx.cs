@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.Portal.Code.UserControls;
+using SCP = SolidCP.EnterpriseServer;
 
 namespace SolidCP.Portal.ExchangeServer.UserControls
 {
@@ -22,7 +23,14 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             List<Tab> tabsList = new List<Tab>();
             tabsList.Add(CreateTab("enterprisestorage_folder_settings", "Tab.GeneralSettings"));
             tabsList.Add(CreateTab("enterprisestorage_folder_settings_folder_permissions", "Tab.FolderPermissions"));
-            tabsList.Add(CreateTab("enterprisestorage_folder_settings_owa_editing", "Tab.OwaEditPermissions"));
+
+            SCP.SystemSettings settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.WEBDAV_PORTAL_SETTINGS);
+            bool isOwaEnabled = false;
+            if (settings != null)
+            {
+                isOwaEnabled = Utils.ParseBool(settings[SCP.SystemSettings.WEBDAV_OWA_ENABLED_KEY], false);
+            }
+            if (isOwaEnabled) tabsList.Add(CreateTab("enterprisestorage_folder_settings_owa_editing", "Tab.OwaEditPermissions"));
 
             int idx = 0;
 
