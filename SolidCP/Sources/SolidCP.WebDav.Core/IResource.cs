@@ -108,7 +108,7 @@ namespace SolidCP.WebDav.Core
                     var webClient = new WebClient();
                     return webClient.DownloadData(_href);
                 }
-                catch (AmbiguousMatchException)
+                catch (WebException exception)
                 {
                     throw;
                 }
@@ -205,7 +205,7 @@ namespace SolidCP.WebDav.Core
                             tcpClient.ReceiveTimeout = 0;
                         }
                     }
-                    catch (AmbiguousMatchException)
+                    catch (SocketException e)
                     {
                         tcpClient.SendTimeout = 0;
                         tcpClient.ReceiveTimeout = 0;
@@ -218,7 +218,7 @@ namespace SolidCP.WebDav.Core
                             networkStream.WriteTimeout = TimeOut;
                             networkStream.ReadTimeout = TimeOut;
                         }
-                        catch (AmbiguousMatchException)
+                        catch (Exception e)
                         {
                         }
                     }
@@ -538,7 +538,7 @@ namespace SolidCP.WebDav.Core
                                 break;
                         }
                     }
-                    catch (AmbiguousMatchException)
+                    catch (Exception e)
                     {
                     }
                 }
