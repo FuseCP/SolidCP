@@ -1251,7 +1251,7 @@ namespace SolidCP.EnterpriseServer
                     }
 
                     result.RecordsCount = (int)ds.Tables[0].Rows[0][0];
-                    result.PageItems = folders.Skip(startRow).Take(maximumRows).ToArray();
+                    result.PageItems = folders.ToArray();
                 }
             }
             catch(Exception e) 

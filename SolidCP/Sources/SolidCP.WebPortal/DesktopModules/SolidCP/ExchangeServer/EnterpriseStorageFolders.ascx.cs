@@ -57,7 +57,6 @@ namespace SolidCP.Portal.ExchangeServer
                 if (ES.Services.EnterpriseStorage.CheckUsersDomainExists(PanelRequest.ItemID))
                 {
                     BindEnterpriseStorageStats();
-                    RegisterStatusScript();
                     hdnItemId.Value = PanelRequest.ItemID.ToString();
 
                     gvFolders.DataBound -= OnDataBound;
@@ -70,6 +69,7 @@ namespace SolidCP.Portal.ExchangeServer
                     messageBox.ShowWarningMessage("WEB_SITE_IS_NOT_CREATED");
                 }
             }
+            RegisterStatusScript();
         }
 
         private void RegisterStatusScript()

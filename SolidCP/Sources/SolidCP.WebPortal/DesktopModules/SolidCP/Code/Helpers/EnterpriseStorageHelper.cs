@@ -55,7 +55,7 @@ namespace SolidCP.Portal
             int maximumRows, int startRowIndex, string sortColumn)
         {
             filterValue = filterValue ?? string.Empty;
-
+            startRowIndex++;
             folders = ES.Services.EnterpriseStorage.GetEnterpriseFoldersPaged(itemId, false, false, false, filterValue, sortColumn, startRowIndex, maximumRows);
 
             return folders.PageItems;
