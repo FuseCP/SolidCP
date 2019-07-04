@@ -439,6 +439,25 @@ namespace SolidCP.Server
         }
         #endregion
 
+        #region Secure Boot Templates
+        [WebMethod, SoapHeader("settings")]
+        public List<SecureBootTemplate> GetSecureBootTemplates(string computerName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetSecureBootTemplates", ProviderSettings.ProviderName);
+                List<SecureBootTemplate> result = VirtualizationProvider.GetSecureBootTemplates(computerName);
+                Log.WriteEnd("'{0}' GetSecureBootTemplates", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetSecureBootTemplates", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+        #endregion
+
         #region Virtual Switches
         [WebMethod, SoapHeader("settings")]
         public List<VirtualSwitch> GetExternalSwitches(string computerName)

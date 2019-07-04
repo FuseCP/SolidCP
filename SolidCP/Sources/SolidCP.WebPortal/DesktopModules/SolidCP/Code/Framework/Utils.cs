@@ -141,6 +141,23 @@ namespace SolidCP.Portal
             return result;
         }
 
+        public static bool ParseBool(object val, bool defaultValue)
+        {
+            bool result = defaultValue;
+            if (val != null && !String.IsNullOrEmpty(val.ToString()))
+            {
+                try
+                {
+                    result = Boolean.Parse(val.ToString());
+                }
+                catch
+                {
+                    /* do nothing */
+                }
+            }
+            return result;
+        }
+
         public static decimal ParseDecimal(string val, decimal defaultValue)
         {
             decimal result = defaultValue;

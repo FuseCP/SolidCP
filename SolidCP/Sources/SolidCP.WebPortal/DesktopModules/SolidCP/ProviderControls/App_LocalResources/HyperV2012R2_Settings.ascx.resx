@@ -543,4 +543,7 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="valTemplateGeneration.ErrorMessage" xml:space="preserve">
     <value>Choose OS template Generation</value>
   </data>
+  <data name="locSecureBootTemplate.Text" xml:space="preserve">
+    <value>Secure boot template:</value>
+  </data>
 </root>

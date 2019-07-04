@@ -277,7 +277,7 @@
                         <asp:CheckBox ID="chkCanSetComputerName" runat="server" Checked='<%# Eval("ProvisionComputerName") %>' meta:resourcekey="chkCanSetComputerName" Text="Can set a computer name" /><br />
                         <asp:CheckBox ID="chkCanSetAdminPass" runat="server" Checked='<%# Eval("ProvisionAdministratorPassword") %>' meta:resourcekey="chkCanSetAdminPass" Text="Can set an Administrator password" /><br />
                         <asp:CheckBox ID="chkCanSetNetwork" runat="server" Checked='<%# Eval("ProvisionNetworkAdapters") %>' meta:resourcekey="chkCanSetNetwork" Text="Can set Ip addresses" /><br />
-                        <asp:CheckBox ID="chkEnableSecureBoot" runat="server" Checked='<%# Eval("EnableSecureBoot") %>' meta:resourcekey="chkEnableSecureBoot" Text="Enable Secure Boot (Second Generation only)" /><br />
+                        <asp:CheckBox ID="chkEnableSecureBoot" runat="server" Checked='<%# Eval("EnableSecureBoot") %>' meta:resourcekey="chkEnableSecureBoot" Text="Enable Secure Boot (Second Generation only)" AutoPostBack="True" onCheckedChanged="cbEnableSecureBoot_OnChecked"/><br />
                     </td>
                     <td rowspan="3">
                         <CPCC:StyleButton id="btnRemoveOsTemplate" CssClass="btn btn-danger" runat="server" CausesValidation="false" CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemoveOsTemplate_OnCommand"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnRemoveOsTemplateText"/> </CPCC:StyleButton>
@@ -329,6 +329,16 @@
                         <asp:TextBox Width="470px" CssClass="form-control" runat="server" ID="txtSysprep" Text='<%# Eval("SysprepFiles") != null ? string.Join(";", (string[])Eval("SysprepFiles")) : "" %>'></asp:TextBox>
                     </td>
                 </tr>               
+
+                <tr><td class="SubHead">
+                        <asp:Localize ID="locSecureBootTemplate" runat="server" meta:resourcekey="locSecureBootTemplate" Text="Secure boot template:"></asp:Localize>
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ddlSecureBootTemplate" runat="server" CssClass="form-control" Width="470" Enabled='<%# IsSecureBootEnabled(Eval("EnableSecureBoot")) %>' DataSource ='<%# GetSecureBootTemplatesList() %>'
+                            DataValueField="Name" DataTextField="Description" SelectedIndex='<%# GetSecureBootTemplateIndex(Eval("SecureBootTemplate")) %>'>
+                        </asp:DropDownList>
+                    </td>
+                </tr>
                 
                 <tr>
                     <td colspan="3">

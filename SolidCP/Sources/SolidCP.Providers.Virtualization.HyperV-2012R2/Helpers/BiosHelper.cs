@@ -76,7 +76,7 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot)
+        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot, string secureBootTemplate)
         {
             // for Win2012R2+ and Win8.1+
             if (vm.Generation == 2)
@@ -85,7 +85,10 @@ namespace SolidCP.Providers.Virtualization
 
                 cmd.Parameters.Add("VMName", vm.Name);
                 if (EnableSecureBoot)
+                {
                     cmd.Parameters.Add("EnableSecureBoot", "On");
+                    if (!String.IsNullOrEmpty(secureBootTemplate)) cmd.Parameters.Add("SecureBootTemplate", secureBootTemplate);
+                }
                 else
                     cmd.Parameters.Add("EnableSecureBoot", "Off");
 

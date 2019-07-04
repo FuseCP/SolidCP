@@ -833,6 +833,29 @@ namespace SolidCP.Providers.Virtualization
         }
         #endregion
 
+        #region Secure Boot Templates
+        public List<SecureBootTemplate> GetSecureBootTemplates(string computerName)
+        {
+            HostedSolutionLog.LogStart("GetSecureBootTemplates");
+            HostedSolutionLog.DebugInfo("ComputerName: {0}", computerName);
+
+            List<SecureBootTemplate> templates = new List<SecureBootTemplate>();
+
+            try
+            {
+                // TODO
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetSecureBootTemplates", ex);
+                throw;
+            }
+
+            HostedSolutionLog.LogEnd("GetSecureBootTemplates");
+            return templates;
+        }
+        #endregion
+
         #region Virtual Switches
         public List<VirtualSwitch> GetSwitches()
         {

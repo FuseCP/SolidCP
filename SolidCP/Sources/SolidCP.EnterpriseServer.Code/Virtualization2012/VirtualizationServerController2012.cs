@@ -581,6 +581,7 @@ namespace SolidCP.EnterpriseServer
                             if (osTemplate.Generation < 1)
                                 throw new Exception("The generation of VM was not configured in the template");
                             vm.Generation = osTemplate.Generation;
+                            vm.SecureBootTemplate = osTemplate.SecureBootTemplate;
                             vm.EnableSecureBoot = osTemplate.Generation == 1 ? false : osTemplate.EnableSecureBoot;
                             vm.OperatingSystemTemplate = osTemplate.Name;
                             vm.LegacyNetworkAdapter = osTemplate.LegacyNetworkAdapter;
@@ -1347,6 +1348,7 @@ namespace SolidCP.EnterpriseServer
                 item.ProvisioningStatus = VirtualMachineProvisioningStatus.OK;
 
                 item.Generation = vm.Generation;
+                item.SecureBootTemplate = vm.SecureBootTemplate;
                 item.EnableSecureBoot = vm.EnableSecureBoot;
                 item.CpuCores = vm.CpuCores;
                 item.RamSize = vm.RamSize;
@@ -4165,6 +4167,15 @@ namespace SolidCP.EnterpriseServer
         {
             // VPS - UPDATE_PERMISSIONS
             return 0;
+        }
+        #endregion
+
+        #region Secure Boot Templates
+        public static SecureBootTemplate[] GetSecureBootTemplates(int serviceId, string computerName)
+        {
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetSecureBootTemplates(computerName);
         }
         #endregion
 

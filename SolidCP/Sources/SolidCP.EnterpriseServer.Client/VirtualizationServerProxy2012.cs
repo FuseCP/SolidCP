@@ -4174,6 +4174,16 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSecureBootTemplates", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public SecureBootTemplate[] GetSecureBootTemplates(int serviceId, string computerName)
+        {
+            object[] results = this.Invoke("GetSecureBootTemplates", new object[] {
+                        serviceId,
+                        computerName});
+            return ((SecureBootTemplate[])(results[0]));
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalSwitches", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)
         {

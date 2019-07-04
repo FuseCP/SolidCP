@@ -17,7 +17,7 @@ namespace SolidCP.Providers.Virtualization
 
         const string itemTemplate = @"
     <item path=""{0}"" legacyNetworkAdapter=""{1}"" remoteDesktop=""{2}"" processVolume=""{3}"" 
-                        generation=""{11}"" enableSecureBoot=""{12}"" vhdBlockSizeBytes=""{13}"">
+                        generation=""{11}"" enableSecureBoot=""{12}"" secureBootTemplate=""{16}"" vhdBlockSizeBytes=""{13}"">
         <name>{4}</name>
         <description>{5}</description>
         <DeployScriptParams>{10}</DeployScriptParams>
@@ -78,6 +78,10 @@ namespace SolidCP.Providers.Virtualization
                 item.EnableSecureBoot = true;
                 if (nodeItem.Attributes["enableSecureBoot"] != null)
                     item.EnableSecureBoot = Boolean.Parse(nodeItem.Attributes["enableSecureBoot"].Value);
+
+                item.SecureBootTemplate = "";
+                if (nodeItem.Attributes["secureBootTemplate"] != null)
+                    item.SecureBootTemplate = nodeItem.Attributes["secureBootTemplate"].Value;
 
                 item.VhdBlockSizeBytes = 0;
                 if (nodeItem.Attributes["vhdBlockSizeBytes"] != null)
@@ -164,7 +168,8 @@ namespace SolidCP.Providers.Virtualization
                     libraryItem.RemoteDesktop, libraryItem.ProcessVolume, libraryItem.Name, libraryItem.Description,
                     sysprep, libraryItem.ProvisionComputerName, libraryItem.ProvisionAdministratorPassword,
                     libraryItem.ProvisionNetworkAdapters, libraryItem.DeployScriptParams, libraryItem.Generation,
-                    libraryItem.EnableSecureBoot, libraryItem.VhdBlockSizeBytes, libraryItem.CDKey, libraryItem.TimeZoneId));
+                    libraryItem.EnableSecureBoot, libraryItem.VhdBlockSizeBytes, libraryItem.CDKey, libraryItem.TimeZoneId, 
+                    libraryItem.SecureBootTemplate));
             }
 
             Xml = string.Format(resultTemplate, string.Join("", items.ToArray()));

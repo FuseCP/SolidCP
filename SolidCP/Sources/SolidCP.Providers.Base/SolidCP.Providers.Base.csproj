@@ -390,6 +390,7 @@
     <Compile Include="Virtualization\ReturnCode.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Virtualization\SecureBootTemplate.cs" />
     <Compile Include="Virtualization\SummaryInformationRequest.cs">
       <SubType>Code</SubType>
     </Compile>

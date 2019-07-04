@@ -153,6 +153,8 @@ namespace SolidCP.Providers.Virtualization
         [Persistent]
         public int Generation { get; set; }
         [Persistent]
+        public string SecureBootTemplate { get; set; }
+        [Persistent]
         public bool EnableSecureBoot { get; set; }
 
         [Persistent]
