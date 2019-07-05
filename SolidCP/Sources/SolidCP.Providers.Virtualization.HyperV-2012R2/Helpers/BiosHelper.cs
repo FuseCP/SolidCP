@@ -48,7 +48,14 @@ namespace SolidCP.Providers.Virtualization
 
                     info.StartupOrder = startupOrders.ToArray();
                     info.SecureBootEnabled = "On".Equals(result[0].GetString("SecureBoot"));
-                    info.SecureBootTemplate = result[0].GetString("SecureBootTemplate");
+                    try
+                    {
+                        info.SecureBootTemplate = result[0].GetString("SecureBootTemplate");
+                    }
+                    catch (Exception)
+                    {
+                        info.SecureBootTemplate = "";//catch error on Hyper-V 2012 R2 (No Secure Boot Templates)
+                    }
                 }
             }
             // for others win and linux
