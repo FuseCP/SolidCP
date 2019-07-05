@@ -47,6 +47,8 @@ namespace SolidCP.Providers.Virtualization
                     }
 
                     info.StartupOrder = startupOrders.ToArray();
+                    info.SecureBootEnabled = "On".Equals(result[0].GetString("SecureBoot"));
+                    info.SecureBootTemplate = result[0].GetString("SecureBootTemplate");
                 }
             }
             // for others win and linux
@@ -71,6 +73,8 @@ namespace SolidCP.Providers.Virtualization
                     if (info.StartupOrder != null && info.StartupOrder.Length > 0)
                         info.BootFromCD = info.StartupOrder[0] == "CD";
                 }
+                info.SecureBootEnabled = false;
+                info.SecureBootTemplate = "";
             }
 
             return info;

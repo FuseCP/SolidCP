@@ -150,9 +150,13 @@
                                     <scp:CheckBoxOption id="optionBootFromCD" runat="server"
                                         Text="Boot from CD" meta:resourcekey="optionBootFromCD" Value="True" />
                                 </td>
-                                <td>
+                                <td style="width:200px;">
                                     <scp:CheckBoxOption id="optionNumLock" runat="server"
                                         Text="Num Lock enabled" meta:resourcekey="optionNumLock" Value="False" />
+                                </td>
+                                <td>
+                                    <scp:CheckBoxOption id="optionSecureBoot" runat="server"
+                                        Text="Secure Boot enabled" meta:resourcekey="optionSecureBoot" Value="False" />
                                 </td>
                             </tr>
                         </table>

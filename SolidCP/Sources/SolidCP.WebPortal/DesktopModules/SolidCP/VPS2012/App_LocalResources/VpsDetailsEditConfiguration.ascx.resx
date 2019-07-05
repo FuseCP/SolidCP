@@ -138,6 +138,9 @@
   <data name="chkNumLock.Text" xml:space="preserve">
     <value>Num Lock enabled</value>
   </data>
+  <data name="chkSecureBoot.Text" xml:space="preserve">
+    <value>Secure Boot enabled</value>
+  </data>
   <data name="chkPauseResume.Text" xml:space="preserve">
     <value>Pause, Resume</value>
   </data>

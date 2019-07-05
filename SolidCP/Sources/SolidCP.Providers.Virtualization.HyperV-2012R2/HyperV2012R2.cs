@@ -203,6 +203,8 @@ namespace SolidCP.Providers.Virtualization
                         BiosInfo biosInfo = BiosHelper.Get(PowerShell, vm.Name, vm.Generation);
                         vm.NumLockEnabled = biosInfo.NumLockEnabled;
                         vm.BootFromCD = biosInfo.BootFromCD;
+                        vm.EnableSecureBoot = biosInfo.SecureBootEnabled;
+                        vm.SecureBootTemplate = biosInfo.SecureBootTemplate;
 
                         // DVD drive
                         var dvdInfo = DvdDriveHelper.Get(PowerShell, vm.Name);
@@ -558,7 +560,7 @@ namespace SolidCP.Providers.Virtualization
                 bool canChangeValueWihoutReboot = false;
                 if (realVm.CpuCores == vm.CpuCores)
                 {
-                    if (realVm.HddSize == vm.HddSize)
+                    if (realVm.HddSize == vm.HddSize && realVm.EnableSecureBoot == vm.EnableSecureBoot)
                     {
                         canChangeValueWihoutReboot = true;                       
                     }

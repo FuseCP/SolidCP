@@ -2551,6 +2551,7 @@ namespace SolidCP.EnterpriseServer
 
                 vm.BootFromCD = vmSettings.BootFromCD;
                 vm.NumLockEnabled = vmSettings.NumLockEnabled;
+                vm.EnableSecureBoot = vmSettings.EnableSecureBoot;
                 vm.DvdDriveInstalled = vmSettings.DvdDriveInstalled;
 
                 vm.StartTurnOffAllowed = vmSettings.StartTurnOffAllowed;
