@@ -126,6 +126,11 @@ namespace SolidCP.Portal.VPS2012
                 chkBootFromCd.Checked = vm.BootFromCD;
                 chkNumLock.Checked = vm.NumLockEnabled;
                 chkSecureBoot.Checked = vm.EnableSecureBoot;
+                if (vm.Generation == 1)
+                {
+                    chkSecureBoot.Checked = false;
+                    chkSecureBoot.Enabled = false;
+                }
 
                 chkStartShutdown.Checked = vm.StartTurnOffAllowed;
                 chkPauseResume.Checked = vm.PauseResumeAllowed;

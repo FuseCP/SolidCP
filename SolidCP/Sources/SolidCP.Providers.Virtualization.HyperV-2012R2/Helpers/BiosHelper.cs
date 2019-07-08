@@ -95,13 +95,16 @@ namespace SolidCP.Providers.Virtualization
                 Command cmd = new Command("Set-VMFirmware");
 
                 cmd.Parameters.Add("VMName", vm.Name);
-                if (EnableSecureBoot)
+                if (vm.State == VirtualMachineState.Off)
                 {
-                    cmd.Parameters.Add("EnableSecureBoot", "On");
-                    if (!String.IsNullOrEmpty(secureBootTemplate)) cmd.Parameters.Add("SecureBootTemplate", secureBootTemplate);
+                    if (EnableSecureBoot)
+                    {
+                        cmd.Parameters.Add("EnableSecureBoot", "On");
+                        if (!String.IsNullOrEmpty(secureBootTemplate)) cmd.Parameters.Add("SecureBootTemplate", secureBootTemplate);
+                    }
+                    else
+                        cmd.Parameters.Add("EnableSecureBoot", "Off");
                 }
-                else
-                    cmd.Parameters.Add("EnableSecureBoot", "Off");
 
                 if (bootFromCD)
                     cmd.Parameters.Add("FirstBootDevice", DvdDriveHelper.GetPS(powerShell, vm.Name));

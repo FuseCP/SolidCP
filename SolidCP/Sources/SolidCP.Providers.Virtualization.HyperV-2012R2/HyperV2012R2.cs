@@ -562,7 +562,10 @@ namespace SolidCP.Providers.Virtualization
                 {
                     if (realVm.HddSize == vm.HddSize && realVm.EnableSecureBoot == vm.EnableSecureBoot)
                     {
-                        canChangeValueWihoutReboot = true;                       
+                        if (realVm.Generation > 1 || realVm.BootFromCD == vm.BootFromCD)
+                        {
+                            canChangeValueWihoutReboot = true;
+                        }
                     }
                 }
 
@@ -581,6 +584,7 @@ namespace SolidCP.Providers.Virtualization
                     if (realVm.Generation != 1)
                     {
                         DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
+                        BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
                         NetworkAdapterHelper.Update(PowerShell, vm);
                         if (version >= 6.2) 
                         {
