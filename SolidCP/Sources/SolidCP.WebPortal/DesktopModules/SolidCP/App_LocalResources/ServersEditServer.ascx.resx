@@ -162,6 +162,9 @@
   <data name="IPAddressesHeader.Text" xml:space="preserve">
     <value>IP Addresses</value>
   </data>
+  <data name="VLANsHeader.Text" xml:space="preserve">
+    <value>Private Network VLANs</value>
+  </data>
   <data name="lblAdDomain.Text" xml:space="preserve">
     <value>Root domain:</value>
   </data>

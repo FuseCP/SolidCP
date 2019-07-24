@@ -346,6 +346,33 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.ServerIPAddressesControl ServerIPAddressesControl1;
         
         /// <summary>
+        /// VLANsHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.CollapsiblePanel VLANsHeader;
+        
+        /// <summary>
+        /// VLANsPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel VLANsPanel;
+        
+        /// <summary>
+        /// ServerVLANsControl1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.ServerVLANsControl ServerVLANsControl1;
+        
+        /// <summary>
         /// ServicesHeader control.
         /// </summary>
         /// <remarks>

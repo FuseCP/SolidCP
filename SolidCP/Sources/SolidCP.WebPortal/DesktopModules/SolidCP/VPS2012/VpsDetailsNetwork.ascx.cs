@@ -164,11 +164,21 @@ namespace SolidCP.Portal.VPS2012
                     break;
                 }
             }
+            litExtVLAN.Text = nic.VLAN.ToString();
+            locExtVLAN.Visible = nic.VLAN > 0;
+            litExtVLAN.Visible = locExtVLAN.Visible;
             lblTotalExternal.Text = nic.IPAddresses.Length.ToString();
 
             // bind IP addresses
             gvExternalAddresses.DataSource = nic.IPAddresses;
             gvExternalAddresses.DataBind();
+        }
+
+        protected bool IsVlanEnabled(Object VLAN)
+        {
+            int vlan = 0;
+            if (VLAN != null) Int32.TryParse(VLAN.ToString(), out vlan);
+            return vlan > 0;
         }
 
         private void BindPrivateAddresses()
@@ -187,6 +197,9 @@ namespace SolidCP.Portal.VPS2012
             }
             litPrivSubnet.Text = nic.SubnetMask;
             litPrivFormat.Text = nic.NetworkFormat;
+            litPrivVLAN.Text = nic.VLAN.ToString();
+            locPrivVLAN.Visible = nic.VLAN > 0;
+            litPrivVLAN.Visible = locPrivVLAN.Visible;
             lblTotalPrivate.Text = nic.IPAddresses.Length.ToString();
 
             // bind IP addresses

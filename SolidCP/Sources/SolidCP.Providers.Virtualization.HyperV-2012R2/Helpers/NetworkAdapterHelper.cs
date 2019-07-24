@@ -38,7 +38,7 @@ namespace SolidCP.Providers.Virtualization
                     {
                         adapter.IPAddresses = psAdapter.GetProperty<string[]>("IPAddresses");
                     }
-                    catch (Exception ex) { HostedSolution.HostedSolutionLog.LogError("VirtualMachineNetworkAdapter", ex); }                    
+                    catch (Exception ex) { HostedSolution.HostedSolutionLog.LogError("VirtualMachineNetworkAdapter", ex); }
                     adapter.MacAddress = psAdapter.GetString("MacAddress");
                     adapter.SwitchName = psAdapter.GetString("SwitchName");
 
@@ -81,7 +81,7 @@ namespace SolidCP.Providers.Virtualization
                 Add(powerShell, vm.Name, vm.ExternalSwitchId, vm.ExternalNicMacAddress, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
                 try
                 {
-                    SetVLAN(powerShell, vm.Name, vm.defaultaccessvlan);
+                    SetVLAN(powerShell, vm.Name, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.defaultaccessvlan);
                 }
                 catch (Exception ex)
                 {
@@ -99,6 +99,14 @@ namespace SolidCP.Providers.Virtualization
                  && Get(powerShell, vm.Name, vm.PrivateNicMacAddress) == null)
             {
                 Add(powerShell, vm.Name, vm.PrivateSwitchId, vm.PrivateNicMacAddress, Constants.PRIVATE_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
+                try
+                {
+                    SetVLAN(powerShell, vm.Name, Constants.PRIVATE_NETWORK_ADAPTER_NAME, vm.PrivateNetworkVlan);
+                }
+                catch (Exception ex)
+                {
+                    HostedSolution.HostedSolutionLog.LogError("NetworkAdapterHelperSetVLAN", ex);
+                }
             }
         }
 
@@ -119,13 +127,14 @@ namespace SolidCP.Providers.Virtualization
 
         }
 
-        public static void SetVLAN(PowerShellManager powerShell, string vmName, int vlan)
+        public static void SetVLAN(PowerShellManager powerShell, string vmName, string adapterName, int vlan)
         {
             if (vlan >= 1)
             {
                 Command cmd = new Command("Set-VMNetworkAdapterVlan");
 
                 cmd.Parameters.Add("VMName", vmName);
+                cmd.Parameters.Add("VMNetworkAdapterName", adapterName);
                 cmd.Parameters.Add("Access");
                 cmd.Parameters.Add("VlanId", vlan.ToString());
 

@@ -56,6 +56,7 @@ namespace SolidCP.Portal.ProviderControls
         public bool EnabledReplica { get { return ReplicationModeList.SelectedValue == ReplicaMode.ReplicationEnabled.ToString(); } }
         public string ReplicaServerId { get; set; }
         private List<SecureBootTemplate> SecureBootTemplates { get; set; }
+        private List<VirtualSwitch> ExternalSwitches { get; set; }
 
         void IHostingServiceProviderSettings.BindSettings(StringDictionary settings)
         {
@@ -124,6 +125,12 @@ namespace SolidCP.Portal.ProviderControls
             privateDefaultGateway.Text = settings["PrivateDefaultGateway"];
             privatePreferredNameServer.Text = settings["PrivatePreferredNameServer"];
             privateAlternateNameServer.Text = settings["PrivateAlternateNameServer"];
+            radioSwitchTypePrivateNetwork.SelectedValue = string.IsNullOrEmpty(settings["PrivateSwitchType"])
+                ? "private" : settings["PrivateSwitchType"];
+            ddlExternalNetworksPrivate.SelectedValue = settings["PrivateNetworkId"];
+            ddlExternalNetworksPrivate.Enabled = "external".Equals(radioSwitchTypePrivateNetwork.SelectedValue);
+            chkAssignVLANAutomatically.Checked = Utils.ParseBool(settings["AutoAssignVLAN"], true);
+            chkAssignVLANAutomatically.Enabled = ddlExternalNetworksPrivate.Enabled;
 
             // Management network
             ddlManagementNetworks.SelectedValue = settings["ManagementNetworkId"];
@@ -221,6 +228,17 @@ namespace SolidCP.Portal.ProviderControls
             settings["PrivateDefaultGateway"] = privateDefaultGateway.Text;
             settings["PrivatePreferredNameServer"] = privatePreferredNameServer.Text;
             settings["PrivateAlternateNameServer"] = privateAlternateNameServer.Text;
+            settings["PrivateSwitchType"] = radioSwitchTypePrivateNetwork.SelectedValue;
+            if ("external".Equals(radioSwitchTypePrivateNetwork.SelectedValue))
+            {
+                settings["PrivateNetworkId"] = ddlExternalNetworksPrivate.SelectedValue;
+                settings["AutoAssignVLAN"] = chkAssignVLANAutomatically.Checked.ToString();
+            }
+            else
+            {
+                settings["PrivateNetworkId"] = "";
+                settings["AutoAssignVLAN"] = "false";
+            }
 
             // Management network
             settings["ManagementNetworkId"] = ddlManagementNetworks.SelectedValue;
@@ -253,19 +271,19 @@ namespace SolidCP.Portal.ProviderControls
             try
             {
                 List<VirtualSwitch> switches;
-                
+
                 if (radioSwitchType.SelectedValue == "internal")
                 {
                     switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetInternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
                     chkGetSwitchesByPS.Enabled = false;
-                }                    
-                else if (chkGetSwitchesByPS.Checked)
-                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
-                else
-                    switches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitchesWMI(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+                }
+                else switches = GetExternalSwitches();
 
                 ddlExternalNetworks.DataSource = switches;
                 ddlExternalNetworks.DataBind();
+
+                ddlExternalNetworksPrivate.DataSource = GetExternalSwitches();
+                ddlExternalNetworksPrivate.DataBind();
 
                 ddlManagementNetworks.DataSource = switches;
                 ddlManagementNetworks.DataBind();
@@ -408,6 +426,13 @@ namespace SolidCP.Portal.ProviderControls
         protected void radioSwitchType_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindNetworksList();
+        }
+
+        protected void radioSwitchTypePrivateNetwork_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ddlExternalNetworksPrivate.Enabled = "external".Equals(radioSwitchTypePrivateNetwork.SelectedValue);
+            chkAssignVLANAutomatically.Enabled = ddlExternalNetworksPrivate.Enabled;
+            if (ddlExternalNetworksPrivate.Enabled) BindNetworksList();
         }
 
         protected void btnConnect_Click(object sender, EventArgs e)
@@ -588,6 +613,19 @@ namespace SolidCP.Portal.ProviderControls
         {
             if (SecureBootTemplates == null) SecureBootTemplates = new List<SecureBootTemplate>(ES.Services.VPS2012.GetSecureBootTemplates(PanelRequest.ServiceId, txtServerName.Text.Trim()));
             return SecureBootTemplates;
+        }
+
+        public List<VirtualSwitch> GetExternalSwitches()
+        {
+            if (ExternalSwitches == null)
+            {
+                if (chkGetSwitchesByPS.Checked)
+                    ExternalSwitches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitches(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+                else
+                    ExternalSwitches = new List<VirtualSwitch>(ES.Services.VPS2012.GetExternalSwitchesWMI(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+
+            }
+            return ExternalSwitches;
         }
 
         public int GetSecureBootTemplateIndex(object val)

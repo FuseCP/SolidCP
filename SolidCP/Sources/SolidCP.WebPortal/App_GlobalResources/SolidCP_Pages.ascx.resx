@@ -552,4 +552,10 @@
   <data name="PageTitle.AutoUpdateServers" xml:space="preserve">
     <value>Auto Update Servers</value>
   </data>
+  <data name="PageName.PrivateNetworkVLANs" xml:space="preserve">
+    <value>Private Network VLANs</value>
+  </data>
+  <data name="PageTitle.PrivateNetworkVLANs" xml:space="preserve">
+    <value>Private Network VLANs</value>
+  </data>
 </root>

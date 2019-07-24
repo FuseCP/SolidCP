@@ -801,6 +801,21 @@
   <data name="Error.GDNS_UPDATE_RECORD" xml:space="preserve">
     <value>Fehler beim Aktualisieren des DNS-Eintrages</value>
   </data>
+  <data name="Error.VLAN_ADD_INIT_FORM" xml:space="preserve">
+    <value>Fehler beim Initialisieren des Formulars</value>
+  </data>
+  <data name="Error.VLAN_ADD_VLAN_RANGE" xml:space="preserve">
+    <value>VLAN-bereichs kann nicht hinzugefügt werden.</value>
+  </data>
+  <data name="Error.VLAN_ADD_VLAN" xml:space="preserve">
+    <value>Fehler beim Hinzufügen VLAN</value>
+  </data>
+  <data name="Error.VLAN_GET_VLAN" xml:space="preserve">
+    <value>Fehler beim Lesen VLAN-Information</value>
+  </data>
+  <data name="Error.VLAN_UPDATE_VLAN" xml:space="preserve">
+    <value>Fehler beim Aktualisieren des VLANs</value>
+  </data>
   <data name="Error.IP_ADD_INIT_FORM" xml:space="preserve">
     <value>Fehler beim Initialisieren des Formulars</value>
   </data>
@@ -4203,6 +4218,12 @@
   <data name="Warning.VPS_REINSTALL_CONFIRM" xml:space="preserve">
     <value>Sie müssen die erneute VPS-Installation durch Aktivieren der Checkbox bestätigen</value>
   </data>
+  <data name="Error.DEALLOCATE_SPACE_VLANS" xml:space="preserve">
+    <value>Die folgenden Fehler sind aufgetreten:</value>
+  </data>
+  <data name="Success.DEALLOCATE_SPACE_VLANS" xml:space="preserve">
+    <value>VLANs wurden erfolgreich freigegeben.</value>
+  </data>
   <data name="Error.DEALLOCATE_SPACE_IP_ADDRESSES" xml:space="preserve">
     <value>Die folgenden Fehler sind aufgetreten:</value>
   </data>
@@ -4370,6 +4391,9 @@
   </data>
   <data name="VPS.VPS_ERROR_SEND_SUMMARY_LETTER" xml:space="preserve">
     <value>Fehler beim Senden des VPS-Übersichtsberichts</value>
+  </data>
+  <data name="Error.VPS_ALLOCATE_PRIVATE_VLANS_ERROR" xml:space="preserve">
+    <value>Fehler beim Zuordnen der VLANs.</value>
   </data>
   <data name="Error.VPS_ALLOCATE_EXTERNAL_ADDRESSES_ERROR" xml:space="preserve">
     <value>Fehler beim Zuordnen der externen IP-Adressen.</value>
@@ -4806,6 +4830,18 @@
   <data name="TaskActivity.VPS_CREATE_SET_MANAGEMENT_NIC_KVP_ERROR" xml:space="preserve">
     <value>Fehler bei Setzen der Parameter für die Bereitstellungsaufgabe "Verwaltungsnetzwerkkarte".</value>
   </data>
+  <data name="Warning.VLAN_EDIT_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>Auswahl ist leer.</value>
+  </data>
+  <data name="WarningDescription.VLAN_EDIT_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>Mindestens ein VLAN muss ausgewählt sein.</value>
+  </data>
+  <data name="Warning.VLAN_DELETE_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>Auswahl ist leer.</value>
+  </data>
+  <data name="WarningDescription.VLAN_DELETE_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>Mindestens ein VLAN muss ausgewählt sein.</value>
+  </data>
   <data name="Warning.IP_DELETE_LIST_EMPTY_ERROR" xml:space="preserve">
     <value>Auswahl ist leer.</value>
   </data>
@@ -4826,6 +4862,9 @@
   </data>
   <data name="VPS.IP_ADDRESSES_QUOTA_LIMIT_REACHED" xml:space="preserve">
     <value>Kontingent an IP-Adressen wurde überschritten.</value>
+  </data>
+  <data name="Error.VLAN_DELETE_RANGE_VLAN" xml:space="preserve">
+    <value>VLANs können nicht gelöscht werden.</value>
   </data>
   <data name="AuditLogTask.IP_ADDRESS_DELETE_RANGE" xml:space="preserve">
     <value>Bereich löschen</value>
@@ -5414,6 +5453,9 @@
   </data>
   <data name="Quota.VPS2012.DvdEnabled" xml:space="preserve">
     <value>DVD-Laufwerk</value>
+  </data>
+  <data name="Quota.VPS2012.PrivateVLANsNumber" xml:space="preserve">
+    <value>Anzahl Privates Netzwerk VLANs</value>
   </data>
   <data name="Quota.VPS2012.ExternalIPAddressesNumber" xml:space="preserve">
     <value>Anzahl externer IP-Adressen</value>

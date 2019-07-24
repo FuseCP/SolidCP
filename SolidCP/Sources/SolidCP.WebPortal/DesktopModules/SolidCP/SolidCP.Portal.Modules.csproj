@@ -217,6 +217,7 @@
     <Compile Include="Code\Helpers\VirtualMachines2012Helper.cs" />
     <Compile Include="Code\Helpers\VirtualMachinesHelper.cs" />
     <Compile Include="Code\Helpers\VirtualMachinesProxmoxHelper.cs" />
+    <Compile Include="Code\Helpers\VLANsHelper.cs" />
     <Compile Include="Code\Helpers\WebAppGalleryHelpers.cs" />
     <Compile Include="Code\ProviderControls\IDatabaseEditDatabaseControl.cs" />
     <Compile Include="Code\ProviderControls\IDatabaseEditUserControl.cs" />
@@ -525,6 +526,13 @@
     </Compile>
     <Compile Include="ProviderControls\SfB_Settings.ascx.designer.cs">
       <DependentUpon>SfB_Settings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ServerVLANsControl.ascx.cs">
+      <DependentUpon>ServerVLANsControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ServerVLANsControl.ascx.designer.cs">
+      <DependentUpon>ServerVLANsControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="SettingsMariaDBPolicy.ascx.cs">
       <DependentUpon>SettingsMariaDBPolicy.ascx</DependentUpon>
@@ -842,6 +850,27 @@
     <Compile Include="StorageSpaces\UserControls\StorageSpaceLevelResourceGroups.ascx.designer.cs">
       <DependentUpon>StorageSpaceLevelResourceGroups.ascx</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\AllocatePackageVLANs.ascx.cs">
+      <DependentUpon>AllocatePackageVLANs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\AllocatePackageVLANs.ascx.designer.cs">
+      <DependentUpon>AllocatePackageVLANs.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\EditVLANControl.ascx.cs">
+      <DependentUpon>EditVLANControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\EditVLANControl.ascx.designer.cs">
+      <DependentUpon>EditVLANControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\PackageVLANs.ascx.cs">
+      <DependentUpon>PackageVLANs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControls\PackageVLANs.ascx.designer.cs">
+      <DependentUpon>PackageVLANs.ascx</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ServerPasswordControl.ascx.cs">
       <DependentUpon>ServerPasswordControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -860,7 +889,35 @@
       <DependentUpon>TinyMCEControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="VLANs.ascx.cs">
+      <DependentUpon>VLANs.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VLANs.ascx.designer.cs">
+      <DependentUpon>VLANs.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="VLANsAddVLAN.ascx.cs">
+      <DependentUpon>VLANsAddVLAN.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VLANsAddVLAN.ascx.designer.cs">
+      <DependentUpon>VLANsAddVLAN.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="VLANsEditVLAN.ascx.cs">
+      <DependentUpon>VLANsEditVLAN.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VLANsEditVLAN.ascx.designer.cs">
+      <DependentUpon>VLANsEditVLAN.ascx</DependentUpon>
+    </Compile>
     <Compile Include="VPS2012\guacamole\Encryption.cs" />
+    <Compile Include="VPS2012\VdcAddPrivateNetworkVLAN.ascx.cs">
+      <DependentUpon>VdcAddPrivateNetworkVLAN.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="VPS2012\VdcAddPrivateNetworkVLAN.ascx.designer.cs">
+      <DependentUpon>VdcAddPrivateNetworkVLAN.ascx</DependentUpon>
+    </Compile>
     <Compile Include="VpsMenu.ascx.cs">
       <DependentUpon>VpsMenu.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -3512,11 +3569,11 @@
       <DependentUpon>DomainsEditDomain.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-	<Compile Include="DomainsImportZone.ascx.cs">
+    <Compile Include="DomainsImportZone.ascx.cs">
       <DependentUpon>DomainsImportZone.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-	<Compile Include="DomainsImportZone.ascx.designer.cs">
+    <Compile Include="DomainsImportZone.ascx.designer.cs">
       <DependentUpon>DomainsImportZone.ascx</DependentUpon>
     </Compile>
     <Compile Include="DomainsEditDomain.ascx.designer.cs">
@@ -5491,8 +5548,16 @@
     <Content Include="ProviderControls\HyperVvmm_Settings.ascx" />
     <Content Include="ProviderControls\MailCleaner_Settings.ascx" />
     <Content Include="ProviderControls\SfB_Settings.ascx" />
+    <Content Include="ServerVLANsControl.ascx" />
     <Content Include="SkinControls\BootstrapDropDownList.ascx" />
+    <Content Include="UserControls\AllocatePackageVLANs.ascx" />
+    <Content Include="UserControls\EditVLANControl.ascx" />
+    <Content Include="UserControls\PackageVLANs.ascx" />
     <Content Include="UserControls\TinyMCEControl.ascx" />
+    <Content Include="VLANs.ascx" />
+    <Content Include="VLANsAddVLAN.ascx" />
+    <Content Include="VLANsEditVLAN.ascx" />
+    <Content Include="VPS2012\VdcAddPrivateNetworkVLAN.ascx" />
     <Content Include="VPS\App_LocalResources\VdcAddExternalAddress.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VdcAuditLog.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VdcCreateServer.ascx.de-DE.resx" />
@@ -5501,7 +5566,9 @@
     <Content Include="VPS\App_LocalResources\VdcImportServer.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VdcManagementNetwork.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VdcPermissions.ascx.de-DE.resx" />
-    <Content Include="VPS\App_LocalResources\VdcPrivateNetwork.ascx.de-DE.resx" />
+    <Content Include="VPS\App_LocalResources\VdcPrivateNetwork.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="VPS\App_LocalResources\VpsDetailsAddExternalAddress.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.de-DE.resx" />
     <Content Include="VPS\App_LocalResources\VpsDetailsAuditLog.ascx.de-DE.resx" />
@@ -5531,7 +5598,9 @@
     <Content Include="VPS2012\App_LocalResources\VdcImportServer.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VdcManagementNetwork.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VdcPermissions.ascx.de-DE.resx" />
-    <Content Include="VPS2012\App_LocalResources\VdcPrivateNetwork.ascx.de-DE.resx" />
+    <Content Include="VPS2012\App_LocalResources\VdcPrivateNetwork.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="VPS2012\App_LocalResources\VpsDetailsAddExternalAddress.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VpsDetailsAuditLog.ascx.de-DE.resx" />
@@ -5541,7 +5610,9 @@
     <Content Include="VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VpsDetailsHelp.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VpsDetailsInsertDvd.ascx.de-DE.resx" />
-    <Content Include="VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.de-DE.resx" />
+    <Content Include="VPS2012\App_LocalResources\VpsDetailsNetwork.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="VPS2012\App_LocalResources\VpsDetailsPermissions.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VpsDetailsReplications.ascx.de-DE.resx" />
     <Content Include="VPS2012\App_LocalResources\VpsDetailsSnapshots.ascx.de-DE.resx" />
@@ -5565,7 +5636,9 @@
     <Content Include="VPSForPC\App_LocalResources\VdcImportServer.ascx.de-DE.resx" />
     <Content Include="VPSForPC\App_LocalResources\VdcManagementNetwork.ascx.de-DE.resx" />
     <Content Include="VPSForPC\App_LocalResources\VdcPermissions.ascx.de-DE.resx" />
-    <Content Include="VPSForPC\App_LocalResources\VdcPrivateNetwork.ascx.de-DE.resx" />
+    <Content Include="VPSForPC\App_LocalResources\VdcPrivateNetwork.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="VPSForPC\App_LocalResources\VpsAlertsLog.ascx.de-DE.resx" />
     <Content Include="VPSForPC\App_LocalResources\VpsCheckPoints.ascx.de-DE.resx" />
     <Content Include="VPSForPC\App_LocalResources\VpsDetailsAddExternalAddress.ascx.de-DE.resx" />
@@ -5591,6 +5664,8 @@
     <Content Include="VPSForPC\UserControls\App_LocalResources\ServerTabs.ascx.de-DE.resx" />
     <Content Include="Proxmox\VirtualMachineImage.ashx" />
     <Content Include="Proxmox\VirtualMachineSnapshotImage.ashx" />
+    <Content Include="VPS2012\App_LocalResources\VdcAddPrivateNetworkVLAN.ascx.resx" />
+    <Content Include="VPS2012\App_LocalResources\VdcAddPrivateNetworkVLAN.ascx.de-DE.resx" />
     <None Include="packages.config" />
     <None Include="Resources\PlusSign.ico" />
     <Content Include="SettingsMariaDBPolicy.ascx" />
@@ -6198,9 +6273,15 @@
     <Content Include="ProviderControls\App_LocalResources\hMailServer_EditList.ascx.de-DE.resx" />
     <Content Include="ProviderControls\App_LocalResources\hMailServer_Settings.ascx.de-DE.resx" />
     <Content Include="ProviderControls\App_LocalResources\HostedSharePoint30_Settings.ascx.de-DE.resx" />
-    <Content Include="ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.de-DE.resx" />
-    <Content Include="ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.de-DE.resx" />
-    <Content Include="ProviderControls\App_LocalResources\HyperVvmm_Settings.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\HyperVvmm_Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ProviderControls\App_LocalResources\HyperV_Settings.ascx.de-DE.resx" />
     <Content Include="ProviderControls\App_LocalResources\IceWarp_EditAccount.ascx.de-DE.resx" />
     <Content Include="ProviderControls\App_LocalResources\IceWarp_EditDomain.ascx.de-DE.resx" />
@@ -6314,7 +6395,9 @@
     <Content Include="Proxmox\App_LocalResources\VdcImportServer.ascx.resx" />
     <Content Include="Proxmox\App_LocalResources\VdcManagementNetwork.ascx.resx" />
     <Content Include="Proxmox\App_LocalResources\VdcPermissions.ascx.resx" />
-    <Content Include="Proxmox\App_LocalResources\VdcPrivateNetwork.ascx.resx" />
+    <Content Include="Proxmox\App_LocalResources\VdcPrivateNetwork.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Proxmox\App_LocalResources\VpsDetailsAddExternalAddress.ascx.resx" />
     <Content Include="Proxmox\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.resx" />
     <Content Include="Proxmox\App_LocalResources\VpsDetailsAuditLog.ascx.resx" />
@@ -6341,6 +6424,14 @@
     <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_Settings.ascx.resx" />
     <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_EditAccount.ascx.de-DE.resx" />
     <Content Include="ProviderControls\App_LocalResources\CerberusFTP6_Settings.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\ServerVLANsControl.ascx.resx" />
+    <Content Include="App_LocalResources\ServerVLANsControl.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\VLANsAddVLAN.ascx.resx" />
+    <Content Include="App_LocalResources\VLANsAddVLAN.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\VLANsEditVLAN.ascx.resx" />
+    <Content Include="App_LocalResources\VLANsEditVLAN.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\VLANs.ascx.resx" />
+    <Content Include="App_LocalResources\VLANs.ascx.de-DE.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
@@ -6617,7 +6708,9 @@
     <Content Include="UserControls\App_LocalResources\DomainControl.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\EditDomainsList.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\EditFeedsList.ascx.de-DE.resx" />
-    <Content Include="UserControls\App_LocalResources\EditIPAddressControl.ascx.de-DE.resx" />
+    <Content Include="UserControls\App_LocalResources\EditIPAddressControl.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="UserControls\App_LocalResources\EditItemComments.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\EmailControl.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\EnableAsyncTasksSupport.ascx.de-DE.resx" />
@@ -6649,6 +6742,12 @@
     <Content Include="UserControls\App_LocalResources\UsernameControl.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\UsernamePolicyEditor.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\WebsiteActions.ascx.de-DE.resx" />
+    <Content Include="UserControls\App_LocalResources\EditVLANControl.ascx.resx" />
+    <Content Include="UserControls\App_LocalResources\EditVLANControl.ascx.de-DE.resx" />
+    <Content Include="UserControls\App_LocalResources\PackageVLANs.ascx.resx" />
+    <Content Include="UserControls\App_LocalResources\PackageVLANs.ascx.de-DE.resx" />
+    <Content Include="UserControls\App_LocalResources\AllocatePackageVLANs.ascx.resx" />
+    <Content Include="UserControls\App_LocalResources\AllocatePackageVLANs.ascx.de-DE.resx" />
     <EmbeddedResource Include="UserControls\App_LocalResources\WebsiteActions.ascx.resx" />
     <Content Include="VPS\UserControls\App_LocalResources\Generation.ascx.resx">
       <SubType>Designer</SubType>
@@ -6778,7 +6877,7 @@
     <Content Include="App_LocalResources\DomainsEditDomain.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
-	<Content Include="App_LocalResources\DomainsImportZone.ascx.resx">
+    <Content Include="App_LocalResources\DomainsImportZone.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="App_LocalResources\DomainsSelectDomainControl.ascx.resx">
@@ -7073,7 +7172,7 @@
     <Content Include="Domains.ascx" />
     <Content Include="DomainsAddDomain.ascx" />
     <Content Include="DomainsEditDomain.ascx" />
-	<Content Include="DomainsImportZone.ascx" />
+    <Content Include="DomainsImportZone.ascx" />
     <Content Include="DomainsSelectDomainControl.ascx" />
     <Content Include="FileManager.ascx" />
     <Content Include="FtpAccountEditAccount.ascx" />
@@ -7694,7 +7793,9 @@
     <Content Include="App_LocalResources\SettingsExchangeHostedEditionOrganizationSummary.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="VPSForPC\App_LocalResources\VdcAddExternalAddress.ascx.resx">
       <SubType>Designer</SubType>
     </Content>

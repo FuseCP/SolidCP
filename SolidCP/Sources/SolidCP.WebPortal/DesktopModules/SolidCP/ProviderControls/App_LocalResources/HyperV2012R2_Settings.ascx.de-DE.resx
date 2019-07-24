@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="chkVpsFolderIncludesUsername.Text" xml:space="preserve">
     <value>Benutzername</value>
@@ -275,6 +275,12 @@
   </data>
   <data name="radioVpsFolderIncludesName.Text" xml:space="preserve">
     <value>VPS-Hostname, zum Beispiel "vps1.domain.de"</value>
+  </data>
+  <data name="radioSwitchTypePrivatePrivate.Text" xml:space="preserve">
+    <value>Neuer privater Switch für jeden Hosting Space</value>
+  </data>
+  <data name="radioSwitchTypePrivateExternal.Text" xml:space="preserve">
+    <value>Externen Switch verwenden (VLAN-Trennung)</value>
   </data>
   <data name="RootFolderValidator.ErrorMessage" xml:space="preserve">
     <value>Geben Sie einen VPS-Stammordner ein</value>
@@ -533,5 +539,8 @@
   </data>
   <data name="locSecureBootTemplate.Text" xml:space="preserve">
     <value>"Secure boot" Vorlage:</value>
+  </data>
+  <data name="chkAssignVLANAutomatically.Text" xml:space="preserve">
+    <value>VLANs bei Bereich-Anlage automatisch zuweisen</value>
   </data>
 </root>

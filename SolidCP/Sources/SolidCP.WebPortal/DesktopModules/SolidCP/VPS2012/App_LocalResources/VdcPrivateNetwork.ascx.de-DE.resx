@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FormComments.Text" xml:space="preserve">
     <value>&lt;p&gt;Wenn dieses Formular im Hosting-Bereich verfügbar ist, bedeutet das, dass alle VMs in diesem Hosting-Bereich an ein dediziertes privates Netzwerk angeschlossen sind, das nur in diesem Hosting-Bereich verfügbar ist.&lt;/p&gt; &lt;p&gt;Privates Netzwerk hilft dabei die Netzwerksicherheit zusätzlich zu erhöhen. Verbinden Sie beispielsweise nur einen Frontend-Server (z.B. Server mit Exchange CAS und HUB Rollen installiert) mit dem externem Netzwerk und alle anderen Server nur mit dem privaten (internen) Netzwerk (z.B. einen Server mit Exchange-Postfachrolle und eine zweiten als DC).&lt;/p&gt;&lt;p&gt;Das Kontingent unten im Formular zeigt die maximale Anzahl jeder VM zuzweisbarer privater IP-Adressen an.&lt;/p&gt;</value>
@@ -146,5 +146,11 @@
   </data>
   <data name="secQuotas.Text" xml:space="preserve">
     <value>Kontingente</value>
+  </data>
+  <data name="secVLAN.Text" xml:space="preserve">
+    <value>VLAN</value>
+  </data>
+  <data name="locVLANsQuota.Text" xml:space="preserve">
+    <value>Privates Netzwerk VLANs:</value>
   </data>
 </root>

@@ -3304,6 +3304,7 @@ namespace SolidCP.EnterpriseServer
 
             // update NIC
             nic.MacAddress = GetSymbolDelimitedMacAddress(vm.ExternalNicMacAddress, "-");
+            nic.VLAN = vm.defaultaccessvlan;
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
@@ -3687,6 +3688,7 @@ namespace SolidCP.EnterpriseServer
 
             // update NIC
             nic.MacAddress = GetSymbolDelimitedMacAddress(vm.PrivateNicMacAddress, "-");
+            nic.VLAN = vm.PrivateNetworkVlan;
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(

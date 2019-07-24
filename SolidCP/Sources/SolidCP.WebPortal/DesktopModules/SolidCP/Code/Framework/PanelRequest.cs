@@ -116,6 +116,11 @@ namespace SolidCP.Portal
             get { return GetInt("AddressID"); }
         }
 
+        public static int VlanID
+        {
+            get { return GetInt("VlanID"); }
+        }
+
         public static string Addresses
         {
             get { return HttpContext.Current.Request["Addresses"]; }

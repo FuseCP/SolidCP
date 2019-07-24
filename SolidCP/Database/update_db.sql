@@ -15838,6 +15838,474 @@ SELECT Id, RDSCollectionId, MessageText, UserName, [Date] FROM [dbo].[RDSMessage
 RETURN
 GO
 
+-- Private Network VLANs
+
+IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PrivateNetworkVLANs')
+CREATE TABLE [dbo].[PrivateNetworkVLANs]
+(
+	[VlanID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[Vlan] INT NOT NULL,
+	[ServerID] INT NOT NULL,
+	[Comments] NTEXT,
+	CONSTRAINT [FK_ServerID]
+		FOREIGN KEY ([ServerID]) REFERENCES [dbo].[Servers] ([ServerID])
+		ON DELETE CASCADE
+)
+GO
+
+IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PackageVLANs')
+CREATE TABLE [dbo].[PackageVLANs]
+(
+	[PackageVlanID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[VlanID] INT NOT NULL,
+	[PackageID] INT NOT NULL,
+	CONSTRAINT [FK_VlanID]
+		FOREIGN KEY ([VlanID]) REFERENCES [dbo].[PrivateNetworkVLANs] ([VlanID])
+		ON DELETE CASCADE,
+	CONSTRAINT [FK_PackageID]
+		FOREIGN KEY ([PackageID]) REFERENCES [dbo].[Packages] ([PackageID])
+		ON DELETE CASCADE
+)
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddPrivateNetworkVlan')
+DROP PROCEDURE AddPrivateNetworkVlan
+GO
+CREATE PROCEDURE [dbo].[AddPrivateNetworkVlan]
+(
+ @VlanID int OUTPUT,
+ @Vlan int,
+ @ServerID int,
+ @Comments ntext
+)
+AS
+BEGIN
+ IF @ServerID = 0
+ SET @ServerID = NULL
+
+ INSERT INTO PrivateNetworkVLANs(Vlan, ServerID, Comments)
+ VALUES (@Vlan, @ServerID, @Comments)
+
+ SET @VlanID = SCOPE_IDENTITY()
+
+ RETURN
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeletePrivateNetworkVLAN')
+DROP PROCEDURE DeletePrivateNetworkVLAN
+GO
+CREATE PROCEDURE [dbo].[DeletePrivateNetworkVLAN]
+(
+	@VlanID int,
+	@Result int OUTPUT
+)
+AS
+
+SET @Result = 0
+IF EXISTS(SELECT VlanID FROM PackageVLANs WHERE VlanID = @VlanID)
+BEGIN
+	SET @Result = -2
+	RETURN
+END
+
+DELETE FROM PrivateNetworkVLANs
+WHERE VlanID = @VlanID
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPrivateNetworVLANsPaged')
+DROP PROCEDURE GetPrivateNetworVLANsPaged
+GO
+CREATE PROCEDURE [dbo].[GetPrivateNetworVLANsPaged]
+(
+ @ActorID int,
+ @ServerID int,
+ @FilterColumn nvarchar(50) = '',
+ @FilterValue nvarchar(50) = '',
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int
+)
+AS
+BEGIN
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+@IsAdmin = 1
+AND (@ServerID = 0 OR @ServerID <> 0 AND V.ServerID = @ServerID)
+'
+
+IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+BEGIN
+ IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+  SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+ ELSE
+  SET @condition = @condition + '
+   AND (Vlan LIKE ''' + @FilterValue + '''
+   OR ServerName LIKE ''' + @FilterValue + '''
+   OR Username LIKE ''' + @FilterValue + ''')'
+END
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'V.Vlan ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(V.VlanID)
+FROM dbo.PrivateNetworkVLANs AS V
+LEFT JOIN Servers AS S ON V.ServerID = S.ServerID
+LEFT JOIN PackageVLANs AS PA ON V.VlanID = PA.VlanID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON P.UserID = U.UserID
+WHERE ' + @condition + '
+
+DECLARE @VLANs AS TABLE
+(
+ VlanID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  V.VlanID
+ FROM dbo.PrivateNetworkVLANs AS V
+ LEFT JOIN Servers AS S ON V.ServerID = S.ServerID
+ LEFT JOIN PackageVLANs AS PA ON V.VlanID = PA.VlanID
+ LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @VLANs
+SELECT VlanID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ V.VlanID,
+ V.Vlan,
+ V.Comments,
+ V.ServerID,
+ S.ServerName,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM @VLANs AS TA
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON TA.VlanID = V.VlanID
+LEFT JOIN Servers AS S ON V.ServerID = S.ServerID
+LEFT JOIN PackageVLANs AS PA ON V.VlanID = PA.VlanID
+LEFT JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+LEFT JOIN dbo.Users U ON U.UserID = P.UserID
+'
+
+exec sp_executesql @sql, N'@IsAdmin bit, @ServerID int, @StartRow int, @MaximumRows int',
+@IsAdmin, @ServerID, @StartRow, @MaximumRows
+
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPrivateNetworVLAN')
+DROP PROCEDURE GetPrivateNetworVLAN
+GO
+CREATE PROCEDURE [dbo].[GetPrivateNetworVLAN]
+(
+ @VlanID int
+)
+AS
+BEGIN
+ -- select
+ SELECT
+  VlanID,
+  Vlan,
+  ServerID,
+  Comments
+ FROM PrivateNetworkVLANs
+ WHERE
+  VlanID = @VlanID
+ RETURN
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdatePrivateNetworVLAN')
+DROP PROCEDURE UpdatePrivateNetworVLAN
+GO
+CREATE PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
+(
+ @VlanID int,
+ @ServerID int,
+ @Vlan int,
+ @Comments ntext
+)
+AS
+BEGIN
+ IF @ServerID = 0
+ SET @ServerID = NULL
+
+ UPDATE PrivateNetworkVLANs SET
+  Vlan = @Vlan,
+  ServerID = @ServerID,
+  Comments = @Comments
+ WHERE VlanID = @VlanID
+ RETURN
+END
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackagePrivateNetworkVLANs')
+DROP PROCEDURE GetPackagePrivateNetworkVLANs
+GO
+CREATE PROCEDURE [dbo].[GetPackagePrivateNetworkVLANs]
+(
+ @PackageID int,
+ @SortColumn nvarchar(50),
+ @StartRow int,
+ @MaximumRows int
+)
+AS
+BEGIN
+-- start
+DECLARE @condition nvarchar(700)
+SET @condition = '
+dbo.CheckPackageParent(@PackageID, PA.PackageID) = 1
+'
+
+IF @SortColumn IS NULL OR @SortColumn = ''
+SET @SortColumn = 'V.Vlan ASC'
+
+DECLARE @sql nvarchar(3500)
+
+set @sql = '
+SELECT COUNT(PA.PackageVlanID)
+FROM dbo.PackageVLANs PA
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+WHERE ' + @condition + '
+
+DECLARE @VLANs AS TABLE
+(
+ PackageVlanID int
+);
+
+WITH TempItems AS (
+ SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+  PA.PackageVlanID
+ FROM dbo.PackageVLANs PA
+ INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+ INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+ INNER JOIN dbo.Users U ON U.UserID = P.UserID
+ WHERE ' + @condition + '
+)
+
+INSERT INTO @VLANs
+SELECT PackageVlanID FROM TempItems
+WHERE TempItems.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+SELECT
+ PA.PackageVlanID,
+ PA.VlanID,
+ V.Vlan,
+ PA.PackageID,
+ P.PackageName,
+ P.UserID,
+ U.UserName
+FROM @VLANs AS TA
+INNER JOIN dbo.PackageVLANs AS PA ON TA.PackageVlanID = PA.PackageVlanID
+INNER JOIN dbo.PrivateNetworkVLANs AS V ON PA.VlanID = V.VlanID
+INNER JOIN dbo.Packages P ON PA.PackageID = P.PackageID
+INNER JOIN dbo.Users U ON U.UserID = P.UserID
+'
+
+print @sql
+
+exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
+@PackageID, @StartRow, @MaximumRows
+
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeallocatePackageVLAN')
+DROP PROCEDURE DeallocatePackageVLAN
+GO
+CREATE PROCEDURE [dbo].[DeallocatePackageVLAN]
+	@PackageVlanID int
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	-- check parent package
+	DECLARE @ParentPackageID int
+
+	SELECT @ParentPackageID = P.ParentPackageID
+	FROM PackageVLANs AS PV
+	INNER JOIN Packages AS P ON PV.PackageID = P.PackageId
+	WHERE PV.PackageVlanID = @PackageVlanID
+
+	IF (@ParentPackageID = 1) -- "System" space
+	BEGIN
+		DELETE FROM dbo.PackageVLANs
+		WHERE PackageVlanID = @PackageVlanID
+	END
+	ELSE -- 2rd level space and below
+	BEGIN
+		UPDATE PackageVLANs
+		SET PackageID = @ParentPackageID
+		WHERE PackageVlanID = @PackageVlanID
+	END
+
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUnallottedVLANs')
+DROP PROCEDURE GetUnallottedVLANs
+GO
+CREATE PROCEDURE [dbo].[GetUnallottedVLANs]
+ @PackageID int,
+ @ServiceID int
+AS
+BEGIN
+ DECLARE @ParentPackageID int
+ DECLARE @ServerID int
+IF (@PackageID = -1) -- NO PackageID defined, use ServerID from ServiceID (VPS Import)
+BEGIN
+ SELECT
+  @ServerID = ServerID,
+  @ParentPackageID = 1
+ FROM Services
+ WHERE ServiceID = @ServiceID
+END
+ELSE
+BEGIN
+ SELECT
+  @ParentPackageID = ParentPackageID,
+  @ServerID = ServerID
+ FROM Packages
+ WHERE PackageID = @PackageId
+END
+
+IF @ParentPackageID = 1 -- "System" space
+BEGIN
+  -- check if server is physical
+  IF EXISTS(SELECT * FROM Servers WHERE ServerID = @ServerID AND VirtualServer = 0)
+  BEGIN
+   -- physical server
+   SELECT
+    V.VlanID,
+    V.Vlan,
+    V.ServerID
+   FROM dbo.PrivateNetworkVLANs AS V
+   WHERE
+    V.ServerID = @ServerID
+    AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
+   ORDER BY V.Vlan
+  END
+  ELSE
+  BEGIN
+   -- virtual server
+   -- get resource group by service
+   DECLARE @GroupID int
+   SELECT @GroupID = P.GroupID FROM Services AS S
+   INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+   WHERE S.ServiceID = @ServiceID
+   SELECT
+    V.VlanID,
+    V.Vlan,
+    V.ServerID
+   FROM dbo.PrivateNetworkVLANs AS V
+   WHERE
+    V.ServerID IN (
+     SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
+     INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
+     WHERE [SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
+    )
+    AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
+   ORDER BY V.Vlan
+  END
+ END
+ ELSE -- 2rd level space and below
+ BEGIN
+  -- get service location
+  SELECT @ServerID = S.ServerID FROM Services AS S
+  WHERE S.ServiceID = @ServiceID
+  SELECT
+   V.VlanID,
+   V.Vlan,
+   V.ServerID
+  FROM dbo.PackageVLANs AS PV
+  INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+  WHERE
+   PV.PackageID = @ParentPackageID
+   AND V.ServerID = @ServerID
+  ORDER BY V.Vlan
+ END
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AllocatePackageVLANs')
+DROP PROCEDURE AllocatePackageVLANs
+GO
+CREATE PROCEDURE [dbo].[AllocatePackageVLANs]
+(
+	@PackageID int,
+	@xml ntext
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @idoc int
+	--Create an internal representation of the XML document.
+	EXEC sp_xml_preparedocument @idoc OUTPUT, @xml
+
+	-- delete
+	DELETE FROM PackageVLANs
+	FROM PackageVLANs AS PV
+	INNER JOIN OPENXML(@idoc, '/items/item', 1) WITH 
+	(
+		VlanID int '@id'
+	) as PX ON PV.VlanID = PX.VlanID
+
+
+	-- insert
+	INSERT INTO dbo.PackageVLANs
+	(		
+		PackageID,
+		VlanID	
+	)
+	SELECT		
+		@PackageID,
+		VlanID
+
+	FROM OPENXML(@idoc, '/items/item', 1) WITH 
+	(
+		VlanID int '@id'
+	) as PX
+
+	-- remove document
+	exec sp_xml_removedocument @idoc
+
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.PrivateVLANsNumber')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (725, 33, 14, N'VPS2012.PrivateVLANsNumber', N'Number of Private Network VLANs', 2, 0, NULL, NULL)
+END
+GO
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -20407,6 +20875,11 @@ AS
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
 							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
 							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 3)
+		ELSE IF @QuotaID = 725 -- Private Network VLANs of VPS2012
+			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
+							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
+							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
+							WHERE PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 100 -- Dedicated Web IP addresses
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID

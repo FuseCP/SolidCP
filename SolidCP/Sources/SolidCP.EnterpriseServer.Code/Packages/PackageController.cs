@@ -746,6 +746,8 @@ namespace SolidCP.EnterpriseServer
                 StringDictionary vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                 if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+                if (Utils.ParseBool(vps2012Settings["AutoAssignVLAN"], true))
+                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012);
 
                 // allocate "VPSForPC" IP addresses
                 int vpsfcpServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPSForPC);

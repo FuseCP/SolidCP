@@ -328,6 +328,17 @@ namespace SolidCP.Providers.Virtualization
                     };
                     adapters.Add(adapter);
                 }
+
+                foreach (VirtualMachineNetworkAdapter adapter in adapters)
+                {
+                    command = new Command("Get-VMNetworkAdapterVlan");
+                    command.Parameters.Add("VMName", vmName);
+                    command.Parameters.Add("VMNetworkAdapterName", adapter.Name);
+                    result = PowerShell.Execute(command, true, true);
+                    int vlan = 0;
+                    Int32.TryParse(result[0].GetString("AccessVlanId"), out vlan);
+                    adapter.vlan = vlan;
+                }
             }
             catch (Exception ex)
             {

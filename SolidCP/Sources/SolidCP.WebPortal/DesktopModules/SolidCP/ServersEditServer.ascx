@@ -1,4 +1,5 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ServersEditServer.ascx.cs" Inherits="SolidCP.Portal.ServersEditServer" %>
+<%@ Register Src="ServerVLANsControl.ascx" TagName="ServerVLANsControl" TagPrefix="uc5" %>
 <%@ Register Src="ServerServicesControl.ascx" TagName="ServerServicesControl" TagPrefix="uc4" %>
 <%@ Register Src="ServerIPAddressesControl.ascx" TagName="ServerIPAddressesControl" TagPrefix="uc2" %>
 <%@ Register Src="ServerDnsRecordsControl.ascx" TagName="ServerDnsRecordsControl" TagPrefix="uc3" %>
@@ -138,6 +139,19 @@
                         <td>
                             <uc2:ServerIPAddressesControl id="ServerIPAddressesControl1" runat="server">
                             </uc2:ServerIPAddressesControl></td>
+                    </tr>
+                </table>
+            </asp:Panel>
+            <scp:CollapsiblePanel id="VLANsHeader" runat="server" IsCollapsed="true"
+                TargetControlID="VLANsPanel" resourcekey="VLANsHeader" Text="Private Network VLANs">
+            </scp:CollapsiblePanel>
+            <asp:Panel ID="VLANsPanel" runat="server" Height="0" style="overflow:hidden;">
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <uc5:ServerVLANsControl id="ServerVLANsControl1" runat="server">
+                            </uc5:ServerVLANsControl>
+                        </td>
                     </tr>
                 </table>
             </asp:Panel>

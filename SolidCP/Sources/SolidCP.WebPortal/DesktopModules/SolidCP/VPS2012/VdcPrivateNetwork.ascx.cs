@@ -50,6 +50,7 @@ namespace SolidCP.Portal.VPS2012
             {
                 searchBox.AddCriteria("IPAddress", GetLocalizedString("SearchField.IPAddress"));
                 searchBox.AddCriteria("ItemName", GetLocalizedString("SearchField.ItemName"));
+                packageVLANs.ManageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
             }
             searchBox.AjaxData = this.GetSearchBoxAjaxData();
         }

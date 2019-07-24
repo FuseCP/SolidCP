@@ -133,6 +133,8 @@
     <Compile Include="Servers\IPAddressesPaged.cs" />
     <Compile Include="Servers\IPAddressPool.cs" />
     <Compile Include="Servers\ServiceGroupIds.cs" />
+    <Compile Include="Servers\VLANInfo.cs" />
+    <Compile Include="Servers\VLANsPaged.cs" />
     <Compile Include="SpamExperts\SpamExpertsRoute.cs" />
     <Compile Include="System\SystemSettings.cs" />
     <Compile Include="Tasks\BackgroundTask.cs" />
@@ -169,6 +171,8 @@
     <Compile Include="Virtualization\PackageIPAddressesPaged.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Virtualization\PackageVLAN.cs" />
+    <Compile Include="Virtualization\PackageVLANsPaged.cs" />
     <Compile Include="Virtualization\PrivateIPAddress.cs">
       <SubType>Code</SubType>
     </Compile>

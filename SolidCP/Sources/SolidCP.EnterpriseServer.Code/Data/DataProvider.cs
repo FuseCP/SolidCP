@@ -608,6 +608,105 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
+        #region Private Network VLANs
+        public static int AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+        {
+            SqlParameter prmAddresId = new SqlParameter("@VlanID", SqlDbType.Int);
+            prmAddresId.Direction = ParameterDirection.Output;
+
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "AddPrivateNetworkVlan",
+                prmAddresId,
+                new SqlParameter("@Vlan", vlan),
+                new SqlParameter("@ServerID", serverId),
+                new SqlParameter("@Comments", comments));
+
+            return Convert.ToInt32(prmAddresId.Value);
+        }
+
+        public static int DeletePrivateNetworkVLAN(int vlanId)
+        {
+            SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Int);
+            prmResult.Direction = ParameterDirection.Output;
+
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "DeletePrivateNetworkVLAN",
+                prmResult,
+                new SqlParameter("@VlanID", vlanId));
+
+            return Convert.ToInt32(prmResult.Value);
+        }
+
+        public static IDataReader GetPrivateNetworVLANsPaged(int actorId, int serverId,
+            string filterColumn, string filterValue,
+            string sortColumn, int startRow, int maximumRows)
+        {
+            IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                     "GetPrivateNetworVLANsPaged",
+                                        new SqlParameter("@ActorId", actorId),
+                                        new SqlParameter("@ServerId", serverId),
+                                        new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+                                        new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+                                        new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+                                        new SqlParameter("@startRow", startRow),
+                                        new SqlParameter("@maximumRows", maximumRows));
+            return reader;
+        }
+
+        public static IDataReader GetPrivateNetworVLAN(int vlanId)
+        {
+            return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetPrivateNetworVLAN",
+                new SqlParameter("@VlanID", vlanId));
+        }
+
+        public static void UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "UpdatePrivateNetworVLAN",
+                new SqlParameter("@VlanID", vlanId),
+                new SqlParameter("@ServerID", serverId),
+                new SqlParameter("@Vlan", vlan),
+                new SqlParameter("@Comments", comments));
+        }
+
+        public static IDataReader GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                     "GetPackagePrivateNetworkVLANs",
+                                        new SqlParameter("@PackageID", packageId),
+                                        new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+                                        new SqlParameter("@startRow", startRow),
+                                        new SqlParameter("@maximumRows", maximumRows));
+            return reader;
+        }
+
+        public static void DeallocatePackageVLAN(int id)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure, "DeallocatePackageVLAN",
+                                      new SqlParameter("@PackageVlanID", id));
+        }
+
+        public static IDataReader GetUnallottedVLANs(int packageId, int serviceId)
+        {
+            return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                     "GetUnallottedVLANs",
+                                        new SqlParameter("@PackageId", packageId),
+                                        new SqlParameter("@ServiceId", serviceId));
+        }
+
+        public static void AllocatePackageVLANs(int packageId, string xml)
+        {
+            SqlParameter[] param = new[]
+                                       {
+                                           new SqlParameter("@PackageID", packageId),
+                                           new SqlParameter("@xml", xml)
+                                       };
+
+            ExecuteLongNonQuery("AllocatePackageVLANs", param);
+        }
+        #endregion
+
         #region IPAddresses
         public static IDataReader GetIPAddress(int ipAddressId)
         {

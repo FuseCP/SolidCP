@@ -253,6 +253,16 @@ namespace SolidCP.Portal.VPS2012
 
                 txtPrivateAddressesNumber.Text = "1";
                 litMaxPrivateAddresses.Text = String.Format(GetLocalizedString("litMaxPrivateAddresses.Text"), maxPrivate);
+
+                listPrivateNetworkVLAN.Items.Clear();
+                PackageVLANsPaged vlans = ES.Services.Servers.GetPackagePrivateNetworkVLANs(PanelSecurity.PackageId, "", 0, Int32.MaxValue);
+                if (vlans != null && vlans.Count > 0)
+                {
+                    foreach (PackageVLAN vlan in vlans.Items)
+                    {
+                        listPrivateNetworkVLAN.Items.Add(new ListItem(String.Format("VLAN {0}", vlan.Vlan.ToString()), vlan.Vlan.ToString()));
+                    }
+                }
             }
 
 
@@ -375,7 +385,7 @@ namespace SolidCP.Portal.VPS2012
             tablePrivateNetwork.Visible = chkPrivateNetworkEnabled.Checked && (ViewState["DHCP"] == null);
             PrivateAddressesNumberRow.Visible = radioPrivateRandom.Checked;
             PrivateAddressesListRow.Visible = radioPrivateSelected.Checked;
-
+            listPrivateNetworkVLAN.Visible = listPrivateNetworkVLAN.Items.Count > 1;
         }
 
         private void BindExternalIps()
@@ -539,7 +549,13 @@ namespace SolidCP.Portal.VPS2012
 
 
                 // set default selected vlan
-                virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);
+                virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);//external network vlan
+
+                // set private network vlan
+                if (listPrivateNetworkVLAN.Items.Count > 0)
+                {
+                    virtualMachine.PrivateNetworkVlan = Convert.ToInt32(listPrivateNetworkVLAN.SelectedValue);
+                }
 
                 // create virtual machine
                 IntResult res = ES.Services.VPS2012.CreateNewVirtualMachine(virtualMachine,
