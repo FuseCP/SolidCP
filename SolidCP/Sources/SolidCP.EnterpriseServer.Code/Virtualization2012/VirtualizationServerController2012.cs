@@ -2562,6 +2562,8 @@ namespace SolidCP.EnterpriseServer
 
                 vm.ExternalNetworkEnabled = vmSettings.ExternalNetworkEnabled;
                 vm.PrivateNetworkEnabled = vmSettings.PrivateNetworkEnabled;
+                vm.defaultaccessvlan = vmSettings.defaultaccessvlan;
+                vm.PrivateNetworkVlan = vmSettings.PrivateNetworkVlan;
                 /////////////////////////////////////////////
 
                 // dynamic memory

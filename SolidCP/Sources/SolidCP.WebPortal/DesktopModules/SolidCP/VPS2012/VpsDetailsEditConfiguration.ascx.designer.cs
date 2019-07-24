@@ -499,6 +499,24 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Panel NetworkPanel;
         
         /// <summary>
+        /// EmptyExternalAddressesMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl EmptyExternalAddressesMessage;
+        
+        /// <summary>
+        /// locNotEnoughExternalAddresses control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locNotEnoughExternalAddresses;
+        
+        /// <summary>
         /// chkExternalNetworkEnabled control.
         /// </summary>
         /// <remarks>

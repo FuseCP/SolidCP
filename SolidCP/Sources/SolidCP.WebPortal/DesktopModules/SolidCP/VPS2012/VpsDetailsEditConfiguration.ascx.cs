@@ -152,6 +152,15 @@ namespace SolidCP.Portal.VPS2012
                 BindCheckboxOption(chkReinstall, Quotas.VPS2012_REINSTALL_ALLOWED);
 
                 BindCheckboxOption(chkExternalNetworkEnabled, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED);
+                if (chkExternalNetworkEnabled.Enabled && !chkExternalNetworkEnabled.Checked)
+                {
+                    PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
+                    if (ips.Length == 0)
+                    {
+                        chkExternalNetworkEnabled.Enabled = false;
+                        EmptyExternalAddressesMessage.Visible = true;
+                    }
+                }
                 BindCheckboxOption(chkPrivateNetworkEnabled, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED);
 
                 this.BindSettingsControls(vm);
@@ -201,6 +210,7 @@ namespace SolidCP.Portal.VPS2012
                 }
 
                 VirtualMachine virtualMachine = new VirtualMachine();
+                VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineItem(PanelRequest.ItemID);
 
                 // the custom provider control
                 this.SaveSettingsControls(ref virtualMachine);
@@ -222,6 +232,43 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
                 virtualMachine.NeedReboot = chkForceReboot.Checked;
+
+                bool setupExternalNetwork = !vm.ExternalNetworkEnabled && chkExternalNetworkEnabled.Checked;
+                bool setupPrivateNetwork = !vm.PrivateNetworkEnabled && chkPrivateNetworkEnabled.Checked;
+
+                if (setupExternalNetwork)
+                {
+                    PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
+                    if (ips.Length > 0)
+                    {
+                        virtualMachine.defaultaccessvlan = ips[0].VLAN;
+                        int[] ipId = new int[1];
+                        ipId[0] = ips[0].PackageAddressID;
+                        ES.Services.VPS2012.AddVirtualMachineExternalIPAddresses(PanelRequest.ItemID, false, 1, ipId);
+                    }
+                }
+
+                if (setupPrivateNetwork)
+                {
+                    PackageVLANsPaged vlans = ES.Services.Servers.GetPackagePrivateNetworkVLANs(PanelSecurity.PackageId, "", 0, Int32.MaxValue);
+                    if (vlans.Count > 0)
+                    {
+                        virtualMachine.PrivateNetworkVlan = vlans.Items[0].Vlan;
+                    }
+
+                    PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+
+                    if (cntx.Quotas.ContainsKey(Quotas.VPS2012_PRIVATE_IP_ADDRESSES_NUMBER))
+                    {
+                        QuotaValueInfo privQuota = cntx.Quotas[Quotas.VPS2012_PRIVATE_IP_ADDRESSES_NUMBER];
+                        int privAdrCount = 0;
+                        if (privQuota.QuotaAllocatedValue > 0 || privQuota.QuotaAllocatedValue == -1) privAdrCount = 1;
+                        if (privAdrCount > 0)
+                        {
+                            ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, true, privAdrCount, new string[0]);
+                        }
+                    }
+                }
 
                 ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineResource(PanelRequest.ItemID, virtualMachine);
                 //ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,

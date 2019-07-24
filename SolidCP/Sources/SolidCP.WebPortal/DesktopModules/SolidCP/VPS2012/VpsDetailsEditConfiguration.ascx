@@ -173,6 +173,10 @@
                     </scp:CollapsiblePanel>
                     <asp:Panel ID="NetworkPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
                         <div class="form-group">
+                            <div runat="server" ID="EmptyExternalAddressesMessage" style="padding: 5px; padding-left: 15px;" visible="false">
+                                <asp:Localize ID="locNotEnoughExternalAddresses" runat="server" Text="Not enough external IP Addresses."
+                                             meta:resourcekey="locNotEnoughExternalAddresses"></asp:Localize>
+                            </div>
                             <div class="col-sm-12 form-inline">
                                 <asp:CheckBox ID="chkExternalNetworkEnabled" runat="server"
                                              meta:resourcekey="chkExternalNetworkEnabled" Text="External network enabled" />
