@@ -63,7 +63,7 @@
   <ItemGroup>
     <None Include="letsencrypt.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="settings_default.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
