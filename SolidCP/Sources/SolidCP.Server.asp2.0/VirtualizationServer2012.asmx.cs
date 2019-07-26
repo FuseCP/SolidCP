@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2019, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -434,6 +434,25 @@ namespace SolidCP.Server
             catch (Exception ex)
             {
                 Log.WriteError(String.Format("'{0}' GetSnapshotThumbnailImage", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+        #endregion
+
+        #region Secure Boot Templates
+        [WebMethod, SoapHeader("settings")]
+        public List<SecureBootTemplate> GetSecureBootTemplates(string computerName)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetSecureBootTemplates", ProviderSettings.ProviderName);
+                List<SecureBootTemplate> result = VirtualizationProvider.GetSecureBootTemplates(computerName);
+                Log.WriteEnd("'{0}' GetSecureBootTemplates", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetSecureBootTemplates", ProviderSettings.ProviderName), ex);
                 throw;
             }
         }
