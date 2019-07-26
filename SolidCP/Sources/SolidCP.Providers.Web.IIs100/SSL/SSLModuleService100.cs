@@ -159,14 +159,15 @@ namespace SolidCP.Providers.Web.Iis
                 // This sets the correct path for the Exe file.
                 var Path = AppDomain.CurrentDomain.BaseDirectory;
                 Log.WriteInfo("SolidCP Server path: {0}", Path);
-                string command = AppDomain.CurrentDomain.BaseDirectory + "bin\\LetsEncrypt\\letsencrypt.exe";
+                string command = AppDomain.CurrentDomain.BaseDirectory + "bin\\LetsEncrypt\\wacs.exe";
 
                 runSpace = OpenRunspace();
                 var scripts = new List<string>
                 {
-                    string.Format("& '{0}' --plugin iissite --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser --closeonfinish", command, email, siteid)
+                    string.Format("& '{0}' --target iissite  --installation iis --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser", command, email, siteid)
                 };
 
+                Log.WriteInfo("LE Command Strïng: {0}", scripts);
 
                 result = ExecuteLocalScript(runSpace, scripts, out errors);
                 Log.WriteInfo(result.ToString());
