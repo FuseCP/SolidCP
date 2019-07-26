@@ -330,14 +330,17 @@
                     </td>
                 </tr>               
 
-                <tr><td class="SubHead">
-                        <asp:Localize ID="locSecureBootTemplate" runat="server" meta:resourcekey="locSecureBootTemplate" Text="Secure boot template:"></asp:Localize>
-                    </td>
-                    <td>
-                        <asp:DropDownList ID="ddlSecureBootTemplate" runat="server" CssClass="form-control" Width="470" Enabled='<%# IsSecureBootEnabled(Eval("EnableSecureBoot")) %>' DataSource ='<%# GetSecureBootTemplatesList() %>'
-                            DataValueField="Name" DataTextField="Description" SelectedIndex='<%# GetSecureBootTemplateIndex(Eval("SecureBootTemplate")) %>'>
-                        </asp:DropDownList>
-                    </td>
+                <tr>
+                    <div runat="server" ID="dSecureBootTemplate" visible='<%# GetSecureBootTemplatesList().Count > 0 %>'>
+                        <td class="SubHead">
+                            <asp:Localize ID="locSecureBootTemplate" runat="server" meta:resourcekey="locSecureBootTemplate" Text="Secure boot template:"></asp:Localize>
+                        </td>
+                        <td>
+                            <asp:DropDownList ID="ddlSecureBootTemplate" runat="server" CssClass="form-control" Width="470" Enabled='<%# IsSecureBootEnabled(Eval("EnableSecureBoot")) %>' DataSource ='<%# GetSecureBootTemplatesList() %>'
+                                DataValueField="Name" DataTextField="Description" SelectedIndex='<%# GetSecureBootTemplateIndex(Eval("SecureBootTemplate")) %>'>
+                            </asp:DropDownList>
+                        </td>
+                    </div>
                 </tr>
                 
                 <tr>
