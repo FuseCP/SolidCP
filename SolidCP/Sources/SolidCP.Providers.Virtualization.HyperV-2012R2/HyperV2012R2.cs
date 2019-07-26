@@ -203,6 +203,8 @@ namespace SolidCP.Providers.Virtualization
                         BiosInfo biosInfo = BiosHelper.Get(PowerShell, vm.Name, vm.Generation);
                         vm.NumLockEnabled = biosInfo.NumLockEnabled;
                         vm.BootFromCD = biosInfo.BootFromCD;
+                        vm.EnableSecureBoot = biosInfo.SecureBootEnabled;
+                        vm.SecureBootTemplate = biosInfo.SecureBootTemplate;
 
                         // DVD drive
                         var dvdInfo = DvdDriveHelper.Get(PowerShell, vm.Name);
@@ -527,7 +529,7 @@ namespace SolidCP.Providers.Virtualization
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
-                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot);
+                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
@@ -558,9 +560,12 @@ namespace SolidCP.Providers.Virtualization
                 bool canChangeValueWihoutReboot = false;
                 if (realVm.CpuCores == vm.CpuCores)
                 {
-                    if (realVm.HddSize == vm.HddSize)
+                    if (realVm.HddSize == vm.HddSize && realVm.EnableSecureBoot == vm.EnableSecureBoot)
                     {
-                        canChangeValueWihoutReboot = true;                       
+                        if (realVm.Generation > 1 || realVm.BootFromCD == vm.BootFromCD)
+                        {
+                            canChangeValueWihoutReboot = true;
+                        }
                     }
                 }
 
@@ -579,6 +584,7 @@ namespace SolidCP.Providers.Virtualization
                     if (realVm.Generation != 1)
                     {
                         DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
+                        BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
                         NetworkAdapterHelper.Update(PowerShell, vm);
                         if (version >= 6.2) 
                         {
@@ -1183,6 +1189,48 @@ namespace SolidCP.Providers.Virtualization
 
             HostedSolutionLog.LogEnd("GetSwitches");
             return switches;
+        }
+
+        public List<SecureBootTemplate> GetSecureBootTemplates(string computerName)
+        {
+            HostedSolutionLog.LogStart("GetSecureBootTemplates");
+            HostedSolutionLog.DebugInfo("ComputerName: {0}", computerName);
+
+            List<SecureBootTemplate> templates = new List<SecureBootTemplate>();
+
+            try
+            {
+
+                StringBuilder scriptCommand = new StringBuilder("Get-VMHost");
+                string stringFormat = " -{0} {1}";
+                if (!string.IsNullOrEmpty(computerName)) scriptCommand.AppendFormat(stringFormat, "ComputerName", computerName);
+                scriptCommand.AppendFormat(" | {0}", "Select SecureBootTemplates");
+
+                Command cmd = new Command(scriptCommand.ToString(), true);
+
+                Collection<PSObject> result = PowerShell.Execute(cmd, false, true);
+
+                if (result != null && result.Count > 0)
+                {
+                    Object objValue = result[0].Properties["SecureBootTemplates"].Value;
+                    ICollection collection = (ICollection)objValue;
+                    foreach (Object value in collection)
+                    {
+                        SecureBootTemplate template = new SecureBootTemplate();
+                        template.Description = (string)value.GetType().GetProperty("Description").GetValue(value, null);
+                        template.Id = (Guid)value.GetType().GetProperty("Id").GetValue(value, null);
+                        template.Name = (string)value.GetType().GetProperty("Name").GetValue(value, null);
+                        templates.Add(template);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetSecureBootTemplates", ex);
+            }
+
+            HostedSolutionLog.LogEnd("GetSecureBootTemplates");
+            return templates;
         }
 
         public bool SwitchExists(string switchId)

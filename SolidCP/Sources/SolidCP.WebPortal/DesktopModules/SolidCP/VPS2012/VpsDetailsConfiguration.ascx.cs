@@ -90,6 +90,7 @@ namespace SolidCP.Portal.VPS2012
                 optionDvdInstalled.Value = vm.DvdDriveInstalled;
                 optionBootFromCD.Value = vm.BootFromCD;
                 optionNumLock.Value = vm.NumLockEnabled;
+                optionSecureBoot.Value = vm.EnableSecureBoot;
 
                 optionStartShutdown.Value = vm.StartTurnOffAllowed;
                 optionPauseResume.Value = vm.PauseResumeAllowed;

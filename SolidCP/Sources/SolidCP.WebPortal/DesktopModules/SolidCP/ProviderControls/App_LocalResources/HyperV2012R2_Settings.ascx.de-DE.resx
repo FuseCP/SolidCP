@@ -531,4 +531,7 @@
   <data name="btnSetReplicaServerText.Text" xml:space="preserve">
     <value>Festlegen</value>
   </data>
+  <data name="locSecureBootTemplate.Text" xml:space="preserve">
+    <value>"Secure boot" Vorlage:</value>
+  </data>
 </root>

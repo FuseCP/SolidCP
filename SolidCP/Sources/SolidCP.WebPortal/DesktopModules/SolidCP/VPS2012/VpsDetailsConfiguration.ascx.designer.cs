@@ -346,6 +346,15 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::SolidCP.Portal.UserControls.CheckBoxOption optionNumLock;
         
         /// <summary>
+        /// optionSecureBoot control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.UserControls.CheckBoxOption optionSecureBoot;
+        
+        /// <summary>
         /// secActions control.
         /// </summary>
         /// <remarks>

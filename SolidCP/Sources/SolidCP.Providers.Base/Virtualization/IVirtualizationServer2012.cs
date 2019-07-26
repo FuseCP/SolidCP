@@ -73,6 +73,9 @@ namespace SolidCP.Providers.Virtualization
         VirtualSwitch CreateSwitch(string name);
         ReturnCode DeleteSwitch(string switchId);
 
+        // Secure Boot
+        List<SecureBootTemplate> GetSecureBootTemplates(string computerName);
+
         // IP operations
         List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName);
         JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration);

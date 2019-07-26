@@ -55,6 +55,7 @@ namespace SolidCP.Portal.ProviderControls
         public bool IsReplicaServer { get { return ReplicationModeList.SelectedValue == ReplicaMode.IsReplicaServer.ToString(); } }
         public bool EnabledReplica { get { return ReplicationModeList.SelectedValue == ReplicaMode.ReplicationEnabled.ToString(); } }
         public string ReplicaServerId { get; set; }
+        private List<SecureBootTemplate> SecureBootTemplates { get; set; }
 
         void IHostingServiceProviderSettings.BindSettings(StringDictionary settings)
         {
@@ -392,6 +393,13 @@ namespace SolidCP.Portal.ProviderControls
             return support;
         }
 
+        protected bool IsSecureBootEnabled(object val)
+        {
+            bool enabled = false;
+            if (val != null && Utils.ParseBool(val, false)) enabled = true;
+            return enabled;
+        }
+
         protected void radioServer_SelectedIndexChanged(object sender, EventArgs e)
         {
             ToggleControls();
@@ -466,6 +474,11 @@ namespace SolidCP.Portal.ProviderControls
             RebindOsTemplate(templates);
         }
 
+        protected void cbEnableSecureBoot_OnChecked(object sender, EventArgs e)
+        {
+            RebindOsTemplate(GetOsTemplates());
+        }
+
         protected void btnRemoveOsTemplate_OnCommand(object sender, CommandEventArgs e)
         {
             var templates = GetOsTemplates();
@@ -478,7 +491,7 @@ namespace SolidCP.Portal.ProviderControls
         private List<LibraryItem> GetOsTemplates()
         {
             var result = new List<LibraryItem>();
-
+            
             foreach (RepeaterItem item in repOsTemplates.Items)
             {
                 var template = new LibraryItem();
@@ -490,6 +503,7 @@ namespace SolidCP.Portal.ProviderControls
                 int.TryParse(GetTextBoxText(item, "txtProcessVolume"), out processVolume);
                 template.ProcessVolume = processVolume;
                 template.Generation = GetDropDownListSelectedIndex(item, "ddlTemplateGeneration");
+                template.SecureBootTemplate = GetDropDownListSelectedValue(item, "ddlSecureBootTemplate");
                 template.LegacyNetworkAdapter = GetCheckBoxValue(item, "chkLegacyNetworkAdapter");
 
                 if (template.Generation != 1)
@@ -499,7 +513,9 @@ namespace SolidCP.Portal.ProviderControls
                 }                    
                 else
                     template.EnableSecureBoot = false;
-                
+
+                if (!template.EnableSecureBoot) template.SecureBootTemplate = "";
+
                 template.RemoteDesktop = true; // obsolete
                 template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");
                 template.ProvisionAdministratorPassword = GetCheckBoxValue(item, "chkCanSetAdminPass");
@@ -565,7 +581,35 @@ namespace SolidCP.Portal.ProviderControls
         private void RebindOsTemplate(List<LibraryItem> templates)
         {
             repOsTemplates.DataSource = templates;
-            repOsTemplates.DataBind();            
+            repOsTemplates.DataBind();
+        }
+
+        public List<SecureBootTemplate> GetSecureBootTemplatesList()
+        {
+            if (SecureBootTemplates == null) SecureBootTemplates = new List<SecureBootTemplate>(ES.Services.VPS2012.GetSecureBootTemplates(PanelRequest.ServiceId, txtServerName.Text.Trim()));
+            return SecureBootTemplates;
+        }
+
+        public int GetSecureBootTemplateIndex(object val)
+        {
+            int index = 0;
+            try
+            {
+                if (val != null)
+                {
+                    List<SecureBootTemplate> templates = GetSecureBootTemplatesList();
+                    for (int i = 0; i < templates.Count; i++)
+                    {
+                        if (templates[i].Name.Equals(val))
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            catch{ }
+            return index;
         }
 
         private string GetConfigXml(List<LibraryItem> items)

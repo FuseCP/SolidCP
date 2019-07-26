@@ -41,6 +41,7 @@ namespace SolidCP.Providers.Virtualization
         public string Path { get; set; }
         public string Name { get; set; }
         public int Generation { get; set; }
+        public string SecureBootTemplate { get; set; }
         public bool EnableSecureBoot { get; set; } = true; //by default is true
         public string Description { get; set; }
         public bool LegacyNetworkAdapter { get; set; }

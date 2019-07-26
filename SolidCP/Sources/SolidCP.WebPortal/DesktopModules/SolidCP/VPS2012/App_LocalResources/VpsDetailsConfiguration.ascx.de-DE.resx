@@ -186,6 +186,9 @@
   <data name="optionNumLock.Text" xml:space="preserve">
     <value>Num-Lock aktiviert</value>
   </data>
+  <data name="optionSecureBoot.Text" xml:space="preserve">
+    <value>Secure-Boot aktiviert</value>
+  </data>
   <data name="optionPauseResume.Text" xml:space="preserve">
     <value>Anhalten, Fortsetzen</value>
   </data>

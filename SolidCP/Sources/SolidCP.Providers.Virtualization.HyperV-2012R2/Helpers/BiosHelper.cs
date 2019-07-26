@@ -47,6 +47,15 @@ namespace SolidCP.Providers.Virtualization
                     }
 
                     info.StartupOrder = startupOrders.ToArray();
+                    info.SecureBootEnabled = "On".Equals(result[0].GetString("SecureBoot"));
+                    try
+                    {
+                        info.SecureBootTemplate = result[0].GetString("SecureBootTemplate");
+                    }
+                    catch (Exception)
+                    {
+                        info.SecureBootTemplate = "";//catch error on Hyper-V 2012 R2 (No Secure Boot Templates)
+                    }
                 }
             }
             // for others win and linux
@@ -71,12 +80,14 @@ namespace SolidCP.Providers.Virtualization
                     if (info.StartupOrder != null && info.StartupOrder.Length > 0)
                         info.BootFromCD = info.StartupOrder[0] == "CD";
                 }
+                info.SecureBootEnabled = false;
+                info.SecureBootTemplate = "";
             }
 
             return info;
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot)
+        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot, string secureBootTemplate)
         {
             // for Win2012R2+ and Win8.1+
             if (vm.Generation == 2)
@@ -84,10 +95,16 @@ namespace SolidCP.Providers.Virtualization
                 Command cmd = new Command("Set-VMFirmware");
 
                 cmd.Parameters.Add("VMName", vm.Name);
-                if (EnableSecureBoot)
-                    cmd.Parameters.Add("EnableSecureBoot", "On");
-                else
-                    cmd.Parameters.Add("EnableSecureBoot", "Off");
+                if (vm.State == VirtualMachineState.Off)
+                {
+                    if (EnableSecureBoot)
+                    {
+                        cmd.Parameters.Add("EnableSecureBoot", "On");
+                        if (!String.IsNullOrEmpty(secureBootTemplate)) cmd.Parameters.Add("SecureBootTemplate", secureBootTemplate);
+                    }
+                    else
+                        cmd.Parameters.Add("EnableSecureBoot", "Off");
+                }
 
                 if (bootFromCD)
                     cmd.Parameters.Add("FirstBootDevice", DvdDriveHelper.GetPS(powerShell, vm.Name));

@@ -138,6 +138,9 @@
   <data name="chkNumLock.Text" xml:space="preserve">
     <value>Num-Lock aktiviert</value>
   </data>
+  <data name="chkSecureBoot.Text" xml:space="preserve">
+    <value>Secure-Boot aktiviert</value>
+  </data>
   <data name="chkPauseResume.Text" xml:space="preserve">
     <value>Anhalten, Fortsetzen</value>
   </data>

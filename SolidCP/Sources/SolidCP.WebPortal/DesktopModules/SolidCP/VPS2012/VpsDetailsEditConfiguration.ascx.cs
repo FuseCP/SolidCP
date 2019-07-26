@@ -125,6 +125,12 @@ namespace SolidCP.Portal.VPS2012
                 chkDvdInstalled.Checked = vm.DvdDriveInstalled;
                 chkBootFromCd.Checked = vm.BootFromCD;
                 chkNumLock.Checked = vm.NumLockEnabled;
+                chkSecureBoot.Checked = vm.EnableSecureBoot;
+                if (vm.Generation == 1)
+                {
+                    chkSecureBoot.Checked = false;
+                    chkSecureBoot.Enabled = false;
+                }
 
                 chkStartShutdown.Checked = vm.StartTurnOffAllowed;
                 chkPauseResume.Checked = vm.PauseResumeAllowed;
@@ -207,6 +213,7 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.DvdDriveInstalled = chkDvdInstalled.Checked;
                 virtualMachine.BootFromCD = chkBootFromCd.Checked;
                 virtualMachine.NumLockEnabled = chkNumLock.Checked;
+                virtualMachine.EnableSecureBoot = chkSecureBoot.Checked;
                 virtualMachine.StartTurnOffAllowed = chkStartShutdown.Checked;
                 virtualMachine.PauseResumeAllowed = chkPauseResume.Checked;
                 virtualMachine.RebootAllowed = chkReboot.Checked;

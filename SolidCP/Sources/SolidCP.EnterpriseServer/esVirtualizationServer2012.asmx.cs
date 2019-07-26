@@ -526,6 +526,14 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region Secure Boot Template
+        [WebMethod]
+        public SecureBootTemplate[] GetSecureBootTemplates(int serviceId, string computerName)
+        {
+            return VirtualizationServerController2012.GetSecureBootTemplates(serviceId, computerName);
+        }
+        #endregion
+
         #region Virtual Switches
         [WebMethod]
         public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)

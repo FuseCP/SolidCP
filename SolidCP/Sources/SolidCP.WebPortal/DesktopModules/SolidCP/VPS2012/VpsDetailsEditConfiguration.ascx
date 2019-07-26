@@ -131,13 +131,16 @@
                     <scp:CollapsiblePanel id="secBios" runat="server"
                         TargetControlID="BiosPanel" meta:resourcekey="secBios" Text="BIOS">
                     </scp:CollapsiblePanel>
-                    <asp:Panel ID="BiosPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;width:450px;">
+                    <asp:Panel ID="BiosPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;width:700px;">
                         <div class="form-group">
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <asp:CheckBox ID="chkBootFromCd" runat="server" Text="Boot from CD" meta:resourcekey="chkBootFromCd" />
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <asp:CheckBox ID="chkNumLock" runat="server" Text="Num Lock enabled" meta:resourcekey="chkNumLock" />
+                            </div>
+                            <div class="col-sm-4">
+                                <asp:CheckBox ID="chkSecureBoot" runat="server" Text="Secure Boot enabled" meta:resourcekey="chkSecureBoot" />
                             </div>
                         </div>                        
                     </asp:Panel>
