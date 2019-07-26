@@ -79,6 +79,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetVirtualMachineGeneralDetailsOperationCompleted;
 
+        private System.Threading.SendOrPostCallback DiscoverVirtualMachineOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetVirtualMachineExtendedInfoOperationCompleted;
 
         private System.Threading.SendOrPostCallback CancelVirtualMachineJobOperationCompleted;
@@ -269,6 +271,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         public event GetVirtualMachineGeneralDetailsCompletedEventHandler GetVirtualMachineGeneralDetailsCompleted;
+
+        /// <remarks/>
+        public event DiscoverVirtualMachineCompletedEventHandler DiscoverVirtualMachineCompleted;
 
         /// <remarks/>
         public event GetVirtualMachineExtendedInfoCompletedEventHandler GetVirtualMachineExtendedInfoCompleted;
@@ -1987,6 +1992,55 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVirtualMachineGeneralDetailsCompleted(this, new GetVirtualMachineGeneralDetailsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DiscoverVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int DiscoverVirtualMachine(int itemId)
+        {
+            object[] results = this.Invoke("DiscoverVirtualMachine", new object[] {
+                        itemId});
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDiscoverVirtualMachine(int itemId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DiscoverVirtualMachine", new object[] {
+                        itemId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public int EndDiscoverVirtualMachine(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DiscoverVirtualMachineAsync(int itemId)
+        {
+            this.DiscoverVirtualMachineAsync(itemId, null);
+        }
+
+        /// <remarks/>
+        public void DiscoverVirtualMachineAsync(int itemId, object userState)
+        {
+            if ((this.DiscoverVirtualMachineOperationCompleted == null))
+            {
+                this.DiscoverVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDiscoverVirtualMachineOperationCompleted);
+            }
+            this.InvokeAsync("DiscoverVirtualMachine", new object[] {
+                        itemId}, this.DiscoverVirtualMachineOperationCompleted, userState);
+        }
+
+        private void OnDiscoverVirtualMachineOperationCompleted(object arg)
+        {
+            if ((this.DiscoverVirtualMachineCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DiscoverVirtualMachineCompleted(this, new DiscoverVirtualMachineCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -5830,6 +5884,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
             {
                 this.RaiseExceptionIfNecessary();
                 return ((VirtualMachine)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DiscoverVirtualMachineCompletedEventHandler(object sender, DiscoverVirtualMachineCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DiscoverVirtualMachineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DiscoverVirtualMachineCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public int Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
             }
         }
     }

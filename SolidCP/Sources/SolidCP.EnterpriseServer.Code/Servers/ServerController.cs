@@ -636,15 +636,15 @@ namespace SolidCP.EnterpriseServer
 			return DataProvider.GetServicesByGroupId(SecurityContext.User.UserId, groupId);
 		}
 
-		public static DataSet GetRawServicesByGroupName(string groupName)
+		public static DataSet GetRawServicesByGroupName(string groupName, bool forAutodiscover)
 		{
-			return DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName);
+			return DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName, forAutodiscover);
 		}
 
 		public static List<ServiceInfo> GetServicesByGroupName(string groupName)
 		{
 			return ObjectUtils.CreateListFromDataSet<ServiceInfo>(
-				DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName));
+				DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName, false));
 		}
 
 		public static ServiceInfo GetServiceInfoAdmin(int serviceId)

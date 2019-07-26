@@ -1513,15 +1513,15 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int MovePackageItem(int itemId, int destinationServiceId)
+        public static int MovePackageItem(int itemId, int destinationServiceId, bool forAutodiscover)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
                 | DemandAccount.IsAdmin);
-            if (accountCheck < 0) return accountCheck;
+            if (accountCheck < 0 && !forAutodiscover) return accountCheck;
 
             // move item
-            DataProvider.MoveServiceItem(SecurityContext.User.UserId, itemId, destinationServiceId);
+            DataProvider.MoveServiceItem(SecurityContext.User.UserId, itemId, destinationServiceId, forAutodiscover);
 
             return 0;
         }

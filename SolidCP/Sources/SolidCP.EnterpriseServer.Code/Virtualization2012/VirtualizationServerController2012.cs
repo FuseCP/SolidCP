@@ -489,6 +489,11 @@ namespace SolidCP.EnterpriseServer
                 // service ID
                 int serviceId = GetServiceId(packageId);
 
+                if (!createMetaItem && serviceId != VMSettings.ServiceId)// VPS reinstall --> VM was moved
+                {
+                    PackageController.MovePackageItem(VMSettings.Id, serviceId, true);
+                }
+
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(serviceId);
                 #endregion
@@ -2043,6 +2048,43 @@ namespace SolidCP.EnterpriseServer
 
             // return thumbnail
             return vps.GetVirtualMachineThumbnailImage(vm.VirtualMachineId, size);
+        }
+
+        public static int DiscoverVirtualMachine(int itemId)
+        {
+            try
+            {
+                DataView dvServices = ServerController.GetRawServicesByGroupName(ResourceGroups.VPS2012, true).Tables[0].DefaultView;
+
+                if (dvServices.Count > 1)
+                {
+                    VirtualMachine vm = GetVirtualMachineByItemId(itemId);
+                    if (vm == null || String.IsNullOrEmpty(vm.VirtualMachineId)) return -1;
+
+                    int oldServiceid = vm.ServiceId;
+                    foreach (DataRowView dr in dvServices)
+                    {
+                        int serviceId = (int)dr["ServiceID"];
+                        if (serviceId != oldServiceid)
+                        {
+                            try
+                            {
+                                VirtualizationServer2012 vps = GetVirtualizationProxy(serviceId);
+                                VirtualMachine newVm = vps.GetVirtualMachine(vm.VirtualMachineId);
+                                if (newVm != null && newVm.State != VirtualMachineState.Unknown)
+                                {
+                                    PackageController.MovePackageItem(itemId, serviceId, true);
+                                    return serviceId;
+                                }
+                            }
+                            catch (Exception) { }
+                        }
+                    }
+                }
+            }
+            catch (Exception) { }
+
+            return -1;
         }
 
         public static VirtualMachine GetVirtualMachineGeneralDetails(int itemId)

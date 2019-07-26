@@ -255,6 +255,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public int DiscoverVirtualMachine(int itemId)
+        {
+            return VirtualizationServerController2012.DiscoverVirtualMachine(itemId);
+        }
+
+        [WebMethod]
         public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
         {
             return VirtualizationServerController2012.GetVirtualMachineExtendedInfo(serviceId, vmId);

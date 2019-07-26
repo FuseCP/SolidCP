@@ -484,7 +484,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public int MovePackageItem(int itemId, int destinationServiceId)
         {
-            return PackageController.MovePackageItem(itemId, destinationServiceId);
+            return PackageController.MovePackageItem(itemId, destinationServiceId, false);
         }
         #endregion
 

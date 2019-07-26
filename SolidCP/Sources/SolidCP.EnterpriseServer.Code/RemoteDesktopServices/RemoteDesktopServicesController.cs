@@ -2044,7 +2044,7 @@ namespace SolidCP.EnterpriseServer
 
         private static List<ServiceInfo> GetRdsServicesInternal()
         {
-            return ObjectUtils.CreateListFromDataSet<ServiceInfo>(DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, ResourceGroups.RDS));
+            return ObjectUtils.CreateListFromDataSet<ServiceInfo>(DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, ResourceGroups.RDS, false));
         }
 
         protected static int GetRdsMainServiceId()

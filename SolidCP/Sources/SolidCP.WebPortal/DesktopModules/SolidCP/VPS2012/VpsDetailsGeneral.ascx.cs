@@ -82,6 +82,22 @@ namespace SolidCP.Portal.VPS2012
 
             if (vm != null)
             {
+                if (vm.State == VirtualMachineState.Unknown)// VPS was moved
+                {
+                    int newServiceId = ES.Services.VPS2012.DiscoverVirtualMachine(PanelRequest.ItemID);
+                    if (newServiceId != -1)
+                    {
+                        try
+                        {
+                            vm = ES.Services.VPS2012.GetVirtualMachineGeneralDetails(PanelRequest.ItemID);
+                        }
+                        catch (Exception ex)
+                        {
+                            messageBox.ShowErrorMessage("VPS_ERROR_GET_VM_DETAILS", ex);
+                        }
+
+                    }
+                }
                 // Guacamole & RDP
                 string guacamoleconnecturl = ES.Services.VPS2012.GetVirtualMachineGuacamoleURL(PanelRequest.ItemID);
 

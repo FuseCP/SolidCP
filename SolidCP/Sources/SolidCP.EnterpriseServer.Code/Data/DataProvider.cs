@@ -1116,12 +1116,13 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@groupId", groupId));
         }
 
-        public static DataSet GetServicesByGroupName(int actorId, string groupName)
+        public static DataSet GetServicesByGroupName(int actorId, string groupName, bool forAutodiscover)
         {
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "GetServicesByGroupName",
                 new SqlParameter("@actorId", actorId),
-                new SqlParameter("@GroupName", groupName));
+                new SqlParameter("@GroupName", groupName),
+                new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
         public static IDataReader GetService(int actorId, int serviceId)
@@ -1434,13 +1435,14 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@ItemID", itemId));
         }
 
-        public static void MoveServiceItem(int actorId, int itemId, int destinationServiceId)
+        public static void MoveServiceItem(int actorId, int itemId, int destinationServiceId, bool forAutodiscover)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "MoveServiceItem",
                 new SqlParameter("@actorId", actorId),
                 new SqlParameter("@ItemID", itemId),
-                new SqlParameter("@DestinationServiceID", destinationServiceId));
+                new SqlParameter("@DestinationServiceID", destinationServiceId),
+                new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
         public static int GetPackageServiceId(int actorId, int packageId, string groupName)

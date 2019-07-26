@@ -15838,6 +15838,82 @@ SELECT Id, RDSCollectionId, MessageText, UserName, [Date] FROM [dbo].[RDSMessage
 RETURN
 GO
 
+-- Changes for VPS Autodiscover
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServicesByGroupName')
+DROP PROCEDURE GetServicesByGroupName
+GO
+CREATE PROCEDURE [dbo].[GetServicesByGroupName]
+(
+	@ActorID int,
+	@GroupName nvarchar(100),
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	S.ServiceID,
+	S.ServiceName,
+	S.ServerID,
+	S.ServiceQuotaValue,
+	SRV.ServerName,
+	S.ProviderID,
+    PROV.ProviderName,
+	S.ServiceName + ' on ' + SRV.ServerName AS FullServiceName
+FROM Services AS S
+INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+WHERE
+	RG.GroupName = @GroupName
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+RETURN
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'MoveServiceItem')
+DROP PROCEDURE MoveServiceItem
+GO
+CREATE PROCEDURE [dbo].[MoveServiceItem]
+(
+	@ActorID int,
+	@ItemID int,
+	@DestinationServiceID int,
+	@forAutodiscover bit
+)
+AS
+
+-- check rights
+DECLARE @PackageID int
+SELECT PackageID = @PackageID FROM ServiceItems
+WHERE ItemID = @ItemID
+
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0 AND @forAutodiscover = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE ServiceItems
+SET ServiceID = @DestinationServiceID
+WHERE ItemID = @ItemID
+
+COMMIT TRAN
+
+RETURN
+
+
 -- Private Network VLANs
 
 IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PrivateNetworkVLANs')

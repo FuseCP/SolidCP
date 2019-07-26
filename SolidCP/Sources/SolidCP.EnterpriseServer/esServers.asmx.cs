@@ -235,7 +235,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public DataSet GetRawServicesByGroupName(string groupName)
         {
-            return ServerController.GetRawServicesByGroupName(groupName);
+            return ServerController.GetRawServicesByGroupName(groupName, false);
         }
 
         [WebMethod]
