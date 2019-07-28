@@ -1,3 +1,23 @@
+Version 1.4.4
+- Fix for users delete from Hosted Organisations - bluechip
+- Fix for Exchange 2019 is installed
+- Allow sorting on Exchange Address Book (Exchange - Distribution Lists - Add Members) - bluechip
+- change to better support when dSHeuristics is not set to Object List Mode
+- Hide SharedFolders - "Office Web App Editing" tab, when Office Web Apps not enabled in System Settings.
+- Fix for MySQL8 quotas
+- Added MsSQL2012 to the Quota Overview and renamed 2008 to match others
+- Fix for a RDS quota Names
+- Exchange Retention Policy tag modification allow number quota for amount
+- Fix for importing * webhost
+- SolidCP Linux-VM config service - bluechip
+- [SimpleDNS v8] Creating records with text have an issue
+- Fix's issue with Cloud portal not loading folders in sub dirs.
+- Add choice of Secure Boot Template in Hyper-V OS-Template settings. - bluechip
+- [Cloud Folders] Pagination is broken, if you have more than 20 folders in an org - bluechip
+- [HyperV2012R+] Fix Boot from CD option - bluechip
+- Changes to support the start of changes from Le-Win-Simple to Windows ACME Simple (WACS)
+- Fix for Mysql ANSI username and database names.
+
 Version 1.4.3
 - Added Exchange 2019 provider.
 - Added Skype for business 2019
