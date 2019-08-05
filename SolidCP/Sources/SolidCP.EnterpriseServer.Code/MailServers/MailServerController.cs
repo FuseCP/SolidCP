@@ -318,10 +318,12 @@ namespace SolidCP.EnterpriseServer
 		{
 			// load package context
 			int maxSize = 0; // unlimited
+			bool maxMailboxSizeChangeable = false;
 			PackageContext cntx = PackageController.GetPackageContext(packageId);
 			if (cntx != null && cntx.Quotas.ContainsKey(Quotas.MAIL_MAXBOXSIZE))
 			{
 				maxSize = cntx.Quotas[Quotas.MAIL_MAXBOXSIZE].QuotaAllocatedValue;
+				maxMailboxSizeChangeable = (cntx.Quotas[Quotas.MAIL_DISABLESIZEEDIT].QuotaAllocatedValue == 0);
 				if (maxSize == -1)
 					return item.MaxMailboxSize;
 			}
@@ -330,6 +332,10 @@ namespace SolidCP.EnterpriseServer
 			{
 				if (cntx != null && cntx.Package != null)
 					maxSize = GetMaxMailBoxSize(cntx.Package.ParentPackageId, item);
+			}
+			else if (item.MaxMailboxSize != 0 && maxMailboxSizeChangeable == false)
+			{
+				maxSize = GetMaxMailBoxSize(cntx.Package.ParentPackageId, item);
 			}
 			else if (item.MaxMailboxSize != 0)
 			{
