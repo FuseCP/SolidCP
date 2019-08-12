@@ -133,7 +133,7 @@ namespace SolidCP.Providers.Database
         {
             get
             {
-                return String.Format("server={0};port={1};database=mysql;uid={2};password={3}{4}",
+                return String.Format("server={0};port={1};database=mysql;uid=`{2}`;password={3}{4}",
                     ServerName, ServerPort, RootLogin, RootPassword, SslMode);
             }
         }
@@ -186,14 +186,14 @@ namespace SolidCP.Providers.Database
 		#region Databases
 		private string GetSafeConnectionString(string databaseName, string username, string password)
         {
-            return String.Format("server={0};port={1};database={2};uid={3};password={4}{5}",
+            return String.Format("server={0};port={1};database=`{2}`;uid=`{3}`;password={4}{5}",
                 ServerName, ServerPort, databaseName, username, password, SslMode);
         }
 
         public virtual bool CheckConnectivity(string databaseName, string username, string password)
         {
             MySqlConnection conn = new MySqlConnection(
-                    String.Format("server={0};port={1};database={2};uid={3};password={4}{5}",
+                    String.Format("server={0};port={1};database=`{2}`;uid=`{3}`;password={4}{5}",
                                 ServerName,
                                 ServerPort,
                                 databaseName,
@@ -216,25 +216,25 @@ namespace SolidCP.Providers.Database
 
         public virtual DataSet ExecuteSqlQuery(string databaseName, string commandText)
         {
-            commandText = "USE " + databaseName + "; " + commandText;
+            commandText = "USE `" + databaseName + "`; " + commandText;
             return ExecuteQueryDataSet(commandText);
         }
 
         public virtual void ExecuteSqlNonQuery(string databaseName, string commandText)
         {
-            commandText = "USE " + databaseName + ";\n" + commandText;
+            commandText = "USE `" + databaseName + "`;\n" + commandText;
             ExecuteNonQuery(commandText);
         }
 
         public virtual DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
         {
-            commandText = "USE " + databaseName + "; " + commandText;
+            commandText = "USE `" + databaseName + "`; " + commandText;
             return ExecuteQueryDataSet(commandText, GetSafeConnectionString(databaseName, username, password));
         }
 
         public virtual void ExecuteSqlNonQuerySafe(string databaseName, string username, string password, string commandText)
         {
-            commandText = "USE " + databaseName + ";\n" + commandText;
+            commandText = "USE `" + databaseName + "`;\n" + commandText;
             ExecuteNonQuery(commandText, GetSafeConnectionString(databaseName, username, password));
         }
 
@@ -270,7 +270,7 @@ namespace SolidCP.Providers.Database
             database.Name = databaseName;
 
             // calculate database size
-            DataView dvTables = ExecuteQuery(String.Format("SHOW TABLE STATUS FROM {0}", databaseName)).DefaultView;
+            DataView dvTables = ExecuteQuery(String.Format("SHOW TABLE STATUS FROM `{0}`", databaseName)).DefaultView;
             long data = 0;
             long index = 0;
 
@@ -310,7 +310,7 @@ namespace SolidCP.Providers.Database
              */
 
             // create database
-            ExecuteNonQuery(String.Format("CREATE DATABASE IF NOT EXISTS {0};", database.Name));
+            ExecuteNonQuery(String.Format("CREATE DATABASE IF NOT EXISTS `{0}`;", database.Name));
 
             // grant users access
             foreach (string user in database.Users)
@@ -346,7 +346,7 @@ namespace SolidCP.Providers.Database
             CloseDatabaseConnections(databaseName);
 
             // drop database
-            ExecuteNonQuery(String.Format("DROP DATABASE IF EXISTS {0}", databaseName));
+            ExecuteNonQuery(String.Format("DROP DATABASE IF EXISTS `{0}`", databaseName));
         }
 
         #endregion
@@ -499,7 +499,7 @@ namespace SolidCP.Providers.Database
             string cmd = Path.Combine(MySqlBinFolder, "mysqldump.exe");
             string bakFile = Path.Combine(BackupTempFolder, backupName);
 
-            string args = string.Format(" --host={0} --port={1} --user={2} --password={3} --opt --skip-extended-insert --skip-quick --skip-comments --result-file=\"{4}\" {5}",
+            string args = string.Format(" --host={0} --port={1} --user=`{2}` --password={3} --opt --skip-extended-insert --skip-quick --skip-comments --result-file=\"{4}\" `{5}`",
                 ServerName, ServerPort, RootLogin, RootPassword, bakFile, databaseName);
 
             // backup database
@@ -519,9 +519,9 @@ namespace SolidCP.Providers.Database
             file.WriteLine("cls");
             file.WriteLine("set host=%1%");
             file.WriteLine("set port=%2%");
-            file.WriteLine("set user=%3%");
+            file.WriteLine("set user=`%3%`");
             file.WriteLine("set password=%4%");
-            file.WriteLine("set dbname=%5%");
+            file.WriteLine("set dbname=`%5%`");
             file.WriteLine("\"" + Path.Combine(MySqlBinFolder, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% -N -e \"SELECT CONCAT('OPTIMIZE TABLE ', table_name, ';') FROM information_schema.tables WHERE table_schema = '%dbname%' AND data_free/1024/1024 > 5;\" | mysql --host=%host% --port=%port% --user=%user% --password=%password% %dbname%");
             file.Close();
 
@@ -608,9 +608,9 @@ namespace SolidCP.Providers.Database
                 file.WriteLine("cls");
                 file.WriteLine("set host=%1%");
                 file.WriteLine("set port=%2%");
-                file.WriteLine("set user=%3%");
+                file.WriteLine("set user=`%3%`");
                 file.WriteLine("set password=%4%");
-                file.WriteLine("set dbname=%5%");
+                file.WriteLine("set dbname=`%5%`");
                 file.WriteLine("set dumpfile=%6%");
                 file.WriteLine("\"" + Path.Combine(MySqlBinFolder, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% %dbname% < %dumpfile%");
                 file.Close();
@@ -758,14 +758,14 @@ namespace SolidCP.Providers.Database
         private void AddUserToDatabase(string databaseName, string user)
         {
             // grant database access
-            ExecuteNonQuery(String.Format("GRANT ALL PRIVILEGES ON {0}.* TO '{1}'@'%'",
+            ExecuteNonQuery(String.Format("GRANT ALL PRIVILEGES ON `{0}`.* TO '{1}'@'%'",
                     databaseName, user));
         }
 
         private void RemoveUserFromDatabase(string databaseName, string user)
         {
             // revoke db access
-            ExecuteNonQuery(String.Format("REVOKE ALL PRIVILEGES ON {0}.* FROM '{1}'@'%'",
+            ExecuteNonQuery(String.Format("REVOKE ALL PRIVILEGES ON `{0}`.* FROM '{1}'@'%'",
                     databaseName, user));
         }
 
