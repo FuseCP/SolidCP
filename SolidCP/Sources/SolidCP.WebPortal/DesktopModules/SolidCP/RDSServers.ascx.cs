@@ -58,9 +58,10 @@ namespace SolidCP.Portal
 			{
                 gvRDSServers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
                 gvRDSServers.Sort("Name", System.Web.UI.WebControls.SortDirection.Ascending);                
-                RegisterStatusScript();
 			}
-            
+
+            RegisterStatusScript();
+
             gvRDSServers.DataBound -= OnDataBound;
             gvRDSServers.DataBound += OnDataBound;
         }       
