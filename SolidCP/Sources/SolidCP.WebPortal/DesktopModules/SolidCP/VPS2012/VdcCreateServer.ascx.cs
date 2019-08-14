@@ -240,6 +240,22 @@ namespace SolidCP.Portal.VPS2012
                 NetworkAdapterDetails nic = ES.Services.VPS2012.GetPrivateNetworkDetails(PanelSecurity.PackageId);
                 litPrivateNetworkFormat.Text = nic.NetworkFormat;
                 litPrivateSubnetMask.Text = nic.SubnetMask;
+                txtGateway.Text = nic.DefaultGateway;
+                txtDNS1.Text = nic.PreferredNameServer;
+                txtDNS2.Text = nic.AlternateNameServer;
+                
+                //firewall find
+                VirtualMachines2012Helper vmh = new VirtualMachines2012Helper();
+                VirtualMachineMetaItem[] machines = vmh.GetVirtualMachines(PanelSecurity.PackageId, "", "", "SI.ItemID", 20, 0);
+                foreach (var item in machines)
+                {
+                    if (!String.IsNullOrEmpty(item.ExternalIP) && !String.IsNullOrEmpty(item.IPAddress))
+                    {
+                        txtGateway.Text = item.IPAddress;
+                        txtDNS1.Text = item.IPAddress;
+                        break;
+                    }
+                }
 
                 // set max number
                 QuotaValueInfo privQuota = cntx.Quotas[Quotas.VPS2012_PRIVATE_IP_ADDRESSES_NUMBER];
@@ -389,6 +405,7 @@ namespace SolidCP.Portal.VPS2012
             PrivateAddressesNumberRow.Visible = radioPrivateRandom.Checked;
             PrivateAddressesListRow.Visible = radioPrivateSelected.Checked;
             listPrivateNetworkVLAN.Visible = listPrivateNetworkVLAN.Items.Count > 1;
+            trCustomGateway.Visible = chkCustomGateway.Checked;
         }
 
         private void BindExternalIps()
@@ -555,6 +572,13 @@ namespace SolidCP.Portal.VPS2012
                 if (listPrivateNetworkVLAN.Items.Count > 0)
                 {
                     virtualMachine.PrivateNetworkVlan = Convert.ToInt32(listPrivateNetworkVLAN.SelectedValue);
+                }
+
+                if (chkCustomGateway.Checked)
+                {
+                    virtualMachine.CustomPrivateGateway = txtGateway.Text;
+                    virtualMachine.CustomPrivateDNS1 = txtDNS1.Text;
+                    virtualMachine.CustomPrivateDNS2 = txtDNS2.Text;
                 }
 
                 // create virtual machine
