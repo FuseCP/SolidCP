@@ -83,6 +83,16 @@ namespace SolidCP.Portal.ExchangeServer
             {
                 ddlDomains.Visible = btnCreate.Enabled = false;
             }
+
+            string orgid = PanelSecurity.SelectedUser.Username;
+            int num = 2;
+            while (ES.Services.Organizations.CheckOrgIdExists(orgid))
+            {
+                orgid = PanelSecurity.SelectedUser.Username + num.ToString();
+                num++;
+            }
+            txtOrganizationName.Text = orgid;
+            txtOrganizationID.Text = orgid;
         }
 
         public void SetPolicy(int packageId, string settingsName, string key)
