@@ -57,24 +57,27 @@ namespace SolidCP.Portal.ExchangeServer
                 }
             }
 
-            foreach (DomainInfo d in domains)
+            if (!IsPostBack)
             {
-                if (!d.IsDomainPointer)
+                foreach (DomainInfo d in domains)
                 {
-                    bool bAdd = true;
-                    foreach (OrganizationDomainName acceptedDomain in list)
+                    if (!d.IsDomainPointer)
                     {
-                        if (d.DomainName.ToLower() == acceptedDomain.DomainName.ToLower())
+                        bool bAdd = true;
+                        foreach (OrganizationDomainName acceptedDomain in list)
                         {
-                            bAdd = false;
-                            break;
+                            if (d.DomainName.ToLower() == acceptedDomain.DomainName.ToLower())
+                            {
+                                bAdd = false;
+                                break;
+                            }
                         }
-                    }
-                    if (bAdd)
-                    {
-                        ddlDomains.Items.Add(d.DomainName.ToLower());
-                        //Add Mail Cleaner
-                        Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(d.DomainName.ToLower());
+                        if (bAdd)
+                        {
+                            ddlDomains.Items.Add(d.DomainName.ToLower());
+                            //Add Mail Cleaner
+                            Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(d.DomainName.ToLower());
+                        }
                     }
                 }
             }
@@ -84,15 +87,40 @@ namespace SolidCP.Portal.ExchangeServer
                 ddlDomains.Visible = btnCreate.Enabled = false;
             }
 
-            string orgid = PanelSecurity.SelectedUser.Username;
-            int num = 2;
-            while (ES.Services.Organizations.CheckOrgIdExists(orgid))
+            SetDefaultOrgId();
+        }
+
+        private string GetOrgId(string orgIdPolicy, string domainName, int packageId)
+        {
+            string[] values = orgIdPolicy.Split(';');
+
+            if (values.Length > 1 && Convert.ToBoolean(values[0]))
             {
-                orgid = PanelSecurity.SelectedUser.Username + num.ToString();
-                num++;
+                try
+                {
+                    int maxLength = Convert.ToInt32(values[1]);
+
+                    if (domainName.Length > maxLength)
+                    {
+                        domainName = domainName.Substring(0, maxLength);
+                        string orgId = domainName;
+                        int counter = 0;
+
+                        while (ES.Services.Organizations.CheckOrgIdExists(orgId))
+                        {
+                            counter++;
+                            orgId = maxLength > 3 ? string.Format("{0}{1}", orgId.Substring(0, orgId.Length - 3), counter.ToString("d3")) : counter.ToString("d3");
+                        }
+
+                        return orgId;
+                    }
+                }
+                catch (Exception)
+                {
+                }
             }
-            txtOrganizationName.Text = orgid;
-            txtOrganizationID.Text = orgid;
+
+            return domainName;
         }
 
         public void SetPolicy(int packageId, string settingsName, string key)
@@ -137,6 +165,42 @@ namespace SolidCP.Portal.ExchangeServer
                 {
                 }
             }
+        }
+
+        private void SetDefaultOrgId()
+        {
+            UserInfo user = UsersHelper.GetUser(PanelSecurity.SelectedUserId);
+
+            if (user != null)
+            {
+                string domainName = ddlDomains.SelectedValue;
+                if (!string.IsNullOrEmpty(domainName))
+                {
+                    UserSettings settings = ES.Services.Users.GetUserSettings(user.UserId, UserSettings.EXCHANGE_POLICY);
+                    string orgId = domainName.ToLower();
+
+                    if (settings != null && settings["OrgIdPolicy"] != null)
+                    {
+                        orgId = GetOrgId(settings["OrgIdPolicy"], domainName, PanelSecurity.PackageId);
+                    }
+                    else
+                    {
+                        int num = 2;
+                        while (ES.Services.Organizations.CheckOrgIdExists(orgId))
+                        {
+                            orgId = domainName.ToLower() + num.ToString();
+                            num++;
+                        }
+                    }
+                    txtOrganizationName.Text = orgId;
+                    txtOrganizationID.Text = orgId;
+                }
+            }
+        }
+
+        protected void ddlDomains_Changed(object sender, EventArgs e)
+        {
+            SetDefaultOrgId();
         }
 
         protected void btnCreate_Click(object sender, EventArgs e)
