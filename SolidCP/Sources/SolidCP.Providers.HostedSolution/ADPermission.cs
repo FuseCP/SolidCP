@@ -48,8 +48,6 @@ namespace SolidCP.Providers.HostedSolution
         {
             string OUPath = orgProvider.GetOrganizationPath(organizationId);
 
-            ActiveDirectoryUtils.DisableInheritance(OUPath);
-
             string dSHeuristicsOU = orgProvider.GetdSHeuristicsOU(rootDomain);
             Log.WriteInfo("dSHeuristicsOU: {0}", dSHeuristicsOU);
 
@@ -60,44 +58,54 @@ namespace SolidCP.Providers.HostedSolution
 
             if (dSHeuristics is "001")
             {
+                ActiveDirectoryUtils.DisableInheritance(OUPath);
 
                 Log.WriteInfo("Removing PreWindows2000Identity from OU");
                 ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, PreWindows2000Identity);
 
-            }
 
 
-            ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, EveryoneIdentity);
-            ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, AuthenticatedUsersIdentity);
+                Log.WriteInfo("RemoveIdentityAllows for Everyone\n SID: {0}", EveryoneIdentity.ToString());
+                ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, EveryoneIdentity);
+                Log.WriteInfo("RemoveIdentityAllows for AuthenticatedUsers\n SID: {0}", AuthenticatedUsersIdentity.ToString());
+                ActiveDirectoryUtils.RemoveIdentityAllows(OUPath, AuthenticatedUsersIdentity);
 
-            var exchServers = ActiveDirectoryUtils.GetObjectTargetAccountName("Recipient Management", rootDomain);
-            if (ActiveDirectoryUtils.AccountExists(exchServers))
-                ActiveDirectoryUtils.AddPermission(OUPath, new NTAccount(exchServers), ActiveDirectoryRights.GenericAll);
+                Log.WriteInfo("Changes for Exchange Servers: Recipient Management");
+                var exchServers = ActiveDirectoryUtils.GetObjectTargetAccountName("Recipient Management", rootDomain);
+                Log.WriteInfo("Recipient Management Exchange Servers: {0} ", exchServers);
+                if (ActiveDirectoryUtils.AccountExists(exchServers))
+                    ActiveDirectoryUtils.AddPermission(OUPath, new NTAccount(exchServers), ActiveDirectoryRights.GenericAll);
 
-            exchServers = ActiveDirectoryUtils.GetObjectTargetAccountName("Public Folder Management", rootDomain);
-            if (ActiveDirectoryUtils.AccountExists(exchServers))
-                ActiveDirectoryUtils.AddPermission(OUPath, new NTAccount(exchServers), ActiveDirectoryRights.GenericAll);
+                Log.WriteInfo("Changes for Exchange Servers: Public Folder Management");
+                exchServers = ActiveDirectoryUtils.GetObjectTargetAccountName("Public Folder Management", rootDomain);
+                Log.WriteInfo("Public Folder Management Exchange Servers: {0} ", exchServers);
+                if (ActiveDirectoryUtils.AccountExists(exchServers))
+                    ActiveDirectoryUtils.AddPermission(OUPath, new NTAccount(exchServers), ActiveDirectoryRights.GenericAll);
 
-            var groupAccount = ActiveDirectoryUtils.GetObjectTargetAccountName(organizationId, orgProvider.RootDomain);
-            for (int i = 0; i <= 25; i++)
-            {
-                if (ActiveDirectoryUtils.AccountExists(groupAccount))
+                Log.WriteInfo("Completed Changes for Exchange Servers");
+
+                var groupAccount = ActiveDirectoryUtils.GetObjectTargetAccountName(organizationId, orgProvider.RootDomain);
+                Log.WriteInfo("Changes for GroupAccount: {0}", groupAccount.ToString());
+                for (int i = 0; i <= 25; i++)
                 {
-                    ActiveDirectoryUtils.AddOrgPermisionsToIdentity(OUPath, new NTAccount(groupAccount));
-                    break;
+                    if (ActiveDirectoryUtils.AccountExists(groupAccount))
+                    {
+                        ActiveDirectoryUtils.AddOrgPermisionsToIdentity(OUPath, new NTAccount(groupAccount));
+                        break;
+                    }
+
+                    if (i == 25)
+                        throw new Exception($"Can not find {groupAccount} group to set ACL permissions after {i * 2} seconds. Set Acl permissions manually");
+
+                    Thread.Sleep(2000);
                 }
 
-                if (i == 25)
-                    throw new Exception($"Can not find {groupAccount} group to set ACL permissions after {i * 2} seconds. Set Acl permissions manually");
+                var privilegedGroup = ActiveDirectoryUtils.GetObjectTargetAccountName("Privileged Services", rootDomain);
+                if (!ActiveDirectoryUtils.AccountExists(privilegedGroup))
+                    ActiveDirectoryUtils.CreateGroup(rootDomainPath, "Privileged Services");
 
-                Thread.Sleep(2000);
+                ActiveDirectoryUtils.AddPermission(OUPath, new NTAccount(privilegedGroup), ActiveDirectoryRights.GenericRead);
             }
-
-            var privilegedGroup = ActiveDirectoryUtils.GetObjectTargetAccountName("Privileged Services", rootDomain);
-            if (!ActiveDirectoryUtils.AccountExists(privilegedGroup))
-                ActiveDirectoryUtils.CreateGroup(rootDomainPath, "Privileged Services");
-
-            ActiveDirectoryUtils.AddPermission(OUPath, new NTAccount(privilegedGroup), ActiveDirectoryRights.GenericRead);
         }
     }
 }
