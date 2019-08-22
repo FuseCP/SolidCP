@@ -16378,7 +16378,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.PrivateVLANsNumber')
 BEGIN
-	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (725, 33, 14, N'VPS2012.PrivateVLANsNumber', N'Number of Private Network VLANs', 2, 0, NULL, NULL)
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (726, 33, 14, N'VPS2012.PrivateVLANsNumber', N'Number of Private Network VLANs', 2, 0, NULL, NULL)
 END
 GO
 
@@ -20951,7 +20951,7 @@ AS
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
 							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
 							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 3)
-		ELSE IF @QuotaID = 725 -- Private Network VLANs of VPS2012
+		ELSE IF @QuotaID = 726 -- Private Network VLANs of VPS2012
 			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
 							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
 							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
