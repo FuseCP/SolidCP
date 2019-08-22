@@ -1988,6 +1988,7 @@ namespace SolidCP.EnterpriseServer
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2014, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2016, domain, "");
                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2017, domain, "");
+                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2019, domain, "");
                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql4, domain, "");
 					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql5, domain, "");
                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql8, domain, "");
@@ -2558,6 +2559,7 @@ namespace SolidCP.EnterpriseServer
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2014, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2016, domain, "");
                                         ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
+                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2019, domain, "");
                                         ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
 										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
                                         ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");
