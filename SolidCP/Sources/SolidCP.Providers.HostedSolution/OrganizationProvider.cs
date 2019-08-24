@@ -59,8 +59,8 @@ namespace SolidCP.Providers.HostedSolution
     {
         #region Constants
 
-        private const string GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE = @"\\{0}\SYSVOL\{0}\Policies\{1}\User\Preferences\Drives";
-        private const string GROUP_POLICY_MAPPED_DRIVES_ROOT_PATH_TEMPLATE = @"\\{0}\SYSVOL\{0}\Policies\{1}";
+        private const string GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE = @"\\{0}\SYSVOL\{1}\Policies\{2}\User\Preferences\Drives";
+        private const string GROUP_POLICY_MAPPED_DRIVES_ROOT_PATH_TEMPLATE = @"\\{0}\SYSVOL\{1}\Policies\{2}";
         private const string DRIVES_CLSID = "{8FDDCC1A-0C3C-43cd-A6B4-71A6DF20DA8C}";
         private const string DRIVE_CLSID = "{935D1B74-9CB8-4e3c-9914-7DD559B7A417}";
         private const string gPCUserExtensionNames = "[{00000000-0000-0000-0000-000000000000}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}][{5794DAFD-BE60-433F-88A2-1A31939AC01F}{2EA1A81B-48E5-45E9-8BB7-A6E3AC170006}]";
@@ -1784,7 +1784,7 @@ namespace SolidCP.Providers.HostedSolution
             if (!string.IsNullOrEmpty(gpoId))
             {
                 string drivesXmlPath = string.Format("{0}\\{1}",
-                                                     string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId), 
+                                                     string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId), 
                                                      "Drives.xml");
                 var xml = GetOrCreateDrivesFile(gpoId);
 
@@ -1830,7 +1830,7 @@ namespace SolidCP.Providers.HostedSolution
                 if (!string.IsNullOrEmpty(gpoId))
                 {
                     string filePath = string.Format("{0}\\{1}",
-                                                string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId),
+                                                string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId),
                                                 "Drives.xml");
 
                     var xml = GetOrCreateDrivesFile(gpoId);
@@ -1877,7 +1877,7 @@ namespace SolidCP.Providers.HostedSolution
             if (!string.IsNullOrEmpty(gpoId))
             {
                 string path = string.Format("{0}\\{1}",
-                                            string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId),
+                                            string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId),
                                             "Drives.xml");
 
                 var xml = GetOrCreateDrivesFile(gpoId);
@@ -1978,7 +1978,7 @@ namespace SolidCP.Providers.HostedSolution
                  if (!string.IsNullOrEmpty(gpoId))
                  {
                      string drivesXmlPath = string.Format("{0}\\{1}",
-                                                          string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId),
+                                                          string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId),
                                                           "Drives.xml");
                      // open xml document
                      var xml = GetOrCreateDrivesFile(gpoId);
@@ -2044,7 +2044,7 @@ namespace SolidCP.Providers.HostedSolution
                  if (!string.IsNullOrEmpty(gpoId))
                  {
                      string drivesXmlPath = string.Format("{0}\\{1}",
-                                                          string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId),
+                                                          string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId),
                                                           "Drives.xml");
                      // open xml document
                      var xml = GetOrCreateDrivesFile(gpoId);
@@ -2115,7 +2115,7 @@ namespace SolidCP.Providers.HostedSolution
                 ExecuteShellCommand(runSpace, cmd);
 
                 //create empty drives.xml file for for gpo drives mapping
-                CreateDrivesXmlEmpty(string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId), "Drives.xml");
+                CreateDrivesXmlEmpty(string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId), "Drives.xml");
             }
             catch (Exception)
             {
@@ -2216,7 +2216,7 @@ namespace SolidCP.Providers.HostedSolution
         private void IncrementGPOVersion(string organizationId, string gpoId)
         {
             string path = string.Format("{0}\\{1}",
-                                           string.Format(GROUP_POLICY_MAPPED_DRIVES_ROOT_PATH_TEMPLATE, RootDomain, gpoId),
+                                           string.Format(GROUP_POLICY_MAPPED_DRIVES_ROOT_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId),
                                            "GPT.ini");
 
             if (File.Exists(path))
@@ -2418,12 +2418,14 @@ namespace SolidCP.Providers.HostedSolution
         private XmlDocument GetOrCreateDrivesFile(string gpoId)
         {
             string path = string.Format("{0}\\{1}",
-                string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId),
+                string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId),
                 "Drives.xml");
+
+            HostedSolutionLog.LogInfo("path: {0}", path);
 
             if (!File.Exists(path))
             {
-                CreateDrivesXmlEmpty(string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, RootDomain, gpoId), "Drives.xml");
+                CreateDrivesXmlEmpty(string.Format(GROUP_POLICY_MAPPED_DRIVES_FILE_PATH_TEMPLATE, PrimaryDomainController, RootDomain, gpoId), "Drives.xml");
             }
 
             // open xml document
