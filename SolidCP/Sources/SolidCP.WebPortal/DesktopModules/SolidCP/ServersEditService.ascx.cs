@@ -99,7 +99,7 @@ namespace SolidCP.Portal
         {
 			litGroup.Text = PanelFormatter.GetLocalizedResourceGroupName(resourceGroup.GroupName);
 
-            if(ResourceGroups.VPS2012 == resourceGroup.GroupName) //HyperV_v2
+            if(ResourceGroups.VPS2012 == resourceGroup.GroupName || ResourceGroups.Os == resourceGroup.GroupName)
             {
                 textProvider.Visible = false;
                 ddlProviders.DataSource = ES.Services.Servers.GetProvidersByGroupId(provider.GroupId);
