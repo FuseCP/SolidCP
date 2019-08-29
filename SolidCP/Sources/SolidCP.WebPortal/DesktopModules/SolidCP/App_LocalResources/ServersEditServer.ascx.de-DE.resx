@@ -162,6 +162,9 @@
   <data name="IPAddressesHeader.Text" xml:space="preserve">
     <value>IP-Adressen</value>
   </data>
+  <data name="VLANsHeader.Text" xml:space="preserve">
+    <value>Privates Netzwerk VLANs</value>
+  </data>
   <data name="lblAdDomain.Text" xml:space="preserve">
     <value>Stammdomäne:</value>
   </data>

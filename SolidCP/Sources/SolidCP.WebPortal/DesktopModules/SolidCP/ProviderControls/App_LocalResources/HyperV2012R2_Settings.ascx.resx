@@ -279,6 +279,12 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="radioVpsFolderIncludesName.Text" xml:space="preserve">
     <value>VPS host name, for example "vps1.domain.com"</value>
   </data>
+  <data name="radioSwitchTypePrivatePrivate.Text" xml:space="preserve">
+    <value>New private switch for each Hosting Space</value>
+  </data>
+  <data name="radioSwitchTypePrivateExternal.Text" xml:space="preserve">
+    <value>Use external switch (VLAN separation)</value>
+  </data>
   <data name="RootFolderValidator.ErrorMessage" xml:space="preserve">
     <value>Enter VPS root folder</value>
   </data>
@@ -545,5 +551,8 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   </data>
   <data name="locSecureBootTemplate.Text" xml:space="preserve">
     <value>Secure boot template:</value>
+  </data>
+  <data name="chkAssignVLANAutomatically.Text" xml:space="preserve">
+    <value>Automatically assign VLANs to the space on creation</value>
   </data>
 </root>

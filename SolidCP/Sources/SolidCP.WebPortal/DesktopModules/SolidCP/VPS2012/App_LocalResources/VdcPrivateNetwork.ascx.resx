@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FormComments.Text" xml:space="preserve">
     <value>&lt;p&gt;If this form is available in the hosting space then it means that all VPS in this hosting space are connected to dedicated private network available only to this hosting space.&lt;/p&gt; &lt;p&gt;Private network is a very powerful mechanizm that allows additional increase of network security. For example, you might have only one front-end server (e.g. server with Exchange CAS and HUB roles installed) connected to External network and all the rest of servers connected to private (internal) network only (e.g. one server with Exchange MB role and second one with DC).&lt;/p&gt;&lt;p&gt;Quota in the bottom of the form displays the maximum number of private IP addresses that could be assigned to every VPS.&lt;/p&gt;</value>
@@ -146,5 +146,11 @@
   </data>
   <data name="secQuotas.Text" xml:space="preserve">
     <value>Quotas</value>
+  </data>
+  <data name="secVLAN.Text" xml:space="preserve">
+    <value>VLAN</value>
+  </data>
+  <data name="locVLANsQuota.Text" xml:space="preserve">
+    <value>Private Network VLANs:</value>
   </data>
 </root>

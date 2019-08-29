@@ -636,15 +636,15 @@ namespace SolidCP.EnterpriseServer
 			return DataProvider.GetServicesByGroupId(SecurityContext.User.UserId, groupId);
 		}
 
-		public static DataSet GetRawServicesByGroupName(string groupName)
+		public static DataSet GetRawServicesByGroupName(string groupName, bool forAutodiscover)
 		{
-			return DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName);
+			return DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName, forAutodiscover);
 		}
 
 		public static List<ServiceInfo> GetServicesByGroupName(string groupName)
 		{
 			return ObjectUtils.CreateListFromDataSet<ServiceInfo>(
-				DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName));
+				DataProvider.GetServicesByGroupName(SecurityContext.User.UserId, groupName, false));
 		}
 
 		public static ServiceInfo GetServiceInfoAdmin(int serviceId)
@@ -1027,10 +1027,347 @@ namespace SolidCP.EnterpriseServer
 			return ad.GetServerFilePath(); // ad.GetServer
 		}
 
-		#endregion
+        #endregion
 
-		#region IP Addresses
-		public static List<IPAddressInfo> GetIPAddresses(IPAddressPool pool, int serverId)
+        #region Private Network VLANs
+        public static VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
+            VLANsPaged result = new VLANsPaged();
+
+            // get reader
+            IDataReader reader = DataProvider.GetPrivateNetworVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+
+            // number of items = first data reader
+            reader.Read();
+            result.Count = (int)reader[0];
+
+            // items = second data reader
+            reader.NextResult();
+            result.Items = ObjectUtils.CreateListFromDataReader<VLANInfo>(reader).ToArray();
+
+            return result;
+        }
+
+        public static IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+        {
+            IntResult res = new IntResult();
+
+            #region Check account statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+                return res;
+            #endregion
+
+            // start task
+            res = TaskManager.StartResultTask<IntResult>("VLAN", "ADD", vlan.ToString());
+
+            TaskManager.WriteParameter("ServerID", serverId);
+
+            try
+            {
+                res.Value = DataProvider.AddPrivateNetworkVLAN(serverId, vlan, comments);
+
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VLAN_ADD_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static ResultObject DeletePrivateNetworkVLANs(int[] vlans)
+        {
+            ResultObject res = new ResultObject();
+
+            #region Check account statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+                return res;
+            #endregion
+
+            // start task
+            res = TaskManager.StartResultTask<ResultObject>("VLAN", "DELETE_RANGE");
+
+            try
+            {
+                foreach (int vlanId in vlans)
+                {
+                    ResultObject vlanRes = DeletePrivateNetworkVLAN(vlanId);
+                    if (!vlanRes.IsSuccess && vlanRes.ErrorCodes.Count > 0)
+                    {
+                        res.ErrorCodes.AddRange(vlanRes.ErrorCodes);
+                        res.IsSuccess = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VLAN_DELETE_RANGE_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        private static ResultObject DeletePrivateNetworkVLAN(int vlanId)
+        {
+            ResultObject res = new ResultObject();
+
+            // start task
+            res = TaskManager.StartResultTask<ResultObject>("VLAN", "DELETE");
+
+            try
+            {
+                int result = DataProvider.DeletePrivateNetworkVLAN(vlanId);
+                if (result == -2)
+                {
+                    TaskManager.CompleteResultTask(res, "ERROR_VLAN_USED_BY_PACKAGE_ITEM");
+                    return res;
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VLAN_DELETE_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
+        {
+            ResultObject res = new ResultObject();
+
+            #region Check account statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+                return res;
+            #endregion
+
+            // start task
+            res = TaskManager.StartResultTask<ResultObject>("VLAN", "ADD_RANGE", startVLAN);
+
+            TaskManager.WriteParameter("ServerID", serverId);
+            TaskManager.WriteParameter("End VLAN", endVLAN);
+
+            try
+            {
+                for (int i = startVLAN; i <= endVLAN; i++)
+                {
+                    DataProvider.AddPrivateNetworkVLAN(serverId, i, comments);
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VLAN_ADD_RANGE_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static VLANInfo GetPrivateNetworVLAN(int vlanId)
+        {
+            return ObjectUtils.FillObjectFromDataReader<VLANInfo>(
+                DataProvider.GetPrivateNetworVLAN(vlanId));
+        }
+
+        public static ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+        {
+            ResultObject res = new ResultObject();
+
+            #region Check account statuses
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+                return res;
+            #endregion
+
+            // start task
+            res = TaskManager.StartResultTask<ResultObject>("VLAN", "UPDATE");
+
+            try
+            {
+                DataProvider.UpdatePrivateNetworVLAN(vlanId, serverId, vlan, comments);
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VLAN_UPDATE_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            PackageVLANsPaged result = new PackageVLANsPaged();
+
+            // get reader
+            IDataReader reader = DataProvider.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+
+            // number of items = first data reader
+            reader.Read();
+            result.Count = (int)reader[0];
+
+            // items = second data reader
+            reader.NextResult();
+            result.Items = ObjectUtils.CreateListFromDataReader<PackageVLAN>(reader).ToArray();
+
+            return result;
+        }
+
+        public static ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
+        {
+            #region Check account and space statuses
+            // create result object
+            ResultObject res = new ResultObject();
+
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+                return res;
+
+            // check package
+            if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
+                return res;
+            #endregion
+
+            res = TaskManager.StartResultTask<ResultObject>("VLAN", "DEALLOCATE_PACKAGE_VLAN", packageId);
+
+            try
+            {
+                foreach (int id in packageVlanId)
+                {
+                    DataProvider.DeallocatePackageVLAN(id);
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "DEALLOCATE_PACKAGE_VLAN_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+
+        public static List<VLANInfo> GetUnallottedVLANs(int packageId, string groupName)
+        {
+
+            int serviceId = 0;
+            bool servicebyid = int.TryParse(groupName, out serviceId);
+            if (!servicebyid) // get service ID
+                serviceId = PackageController.GetPackageServiceId(packageId, groupName);
+
+
+            // get unallotted vlans
+            return ObjectUtils.CreateListFromDataReader<VLANInfo>(
+                DataProvider.GetUnallottedVLANs(packageId, serviceId));
+        }
+
+        public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+        {
+            #region Check account and space statuses
+            // create result object
+            ResultObject res = new ResultObject();
+
+            // check account
+            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+                return res;
+
+            // check package
+            if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
+                return res;
+            #endregion
+
+            // get total number of addresses requested
+            if (!allocateRandom && vlanId != null)
+                vlansNumber = vlanId.Length;
+
+            if (vlansNumber <= 0)
+            {
+                res.IsSuccess = true;
+                return res; // just exit
+            }
+
+            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+
+            // get maximum server IPs
+            List<VLANInfo> vlans = ServerController.GetUnallottedVLANs(packageId, groupName);
+            int maxAvailableVLANs = vlans.Count;
+
+            if (maxAvailableVLANs == 0)
+            {
+                res.ErrorCodes.Add("VLANS_POOL_IS_EMPTY");
+                return res;
+            }
+
+            // get hosting plan VLAN limits
+            PackageContext cntx = PackageController.GetPackageContext(packageId);
+            int quotaAllocated = cntx.Quotas[quotaName].QuotaAllocatedValue;
+            int quotaUsed = cntx.Quotas[quotaName].QuotaUsedValue;
+
+            // check the maximum allowed number
+            if (quotaAllocated != -1) // check only if not unlimited 
+            {
+                if (vlansNumber > (quotaAllocated - quotaUsed))
+                {
+                    res.ErrorCodes.Add("VLANS_QUOTA_LIMIT_REACHED");
+                    return res;
+                }
+            }
+
+            // check if requested more than available
+            if (maxAvailableVLANs != -1 &&
+                (vlansNumber > maxAvailableVLANs))
+                vlansNumber = maxAvailableVLANs;
+
+            res = TaskManager.StartResultTask<ResultObject>("VLAN", "ALLOCATE_PACKAGE_VLAN", packageId);
+
+            try
+            {
+                if (allocateRandom)
+                {
+                    int[] ids = new int[vlansNumber];
+                    for (int i = 0; i < vlansNumber; i++)
+                        ids[i] = vlans[i].VlanId;
+
+                    vlanId = ids;
+                }
+
+                // prepare XML document
+                string xml = PrepareIPsXML(vlanId);
+
+                // save to database
+                try
+                {
+                    DataProvider.AllocatePackageVLANs(packageId, xml);
+                }
+                catch (Exception ex)
+                {
+                    TaskManager.CompleteResultTask(res, "VPS_CANNOT_ADD_VLANS_TO_DATABASE", ex);
+                    return res;
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.CompleteResultTask(res, "VPS_ALLOCATE_PRIVATE_VLANS_GENERAL_ERROR", ex);
+                return res;
+            }
+
+            TaskManager.CompleteResultTask();
+            return res;
+        }
+        #endregion
+
+        #region IP Addresses
+        public static List<IPAddressInfo> GetIPAddresses(IPAddressPool pool, int serverId)
 		{
 			return ObjectUtils.CreateListFromDataReader<IPAddressInfo>(
 				DataProvider.GetIPAddresses(SecurityContext.User.UserId, (int)pool, serverId));
@@ -1515,7 +1852,40 @@ namespace SolidCP.EnterpriseServer
 				true, number, new int[0]);
 		}
 
-		public static ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
+        public static ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
+        {
+            // get maximum server VLANs
+            int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
+
+            // get hosting plan VLANs
+            int number = 0;
+
+            PackageContext cntx = PackageController.GetPackageContext(packageId);
+            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+            if (cntx.Quotas.ContainsKey(quotaName))
+            {
+                if (cntx.Quotas[quotaName].QuotaAllocatedValue == -1)
+                {
+                    // unlimited
+                    //number = maxAvailableVLANs; // assign max available server VLANs
+                    if (maxAvailableVLANs > 0)
+                    {
+                        number = 1;//assign 1 VLAN or the entire free pool if unlimited. What is better???
+                    }
+                    else number = 0;
+                }
+                else
+                {
+                    // quota
+                    number = cntx.Quotas[quotaName].QuotaAllocatedValue - cntx.Quotas[quotaName].QuotaUsedValue;
+                }
+            }
+
+            // allocate
+            return AllocatePackageVLANs(packageId, groupName, true, number, new int[0]);
+        }
+
+        public static ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
 		{
 			#region Check account and space statuses
 			// create result object

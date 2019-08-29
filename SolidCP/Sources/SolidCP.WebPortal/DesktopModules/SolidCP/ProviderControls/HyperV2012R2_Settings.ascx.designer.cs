@@ -1147,6 +1147,51 @@ namespace SolidCP.Portal.ProviderControls {
         protected global::SolidCP.Portal.UserControls.EditIPAddressControl privateAlternateNameServer;
         
         /// <summary>
+        /// locSwitchTypePrivateNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locSwitchTypePrivateNetwork;
+        
+        /// <summary>
+        /// radioSwitchTypePrivateNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList radioSwitchTypePrivateNetwork;
+        
+        /// <summary>
+        /// locPrivateNetworkName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locPrivateNetworkName;
+        
+        /// <summary>
+        /// ddlExternalNetworksPrivate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlExternalNetworksPrivate;
+        
+        /// <summary>
+        /// chkAssignVLANAutomatically control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkAssignVLANAutomatically;
+        
+        /// <summary>
         /// locHostname control.
         /// </summary>
         /// <remarks>

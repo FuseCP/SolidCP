@@ -326,6 +326,8 @@
                                     <p>
                                         <asp:CheckBox ID="chkPrivateNetworkEnabled" runat="server" AutoPostBack="true" Checked="true"
                                                     meta:resourcekey="chkPrivateNetworkEnabled" Text="Private network enabled" />
+                                        <asp:DropDownList ID="listPrivateNetworkVLAN" runat="server">
+                                        </asp:DropDownList>
                                     </p>
                                     
                                    

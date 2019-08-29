@@ -42,6 +42,7 @@ namespace SolidCP.EnterpriseServer
         public bool IsDHCP { get; set; }
         public string NetworkId { get; set; }
         public string MacAddress { get; set; }
+        public int VLAN { get; set; }
         public string SubnetMask { get; set; }
         public string SubnetMaskCidr { get; set; }
         public string DefaultGateway { get; set; }

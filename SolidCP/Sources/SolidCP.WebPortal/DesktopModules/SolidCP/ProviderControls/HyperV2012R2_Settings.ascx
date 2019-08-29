@@ -330,14 +330,17 @@
                     </td>
                 </tr>               
 
-                <tr><td class="SubHead">
-                        <asp:Localize ID="locSecureBootTemplate" runat="server" meta:resourcekey="locSecureBootTemplate" Text="Secure boot template:"></asp:Localize>
-                    </td>
-                    <td>
-                        <asp:DropDownList ID="ddlSecureBootTemplate" runat="server" CssClass="form-control" Width="470" Enabled='<%# IsSecureBootEnabled(Eval("EnableSecureBoot")) %>' DataSource ='<%# GetSecureBootTemplatesList() %>'
-                            DataValueField="Name" DataTextField="Description" SelectedIndex='<%# GetSecureBootTemplateIndex(Eval("SecureBootTemplate")) %>'>
-                        </asp:DropDownList>
-                    </td>
+                <tr>
+                    <div runat="server" ID="dSecureBootTemplate" visible='<%# GetSecureBootTemplatesList().Count > 0 %>'>
+                        <td class="SubHead">
+                            <asp:Localize ID="locSecureBootTemplate" runat="server" meta:resourcekey="locSecureBootTemplate" Text="Secure boot template:"></asp:Localize>
+                        </td>
+                        <td>
+                            <asp:DropDownList ID="ddlSecureBootTemplate" runat="server" CssClass="form-control" Width="470" Enabled='<%# IsSecureBootEnabled(Eval("EnableSecureBoot")) %>' DataSource ='<%# GetSecureBootTemplatesList() %>'
+                                DataValueField="Name" DataTextField="Description" SelectedIndex='<%# GetSecureBootTemplateIndex(Eval("SecureBootTemplate")) %>'>
+                            </asp:DropDownList>
+                        </td>
+                    </div>
                 </tr>
                 
                 <tr>
@@ -735,6 +738,32 @@
 		    <td>
 		        <scp:EditIPAddressControl id="privateAlternateNameServer" runat="server" />
             </td>
+	    </tr>
+        <tr>
+            <td class="SubHead" style="width:200px; vertical-align: top;">
+		        <asp:Localize ID="locSwitchTypePrivateNetwork" runat="server" meta:resourcekey="locSwitchType" Text="Switch Type:"></asp:Localize>
+		    </td>
+	        <td colspan="2">
+		        <asp:RadioButtonList ID="radioSwitchTypePrivateNetwork" runat="server" AutoPostBack="true" 
+			        onselectedindexchanged="radioSwitchTypePrivateNetwork_SelectedIndexChanged">
+                    <asp:ListItem Value="private" meta:resourcekey="radioSwitchTypePrivatePrivate" Selected="True">New private switch for each Hosting Space</asp:ListItem>
+			        <asp:ListItem Value="external" meta:resourcekey="radioSwitchTypePrivateExternal">Use external switch (VLAN separation)</asp:ListItem>
+		        </asp:RadioButtonList>
+	        </td>
+        </tr>
+        <tr>
+		    <td class="SubHead" style="width:200px;">
+		        <asp:Localize ID="locPrivateNetworkName" runat="server" meta:resourcekey="locExternalNetworkName" Text="Connect to Network:"></asp:Localize>
+		    </td>
+		    <td>
+                <asp:DropDownList ID="ddlExternalNetworksPrivate" runat="server" CssClass="form-control" Width="450" Enabled="false"
+                    DataValueField="SwitchId" DataTextField="Name"></asp:DropDownList>
+            </td>
+	    </tr>
+        <tr>
+	        <td colspan="3">
+	            <asp:CheckBox ID="chkAssignVLANAutomatically" runat="server" meta:resourcekey="chkAssignVLANAutomatically" Text="Assign VLAN to the space on creation" Enabled="false" />
+	        </td>
 	    </tr>
 	</table>
 </fieldset>

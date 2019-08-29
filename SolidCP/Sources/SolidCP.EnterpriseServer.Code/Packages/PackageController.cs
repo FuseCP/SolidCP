@@ -747,6 +747,8 @@ namespace SolidCP.EnterpriseServer
                 StringDictionary vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                 if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+                if (Utils.ParseBool(vps2012Settings["AutoAssignVLAN"], true))
+                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012);
 
                 // allocate "VPSForPC" IP addresses
                 int vpsfcpServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPSForPC);
@@ -1512,15 +1514,15 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
-        public static int MovePackageItem(int itemId, int destinationServiceId)
+        public static int MovePackageItem(int itemId, int destinationServiceId, bool forAutodiscover)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
                 | DemandAccount.IsAdmin);
-            if (accountCheck < 0) return accountCheck;
+            if (accountCheck < 0 && !forAutodiscover) return accountCheck;
 
             // move item
-            DataProvider.MoveServiceItem(SecurityContext.User.UserId, itemId, destinationServiceId);
+            DataProvider.MoveServiceItem(SecurityContext.User.UserId, itemId, destinationServiceId, forAutodiscover);
 
             return 0;
         }

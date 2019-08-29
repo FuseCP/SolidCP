@@ -63,6 +63,20 @@ namespace SolidCP.Portal.VPS2012
 
         private void BindFormDetails()
         {
+            // check vm
+            try
+            {
+                VirtualMachine realVm = ES.Services.VPS2012.GetVirtualMachineGeneralDetails(PanelRequest.ItemID);
+                if (realVm != null)
+                {
+                    if (realVm.State == VirtualMachineState.Unknown)// VPS was moved
+                    {
+                        ES.Services.VPS2012.DiscoverVirtualMachine(PanelRequest.ItemID);
+                    }
+                }
+            }
+            catch (Exception) { }
+
             // load VM item
             VirtualMachine vm = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
             if (!String.IsNullOrEmpty(vm.CurrentTaskId))

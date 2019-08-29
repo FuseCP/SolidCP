@@ -225,6 +225,7 @@ order by rg.groupOrder
         public const string VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER = "VPS2012.ExternalIPAddressesNumber";		// Number of External IP addresses
         public const string VPS2012_PRIVATE_NETWORK_ENABLED = "VPS2012.PrivateNetworkEnabled";		// Private Network
         public const string VPS2012_PRIVATE_IP_ADDRESSES_NUMBER = "VPS2012.PrivateIPAddressesNumber";		// Number of Private IP addresses per VPS
+        public const string VPS2012_PRIVATE_VLANS_NUMBER = "VPS2012.PrivateVLANsNumber";		// Number of Private Network VLANs
         public const string VPS2012_SNAPSHOTS_NUMBER = "VPS2012.SnapshotsNumber";		// Number of Snaphots
         public const string VPS2012_START_SHUTDOWN_ALLOWED = "VPS2012.StartShutdownAllowed";		// Allow user to Start, Turn off and Shutdown VPS
         public const string VPS2012_PAUSE_RESUME_ALLOWED = "VPS2012.PauseResumeAllowed";		// Allow user to Pause, Resume VPS

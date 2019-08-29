@@ -62,6 +62,20 @@ namespace SolidCP.Portal.VPS2012
         private readonly string sessionIpAddresses = "IpAddresses" + PanelRequest.ItemID;   //TODO: Add the ability to change IP?
         private void BindConfiguration()
         {
+            // check vm
+            try
+            {
+                VirtualMachine realVm = ES.Services.VPS2012.GetVirtualMachineGeneralDetails(PanelRequest.ItemID);
+                if (realVm != null)
+                {
+                    if (realVm.State == VirtualMachineState.Unknown)// VPS was moved
+                    {
+                        ES.Services.VPS2012.DiscoverVirtualMachine(PanelRequest.ItemID);
+                    }
+                }
+            }
+            catch (Exception) { }
+
             Session.Timeout = 10;
             VirtualMachine vm = null;
             // load machine
@@ -85,7 +99,9 @@ namespace SolidCP.Portal.VPS2012
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
 
             vm.CreationTime = string.IsNullOrEmpty(vm.CreationTime) ? DateTime.Now.ToString() : vm.CreationTime;
-            DateTime dateTimePlusHours = DateTime.Parse(vm.CreationTime).AddHours(9);
+            DateTime dateTimePlusHours = DateTime.Now;
+            DateTime.TryParse(vm.CreationTime, out dateTimePlusHours);
+            dateTimePlusHours.AddHours(9);
             bool IsNotReinstallPossible = !(dateTimePlusHours <= DateTime.Now); //TODO: add possible to change that check.
             if (IsNotReinstallPossible && !manageAllowed)
             {

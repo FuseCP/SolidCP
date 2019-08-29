@@ -30,7 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
+using System;
 
 
 namespace SolidCP.Providers.Virtualization
@@ -131,6 +131,8 @@ namespace SolidCP.Providers.Virtualization
         public string PrivateNicMacAddress { get; set; }
         [Persistent]
         public string PrivateSwitchId { get; set; }
+        [Persistent]
+        public int PrivateNetworkVlan { get; set; }
 
         [Persistent]
         public bool ManagementNetworkEnabled { get; set; }
@@ -162,8 +164,8 @@ namespace SolidCP.Providers.Virtualization
 
         [Persistent]
         public string ParentSnapshotId { get; set; }
-
-        public int defaultaccessvlan { get; set; }
+        [Persistent]
+        public int defaultaccessvlan { get; set; }//external network vlan
         public VirtualMachineIPAddress PrimaryIP { get; set; }
         public bool NeedReboot { get; set; } //give access to force reboot a server.
     }

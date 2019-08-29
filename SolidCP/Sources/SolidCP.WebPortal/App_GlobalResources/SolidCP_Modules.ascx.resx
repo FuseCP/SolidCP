@@ -144,6 +144,9 @@
   <data name="ModuleTitle.AddDomain" xml:space="preserve">
     <value>Add Domain</value>
   </data>
+  <data name="ModuleTitle.AddVLAN" xml:space="preserve">
+    <value>Add VLAN</value>
+  </data>
   <data name="ModuleTitle.AddIPAddress" xml:space="preserve">
     <value>Add IP Address</value>
   </data>
@@ -255,6 +258,9 @@
   <data name="ModuleTitle.EditIconProperties" xml:space="preserve">
     <value>Edit Icon Properties</value>
   </data>
+  <data name="ModuleTitle.EditVLAN" xml:space="preserve">
+    <value>Edit VLAN</value>
+  </data>
   <data name="ModuleTitle.EditIPAddress" xml:space="preserve">
     <value>Edit IP Address</value>
   </data>
@@ -335,6 +341,9 @@
   </data>
   <data name="ModuleTitle.IPAddressesManager" xml:space="preserve">
     <value>IP Addresses Manager</value>
+  </data>
+  <data name="ModuleTitle.VLANsManager" xml:space="preserve">
+    <value>VLANs Manager</value>
   </data>
   <data name="ModuleTitle.SignIn" xml:space="preserve">
     <value>Sign In to Control Panel</value>
@@ -858,6 +867,9 @@
   <data name="ModuleTitle.VdcManagementNetwork" xml:space="preserve">
     <value>Management Network</value>
   </data>
+  <data name="ModuleTitle.VdcAddPrivateNetworkVLAN" xml:space="preserve">
+    <value>Allocate VLANs</value>
+  </data>
   <data name="ModuleTitle.VdcAddExternalAddress" xml:space="preserve">
     <value>Allocate IP Addresses</value>
   </data>
@@ -944,5 +956,8 @@
   </data>
   <data name="ModuleTitle.DomainsImportZone" xml:space="preserve">
     <value>Import DNS Zone</value>
+  </data>
+  <data name="ModuleTitle.PrivateNetworkVLANs" xml:space="preserve">
+    <value>Private Network VLANs</value>
   </data>
 </root>

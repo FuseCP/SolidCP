@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnAddExternalAddress.Text" xml:space="preserve">
     <value>IP hinzufügen...</value>
@@ -191,5 +191,14 @@
   </data>
   <data name="gvSubnetMask.HeaderText" xml:space="preserve">
     <value>Subnetzmaske</value>
+  </data>
+  <data name="locAdapterVLAN.Text" xml:space="preserve">
+    <value>VLAN:</value>
+  </data>
+  <data name="locVLAN.Text" xml:space="preserve">
+    <value>VLAN:</value>
+  </data>
+  <data name="locAdapterAddresses.Text" xml:space="preserve">
+    <value>IP-Adressen:</value>
   </data>
 </root>

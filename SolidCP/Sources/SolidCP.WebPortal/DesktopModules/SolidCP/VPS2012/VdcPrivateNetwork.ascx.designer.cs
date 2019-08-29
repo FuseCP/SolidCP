@@ -49,6 +49,33 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.ObjectDataSource odsPrivateAddressesPaged;
         
         /// <summary>
+        /// secVLAN control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.CollapsiblePanel secVLAN;
+        
+        /// <summary>
+        /// VLANPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel VLANPanel;
+        
+        /// <summary>
+        /// packageVLANs control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.UserControls.PackageVLANs packageVLANs;
+        
+        /// <summary>
         /// secQuotas control.
         /// </summary>
         /// <remarks>
@@ -83,5 +110,23 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota addressesPerVps;
+        
+        /// <summary>
+        /// locVLANsQuota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locVLANsQuota;
+        
+        /// <summary>
+        /// vlansQuota control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota vlansQuota;
     }
 }

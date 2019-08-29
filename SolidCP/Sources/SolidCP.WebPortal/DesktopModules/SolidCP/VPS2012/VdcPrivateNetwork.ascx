@@ -6,6 +6,7 @@
 <%@ Register Src="../UserControls/CollapsiblePanel.ascx" TagName="CollapsiblePanel" TagPrefix="scp" %>
 <%@ Register Src="../UserControls/SearchBox.ascx" TagName="SearchBox" TagPrefix="scp" %>
 <%@ Register Src="../UserControls/Quota.ascx" TagName="Quota" TagPrefix="scp" %>
+<%@ Register Src="../UserControls/PackageVLANs.ascx" TagName="PackageVLANs" TagPrefix="scp" %>
 
 	    <div class="Content">
 		    <div class="Center">
@@ -57,6 +58,15 @@
 					    </SelectParameters>
 				    </asp:ObjectDataSource>
 				    <br />
+
+                    <scp:CollapsiblePanel id="secVLAN" runat="server"
+                        TargetControlID="VLANPanel" meta:resourcekey="secVLAN" Text="VLAN" IsCollapsed="true">
+                    </scp:CollapsiblePanel>
+                    <asp:Panel ID="VLANPanel" runat="server" Height="0" style="overflow:hidden;">
+                        <scp:PackageVLANs id="packageVLANs" runat="server"
+                            SpaceHomeControl="vdc_private_network"
+                            AllocateVLANsControl="vdc_allocate_private_vlan" />
+                    </asp:Panel>
     				
 				    <scp:CollapsiblePanel id="secQuotas" runat="server"
                         TargetControlID="QuotasPanel" meta:resourcekey="secQuotas" Text="Quotas">
@@ -67,6 +77,10 @@
                             <tr>
                                 <td><asp:Localize ID="locVpsAddressesQuota" runat="server" meta:resourcekey="locVpsAddressesQuota" Text="IP addresses per VPS:"></asp:Localize></td>
                                 <td><scp:Quota ID="addressesPerVps" runat="server" QuotaName="VPS2012.PrivateIPAddressesNumber" /></td>
+                            </tr>
+                            <tr>
+                                <td><asp:Localize ID="locVLANsQuota" runat="server" meta:resourcekey="locVLANsQuota" Text="Private Network VLANs:"></asp:Localize></td>
+                                <td><scp:Quota ID="vlansQuota" runat="server" QuotaName="VPS2012.PrivateVLANsNumber" /></td>
                             </tr>
                         </table>
                     

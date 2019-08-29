@@ -137,6 +137,20 @@ namespace SolidCP.Portal
         }
         #endregion
 
+        #region Package Private Network VLANs
+        PackageVLANsPaged packageVLANs;
+        public PackageVLAN[] GetPackageVLANs(int packageId, string sortColumn, int maximumRows, int startRowIndex)
+        {
+            packageVLANs = ES.Services.Servers.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRowIndex, maximumRows);
+            return packageVLANs.Items;
+        }
+
+        public int GetPackageVLANsCount(int packageId)
+        {
+            return packageVLANs.Count;
+        }
+        #endregion
+
         #region Package Private IP Addresses
         PrivateIPAddressesPaged privateAddresses;
         public PrivateIPAddress[] GetPackagePrivateIPAddresses(int packageId, string filterColumn, string filterValue,

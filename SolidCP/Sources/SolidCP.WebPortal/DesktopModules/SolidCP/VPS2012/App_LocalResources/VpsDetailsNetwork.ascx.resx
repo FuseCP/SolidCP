@@ -193,7 +193,7 @@
     <value>Subnet Mask</value>
   </data>
   <data name="locAdapterMAC.Text" xml:space="preserve">
-    <value>Adapter MAC:</value>
+    <value>MAC:</value>
   </data>
   <data name="locAdapterName.Text" xml:space="preserve">
     <value>Adapter Name:</value>
@@ -203,5 +203,14 @@
   </data>
   <data name="btnDeletePrivateByInject.Text" xml:space="preserve">
     <value>Delete By Injection (BETA)</value>
+  </data>
+  <data name="locAdapterVLAN.Text" xml:space="preserve">
+    <value>VLAN:</value>
+  </data>
+  <data name="locVLAN.Text" xml:space="preserve">
+    <value>VLAN:</value>
+  </data>
+  <data name="locAdapterAddresses.Text" xml:space="preserve">
+    <value>IP addresses:</value>
   </data>
 </root>

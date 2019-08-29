@@ -201,11 +201,14 @@ namespace SolidCP.Portal.VPS2012
                 }
                 else
                 {
-                    IPAddressInfo[] uips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
-                    isUnassignedPackageIPs = true;
-                    foreach (IPAddressInfo ip in uips)
+                    if (PanelSecurity.EffectiveUser.Role != UserRole.User)
                     {
-                        dupevlans.Add(ip.VLAN);
+                        IPAddressInfo[] uips = ES.Services.Servers.GetUnallottedIPAddresses(PanelSecurity.PackageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+                        isUnassignedPackageIPs = true;
+                        foreach (IPAddressInfo ip in uips)
+                        {
+                            dupevlans.Add(ip.VLAN);
+                        }
                     }
                 }
 
@@ -253,6 +256,16 @@ namespace SolidCP.Portal.VPS2012
 
                 txtPrivateAddressesNumber.Text = "1";
                 litMaxPrivateAddresses.Text = String.Format(GetLocalizedString("litMaxPrivateAddresses.Text"), maxPrivate);
+
+                listPrivateNetworkVLAN.Items.Clear();
+                PackageVLANsPaged vlans = ES.Services.Servers.GetPackagePrivateNetworkVLANs(PanelSecurity.PackageId, "", 0, Int32.MaxValue);
+                if (vlans != null && vlans.Count > 0)
+                {
+                    foreach (PackageVLAN vlan in vlans.Items)
+                    {
+                        listPrivateNetworkVLAN.Items.Add(new ListItem(String.Format("VLAN {0}", vlan.Vlan.ToString()), vlan.Vlan.ToString()));
+                    }
+                }
             }
 
 
@@ -375,14 +388,11 @@ namespace SolidCP.Portal.VPS2012
             tablePrivateNetwork.Visible = chkPrivateNetworkEnabled.Checked && (ViewState["DHCP"] == null);
             PrivateAddressesNumberRow.Visible = radioPrivateRandom.Checked;
             PrivateAddressesListRow.Visible = radioPrivateSelected.Checked;
-
+            listPrivateNetworkVLAN.Visible = listPrivateNetworkVLAN.Items.Count > 1;
         }
 
         private void BindExternalIps()
         {
-            //if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED))
-            //{
-
             // bind list
             PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
 
@@ -403,7 +413,6 @@ namespace SolidCP.Portal.VPS2012
             litMaxExternalAddresses.Text = String.Format(GetLocalizedString("litMaxExternalAddresses.Text"), maxAddresses);
             if (maxAddresses > 0)
                 txtExternalAddressesNumber.Text = "1";
-            //}
         }
 
         private void BindExternalUnallottedIps()
@@ -429,6 +438,7 @@ namespace SolidCP.Portal.VPS2012
             if (maxAddresses > 0)
                 txtExternalAddressesNumber.Text = "1";
         }
+
 
         private void BindSummary()
         {
@@ -539,7 +549,13 @@ namespace SolidCP.Portal.VPS2012
 
 
                 // set default selected vlan
-                virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);
+                virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);//external network vlan
+
+                // set private network vlan
+                if (listPrivateNetworkVLAN.Items.Count > 0)
+                {
+                    virtualMachine.PrivateNetworkVlan = Convert.ToInt32(listPrivateNetworkVLAN.SelectedValue);
+                }
 
                 // create virtual machine
                 IntResult res = ES.Services.VPS2012.CreateNewVirtualMachine(virtualMachine,
@@ -597,9 +613,10 @@ namespace SolidCP.Portal.VPS2012
         {
             PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
             if (ips.Length > 0)
-                BindExternalIps();            
+                BindExternalIps();
             else
-                BindExternalUnallottedIps();
+                if (PanelSecurity.EffectiveUser.Role != UserRole.User) BindExternalUnallottedIps();
+
         }
 
 

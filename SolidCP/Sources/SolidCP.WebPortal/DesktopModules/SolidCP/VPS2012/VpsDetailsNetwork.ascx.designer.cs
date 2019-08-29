@@ -166,6 +166,24 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Literal litExtGateway;
         
         /// <summary>
+        /// locExtVLAN control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locExtVLAN;
+        
+        /// <summary>
+        /// litExtVLAN control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litExtVLAN;
+        
+        /// <summary>
         /// gvExternalAddresses control.
         /// </summary>
         /// <remarks>
@@ -299,6 +317,24 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litPrivSubnet;
+        
+        /// <summary>
+        /// locPrivVLAN control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locPrivVLAN;
+        
+        /// <summary>
+        /// litPrivVLAN control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litPrivVLAN;
         
         /// <summary>
         /// PrivateAddressesPanel control.

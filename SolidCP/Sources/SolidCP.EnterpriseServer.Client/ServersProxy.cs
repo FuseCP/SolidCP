@@ -233,7 +233,27 @@ namespace SolidCP.EnterpriseServer {
         private System.Threading.SendOrPostCallback GetServerVersionOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetServerFilePathOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback GetPrivateNetworVLANsPagedOperationCompleted;
+
+        private System.Threading.SendOrPostCallback AddPrivateNetworkVLANOperationCompleted;
+
+        private System.Threading.SendOrPostCallback DeletePrivateNetworkVLANsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback AddPrivateNetworkVLANsRangeOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetPrivateNetworVLANOperationCompleted;
+
+        private System.Threading.SendOrPostCallback UpdatePrivateNetworVLANOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetPackagePrivateNetworkVLANsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback DeallocatePackageVLANsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetUnallottedVLANsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback AllocatePackageVLANsOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetIPAddressesOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetIPAddressesPagedOperationCompleted;
@@ -583,7 +603,37 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         public event GetServerFilePathCompletedEventHandler GetServerFilePathCompleted;
-        
+
+        /// <remarks/>
+        public event GetPrivateNetworVLANsPagedCompletedEventHandler GetPrivateNetworVLANsPagedCompleted;
+
+        /// <remarks/>
+        public event AddPrivateNetworkVLANCompletedEventHandler AddPrivateNetworkVLANCompleted;
+
+        /// <remarks/>
+        public event DeletePrivateNetworkVLANsCompletedEventHandler DeletePrivateNetworkVLANsCompleted;
+
+        /// <remarks/>
+        public event AddPrivateNetworkVLANsRangeCompletedEventHandler AddPrivateNetworkVLANsRangeCompleted;
+
+        /// <remarks/>
+        public event GetPrivateNetworVLANCompletedEventHandler GetPrivateNetworVLANCompleted;
+
+        /// <remarks/>
+        public event UpdatePrivateNetworVLANCompletedEventHandler UpdatePrivateNetworVLANCompleted;
+
+        /// <remarks/>
+        public event GetPackagePrivateNetworkVLANsCompletedEventHandler GetPackagePrivateNetworkVLANsCompleted;
+
+        /// <remarks/>
+        public event DeallocatePackageVLANsCompletedEventHandler DeallocatePackageVLANsCompleted;
+
+        /// <remarks/>
+        public event GetUnallottedVLANsCompletedEventHandler GetUnallottedVLANsCompleted;
+
+        /// <remarks/>
+        public event AllocatePackageVLANsCompletedEventHandler AllocatePackageVLANsCompleted;
+
         /// <remarks/>
         public event GetIPAddressesCompletedEventHandler GetIPAddressesCompleted;
         
@@ -4942,7 +4992,565 @@ namespace SolidCP.EnterpriseServer {
                 this.GetServerFilePathCompleted(this, new GetServerFilePathCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        #region Private Network VLANs
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPrivateNetworVLANsPaged", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
+            object[] results = this.Invoke("GetPrivateNetworVLANsPaged", new object[] {
+                        serverId,
+                        filterColumn,
+                        filterValue,
+                        sortColumn,
+                        startRow,
+                        maximumRows});
+            return ((VLANsPaged)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetPrivateNetworVLANsPaged", new object[] {
+                        serverId,
+                        filterColumn,
+                        filterValue,
+                        sortColumn,
+                        startRow,
+                        maximumRows}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VLANsPaged EndGetPrivateNetworVLANsPaged(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VLANsPaged)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetPrivateNetworVLANsPagedAsync(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
+            this.GetPrivateNetworVLANsPagedAsync(serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows, null);
+        }
+
+        /// <remarks/>
+        public void GetPrivateNetworVLANsPagedAsync(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows, object userState)
+        {
+            if ((this.GetPrivateNetworVLANsPagedOperationCompleted == null))
+            {
+                this.GetPrivateNetworVLANsPagedOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPrivateNetworVLANsPagedOperationCompleted);
+            }
+            this.InvokeAsync("GetPrivateNetworVLANsPaged", new object[] {
+                        serverId,
+                        filterColumn,
+                        filterValue,
+                        sortColumn,
+                        startRow,
+                        maximumRows}, this.GetPrivateNetworVLANsPagedOperationCompleted, userState);
+        }
+
+        private void OnGetPrivateNetworVLANsPagedOperationCompleted(object arg)
+        {
+            if ((this.GetPrivateNetworVLANsPagedCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPrivateNetworVLANsPagedCompleted(this, new GetPrivateNetworVLANsPagedCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeletePrivateNetworkVLANs", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeletePrivateNetworkVLANs(int[] vlans)
+        {
+            object[] results = this.Invoke("DeletePrivateNetworkVLANs", new object[] {
+                        vlans});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeletePrivateNetworkVLANs(int[] vlans, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeletePrivateNetworkVLANs", new object[] {
+                        vlans}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndDeletePrivateNetworkVLANs(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeletePrivateNetworkVLANsAsync(int[] vlans)
+        {
+            this.DeletePrivateNetworkVLANsAsync(vlans, null);
+        }
+
+        /// <remarks/>
+        public void DeletePrivateNetworkVLANsAsync(int[] vlans, object userState)
+        {
+            if ((this.DeletePrivateNetworkVLANsOperationCompleted == null))
+            {
+                this.DeletePrivateNetworkVLANsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeletePrivateNetworkVLANsOperationCompleted);
+            }
+            this.InvokeAsync("DeletePrivateNetworkVLANs", new object[] {
+                        vlans}, this.DeletePrivateNetworkVLANsOperationCompleted, userState);
+        }
+
+        private void OnDeletePrivateNetworkVLANsOperationCompleted(object arg)
+        {
+            if ((this.DeletePrivateNetworkVLANsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeletePrivateNetworkVLANsCompleted(this, new DeletePrivateNetworkVLANsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddPrivateNetworkVLAN", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+        {
+            object[] results = this.Invoke("AddPrivateNetworkVLAN", new object[] {
+                        serverId,
+                        vlan,
+                        comments});
+            return ((IntResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginAddPrivateNetworkVLAN(int serverId, int vlan, string comments, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("AddPrivateNetworkVLAN", new object[] {
+                        serverId,
+                        vlan,
+                        comments}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public IntResult EndAddPrivateNetworkVLAN(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((IntResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void AddPrivateNetworkVLANAsync(int serverId, int vlan, string comments)
+        {
+            this.AddPrivateNetworkVLANAsync(serverId, vlan, comments, null);
+        }
+
+        /// <remarks/>
+        public void AddPrivateNetworkVLANAsync(int serverId, int vlan, string comments, object userState)
+        {
+            if ((this.AddPrivateNetworkVLANOperationCompleted == null))
+            {
+                this.AddPrivateNetworkVLANOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddPrivateNetworkVLANOperationCompleted);
+            }
+            this.InvokeAsync("AddPrivateNetworkVLAN", new object[] {
+                        serverId,
+                        vlan,
+                        comments}, this.AddPrivateNetworkVLANOperationCompleted, userState);
+        }
+
+        private void OnAddPrivateNetworkVLANOperationCompleted(object arg)
+        {
+            if ((this.AddPrivateNetworkVLANCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.AddPrivateNetworkVLANCompleted(this, new AddPrivateNetworkVLANCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddPrivateNetworkVLANsRange", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
+        {
+            object[] results = this.Invoke("AddPrivateNetworkVLANsRange", new object[] {
+                        serverId,
+                        startVLAN,
+                        endVLAN,
+                        comments});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginAddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("AddPrivateNetworkVLANsRange", new object[] {
+                        serverId,
+                        startVLAN,
+                        endVLAN,
+                        comments}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndAddPrivateNetworkVLANsRange(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void AddPrivateNetworkVLANsRangeAsync(int serverId, int startVLAN, int endVLAN, string comments)
+        {
+            this.AddPrivateNetworkVLANsRangeAsync(serverId, startVLAN, endVLAN, comments, null);
+        }
+
+        /// <remarks/>
+        public void AddPrivateNetworkVLANsRangeAsync(int serverId, int startVLAN, int endVLAN, string comments, object userState)
+        {
+            if ((this.AddPrivateNetworkVLANsRangeOperationCompleted == null))
+            {
+                this.AddPrivateNetworkVLANsRangeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAddPrivateNetworkVLANsRangeOperationCompleted);
+            }
+            this.InvokeAsync("AddPrivateNetworkVLANsRange", new object[] {
+                        serverId,
+                        startVLAN,
+                        endVLAN,
+                        comments}, this.AddPrivateNetworkVLANsRangeOperationCompleted, userState);
+        }
+
+        private void OnAddPrivateNetworkVLANsRangeOperationCompleted(object arg)
+        {
+            if ((this.AddPrivateNetworkVLANsRangeCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.AddPrivateNetworkVLANsRangeCompleted(this, new AddPrivateNetworkVLANsRangeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPrivateNetworVLAN", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VLANInfo GetPrivateNetworVLAN(int vlanId)
+        {
+            object[] results = this.Invoke("GetPrivateNetworVLAN", new object[] {
+                        vlanId});
+            return ((VLANInfo)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetPrivateNetworVLAN(int vlanId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetPrivateNetworVLAN", new object[] {
+                        vlanId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VLANInfo EndGetPrivateNetworVLAN(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VLANInfo)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetPrivateNetworVLANAsync(int vlanId)
+        {
+            this.GetPrivateNetworVLANAsync(vlanId, null);
+        }
+
+        /// <remarks/>
+        public void GetPrivateNetworVLANAsync(int vlanId, object userState)
+        {
+            if ((this.GetPrivateNetworVLANOperationCompleted == null))
+            {
+                this.GetPrivateNetworVLANOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPrivateNetworVLANOperationCompleted);
+            }
+            this.InvokeAsync("GetPrivateNetworVLAN", new object[] {
+                        vlanId}, this.GetPrivateNetworVLANOperationCompleted, userState);
+        }
+
+        private void OnGetPrivateNetworVLANOperationCompleted(object arg)
+        {
+            if ((this.GetPrivateNetworVLANCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPrivateNetworVLANCompleted(this, new GetPrivateNetworVLANCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdatePrivateNetworVLAN", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+        {
+            object[] results = this.Invoke("UpdatePrivateNetworVLAN", new object[] {
+                        vlanId,
+                        serverId,
+                        vlan,
+                        comments});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginUpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("UpdatePrivateNetworVLAN", new object[] {
+                        vlanId,
+                        serverId,
+                        vlan,
+                        comments}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndUpdatePrivateNetworVLAN(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void UpdatePrivateNetworVLANAsync(int vlanId, int serverId, int vlan, string comments)
+        {
+            this.UpdatePrivateNetworVLANAsync(vlanId, serverId, vlan, comments, null);
+        }
+
+        /// <remarks/>
+        public void UpdatePrivateNetworVLANAsync(int vlanId, int serverId, int vlan, string comments, object userState)
+        {
+            if ((this.UpdatePrivateNetworVLANOperationCompleted == null))
+            {
+                this.UpdatePrivateNetworVLANOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdatePrivateNetworVLANOperationCompleted);
+            }
+            this.InvokeAsync("UpdatePrivateNetworVLAN", new object[] {
+                        vlanId,
+                        serverId,
+                        vlan,
+                        comments}, this.UpdatePrivateNetworVLANOperationCompleted, userState);
+        }
+
+        private void OnUpdatePrivateNetworVLANOperationCompleted(object arg)
+        {
+            if ((this.UpdatePrivateNetworVLANCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdatePrivateNetworVLANCompleted(this, new UpdatePrivateNetworVLANCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetPackagePrivateNetworkVLANs", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            object[] results = this.Invoke("GetPackagePrivateNetworkVLANs", new object[] {
+                        packageId,
+                        sortColumn,
+                        startRow,
+                        maximumRows});
+            return ((PackageVLANsPaged)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetPackagePrivateNetworkVLANs", new object[] {
+                        packageId,
+                        sortColumn,
+                        startRow,
+                        maximumRows}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public PackageVLANsPaged EndGetPackagePrivateNetworkVLANs(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((PackageVLANsPaged)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetPackagePrivateNetworkVLANsAsync(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            this.GetPackagePrivateNetworkVLANsAsync(packageId, sortColumn, startRow, maximumRows, null);
+        }
+
+        /// <remarks/>
+        public void GetPackagePrivateNetworkVLANsAsync(int packageId, string sortColumn, int startRow, int maximumRows, object userState)
+        {
+            if ((this.GetPackagePrivateNetworkVLANsOperationCompleted == null))
+            {
+                this.GetPackagePrivateNetworkVLANsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPackagePrivateNetworkVLANsOperationCompleted);
+            }
+            this.InvokeAsync("GetPackagePrivateNetworkVLANs", new object[] {
+                        packageId,
+                        sortColumn,
+                        startRow,
+                        maximumRows}, this.GetPackagePrivateNetworkVLANsOperationCompleted, userState);
+        }
+
+        private void OnGetPackagePrivateNetworkVLANsOperationCompleted(object arg)
+        {
+            if ((this.GetPackagePrivateNetworkVLANsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPackagePrivateNetworkVLANsCompleted(this, new GetPackagePrivateNetworkVLANsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeallocatePackageVLANs", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject DeallocatePackageVLANs(int packageId, int[] vlanId)
+        {
+            object[] results = this.Invoke("DeallocatePackageVLANs", new object[] {
+                        packageId,
+                        vlanId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeallocatePackageVLANs(int packageId, int[] vlanId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeallocatePackageVLANs", new object[] {
+                        packageId,
+                        vlanId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndDeallocatePackageVLANs(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void DeallocatePackageVLANsAsync(int packageId, int[] vlanId)
+        {
+            this.DeallocatePackageVLANsAsync(packageId, vlanId, null);
+        }
+
+        /// <remarks/>
+        public void DeallocatePackageVLANsAsync(int packageId, int[] vlanId, object userState)
+        {
+            if ((this.DeallocatePackageVLANsOperationCompleted == null))
+            {
+                this.DeallocatePackageVLANsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeallocatePackageVLANsOperationCompleted);
+            }
+            this.InvokeAsync("DeallocatePackageVLANs", new object[] {
+                        packageId,
+                        vlanId}, this.DeallocatePackageVLANsOperationCompleted, userState);
+        }
+
+        private void OnDeallocatePackageVLANsOperationCompleted(object arg)
+        {
+            if ((this.DeallocatePackageVLANsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeallocatePackageVLANsCompleted(this, new DeallocatePackageVLANsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetUnallottedVLANs", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VLANInfo[] GetUnallottedVLANs(int packageId, string groupName)
+        {
+            object[] results = this.Invoke("GetUnallottedVLANs", new object[] {
+                        packageId,
+                        groupName});
+            return ((VLANInfo[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetUnallottedVLANs(int packageId, string groupName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetUnallottedVLANs", new object[] {
+                        packageId,
+                        groupName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VLANInfo[] EndGetUnallottedVLANs(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VLANInfo[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetUnallottedVLANsAsync(int packageId, string groupName)
+        {
+            this.GetUnallottedVLANsAsync(packageId, groupName, null);
+        }
+
+        /// <remarks/>
+        public void GetUnallottedVLANsAsync(int packageId, string groupName, object userState)
+        {
+            if ((this.GetUnallottedVLANsOperationCompleted == null))
+            {
+                this.GetUnallottedVLANsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetUnallottedVLANsOperationCompleted);
+            }
+            this.InvokeAsync("GetUnallottedVLANs", new object[] {
+                        packageId,
+                        groupName}, this.GetUnallottedVLANsOperationCompleted, userState);
+        }
+
+        private void OnGetUnallottedVLANsOperationCompleted(object arg)
+        {
+            if ((this.GetUnallottedVLANsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetUnallottedVLANsCompleted(this, new GetUnallottedVLANsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AllocatePackageVLANs", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+        {
+            object[] results = this.Invoke("AllocatePackageVLANs", new object[] {
+                        packageId,
+                        groupName,
+                        allocateRandom,
+                        vlansNumber,
+                        vlanId});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginAllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("AllocatePackageVLANs", new object[] {
+                        packageId,
+                        groupName,
+                        allocateRandom,
+                        vlansNumber,
+                        vlanId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndAllocatePackageVLANs(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void AllocatePackageVLANsAsync(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+        {
+            this.AllocatePackageVLANsAsync(packageId, groupName, allocateRandom, vlansNumber, vlanId, null);
+        }
+
+        /// <remarks/>
+        public void AllocatePackageVLANsAsync(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId, object userState)
+        {
+            if ((this.AllocatePackageVLANsOperationCompleted == null))
+            {
+                this.AllocatePackageVLANsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAllocatePackageVLANsOperationCompleted);
+            }
+            this.InvokeAsync("AllocatePackageVLANs", new object[] {
+                        packageId,
+                        groupName,
+                        allocateRandom,
+                        vlansNumber,
+                        vlanId}, this.AllocatePackageVLANsOperationCompleted, userState);
+        }
+
+        private void OnAllocatePackageVLANsOperationCompleted(object arg)
+        {
+            if ((this.AllocatePackageVLANsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.AllocatePackageVLANsCompleted(this, new AllocatePackageVLANsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        #endregion
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetIPAddresses", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public IPAddressInfo[] GetIPAddresses(IPAddressPool pool, int serverId) {
@@ -8547,7 +9155,309 @@ namespace SolidCP.EnterpriseServer {
             }
         }
     }
-    
+
+    //vlans
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetPrivateNetworVLANsPagedCompletedEventHandler(object sender, GetPrivateNetworVLANsPagedCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPrivateNetworVLANsPagedCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetPrivateNetworVLANsPagedCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VLANsPaged Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VLANsPaged)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void AddPrivateNetworkVLANCompletedEventHandler(object sender, AddPrivateNetworkVLANCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class AddPrivateNetworkVLANCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal AddPrivateNetworkVLANCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public IntResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((IntResult)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeletePrivateNetworkVLANsCompletedEventHandler(object sender, DeletePrivateNetworkVLANsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeletePrivateNetworkVLANsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeletePrivateNetworkVLANsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void AddPrivateNetworkVLANsRangeCompletedEventHandler(object sender, AddPrivateNetworkVLANsRangeCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class AddPrivateNetworkVLANsRangeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal AddPrivateNetworkVLANsRangeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetPrivateNetworVLANCompletedEventHandler(object sender, GetPrivateNetworVLANCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPrivateNetworVLANCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetPrivateNetworVLANCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VLANInfo Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VLANInfo)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void UpdatePrivateNetworVLANCompletedEventHandler(object sender, UpdatePrivateNetworVLANCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdatePrivateNetworVLANCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal UpdatePrivateNetworVLANCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetPackagePrivateNetworkVLANsCompletedEventHandler(object sender, GetPackagePrivateNetworkVLANsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPackagePrivateNetworkVLANsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetPackagePrivateNetworkVLANsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public PackageVLANsPaged Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((PackageVLANsPaged)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeallocatePackageVLANsCompletedEventHandler(object sender, DeallocatePackageVLANsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeallocatePackageVLANsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal DeallocatePackageVLANsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetUnallottedVLANsCompletedEventHandler(object sender, GetUnallottedVLANsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetUnallottedVLANsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetUnallottedVLANsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VLANInfo[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VLANInfo[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void AllocatePackageVLANsCompletedEventHandler(object sender, AllocatePackageVLANsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class AllocatePackageVLANsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal AllocatePackageVLANsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+    //vlans
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetIPAddressesCompletedEventHandler(object sender, GetIPAddressesCompletedEventArgs e);

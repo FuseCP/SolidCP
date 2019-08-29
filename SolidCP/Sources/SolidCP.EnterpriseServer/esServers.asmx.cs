@@ -235,7 +235,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public DataSet GetRawServicesByGroupName(string groupName)
         {
-            return ServerController.GetRawServicesByGroupName(groupName);
+            return ServerController.GetRawServicesByGroupName(groupName, false);
         }
 
         [WebMethod]
@@ -371,6 +371,69 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public string GetServerFilePath(int serverId) {
             return ServerController.GetServerFilePath(serverId);
+        }
+        #endregion
+
+        #region Private Network VLANs
+        [WebMethod]
+        public VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, 
+            string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
+            return ServerController.GetPrivateNetworVLANsPaged(serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+        }
+
+        [WebMethod]
+        public IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+        {
+            return ServerController.AddPrivateNetworkVLAN(serverId, vlan, comments);
+        }
+
+        [WebMethod]
+        public ResultObject DeletePrivateNetworkVLANs(int[] vlans)
+        {
+            return ServerController.DeletePrivateNetworkVLANs(vlans);
+        }
+
+        [WebMethod]
+        public ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
+        {
+            return ServerController.AddPrivateNetworkVLANsRange(serverId, startVLAN, endVLAN, comments);
+        }
+
+        [WebMethod]
+        public VLANInfo GetPrivateNetworVLAN(int vlanId)
+        {
+            return ServerController.GetPrivateNetworVLAN(vlanId);
+        }
+
+        [WebMethod]
+        public ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+        {
+            return ServerController.UpdatePrivateNetworVLAN(vlanId, serverId, vlan, comments);
+        }
+
+        [WebMethod]
+        public PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            return ServerController.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+        }
+
+        [WebMethod]
+        public ResultObject DeallocatePackageVLANs(int packageId, int[] vlanId)
+        {
+            return ServerController.DeallocatePackageVLANs(packageId, vlanId);
+        }
+
+        [WebMethod]
+        public List<VLANInfo> GetUnallottedVLANs(int packageId, string groupName)
+        {
+            return ServerController.GetUnallottedVLANs(packageId, groupName);
+        }
+
+        [WebMethod]
+        public ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+        {
+            return ServerController.AllocatePackageVLANs(packageId, groupName, allocateRandom, vlansNumber, vlanId);
         }
         #endregion
 

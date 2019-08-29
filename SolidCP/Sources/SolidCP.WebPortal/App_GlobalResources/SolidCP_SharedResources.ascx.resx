@@ -801,6 +801,21 @@
   <data name="Error.GDNS_UPDATE_RECORD" xml:space="preserve">
     <value>Error updating DNS record</value>
   </data>
+  <data name="Error.VLAN_ADD_INIT_FORM" xml:space="preserve">
+    <value>Error initializing form</value>
+  </data>
+  <data name="Error.VLAN_ADD_VLAN_RANGE" xml:space="preserve">
+    <value>Cannot add VLANs range.</value>
+  </data>
+  <data name="Error.VLAN_ADD_VLAN" xml:space="preserve">
+    <value>Error adding VLAN</value>
+  </data>
+  <data name="Error.VLAN_GET_VLAN" xml:space="preserve">
+    <value>Error getting VLAN information</value>
+  </data>
+  <data name="Error.VLAN_UPDATE_VLAN" xml:space="preserve">
+    <value>Error updating VLAN</value>
+  </data>
   <data name="Error.IP_ADD_INIT_FORM" xml:space="preserve">
     <value>Error initializing form</value>
   </data>
@@ -4231,6 +4246,12 @@
   <data name="Warning.VPS_REINSTALL_CONFIRM" xml:space="preserve">
     <value>You should confirm VPS re-installation by ticking checkbox</value>
   </data>
+  <data name="Error.DEALLOCATE_SPACE_VLANS" xml:space="preserve">
+    <value>The following errors have been occurred:</value>
+  </data>
+  <data name="Success.DEALLOCATE_SPACE_VLANS" xml:space="preserve">
+    <value>VLANs have been successfully deallocated.</value>
+  </data>
   <data name="Error.DEALLOCATE_SPACE_IP_ADDRESSES" xml:space="preserve">
     <value>The following errors have been occurred:</value>
   </data>
@@ -4398,6 +4419,9 @@
   </data>
   <data name="VPS.VPS_ERROR_SEND_SUMMARY_LETTER" xml:space="preserve">
     <value>Error sending VPS summary letter</value>
+  </data>
+  <data name="Error.VPS_ALLOCATE_PRIVATE_VLANS_ERROR" xml:space="preserve">
+    <value>Error allocating hosting space VLANs</value>
   </data>
   <data name="Error.VPS_ALLOCATE_EXTERNAL_ADDRESSES_ERROR" xml:space="preserve">
     <value>Error allocating hosting space IP addresses</value>
@@ -4834,6 +4858,18 @@
   <data name="TaskActivity.VPS_CREATE_SET_MANAGEMENT_NIC_KVP_ERROR" xml:space="preserve">
     <value>Error setting "management NIC" provisioning task parameters</value>
   </data>
+  <data name="Warning.VLAN_EDIT_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>Selection is empty.</value>
+  </data>
+  <data name="WarningDescription.VLAN_EDIT_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>At least one VLAN must be selected.</value>
+  </data>
+  <data name="Warning.VLAN_DELETE_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>Selection is empty.</value>
+  </data>
+  <data name="WarningDescription.VLAN_DELETE_LIST_EMPTY_ERROR" xml:space="preserve">
+    <value>At least one VLAN must be selected.</value>
+  </data>
   <data name="Warning.IP_DELETE_LIST_EMPTY_ERROR" xml:space="preserve">
     <value>Selection is empty.</value>
   </data>
@@ -4854,6 +4890,9 @@
   </data>
   <data name="VPS.IP_ADDRESSES_QUOTA_LIMIT_REACHED" xml:space="preserve">
     <value>IP Addresses quota will be exceeded</value>
+  </data>
+  <data name="Error.VLAN_DELETE_RANGE_VLAN" xml:space="preserve">
+    <value>Cannot delete VLANs.</value>
   </data>
   <data name="AuditLogTask.IP_ADDRESS_DELETE_RANGE" xml:space="preserve">
     <value>Delete range</value>
@@ -5448,6 +5487,9 @@
   </data>
   <data name="Quota.VPS2012.ExternalIPAddressesNumber" xml:space="preserve">
     <value>Number of External IP addresses</value>
+  </data>
+  <data name="Quota.VPS2012.PrivateVLANsNumber" xml:space="preserve">
+    <value>Number of Private Network VLANs</value>
   </data>
   <data name="Quota.VPS2012.ExternalNetworkEnabled" xml:space="preserve">
     <value>External Network</value>
