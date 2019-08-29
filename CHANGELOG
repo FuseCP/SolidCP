@@ -18,6 +18,12 @@ Version 1.4.4
 - Changes to support the start of changes from Le-Win-Simple to Windows ACME Simple (WACS)
 - Fix for Mysql ANSI username and database names.
 - Mail Change to not set the Mailbox size when "Disable Mailbox Size Edit" Quota is enabled.
+- Ability to use Private Network with external switch and VLAN management - bluechip
+- Disable VPS external network in Configuration if no more IPs available - bluechip
+- VPS autodiscover if it was moved - bluechip
+- MsSQL 2019 Support added
+- Change to the Drive mappings so it will use the Hosted Org Preferred Domain Controller
+- Allow change of OS provider versions from inside SolidCP
 
 Version 1.4.3
 - Added Exchange 2019 provider.
