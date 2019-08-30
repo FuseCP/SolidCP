@@ -15846,8 +15846,11 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServicesByGroupName')
+BEGIN
 DROP PROCEDURE GetServicesByGroupName
+END
 GO
+
 CREATE PROCEDURE [dbo].[GetServicesByGroupName]
 (
 	@ActorID int,
@@ -15884,8 +15887,11 @@ SET QUOTED_IDENTIFIER OFF
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'MoveServiceItem')
+BEGIN
 DROP PROCEDURE MoveServiceItem
+END
 GO
+
 CREATE PROCEDURE [dbo].[MoveServiceItem]
 (
 	@ActorID int,
@@ -15917,6 +15923,7 @@ RETURN
 -- Private Network VLANs
 
 IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PrivateNetworkVLANs')
+BEGIN
 CREATE TABLE [dbo].[PrivateNetworkVLANs]
 (
 	[VlanID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -15927,9 +15934,11 @@ CREATE TABLE [dbo].[PrivateNetworkVLANs]
 		FOREIGN KEY ([ServerID]) REFERENCES [dbo].[Servers] ([ServerID])
 		ON DELETE CASCADE
 )
+END
 GO
 
 IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PackageVLANs')
+BEGIN
 CREATE TABLE [dbo].[PackageVLANs]
 (
 	[PackageVlanID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -15942,6 +15951,7 @@ CREATE TABLE [dbo].[PackageVLANs]
 		FOREIGN KEY ([PackageID]) REFERENCES [dbo].[Packages] ([PackageID])
 		ON DELETE CASCADE
 )
+END
 GO
 
 SET ANSI_NULLS ON
@@ -15950,8 +15960,11 @@ SET QUOTED_IDENTIFIER OFF
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddPrivateNetworkVlan')
+BEGIN
 DROP PROCEDURE AddPrivateNetworkVlan
+END
 GO
+
 CREATE PROCEDURE [dbo].[AddPrivateNetworkVlan]
 (
  @VlanID int OUTPUT,
@@ -15974,8 +15987,11 @@ END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeletePrivateNetworkVLAN')
+BEGIN
 DROP PROCEDURE DeletePrivateNetworkVLAN
+END
 GO
+
 CREATE PROCEDURE [dbo].[DeletePrivateNetworkVLAN]
 (
 	@VlanID int,
@@ -15996,8 +16012,11 @@ RETURN
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPrivateNetworVLANsPaged')
+BEGIN
 DROP PROCEDURE GetPrivateNetworVLANsPaged
+END
 GO
+
 CREATE PROCEDURE [dbo].[GetPrivateNetworVLANsPaged]
 (
  @ActorID int,
@@ -16092,8 +16111,11 @@ END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPrivateNetworVLAN')
+BEGIN
 DROP PROCEDURE GetPrivateNetworVLAN
+END
 GO
+
 CREATE PROCEDURE [dbo].[GetPrivateNetworVLAN]
 (
  @VlanID int
@@ -16114,8 +16136,11 @@ END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdatePrivateNetworVLAN')
+BEGIN
 DROP PROCEDURE UpdatePrivateNetworVLAN
+END
 GO
+
 CREATE PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
 (
  @VlanID int,
@@ -16139,8 +16164,11 @@ GO
 
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackagePrivateNetworkVLANs')
+BEGIN
 DROP PROCEDURE GetPackagePrivateNetworkVLANs
+END
 GO
+
 CREATE PROCEDURE [dbo].[GetPackagePrivateNetworkVLANs]
 (
  @PackageID int,
@@ -16212,8 +16240,11 @@ END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeallocatePackageVLAN')
+BEGIN
 DROP PROCEDURE DeallocatePackageVLAN
+END
 GO
+
 CREATE PROCEDURE [dbo].[DeallocatePackageVLAN]
 	@PackageVlanID int
 AS
@@ -16245,8 +16276,11 @@ END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetUnallottedVLANs')
+BEGIN
 DROP PROCEDURE GetUnallottedVLANs
+END
 GO
+
 CREATE PROCEDURE [dbo].[GetUnallottedVLANs]
  @PackageID int,
  @ServiceID int
@@ -16330,8 +16364,11 @@ END
 GO
 
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AllocatePackageVLANs')
+BEGIN
 DROP PROCEDURE AllocatePackageVLANs
+END
 GO
+
 CREATE PROCEDURE [dbo].[AllocatePackageVLANs]
 (
 	@PackageID int,
@@ -16378,7 +16415,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.PrivateVLANsNumber')
 BEGIN
-	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (725, 33, 14, N'VPS2012.PrivateVLANsNumber', N'Number of Private Network VLANs', 2, 0, NULL, NULL)
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (728, 33, 14, N'VPS2012.PrivateVLANsNumber', N'Number of Private Network VLANs', 2, 0, NULL, NULL)
 END
 GO
 
@@ -20951,7 +20988,7 @@ AS
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
 							INNER JOIN PackagesTreeCache AS PT ON PIP.PackageID = PT.PackageID
 							WHERE PT.ParentPackageID = @PackageID AND IP.PoolID = 3)
-		ELSE IF @QuotaID = 725 -- Private Network VLANs of VPS2012
+		ELSE IF @QuotaID = 728 -- Private Network VLANs of VPS2012
 			SET @Result = (SELECT COUNT(PV.PackageVlanID) FROM PackageVLANs AS PV
 							INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
 							INNER JOIN PackagesTreeCache AS PT ON PV.PackageID = PT.PackageID
