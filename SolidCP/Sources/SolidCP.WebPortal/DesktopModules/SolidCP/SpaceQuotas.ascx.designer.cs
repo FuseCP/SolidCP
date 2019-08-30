@@ -697,31 +697,31 @@ namespace SolidCP.Portal {
         protected global::SolidCP.Portal.Quota quotamssql2017databases;
         
         /// <summary>
-        /// pnlMySQL4Databases control.
+        /// pnlMsSQL2019Databases control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMySQL4Databases;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2019Databases;
         
         /// <summary>
-        /// lblMySQL4Databases control.
+        /// lblMsSQL2019Databases control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMySQL4Databases;
+        protected global::System.Web.UI.WebControls.Label lblMsSQL2019Databases;
         
         /// <summary>
-        /// quotamysql4databases control.
+        /// quotamssql2019databases control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SolidCP.Portal.Quota quotamysql4databases;
+        protected global::SolidCP.Portal.Quota quotamssql2019databases;
         
         /// <summary>
         /// pnlMySQL5Databases control.

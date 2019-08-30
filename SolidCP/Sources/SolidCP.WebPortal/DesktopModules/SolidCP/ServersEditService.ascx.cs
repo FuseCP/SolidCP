@@ -99,7 +99,7 @@ namespace SolidCP.Portal
         {
 			litGroup.Text = PanelFormatter.GetLocalizedResourceGroupName(resourceGroup.GroupName);
 
-            if(ResourceGroups.VPS2012 == resourceGroup.GroupName) //HyperV_v2
+            if(ResourceGroups.VPS2012 == resourceGroup.GroupName || ResourceGroups.Os == resourceGroup.GroupName)
             {
                 textProvider.Visible = false;
                 ddlProviders.DataSource = ES.Services.Servers.GetProvidersByGroupId(provider.GroupId);
@@ -191,6 +191,7 @@ namespace SolidCP.Portal
                                                                 (resourceGroup.GroupName == ResourceGroups.MsSql2014) |
                                                                 (resourceGroup.GroupName == ResourceGroups.MsSql2016) |
                                                                 (resourceGroup.GroupName == ResourceGroups.MsSql2017) |
+                                                                (resourceGroup.GroupName == ResourceGroups.MsSql2019) |
                                                                 (resourceGroup.GroupName == ResourceGroups.MySql4)|
                                                                 (resourceGroup.GroupName == ResourceGroups.MySql5)|
                                                                 (resourceGroup.GroupName == ResourceGroups.MySql8) |

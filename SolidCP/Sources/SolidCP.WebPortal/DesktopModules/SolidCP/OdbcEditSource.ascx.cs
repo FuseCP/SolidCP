@@ -217,6 +217,7 @@ namespace SolidCP.Portal
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2014, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2016, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2017, false));
+                sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2019, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2000, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2005, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2008, false));
@@ -224,6 +225,7 @@ namespace SolidCP.Portal
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2014, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2016, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2017, false));
+                sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2019, false));
             }
             else if (driverName == "MySql")
             {
