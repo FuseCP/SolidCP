@@ -15918,7 +15918,7 @@ WHERE ItemID = @ItemID
 COMMIT TRAN
 
 RETURN
-
+GO
 
 -- Private Network VLANs
 
