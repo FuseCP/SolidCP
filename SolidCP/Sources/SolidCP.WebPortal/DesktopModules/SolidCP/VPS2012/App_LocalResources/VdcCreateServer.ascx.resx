@@ -414,4 +414,22 @@
   <data name="secHddQOS.Text" xml:space="preserve">
     <value>Virtual Hard Disk Drive Quality of Service management</value>
   </data>
+  <data name="chkCustomGateway.Text" xml:space="preserve">
+    <value>Custom Gateway and DNS</value>
+  </data>
+  <data name="DNSValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter DNS server IP</value>
+  </data>
+  <data name="GatewayValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter Gateway</value>
+  </data>
+  <data name="locDNS1.Text" xml:space="preserve">
+    <value>Preferred DNS server:</value>
+  </data>
+  <data name="locDNS2.Text" xml:space="preserve">
+    <value>Alternate DNS server:</value>
+  </data>
+  <data name="locGateway.Text" xml:space="preserve">
+    <value>Gateway:</value>
+  </data>
 </root>

@@ -15,7 +15,7 @@
 </div>
 								<table class="RightBlockTable">
     <tr>
-        <td class="SubHead" style="white-space:nowrap;"><asp:Localize ID="locFullName" runat="server" meta:resourcekey="locFullName" Text="Name:"/></td>
+        <td class="SubHead"><asp:Localize ID="locFullName" runat="server" meta:resourcekey="locFullName" Text="Name:"/></td>
         <td class="Normal"><asp:Literal ID="litFullName" runat="server"></asp:Literal></td>
     </tr>
     <tr>

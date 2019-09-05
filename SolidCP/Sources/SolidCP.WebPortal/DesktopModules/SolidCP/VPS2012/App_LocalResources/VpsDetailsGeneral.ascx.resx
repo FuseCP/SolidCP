@@ -306,4 +306,7 @@
   <data name="btnChangeHostnameText.Text" xml:space="preserve">
     <value>Change</value>
   </data>
+  <data name="locHVHost.Text" xml:space="preserve">
+    <value>HV Host:</value>
+  </data>
 </root>

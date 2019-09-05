@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnFinish.Text" xml:space="preserve">
     <value>Erstellen</value>
@@ -383,5 +383,23 @@
   </data>
   <data name="btnPreviousText.Text" xml:space="preserve">
     <value>Zurück</value>
+  </data>
+  <data name="chkCustomGateway.Text" xml:space="preserve">
+    <value>Benutzerdefiniertes Gateway und DNS</value>
+  </data>
+  <data name="DNSValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die DNS-Server IP-Adresse</value>
+  </data>
+  <data name="GatewayValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie das Gateway ein</value>
+  </data>
+  <data name="locDNS1.Text" xml:space="preserve">
+    <value>Bevorzugter DNS-Server:</value>
+  </data>
+  <data name="locDNS2.Text" xml:space="preserve">
+    <value>Alternativer DNS-Server:</value>
+  </data>
+  <data name="locGateway.Text" xml:space="preserve">
+    <value>Gateway:</value>
   </data>
 </root>

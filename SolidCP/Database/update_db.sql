@@ -21419,6 +21419,9 @@ INSERT INTO @RDSServer (RDSServerId)
 SELECT
 	S.ID
 FROM RDSServers AS S
+LEFT OUTER JOIN  ServiceItems AS SI ON SI.ItemId = S.ItemId
+LEFT OUTER JOIN  Services AS SE ON SE.ServiceID = S.Controller
+LEFT OUTER JOIN  RDSCollections AS RC ON RC.ID = S.RdsCollectionId
 WHERE 
 	((((@ItemID is Null AND S.ItemID is null ) or (@IgnoreItemId = 1 ))
 		or (@ItemID is not Null AND S.ItemID = @ItemID ))

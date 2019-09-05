@@ -46,15 +46,15 @@ namespace SolidCP.Portal
 
         RdsServersPaged rdsServers;
 
-        public int GetRDSServersPagedCount(string filterValue)
+        public int GetRDSServersPagedCount(string filterColumn, string filterValue)
         {
             //return 4;
             return rdsServers.RecordsCount;
         }
 
-        public RdsServer[] GetRDSServersPaged(int maximumRows, int startRowIndex, string sortColumn, string filterValue)
+        public RdsServer[] GetRDSServersPaged(int maximumRows, int startRowIndex, string sortColumn, string filterColumn, string filterValue)
         {
-            rdsServers = ES.Services.RDS.GetRdsServersPaged("", filterValue, sortColumn, startRowIndex, maximumRows, 0);
+            rdsServers = ES.Services.RDS.GetRdsServersPaged(filterColumn, filterValue, sortColumn, startRowIndex, maximumRows, 0);
 
             foreach (var rdsServer in rdsServers.Servers)
             {

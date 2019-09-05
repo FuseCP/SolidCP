@@ -94,6 +94,11 @@ function OpenRemoteDesktopWindow(resolution, width, height) {
                                             meta:resourcekey="locCreated" Text="Created:"/></td>
                                         <td><asp:Literal ID="litCreated" runat="server" Text="[date]"/></td>
                                     </tr>
+                                    <tr runat="server" id="trHVHost">
+                                        <td><asp:Localize ID="locHVHost" runat="server"
+                                            meta:resourcekey="locHVHost" Text="HV Host:"/></td>
+                                        <td><asp:Literal ID="litHVHost" runat="server" Text="[host]"/></td>
+                                    </tr>
                                 </table>
 				    				   </ContentTemplate>
 				                 </asp:UpdatePanel>

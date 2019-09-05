@@ -33,9 +33,17 @@
                         <asp:Localize ID="locSearch" runat="server" meta:resourcekey="locSearch" Visible="false"></asp:Localize>
                         <asp:DropDownList ID="ddlPageSize" runat="server" CssClass="form-control" AutoPostBack="True" onselectedindexchanged="ddlPageSize_SelectedIndexChanged">
                             <asp:ListItem>10</asp:ListItem>
-                            <asp:ListItem Selected="True">20</asp:ListItem>
-                            <asp:ListItem>50</asp:ListItem>
+                            <asp:ListItem>20</asp:ListItem>
+                            <asp:ListItem Selected="True">50</asp:ListItem>
                             <asp:ListItem>100</asp:ListItem>
+                        </asp:DropDownList>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <asp:DropDownList ID="ddlSearchColumn" runat="server" class="form-control">
+                            <asp:ListItem Value="S.Name" meta:resourcekey="liServerName">Server Name</asp:ListItem>
+                            <asp:ListItem Value="SI.ItemName" meta:resourcekey="liOrganization">Organization</asp:ListItem>
                         </asp:DropDownList>
                     </div>
                 </div>
@@ -43,7 +51,7 @@
                     <div class="input-group">
                         <asp:TextBox ID="txtSearchValue" runat="server" CssClass="form-control" />
                         <div class="input-group-btn">
-                            <CPCC:StyleButton ID="cmdSearch" runat="server" SkinID="SearchButton" CausesValidation="false" style="vertical-align: middle;" CssClass="btn btn-primary">
+                            <CPCC:StyleButton ID="cmdSearch" runat="server" SkinID="SearchButton" CausesValidation="false" style="vertical-align: middle;" CssClass="btn btn-primary" OnClick="btnSearchClick">
                                 <i class="fa fa-search" aria-hidden="true"></i>
                             </CPCC:StyleButton>
                         </div>
@@ -57,6 +65,7 @@
             SelectMethod="GetRDSServersPaged" SortParameterName="sortColumn" TypeName="SolidCP.Portal.RDSHelper" OnSelected="odsRDSServersPaged_Selected">
             <SelectParameters>
                 <asp:ControlParameter Name="filterValue" ControlID="txtSearchValue" PropertyName="Text" />                                
+                <asp:ControlParameter Name="filterColumn" ControlID="ddlSearchColumn" PropertyName="SelectedValue" />
             </SelectParameters>
         </asp:ObjectDataSource>
 

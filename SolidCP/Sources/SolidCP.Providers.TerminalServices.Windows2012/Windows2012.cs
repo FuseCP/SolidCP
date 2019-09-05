@@ -3092,20 +3092,32 @@ namespace SolidCP.Providers.RemoteDesktopServices
         }
 
         private bool CheckPendingReboot(Runspace runspace, string serverName)
-        {            
-            if (CheckPendingReboot(runspace, serverName, @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing", "RebootPending"))
-            {
-                return true;
-            }
+        {
+            string strCmd = "Get-ItemProperty -Path " + string.Format("\"{0}\"", @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\RebootPending") +
+                "-ErrorAction SilentlyContinue;" +
+                "Get-ItemProperty -Path " + string.Format("\"{0}\"", @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update\RebootRequired") +
+                "-ErrorAction SilentlyContinue;" +
+                "Get-ItemProperty -Path " + string.Format("\"{0}\"", @"HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager") +
+                "-Name PendingFileRenameOperations -ErrorAction SilentlyContinue";
+            Command cmd = new Command(strCmd);
 
-            if (CheckPendingReboot(runspace, serverName, @"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Auto Update", "RebootRequired"))
-            {
-                return true;
-            }
+            string domainName = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
+            string hostName = Dns.GetHostName();
+            string fqdn;
+            if (!hostName.Contains(domainName))
+                fqdn = hostName + "." + domainName;
+            else
+                fqdn = hostName;
 
-            if (CheckPendingReboot(runspace, serverName, @"HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager", "PendingFileRenameOperations"))
+            if (serverName.Equals(fqdn))//check locally
             {
-                return true;
+                var result = runspace.ExecuteLocalShellCommand(cmd).FirstOrDefault();
+                if (result != null) return true;
+            }
+            else//check remotely
+            {
+                var result = runspace.ExecuteRemoteShellCommand(serverName, cmd, PrimaryDomainController).FirstOrDefault();
+                if (result != null) return true;
             }
 
             return false;

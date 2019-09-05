@@ -168,5 +168,11 @@ namespace SolidCP.Providers.Virtualization
         public int defaultaccessvlan { get; set; }//external network vlan
         public VirtualMachineIPAddress PrimaryIP { get; set; }
         public bool NeedReboot { get; set; } //give access to force reboot a server.
+        [Persistent]
+        public string CustomPrivateGateway { get; set; }
+        [Persistent]
+        public string CustomPrivateDNS1 { get; set; }
+        [Persistent]
+        public string CustomPrivateDNS2 { get; set; }
     }
 }

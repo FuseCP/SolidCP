@@ -1566,6 +1566,9 @@ namespace SolidCP.EnterpriseServer
             {
                 // private
                 nic = GetPrivateNetworkAdapterDetails(itemId);
+                if (!String.IsNullOrEmpty(vm.CustomPrivateGateway)) nic.DefaultGateway = vm.CustomPrivateGateway;
+                if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
+                if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
             }
             else
             {
@@ -1589,7 +1592,16 @@ namespace SolidCP.EnterpriseServer
 
                         // set gateway from the first (primary) IP
                         if (i == 0)
-                            guestNetworkAdapterConfiguration.DefaultGateways = new string[] { nic.IPAddresses[i].DefaultGateway };
+                        {
+                            if (String.Compare(adapterName, "private", true) == 0 && !String.IsNullOrEmpty(vm.CustomPrivateGateway))
+                            {
+                                guestNetworkAdapterConfiguration.DefaultGateways = new string[] { vm.CustomPrivateGateway };
+                            }
+                            else
+                            {
+                                guestNetworkAdapterConfiguration.DefaultGateways = new string[] { nic.IPAddresses[i].DefaultGateway };
+                            }
+                        }
                     }
 
                     guestNetworkAdapterConfiguration.IPAddresses = ips;
@@ -1632,6 +1644,9 @@ namespace SolidCP.EnterpriseServer
             {
                 // private
                 nic = GetPrivateNetworkAdapterDetails(itemId);
+                if (!String.IsNullOrEmpty(vm.CustomPrivateGateway)) nic.DefaultGateway = vm.CustomPrivateGateway;
+                if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
+                if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
             }
             else
             {
@@ -1655,7 +1670,16 @@ namespace SolidCP.EnterpriseServer
 
                         // set gateway from the first (primary) IP
                         if (i == 0)
-                            props["DefaultIPGateway"] = nic.IPAddresses[i].DefaultGateway;
+                        {
+                            if (String.Compare(adapterName, "private", true) == 0 && !String.IsNullOrEmpty(vm.CustomPrivateGateway))
+                            {
+                                props["DefaultIPGateway"] = vm.CustomPrivateGateway;
+                            }
+                            else
+                            {
+                                props["DefaultIPGateway"] = nic.IPAddresses[i].DefaultGateway;
+                            }
+                        }
                     }
 
                     props["IPAddress"] = String.Join(";", ips);

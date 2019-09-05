@@ -129,4 +129,10 @@
   <data name="gvRDSServers.Empty" xml:space="preserve">
     <value>The list of RDS Servers is empty.&lt;br&gt;&lt;br&gt;To add a new Server click "Add RDS Sever" button.</value>
   </data>
+  <data name="liOrganization.Text" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+  <data name="liServerName.Text" xml:space="preserve">
+    <value>Server Name</value>
+  </data>
 </root>
