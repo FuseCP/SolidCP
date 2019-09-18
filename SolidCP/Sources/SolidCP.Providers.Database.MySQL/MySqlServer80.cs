@@ -111,6 +111,12 @@ namespace SolidCP.Providers.Database {
             ExecuteNonQuery(commandText);
         }
 
+        public override void ChangeUserPassword(string username, string password)
+        {
+            ExecuteNonQuery(String.Format("ALTER USER '{0}'@'%' IDENTIFIED BY '{1}';",
+                username, password));
+        }
+
 
         private int ExecuteNonQuery(string commandText)
         {
