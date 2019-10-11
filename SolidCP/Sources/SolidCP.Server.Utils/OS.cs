@@ -410,10 +410,10 @@ namespace SolidCP.Server.Utils
                             int ReleaseId = GetReleaseId();
                             // Server 2016
                             if (ReleaseId == 1607 || ReleaseId == 1803 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.WindowsServer2016;
-                            // Server 2019
-                            else if (ReleaseId == 1809) ret = WindowsVersion.WindowsServer2019;
-                            // Windows 10
+                            // Windows 10 below 1903
                             else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
+                            // Server 2019 and Windows 10 above 1903
+                            else if (ReleaseId == 1809 || ReleaseId >= 1903) ret = WindowsVersion.WindowsServer2019;
                             break;
 					}
 					break;
