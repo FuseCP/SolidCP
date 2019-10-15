@@ -34,6 +34,7 @@
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
+using SolidCP.EnterpriseServer;
 using System.Collections.Generic;
 
 namespace SolidCP.Portal.VPS2012
@@ -137,6 +138,12 @@ namespace SolidCP.Portal.VPS2012
                 litStatus.Text = GetLocalizedString("State." + vm.State);
                 litCreated.Text = string.IsNullOrEmpty(vm.CreationTime) ? vm.CreatedDate.ToString() : vm.CreationTime;
                 litHeartbeat.Text = GetLocalizedString("Heartbeat." + vm.Heartbeat);
+                trHVHost.Visible = PanelSecurity.EffectiveUser.Role != UserRole.User;
+                if (trHVHost.Visible)
+                {
+                    ServiceInfo info = SolidCP.Portal.ES.Services.Servers.GetServiceInfo(vm.ServiceId);
+                    litHVHost.Text = info.ServerName;
+                }
 
                 // CPU
                 cpuGauge.Progress = vm.CpuUsage;

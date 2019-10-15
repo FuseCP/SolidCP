@@ -141,8 +141,38 @@ namespace SolidCP.Providers.RemoteDesktopServices
             }
 
             return result;
-        }           
-    
+        }
+
+        public static Collection<PSObject> ExecuteLocalShellCommand(this Runspace runSpace, Command cmd, params string[] moduleImports)
+        {
+            object[] errors;
+            return ExecuteLocalShellCommand(runSpace, cmd, out errors, moduleImports);
+        }
+
+        public static Collection<PSObject> ExecuteLocalShellCommand(this Runspace runSpace, Command cmd, out object[] errors, params string[] moduleImports)
+        {
+            Command invokeCommand = new Command("Invoke-Command");
+
+            RunspaceInvoke invoke = new RunspaceInvoke();
+
+            string commandString = moduleImports.Any() ? string.Format("import-module {0};", string.Join(",", moduleImports)) : string.Empty;
+
+            commandString += cmd.CommandText;
+
+            if (cmd.Parameters != null && cmd.Parameters.Any())
+            {
+                commandString += " " +
+                                 string.Join(" ",
+                                     cmd.Parameters.Select(x => string.Format("-{0} {1}", x.Name, x.Value)).ToArray());
+            }
+
+            ScriptBlock sb = invoke.Invoke(string.Format("{{{0}}}", commandString))[0].BaseObject as ScriptBlock;
+
+            invokeCommand.Parameters.Add("ScriptBlock", sb);
+
+            return ExecuteShellCommand(runSpace, invokeCommand, false, null, out errors);
+        }
+
         public static Collection<PSObject> ExecuteRemoteShellCommand(this Runspace runSpace, string hostName, Command cmd, string primaryDomainController, params string[] moduleImports)
         {
             object[] errors;

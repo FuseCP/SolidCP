@@ -57,10 +57,11 @@ namespace SolidCP.Portal
 			if (!IsPostBack)
 			{
                 gvRDSServers.PageSize = Convert.ToInt32(ddlPageSize.SelectedValue);
-                gvRDSServers.Sort("Name", System.Web.UI.WebControls.SortDirection.Ascending);                
-                RegisterStatusScript();
+                gvRDSServers.Sort("S.Name", System.Web.UI.WebControls.SortDirection.Ascending);                
 			}
-            
+
+            RegisterStatusScript();
+
             gvRDSServers.DataBound -= OnDataBound;
             gvRDSServers.DataBound += OnDataBound;
         }       
@@ -132,6 +133,11 @@ namespace SolidCP.Portal
 		{
             Response.Redirect(EditUrl("add_rdsserver"));
 		}
+
+        protected void btnSearchClick(object sender, EventArgs e)
+        {
+            gvRDSServers.DataBind();
+        }
 
         protected void gvRDSServers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
