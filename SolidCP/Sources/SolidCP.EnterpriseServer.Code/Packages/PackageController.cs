@@ -346,6 +346,11 @@ namespace SolidCP.EnterpriseServer
             return DataProvider.GetPackageQuotas(SecurityContext.User.UserId, packageId);
         }
 
+        public static DataSet GetParentPackageQuotas(int packageId)
+        {
+            return DataProvider.GetParentPackageQuotas(SecurityContext.User.UserId, packageId);
+        }
+
         public static DataSet GetPackageQuotasForEdit(int packageId)
         {
             return DataProvider.GetPackageQuotasForEdit(SecurityContext.User.UserId, packageId);
@@ -368,6 +373,54 @@ namespace SolidCP.EnterpriseServer
 
             // load groups and quotas
             DataSet ds = GetPackageQuotas(packageId);
+
+            List<HostingPlanGroupInfo> groups = new List<HostingPlanGroupInfo>();
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                HostingPlanGroupInfo group = new HostingPlanGroupInfo();
+                group.GroupId = (int)dr["GroupID"];
+                group.GroupName = (string)dr["GroupName"];
+                group.Enabled = true;
+                group.CalculateBandwidth = (bool)dr["CalculateBandwidth"];
+                group.CalculateDiskSpace = (bool)dr["CalculateDiskSpace"];
+                groups.Add(group);
+                context.Groups.Add(group.GroupName, group);
+            }
+
+            List<QuotaValueInfo> quotas = new List<QuotaValueInfo>();
+            foreach (DataRow dr in ds.Tables[1].Rows)
+            {
+                QuotaValueInfo quota = new QuotaValueInfo();
+                quota.QuotaId = (int)dr["QuotaId"];
+                quota.GroupId = (int)dr["GroupId"];
+                quota.QuotaName = (string)dr["QuotaName"];
+                quota.QuotaDescription = ((object)dr["QuotaDescription"]).GetType() == typeof(System.DBNull) ? string.Empty : (string)dr["QuotaDescription"];
+                quota.QuotaTypeId = (int)dr["QuotaTypeId"];
+                quota.QuotaAllocatedValue = (int)dr["QuotaValue"];
+                quota.QuotaAllocatedValuePerOrganization = (int)dr["QuotaValuePerOrganization"];
+                quota.QuotaUsedValue = (int)dr["QuotaUsedValue"];
+                quota.QuotaExhausted = (packageId < 2) || (quota.QuotaAllocatedValue != -1 && quota.QuotaUsedValue >= quota.QuotaAllocatedValue);
+                quotas.Add(quota);
+                context.Quotas.Add(quota.QuotaName, quota);
+            }
+
+            context.GroupsArray = groups.ToArray();
+            context.QuotasArray = quotas.ToArray();
+
+            return context;
+        }
+
+        public static PackageContext GetParentPackageContext(int packageId)
+        {
+            PackageContext context = new PackageContext();
+
+            // load package
+            context.Package = GetPackage(packageId);
+            if (context.Package == null)
+                return null;
+
+            // load groups and quotas
+            DataSet ds = GetParentPackageQuotas(packageId);
 
             List<HostingPlanGroupInfo> groups = new List<HostingPlanGroupInfo>();
             foreach (DataRow dr in ds.Tables[0].Rows)

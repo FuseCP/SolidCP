@@ -21505,3 +21505,73 @@ BEGIN
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 74 WHERE [DisplayName] = 'Microsoft SQL Server 2019'
 END
 GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetParentPackageQuotas')
+DROP PROCEDURE GetParentPackageQuotas
+GO
+
+CREATE PROCEDURE [dbo].[GetParentPackageQuotas]
+(
+	@ActorID int,
+	@PackageID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorParentPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+DECLARE @PlanID int, @ParentPackageID int
+SELECT @PlanID = PlanID, @ParentPackageID = ParentPackageID FROM Packages
+WHERE PackageID = @PackageID
+
+-- get resource groups
+SELECT
+	RG.GroupID,
+	RG.GroupName,
+	ISNULL(HPR.CalculateDiskSpace, 0) AS CalculateDiskSpace,
+	ISNULL(HPR.CalculateBandwidth, 0) AS CalculateBandwidth,
+	--dbo.GetPackageAllocatedResource(@ParentPackageID, RG.GroupID, 0) AS ParentEnabled
+	CASE
+		WHEN RG.GroupName = 'Service Levels' THEN dbo.GetPackageServiceLevelResource(@ParentPackageID, RG.GroupID, 0)
+		ELSE dbo.GetPackageAllocatedResource(@ParentPackageID, RG.GroupID, 0)
+	END AS ParentEnabled
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN HostingPlanResources AS HPR ON RG.GroupID = HPR.GroupID AND HPR.PlanID = @PlanID
+--WHERE dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, 0) = 1
+WHERE (dbo.GetPackageAllocatedResource(@PackageID, RG.GroupID, 0) = 1 AND RG.GroupName <> 'Service Levels') OR
+	  (dbo.GetPackageServiceLevelResource(@PackageID, RG.GroupID, 0) = 1 AND RG.GroupName = 'Service Levels')
+ORDER BY RG.GroupOrder
+
+-- return quotas
+DECLARE @OrgsCount INT
+SET @OrgsCount = dbo.GetPackageAllocatedQuota(@PackageID, 205) -- 205 - HostedSolution.Organizations
+SET @OrgsCount = CASE WHEN ISNULL(@OrgsCount, 0) < 1 THEN 1 ELSE @OrgsCount END
+
+SELECT
+	Q.QuotaID,
+	Q.GroupID,
+	Q.QuotaName,
+	Q.QuotaDescription,
+	Q.QuotaTypeID,
+	QuotaValue = CASE WHEN Q.PerOrganization = 1 AND dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) <> -1 THEN 
+					dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) * @OrgsCount 
+				 ELSE 
+					dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID) 
+				 END,
+	QuotaValuePerOrganization = dbo.GetPackageAllocatedQuota(@PackageID, Q.QuotaID),
+	dbo.GetPackageAllocatedQuota(@ParentPackageID, Q.QuotaID) AS ParentQuotaValue,
+	ISNULL(dbo.CalculateQuotaUsage(@PackageID, Q.QuotaID), 0) AS QuotaUsedValue,
+	Q.PerOrganization
+FROM Quotas AS Q
+WHERE Q.HideQuota IS NULL OR Q.HideQuota = 0
+ORDER BY Q.QuotaOrder
+
+RETURN
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
