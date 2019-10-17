@@ -39,6 +39,35 @@ using SolidCP.Setup.Actions;
 namespace SolidCP.Setup
 {
     /// <summary>
+    /// Release 1.4.5
+    /// </summary>
+    public class Portal145 : Portal
+    {
+        public static new object Install(object obj)
+        {
+            //
+            return Portal.InstallBase(obj, "1.4.4");
+        }
+
+        public static new DialogResult Uninstall(object obj)
+        {
+            return Portal.Uninstall(obj);
+        }
+
+        public static new DialogResult Setup(object obj)
+        {
+            return Portal.Setup(obj);
+        }
+
+        public static new DialogResult Update(object obj)
+        {
+            return UpdateBase(obj,
+                minimalInstallerVersion: "1.0.1",
+                versionToUpgrade: "1.4.4,1.4.3",
+                updateSql: false);
+        }
+    }
+    /// <summary>
     /// Release 1.4.4
     /// </summary>
     public class Portal144 : Portal

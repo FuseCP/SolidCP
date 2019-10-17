@@ -38,6 +38,16 @@ using System.Windows.Forms;
 namespace SolidCP.Setup
 {
     /// <summary>
+    /// Release 1.4.5
+    /// </summary>
+    public class StandaloneServerSetup145 : StandaloneServerSetup
+    {
+        public static new object Install(object obj)
+        {
+            return StandaloneServerSetup.InstallBase(obj, "1.0.1");
+        }
+    }
+    /// <summary>
     /// Release 1.4.4
     /// </summary>
     public class StandaloneServerSetup144 : StandaloneServerSetup
