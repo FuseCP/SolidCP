@@ -341,7 +341,8 @@ namespace SolidCP.EnterpriseServer
 			{
 				maxSize = Math.Min(item.MaxMailboxSize, maxSize);
 			}
-			//
+            //
+            return maxSize;
         }
 
 
