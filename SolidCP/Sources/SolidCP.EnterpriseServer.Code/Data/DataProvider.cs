@@ -1775,6 +1775,14 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@PackageID", packageId));
         }
 
+        public static DataSet GetParentPackageQuotas(int actorId, int packageId)
+        {
+            return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetParentPackageQuotas",
+                new SqlParameter("@actorId", actorId),
+                new SqlParameter("@PackageID", packageId));
+        }
+
         public static DataSet GetPackageQuotasForEdit(int actorId, int packageId)
         {
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
