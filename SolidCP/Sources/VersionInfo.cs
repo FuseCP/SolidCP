@@ -15,8 +15,8 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("SolidCP")]
 [assembly: AssemblyCopyright("Copyright © 2019 SolidCP.")]
-[assembly: AssemblyVersion("1.4.4")]
-[assembly: AssemblyFileVersion("1.4.4")]
-[assembly: AssemblyInformationalVersion("1.4.4")]
+[assembly: AssemblyVersion("1.4.5")]
+[assembly: AssemblyFileVersion("1.4.5")]
+[assembly: AssemblyInformationalVersion("1.4.5")]
 
 
