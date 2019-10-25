@@ -2263,6 +2263,7 @@ namespace SolidCP.Providers.Virtualization
                     VersionsConfig = new double[] { 9.0, 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
                     break;
                 case 18362: //Windows Server 2019/Windows 10 1903
+                case 18363: //Windows Server 2019/Windows 10 1909 (Service Pack)
                     VersionsConfig = new double[] { 9.1, 9.0, 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
                     break;
                 default:    //If we don't know or Windwos too old (Windows 2012R2)
