@@ -472,8 +472,15 @@ namespace SolidCP.Providers.DNS
             //Get all the records for the specific zone
             var records = ZoneRecordsResponse.FromJson(ApiGet($"zones/{zoneName}/records"));
 
-            //Return the resulting array
-            return records.ToDnsRecordArray();
+            //Return the resulting array without SOA and DNSSEC records
+            List<string> dnsTypes = new List<string> { "A","AAAA","CAA","MX", "NS", "TXT", "CNAME", "SRV" };
+            List<ZoneRecordsResponse> recordlist = new List<ZoneRecordsResponse>();
+            foreach (ZoneRecordsResponse rec in records)
+            {
+                if (dnsTypes.Contains(rec.Type))
+                    recordlist.Add(rec);
+            }
+            return recordlist.ToDnsRecordArray();
         }
 
         public void AddZoneRecord(string zoneName, DnsRecord record)
