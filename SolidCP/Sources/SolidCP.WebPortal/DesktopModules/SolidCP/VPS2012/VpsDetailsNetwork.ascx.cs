@@ -196,7 +196,7 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
             litPrivSubnet.Text = nic.SubnetMask;
-            litPrivFormat.Text = nic.NetworkFormat;
+            litPrivGateway.Text = nic.DefaultGateway;
             litPrivVLAN.Text = nic.VLAN.ToString();
             locPrivVLAN.Visible = nic.VLAN > 0;
             litPrivVLAN.Visible = locPrivVLAN.Visible;
