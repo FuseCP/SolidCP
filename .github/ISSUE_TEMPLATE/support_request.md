@@ -1,6 +1,6 @@
 ---
 name: Support Request
-about: Have a problem on your SolidCP? Ask for help
+about: Have a problem on your SolidCP? Ask for help at https://solidcp.com/forum/
 title: ''
 labels: ''
 assignees: ''
