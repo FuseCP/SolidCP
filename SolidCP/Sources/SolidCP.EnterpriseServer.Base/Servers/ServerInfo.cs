@@ -53,6 +53,8 @@ namespace SolidCP.EnterpriseServer
         private string adUsername;
         private string adPassword;
         private int primaryGroupId;
+        private string adParentDomain;
+        private string adParentDomainController;
 
         public ServerInfo()
         {
@@ -134,6 +136,18 @@ namespace SolidCP.EnterpriseServer
         {
             get { return this.adEnabled; }
             set { this.adEnabled = value; }
+        }
+
+        public string ADParentDomain
+        {
+            get { return adParentDomain; }
+            set { adParentDomain = value; }
+        }
+
+        public string ADParentDomainController
+        {
+            get { return adParentDomainController; }
+            set { adParentDomainController = value; }
         }
 	}
 }

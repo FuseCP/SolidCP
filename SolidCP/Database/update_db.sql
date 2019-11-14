@@ -21575,3 +21575,164 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Servers' AND COLS.name='AdParentDomain')
+BEGIN
+ALTER TABLE [dbo].[Servers] ADD
+	[AdParentDomain] [nvarchar](200) NULL,
+	[AdParentDomainController] [nvarchar](200) NULL
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServer')
+DROP PROCEDURE UpdateServer
+GO
+
+CREATE PROCEDURE UpdateServer
+(
+	@ServerID int,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(100),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@ADParentDomain nvarchar(200),
+	@ADParentDomainController nvarchar(200)
+)
+AS
+
+IF @PrimaryGroupID = 0
+SET @PrimaryGroupID = NULL
+
+UPDATE Servers SET
+	ServerName = @ServerName,
+	ServerUrl = @ServerUrl,
+	Password = @Password,
+	Comments = @Comments,
+	InstantDomainAlias = @InstantDomainAlias,
+	PrimaryGroupID = @PrimaryGroupID,
+	ADEnabled = @ADEnabled,
+	ADRootDomain = @ADRootDomain,
+	ADUsername = @ADUsername,
+	ADPassword = @ADPassword,
+	ADAuthenticationType = @ADAuthenticationType,
+	ADParentDomain = @ADParentDomain,
+	ADParentDomainController = @ADParentDomainController
+WHERE ServerID = @ServerID
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServer')
+DROP PROCEDURE GetServer
+GO
+
+CREATE PROCEDURE [dbo].[GetServer]
+(
+	@ActorID int,
+	@ServerID int
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController
+FROM Servers
+WHERE
+	ServerID = @ServerID
+	AND @IsAdmin = 1
+
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServerInternal')
+DROP PROCEDURE GetServerInternal
+GO
+
+CREATE PROCEDURE GetServerInternal
+(
+	@ServerID int
+)
+AS
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController
+FROM Servers
+WHERE
+	ServerID = @ServerID
+
+RETURN
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServerByName')
+DROP PROCEDURE GetServerByName
+GO
+
+CREATE PROCEDURE GetServerByName
+(
+	@ActorID int,
+	@ServerName nvarchar(100)
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController
+FROM Servers
+WHERE
+	ServerName = @ServerName
+	AND @IsAdmin = 1
+
+RETURN
+GO

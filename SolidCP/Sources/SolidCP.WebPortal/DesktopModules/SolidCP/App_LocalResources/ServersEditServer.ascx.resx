@@ -264,4 +264,13 @@
   <data name="btnUpdateText.Text" xml:space="preserve">
     <value>Update</value>
   </data>
+  <data name="lblAdUseParentDomain.text" xml:space="preserve">
+    <value>Alternative Parent Domain:</value>
+  </data>
+  <data name="lblAdParentDomain.text" xml:space="preserve">
+    <value>Parent Domain:</value>
+  </data>
+  <data name="lblAdParentDomainController.text" xml:space="preserve">
+    <value>Parent Domain Controller:</value>
+  </data>
 </root>
