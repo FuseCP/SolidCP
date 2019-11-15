@@ -5467,10 +5467,10 @@
     <value>Virtual Proxmox Servers</value>
   </data>
   <data name="ResourceGroup.VPS2012" xml:space="preserve">
-    <value>Virtual Private Server 2012</value>
+    <value>Hyper-V</value>
   </data>
   <data name="AuditLogSource.VPS2012" xml:space="preserve">
-    <value>Virtual Private Server 2012</value>
+    <value>Hyper-V</value>
   </data>
   <data name="Quota.VPS2012.Bandwidth" xml:space="preserve">
     <value>Monatlicher Traffic [GB]</value>

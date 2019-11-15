@@ -187,17 +187,17 @@
                     </tr>
                     <tr>
                         <td>
-                            <asp:Localize ID="locPrivFormat" runat="server"
-                                meta:resourcekey="locPrivFormat" Text="Network format:" /></td>
-                        <td class="NormalBold">
-                            <asp:Literal ID="litPrivFormat" runat="server" Text="" /></td>
-                    </tr>
-                    <tr>
-                        <td>
                             <asp:Localize ID="locPrivSubnet" runat="server"
                                 meta:resourcekey="locPrivSubnet" Text="Subnet mask:" /></td>
                         <td class="NormalBold">
                             <asp:Literal ID="litPrivSubnet" runat="server" Text="" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Localize ID="locPrivGateway" runat="server"
+                                meta:resourcekey="locPrivGateway" Text="Default gateway:" /></td>
+                        <td class="NormalBold">
+                            <asp:Literal ID="litPrivGateway" runat="server" Text="" /></td>
                     </tr>
                     <tr>
                         <td>
@@ -210,7 +210,7 @@
 
                 <asp:Panel ID="PrivateAddressesPanel" runat="server">
 
-                    <div style="width: 260px;">
+                    <div style="width: 400px;">
                         <asp:GridView ID="gvPrivateAddresses" runat="server" AutoGenerateColumns="False"
                             EmptyDataText="gvPrivateAddresses" CssSelectorClass="NormalGridView"
                             DataKeyNames="AddressID">
@@ -229,6 +229,8 @@
                                         <%# Eval("IPAddress")%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
+                                <asp:BoundField DataField="SubnetMask" HeaderText="gvSubnetMask" meta:resourcekey="gvSubnetMask" />
+                                <asp:BoundField DataField="DefaultGateway" HeaderText="gvDefaultGateway" meta:resourcekey="gvDefaultGateway" />
                                 <asp:TemplateField HeaderText="gvPrimary" meta:resourcekey="gvPrimary" ItemStyle-Width="50">
                                     <ItemTemplate>
                                         <div style="text-align: center">
