@@ -421,6 +421,7 @@
                 ItemName="LocalizationToolkitMsi" />
 		</MSBuild>
 		<Copy SourceFiles="@(LocalizationToolkitMsi)" DestinationFolder="$(LocalizationToolkitBuild)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\bin\$(BuildConfiguration)\Data\en-US\Resources.xml" DestinationFolder="$(RootFolder)\Languages" />
 	</Target>
 
 	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
