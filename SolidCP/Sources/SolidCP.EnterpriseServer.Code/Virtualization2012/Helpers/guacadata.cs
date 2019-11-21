@@ -16,5 +16,6 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.guacamole
         public string security { get; set; }
         public string preconnectionblob { get; set; }
         public string vmhostname { get; set; }
+        public string timestamp { get; set; }
     }
 }

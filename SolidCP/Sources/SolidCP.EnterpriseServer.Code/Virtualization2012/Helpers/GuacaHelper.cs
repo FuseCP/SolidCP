@@ -33,17 +33,25 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
                 cookiedata.password = settings["GuacamoleHyperVAdministratorPassword"];
                 cookiedata.domain = settings["GuacamoleHyperVDomain"];
                 cookiedata.hostname = settings["GuacamoleHyperVIP"];
+                if (String.IsNullOrEmpty(settings["GuacamoleHyperVUser"]))
+                {
+                    cookiedata.username = "Administrator";
+                }
+                else
+                {
+                    cookiedata.username = settings["GuacamoleHyperVUser"];
+                }
             }
             catch
             {
                 return "";
             }
 
-            cookiedata.username = "Administrator";
             cookiedata.security = "nla";
             cookiedata.protocol = "rdp";
             cookiedata.port = "2179";
             cookiedata.vmhostname = vm.Hostname;
+            cookiedata.timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH:mm:ss");
 
             /* Als Ansatz eines pseudorandom IV mit Datum dec values drin.
             string strkey = "";

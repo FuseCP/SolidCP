@@ -543,4 +543,13 @@
   <data name="chkAssignVLANAutomatically.Text" xml:space="preserve">
     <value>VLANs bei Bereich-Anlage automatisch zuweisen</value>
   </data>
+  <data name="locGuacamoleHyperVAdministratorPassword.Text" xml:space="preserve">
+    <value>Hyper-V Kennwort:</value>
+  </data>
+  <data name="locGuacamoleHyperVUser.Text" xml:space="preserve">
+    <value>Hyper-V Benutzer:</value>
+  </data>
+  <data name="lblCurrPassword.Text" xml:space="preserve">
+    <value>Aktuelles Hyper-V Kennwort:</value>
+  </data>
 </root>
