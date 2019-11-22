@@ -37492,6 +37492,21 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
     <DefaultValue>Automatically assign VLANs to the space on creation</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locGuacamoleHyperVAdministratorPassword.Text</Key>
+    <DefaultValue>Hyper-V Password:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locGuacamoleHyperVUser.Text</Key>
+    <DefaultValue>Hyper-V User:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>lblCurrPassword.Text</Key>
+    <DefaultValue>Current Hyper-V Password:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx</File>
     <Key>chkVpsFolderIncludesUsername.Text</Key>
     <DefaultValue>User name</DefaultValue>
