@@ -3144,6 +3144,9 @@
   <data name="Quota.Exchange2007.DisclaimersAllowed" xml:space="preserve">
     <value>Disclaimer erlaubt</value>
   </data>
+  <data name="Quota.Exchange2013.AutoReply" xml:space="preserve">
+    <value>Automatische Antworten über SolidCP erlaubt</value>
+  </data>
   <data name="ResourceGroup.Exchange" xml:space="preserve">
     <value>Gehostetes Exchange</value>
   </data>
@@ -3237,6 +3240,9 @@
   <data name="Error.EXCHANGE_GET_DISCLAIMER_SETTINGS" xml:space="preserve">
     <value>Fehler beim Lesen des Disclaimers. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
+  <data name="Error.EXCHANGE_GET_AUTOREPLY_SETTINGS" xml:space="preserve">
+    <value>Fehler beim Lesen der automatischen Antworten. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
+  </data>
   <data name="Error.EXCHANGE_GET_MAILBOX_ADVANCED" xml:space="preserve">
     <value>Fehler beim Lesen der erweiterten Postfacheinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
@@ -3290,6 +3296,9 @@
   </data>
   <data name="Error.EXCHANGE_UPDATE_DISCLAIMER_SETTINGS" xml:space="preserve">
     <value>Fehler beim Aktualisieren des Disclaimers. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
+  </data>
+  <data name="Error.EXCHANGE_UPDATE_AUTOREPLY_SETTINGS" xml:space="preserve">
+    <value>Fehler beim Aktualisieren der automatischen Antworten. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
   <data name="Error.EXCHANGE_UPDATE_MAILBOX_ADVANCED" xml:space="preserve">
     <value>Fehler beim Aktualisieren der erweiterten Postfacheinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
@@ -3395,6 +3404,9 @@
   </data>
   <data name="Success.EXCHANGE_UPDATE_DISCLAIMER_SETTINGS" xml:space="preserve">
     <value>Disclaimer erfolgreich geändert.</value>
+  </data>
+  <data name="Success.EXCHANGE_UPDATE_AUTOREPLY_SETTINGS" xml:space="preserve">
+    <value>Automatische Antworten wurden erfolgreich aktualisiert.</value>
   </data>
   <data name="Success.EXCHANGE_UPDATE_PFOLDER_MAILFLOW" xml:space="preserve">
     <value>Nachrichtenflusseinstellungen des öffentlichen Ordners wurden erfolgreich aktualisiert.</value>

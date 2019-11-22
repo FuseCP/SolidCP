@@ -4337,6 +4337,15 @@ ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
 END
 GO
 
+-- Exchange2013 Auto Reply
+
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='ExchangeMailboxPlans' AND COLS.name='EnableAutoReply')
+BEGIN
+ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
+[EnableAutoReply] [bit] NULL
+END
+GO
+
 
 ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan] 
 (
@@ -7133,6 +7142,15 @@ VALUES (428, 12, 31, N'Exchange2013.ResourceMailboxes', N'Resource Mailboxes per
 END
 GO
 
+-- Exchange2013 Automatic Replies Quota
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2013.AutoReply')
+BEGIN
+INSERT [dbo].[Quotas]  ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) 
+VALUES (729, 12, 32, N'Exchange2013.AutoReply', N'Automatic Replies via SolidCP Allowed', 1, 0, NULL, NULL)
+END
+GO
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -8929,6 +8947,7 @@ ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan]
 	@EnableMAPI bit,
 	@EnableOWA bit,
 	@EnablePOP bit,
+	@EnableAutoReply bit,
 	@IsDefault bit,
 	@IssueWarningPct int,
 	@KeepDeletedItemsDays int,
@@ -8974,6 +8993,7 @@ INSERT INTO ExchangeMailboxPlans
 	EnableMAPI,
 	EnableOWA,
 	EnablePOP,
+	EnableAutoReply,
 	IsDefault,
 	IssueWarningPct,
 	KeepDeletedItemsDays,
@@ -9005,6 +9025,7 @@ VALUES
 	@EnableMAPI,
 	@EnableOWA,
 	@EnablePOP,
+	@EnableAutoReply,
 	@IsDefault,
 	@IssueWarningPct,
 	@KeepDeletedItemsDays,
@@ -9042,6 +9063,7 @@ ALTER PROCEDURE [dbo].[UpdateExchangeMailboxPlan]
 	@EnableMAPI bit,
 	@EnableOWA bit,
 	@EnablePOP bit,
+	@EnableAutoReply bit,
 	@IsDefault bit,
 	@IssueWarningPct int,
 	@KeepDeletedItemsDays int,
@@ -9073,6 +9095,7 @@ UPDATE ExchangeMailboxPlans SET
 	EnableMAPI = @EnableMAPI,
 	EnableOWA = @EnableOWA,
 	EnablePOP = @EnablePOP,
+	EnableAutoReply = @EnableAutoReply,
 	IsDefault = @IsDefault,
 	IssueWarningPct= @IssueWarningPct,
 	KeepDeletedItemsDays = @KeepDeletedItemsDays,
@@ -9113,6 +9136,7 @@ SELECT
 	EnableMAPI,
 	EnableOWA,
 	EnablePOP,
+	EnableAutoReply,
 	IsDefault,
 	IssueWarningPct,
 	KeepDeletedItemsDays,
@@ -9156,6 +9180,7 @@ SELECT
 	EnableMAPI,
 	EnableOWA,
 	EnablePOP,
+	EnableAutoReply,
 	IsDefault,
 	IssueWarningPct,
 	KeepDeletedItemsDays,

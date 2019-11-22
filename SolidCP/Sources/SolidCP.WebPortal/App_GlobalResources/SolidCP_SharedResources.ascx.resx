@@ -3141,6 +3141,9 @@
   <data name="Quota.Exchange2007.DisclaimersAllowed" xml:space="preserve">
     <value>Disclaimers Allowed</value>
   </data>
+  <data name="Quota.Exchange2013.AutoReply" xml:space="preserve">
+    <value>Automatic Replies via SolidCP Allowed</value>
+  </data>
   <data name="ResourceGroup.Exchange" xml:space="preserve">
     <value>Hosted Exchange</value>
   </data>
@@ -3235,6 +3238,9 @@
   <data name="Error.EXCHANGE_GET_DISCLAIMER_SETTINGS" xml:space="preserve">
     <value>Error reading disclaimer. See audit log for more details.</value>
   </data>
+  <data name="Error.EXCHANGE_GET_AUTOREPLY_SETTINGS" xml:space="preserve">
+    <value>Error reading Automatic Replies. See audit log for more details.</value>
+  </data>
   <data name="Error.EXCHANGE_GET_MAILBOX_ADVANCED" xml:space="preserve">
     <value>Error reading mailbox advanced settings. See audit log for more details.</value>
   </data>
@@ -3288,6 +3294,9 @@
   </data>
   <data name="Error.EXCHANGE_UPDATE_DISCLAIMER_SETTINGS" xml:space="preserve">
     <value>Error updating disclaimer. See audit log for more details.</value>
+  </data>
+  <data name="Error.EXCHANGE_UPDATE_AUTOREPLY_SETTINGS" xml:space="preserve">
+    <value>Error updating Automatic Replies. See audit log for more details.</value>
   </data>
   <data name="Error.EXCHANGE_UPDATE_MAILBOX_ADVANCED" xml:space="preserve">
     <value>Error updating mailbox advanced settings. See audit log for more details.</value>
@@ -3393,6 +3402,9 @@
   </data>
   <data name="Success.EXCHANGE_UPDATE_DISCLAIMER_SETTINGS" xml:space="preserve">
     <value>Disclaimer successfully updated.</value>
+  </data>
+  <data name="Success.EXCHANGE_UPDATE_AUTOREPLY_SETTINGS" xml:space="preserve">
+    <value>Automatic Replies successfully updated.</value>
   </data>
   <data name="Success.EXCHANGE_UPDATE_PFOLDER_MAILFLOW" xml:space="preserve">
     <value>Public folder mail flow settings have been successfully updated.</value>

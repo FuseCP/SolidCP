@@ -118,7 +118,7 @@ namespace SolidCP.Portal.UserControls
                     {
                         ctl = "organization_settings_password_settings";
                     }
-                    else if (ctl.Equals("create_mailbox", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_settings", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_addresses", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mailflow", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_permissions", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_setup", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mobile", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_memberof", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("archivingmailboxes", StringComparison.CurrentCultureIgnoreCase))
+                    else if (ctl.Equals("create_mailbox", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_settings", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_addresses", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mailflow", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_permissions", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_setup", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mobile", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_memberof", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_autoreply", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("archivingmailboxes", StringComparison.CurrentCultureIgnoreCase))
                     {
                         ctl = "mailboxes";
                     }

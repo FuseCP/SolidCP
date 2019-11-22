@@ -3046,7 +3046,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Exchange Mailbox Plans
-        public static int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP,
+        public static int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
                                                     bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
                                                     int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
                                                     bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
@@ -3067,6 +3067,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@EnableMAPI", enableMAPI),
                 new SqlParameter("@EnableOWA", enableOWA),
                 new SqlParameter("@EnablePOP", enablePOP),
+                new SqlParameter("@EnableAutoReply", enableAutoReply),
                 new SqlParameter("@IsDefault", isDefault),
                 new SqlParameter("@IssueWarningPct", issueWarningPct),
                 new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
@@ -3095,7 +3096,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP,
+        public static void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
                                             bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
                                             int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
                                             bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
@@ -3112,6 +3113,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@EnableMAPI", enableMAPI),
                 new SqlParameter("@EnableOWA", enableOWA),
                 new SqlParameter("@EnablePOP", enablePOP),
+                new SqlParameter("@EnableAutoReply", enableAutoReply),
                 new SqlParameter("@IsDefault", isDefault),
                 new SqlParameter("@IssueWarningPct", issueWarningPct),
                 new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),

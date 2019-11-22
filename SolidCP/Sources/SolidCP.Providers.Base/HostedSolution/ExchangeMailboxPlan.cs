@@ -56,6 +56,7 @@ namespace SolidCP.Providers.HostedSolution
         int maxRecipients;
         int maxSendMessageSizeKB;
         int maxReceiveMessageSizeKB;
+        bool enableAutoReply;
 
         bool enablePOP;
         bool enableIMAP;
@@ -132,6 +133,12 @@ namespace SolidCP.Providers.HostedSolution
         {
             get { return this.maxReceiveMessageSizeKB; }
             set { this.maxReceiveMessageSizeKB = value; }
+        }
+
+        public bool EnableAutoReply
+        {
+            get { return this.enableAutoReply; }
+            set { this.enableAutoReply = value; }
         }
 
         public bool EnablePOP

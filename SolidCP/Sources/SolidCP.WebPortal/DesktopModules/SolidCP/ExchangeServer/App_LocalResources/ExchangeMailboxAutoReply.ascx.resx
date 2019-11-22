@@ -117,157 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnAddMailboxPlan.Text" xml:space="preserve">
-    <value>Add New</value>
+  <data name="chkAutoReplyTime.Text" xml:space="preserve">
+    <value>Send replies only during this time period:</value>
   </data>
-  <data name="btnSetDefaultMailboxPlan.Text" xml:space="preserve">
-    <value>Set Default Mailbox plan</value>
+  <data name="chkOutsideOrganization.Text" xml:space="preserve">
+    <value>Send replies outside my organization</value>
   </data>
-  <data name="chkActiveSync.Text" xml:space="preserve">
-    <value>ActiveSync</value>
+  <data name="locEndTime.Text" xml:space="preserve">
+    <value>End time:</value>
   </data>
-  <data name="chkHideFromAddressBook" xml:space="preserve">
-    <value>Hide from Addressbook</value>
+  <data name="locExtReply.Text" xml:space="preserve">
+    <value>Send a reply once to each sender outside my organization with the following message:</value>
   </data>
-  <data name="chkIMAP.Text" xml:space="preserve">
-    <value>IMAP</value>
+  <data name="locIntReply.Text" xml:space="preserve">
+    <value>Send a reply once to each sender inside my organization with the following message:</value>
   </data>
-  <data name="chkMAPI.Text" xml:space="preserve">
-    <value>MAPI</value>
-  </data>
-  <data name="chkOWA.Text" xml:space="preserve">
-    <value>OWA/HTTP</value>
-  </data>
-  <data name="chkPOP3.Text" xml:space="preserve">
-    <value>POP3</value>
-  </data>
-  <data name="gvMailboxPlan.Header" xml:space="preserve">
-    <value>Mailbox plan</value>
-  </data>
-  <data name="gvMailboxPlanDefault.Header" xml:space="preserve">
-    <value>Default Mailbox plan</value>
-  </data>
-  <data name="gvMailboxPlanEdit.Header" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="gvMailboxPlans.Empty" xml:space="preserve">
-    <value>No mailbox plans have been added yet. To add a new mailbox plan click "Add New Mailbox plan" button.</value>
-  </data>
-  <data name="gvMailboxPlanSelect.Header" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="locDays.Text" xml:space="preserve">
-    <value>days</value>
-  </data>
-  <data name="locIssueWarning.Text" xml:space="preserve">
-    <value>Issue warning at:</value>
-  </data>
-  <data name="locKB.Text" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="locKeepDeletedItems.Text" xml:space="preserve">
-    <value>Keep deleted items for:</value>
-  </data>
-  <data name="locMailboxSize.Text" xml:space="preserve">
-    <value>Mailbox size (Mb):</value>
-  </data>
-  <data name="locMaxReceiveMessageSizeKB.Text" xml:space="preserve">
-    <value>Maximum Receive Message Size (Kb):</value>
-  </data>
-  <data name="locMaxRecipients.Text" xml:space="preserve">
-    <value>Maximum Recipients:</value>
-  </data>
-  <data name="locMaxSendMessageSizeKB.Text" xml:space="preserve">
-    <value>Maximum Send Message Size (Kb):</value>
-  </data>
-  <data name="locProhibitSend.Text" xml:space="preserve">
-    <value>Prohibit send at:</value>
-  </data>
-  <data name="locProhibitSendReceive.Text" xml:space="preserve">
-    <value>Prohibit send and receive at:</value>
+  <data name="locStartTime.Text" xml:space="preserve">
+    <value>Start time:</value>
   </data>
   <data name="locTitle.Text" xml:space="preserve">
-    <value>Add Mailbox plan</value>
+    <value>Configure Automatic Replies</value>
   </data>
-  <data name="locWhenSizeExceeds.Text" xml:space="preserve">
-    <value>When the mailbox size exceeds the indicated amount:</value>
+  <data name="rblExtAll.Text" xml:space="preserve">
+    <value>Send to all external senders</value>
   </data>
-  <data name="secDeleteRetention.Text" xml:space="preserve">
-    <value>Delete Item Retention</value>
+  <data name="rblExtContact.Text" xml:space="preserve">
+    <value>Only to senders in my Contact list</value>
   </data>
-  <data name="secMailboxFeatures.Text" xml:space="preserve">
-    <value>Mailbox Features</value>
+  <data name="rblSetAutoreplyOff.Text" xml:space="preserve">
+    <value>Don't send automatic replies</value>
   </data>
-  <data name="secMailboxGeneral.Text" xml:space="preserve">
-    <value>General</value>
-  </data>
-  <data name="secMailboxPlan.Text" xml:space="preserve">
-    <value>Mailbox plan</value>
-  </data>
-  <data name="secStorageQuotas.Text" xml:space="preserve">
-    <value>Quotas</value>
-  </data>
-  <data name="valRequireMailboxPlan.ErrorMessage" xml:space="preserve">
-    <value>Please enter correct mailboxplan</value>
-  </data>
-  <data name="valRequireMailboxPlan.Text" xml:space="preserve">
-    <value>*</value>
-  </data>
-  <data name="btnAddMailboxPlanToOrganizations.Text" xml:space="preserve">
-    <value>Add Mailbox Plans Template to All Tenants</value>
-  </data>
-  <data name="btnStampUnassigned.Text" xml:space="preserve">
-    <value>Stamp unassigned mailboxes</value>
-  </data>
-  <data name="secTools.Text" xml:space="preserve">
-    <value>Tools</value>
-  </data>
-  <data name="btnStamp.Text" xml:space="preserve">
-    <value>Restamp mailboxes</value>
-  </data>
-  <data name="btnUpdateMailboxPlan.Text" xml:space="preserve">
-    <value>Update</value>
-  </data>
-  <data name="chkEnableLitigationHold.Text" xml:space="preserve">
-    <value>Enable Litigation Hold</value>
-  </data>
-  <data name="locRecoverableItemsSpace.Text" xml:space="preserve">
-    <value>Recoverable Items Space (Mb):</value>
-  </data>
-  <data name="locRecoverableItemsWarning.Text" xml:space="preserve">
-    <value>Warning at:</value>
-  </data>
-  <data name="secLitigationHold.Text" xml:space="preserve">
-    <value>Litigation Hold</value>
-  </data>
-  <data name="lblLitigationHoldMsg.Text" xml:space="preserve">
-    <value>Litigation Hold Message:</value>
-  </data>
-  <data name="lblLitigationHoldUrl.Text" xml:space="preserve">
-    <value>Litigation Hold Url:</value>
-  </data>
-  <data name="secRetentionPolicy.Text" xml:space="preserve">
-    <value>Retention policy</value>
-  </data>
-  <data name="lblDefaultMailboxPlan.Text" xml:space="preserve">
-    <value>Default</value>
-  </data>
-  <data name="btnAddMailboxPlanText.Text" xml:space="preserve">
-    <value>Add New</value>
-  </data>
-  <data name="btnSetDefaultMailboxPlanText.Text" xml:space="preserve">
-    <value>Set Default Mailbox plan</value>
-  </data>
-  <data name="btnStampText.Text" xml:space="preserve">
-    <value>Restamp mailboxes</value>
-  </data>
-  <data name="btnStampUnassignedText.Text" xml:space="preserve">
-    <value>Stamp unassigned mailboxes</value>
-  </data>
-  <data name="btnUpdateMailboxPlanText.Text" xml:space="preserve">
-    <value>Update</value>
-  </data>
-  <data name="locAutoReplyEnabled.Text" xml:space="preserve">
-    <value>Automatic Replies via SolidCP</value>
+  <data name="rblSetAutoreplyOn.Text" xml:space="preserve">
+    <value>Send automatic replies</value>
   </data>
 </root>

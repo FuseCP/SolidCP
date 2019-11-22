@@ -149,6 +149,7 @@ namespace SolidCP.Portal
                 plan.EnableOWA = chkOWA.Checked;
                 plan.EnableMAPI = chkMAPI.Checked;
                 plan.EnableActiveSync = chkActiveSync.Checked;
+                plan.EnableAutoReply = chkAutoReplyEnabled.Checked;
                 plan.IssueWarningPct = sizeIssueWarning.ValueKB;
                 if ((plan.IssueWarningPct == 0)) plan.IssueWarningPct = 100;
                 plan.ProhibitSendPct = sizeProhibitSend.ValueKB;
@@ -240,6 +241,7 @@ namespace SolidCP.Portal
                         chkOWA.Checked = false;
                         chkMAPI.Checked = false;
                         chkActiveSync.Checked = false;
+                        chkAutoReplyEnabled.Checked = false;
                         sizeIssueWarning.ValueKB = -1;
                         sizeProhibitSend.ValueKB = -1;
                         sizeProhibitSendReceive.ValueKB = -1;
@@ -301,6 +303,7 @@ namespace SolidCP.Portal
                             chkOWA.Checked = plan.EnableOWA;
                             chkMAPI.Checked = plan.EnableMAPI;
                             chkActiveSync.Checked = plan.EnableActiveSync;
+                            chkAutoReplyEnabled.Checked = plan.EnableAutoReply;
                             sizeIssueWarning.ValueKB = plan.IssueWarningPct;
                             sizeProhibitSend.ValueKB = plan.ProhibitSendPct;
                             sizeProhibitSendReceive.ValueKB = plan.ProhibitSendReceivePct;
@@ -409,6 +412,7 @@ namespace SolidCP.Portal
                 plan.EnableOWA = chkOWA.Checked;
                 plan.EnableMAPI = chkMAPI.Checked;
                 plan.EnableActiveSync = chkActiveSync.Checked;
+                plan.EnableAutoReply = chkAutoReplyEnabled.Checked;
                 plan.IssueWarningPct = sizeIssueWarning.ValueKB;
                 if ((plan.IssueWarningPct == 0)) plan.IssueWarningPct = 100;
                 plan.ProhibitSendPct = sizeProhibitSend.ValueKB;

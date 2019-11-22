@@ -61,6 +61,8 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 
             PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
 
+            Providers.HostedSolution.ExchangeMailboxPlan plan = ES.Services.ExchangeServer.GetExchangeMailboxPlan(PanelRequest.ItemID, ES.Services.ExchangeServer.GetAccount(PanelRequest.ItemID, PanelRequest.AccountID).MailboxPlanId);
+
             if (user != null)
             {
                 if ((user.Role == UserRole.User) & (Utils.CheckQouta(Quotas.EXCHANGE2007_ISCONSUMER, cntx)))
@@ -73,6 +75,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             if (!hideItems) tabsList.Add(CreateTab("mailbox_addresses", "Tab.Addresses"));
             if (!hideItems) tabsList.Add(CreateTab("mailbox_mailflow", "Tab.Mailflow"));
             if (!hideItems) tabsList.Add(CreateTab("mailbox_permissions", "Tab.Permissions"));
+            if (plan.EnableAutoReply) tabsList.Add(CreateTab("mailbox_autoreply", "Tab.AutoReply"));
 
             string instructions = ES.Services.ExchangeServer.GetMailboxSetupInstructions(PanelRequest.ItemID, PanelRequest.AccountID, false, false, false, " ");
             if (!string.IsNullOrEmpty(instructions))

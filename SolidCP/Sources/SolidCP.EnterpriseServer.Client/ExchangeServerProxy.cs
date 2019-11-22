@@ -184,6 +184,10 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback GetMailboxAdvancedSettingsOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetMailboxAutoReplySettingsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback SetMailboxAutoReplySettingsOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetMailboxGeneralSettingsOperationCompleted;
 
         private System.Threading.SendOrPostCallback SetMailboxGeneralSettingsOperationCompleted;
@@ -480,6 +484,12 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event GetMailboxAdvancedSettingsCompletedEventHandler GetMailboxAdvancedSettingsCompleted;
+
+        /// <remarks/>
+        public event GetMailboxAutoReplySettingsCompletedEventHandler GetMailboxAutoReplySettingsCompleted;
+
+        /// <remarks/>
+        public event SetMailboxAutoReplySettingsCompletedEventHandler SetMailboxAutoReplySettingsCompleted;
 
         /// <remarks/>
         public event GetMailboxGeneralSettingsCompletedEventHandler GetMailboxGeneralSettingsCompleted;
@@ -4668,6 +4678,113 @@ namespace SolidCP.EnterpriseServer
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetMailboxAdvancedSettingsCompleted(this, new GetMailboxAdvancedSettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetMailboxAutoReplySettings", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(int itemId, int accountId)
+        {
+            object[] results = this.Invoke("GetMailboxAutoReplySettings", new object[] {
+                        itemId,
+                        accountId});
+            return ((ExchangeMailboxAutoReplySettings)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetMailboxAutoReplySettings(int itemId, int accountId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetMailboxAutoReplySettings", new object[] {
+                        itemId,
+                        accountId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ExchangeMailboxAutoReplySettings EndGetMailboxAutoReplySettings(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ExchangeMailboxAutoReplySettings)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetMailboxAutoReplySettingsAsync(int itemId, int accountId)
+        {
+            this.GetMailboxAutoReplySettingsAsync(itemId, accountId, null);
+        }
+
+        /// <remarks/>
+        public void GetMailboxAutoReplySettingsAsync(int itemId, int accountId, object userState)
+        {
+            if ((this.GetMailboxAutoReplySettingsOperationCompleted == null))
+            {
+                this.GetMailboxAutoReplySettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMailboxAutoReplySettingsOperationCompleted);
+            }
+            this.InvokeAsync("GetMailboxAutoReplySettings", new object[] {
+                        itemId,
+                        accountId}, this.GetMailboxAutoReplySettingsOperationCompleted, userState);
+        }
+
+        private void OnGetMailboxAutoReplySettingsOperationCompleted(object arg)
+        {
+            if ((this.GetMailboxAutoReplySettingsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetMailboxAutoReplySettingsCompleted(this, new GetMailboxAutoReplySettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetMailboxAutoReplySettings", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int SetMailboxAutoReplySettings(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings)
+        {
+            object[] results = this.Invoke("SetMailboxAutoReplySettings", new object[] {
+                        itemId,
+                        accountId,
+                        settings});
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginSetMailboxAutoReplySettings(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("SetMailboxAutoReplySettings", new object[] {
+                        itemId,
+                        accountId,
+                        settings}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public int EndSetMailboxAutoReplySettings(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public void SetMailboxAutoReplySettingsAsync(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings)
+        {
+            this.SetMailboxAutoReplySettingsAsync(itemId, accountId, settings, null);
+        }
+
+        /// <remarks/>
+        public void SetMailboxAutoReplySettingsAsync(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings, object userState)
+        {
+            if ((this.SetMailboxAutoReplySettingsOperationCompleted == null))
+            {
+                this.SetMailboxAutoReplySettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetMailboxAutoReplySettingsOperationCompleted);
+            }
+            this.InvokeAsync("SetMailboxAutoReplySettings", new object[] {
+                        itemId,
+                        accountId,
+                        settings}, this.SetMailboxAutoReplySettingsOperationCompleted, userState);
+        }
+
+        private void OnSetMailboxAutoReplySettingsOperationCompleted(object arg)
+        {
+            if ((this.SetMailboxAutoReplySettingsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetMailboxAutoReplySettingsCompleted(this, new SetMailboxAutoReplySettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -8963,6 +9080,66 @@ namespace SolidCP.EnterpriseServer
             {
                 this.RaiseExceptionIfNecessary();
                 return ((ExchangeMailbox)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetMailboxAutoReplySettingsCompletedEventHandler(object sender, GetMailboxAutoReplySettingsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetMailboxAutoReplySettingsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetMailboxAutoReplySettingsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ExchangeMailboxAutoReplySettings Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ExchangeMailboxAutoReplySettings)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void SetMailboxAutoReplySettingsCompletedEventHandler(object sender, SetMailboxAutoReplySettingsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetMailboxAutoReplySettingsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal SetMailboxAutoReplySettingsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public int Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
             }
         }
     }
