@@ -493,7 +493,7 @@ namespace SolidCP.EnterpriseServer
         public static void UpdateServer(int serverId, string serverName, string serverUrl,
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType)
+            string adAuthenticationType, string adParentDomain, String adParentDomainController)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "UpdateServer",
@@ -508,7 +508,9 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdRootDomain", adRootDomain),
                 new SqlParameter("@AdUsername", adUsername),
                 new SqlParameter("@AdPassword", adPassword),
-                new SqlParameter("@AdAuthenticationType", adAuthenticationType));
+                new SqlParameter("@AdAuthenticationType", adAuthenticationType),
+                new SqlParameter("@AdParentDomain", adParentDomain),
+                new SqlParameter("@AdParentDomainController", adParentDomainController));
 
         }
 

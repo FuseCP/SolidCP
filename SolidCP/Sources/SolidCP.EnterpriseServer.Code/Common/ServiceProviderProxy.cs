@@ -96,6 +96,8 @@ namespace SolidCP.EnterpriseServer
             cnfg.ServerSettings.ADRootDomain = server.ADRootDomain;
             cnfg.ServerSettings.ADUsername = server.ADUsername;
             cnfg.ServerSettings.ADPassword = server.ADPassword;
+            cnfg.ServerSettings.ADParentDomain = server.ADParentDomain;
+            cnfg.ServerSettings.ADParentDomainController = server.ADParentDomainController;
 
             // set timeout
             cnfg.Timeout = ConfigSettings.ServerRequestTimeout;

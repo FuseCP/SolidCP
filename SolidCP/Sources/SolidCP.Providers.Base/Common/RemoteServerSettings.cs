@@ -45,6 +45,8 @@ namespace SolidCP.Providers
         private string adRootDomain;
         private string adUsername;
         private string adPassword;
+        private string adParentDomain;
+        private string adParentDomainController;
 
         // Server settings
         private int serverId;
@@ -78,6 +80,10 @@ namespace SolidCP.Providers
                     ServerId = Int32.Parse(val);
                 else if (key == "Server:ServerName")
                     ServerName = val;
+                else if (key == "AD:ParentDomain")
+                    ADParentDomain = val;
+                else if (key == "AD:ParentDomainController")
+                    ADParentDomainController = val;
             }
         }
 
@@ -122,6 +128,18 @@ namespace SolidCP.Providers
         {
             get { return this.serverName; }
             set { this.serverName = value; }
+        }
+
+        public string ADParentDomain
+        {
+            get { return this.adParentDomain; }
+            set { this.adParentDomain = value; }
+        }
+
+        public string ADParentDomainController
+        {
+            get { return this.adParentDomainController; }
+            set { this.adParentDomainController = value; }
         }
         #endregion
     }
