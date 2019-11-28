@@ -142,7 +142,7 @@
     <value>Virtual Private Server</value>
   </data>
   <data name="lnkVps2012.Text" xml:space="preserve">
-    <value>Virtual Private Server 2012</value>
+    <value>Hyper-V</value>
   </data>
   <data name="lnkVpsForPC.Text" xml:space="preserve">
     <value>Virtual Private Server für Private Cloud</value>

@@ -201,4 +201,7 @@
   <data name="locAdapterAddresses.Text" xml:space="preserve">
     <value>IP-Adressen:</value>
   </data>
+  <data name="locPrivGateway.Text" xml:space="preserve">
+    <value>Standard-Gateway:</value>
+  </data>
 </root>

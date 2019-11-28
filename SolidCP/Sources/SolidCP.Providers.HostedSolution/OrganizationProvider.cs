@@ -84,6 +84,16 @@ namespace SolidCP.Providers.HostedSolution
             get { return ProviderSettings["PrimaryDomainController"]; }
         }
 
+        private string ParentDomain
+        {
+            get { return ServerSettings.ADParentDomain; }
+        }
+
+        private string ParentDomainController
+        {
+            get { return ServerSettings.ADParentDomainController; }
+        }
+
         #endregion
 
 
@@ -245,6 +255,18 @@ namespace SolidCP.Providers.HostedSolution
             sb.Append(PrimaryDomainController + "/");
         }
 
+        private void AppendParentDomainController(StringBuilder sb)
+        {
+            if (!string.IsNullOrEmpty(ParentDomain))
+            {
+                sb.Append(ParentDomainController + "/");
+            }
+            else
+            {
+                sb.Append(PrimaryDomainController + "/");
+            }
+        }
+
         private static void AppendCNPath(StringBuilder sb, string organizationId)
         {
             if (string.IsNullOrEmpty(organizationId))
@@ -288,7 +310,7 @@ namespace SolidCP.Providers.HostedSolution
         {
             StringBuilder sb = new StringBuilder();
             AppendProtocol(sb);
-            AppendDomainController(sb);
+            AppendParentDomainController(sb);
             sb.Append("CN=Directory Service,CN= Windows NT,CN= Services,CN= Configuration,");
             AppendDomainPath(sb, RootDomain);
 
@@ -2448,7 +2470,7 @@ namespace SolidCP.Providers.HostedSolution
 
             try
             {
-                 ADPermission.SetOUAclPermissions(this, organizationId, RootDomain, GetDomainOU());
+                 ADPermission.SetOUAclPermissions(this, organizationId, RootDomain, GetDomainOU(), ParentDomain);
             }
             catch (Exception ex)
             {

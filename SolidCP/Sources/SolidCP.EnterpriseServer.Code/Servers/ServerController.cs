@@ -340,7 +340,7 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
 
 			TaskManager.CompleteTask();
 
@@ -366,7 +366,7 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
 
 			TaskManager.CompleteTask();
 
@@ -392,7 +392,7 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
 
 			TaskManager.CompleteTask();
 
