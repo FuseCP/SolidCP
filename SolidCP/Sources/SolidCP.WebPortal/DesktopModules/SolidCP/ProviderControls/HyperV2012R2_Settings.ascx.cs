@@ -78,6 +78,7 @@ namespace SolidCP.Portal.ProviderControls
             txtGuacamoleHyperVIP.Text = settings["GuacamoleHyperVIP"];
             ViewState["PWD"] = settings["GuacamoleHyperVAdministratorPassword"];
             rowPassword.Visible = ((string)ViewState["PWD"]) != "";
+            if (!String.IsNullOrEmpty(settings["GuacamoleHyperVUser"])) txtGuacamoleHyperVUser.Text = settings["GuacamoleHyperVUser"];
 
             // general settings
             txtVpsRootFolder.Text = settings["RootFolder"];
@@ -187,6 +188,7 @@ namespace SolidCP.Portal.ProviderControls
             settings["GuacamoleHyperVIP"] = txtGuacamoleHyperVIP.Text.Trim();
             settings["GuacamoleHyperVDomain"] = txtGuacamoleHyperVDomain.Text.Trim();
             settings["GuacamoleHyperVAdministratorPassword"] = (txtGuacamoleHyperVAdministratorPassword.Text.Length > 0) ? txtGuacamoleHyperVAdministratorPassword.Text : (string)ViewState["PWD"];
+            settings["GuacamoleHyperVUser"] = txtGuacamoleHyperVUser.Text.Trim();
 
             // general settings
             settings["RootFolder"] = txtVpsRootFolder.Text.Trim();

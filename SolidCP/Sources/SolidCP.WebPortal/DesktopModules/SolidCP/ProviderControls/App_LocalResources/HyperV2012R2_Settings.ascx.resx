@@ -555,4 +555,13 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="chkAssignVLANAutomatically.Text" xml:space="preserve">
     <value>Automatically assign VLANs to the space on creation</value>
   </data>
+  <data name="locGuacamoleHyperVAdministratorPassword.Text" xml:space="preserve">
+    <value>Hyper-V Password:</value>
+  </data>
+  <data name="locGuacamoleHyperVUser.Text" xml:space="preserve">
+    <value>Hyper-V User:</value>
+  </data>
+  <data name="lblCurrPassword.Text" xml:space="preserve">
+    <value>Current Hyper-V Password:</value>
+  </data>
 </root>

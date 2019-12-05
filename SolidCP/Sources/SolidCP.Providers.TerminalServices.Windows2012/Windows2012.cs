@@ -306,7 +306,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             try
             {
                 runSpace = RdsRunspaceExtensions.OpenRunspace();
-                Log.WriteWarning("Creating Collection");
+                Log.WriteInfo("Creating Collection");
                 var existingServers = GetServersExistingInCollections(runSpace);
                 existingServers = existingServers.Select(x => x.ToUpper()).Intersect(collection.Servers.Select(x => x.FqdName.ToUpper())).ToList();                
 
@@ -326,7 +326,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     }
                 }
 
-                Log.WriteWarning("powershell: New-RDSessionCollection");
+                Log.WriteInfo("powershell: New-RDSessionCollection");
                 Command cmd = new Command("New-RDSessionCollection");
                 cmd.Parameters.Add("CollectionName", collection.Name);
                 cmd.Parameters.Add("SessionHost", collection.Servers.Select(x => x.FqdName).ToArray());
@@ -344,13 +344,13 @@ namespace SolidCP.Providers.RemoteDesktopServices
                     throw new Exception("Collection not created");
                 }
 
-                Log.WriteWarning("powershell: New-RDSessionCollection\tSuccessfully");
+                Log.WriteInfo("powershell: New-RDSessionCollection\tSuccessfully");
 
                 EditRdsCollectionSettingsInternal(collection, runSpace);
 
-                Log.WriteWarning("Settings edited");
+                Log.WriteInfo("Settings edited");
                 var orgPath = GetOrganizationPath(organizationId);
-                Log.WriteWarning(string.Format("orgPath: {0}", orgPath));
+                Log.WriteInfo(string.Format("orgPath: {0}", orgPath));
                 CheckOrCreateAdGroup(GetComputerGroupPath(organizationId, collection.Name), orgPath, GetComputersGroupName(collection.Name), RdsCollectionComputersGroupDescription);
                 CheckOrCreateHelpDeskComputerGroup();
                 string helpDeskGroupSamAccountName = CheckOrCreateAdGroup(GetHelpDeskGroupPath(RDSHelpDeskGroup), GetRootOUPath(), RDSHelpDeskGroup, RDSHelpDeskGroupDescription);
@@ -631,7 +631,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 AddAdGroupToLocalAdmins(runSpace, server.FqdName, LocalAdministratorsGroupName);
                 AddAdGroupToLocalAdmins(runSpace, server.FqdName, helpDeskGroupSamAccountName);
                 AddComputerToCollectionAdComputerGroup(organizationId, collectionName, server);
-                Log.WriteWarning("AddSessionHostServerToCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
+                Log.WriteInfo("AddSessionHostServerToCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
                 ActiveDirectoryUtils.AddOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }            
             finally
@@ -674,7 +674,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                 RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
                 MoveRdsServerToTenantOU(server.Name, organizationId);
-                Log.WriteWarning("RemoveSessionHostServerFromCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
+                Log.WriteInfo("RemoveSessionHostServerFromCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
                 ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
             }
             finally
@@ -764,7 +764,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
             try
             {
-                Log.WriteWarning(string.Format("App alias: {0}\r\nCollection Name:{2}\r\nUsers: {1}", remoteApp.Alias, string.Join("; ", users), collectionName));
+                Log.WriteInfo(string.Format("App alias: {0}\r\nCollection Name:{2}\r\nUsers: {1}", remoteApp.Alias, string.Join("; ", users), collectionName));
                 runspace = RdsRunspaceExtensions.OpenRunspace();
 
                 Command cmd = new Command("Set-RDRemoteApp");
@@ -790,7 +790,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 }
                 else
                 {
-                    Log.WriteWarning(string.Format("{0} users added successfully", remoteApp.DisplayName));
+                    Log.WriteInfo(string.Format("{0} users added successfully", remoteApp.DisplayName));
                 }
             }
             catch(Exception)
@@ -1044,7 +1044,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
                 if (errors == null || !errors.Any())
                 {
-                    Log.WriteWarning("RD RAP Added Successfully");
+                    Log.WriteInfo("RD RAP Added Successfully");
                     break;
                 }
                 else
@@ -1083,12 +1083,12 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
             for (int i = 0; i < 3; i++)
             {
-                Log.WriteWarning(string.Format("Adding RD RAP ... {0}\r\nGateway Host\t{1}\r\nUser Group\t{2}\r\nComputer Group\t{3}", i + 1, gatewayHost, userGroupParametr, computerGroupParametr));
+                Log.WriteInfo(string.Format("Adding RD RAP ... {0}\r\nGateway Host\t{1}\r\nUser Group\t{2}\r\nComputer Group\t{3}", i + 1, gatewayHost, userGroupParametr, computerGroupParametr));
                 runSpace.ExecuteRemoteShellCommand(gatewayHost, rdRapCommand, PrimaryDomainController, out errors, RdsModuleName);
 
                 if (errors == null || !errors.Any())
                 {
-                    Log.WriteWarning("RD RAP Added Successfully");
+                    Log.WriteInfo("RD RAP Added Successfully");
                     break;
                 }
                 else
@@ -1922,27 +1922,27 @@ namespace SolidCP.Providers.RemoteDesktopServices
             var computerGroupName = GetComputersGroupName( collectionName);            
             var computerObject = GetComputerObject(server.Name);
 
-            Log.WriteWarning(string.Format("ComputerGroupName: {0}\r\nServerName: {1}\r\nCollectionName: {2}", computerGroupName, server.Name, collectionName));
+            Log.WriteInfo(string.Format("ComputerGroupName: {0}\r\nServerName: {1}\r\nCollectionName: {2}", computerGroupName, server.Name, collectionName));
 
             if (computerObject != null)
             {                
                 var samName = (string)ActiveDirectoryUtils.GetADObjectProperty(computerObject, "sAMAccountName");
-                Log.WriteWarning(string.Format("sAMAccountName: {0}\r\nPath: {1}\r\n", samName, computerObject.Path));
+                Log.WriteInfo(string.Format("sAMAccountName: {0}\r\nPath: {1}\r\n", samName, computerObject.Path));
 
                 if (!ActiveDirectoryUtils.IsComputerInGroup(samName, computerGroupName))
                 {
                     string groupPath = GetComputerGroupPath(organizationId, collectionName);
-                    Log.WriteWarning(string.Format("ComputerGroupPath: {0}", groupPath));
+                    Log.WriteInfo(string.Format("ComputerGroupPath: {0}", groupPath));
                     ActiveDirectoryUtils.AddObjectToGroup(computerObject.Path, groupPath);
-                    Log.WriteWarning(string.Format("{0} added to {1}", computerObject.Path, groupPath));
+                    Log.WriteInfo(string.Format("{0} added to {1}", computerObject.Path, groupPath));
                 }
 
                 if (!ActiveDirectoryUtils.IsComputerInGroup(samName, RDSHelpDeskComputerGroup))
                 {
                     string helpDeskGroupPath = GetHelpDeskGroupPath(RDSHelpDeskComputerGroup);
-                    Log.WriteWarning(string.Format("HelpDeskGroupPath: {0}", helpDeskGroupPath));
+                    Log.WriteInfo(string.Format("HelpDeskGroupPath: {0}", helpDeskGroupPath));
                     ActiveDirectoryUtils.AddObjectToGroup(computerObject.Path, helpDeskGroupPath);
-                    Log.WriteWarning(string.Format("{0} added to {1}", computerObject.Path, helpDeskGroupPath));
+                    Log.WriteInfo(string.Format("{0} added to {1}", computerObject.Path, helpDeskGroupPath));
                 }
             }
             else
@@ -2073,7 +2073,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
         internal int SetRDSOUSecurity(string Path, string organizationId, string hostname)
         {
-            Log.WriteWarning("SetRDSOUSecurity Path: {0}, OrgID: {1}", Path, organizationId);
+            Log.WriteInfo("SetRDSOUSecurity Path: {0}, OrgID: {1}", Path, organizationId);
 
             if (string.IsNullOrEmpty(organizationId))
                 throw new ArgumentNullException("organizationId");
@@ -3023,20 +3023,13 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
         private string GetRdsServerStatus (Runspace runspace, string serverName)
         {
-            Log.WriteWarning(string.Format("CheckServerAvailability started"));        
-
             if (CheckServerAvailability(serverName))
             {
-                Log.WriteWarning(string.Format("Pending reboot check started"));        
 
                 if (CheckPendingReboot(runspace, serverName))
                 {
-                    Log.WriteWarning(string.Format("Pending reboot check finished"));        
-
                     return "Online - Pending Reboot";
                 }
-
-                Log.WriteWarning(string.Format("Pending reboot check finished"));        
 
                 return "Online";
             }

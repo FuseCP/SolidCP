@@ -114,6 +114,8 @@ namespace SolidCP.Server.Client
             // AD Settings
             settings.Add("AD:Enabled=" + ServerSettings.ADEnabled.ToString());
             settings.Add("AD:AuthenticationType=" + ServerSettings.ADAuthenticationType.ToString());
+            settings.Add("AD:ParentDomain=" + ServerSettings.ADParentDomain);
+            settings.Add("AD:ParentDomainController=" + ServerSettings.ADParentDomainController);
             settings.Add("AD:RootDomain=" + ServerSettings.ADRootDomain);
             settings.Add("AD:Username=" + ServerSettings.ADUsername);
             settings.Add("AD:Password=" + ServerSettings.ADPassword);

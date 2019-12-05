@@ -107,17 +107,19 @@
             </td>
 	    </tr>
 
-        <tr id="rowPassword" runat="server">
-    		<td class="SubHead">
-		        <asp:Label ID="lblCurrPassword" runat="server" meta:resourcekey="lblCurrPassword" Text="Current Hyper-V Administrator Password:"></asp:Label>
-    		</td>
-    		<td class="Normal">*******
+        <tr>
+		    <td class="SubHead" style="width:250px;">
+		        <asp:Localize ID="locGuacamoleHyperVUser" runat="server" meta:resourcekey="locGuacamoleHyperVUser" Text="Hyper-V User:"></asp:Localize>
 		    </td>
+		    <td>
+                <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleHyperVUser" Text="Administrator"></asp:TextBox>
+                
+            </td>
 	    </tr>
 
         <tr>
 		    <td class="SubHead" style="width:250px;">
-		        <asp:Localize ID="locGuacamoleHyperVAdministratorPassword" runat="server" meta:resourcekey="locGuacamoleHyperVAdministratorPassword" Text="Hyper-V Administrator Password:"></asp:Localize>
+		        <asp:Localize ID="locGuacamoleHyperVAdministratorPassword" runat="server" meta:resourcekey="locGuacamoleHyperVAdministratorPassword" Text="Hyper-V Password:"></asp:Localize>
 		    </td>
 		    <td>
                 <asp:TextBox Width="250px" CssClass="form-control" Runat="server" ID="txtGuacamoleHyperVAdministratorPassword"  TextMode="Password"></asp:TextBox>
@@ -125,8 +127,13 @@
             </td>
 	    </tr>
 
-
-
+        <tr id="rowPassword" runat="server">
+    		<td class="SubHead">
+		        <asp:Label ID="lblCurrPassword" runat="server" meta:resourcekey="lblCurrPassword" Text="Current Hyper-V Password:"></asp:Label>
+    		</td>
+    		<td class="Normal">*******
+		    </td>
+	    </tr>
 
 	</table>
 </fieldset>
@@ -229,7 +236,7 @@
                             <asp:ListItem Text="8.2 - Windows 10 (version 1709)" Value="8.2"></asp:ListItem>
                             <asp:ListItem Text="8.3 - Windows 10 (version 1803)" Value="8.3"></asp:ListItem>
                             <asp:ListItem Text="9.0 - Windows Server 2019 (version 1809) LTSC" Value="9.0"></asp:ListItem>
-                            <asp:ListItem Text="9.1 - Windows Server 2019 (version 1903)" Value="9.1"></asp:ListItem>
+                            <asp:ListItem Text="9.1 - Windows Server 2019 (version 1903/1909)" Value="9.1"></asp:ListItem>
                         </asp:DropDownList>                        
                     </td>
                 </tr>

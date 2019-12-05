@@ -61,6 +61,34 @@
                                         meta:resourcekey="locOnePerLine" Text="* Type one IP address per line"></asp:Localize>
                             </td>
                         </tr>
+                        <tr>
+                            <td>
+                                <br />
+                                <asp:CheckBox ID="chkCustomGateway" runat="server" AutoPostBack="true" Checked="false"
+                                    meta:resourcekey="chkCustomGateway" Text="Custom Gateway and DNS" />
+                            </td>
+                        </tr>
+                        <tr id="trCustomGateway" runat="server">
+                            <td style="padding-left: 30px;">
+                                <asp:RequiredFieldValidator ID="GatewayValidator" runat="server" Text="*" Display="Dynamic"
+                                    ControlToValidate="txtGateway" meta:resourcekey="GatewayValidator" SetFocusOnError="true"
+                                    ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                <asp:Localize ID="locGateway" runat="server"
+                                    meta:resourcekey="locGateway" Text="Gateway:"></asp:Localize>
+                                <asp:TextBox ID="txtGateway" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                <asp:RequiredFieldValidator ID="DNSValidator" runat="server" Text="*" Display="Dynamic"
+                                    ControlToValidate="txtDNS1" meta:resourcekey="DNSValidator" SetFocusOnError="true"
+                                    ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                <asp:Localize ID="locDNS1" runat="server"
+                                    meta:resourcekey="locDNS1" Text="Preferred DNS server:"></asp:Localize>
+                                <asp:TextBox ID="txtDNS1" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                <asp:Localize ID="locDNS2" runat="server"
+                                    meta:resourcekey="locDNS2" Text="Alternate DNS server:"></asp:Localize>
+                                <asp:TextBox ID="txtDNS2" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+                            </td>
+                        </tr>
                     </table>
                     
                     <p>

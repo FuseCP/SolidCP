@@ -882,7 +882,7 @@ namespace SolidCP.EnterpriseServer
                         if (!privNic.IsDHCP)
                         {
                             // provision IP addresses
-                            ResultObject extResult = AddVirtualMachinePrivateIPAddresses(vm.Id, randomPrivateAddresses, privateAddressesNumber, privateAddresses, false);
+                            ResultObject extResult = AddVirtualMachinePrivateIPAddresses(vm.Id, randomPrivateAddresses, privateAddressesNumber, privateAddresses, false, false, null, null, null);
 
                             // set primary IP address
                             privNic = GetPrivateNetworkAdapterDetails(vm.Id);
@@ -3757,10 +3757,13 @@ namespace SolidCP.EnterpriseServer
             // update NIC
             nic.MacAddress = GetSymbolDelimitedMacAddress(vm.PrivateNicMacAddress, "-");
             nic.VLAN = vm.PrivateNetworkVlan;
+            if (!String.IsNullOrEmpty(vm.CustomPrivateGateway)) nic.DefaultGateway = vm.CustomPrivateGateway;
+            if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
+            if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
-                DataProvider.GetItemPrivateIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
+            DataProvider.GetItemPrivateIPAddresses(SecurityContext.User.UserId, itemId)).ToArray();
 
             foreach (NetworkAdapterIPAddress ip in nic.IPAddresses)
             {
@@ -3844,21 +3847,21 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2)
         {
             int provisionKvpType = 2;
-            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType);
+            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2);
         }
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp)
+        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2)
         {
             int provisionKvpType = 0;
             if (provisionKvp)
                 provisionKvpType = 1;
 
-            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType);
+            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2);
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType)
+        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType, bool customGatewayAndDns, string gateway, string dns1, string dns2)
         {
             // trace info
             Trace.TraceInformation("Entering AddVirtualMachinePrivateIPAddresses()");
@@ -3952,6 +3955,14 @@ namespace SolidCP.EnterpriseServer
                     nic = GetPrivateNetworkAdapterDetails(itemId);
                     if (nic.IPAddresses.Length > 0)
                         SetVirtualMachinePrimaryPrivateIPAddress(itemId, nic.IPAddresses[0].AddressId, false);
+                }
+
+                if (customGatewayAndDns) // set custom Gateway and DNS
+                {
+                    vm.CustomPrivateGateway = gateway;
+                    vm.CustomPrivateDNS1 = dns1;
+                    vm.CustomPrivateDNS2 = dns2;
+                    PackageController.UpdatePackageItem(vm);
                 }
 
                 // send KVP config items

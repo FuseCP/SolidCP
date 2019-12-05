@@ -1,3 +1,15 @@
+Version 1.4.6
+- [HyperV2012R2+] Ability to configure custom Gateway and DNS for a private network / RDS-Servers: optimize status update and fix search - IvanSchulz
+- Fixes for MySQL and MariaDB
+- [MySQL8] Moving MySQL8 from SET PASSWORD to ALTER USER
+- [OS 2019] Change to allow for OS using build 1903 and above  
+- Fix for the issue regarding adding mail accounts
+- [HyperV2012R2+] Added VMConfig version 9.1 (Windows 1903).
+- [HyperV2012R2+] Supporting VMConfig for Windows 10 1909
+- [SimpleDNS80] Fix for DNSSec and SOA record visibility - posixx
+- [dSHeuristics] Support for alternative Parent Domain
+
+
 Version 1.4.4
 - Fix for users delete from Hosted Organisations - bluechip
 - Fix for Exchange 2019 is installed
