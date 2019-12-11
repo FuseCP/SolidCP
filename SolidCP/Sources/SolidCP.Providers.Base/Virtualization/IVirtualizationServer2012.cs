@@ -48,10 +48,10 @@ namespace SolidCP.Providers.Virtualization
         JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState);
         ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason);
         List<ConcreteJob> GetVirtualMachineJobs(string vmId);
-        JobResult RenameVirtualMachine(string vmId, string name);
+        JobResult RenameVirtualMachine(string vmId, string name, string clusterName);
         JobResult ExportVirtualMachine(string vmId, string exportPath);
-        JobResult DeleteVirtualMachine(string vmId);
-        JobResult DeleteVirtualMachineExtended(string vmId);
+        JobResult DeleteVirtualMachine(string vmId, string clusterName);
+        JobResult DeleteVirtualMachineExtended(string vmId, string clusterName);
         bool IsTryToUpdateVirtualMachineWithoutRebootSuccess(VirtualMachine vm);
 
         // Snapshots

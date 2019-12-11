@@ -1155,6 +1155,8 @@ namespace SolidCP.EnterpriseServer
                 } // end if (expanded ...
                 #endregion
 
+                vm.ClusterName = (Utils.ParseBool(settings["UseFailoverCluster"], false)) ? settings["ClusterName"] : null;
+
                 #region Create Virtual Machine
                 TaskManager.Write("VPS_CREATE_CPU_CORES", vm.CpuCores.ToString());
                 TaskManager.Write("VPS_CREATE_RAM_SIZE", vm.RamSize.ToString());
@@ -2184,8 +2186,11 @@ namespace SolidCP.EnterpriseServer
                 // get proxy
                 VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
 
+                StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
+                vm.ClusterName = (Utils.ParseBool(settings["UseFailoverCluster"], false)) ? settings["ClusterName"] : null;
+
                 // update virtual machine name
-                JobResult result = vs.RenameVirtualMachine(vm.VirtualMachineId, hostname);
+                JobResult result = vs.RenameVirtualMachine(vm.VirtualMachineId, hostname, vm.ClusterName);
                 if (result.ReturnValue != ReturnCode.OK)
                 {
                     LogReturnValueResult(res, result);
@@ -4326,6 +4331,9 @@ namespace SolidCP.EnterpriseServer
                 // check VM state
                 VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
 
+                StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
+                vm.ClusterName = (Utils.ParseBool(settings["UseFailoverCluster"], false)) ? settings["ClusterName"] : null;
+
                 JobResult result = null;
 
                 if (vps != null)
@@ -4381,7 +4389,7 @@ namespace SolidCP.EnterpriseServer
 
                     #region delete machine
                     TaskManager.Write("VPS_DELETE_DELETE");
-                    result = saveFiles ? vs.DeleteVirtualMachine(vm.VirtualMachineId) : vs.DeleteVirtualMachineExtended(vm.VirtualMachineId);
+                    result = saveFiles ? vs.DeleteVirtualMachine(vm.VirtualMachineId, vm.ClusterName) : vs.DeleteVirtualMachineExtended(vm.VirtualMachineId, vm.ClusterName);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -4523,6 +4531,9 @@ namespace SolidCP.EnterpriseServer
                 // check VM state
                 VirtualMachine vps = vs.GetVirtualMachine(vm.VirtualMachineId);
 
+                StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
+                vm.ClusterName = (Utils.ParseBool(settings["UseFailoverCluster"], false)) ? settings["ClusterName"] : null;
+
                 JobResult result = null;
                 //vm.ProvisioningStatus = VirtualMachineProvisioningStatus.InProgress;
 
@@ -4574,7 +4585,7 @@ namespace SolidCP.EnterpriseServer
 
                     #region delete machine
                     TaskManager.Write("VPS_DELETE_DELETE");
-                    result = saveFiles ? vs.DeleteVirtualMachine(vm.VirtualMachineId) : vs.DeleteVirtualMachineExtended(vm.VirtualMachineId);
+                    result = saveFiles ? vs.DeleteVirtualMachine(vm.VirtualMachineId, vm.ClusterName) : vs.DeleteVirtualMachineExtended(vm.VirtualMachineId, vm.ClusterName);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)

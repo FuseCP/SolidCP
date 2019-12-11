@@ -110,8 +110,16 @@ namespace SolidCP.Providers.Virtualization
             powerShell.Execute(cmd, true);
         }
 
-        public static void Delete(PowerShellManager powerShell, string vmName, string server)
+        public static void Delete(PowerShellManager powerShell, string vmName, string vmId, string server, string clusterName)
         {
+            if (!String.IsNullOrEmpty(clusterName))
+            {
+                Command cmdCluster = new Command("Remove-ClusterGroup");
+                cmdCluster.Parameters.Add("VMId", vmId);
+                cmdCluster.Parameters.Add("RemoveResources");
+                cmdCluster.Parameters.Add("Force");
+                powerShell.Execute(cmdCluster, false);
+            }
             Command cmd = new Command("Remove-VM");
             cmd.Parameters.Add("Name", vmName);
             if (!string.IsNullOrEmpty(server)) cmd.Parameters.Add("ComputerName", server);

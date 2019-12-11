@@ -518,6 +518,15 @@ namespace SolidCP.Providers.Virtualization
                     throw new Exception("Can't find created machine");
                 vm.VirtualMachineId = createdMachine.VirtualMachineId;
 
+                // add to Failover Cluster
+                if (!String.IsNullOrEmpty(vm.ClusterName))
+                {
+                    Command cmdCluster = new Command("Add-ClusterVirtualMachineRole");
+                    cmdCluster.Parameters.Add("VMId", vm.VirtualMachineId);
+                    cmdCluster.Parameters.Add("Cluster", vm.ClusterName);
+                    PowerShell.Execute(cmdCluster, false);
+                }
+
                 // Update common settings
                 UpdateVirtualMachine(vm);
             }
@@ -846,28 +855,46 @@ namespace SolidCP.Providers.Virtualization
             return jobs;
         }
 
-        public JobResult RenameVirtualMachine(string vmId, string name)
+        public JobResult RenameVirtualMachine(string vmId, string name, string clusterName)
         {
             var vm = GetVirtualMachine(vmId);
+
+            if (!String.IsNullOrEmpty(clusterName))
+            {
+                Command cmdCluster = new Command("Remove-ClusterGroup");
+                cmdCluster.Parameters.Add("VMId", vmId);
+                cmdCluster.Parameters.Add("RemoveResources");
+                cmdCluster.Parameters.Add("Force");
+                PowerShell.Execute(cmdCluster, false);
+            }
 
             Command cmdSet = new Command("Rename-VM");
             cmdSet.Parameters.Add("Name", vm.Name);
             cmdSet.Parameters.Add("NewName", name);
             PowerShell.Execute(cmdSet, true);
 
+            if (!String.IsNullOrEmpty(clusterName))
+            {
+                Command cmdCluster = new Command("Add-ClusterVirtualMachineRole");
+                cmdCluster.Parameters.Add("VMId", vmId);
+                cmdCluster.Parameters.Add("Cluster", clusterName);
+                PowerShell.Execute(cmdCluster, false);
+            }
+
             return JobHelper.CreateSuccessResult();
         }
-        public JobResult DeleteVirtualMachine(string vmId)
+
+        public JobResult DeleteVirtualMachine(string vmId, string clusterName)
         {
-            return DeleteVirtualMachineInternal(vmId, false);
+            return DeleteVirtualMachineInternal(vmId, false, clusterName);
         }
 
-        public JobResult DeleteVirtualMachineExtended(string vmId)
+        public JobResult DeleteVirtualMachineExtended(string vmId, string clusterName)
         {
-            return DeleteVirtualMachineInternal(vmId, true);
+            return DeleteVirtualMachineInternal(vmId, true, clusterName);
         }
 
-        protected JobResult DeleteVirtualMachineInternal(string vmId, bool withExternalData)
+        protected JobResult DeleteVirtualMachineInternal(string vmId, bool withExternalData, string clusterName)
         {
             var vm = GetVirtualMachineEx(vmId);
 
@@ -891,7 +918,7 @@ namespace SolidCP.Providers.Virtualization
                 SnapshotHelper.Delete(PowerShell, vm.Name);                
                 //something else???
             }            
-            VirtualMachineHelper.Delete(PowerShell, vm.Name, ServerNameSettings);
+            VirtualMachineHelper.Delete(PowerShell, vm.Name, vmId, ServerNameSettings, clusterName);
 
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
         }
@@ -2168,7 +2195,7 @@ namespace SolidCP.Providers.Virtualization
 
                 #region Delete virtual machine
                 //result = DeleteVirtualMachine(vm.VirtualMachineId);
-                result = DeleteVirtualMachineExtended(vm.VirtualMachineId);
+                result = DeleteVirtualMachineExtended(vm.VirtualMachineId, vm.ClusterName);
 
                 // check result
                 if (result.ReturnValue != ReturnCode.JobStarted)

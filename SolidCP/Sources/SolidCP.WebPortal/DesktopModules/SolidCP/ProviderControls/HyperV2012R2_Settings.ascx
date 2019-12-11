@@ -862,3 +862,31 @@
     </table>
 </fieldset>
 <br />
+
+<fieldset>
+    <legend>
+        <asp:Localize ID="locFailoverCluster" runat="server" meta:resourcekey="locFailoverCluster" Text="Failover Cluster"></asp:Localize>
+    </legend>
+    
+    <asp:UpdatePanel ID="UpdatePanel1" runat="server" ChildrenAsTriggers="true">
+        <ContentTemplate>
+            <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
+                <tr>
+                    <td colspan="3">
+                        <asp:CheckBox ID="chkUseFailoverCluster" runat="server" meta:resourcekey="chkUseFailoverCluster" OnCheckedChanged="chkUseFailoverCluster_CheckedChanged" Text="Use Failover Cluster" AutoPostBack="true" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="SubHead" style="width:200px;">
+		                <asp:Localize ID="locClusterName" runat="server" meta:resourcekey="locClusterName" Text="Cluster FQDN Name:"></asp:Localize>
+		            </td>
+                    <td>
+                        <asp:TextBox ID="tbClusterName" runat="server" Width="300px" CssClass="form-control"></asp:TextBox>
+		                <asp:RequiredFieldValidator ID="ClusterNameValidator" runat="server" ControlToValidate="tbClusterName"
+                            Text="*" meta:resourcekey="ClusterNameValidator" Display="Dynamic" SetFocusOnError="true" />
+                    </td>
+                </tr>
+            </table>
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</fieldset>

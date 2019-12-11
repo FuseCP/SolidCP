@@ -156,6 +156,12 @@ namespace SolidCP.Portal.ProviderControls
             txtReplicaPath.Text = settings["ReplicaServerPath"];
             ReplicaServerId = settings["ReplicaServerId"];
 
+            // Failover Cluster
+            chkUseFailoverCluster.Checked = Utils.ParseBool(settings["UseFailoverCluster"], false);
+            tbClusterName.Text = settings["ClusterName"];
+            tbClusterName.Enabled = chkUseFailoverCluster.Checked;
+            ClusterNameValidator.Enabled = chkUseFailoverCluster.Checked;
+
             ToggleControls();
 
             // replica
@@ -263,6 +269,10 @@ namespace SolidCP.Portal.ProviderControls
             settings["ReplicaServerId"] = ddlReplicaServer.SelectedValue;
             settings["ReplicaServerPath"] = txtReplicaPath.Text;
             settings["ReplicaServerThumbprint"] = CertificateThumbprint;
+
+            // Failover Cluster
+            settings["UseFailoverCluster"] = chkUseFailoverCluster.Checked.ToString();
+            settings["ClusterName"] = tbClusterName.Text;
 
             SetUnsetReplication();
         }
@@ -722,6 +732,12 @@ namespace SolidCP.Portal.ProviderControls
         protected void chkGetSwitchesByPS_CheckedChanged(object sender, EventArgs e)
         {
             BindNetworksList();
+        }
+
+        protected void chkUseFailoverCluster_CheckedChanged(object sender, EventArgs e)
+        {
+            tbClusterName.Enabled = chkUseFailoverCluster.Checked;
+            ClusterNameValidator.Enabled = chkUseFailoverCluster.Checked;
         }
     }
 }

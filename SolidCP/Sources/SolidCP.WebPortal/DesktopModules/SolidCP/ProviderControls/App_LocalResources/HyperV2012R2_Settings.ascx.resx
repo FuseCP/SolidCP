@@ -564,4 +564,16 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="lblCurrPassword.Text" xml:space="preserve">
     <value>Current Hyper-V Password:</value>
   </data>
+  <data name="chkUseFailoverCluster.Text" xml:space="preserve">
+    <value>Use Failover Cluster</value>
+  </data>
+  <data name="ClusterNameValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter Cluster name</value>
+  </data>
+  <data name="locClusterName.Text" xml:space="preserve">
+    <value>Cluster FQDN name:</value>
+  </data>
+  <data name="locFailoverCluster.Text" xml:space="preserve">
+    <value>Failover Cluster</value>
+  </data>
 </root>
