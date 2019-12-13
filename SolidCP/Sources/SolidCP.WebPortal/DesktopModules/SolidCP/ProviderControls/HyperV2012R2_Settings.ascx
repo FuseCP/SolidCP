@@ -371,6 +371,14 @@
                                 </tr>
                                 <tr>
 	                                <td class="SubHead">
+		                                <asp:Localize ID="locDiskSize" runat="server" meta:resourcekey="locDiskSize" Text="VHD Disk Size (GB):"></asp:Localize>
+	                                </td>
+	                                <td>
+		                                <asp:TextBox Width="400px" CssClass="form-control" runat="server" ID="txtDiskSize" Text='<%# Eval("DiskSize") %>'></asp:TextBox>
+	                                </td>
+                                </tr>
+                                <tr>
+	                                <td class="SubHead">
 		                                <asp:Localize ID="locTemplateTimeZone" runat="server" meta:resourcekey="locTemplateTimeZone" Text="OS Time Zone (#os_template.TimeZoneId#):"></asp:Localize>
 	                                </td>
 	                                <td>
