@@ -206,17 +206,17 @@ namespace SolidCP.Portal.ExchangeServer
             }
         }
 
-        private void SaveSettings()
+        private bool SaveSettings()
         {
             if (!Page.IsValid)
-                return;
+                return false;
 
             try
             {
                 if (mailboxPlanSelector.MailboxPlanId == "-1")
                 {
                     messageBox.ShowErrorMessage("EXCHANGE_SPECIFY_PLAN");
-                    return;
+                    return false;
                 }
 
                 int result = ES.Services.ExchangeServer.SetMailboxGeneralSettings(
@@ -227,7 +227,7 @@ namespace SolidCP.Portal.ExchangeServer
                 if (result < 0)
                 {
                     messageBox.ShowResultMessage(result);
-                    return;
+                    return false;
                 }
                 else
                 {
@@ -243,7 +243,7 @@ namespace SolidCP.Portal.ExchangeServer
                     if (result < 0)
                     {
                         messageBox.ShowResultMessage(result);
-                        return;
+                        return false;
                     }
                 }
 
@@ -256,10 +256,12 @@ namespace SolidCP.Portal.ExchangeServer
 
                 messageBox.ShowSuccessMessage("EXCHANGE_UPDATE_MAILBOX_SETTINGS");
                 BindSettings();
+                return true;
             }
             catch (Exception ex)
             {
                 messageBox.ShowErrorMessage("EXCHANGE_UPDATE_MAILBOX_SETTINGS", ex);
+                return false;
             }
         }
 
@@ -270,11 +272,12 @@ namespace SolidCP.Portal.ExchangeServer
 
         protected void btnSaveExit_Click(object sender, EventArgs e)
         {
-            SaveSettings();
-
-            Response.Redirect(PortalUtils.EditUrl("ItemID", PanelRequest.ItemID.ToString(),
+            if (SaveSettings())
+            {
+                Response.Redirect(PortalUtils.EditUrl("ItemID", PanelRequest.ItemID.ToString(),
                 "mailboxes",
                 "SpaceID=" + PanelSecurity.PackageId));
+            }
         }
 
 
