@@ -5990,6 +5990,11 @@ namespace SolidCP.EnterpriseServer
 
         public static void UpdateRDSServer(int id, int? itemId, string name, string fqdName, string description, int? rdsCollectionId, string connectionEnabled)
         {
+            byte connEnabled = 1;
+            if (!String.IsNullOrEmpty(connectionEnabled))
+            {
+                if (connectionEnabled.Equals("false") || connectionEnabled.Equals("no") || connectionEnabled.Equals("0")) connEnabled = 0;
+            }
             SqlHelper.ExecuteNonQuery(
                 ConnectionString,
                 CommandType.StoredProcedure,
@@ -6000,7 +6005,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@FqdName", fqdName),
                 new SqlParameter("@Description", description),
                 new SqlParameter("@RDSCollectionId", rdsCollectionId),
-                new SqlParameter("@ConnectionEnabled", connectionEnabled)
+                new SqlParameter("@ConnectionEnabled", connEnabled)
             );
         }
 
