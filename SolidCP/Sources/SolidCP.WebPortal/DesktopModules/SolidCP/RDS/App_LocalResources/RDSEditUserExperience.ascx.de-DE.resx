@@ -112,16 +112,22 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="cbAdministrators.Text" xml:space="preserve">
     <value>Administratoren</value>
   </data>
   <data name="cbUsers.Text" xml:space="preserve">
     <value>Benutzer</value>
+  </data>
+  <data name="locRemoteApps.Text" xml:space="preserve">
+    <value>Möglicherweise müssen Sie &lt;strong&gt;die Eingabeaufforderung&lt;/strong&gt; aktivieren, wenn die RemoteApps in dieser Sammlung nicht geladen werden.</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>RDS-Sammlung bearbeiten</value>
   </data>
   <data name="secChangeDesktop.Text" xml:space="preserve">
     <value>Desktop-Änderungen deaktiviert</value>
@@ -148,7 +154,7 @@
     <value>Bildschirmschoner deaktivieren</value>
   </data>
   <data name="secShutdown.Text" xml:space="preserve">
-    <value>Harunterfahren und Neustarten entfernen</value>
+    <value>Herunterfahren und Neu starten entfernen</value>
   </data>
   <data name="secTaskManager.Text" xml:space="preserve">
     <value>Task-Manager deaktivieren</value>

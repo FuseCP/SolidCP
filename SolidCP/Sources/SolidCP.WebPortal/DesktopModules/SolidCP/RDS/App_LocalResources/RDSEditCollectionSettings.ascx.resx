@@ -117,6 +117,51 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="cbAuthentication.Text" xml:space="preserve">
+    <value>Allow connections only from computers running Remote Desktop with Network Level Authentication</value>
+  </data>
+  <data name="chAudioRecording.Text" xml:space="preserve">
+    <value>Audio recording</value>
+  </data>
+  <data name="chAudioVideo.Text" xml:space="preserve">
+    <value>Audio and video playback</value>
+  </data>
+  <data name="chAutomaticReconnection.Text" xml:space="preserve">
+    <value>Enable automatic reconnection</value>
+  </data>
+  <data name="chClipboard.Text" xml:space="preserve">
+    <value>Clipboard</value>
+  </data>
+  <data name="chDefaultDevice.Text" xml:space="preserve">
+    <value>Use the client default printing device</value>
+  </data>
+  <data name="chDeleteOnExit.Text" xml:space="preserve">
+    <value>Delete temporary folders on exit</value>
+  </data>
+  <data name="chDisconnect.Text" xml:space="preserve">
+    <value>Disconnect from the session</value>
+  </data>
+  <data name="chDrives.Text" xml:space="preserve">
+    <value>Drives</value>
+  </data>
+  <data name="chEasyPrint.Text" xml:space="preserve">
+    <value>Use the Remote Desktop Easy Print print driver first</value>
+  </data>
+  <data name="chEndSession.Text" xml:space="preserve">
+    <value>End the session</value>
+  </data>
+  <data name="chPlugPlay.Text" xml:space="preserve">
+    <value>Plug and play devices</value>
+  </data>
+  <data name="chPrinterRedirection.Text" xml:space="preserve">
+    <value>Allow client printer redirection</value>
+  </data>
+  <data name="chSmartCards.Text" xml:space="preserve">
+    <value>Smart cards</value>
+  </data>
+  <data name="chUseFolders.Text" xml:space="preserve">
+    <value>Use temporary folders per session</value>
+  </data>
   <data name="locActiveSessionLimit.Text" xml:space="preserve">
     <value>Active session limit:</value>
   </data>

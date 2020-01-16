@@ -508,6 +508,15 @@ namespace SolidCP.Portal.RDS {
         protected global::System.Web.UI.WebControls.CheckBox cbDisableCmdAdministrators;
         
         /// <summary>
+        /// locRemoteApps control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locRemoteApps;
+        
+        /// <summary>
         /// buttonPanel control.
         /// </summary>
         /// <remarks>
