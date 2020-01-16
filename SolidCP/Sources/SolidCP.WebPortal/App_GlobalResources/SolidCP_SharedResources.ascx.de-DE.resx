@@ -2421,6 +2421,36 @@
   <data name="AuditLogSource.WEB_SITE" xml:space="preserve">
     <value>Webseite</value>
   </data>
+  <data name="AuditLogSource.REMOTE_DESKTOP_SERVICES" xml:space="preserve">
+    <value>Remote Desktop Services</value>
+  </data>
+  <data name="AuditLogSource.OCS" xml:space="preserve">
+    <value>OCS</value>
+  </data>
+  <data name="AuditLogSource.ORGANIZATION" xml:space="preserve">
+    <value>Organisation</value>
+  </data>
+  <data name="AuditLogSource.AUTO_DISCOVERY" xml:space="preserve">
+    <value>Auto Discovery</value>
+  </data>
+  <data name="AuditLogSource.STORAGE_SPACES" xml:space="preserve">
+    <value>Storage-Spaces</value>
+  </data>
+  <data name="AuditLogSource.ENTERPRISE_STORAGE" xml:space="preserve">
+    <value>Enterprise Storage</value>
+  </data>
+  <data name="AuditLogSource.HOSTING_SPACE_WR" xml:space="preserve">
+    <value>Hosting-Bereich WR</value>
+  </data>
+  <data name="AuditLogSource.HOSTING_SPACE" xml:space="preserve">
+    <value>Hosting-Bereich hinzufügen</value>
+  </data>
+  <data name="AuditLogSource.VLAN" xml:space="preserve">
+    <value>VLAN</value>
+  </data>
+  <data name="AuditLogSource.WAG_INSTALLER" xml:space="preserve">
+    <value>Web Apps Galerie Installer</value>
+  </data>
   <data name="AuditLogTask.APP_INSTALLER_INSTALL_APPLICATION" xml:space="preserve">
     <value>Applikation installieren</value>
   </data>
@@ -2795,6 +2825,231 @@
   </data>
   <data name="AuditLogTask.SCHEDULER_RUN_SCHEDULE" xml:space="preserve">
     <value>Zeitplanung ausführen</value>
+  </data>
+  <data name="AuditLogTask.REMOTE_DESKTOP_SERVICES_ADD_RDS_SERVER" xml:space="preserve">
+    <value>RDS-Server hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.REMOTE_DESKTOP_SERVICES_RESTART_RDS_SERVER" xml:space="preserve">
+    <value>RDS-Server Neustart</value>
+  </data>
+  <data name="AuditLogTask.REMOTE_DESKTOP_SERVICES_SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED" xml:space="preserve">
+    <value>RDS - neue Verbindungen Einstellen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CREATE" xml:space="preserve">
+    <value>VM erstellen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_REINSTALL" xml:space="preserve">
+    <value>VM Reinstall</value>
+  </data>
+  <data name="AuditLogTask.HOSTING_SPACE_ADD" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.ENTERPRISE_STORAGE_GET_ORG_STATS" xml:space="preserve">
+    <value>Abrufen von Organisationsstatistiken</value>
+  </data>
+  <data name="AuditLogTask.ENTERPRISE_STORAGE_CREATE_MAPPED_DRIVE" xml:space="preserve">
+    <value>Zugeordnetes Laufwerk erstellen</value>
+  </data>
+  <data name="AuditLogTask.ENTERPRISE_STORAGE_DELETE_MAPPED_DRIVE" xml:space="preserve">
+    <value>Zugeordnetes Laufwerk löschen</value>
+  </data>
+  <data name="AuditLogTask.ENTERPRISE_STORAGE_CREATE_FOLDER" xml:space="preserve">
+    <value>Ordner erstellen</value>
+  </data>
+  <data name="AuditLogTask.ENTERPRISE_STORAGE_DELETE_FOLDER" xml:space="preserve">
+    <value>Ordner löschen</value>
+  </data>
+  <data name="AuditLogTask.ENTERPRISE_STORAGE_SET_ENTERPRISE_FOLDER_GENERAL_SETTINGS" xml:space="preserve">
+    <value>Enterprise Ordner allgemeine Einstellungen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_GET_ORG_STATS" xml:space="preserve">
+    <value>Abrufen von Organisationsstatistiken</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_GET_SUPPORT_SERVICE_LEVELS" xml:space="preserve">
+    <value>Abrufen von Support-Service-Levels</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_GET_SECURITY_GROUPS_BYMEMBER" xml:space="preserve">
+    <value>Sicherheitsgruppen nach Mitglied abrufen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_GET_SECURITY_GROUP_GENERAL" xml:space="preserve">
+    <value>Allgemeine Einstellungen für Sicherheitsgruppen abrufen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_SET_USER_PASSWORD" xml:space="preserve">
+    <value>Benutzer Passwort festlegen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_SET_USER_USERPRINCIPALNAME" xml:space="preserve">
+    <value>Benutzerprinzipalname festlegen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_UPDATE_USER_GENERAL" xml:space="preserve">
+    <value>Allgemeinen Benutzereinstellungen aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_CREATE_USER" xml:space="preserve">
+    <value>Benutzer anlegen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_REMOVE_USER" xml:space="preserve">
+    <value>Benutzer entfernen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_CREATE_ORG" xml:space="preserve">
+    <value>Organisation erstellen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_DELETE_ORG" xml:space="preserve">
+    <value>Organisation löschen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_CREATE_ORGANIZATION_ENTERPRISE_STORAGE" xml:space="preserve">
+    <value>Organisation Enterprise-Storage erstellen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_SEND_USER_PASSWORD_RESET_EMAIL_PINCODE" xml:space="preserve">
+    <value>E-Mail-PIN-Code zum Zurücksetzen des Benutzerkennworts senden</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_UPDATE_PASSWORD_SETTINGS" xml:space="preserve">
+    <value>Passworteinstellungen aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_CREATE_SECURITY_GROUP" xml:space="preserve">
+    <value>Sicherheitsgruppe erstellen</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_UPDATE_SECURITY_GROUP_GENERAL" xml:space="preserve">
+    <value>Allgemeinen Einstellungen der Sicherheitsgruppe aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.ORGANIZATION_DELETE_SECURITY_GROUP" xml:space="preserve">
+    <value>Sicherheitsgruppe löschen</value>
+  </data>
+  <data name="AuditLogTask.AUTO_DISCOVERY_IS_INSTALLED" xml:space="preserve">
+    <value>Ist installiert</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_EXCHANGE_MAILBOXPLANS" xml:space="preserve">
+    <value>Exchange Mailbox-Pläne abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_EXCHANGE_MAILBOXPLAN" xml:space="preserve">
+    <value>Exchange Mailbox-Plan abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_EXCHANGE_ACCOUNTDISCLAIMERID" xml:space="preserve">
+    <value>Exchange-Konto Disclaimer id abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_EXCHANGE_EXCHANGEDISCLAIMER" xml:space="preserve">
+    <value>Exchange Disclaimer abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_ADD_EXCHANGE_EXCHANGEDISCLAIMER" xml:space="preserve">
+    <value>Exchange Disclaimer hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_MAILBOX_STATS" xml:space="preserve">
+    <value>Mailboxstatistik abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_ACTIVESYNC_POLICY" xml:space="preserve">
+    <value>ActiveSync-Richtlinie abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_SET_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING" xml:space="preserve">
+    <value>Archivierung der Aufbewahrungsrichtlinien für Postfachpläne festlegen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_EXCHANGE_RETENTIONPOLICYTAG" xml:space="preserve">
+    <value>Exchange-Aufbewahrungsrichtlinientag abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_ADD_EXCHANGE_RETENTIONPOLICYTAG" xml:space="preserve">
+    <value>Exchange-Aufbewahrungsrichtlinientag hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_EXCHANGE_RETENTIONPOLICYTAGS" xml:space="preserve">
+    <value>Exchange-Aufbewahrungsrichtlinientags abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_DELETE_EXCHANGE_RETENTIONPOLICYTAG" xml:space="preserve">
+    <value>Exchange-Aufbewahrungsrichtlinientag löschen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_UPDATE_EXCHANGE_RETENTIONPOLICYTAG" xml:space="preserve">
+    <value>Exchange-Aufbewahrungsrichtlinientag aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_ADD_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING" xml:space="preserve">
+    <value>Aufbewahrungsrichtlinie für die Exchange-Archivierung hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_DELETE_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIV" xml:space="preserve">
+    <value>Aufbewahrungsrichtlinie für die Exchange-Archivierung löschen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_PICTURE" xml:space="preserve">
+    <value>Bild abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_UPDATE_MAILBOX_AUTOREPLY" xml:space="preserve">
+    <value>Mailbox automatische Antwort aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_MAILBOX_AUTOREPLY" xml:space="preserve">
+    <value>Mailbox automatische Antwort abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_DISTR_LIST_BYMEMBER" xml:space="preserve">
+    <value>Verteilerliste nach Mitglied abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_DISTRIBUTION_LIST_RESULT" xml:space="preserve">
+    <value>Ergebnis der Verteilerliste abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_MOBILE_DEVICES" xml:space="preserve">
+    <value>Mobile Geräte abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_MAILBOX_PERMISSIONS" xml:space="preserve">
+    <value>Postfachberechtigungen abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_DISABLE_MAILBOX" xml:space="preserve">
+    <value>Mailbox deaktivieren</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_SET_EXCHANGE_ACCOUNTDISCLAIMERID" xml:space="preserve">
+    <value>Exchange-Konto Disclaimer id festlegen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_SET_EXCHANGE_MAILBOXPLAN" xml:space="preserve">
+    <value>Exchange-Postfachplans festlegen</value>
+  </data>
+  <data name="AuditLogTask.STORAGE_SPACES_SAVE_STORAGE_SPACE" xml:space="preserve">
+    <value>Storage-Space speichern</value>
+  </data>
+  <data name="AuditLogTask.STORAGE_SPACES_SAVE_STORAGE_SPACE_LEVEL" xml:space="preserve">
+    <value>Storage-Space Ebene speichern</value>
+  </data>
+  <data name="AuditLogTask.STORAGE_SPACES_REMOVE_STORAGE_SPACE" xml:space="preserve">
+    <value>Storage-Space löschen</value>
+  </data>
+  <data name="AuditLogTask.DOMAIN_ENABLE_DNS" xml:space="preserve">
+    <value>DNS aktivieren</value>
+  </data>
+  <data name="AuditLogTask.VLAN_ADD" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.VLAN_ADD_RANGE" xml:space="preserve">
+    <value>Bereich hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.VLAN_DELETE_RANGE" xml:space="preserve">
+    <value>Bereich löschen</value>
+  </data>
+  <data name="AuditLogTask.VLAN_UPDATE" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.VLAN_ALLOCATE_PACKAGE_VLAN" xml:space="preserve">
+    <value>VLAN das Paket zuordnen</value>
+  </data>
+  <data name="AuditLogTask.VLAN_DEALLOCATE_PACKAGE_VLAN" xml:space="preserve">
+    <value>Paket-VLAN freigeben</value>
+  </data>
+  <data name="AuditLogTask.WAG_INSTALLER_GET_GALLERY_APPS_TASK" xml:space="preserve">
+    <value>Galerie-Anwendungen abrufen</value>
+  </data>
+  <data name="AuditLogTask.WAG_INSTALLER_GET_GALLERY_CATEGORIES_TASK" xml:space="preserve">
+    <value>Galerie Kategorien abrufen</value>
+  </data>
+  <data name="AuditLogTask.WAG_INSTALLER_GET_GALLERY_APP_DETAILS_TASK" xml:space="preserve">
+    <value>Details von Galerie-Anwendung abrufen</value>
+  </data>
+  <data name="AuditLogTask.WAG_INSTALLER_INSTALL_WEB_APP" xml:space="preserve">
+    <value>Webanwendung installieren</value>
+  </data>
+  <data name="AuditLogTask.WAG_INSTALLER_GET_APP_PARAMS_TASK" xml:space="preserve">
+    <value>Anwendungsparameter abrufen</value>
+  </data>
+  <data name="AuditLogTask.WAG_INSTALLER_GET_SRV_GALLERY_APPS_TASK" xml:space="preserve">
+    <value>Server-Galerie-Anwendungen abrufen</value>
+  </data>
+  <data name="AuditLogTask.WEB_SITE_GET_STATE" xml:space="preserve">
+    <value>Status abrufen</value>
+  </data>
+  <data name="AuditLogTask.OCS_CREATE_OCS_USER" xml:space="preserve">
+    <value>OCS-Benutzer erstellen</value>
+  </data>
+  <data name="AuditLogTask.OCS_GET_OCS_USERS_COUNT" xml:space="preserve">
+    <value>Anzahl der OCS-Benutzer abrufen</value>
+  </data>
+  <data name="AuditLogTask.OCS_GET_OCS_USERS" xml:space="preserve">
+    <value>OCS-Benutzer abrufen</value>
   </data>
   <data name="Error.401" xml:space="preserve">
     <value>Ungültige Anforderung</value>
