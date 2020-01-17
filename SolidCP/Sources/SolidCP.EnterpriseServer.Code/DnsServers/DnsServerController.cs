@@ -350,7 +350,7 @@ namespace SolidCP.EnterpriseServer
                         zoneRecords.Add(rr);
                 }
             }
-            return zoneRecords;
+            return zoneRecords.Distinct(new DnsComparer()).ToList();
         }
 
         public static string[] GetExternalIPAddressesFromString(string str)
@@ -580,5 +580,18 @@ namespace SolidCP.EnterpriseServer
         }
 
         #endregion
+    }
+
+    internal class DnsComparer : IEqualityComparer<DnsRecord>
+    {
+        public bool Equals(DnsRecord x, DnsRecord y)
+        {
+            return x.RecordName == y.RecordName && x.RecordData == y.RecordData && x.RecordType == y.RecordType;
+        }
+
+        public int GetHashCode(DnsRecord obj)
+        {
+            return (obj.RecordName + obj.RecordData + obj.RecordType).GetHashCode();
+        }
     }
 }
