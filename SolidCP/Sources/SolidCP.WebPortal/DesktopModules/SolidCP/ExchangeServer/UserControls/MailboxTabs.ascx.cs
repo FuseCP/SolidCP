@@ -75,7 +75,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             if (!hideItems) tabsList.Add(CreateTab("mailbox_addresses", "Tab.Addresses"));
             if (!hideItems) tabsList.Add(CreateTab("mailbox_mailflow", "Tab.Mailflow"));
             if (!hideItems) tabsList.Add(CreateTab("mailbox_permissions", "Tab.Permissions"));
-            if (plan.EnableAutoReply) tabsList.Add(CreateTab("mailbox_autoreply", "Tab.AutoReply"));
+            if (plan != null && plan.EnableAutoReply) tabsList.Add(CreateTab("mailbox_autoreply", "Tab.AutoReply"));
 
             string instructions = ES.Services.ExchangeServer.GetMailboxSetupInstructions(PanelRequest.ItemID, PanelRequest.AccountID, false, false, false, " ");
             if (!string.IsNullOrEmpty(instructions))
