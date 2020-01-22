@@ -345,19 +345,19 @@ namespace SolidCP.EnterpriseServer
                     randDomainName += "_" + Utils.GetRandomString(DOMAIN_RANDOM_LENGTH);
 
                 // ROOT folder
-                site.ContentPath = GetWebFolder(packageId, WEBSITE_ROOT_FOLDER_PATTERN, randDomainName);
+                site.ContentPath = GetWebFolder(packageId, WEBSITE_ROOT_FOLDER_PATTERN, randDomainName, hostName, domainName);
                 if (!String.IsNullOrEmpty(webPolicy["WebRootFolder"]))
-                    site.ContentPath = GetWebFolder(packageId, webPolicy["WebRootFolder"], randDomainName);
+                    site.ContentPath = GetWebFolder(packageId, webPolicy["WebRootFolder"], randDomainName, hostName, domainName);
 
                 // LOGS folder
-                site.LogsPath = GetWebFolder(packageId, WEBSITE_LOGS_FOLDER_PATTERN, randDomainName);
+                site.LogsPath = GetWebFolder(packageId, WEBSITE_LOGS_FOLDER_PATTERN, randDomainName, hostName, domainName);
                 if (!String.IsNullOrEmpty(webPolicy["WebLogsFolder"]))
-                    site.LogsPath = GetWebFolder(packageId, webPolicy["WebLogsFolder"], randDomainName);
+                    site.LogsPath = GetWebFolder(packageId, webPolicy["WebLogsFolder"], randDomainName, hostName, domainName);
 
                 // DATA folder
-                site.DataPath = GetWebFolder(packageId, WEBSITE_DATA_FOLDER_PATTERN, randDomainName);
+                site.DataPath = GetWebFolder(packageId, WEBSITE_DATA_FOLDER_PATTERN, randDomainName, hostName, domainName);
                 if (!String.IsNullOrEmpty(webPolicy["WebDataFolder"]))
-                    site.DataPath = GetWebFolder(packageId, webPolicy["WebDataFolder"], randDomainName);
+                    site.DataPath = GetWebFolder(packageId, webPolicy["WebDataFolder"], randDomainName, hostName, domainName);
 
                 // default documents
                 site.DefaultDocs = null; // inherit from service
@@ -1270,12 +1270,14 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        private static string GetWebFolder(int packageId, string pattern, string domainName)
+        private static string GetWebFolder(int packageId, string pattern, string domainName, string hostName, string domain)
         {
             string path = Utils.ReplaceStringVariable(pattern, "domain_name", domainName);
+            path = Utils.ReplaceStringVariable(path, "host", hostName);
+            path = Utils.ReplaceStringVariable(path, "domain", domain);
             return FilesController.GetFullPackagePath(packageId, path);
         }
-
+        
         private static string GetFrontPageUsername(string domainName)
         {
             int maxLength = MAX_ACCOUNT_LENGTH - FRONTPAGE_ACCOUNT_SUFFIX.Length - 1;
@@ -4112,6 +4114,13 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             UserSettings webPolicy = UserController.GetUserSettings(user.UserId, UserSettings.WEB_POLICY);
             string packageHome = FilesController.GetHomeFolder(packageId);
 
+            // need to extract hostName and domainName from itemName
+            // assumes the first segment is the host and the remaining segments are the domain
+            // so works for www.domain.com  or shop.domain.co.uk  but not domain.co.uk or domain.com 
+            string[] parts = Utils.ParseDelimitedString(itemName, '.');
+            string hostName = parts[0];
+            string domainName = String.Join(".", parts.Skip(1));
+
             // add random string to the domain if specified
             string randDomainName = itemName;
             if (!String.IsNullOrEmpty(webPolicy["AddRandomDomainString"])
@@ -4119,22 +4128,22 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 randDomainName += "_" + Utils.GetRandomString(DOMAIN_RANDOM_LENGTH);
 
             // ROOT folder
-            string contentPath = GetWebFolder(packageId, WEBSITE_ROOT_FOLDER_PATTERN, randDomainName);
+            string contentPath = GetWebFolder(packageId, WEBSITE_ROOT_FOLDER_PATTERN, randDomainName, hostName, domainName);
             if (!String.IsNullOrEmpty(webPolicy["WebRootFolder"]))
-                contentPath = GetWebFolder(packageId, webPolicy["WebRootFolder"], randDomainName);
+                contentPath = GetWebFolder(packageId, webPolicy["WebRootFolder"], randDomainName, hostName, domainName);
 
             // LOGS folder
-            string logsPath = GetWebFolder(packageId, WEBSITE_LOGS_FOLDER_PATTERN, randDomainName);
+            string logsPath = GetWebFolder(packageId, WEBSITE_LOGS_FOLDER_PATTERN, randDomainName, hostName, domainName);
             if (!String.IsNullOrEmpty(webPolicy["WebLogsFolder"]))
-                logsPath = GetWebFolder(packageId, webPolicy["WebLogsFolder"], randDomainName);
+                logsPath = GetWebFolder(packageId, webPolicy["WebLogsFolder"], randDomainName, hostName, domainName);
 
             // DATA folder
-            string dataPath = GetWebFolder(packageId, WEBSITE_DATA_FOLDER_PATTERN, randDomainName);
+            string dataPath = GetWebFolder(packageId, WEBSITE_DATA_FOLDER_PATTERN, randDomainName, hostName, domainName);
             if (!String.IsNullOrEmpty(webPolicy["WebDataFolder"]))
-                dataPath = GetWebFolder(packageId, webPolicy["WebDataFolder"], randDomainName);
+                dataPath = GetWebFolder(packageId, webPolicy["WebDataFolder"], randDomainName, hostName, domainName);
 
             // copy site files
-			try
+            try
 			{
 				os.CopyFile(site.ContentPath, contentPath);
 			}
