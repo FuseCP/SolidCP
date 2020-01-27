@@ -882,7 +882,7 @@ namespace SolidCP.EnterpriseServer
                         if (!privNic.IsDHCP)
                         {
                             // provision IP addresses
-                            ResultObject extResult = AddVirtualMachinePrivateIPAddresses(vm.Id, randomPrivateAddresses, privateAddressesNumber, privateAddresses, false, false, null, null, null);
+                            ResultObject extResult = AddVirtualMachinePrivateIPAddresses(vm.Id, randomPrivateAddresses, privateAddressesNumber, privateAddresses, false, false, null, null, null, null);
 
                             // set primary IP address
                             privNic = GetPrivateNetworkAdapterDetails(vm.Id);
@@ -1571,6 +1571,7 @@ namespace SolidCP.EnterpriseServer
                 if (!String.IsNullOrEmpty(vm.CustomPrivateGateway)) nic.DefaultGateway = vm.CustomPrivateGateway;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
+                if (!String.IsNullOrEmpty(vm.CustomPrivateMask)) nic.SubnetMask = vm.CustomPrivateMask;
             }
             else
             {
@@ -1649,6 +1650,7 @@ namespace SolidCP.EnterpriseServer
                 if (!String.IsNullOrEmpty(vm.CustomPrivateGateway)) nic.DefaultGateway = vm.CustomPrivateGateway;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
+                if (!String.IsNullOrEmpty(vm.CustomPrivateMask)) nic.SubnetMask = vm.CustomPrivateMask;
             }
             else
             {
@@ -3765,6 +3767,11 @@ namespace SolidCP.EnterpriseServer
             if (!String.IsNullOrEmpty(vm.CustomPrivateGateway)) nic.DefaultGateway = vm.CustomPrivateGateway;
             if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
             if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
+            if (!String.IsNullOrEmpty(vm.CustomPrivateMask))
+            {
+                nic.SubnetMask = vm.CustomPrivateMask;
+                nic.SubnetMaskCidr = GetSubnetMaskCidr(nic.SubnetMask);
+            }
 
             // load IP addresses
             nic.IPAddresses = ObjectUtils.CreateListFromDataReader<NetworkAdapterIPAddress>(
@@ -3852,21 +3859,21 @@ namespace SolidCP.EnterpriseServer
             return res;
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2)
+        public static ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             int provisionKvpType = 2;
-            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2);
+            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2)
+        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool provisionKvp, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             int provisionKvpType = 0;
             if (provisionKvp)
                 provisionKvpType = 1;
 
-            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2);
+            return AddVirtualMachinePrivateIPAddresses(itemId, selectRandom, addressesNumber, addresses, provisionKvpType, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
-        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType, bool customGatewayAndDns, string gateway, string dns1, string dns2)
+        public static ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, int provisionKvpType, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             // trace info
             Trace.TraceInformation("Entering AddVirtualMachinePrivateIPAddresses()");
@@ -3967,6 +3974,7 @@ namespace SolidCP.EnterpriseServer
                     vm.CustomPrivateGateway = gateway;
                     vm.CustomPrivateDNS1 = dns1;
                     vm.CustomPrivateDNS2 = dns2;
+                    vm.CustomPrivateMask = subnetMask;
                     PackageController.UpdatePackageItem(vm);
                 }
 

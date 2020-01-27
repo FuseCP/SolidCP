@@ -243,7 +243,8 @@ namespace SolidCP.Portal.VPS2012
                 txtGateway.Text = nic.DefaultGateway;
                 txtDNS1.Text = nic.PreferredNameServer;
                 txtDNS2.Text = nic.AlternateNameServer;
-                
+                txtMask.Text = nic.SubnetMask;
+
                 //firewall find
                 VirtualMachines2012Helper vmh = new VirtualMachines2012Helper();
                 VirtualMachineMetaItem[] machines = vmh.GetVirtualMachines(PanelSecurity.PackageId, "", "", "SI.ItemID", 20, 0);
@@ -253,6 +254,8 @@ namespace SolidCP.Portal.VPS2012
                     {
                         txtGateway.Text = item.IPAddress;
                         txtDNS1.Text = item.IPAddress;
+                        VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineItem(item.ItemID);
+                        if (vm != null && !String.IsNullOrEmpty(vm.CustomPrivateMask)) txtMask.Text = vm.CustomPrivateMask;
                         break;
                     }
                 }
@@ -579,6 +582,7 @@ namespace SolidCP.Portal.VPS2012
                     virtualMachine.CustomPrivateGateway = txtGateway.Text;
                     virtualMachine.CustomPrivateDNS1 = txtDNS1.Text;
                     virtualMachine.CustomPrivateDNS2 = txtDNS2.Text;
+                    virtualMachine.CustomPrivateMask = txtMask.Text;
                 }
 
                 // create virtual machine

@@ -1030,6 +1030,33 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.TextBox txtDNS2;
         
         /// <summary>
+        /// maskValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator maskValidator;
+        
+        /// <summary>
+        /// locMask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locMask;
+        
+        /// <summary>
+        /// txtMask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMask;
+        
+        /// <summary>
         /// locPrivateNetworkFormat control.
         /// </summary>
         /// <remarks>

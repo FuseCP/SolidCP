@@ -175,6 +175,8 @@ namespace SolidCP.Providers.Virtualization
         [Persistent]
         public string CustomPrivateDNS2 { get; set; }
         [Persistent]
+        public string CustomPrivateMask { get; set; }
+        [Persistent]
         public string ClusterName { get; set; }
     }
 }
