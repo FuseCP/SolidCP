@@ -433,12 +433,13 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@actorId", actorId));
         }
 
-        public static IDataReader GetServer(int actorId, int serverId)
+        public static IDataReader GetServer(int actorId, int serverId, bool forAutodiscover)
         {
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "GetServer",
                 new SqlParameter("@actorId", actorId),
-                new SqlParameter("@ServerID", serverId));
+                new SqlParameter("@ServerID", serverId),
+                new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
         public static IDataReader GetServerShortDetails(int serverId)
@@ -544,12 +545,13 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@ServerID", serverId));
         }
 
-        public static DataSet GetVirtualServices(int actorId, int serverId)
+        public static DataSet GetVirtualServices(int actorId, int serverId, bool forAutodiscover)
         {
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "GetVirtualServices",
                 new SqlParameter("@actorId", actorId),
-                new SqlParameter("@ServerID", serverId));
+                new SqlParameter("@ServerID", serverId),
+                new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
         public static void AddVirtualServices(int serverId, string xml)
