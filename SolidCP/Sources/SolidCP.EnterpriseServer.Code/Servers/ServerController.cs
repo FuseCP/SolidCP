@@ -142,10 +142,10 @@ namespace SolidCP.EnterpriseServer
 				DataProvider.GetServerShortDetails(serverId));
 		}
 
-		public static ServerInfo GetServerById(int serverId)
+		public static ServerInfo GetServerById(int serverId, bool forAutodiscover)
 		{
 			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
-				DataProvider.GetServer(SecurityContext.User.UserId, serverId));
+				DataProvider.GetServer(SecurityContext.User.UserId, serverId, forAutodiscover));
 		}
 
 		public static ServerInfo GetServerByName(string serverName)
@@ -497,9 +497,9 @@ namespace SolidCP.EnterpriseServer
 			return DataProvider.GetAvailableVirtualServices(SecurityContext.User.UserId, serverId);
 		}
 
-		public static DataSet GetVirtualServices(int serverId)
+		public static DataSet GetVirtualServices(int serverId, bool forAutodiscover)
 		{
-			return DataProvider.GetVirtualServices(SecurityContext.User.UserId, serverId);
+			return DataProvider.GetVirtualServices(SecurityContext.User.UserId, serverId, forAutodiscover);
 		}
 
 		public static int AddVirtualServices(int serverId, int[] ids)

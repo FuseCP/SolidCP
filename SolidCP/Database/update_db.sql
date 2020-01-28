@@ -1,9 +1,7 @@
-USE [${install.database}]
-GO
 -- update database version
 DECLARE @build_version nvarchar(10), @build_date datetime
-SET @build_version = N'${release.version}'
-SET @build_date = '${release.date}T00:00:00' -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
+SET @build_version = N'$1.4.6'
+SET @build_date = GETDATE() -- ISO 8601 Format (YYYY-MM-DDTHH:MM:SS)
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Versions] WHERE [DatabaseVersion] = @build_version)
 BEGIN
@@ -15945,6 +15943,61 @@ COMMIT TRAN
 RETURN
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualServices')
+BEGIN
+DROP PROCEDURE GetVirtualServices
+END
+GO
+
+CREATE PROCEDURE [dbo].[GetVirtualServices]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- virtual groups
+SELECT
+	VRG.VirtualGroupID,
+	RG.GroupID,
+	RG.GroupName,
+	ISNULL(VRG.DistributionType, 1) AS DistributionType,
+	ISNULL(VRG.BindDistributionToPrimary, 1) AS BindDistributionToPrimary
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN VirtualGroups AS VRG ON RG.GroupID = VRG.GroupID AND VRG.ServerID = @ServerID
+WHERE
+	(@IsAdmin = 1 OR @forAutodiscover = 1) AND (ShowGroup = 1)
+ORDER BY RG.GroupOrder
+
+-- services
+SELECT
+	VS.ServiceID,
+	S.ServiceName,
+	S.Comments,
+	P.GroupID,
+	P.DisplayName,
+	SRV.ServerName
+FROM VirtualServices AS VS
+INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE
+	VS.ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+GO
+
 -- Private Network VLANs
 
 IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PrivateNetworkVLANs')
@@ -21661,7 +21714,8 @@ GO
 CREATE PROCEDURE [dbo].[GetServer]
 (
 	@ActorID int,
-	@ServerID int
+	@ServerID int,
+	@forAutodiscover bit
 )
 AS
 -- check rights
@@ -21687,7 +21741,7 @@ SELECT
 FROM Servers
 WHERE
 	ServerID = @ServerID
-	AND @IsAdmin = 1
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
 
 RETURN
 GO

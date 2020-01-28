@@ -99,7 +99,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public ServerInfo GetServerById(int serverId)
         {
-            return ServerController.GetServerById(serverId);
+            return ServerController.GetServerById(serverId, false);
         }
 
         [WebMethod]
@@ -185,7 +185,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public DataSet GetVirtualServices(int serverId)
         {
-            return ServerController.GetVirtualServices(serverId);
+            return ServerController.GetVirtualServices(serverId, false);
         }
 
         [WebMethod]
