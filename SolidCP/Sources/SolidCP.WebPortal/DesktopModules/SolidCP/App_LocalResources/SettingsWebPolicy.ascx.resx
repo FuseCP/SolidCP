@@ -214,7 +214,7 @@
     <value>Default Documents:</value>
   </data>
   <data name="lblFoldersDescription.Text" xml:space="preserve">
-    <value>* All folders are relative to Space home&lt;br&gt;* [DOMAIN_NAME] variable is allowed</value>
+    <value>* All folders are relative to Space home&lt;br&gt;* Allowed variables are [DOMAIN_NAME], [HOST] and [DOMAIN]</value>
   </data>
   <data name="lblFrontPagePassword.Text" xml:space="preserve">
     <value>Password Policy:</value>
