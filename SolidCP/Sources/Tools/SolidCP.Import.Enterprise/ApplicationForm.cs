@@ -98,7 +98,7 @@ namespace SolidCP.Import.Enterprise
 			Global.RootOU = serviceSettings["RootOU"];
 			Global.PrimaryDomainController = serviceSettings["PrimaryDomainController"];
 			Global.TempDomain = serviceSettings["TempDomain"];
-			ServerInfo serverInfo = ServerController.GetServerById(serviceInfo.ServerId);
+			ServerInfo serverInfo = ServerController.GetServerById(serviceInfo.ServerId, false);
 			Global.ADRootDomain = serverInfo.ADRootDomain;
             Global.NetBiosDomain = ActiveDirectoryUtils.GetNETBIOSDomainName(Global.ADRootDomain);
 		}
