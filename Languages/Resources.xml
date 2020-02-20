@@ -5977,6 +5977,56 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.REMOTE_DESKTOP_SERVICES</Key>
+    <DefaultValue>Remote Desktop Services</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.OCS</Key>
+    <DefaultValue>OCS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.ORGANIZATION</Key>
+    <DefaultValue>Organization</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.AUTO_DISCOVERY</Key>
+    <DefaultValue>Auto Discovery</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.STORAGE_SPACES</Key>
+    <DefaultValue>Storage Spaces</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.ENTERPRISE_STORAGE</Key>
+    <DefaultValue>Enterprise Storage</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.HOSTING_SPACE_WR</Key>
+    <DefaultValue>Hosting Space WR</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.HOSTING_SPACE</Key>
+    <DefaultValue>Add Hosting Space</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.VLAN</Key>
+    <DefaultValue>VLAN</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogSource.WAG_INSTALLER</Key>
+    <DefaultValue>Web Apps Gallery Installer</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.APP_INSTALLER_INSTALL_APPLICATION</Key>
     <DefaultValue>Install application</DefaultValue>
   </Resource>
@@ -6602,6 +6652,381 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.REMOTE_DESKTOP_SERVICES_ADD_RDS_SERVER</Key>
+    <DefaultValue>Add RDS server</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.REMOTE_DESKTOP_SERVICES_RESTART_RDS_SERVER</Key>
+    <DefaultValue>Restart RDS server</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.REMOTE_DESKTOP_SERVICES_SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED</Key>
+    <DefaultValue>Set RDS new connection allowed</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_CREATE</Key>
+    <DefaultValue>Create VM</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_REINSTALL</Key>
+    <DefaultValue>Reinstall VM</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.HOSTING_SPACE_ADD</Key>
+    <DefaultValue>Add</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ENTERPRISE_STORAGE_GET_ORG_STATS</Key>
+    <DefaultValue>Get organization statistics</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ENTERPRISE_STORAGE_CREATE_MAPPED_DRIVE</Key>
+    <DefaultValue>Create mapped drive</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ENTERPRISE_STORAGE_DELETE_MAPPED_DRIVE</Key>
+    <DefaultValue>Delete mapped drive</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ENTERPRISE_STORAGE_CREATE_FOLDER</Key>
+    <DefaultValue>Create folder</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ENTERPRISE_STORAGE_DELETE_FOLDER</Key>
+    <DefaultValue>Delete folder</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ENTERPRISE_STORAGE_SET_ENTERPRISE_FOLDER_GENERAL_SETTINGS</Key>
+    <DefaultValue>Set enterprise folder general settings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_GET_ORG_STATS</Key>
+    <DefaultValue>Get organization statistics</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_GET_SUPPORT_SERVICE_LEVELS</Key>
+    <DefaultValue>Get support service levels</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_GET_SECURITY_GROUPS_BYMEMBER</Key>
+    <DefaultValue>Get security groups by member</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_GET_SECURITY_GROUP_GENERAL</Key>
+    <DefaultValue>Get security group general settings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_SET_USER_PASSWORD</Key>
+    <DefaultValue>Set user password</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_SET_USER_USERPRINCIPALNAME</Key>
+    <DefaultValue>Set user principal name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_UPDATE_USER_GENERAL</Key>
+    <DefaultValue>Update user general settings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_CREATE_USER</Key>
+    <DefaultValue>Create user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_REMOVE_USER</Key>
+    <DefaultValue>Remove user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_CREATE_ORG</Key>
+    <DefaultValue>Create organization</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_DELETE_ORG</Key>
+    <DefaultValue>Delete organization</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_CREATE_ORGANIZATION_ENTERPRISE_STORAGE</Key>
+    <DefaultValue>Create organization enterprise storage</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_SEND_USER_PASSWORD_RESET_EMAIL_PINCODE</Key>
+    <DefaultValue>Send user password reset email pincode</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_UPDATE_PASSWORD_SETTINGS</Key>
+    <DefaultValue>Update password settings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_CREATE_SECURITY_GROUP</Key>
+    <DefaultValue>Create security group</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_UPDATE_SECURITY_GROUP_GENERAL</Key>
+    <DefaultValue>Update security group general settings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.ORGANIZATION_DELETE_SECURITY_GROUP</Key>
+    <DefaultValue>Delete security group</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.AUTO_DISCOVERY_IS_INSTALLED</Key>
+    <DefaultValue>Is installed</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_EXCHANGE_MAILBOXPLANS</Key>
+    <DefaultValue>Get Exchange Mailbox plans</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_EXCHANGE_MAILBOXPLAN</Key>
+    <DefaultValue>Get Exchange Mailbox plan</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_EXCHANGE_ACCOUNTDISCLAIMERID</Key>
+    <DefaultValue>Get Exchange account disclaimer id</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_EXCHANGE_EXCHANGEDISCLAIMER</Key>
+    <DefaultValue>Get Exchange disclaimer</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_ADD_EXCHANGE_EXCHANGEDISCLAIMER</Key>
+    <DefaultValue>Add Exchange disclaimer</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_MAILBOX_STATS</Key>
+    <DefaultValue>Get Mailbox statistics</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_ACTIVESYNC_POLICY</Key>
+    <DefaultValue>Get Activesync policy</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_SET_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING</Key>
+    <DefaultValue>Set Mailbox plan retention policy archiving</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_EXCHANGE_RETENTIONPOLICYTAG</Key>
+    <DefaultValue>Get Exchange retention policy tag</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_ADD_EXCHANGE_RETENTIONPOLICYTAG</Key>
+    <DefaultValue>Add Exchange retention policy tag</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_EXCHANGE_RETENTIONPOLICYTAGS</Key>
+    <DefaultValue>Get Exchange retention policy tags</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_DELETE_EXCHANGE_RETENTIONPOLICYTAG</Key>
+    <DefaultValue>Delete Exchange retention policy tag</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_UPDATE_EXCHANGE_RETENTIONPOLICYTAG</Key>
+    <DefaultValue>Update Exchange retention policy tag</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_ADD_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING</Key>
+    <DefaultValue>Add Exchange archiving retention policy</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_DELETE_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIV</Key>
+    <DefaultValue>Delete Exchange archiving retention policy</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_PICTURE</Key>
+    <DefaultValue>Get picture</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_UPDATE_MAILBOX_AUTOREPLY</Key>
+    <DefaultValue>Update Mailbox auto reply</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_MAILBOX_AUTOREPLY</Key>
+    <DefaultValue>Get Mailbox auto reply</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_DISTR_LIST_BYMEMBER</Key>
+    <DefaultValue>Get distributions list by member</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_DISTRIBUTION_LIST_RESULT</Key>
+    <DefaultValue>Get distributions list result</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_MOBILE_DEVICES</Key>
+    <DefaultValue>Get mobile devices</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_MAILBOX_PERMISSIONS</Key>
+    <DefaultValue>Get Mailbox permissions</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_DISABLE_MAILBOX</Key>
+    <DefaultValue>Disable Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_SET_EXCHANGE_ACCOUNTDISCLAIMERID</Key>
+    <DefaultValue>Set exchange account disclaimer id</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_SET_EXCHANGE_MAILBOXPLAN</Key>
+    <DefaultValue>Set exchange Mailbox plan</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.STORAGE_SPACES_SAVE_STORAGE_SPACE</Key>
+    <DefaultValue>Save storage space</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.STORAGE_SPACES_SAVE_STORAGE_SPACE_LEVEL</Key>
+    <DefaultValue>Save storage space level</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.STORAGE_SPACES_REMOVE_STORAGE_SPACE</Key>
+    <DefaultValue>Remove storage space</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.DOMAIN_ENABLE_DNS</Key>
+    <DefaultValue>Enable DNS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VLAN_ADD</Key>
+    <DefaultValue>Add</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VLAN_ADD_RANGE</Key>
+    <DefaultValue>Add range</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VLAN_DELETE_RANGE</Key>
+    <DefaultValue>Delete range</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VLAN_UPDATE</Key>
+    <DefaultValue>Update</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VLAN_ALLOCATE_PACKAGE_VLAN</Key>
+    <DefaultValue>Allocate package VLAN</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VLAN_DEALLOCATE_PACKAGE_VLAN</Key>
+    <DefaultValue>Deallocate package VLAN</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WAG_INSTALLER_GET_GALLERY_APPS_TASK</Key>
+    <DefaultValue>Get gallery applications</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WAG_INSTALLER_GET_GALLERY_CATEGORIES_TASK</Key>
+    <DefaultValue>Get gallery categories</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WAG_INSTALLER_GET_GALLERY_APP_DETAILS_TASK</Key>
+    <DefaultValue>Get gallery application details</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WAG_INSTALLER_INSTALL_WEB_APP</Key>
+    <DefaultValue>Install Web application</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WAG_INSTALLER_GET_APP_PARAMS_TASK</Key>
+    <DefaultValue>Get application parameters</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WAG_INSTALLER_GET_SRV_GALLERY_APPS_TASK</Key>
+    <DefaultValue>Get server gallery applications</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.WEB_SITE_GET_STATE</Key>
+    <DefaultValue>Get state</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.OCS_CREATE_OCS_USER</Key>
+    <DefaultValue>Create OCS user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.OCS_GET_OCS_USERS_COUNT</Key>
+    <DefaultValue>Get OCS users count</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.OCS_GET_OCS_USERS</Key>
+    <DefaultValue>Get OCS users</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.401</Key>
     <DefaultValue>Bad Request</DefaultValue>
   </Resource>
@@ -7182,6 +7607,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.Exchange2013.AutoReply</Key>
+    <DefaultValue>Automatic Replies via SolidCP Allowed</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ResourceGroup.Exchange</Key>
     <DefaultValue>Hosted Exchange</DefaultValue>
   </Resource>
@@ -7338,6 +7768,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_GET_AUTOREPLY_SETTINGS</Key>
+    <DefaultValue>Error reading Automatic Replies. See audit log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.EXCHANGE_GET_MAILBOX_ADVANCED</Key>
     <DefaultValue>Error reading mailbox advanced settings. See audit log for more details.</DefaultValue>
   </Resource>
@@ -7425,6 +7860,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.EXCHANGE_UPDATE_DISCLAIMER_SETTINGS</Key>
     <DefaultValue>Error updating disclaimer. See audit log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_UPDATE_AUTOREPLY_SETTINGS</Key>
+    <DefaultValue>Error updating Automatic Replies. See audit log for more details.</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -7600,6 +8040,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Success.EXCHANGE_UPDATE_DISCLAIMER_SETTINGS</Key>
     <DefaultValue>Disclaimer successfully updated.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Success.EXCHANGE_UPDATE_AUTOREPLY_SETTINGS</Key>
+    <DefaultValue>Automatic Replies successfully updated.</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -18931,6 +19376,11 @@
     <DefaultValue>Update</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsExchangeMailboxPlansPolicy.ascx.resx</File>
+    <Key>locAutoReplyEnabled.Text</Key>
+    <DefaultValue>Automatic Replies via SolidCP</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsExchangeMailboxSetupLetter.ascx.resx</File>
     <Key>ddlPriorityItem.High</Key>
     <DefaultValue>High</DefaultValue>
@@ -28267,6 +28717,11 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>Add Plan</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeAddMailboxPlan.ascx.resx</File>
+    <Key>locAutoReplyEnabled.Text</Key>
+    <DefaultValue>Automatic Replies via SolidCP</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCheckDomainName.ascx.resx</File>
     <Key>locTitle.Text</Key>
     <DefaultValue>Domain Dependencies</DefaultValue>
@@ -29590,6 +30045,61 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeDomainRecords.ascx.resx</File>
     <Key>Text.PageName</Key>
     <DefaultValue>Domain Records</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>chkAutoReplyTime.Text</Key>
+    <DefaultValue>Send replies only during this time period:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>chkOutsideOrganization.Text</Key>
+    <DefaultValue>Send replies outside my organization</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>locEndTime.Text</Key>
+    <DefaultValue>End time:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>locExtReply.Text</Key>
+    <DefaultValue>Send a reply once to each sender outside my organization with the following message:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>locIntReply.Text</Key>
+    <DefaultValue>Send a reply once to each sender inside my organization with the following message:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>locStartTime.Text</Key>
+    <DefaultValue>Start time:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Configure Automatic Replies</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>rblExtAll.Text</Key>
+    <DefaultValue>Send to all external senders</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>rblExtContact.Text</Key>
+    <DefaultValue>Only to senders in my Contact list</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>rblSetAutoreplyOff.Text</Key>
+    <DefaultValue>Don't send automatic replies</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
+    <Key>rblSetAutoreplyOn.Text</Key>
+    <DefaultValue>Send automatic replies</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxEmailAddresses.ascx.resx</File>
@@ -33460,6 +33970,11 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxTabs.ascx.resx</File>
     <Key>Tab.MemberOf</Key>
     <DefaultValue>Member Of</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxTabs.ascx.resx</File>
+    <Key>Tab.AutoReply</Key>
+    <DefaultValue>Automatic replies</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\Menu.ascx.resx</File>
@@ -37505,6 +38020,31 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
     <Key>lblCurrPassword.Text</Key>
     <DefaultValue>Current Hyper-V Password:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>chkUseFailoverCluster.Text</Key>
+    <DefaultValue>Use Failover Cluster</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>ClusterNameValidator.ErrorMessage</Key>
+    <DefaultValue>Enter Cluster name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locClusterName.Text</Key>
+    <DefaultValue>Cluster FQDN name:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locFailoverCluster.Text</Key>
+    <DefaultValue>Failover Cluster</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locDiskSize.Text</Key>
+    <DefaultValue>VHD Disk Size (GB):</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx</File>
@@ -48064,6 +48604,81 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>cbAuthentication.Text</Key>
+    <DefaultValue>Allow connections only from computers running Remote Desktop with Network Level Authentication</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chAudioRecording.Text</Key>
+    <DefaultValue>Audio recording</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chAudioVideo.Text</Key>
+    <DefaultValue>Audio and video playback</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chAutomaticReconnection.Text</Key>
+    <DefaultValue>Enable automatic reconnection</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chClipboard.Text</Key>
+    <DefaultValue>Clipboard</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chDefaultDevice.Text</Key>
+    <DefaultValue>Use the client default printing device</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chDeleteOnExit.Text</Key>
+    <DefaultValue>Delete temporary folders on exit</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chDisconnect.Text</Key>
+    <DefaultValue>Disconnect from the session</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chDrives.Text</Key>
+    <DefaultValue>Drives</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chEasyPrint.Text</Key>
+    <DefaultValue>Use the Remote Desktop Easy Print print driver first</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chEndSession.Text</Key>
+    <DefaultValue>End the session</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chPlugPlay.Text</Key>
+    <DefaultValue>Plug and play devices</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chPrinterRedirection.Text</Key>
+    <DefaultValue>Allow client printer redirection</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chSmartCards.Text</Key>
+    <DefaultValue>Smart cards</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
+    <Key>chUseFolders.Text</Key>
+    <DefaultValue>Use temporary folders per session</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx</File>
     <Key>locActiveSessionLimit.Text</Key>
     <DefaultValue>Active session limit:</DefaultValue>
   </Resource>
@@ -48204,6 +48819,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditUserExperience.ascx.resx</File>
+    <Key>locRemoteApps.Text</Key>
+    <DefaultValue>You may need to enable &lt;strong&gt;Command Prompt&lt;/strong&gt; if RemoteApps in this collection won't load.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditUserExperience.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Edit RDS Collection</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSEditUserExperience.ascx.resx</File>
     <Key>secChangeDesktop.Text</Key>
     <DefaultValue>Changing Desktop Disabled</DefaultValue>
   </Resource>
@@ -48276,6 +48901,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSImportCollection.ascx.resx</File>
     <Key>locTitle.Text</Key>
     <DefaultValue>Import RDSCollection</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSLocalAdmins.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Edit RDS Collection</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSLocalAdmins.ascx.resx</File>
@@ -48354,7 +48984,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\App_LocalResources\RDSUserSessions.ascx.resx</File>
-    <Key>locTitle</Key>
+    <Key>locTitle.Text</Key>
     <DefaultValue>Edit RDS Collection</DefaultValue>
   </Resource>
   <Resource>
@@ -48846,6 +49476,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
     <Key>headerDeleteWarning.Text</Key>
     <DefaultValue>Warning</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
+    <Key>lbSetupInstructions.Text</Key>
+    <DefaultValue>Setup Instructions</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
@@ -55170,7 +55805,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>chkCustomGateway.Text</Key>
-    <DefaultValue>Custom Gateway and DNS</DefaultValue>
+    <DefaultValue>Custom Gateway / DNS / Subnet mask</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
@@ -55196,6 +55831,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
     <Key>locGateway.Text</Key>
     <DefaultValue>Gateway:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locMask.Text</Key>
+    <DefaultValue>Subnet mask:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>maskValidator.ErrorMessage</Key>
+    <DefaultValue>Enter subnet mask</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcExternalNetwork.ascx.resx</File>
@@ -55830,7 +56475,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.resx</File>
     <Key>chkCustomGateway.Text</Key>
-    <DefaultValue>Change Gateway and DNS</DefaultValue>
+    <DefaultValue>Change Gateway / DNS / Subnet mask</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.resx</File>
@@ -55856,6 +56501,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.resx</File>
     <Key>locGateway.Text</Key>
     <DefaultValue>Gateway:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.resx</File>
+    <Key>locMask.Text</Key>
+    <DefaultValue>Subnet mask:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAddPrivateAddress.ascx.resx</File>
+    <Key>MaskValidator.ErrorMessage</Key>
+    <DefaultValue>Enter subnet mask</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsAuditLog.ascx.resx</File>
