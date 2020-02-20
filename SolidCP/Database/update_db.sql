@@ -22254,3 +22254,92 @@ BEGIN
 	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'OCS', N'GET_OCS_USERS', N'Get OCS users')
 END
 GO
+
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddPackage')
+DROP PROCEDURE AddPackage
+GO
+
+
+CREATE PROCEDURE [dbo].[AddPackage]
+(
+	@ActorID int,
+	@PackageID int OUTPUT,
+	@UserID int,
+	@PackageName nvarchar(300),
+	@PackageComments ntext,
+	@StatusID int,
+	@PlanID int,
+	@PurchaseDate datetime
+)
+AS
+
+
+DECLARE @ParentPackageID int, @PlanServerID int
+SELECT @ParentPackageID = PackageID, @PlanServerID = ServerID FROM HostingPlans
+WHERE PlanID = @PlanID
+
+IF @ParentPackageID = 0 OR @ParentPackageID IS NULL
+SELECT @ParentPackageID = PackageID FROM Packages
+WHERE ParentPackageID IS NULL -- root space
+
+
+DECLARE @datelastyear datetime = DATEADD(year,-1,GETDATE())
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @ParentPackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1);
+	RETURN;
+END
+
+BEGIN TRAN
+-- insert package
+INSERT INTO Packages
+(
+	ParentPackageID,
+	UserID,
+	PackageName,
+	PackageComments,
+	ServerID,
+	StatusID,
+	PlanID,
+	PurchaseDate,
+	BandwidthUpdated
+)
+VALUES
+(
+	@ParentPackageID,
+	@UserID,
+	@PackageName,
+	@PackageComments,
+	@PlanServerID,
+	@StatusID,
+	@PlanID,
+	@PurchaseDate,
+	@datelastyear
+)
+
+SET @PackageID = SCOPE_IDENTITY()
+
+-- add package to packages cache
+INSERT INTO PackagesTreeCache (ParentPackageID, PackageID)
+SELECT PackageID, @PackageID FROM dbo.PackageParents(@PackageID)
+
+DECLARE @ExceedingQuotas AS TABLE (QuotaID int, QuotaName nvarchar(50), QuotaValue int)
+INSERT INTO @ExceedingQuotas
+SELECT * FROM dbo.GetPackageExceedingQuotas(@ParentPackageID) WHERE QuotaValue > 0
+
+SELECT * FROM @ExceedingQuotas
+
+IF EXISTS(SELECT * FROM @ExceedingQuotas)
+BEGIN
+	ROLLBACK TRAN
+	RETURN
+END
+
+COMMIT TRAN
+
+RETURN
+GO
