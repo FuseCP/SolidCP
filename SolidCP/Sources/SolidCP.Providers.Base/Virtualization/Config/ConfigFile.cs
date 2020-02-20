@@ -17,7 +17,7 @@ namespace SolidCP.Providers.Virtualization
 
         const string itemTemplate = @"
     <item path=""{0}"" legacyNetworkAdapter=""{1}"" remoteDesktop=""{2}"" processVolume=""{3}"" 
-                        generation=""{11}"" enableSecureBoot=""{12}"" secureBootTemplate=""{16}"" vhdBlockSizeBytes=""{13}"">
+                        generation=""{11}"" enableSecureBoot=""{12}"" secureBootTemplate=""{16}"" vhdBlockSizeBytes=""{13}"" diskSize=""{17}"">
         <name>{4}</name>
         <description>{5}</description>
         <DeployScriptParams>{10}</DeployScriptParams>
@@ -169,7 +169,7 @@ namespace SolidCP.Providers.Virtualization
                     sysprep, libraryItem.ProvisionComputerName, libraryItem.ProvisionAdministratorPassword,
                     libraryItem.ProvisionNetworkAdapters, libraryItem.DeployScriptParams, libraryItem.Generation,
                     libraryItem.EnableSecureBoot, libraryItem.VhdBlockSizeBytes, libraryItem.CDKey, libraryItem.TimeZoneId, 
-                    libraryItem.SecureBootTemplate));
+                    libraryItem.SecureBootTemplate, libraryItem.DiskSize));
             }
 
             Xml = string.Format(resultTemplate, string.Join("", items.ToArray()));

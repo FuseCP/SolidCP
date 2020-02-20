@@ -112,11 +112,56 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="cbAuthentication.Text" xml:space="preserve">
+    <value>Zulassen von Verbindungen nur von Computern, auf denen Remotedesktop mit Authentifizierung auf Netzwerkebene ausgeführt wird</value>
+  </data>
+  <data name="chAudioRecording.Text" xml:space="preserve">
+    <value>Audioaufzeichnung</value>
+  </data>
+  <data name="chAudioVideo.Text" xml:space="preserve">
+    <value>Audio- und Videowiedergabe</value>
+  </data>
+  <data name="chAutomaticReconnection.Text" xml:space="preserve">
+    <value>Automatische Wiederverbindung aktivieren</value>
+  </data>
+  <data name="chClipboard.Text" xml:space="preserve">
+    <value>Zwischenablage</value>
+  </data>
+  <data name="chDefaultDevice.Text" xml:space="preserve">
+    <value>Client-Standarddruckgerät verwenden</value>
+  </data>
+  <data name="chDeleteOnExit.Text" xml:space="preserve">
+    <value>Temporäre Ordner beim Beenden löschen</value>
+  </data>
+  <data name="chDisconnect.Text" xml:space="preserve">
+    <value>Verbindung zur Sitzung trennen</value>
+  </data>
+  <data name="chDrives.Text" xml:space="preserve">
+    <value>Laufwerke</value>
+  </data>
+  <data name="chEasyPrint.Text" xml:space="preserve">
+    <value>Remote Desktop Easy Print-Druckertreiber zuerst verwenden</value>
+  </data>
+  <data name="chEndSession.Text" xml:space="preserve">
+    <value>Sitzung beenden</value>
+  </data>
+  <data name="chPlugPlay.Text" xml:space="preserve">
+    <value>Plug &amp; Play-Geräte</value>
+  </data>
+  <data name="chPrinterRedirection.Text" xml:space="preserve">
+    <value>Client-Druckerumleitung zulassen</value>
+  </data>
+  <data name="chSmartCards.Text" xml:space="preserve">
+    <value>Smartcards</value>
+  </data>
+  <data name="chUseFolders.Text" xml:space="preserve">
+    <value>Temporäre Ordner pro Sitzung verwenden</value>
+  </data>
   <data name="locActiveSessionLimit.Text" xml:space="preserve">
     <value>Aktives Sitzungslimit:</value>
   </data>

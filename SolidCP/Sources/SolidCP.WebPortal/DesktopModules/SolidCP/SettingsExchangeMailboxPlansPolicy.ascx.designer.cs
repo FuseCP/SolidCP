@@ -193,6 +193,24 @@ namespace SolidCP.Portal {
         protected global::System.Web.UI.WebControls.Panel StorageQuotas;
         
         /// <summary>
+        /// locAutoReplyEnabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locAutoReplyEnabled;
+        
+        /// <summary>
+        /// chkAutoReplyEnabled control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkAutoReplyEnabled;
+        
+        /// <summary>
         /// locMailboxSize control.
         /// </summary>
         /// <remarks>

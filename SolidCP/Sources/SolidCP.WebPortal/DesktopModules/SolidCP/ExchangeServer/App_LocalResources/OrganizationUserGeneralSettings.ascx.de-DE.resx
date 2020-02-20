@@ -238,7 +238,7 @@
     <value>Anmeldename:</value>
   </data>
   <data name="btnSetUserPassword.Text" xml:space="preserve">
-    <value>Passwort festlegen</value>
+    <value>Passwort speichern</value>
   </data>
   <data name="btnSetUserPrincipalName.Text" xml:space="preserve">
     <value>Anmeldename festlegen</value>
@@ -265,7 +265,7 @@
     <value>Passwort zurücksetzen</value>
   </data>
   <data name="btnSetUserPasswordText.Text" xml:space="preserve">
-    <value>Passwort festlegen</value>
+    <value>Passwort speichern</value>
   </data>
   <data name="btnSetUserPrincipalNameText.Text" xml:space="preserve">
     <value>Anmeldename festlegen</value>

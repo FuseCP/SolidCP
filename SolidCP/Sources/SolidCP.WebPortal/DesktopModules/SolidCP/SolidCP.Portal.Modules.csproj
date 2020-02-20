@@ -241,6 +241,13 @@
     <Compile Include="Code\ReportingServices\ReportingServicesUtils.cs" />
     <Compile Include="Code\UserControls\Tab.cs" />
     <Compile Include="App_Code\IPAddressExtensions.cs" />
+    <Compile Include="ExchangeServer\ExchangeMailboxAutoReply.ascx.cs">
+      <DependentUpon>ExchangeMailboxAutoReply.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExchangeServer\ExchangeMailboxAutoReply.ascx.designer.cs">
+      <DependentUpon>ExchangeMailboxAutoReply.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5506,6 +5513,7 @@
   <ItemGroup>
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
+    <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
     <Content Include="ProviderControls\SpamExperts_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
@@ -5965,7 +5973,9 @@
     <Content Include="App_LocalResources\SettingsEditor.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SettingsExchangeHostedEditionOrganizationSummary.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SettingsExchangeHostedEditionPolicy.ascx.de-DE.resx" />
-    <Content Include="App_LocalResources\SettingsExchangeMailboxPlansPolicy.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\SettingsExchangeMailboxPlansPolicy.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_LocalResources\SettingsExchangeMailboxSetupLetter.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SettingsExchangePolicy.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SettingsExchangeRetentionPolicyTag.ascx.de-DE.resx" />
@@ -6188,8 +6198,12 @@
     <Content Include="ExchangeServer\UserControls\App_LocalResources\Breadcrumb.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\ContactTabs.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\DaysBox.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\DeletedUserTabs.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\DistributionListTabs.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\DeletedUserTabs.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\DistributionListTabs.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\UserControls\App_LocalResources\EmailAddress.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\EnterpriseStorageEditFolderTabs.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\EnterpriseStorageOwaUsersList.ascx.de-DE.resx" />
@@ -6197,16 +6211,22 @@
     <Content Include="ExchangeServer\UserControls\App_LocalResources\GroupsList.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\HoursBox.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxSelector.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxTabs.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxTabs.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\UserControls\App_LocalResources\Menu.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\OrganizationSettingsTabs.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\PublicFolderTabs.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\RejectedSenders.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\SecurityGroupTabs.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\SecurityGroupTabs.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\UserControls\App_LocalResources\SizeBox.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\UserSelector.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\UsersList.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\UserTabs.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\UserTabs.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="HostedSharePoint\App_LocalResources\HostedSharePointBackupSiteCollection.ascx.de-DE.resx" />
     <Content Include="HostedSharePoint\App_LocalResources\HostedSharePointEditSiteCollection.ascx.de-DE.resx" />
     <Content Include="HostedSharePoint\App_LocalResources\HostedSharePointEnterpriseBackupSiteCollection.ascx.de-DE.resx" />
@@ -6432,6 +6452,8 @@
     <Content Include="App_LocalResources\VLANsEditVLAN.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\VLANs.ascx.resx" />
     <Content Include="App_LocalResources\VLANs.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.de-DE.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
@@ -7974,7 +7996,9 @@
     <Content Include="ExchangeServer\App_LocalResources\OrganizationSecurityGroupGeneralSettings.ascx.resx" />
     <Content Include="ExchangeServer\App_LocalResources\OrganizationSecurityGroups.ascx.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\AccountsListWithPermissions.ascx.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\SecurityGroupTabs.ascx.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\SecurityGroupTabs.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\UserControls\App_LocalResources\UsersList.ascx.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\GroupsList.ascx.resx">
       <SubType>Designer</SubType>

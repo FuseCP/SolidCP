@@ -117,10 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="locTitle.Text" xml:space="preserve">
-    <value>RDS-Sammlung bearbeiten</value>
+  <data name="chkAutoReplyTime.Text" xml:space="preserve">
+    <value>Antworten nur in diesem Zeitraum senden:</value>
   </data>
-  <data name="secRdsLocalAdmins" xml:space="preserve">
-    <value>Lokale Administratoren</value>
+  <data name="chkOutsideOrganization.Text" xml:space="preserve">
+    <value>Automatische Antwortnachrichten an Absender außerhalb der Organisation senden</value>
+  </data>
+  <data name="locEndTime.Text" xml:space="preserve">
+    <value>Endzeit:</value>
+  </data>
+  <data name="locExtReply.Text" xml:space="preserve">
+    <value>Eine Antwort mit der folgenden Nachricht einmal an jeden Absender außerhalb meiner Organisation senden:</value>
+  </data>
+  <data name="locIntReply.Text" xml:space="preserve">
+    <value>Eine Antwort mit der folgenden Nachricht einmal an jeden Absender innerhalb meiner Organisation senden:</value>
+  </data>
+  <data name="locStartTime.Text" xml:space="preserve">
+    <value>Startzeit:</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>Automatische Antwort bearbeiten</value>
+  </data>
+  <data name="rblExtAll.Text" xml:space="preserve">
+    <value>Antworten an alle externen Absender senden</value>
+  </data>
+  <data name="rblExtContact.Text" xml:space="preserve">
+    <value>Antworten nur an Absender in meiner Kontaktliste senden</value>
+  </data>
+  <data name="rblSetAutoreplyOff.Text" xml:space="preserve">
+    <value>Keine automatischen Antworten senden</value>
+  </data>
+  <data name="rblSetAutoreplyOn.Text" xml:space="preserve">
+    <value>Automatische Antworten senden</value>
   </data>
 </root>

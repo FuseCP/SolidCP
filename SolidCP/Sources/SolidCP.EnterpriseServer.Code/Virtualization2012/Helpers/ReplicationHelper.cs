@@ -27,7 +27,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
                 {
                     replicaServer.DisableVmReplication(replicaVm.VirtualMachineId);
                     replicaServer.ShutDownVirtualMachine(replicaVm.VirtualMachineId, true, "ReplicaDelete");
-                    replicaServer.DeleteVirtualMachine(replicaVm.VirtualMachineId);
+                    replicaServer.DeleteVirtualMachine(replicaVm.VirtualMachineId, null);
                 }
             }
             catch { /* skip */ }

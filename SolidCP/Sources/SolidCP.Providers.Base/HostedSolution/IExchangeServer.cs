@@ -69,6 +69,8 @@ namespace SolidCP.Providers.HostedSolution
         // Mailboxes
         void DeleteMailbox(string accountName);
         void DisableMailbox(string id);
+        ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName);
+        void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings);
         ExchangeMailbox GetMailboxGeneralSettings(string accountName);
         void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled);
         ExchangeMailbox GetMailboxMailFlowSettings(string accountName);

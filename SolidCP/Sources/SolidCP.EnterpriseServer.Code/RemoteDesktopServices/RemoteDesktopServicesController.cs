@@ -1284,7 +1284,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 rds.SetRDServerNewConnectionAllowed(newConnectionAllowed, rdsServer);
-                rdsServer.ConnectionEnabled = "newConnectionAllowed";
+                rdsServer.ConnectionEnabled = newConnectionAllowed;
                 DataProvider.UpdateRDSServer(rdsServer);
             }
             catch (Exception ex)

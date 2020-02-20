@@ -141,6 +141,8 @@ namespace SolidCP.Portal.VPS2012
                 chkExternalNetworkEnabled.Checked = vm.ExternalNetworkEnabled;
                 chkPrivateNetworkEnabled.Checked = vm.PrivateNetworkEnabled;
 
+                chkIgnoreHddWarning.Visible = (PanelSecurity.EffectiveUser.Role != UserRole.User);
+
                 // other quotas
                 BindCheckboxOption(chkDvdInstalled, Quotas.VPS2012_DVD_ENABLED);
                 chkBootFromCd.Enabled = PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_BOOT_CD_ALLOWED);
@@ -193,7 +195,7 @@ namespace SolidCP.Portal.VPS2012
             if (!Page.IsValid)
                 return;
 
-            if (!chkIgnoreHddWarning.Checked && (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim())))
+            if ((!chkIgnoreHddWarning.Checked || PanelSecurity.EffectiveUser.Role == UserRole.User) && (Utils.ParseInt(hiddenTxtValHdd.Value) > Utils.ParseInt(txtHdd.Text.Trim())))
             {
                 messageBox.ShowWarningMessage("VPS_CHANGE_HDD_SIZE");
                 return;
@@ -265,7 +267,7 @@ namespace SolidCP.Portal.VPS2012
                         if (privQuota.QuotaAllocatedValue > 0 || privQuota.QuotaAllocatedValue == -1) privAdrCount = 1;
                         if (privAdrCount > 0)
                         {
-                            ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, true, privAdrCount, new string[0], false, null, null, null);
+                            ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, true, privAdrCount, new string[0], false, null, null, null, null);
                         }
                     }
                 }

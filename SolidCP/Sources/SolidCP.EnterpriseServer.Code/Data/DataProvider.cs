@@ -433,12 +433,13 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@actorId", actorId));
         }
 
-        public static IDataReader GetServer(int actorId, int serverId)
+        public static IDataReader GetServer(int actorId, int serverId, bool forAutodiscover)
         {
             return (IDataReader)SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "GetServer",
                 new SqlParameter("@actorId", actorId),
-                new SqlParameter("@ServerID", serverId));
+                new SqlParameter("@ServerID", serverId),
+                new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
         public static IDataReader GetServerShortDetails(int serverId)
@@ -544,12 +545,13 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@ServerID", serverId));
         }
 
-        public static DataSet GetVirtualServices(int actorId, int serverId)
+        public static DataSet GetVirtualServices(int actorId, int serverId, bool forAutodiscover)
         {
             return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "GetVirtualServices",
                 new SqlParameter("@actorId", actorId),
-                new SqlParameter("@ServerID", serverId));
+                new SqlParameter("@ServerID", serverId),
+                new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
         public static void AddVirtualServices(int serverId, string xml)
@@ -3048,7 +3050,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Exchange Mailbox Plans
-        public static int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP,
+        public static int AddExchangeMailboxPlan(int itemID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
                                                     bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
                                                     int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
                                                     bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
@@ -3069,6 +3071,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@EnableMAPI", enableMAPI),
                 new SqlParameter("@EnableOWA", enableOWA),
                 new SqlParameter("@EnablePOP", enablePOP),
+                new SqlParameter("@EnableAutoReply", enableAutoReply),
                 new SqlParameter("@IsDefault", isDefault),
                 new SqlParameter("@IssueWarningPct", issueWarningPct),
                 new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
@@ -3097,7 +3100,7 @@ namespace SolidCP.EnterpriseServer
 
 
 
-        public static void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP,
+        public static void UpdateExchangeMailboxPlan(int mailboxPlanID, string mailboxPlan, bool enableActiveSync, bool enableIMAP, bool enableMAPI, bool enableOWA, bool enablePOP, bool enableAutoReply,
                                             bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
                                             int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
                                             bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
@@ -3114,6 +3117,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@EnableMAPI", enableMAPI),
                 new SqlParameter("@EnableOWA", enableOWA),
                 new SqlParameter("@EnablePOP", enablePOP),
+                new SqlParameter("@EnableAutoReply", enableAutoReply),
                 new SqlParameter("@IsDefault", isDefault),
                 new SqlParameter("@IssueWarningPct", issueWarningPct),
                 new SqlParameter("@KeepDeletedItemsDays", keepDeletedItemsDays),
@@ -5988,6 +5992,11 @@ namespace SolidCP.EnterpriseServer
 
         public static void UpdateRDSServer(int id, int? itemId, string name, string fqdName, string description, int? rdsCollectionId, string connectionEnabled)
         {
+            byte connEnabled = 1;
+            if (!String.IsNullOrEmpty(connectionEnabled))
+            {
+                if (connectionEnabled.Equals("false") || connectionEnabled.Equals("no") || connectionEnabled.Equals("0")) connEnabled = 0;
+            }
             SqlHelper.ExecuteNonQuery(
                 ConnectionString,
                 CommandType.StoredProcedure,
@@ -5998,7 +6007,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@FqdName", fqdName),
                 new SqlParameter("@Description", description),
                 new SqlParameter("@RDSCollectionId", rdsCollectionId),
-                new SqlParameter("@ConnectionEnabled", connectionEnabled)
+                new SqlParameter("@ConnectionEnabled", connEnabled)
             );
         }
 

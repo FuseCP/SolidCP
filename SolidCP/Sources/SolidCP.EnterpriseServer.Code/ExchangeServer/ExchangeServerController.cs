@@ -2318,6 +2318,16 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
+        private static ExchangeMailboxAutoReplySettings GetDemoMailboxAutoReplySettings()
+        {
+            ExchangeMailboxAutoReplySettings ar = new ExchangeMailboxAutoReplySettings();
+            ar.AutoReplyState = OofState.Enabled;
+            ar.ExternalAudience = ExternalAudience.All;
+            ar.ExternalMessage = "<html><body>I am out of the office today.</body></html>";
+            ar.InternalMessage = "<html><body>I'm out of the office today.</body></html>";
+            return ar;
+        }
+
         private static ExchangeMailbox GetDemoMailboxSettings()
         {
             ExchangeMailbox mb = new ExchangeMailbox();
@@ -2346,6 +2356,95 @@ namespace SolidCP.EnterpriseServer
             mb.TotalItems = 5;
             mb.TotalSizeMB = 4;
             return mb;
+        }
+
+        public static ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(int itemId, int accountId)
+        {
+            #region Demo Mode
+            if (IsDemoMode)
+            {
+                return GetDemoMailboxAutoReplySettings();
+            }
+            #endregion
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "GET_MAILBOX_AUTOREPLY", itemId);
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null)
+                    return null;
+
+                // load account
+                ExchangeAccount account = GetAccount(itemId, accountId);
+
+                // get mailbox settings
+
+                int exchangeServiceId = GetExchangeServiceID(org.PackageId);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+                return exchange.GetMailboxAutoReplySettings(account.UserPrincipalName);
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        public static int SetMailboxAutoReplySettings(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0) return accountCheck;
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "UPDATE_MAILBOX_AUTOREPLY", itemId);
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null)
+                    return -1;
+
+                // check package
+                int packageCheck = SecurityContext.CheckPackage(org.PackageId, DemandPackage.IsActive);
+                if (packageCheck < 0) return packageCheck;
+
+                // load account
+                ExchangeAccount account = GetAccount(itemId, accountId);
+
+                // Log Extension
+                LogExtension.SetItemName(account.UserPrincipalName);
+
+                // get mailbox settings
+                int exchangeServiceId = GetExchangeServiceID(org.PackageId);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+
+                var oldObj = exchange.GetMailboxAutoReplySettings(account.UserPrincipalName);
+
+                exchange.SetMailboxAutoReplySettings(account.UserPrincipalName, settings);
+
+                var newObj = exchange.GetMailboxAutoReplySettings(account.UserPrincipalName);
+
+                // Log Extension
+                LogExtension.LogPropertiesIfChanged(oldObj, newObj);
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
         }
 
         public static ExchangeMailbox GetMailboxGeneralSettings(int itemId, int accountId)
@@ -3364,6 +3463,7 @@ namespace SolidCP.EnterpriseServer
                     mailboxPlan.EnableMAPI = mailboxPlan.EnableMAPI & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2007_MAPIALLOWED].QuotaAllocatedValue);
                     mailboxPlan.EnableOWA = mailboxPlan.EnableOWA & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2007_OWAALLOWED].QuotaAllocatedValue);
                     mailboxPlan.EnablePOP = mailboxPlan.EnablePOP & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2007_POP3ALLOWED].QuotaAllocatedValue);
+                    mailboxPlan.EnableAutoReply = mailboxPlan.EnableAutoReply & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2013_AUTOREPLY].QuotaAllocatedValue);
 
                     if (cntx.Quotas[Quotas.EXCHANGE2007_KEEPDELETEDITEMSDAYS].QuotaAllocatedValue != -1)
                         if (mailboxPlan.KeepDeletedItemsDays > cntx.Quotas[Quotas.EXCHANGE2007_KEEPDELETEDITEMSDAYS].QuotaAllocatedValue)
@@ -3403,7 +3503,7 @@ namespace SolidCP.EnterpriseServer
                             mailboxPlan.RecoverableItemsSpace = cntx.Quotas[Quotas.EXCHANGE2007_RECOVERABLEITEMSSPACE].QuotaAllocatedValuePerOrganization;
                 }
 
-                return DataProvider.AddExchangeMailboxPlan(itemID, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP,
+                return DataProvider.AddExchangeMailboxPlan(itemID, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP, mailboxPlan.EnableAutoReply,
                                                         mailboxPlan.IsDefault, mailboxPlan.IssueWarningPct, mailboxPlan.KeepDeletedItemsDays, mailboxPlan.MailboxSizeMB, mailboxPlan.MaxReceiveMessageSizeKB, mailboxPlan.MaxRecipients,
                                                         mailboxPlan.MaxSendMessageSizeKB, mailboxPlan.ProhibitSendPct, mailboxPlan.ProhibitSendReceivePct, mailboxPlan.HideFromAddressBook, mailboxPlan.MailboxPlanType,
                                                         mailboxPlan.AllowLitigationHold, mailboxPlan.RecoverableItemsSpace, mailboxPlan.RecoverableItemsWarningPct,
@@ -3455,6 +3555,7 @@ namespace SolidCP.EnterpriseServer
                     mailboxPlan.EnableMAPI = mailboxPlan.EnableMAPI & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2007_MAPIALLOWED].QuotaAllocatedValue);
                     mailboxPlan.EnableOWA = mailboxPlan.EnableOWA & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2007_OWAALLOWED].QuotaAllocatedValue);
                     mailboxPlan.EnablePOP = mailboxPlan.EnablePOP & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2007_POP3ALLOWED].QuotaAllocatedValue);
+                    mailboxPlan.EnableAutoReply = mailboxPlan.EnableAutoReply & Convert.ToBoolean(cntx.Quotas[Quotas.EXCHANGE2013_AUTOREPLY].QuotaAllocatedValue);
 
                     if (cntx.Quotas[Quotas.EXCHANGE2007_KEEPDELETEDITEMSDAYS].QuotaAllocatedValue != -1)
                         if (mailboxPlan.KeepDeletedItemsDays > cntx.Quotas[Quotas.EXCHANGE2007_KEEPDELETEDITEMSDAYS].QuotaAllocatedValue)
@@ -3486,7 +3587,7 @@ namespace SolidCP.EnterpriseServer
 
                 }
 
-                DataProvider.UpdateExchangeMailboxPlan(mailboxPlan.MailboxPlanId, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP,
+                DataProvider.UpdateExchangeMailboxPlan(mailboxPlan.MailboxPlanId, mailboxPlan.MailboxPlan, mailboxPlan.EnableActiveSync, mailboxPlan.EnableIMAP, mailboxPlan.EnableMAPI, mailboxPlan.EnableOWA, mailboxPlan.EnablePOP, mailboxPlan.EnableAutoReply,
                                                         mailboxPlan.IsDefault, mailboxPlan.IssueWarningPct, mailboxPlan.KeepDeletedItemsDays, mailboxPlan.MailboxSizeMB, mailboxPlan.MaxReceiveMessageSizeKB, mailboxPlan.MaxRecipients,
                                                         mailboxPlan.MaxSendMessageSizeKB, mailboxPlan.ProhibitSendPct, mailboxPlan.ProhibitSendReceivePct, mailboxPlan.HideFromAddressBook, mailboxPlan.MailboxPlanType,
                                                         mailboxPlan.AllowLitigationHold, mailboxPlan.RecoverableItemsSpace, mailboxPlan.RecoverableItemsWarningPct,

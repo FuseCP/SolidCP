@@ -267,4 +267,7 @@
   <data name="btnUpdateMailboxPlanText.Text" xml:space="preserve">
     <value>Update</value>
   </data>
+  <data name="locAutoReplyEnabled.Text" xml:space="preserve">
+    <value>Automatic Replies via SolidCP</value>
+  </data>
 </root>

@@ -147,4 +147,7 @@
   <data name="Tab.MemberOf" xml:space="preserve">
     <value>Mitglied von</value>
   </data>
+  <data name="Tab.AutoReply" xml:space="preserve">
+    <value>Automatische Antworten</value>
+  </data>
 </root>

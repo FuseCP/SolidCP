@@ -842,20 +842,20 @@ namespace SolidCP.Providers.Virtualization2012
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/RenameVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public JobResult RenameVirtualMachine(string vmId, string name)
+        public JobResult RenameVirtualMachine(string vmId, string name, string clusterName)
         {
             object[] results = this.Invoke("RenameVirtualMachine", new object[] {
                         vmId,
-                        name});
+                        name, clusterName});
             return ((JobResult)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginRenameVirtualMachine(string vmId, string name, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginRenameVirtualMachine(string vmId, string name, string clusterName, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("RenameVirtualMachine", new object[] {
                         vmId,
-                        name}, callback, asyncState);
+                        name, clusterName}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -866,13 +866,13 @@ namespace SolidCP.Providers.Virtualization2012
         }
 
         /// <remarks/>
-        public void RenameVirtualMachineAsync(string vmId, string name)
+        public void RenameVirtualMachineAsync(string vmId, string name, string clusterName)
         {
-            this.RenameVirtualMachineAsync(vmId, name, null);
+            this.RenameVirtualMachineAsync(vmId, name, clusterName, null);
         }
 
         /// <remarks/>
-        public void RenameVirtualMachineAsync(string vmId, string name, object userState)
+        public void RenameVirtualMachineAsync(string vmId, string name, string clusterName, object userState)
         {
             if ((this.RenameVirtualMachineOperationCompleted == null))
             {
@@ -880,7 +880,7 @@ namespace SolidCP.Providers.Virtualization2012
             }
             this.InvokeAsync("RenameVirtualMachine", new object[] {
                         vmId,
-                        name}, this.RenameVirtualMachineOperationCompleted, userState);
+                        name, clusterName}, this.RenameVirtualMachineOperationCompleted, userState);
         }
 
         private void OnRenameVirtualMachineOperationCompleted(object arg)
@@ -895,18 +895,18 @@ namespace SolidCP.Providers.Virtualization2012
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteVirtualMachine", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public JobResult DeleteVirtualMachine(string vmId)
+        public JobResult DeleteVirtualMachine(string vmId, string clusterName)
         {
             object[] results = this.Invoke("DeleteVirtualMachine", new object[] {
-                        vmId});
+                        vmId, clusterName});
             return ((JobResult)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteVirtualMachine(string vmId, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginDeleteVirtualMachine(string vmId, string clusterName, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("DeleteVirtualMachine", new object[] {
-                        vmId}, callback, asyncState);
+                        vmId, clusterName}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -917,20 +917,20 @@ namespace SolidCP.Providers.Virtualization2012
         }
 
         /// <remarks/>
-        public void DeleteVirtualMachineAsync(string vmId)
+        public void DeleteVirtualMachineAsync(string vmId, string clusterName)
         {
-            this.DeleteVirtualMachineAsync(vmId, null);
+            this.DeleteVirtualMachineAsync(vmId, clusterName, null);
         }
 
         /// <remarks/>
-        public void DeleteVirtualMachineAsync(string vmId, object userState)
+        public void DeleteVirtualMachineAsync(string vmId, string clusterName, object userState)
         {
             if ((this.DeleteVirtualMachineOperationCompleted == null))
             {
                 this.DeleteVirtualMachineOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineOperationCompleted);
             }
             this.InvokeAsync("DeleteVirtualMachine", new object[] {
-                        vmId}, this.DeleteVirtualMachineOperationCompleted, userState);
+                        vmId, clusterName}, this.DeleteVirtualMachineOperationCompleted, userState);
         }
 
         private void OnDeleteVirtualMachineOperationCompleted(object arg)
@@ -945,18 +945,18 @@ namespace SolidCP.Providers.Virtualization2012
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteVirtualMachineExtended", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public JobResult DeleteVirtualMachineExtended(string vmId)
+        public JobResult DeleteVirtualMachineExtended(string vmId, string clusterName)
         {
             object[] results = this.Invoke("DeleteVirtualMachineExtended", new object[] {
-                        vmId});
+                        vmId, clusterName});
             return ((JobResult)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginDeleteVirtualMachineExtended(string vmId, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginDeleteVirtualMachineExtended(string vmId, string clusterName, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("DeleteVirtualMachineExtended", new object[] {
-                        vmId}, callback, asyncState);
+                        vmId, clusterName}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -967,20 +967,20 @@ namespace SolidCP.Providers.Virtualization2012
         }
 
         /// <remarks/>
-        public void DeleteVirtualMachineExtendedAsync(string vmId)
+        public void DeleteVirtualMachineExtendedAsync(string vmId, string clusterName)
         {
-            this.DeleteVirtualMachineExtendedAsync(vmId, null);
+            this.DeleteVirtualMachineExtendedAsync(vmId, clusterName, null);
         }
 
         /// <remarks/>
-        public void DeleteVirtualMachineExtendedAsync(string vmId, object userState)
+        public void DeleteVirtualMachineExtendedAsync(string vmId, string clusterName, object userState)
         {
             if ((this.DeleteVirtualMachineExtendedOperationCompleted == null))
             {
                 this.DeleteVirtualMachineExtendedOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteVirtualMachineExtendedOperationCompleted);
             }
             this.InvokeAsync("DeleteVirtualMachineExtended", new object[] {
-                        vmId}, this.DeleteVirtualMachineExtendedOperationCompleted, userState);
+                        vmId, clusterName}, this.DeleteVirtualMachineExtendedOperationCompleted, userState);
         }
 
         private void OnDeleteVirtualMachineExtendedOperationCompleted(object arg)

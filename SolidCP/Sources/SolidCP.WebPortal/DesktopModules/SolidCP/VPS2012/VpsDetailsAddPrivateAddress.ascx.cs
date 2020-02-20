@@ -77,6 +77,7 @@ namespace SolidCP.Portal.VPS2012
                 txtGateway.Text = nic.DefaultGateway;
                 txtDNS1.Text = nic.PreferredNameServer;
                 txtDNS2.Text = nic.AlternateNameServer;
+                txtMask.Text = nic.SubnetMask;
             }
         }
 
@@ -101,10 +102,10 @@ namespace SolidCP.Portal.VPS2012
 
                 if (byNewMethod)
                     res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddressesByInject(PanelRequest.ItemID,
-                    radioPrivateRandom.Checked, number, privIps, chkCustomGateway.Checked, txtGateway.Text, txtDNS1.Text, txtDNS2.Text);
+                    radioPrivateRandom.Checked, number, privIps, chkCustomGateway.Checked, txtGateway.Text, txtDNS1.Text, txtDNS2.Text, txtMask.Text);
                 else
                     res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID,
-                    radioPrivateRandom.Checked, number, privIps, chkCustomGateway.Checked, txtGateway.Text, txtDNS1.Text, txtDNS2.Text);
+                    radioPrivateRandom.Checked, number, privIps, chkCustomGateway.Checked, txtGateway.Text, txtDNS1.Text, txtDNS2.Text, txtMask.Text);
 
                 if (res.IsSuccess)
                 {

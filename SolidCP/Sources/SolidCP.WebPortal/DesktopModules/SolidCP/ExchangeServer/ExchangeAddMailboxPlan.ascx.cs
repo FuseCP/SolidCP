@@ -113,6 +113,7 @@ namespace SolidCP.Portal.ExchangeServer
                         chkOWA.Checked = plan.EnableOWA;
                         chkMAPI.Checked = plan.EnableMAPI;
                         chkActiveSync.Checked = plan.EnableActiveSync;
+                        chkAutoReplyEnabled.Checked = plan.EnableAutoReply;
                         sizeIssueWarning.ValueKB = plan.IssueWarningPct;
                         sizeProhibitSend.ValueKB = plan.ProhibitSendPct;
                         sizeProhibitSendReceive.ValueKB = plan.ProhibitSendReceivePct;
@@ -163,6 +164,10 @@ namespace SolidCP.Portal.ExchangeServer
                                     {
                                         maxReceiveMessageSizeKB.QuotaValue = quota.QuotaAllocatedValue;
                                     }
+                                    break;
+                                case 729:
+                                    chkAutoReplyEnabled.Checked = Convert.ToBoolean(quota.QuotaAllocatedValue);
+                                    chkAutoReplyEnabled.Enabled = Convert.ToBoolean(quota.QuotaAllocatedValue);
                                     break;
                                 case 83:
                                     chkPOP3.Checked = Convert.ToBoolean(quota.QuotaAllocatedValue);
@@ -303,6 +308,7 @@ namespace SolidCP.Portal.ExchangeServer
                     plan.EnableOWA = chkOWA.Checked;
                     plan.EnableMAPI = chkMAPI.Checked;
                     plan.EnableActiveSync = chkActiveSync.Checked;
+                    plan.EnableAutoReply = chkAutoReplyEnabled.Checked;
                     plan.IssueWarningPct = sizeIssueWarning.ValueKB;
                     if ((plan.IssueWarningPct == 0)) plan.IssueWarningPct = 100;
                     plan.ProhibitSendPct = sizeProhibitSend.ValueKB;

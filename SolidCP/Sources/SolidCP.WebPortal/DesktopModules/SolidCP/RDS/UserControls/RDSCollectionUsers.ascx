@@ -33,7 +33,7 @@
                 <ItemStyle Width="20%" HorizontalAlign="right"></ItemStyle>
                 <ItemTemplate>
                     <CPCC:StyleButton ID="lbSetupInstructions" CommandName="SetupInstructions" CommandArgument='<%# Eval("AccountId")%>' runat="server"
-                        Text="Setup Instructions" OnClientClick="ShowProgressDialog('Loading ...');return true;"/>
+                        Text="Setup Instructions" OnClientClick="ShowProgressDialog('Loading ...');return true;" meta:resourcekey="lbSetupInstructions"/>
                 </ItemTemplate>
             </asp:TemplateField>
 		</Columns>

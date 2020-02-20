@@ -87,6 +87,13 @@
                                 <asp:Localize ID="locDNS2" runat="server"
                                     meta:resourcekey="locDNS2" Text="Alternate DNS server:"></asp:Localize>
                                 <asp:TextBox ID="txtDNS2" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                <asp:RequiredFieldValidator ID="MaskValidator" runat="server" Text="*" Display="Dynamic"
+                                    ControlToValidate="txtMask" meta:resourcekey="MaskValidator" SetFocusOnError="true"
+                                    ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                <asp:Localize ID="locMask" runat="server"
+                                    meta:resourcekey="locMask" Text="Subnet mask:"></asp:Localize>
+                                <asp:TextBox ID="txtMask" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
                             </td>
                         </tr>
                     </table>

@@ -247,7 +247,7 @@ namespace SolidCP.EnterpriseServer
 					//
 					PackageInfo packageInfo = PackageController.GetPackage(packageId);
 					//
-					ServerInfo serverInfo = ServerController.GetServerById(packageInfo.ServerId);
+					ServerInfo serverInfo = ServerController.GetServerById(packageInfo.ServerId, false);
 					// Give as much clues for the issue to an administrator as possible
 					TaskManager.WriteError("Web site '{0}' could not be created because site with the name requested already " +
                         "exists on '{1}' server.", siteName, serverInfo.ServerName);

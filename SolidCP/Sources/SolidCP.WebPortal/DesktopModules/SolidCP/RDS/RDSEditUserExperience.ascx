@@ -191,7 +191,9 @@
                         </div>
                     </div>
                 </div>
-                <span class="alert alert-info col-xs-12">You may need to enable <strong>Command Prompt</strong> if RemoteApps in this collection won't load.</span>
+                <span class="alert alert-info col-xs-12">
+                    <asp:Localize ID="locRemoteApps" runat="server" meta:resourcekey="locRemoteApps" Text="You may need to enable <strong>Command Prompt</strong> if RemoteApps in this collection won't load."></asp:Localize>
+                </span>
             </asp:Panel>
 		</div>
         <div class="text-right">

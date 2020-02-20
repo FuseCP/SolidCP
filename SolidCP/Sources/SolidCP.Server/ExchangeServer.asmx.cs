@@ -361,6 +361,39 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName)
+        {
+            try
+            {
+                LogStart("GetMailboxAutoReplySettings");
+                ExchangeMailboxAutoReplySettings ret = ES.GetMailboxAutoReplySettings(accountName);
+                LogEnd("GetMailboxAutoReplySettings");
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                LogError("GetMailboxAutoReplySettings", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings)
+        {
+            try
+            {
+                LogStart("SetMailboxAutoReplySettings");
+                ES.SetMailboxAutoReplySettings(accountName, settings);
+                LogEnd("SetMailboxAutoReplySettings");
+            }
+            catch (Exception ex)
+            {
+                LogError("SetMailboxAutoReplySettings", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public ExchangeMailbox GetMailboxGeneralSettings(string accountName)
         {
             try

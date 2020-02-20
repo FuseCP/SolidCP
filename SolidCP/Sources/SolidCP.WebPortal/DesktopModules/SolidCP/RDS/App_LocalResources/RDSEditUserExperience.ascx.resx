@@ -123,6 +123,12 @@
   <data name="cbUsers.Text" xml:space="preserve">
     <value>Users</value>
   </data>
+  <data name="locRemoteApps.Text" xml:space="preserve">
+    <value>You may need to enable &lt;strong&gt;Command Prompt&lt;/strong&gt; if RemoteApps in this collection won't load.</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>Edit RDS Collection</value>
+  </data>
   <data name="secChangeDesktop.Text" xml:space="preserve">
     <value>Changing Desktop Disabled</value>
   </data>
