@@ -23594,8 +23594,8 @@
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsWebPolicy.ascx.resx</File>
     <Key>lblFoldersDescription.Text</Key>
-    <DefaultValue>* All folders are relative to Space home&lt;br&gt;* [DOMAIN_NAME] variable is allowed</DefaultValue>
-    <Value>* Alle Ordner sind relativ zur Bereichsübersicht&lt;br&gt;* [DOMAIN_NAME] - Variable ist erlaubt</Value>
+    <DefaultValue>* All folders are relative to Space home&lt;br&gt;* Allowed variables are [DOMAIN_NAME], [HOST] and [DOMAIN]</DefaultValue>
+    <Value>* Alle Verzeichnisse sind relativ zum Home-Verzeichnis des Bereichs&lt;br&gt;* Erlaubte Variablen lauten [DOMAIN_NAME], [HOST] und [DOMAIN]</Value>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsWebPolicy.ascx.resx</File>
