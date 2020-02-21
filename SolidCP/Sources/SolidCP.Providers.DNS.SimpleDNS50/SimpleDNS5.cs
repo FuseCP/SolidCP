@@ -463,6 +463,25 @@ namespace SolidCP.Providers.DNS
 			return dnsZones.ToArray();
 		}
 
+        public override void DeleteServiceItems(ServiceProviderItem[] items)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is DnsZone)
+                {
+                    try
+                    {
+                        // delete DNS zone
+                        DeleteZone(item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error deleting '{0}' SimpleDNS5 zone", item.Name), ex);
+                    }
+                }
+            }
+        }
+
 		public override void DeleteZone(string zoneName)
 		{
 			Connection cn = SetupProviderConnection();

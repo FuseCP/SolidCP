@@ -349,10 +349,30 @@ namespace SolidCP.Providers.DNS
 			}
 		}
 
-		public override void DeleteZoneRecord(string zoneName, DnsRecord record)
+        public override void DeleteServiceItems(ServiceProviderItem[] items)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is DnsZone)
+                {
+                    try
+                    {
+                        // delete DNS zone
+                        DeleteZone(item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error deleting '{0}' SimpleDNS6 zone", item.Name), ex);
+                    }
+                }
+            }
+        }
+
+        public override void DeleteZoneRecord(string zoneName, DnsRecord record)
 		{
 			if (ZoneExists(zoneName))
 			{
+                Log.WriteInfo("SimpleDNS6 Removing Zone: {0}", zoneName);
 				string m_strRecordName = ConvertRecordNameToSDNSFormat(record.RecordName, zoneName);
 				//
 				Connection cn = SetupProviderConnection();
