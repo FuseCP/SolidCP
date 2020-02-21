@@ -2116,7 +2116,7 @@ namespace SolidCP.Providers.Mail
                         {
                             productName = (string)subkey.GetValue("DisplayName");
                         }
-                    if (productName != null && productName.Equals("SmarterMail"))
+                    if (productName != null && productName.Contains("SmarterMail"))
                     {
                         if (subkey != null)
                             productVersion = (string)subkey.GetValue("DisplayVersion");
@@ -2157,7 +2157,7 @@ namespace SolidCP.Providers.Mail
                         productName = (string)subkey.GetValue("DisplayName");
                     }
                 if (productName != null)
-                    if (productName.Equals("SmarterMail"))
+                    if (productName.Contains("SmarterMail"))
                     {
                         if (subkey != null) productVersion = (string)subkey.GetValue("DisplayVersion");
                         break;
