@@ -7598,6 +7598,9 @@
     <Content Include="App_LocalResources\SettingsWebPolicy.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="App_LocalResources\SettingsWebPolicy.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_LocalResources\SettingsFtpPolicy.ascx.resx">
