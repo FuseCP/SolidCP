@@ -425,6 +425,25 @@ namespace SolidCP.Providers.DNS
             ApiPut($"zones/{zoneName}", request.ToJson());
         }
 
+        public override void DeleteServiceItems(ServiceProviderItem[] items)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is DnsZone)
+                {
+                    try
+                    {
+                        // delete DNS zone
+                        DeleteZone(item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error deleting '{0}' SimpleDNS8 zone", item.Name), ex);
+                    }
+                }
+            }
+        }
+
         public void DeleteZone(string zoneName)
         {
             //Null checking
@@ -435,6 +454,7 @@ namespace SolidCP.Providers.DNS
             if (!ZoneExists(zoneName)) return;
 
             //Call the API endpoint to delete Zone
+            Log.WriteInfo("SimpleDNS8 Removing Zone: {0}", zoneName);
             ApiDelete($"zones/{zoneName}");
         }
 
