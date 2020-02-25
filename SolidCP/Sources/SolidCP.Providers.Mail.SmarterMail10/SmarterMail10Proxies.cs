@@ -5972,19 +5972,19 @@ namespace SolidCP.Mail.SM10
 
 		/// <remarks/>
 		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UpdateUserForwardingInfo2", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-		public GenericResult UpdateUserForwardingInfo2(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string[] ForwardingAddresses)
-		{
+		public GenericResult UpdateUserForwardingInfo2(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string ForwardingAddress)
+        {
 			object[] results = this.Invoke("UpdateUserForwardingInfo2", new object[] {
                     AuthUserName,
                     AuthPassword,
                     EmailAddress,
                     DeleteOnForward,
-                    ForwardingAddresses});
+                    ForwardingAddress});
 			return ((GenericResult)(results[0]));
 		}
 
 		/// <remarks/>
-		public System.IAsyncResult BeginUpdateUserForwardingInfo2(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string[] ForwardingAddresses, System.AsyncCallback callback, object asyncState)
+		public System.IAsyncResult BeginUpdateUserForwardingInfo2(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string ForwardingAddresses, System.AsyncCallback callback, object asyncState)
 		{
 			return this.BeginInvoke("UpdateUserForwardingInfo2", new object[] {
                     AuthUserName,
@@ -6002,13 +6002,13 @@ namespace SolidCP.Mail.SM10
 		}
 
 		/// <remarks/>
-		public void UpdateUserForwardingInfo2Async(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string[] ForwardingAddresses)
+		public void UpdateUserForwardingInfo2Async(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string ForwardingAddresses)
 		{
 			this.UpdateUserForwardingInfo2Async(AuthUserName, AuthPassword, EmailAddress, DeleteOnForward, ForwardingAddresses, null);
 		}
 
 		/// <remarks/>
-		public void UpdateUserForwardingInfo2Async(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string[] ForwardingAddresses, object userState)
+		public void UpdateUserForwardingInfo2Async(string AuthUserName, string AuthPassword, string EmailAddress, bool DeleteOnForward, string ForwardingAddresses, object userState)
 		{
 			if ((this.UpdateUserForwardingInfo2OperationCompleted == null))
 			{
