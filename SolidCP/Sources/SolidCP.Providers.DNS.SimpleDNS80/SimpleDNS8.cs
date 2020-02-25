@@ -535,6 +535,8 @@ namespace SolidCP.Providers.DNS
             //Declare content to be patched
             var content = records.Select(record => record.ToZoneRecordsResponse(MinimumTTL, zoneName)).ToList();
 
+            Log.WriteInfo("AddZoneRecords: JSON content zone: {0} \n data: {1}", zoneName, content.ToJson());
+
             //Call API to PATCH records
             ApiPatch($"zones/{zoneName}/records", content.ToJson());
         }
