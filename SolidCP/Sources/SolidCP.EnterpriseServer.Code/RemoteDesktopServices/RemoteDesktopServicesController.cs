@@ -65,9 +65,9 @@ namespace SolidCP.EnterpriseServer
             return GetRdsServiceId(itemId);
         }
 
-        public static RdsCollection GetRdsCollection(int collectionId)
+        public static RdsCollection GetRdsCollection(int collectionId, bool quick)
         {
-            return GetRdsCollectionInternal(collectionId);
+            return GetRdsCollectionInternal(collectionId, quick);
         }
 
         public static RdsCollectionSettings GetRdsCollectionSettings(int collectionId)
@@ -719,7 +719,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        private static RdsCollection GetRdsCollectionInternal(int collectionId)
+        private static RdsCollection GetRdsCollectionInternal(int collectionId, bool quick)
         {
             var collection = ObjectUtils.FillObjectFromDataReader<RdsCollection>(DataProvider.GetRDSCollectionById(collectionId));
             var collectionSettings = ObjectUtils.FillObjectFromDataReader<RdsCollectionSettings>(DataProvider.GetRdsCollectionSettingsByCollectionId(collectionId));
@@ -729,17 +729,20 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                // load organization
-                Organization org = OrganizationController.GetOrganization(collection.ItemId);
-                if (org == null)
+                if (!quick)
                 {
-                    result.IsSuccess = false;
-                    result.AddError("", new NullReferenceException("Organization not found"));
+                    // load organization
+                    Organization org = OrganizationController.GetOrganization(collection.ItemId);
+                    if (org == null)
+                    {
+                        result.IsSuccess = false;
+                        result.AddError("", new NullReferenceException("Organization not found"));
+                    }
+
+                    var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
+
+                    rds.GetCollection(collection.Name);// ???
                 }
-
-                var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
-
-                rds.GetCollection(collection.Name);
                 FillRdsCollection(collection);
             }
             catch (Exception ex)
@@ -1592,7 +1595,7 @@ namespace SolidCP.EnterpriseServer
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
 
-                var collection = GetRdsCollection(collectionId);
+                var collection = GetRdsCollection(collectionId, false);
 
                 if (collection == null)
                 {
@@ -1936,7 +1939,7 @@ namespace SolidCP.EnterpriseServer
 
                 var rds = RemoteDesktopServicesHelpers.GetRemoteDesktopServices(RemoteDesktopServicesHelpers.GetRemoteDesktopServiceID(org.PackageId));
 
-                var collection = GetRdsCollection(collectionId);
+                var collection = GetRdsCollection(collectionId, false);
 
                 if (collection == null)
                 {

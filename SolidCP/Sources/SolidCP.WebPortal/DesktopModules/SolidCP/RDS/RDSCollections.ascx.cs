@@ -116,7 +116,7 @@ namespace SolidCP.Portal.RDS
 
                 try
                 {
-                    RdsCollection collection = ES.Services.RDS.GetRdsCollection(rdsCollectionId);
+                    RdsCollection collection = ES.Services.RDS.GetRdsCollection(rdsCollectionId, false);
 
                     ResultObject result = ES.Services.RDS.RemoveRdsCollection(PanelRequest.ItemID, collection);
 

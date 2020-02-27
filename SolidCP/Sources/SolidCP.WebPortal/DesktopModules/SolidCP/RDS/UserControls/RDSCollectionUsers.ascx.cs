@@ -46,6 +46,7 @@ namespace SolidCP.Portal.RDS.UserControls
 	{
         public const string DirectionString = "DirectionString";
         public event EventHandler OnRefreshClicked;
+        private static OrganizationUser[] LocalAdmins = null;
 
         public bool ButtonAddEnabled
         {
@@ -96,8 +97,8 @@ namespace SolidCP.Portal.RDS.UserControls
 
 		protected void btnAdd_Click(object sender, EventArgs e)
 		{
-			// bind all accounts
-			BindPopupAccounts();
+            // bind all accounts
+            BindPopupAccounts(null, null);
 
 			// show modal
 			AddAccountsModal.Show();
@@ -168,15 +169,15 @@ namespace SolidCP.Portal.RDS.UserControls
                 return new List<string>();
             }
 
-            var localAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
+            if (LocalAdmins == null) LocalAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
             var organizationUsers = ES.Services.Organizations.GetOrganizationUsersPaged(PanelRequest.ItemID, null, null, null, 0, Int32.MaxValue).PageUsers;
             var applicationUsers = ES.Services.RDS.GetApplicationUsers(PanelRequest.ItemID, PanelRequest.CollectionID, null);
             var remoteAppUsers = organizationUsers.Where(x => applicationUsers.Select(a => a.Split('\\').Last().ToLower()).Contains(x.SamAccountName.Split('\\').Last().ToLower()));
 
             var deletedUsers = new List<OrganizationUser>();
 
-            deletedUsers.AddRange(rdsUsers.Where(r => localAdmins.Select(l => l.AccountName.ToLower()).Contains(r.AccountName.ToLower())));
-            remoteAppUsers = remoteAppUsers.Where(r => !localAdmins.Select(l => l.AccountName.ToLower()).Contains(r.AccountName.ToLower()));
+            deletedUsers.AddRange(rdsUsers.Where(r => LocalAdmins.Select(l => l.AccountName.ToLower()).Contains(r.AccountName.ToLower())));
+            remoteAppUsers = remoteAppUsers.Where(r => !LocalAdmins.Select(l => l.AccountName.ToLower()).Contains(r.AccountName.ToLower()));
             deletedUsers.AddRange(rdsUsers.Where(r => remoteAppUsers.Select(l => l.AccountName.ToLower()).Contains(r.AccountName.ToLower())));
             deletedUsers = deletedUsers.Distinct().ToList();            
 
@@ -186,12 +187,11 @@ namespace SolidCP.Portal.RDS.UserControls
         public void BindUsers()
         {
             var collectionUsers = ES.Services.RDS.GetRdsCollectionUsers(PanelRequest.CollectionID);
-            var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
-            var localAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
+            LocalAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
 
             foreach (var user in collectionUsers)
             {
-                if (localAdmins.Select(l => l.AccountName).Contains(user.AccountName))
+                if (LocalAdmins.Select(l => l.AccountName).Contains(user.AccountName))
                 {
                     user.IsVIP = true;
                 }
@@ -204,31 +204,31 @@ namespace SolidCP.Portal.RDS.UserControls
             SetUsers(collectionUsers);
         }
 
-		protected void BindPopupAccounts()
+		protected void BindPopupAccounts(string filterColumn, string filterValue)
 		{
             OrganizationUser[] accounts;
 
             if (PanelRequest.Ctl == "rds_collection_edit_users")
             {
-                accounts = ES.Services.Organizations.GetOrganizationUsersPaged(PanelRequest.ItemID, null, null, null, 0, Int32.MaxValue).PageUsers;
+                accounts = ES.Services.Organizations.GetOrganizationUsersPaged(PanelRequest.ItemID, filterColumn, filterValue, null, 0, Int32.MaxValue).PageUsers;
             }
             else
             {
                 accounts = ES.Services.RDS.GetRdsCollectionUsers(PanelRequest.CollectionID);
             }
 
-            var localAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
+            if (LocalAdmins == null) LocalAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
 
             foreach (var user in accounts)
             {
-                if (localAdmins.Select(l => l.AccountName).Contains(user.AccountName))
+                if (LocalAdmins.Select(l => l.AccountName).Contains(user.AccountName))
                 {
                     user.IsVIP = true;
                 }
                 else
                 {
                     user.IsVIP = false;
-                }                
+                }
             }
 
             accounts = accounts.Where(x => !GetUsers().Select(p => p.AccountName).Contains(x.AccountName)).ToArray();
@@ -286,6 +286,7 @@ namespace SolidCP.Portal.RDS.UserControls
                 user.AccountName = (string)gvUsers.DataKeys[i][0];
                 user.DisplayName = ((Literal)row.FindControl("litAccount")).Text;
                 user.SamAccountName = ((HiddenField)row.FindControl("hdnSamAccountName")).Value;
+                user.IsVIP = Convert.ToBoolean(((HiddenField)row.FindControl("hdnIsVip")).Value);
 
                 if (state == SelectedState.All ||
                     (state == SelectedState.Selected && chkSelect.Checked) ||
@@ -324,7 +325,7 @@ namespace SolidCP.Portal.RDS.UserControls
 
 		protected void cmdSearch_Click(object sender, EventArgs e)
 		{
-			BindPopupAccounts();
+			BindPopupAccounts(ddlSearchColumn.Text, txtSearchValue.Text);
 		}
 
         protected SortDirection Direction

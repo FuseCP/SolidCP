@@ -112,7 +112,7 @@ namespace SolidCP.Portal.RDS.UserControls
 
         protected void BindPopupApps()
 		{
-            RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+            RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, false);
             List<StartMenuApp> apps = ES.Services.RDS.GetAvailableRemoteApplications(PanelRequest.ItemID, collection.Name).ToList();
             var sessionHosts = ES.Services.RDS.GetRdsCollectionSessionHosts(PanelRequest.CollectionID);            
 
