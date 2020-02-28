@@ -21,7 +21,7 @@ namespace SolidCP.Portal.RDS
                 ddTimeout.DataValueField = "Key";
                 ddTimeout.DataBind();
 
-                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
                 litCollectionName.Text = collection.DisplayName;
                 BindSettings();
             }

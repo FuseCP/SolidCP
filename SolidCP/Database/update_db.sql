@@ -6015,11 +6015,11 @@ AND @FilterValue <> '' AND @FilterValue IS NOT NULL
 BEGIN
 	IF @FilterColumn = 'PrimaryEmailAddress' AND @AccountTypes <> '2'
 	BEGIN		
-		SET @condition = @condition + ' AND EA.AccountID IN (SELECT EAEA.AccountID FROM ExchangeAccountEmailAddresses EAEA WHERE EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
+		SET @condition = @condition + ' AND EA.AccountID IN (SELECT EAEA.AccountID FROM ExchangeAccountEmailAddresses EAEA WHERE EAEA.EmailAddress LIKE ''%' + @FilterValue + '%'')'
 	END
 	ELSE
 	BEGIN		
-		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'''
 	END
 END
 

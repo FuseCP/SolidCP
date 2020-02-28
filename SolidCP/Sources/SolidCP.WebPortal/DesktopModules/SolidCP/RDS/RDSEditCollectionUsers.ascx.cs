@@ -54,7 +54,7 @@ namespace SolidCP.Portal.RDS
 
             if (!IsPostBack)
             {
-                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
                 litCollectionName.Text = collection.DisplayName;
                 BindQuota();
                 users.BindUsers();

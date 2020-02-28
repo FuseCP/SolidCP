@@ -48,7 +48,7 @@ namespace SolidCP.Portal.RDS
 
             if (!IsPostBack)
             {
-                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
                 var collectionApps = ES.Services.RDS.GetCollectionRemoteApplications(PanelRequest.ItemID, collection.Name);
                 
                 litCollectionName.Text = collection.DisplayName;
