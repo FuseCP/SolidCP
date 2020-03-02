@@ -8,6 +8,25 @@ Version 1.4.6
 - [HyperV2012R2+] Supporting VMConfig for Windows 10 1909
 - [SimpleDNS80] Fix for DNSSec and SOA record visibility - posixx
 - [dSHeuristics] Support for alternative Parent Domain
+- [Exchange] Ability to manage Automatic replies in Mailbox Settings - bluechip
+- [HyperV2012R2+] Ability to use Failover Cluster - bluechip
+- [HyperV2012R2+] Fix VPS delete/reinstall bug if snapshots available (parent disk was not deleted) - bluechip
+- [HyperV2012R2+] Minimal hard disk size for OS Template - bluechip
+- [Exchange] Mailbox Settings - Save Changes and Exit - do not redirect when Error/Warnings - bluechip
+- [HyperV2012R2+] Deny reduce VPS HDD size in database for users - bluechip
+- [RDS] Enable button on RDS servers is not shown - bluechip
+- [HyperV2012R2+] Change "Generate hostname automatically" default checked to False. - bluechip
+- [Audit log] Add new sources and tasks  - bluechip
+- Added [DOMAIN] and [HOST] variables to Web Policy. - gybol 
+- [HyperV2012R2+] Ability to use custom private network subnet mask - bluechip
+- [HyperV2012R2+] VM auto discovery - check virtual server services first - bluechip
+- [SimpleDNS] Count Bandwidth Scheduled task infinite loop
+- Disable AutoDiscovery for Web Application Engines
+- [SimpleDNS] Domain not removed when spece deleted 
+- [SmarterMail10.x +] SmarterMail15 not detected
+- [SimpleDNS 8.x] Fix for SRV records not working
+- [RDS Collections] Portal performance optimize / Add RDS User - Search fix - bluechip
+- Fixed missing default values in password policies 
 
 
 Version 1.4.4
