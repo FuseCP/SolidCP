@@ -22348,3 +22348,35 @@ GO
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Web Application Engines'
 GO
 
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;6;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'SolidCPPolicy' AND [PropertyName] = 'PasswordPolicy' AND [PropertyValue] LIKE N'True;6;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;0;0;False;False;0;' Where [SettingsName] = 'WebPolicy' AND [PropertyName] = 'SecuredUserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;0;0;False;False;0;' Where [SettingsName] = 'WebPolicy' AND [PropertyName] = 'FrontPagePasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'FtpPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;-;1;20;;;'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;;;False;False;0;' Where [SettingsName] = 'MailPolicy' AND [PropertyName] = 'AccountPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;0;0;False;False;0;' Where [SettingsName] = 'MsSqlPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;0;0;False;False;0;' Where [SettingsName] = 'MySqlPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;;;False;False;0;' Where [SettingsName] = 'MariaDBPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'SharePointPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'SharePointPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;2;0;True;;0;;;False;False;0;' Where [SettingsName] = 'ExchangePolicy' AND [PropertyName] = 'MailboxPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
