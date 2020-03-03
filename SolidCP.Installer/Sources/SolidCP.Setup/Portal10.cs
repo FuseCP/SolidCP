@@ -46,7 +46,7 @@ namespace SolidCP.Setup
         public static new object Install(object obj)
         {
             //
-            return Portal.InstallBase(obj, "1.4.4");
+            return Portal.InstallBase(obj, minimalInstallerVersion: "1.0.1");
         }
 
         public static new DialogResult Uninstall(object obj)
@@ -63,7 +63,7 @@ namespace SolidCP.Setup
         {
             return UpdateBase(obj,
                 minimalInstallerVersion: "1.0.1",
-                versionToUpgrade: "1.4.4,1.4.3",
+                versionToUpgrade: "1.4.5,1.4.4",
                 updateSql: false);
         }
     }
