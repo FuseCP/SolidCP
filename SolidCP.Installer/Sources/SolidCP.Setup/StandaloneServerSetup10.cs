@@ -44,7 +44,7 @@ namespace SolidCP.Setup
     {
         public static new object Install(object obj)
         {
-            return StandaloneServerSetup.InstallBase(obj, "1.0.1");
+            return StandaloneServerSetup.InstallBase(obj, minimalInstallerVersion: "1.0.1");
         }
     }
     /// <summary>

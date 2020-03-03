@@ -46,7 +46,7 @@ namespace SolidCP.Setup
         public static new object Install(object obj)
         {
             //
-            return Server.InstallBase(obj, "1.0.1");
+            return Server.InstallBase(obj, minimalInstallerVersion: "1.0.1");
         }
 
         public static new object Uninstall(object obj)
@@ -63,7 +63,7 @@ namespace SolidCP.Setup
         {
             return Server.UpdateBase(obj,
                  minimalInstallerVersion: "1.0.1",
-                 versionToUpgrade: "1.4.4,1.4.3",
+                 versionToUpgrade: "1.4.5,1.4.4",
                  updateSql: false);
         }
     }

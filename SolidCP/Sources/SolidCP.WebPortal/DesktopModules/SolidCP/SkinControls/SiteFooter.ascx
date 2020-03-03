@@ -5,7 +5,7 @@
          	<asp:Localize ID="locPoweredBy" runat="server" meta:resourcekey="locPoweredBy" />
      </div>	
      <div class="col-md-3 Version">
-            <asp:Localize ID="locVersion" runat="server" meta:resourcekey="locVersion" /> <scp:ProductVersion id="scpVersion" runat="server" AssemblyName="SolidCP.Portal.Modules"/>
+            <asp:Localize ID="locVersion" runat="server" meta:resourcekey="locVersion" /> 1.4.6
      </div>
      </div>
  </div>
