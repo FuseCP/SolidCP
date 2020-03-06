@@ -63,11 +63,11 @@ namespace SolidCP.Portal.SkinControls
 					//
 					if (attrs.Length > 0)
 					{
-						var asmInfoVerAttrib = (AssemblyInformationalVersionAttribute)attrs[0];
-						litVersion.Text = asmInfoVerAttrib.InformationalVersion;
+                        var fileVersionAttr = ((AssemblyFileVersionAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true)[0]);
+                        litVersion.Text = fileVersionAttr.Version;
 #if DEBUG
-						var fileVersionAttr = ((AssemblyFileVersionAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true)[0]);
-						litVersion.Text = String.Format("{0} ({1})", asmInfoVerAttrib.InformationalVersion, fileVersionAttr.Version);
+                        var asmInfoVerAttrib = (AssemblyInformationalVersionAttribute)attrs[0];
+                        litVersion.Text = String.Format("{0} ({1})", fileVersionAttr.Version, asmInfoVerAttrib.InformationalVersion);
 #endif
 					}
                 }

@@ -1,3 +1,6 @@
+Version 1.4.7
+- Fix to load the footer version based on DLL file version
+
 Version 1.4.6
 - [HyperV2012R2+] Ability to configure custom Gateway and DNS for a private network / RDS-Servers: optimize status update and fix search - IvanSchulz
 - Fixes for MySQL and MariaDB
