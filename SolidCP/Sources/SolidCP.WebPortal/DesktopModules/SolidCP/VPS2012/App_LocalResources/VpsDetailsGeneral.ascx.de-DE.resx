@@ -309,4 +309,7 @@
   <data name="locHVHost.Text" xml:space="preserve">
     <value>HV-Host:</value>
   </data>
+  <data name="locReboot.Text" xml:space="preserve">
+    <value>Neustart erforderlich</value>
+  </data>
 </root>

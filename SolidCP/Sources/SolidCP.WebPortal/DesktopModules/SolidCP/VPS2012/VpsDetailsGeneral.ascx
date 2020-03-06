@@ -20,6 +20,16 @@
         my_window = window.open(rdpUrl + resolution, "RDP", "status=0,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left);
     }
 </script>
+<script type="text/javascript"> 
+    function updateNameChanged(chk) {
+        var warning = document.getElementById('divReboot');
+        if (chk.checked) {
+            warning.classList.remove("hidden");
+        } else {
+            warning.classList.add("hidden");
+        }
+    }
+</script> 
 <div class="panel-body form-horizontal">
     <scp:ServerTabs ID="tabs" runat="server" SelectedTab="vps_general" />
     <scp:SimpleMessageBox ID="messageBox" runat="server" />
@@ -255,10 +265,13 @@
                     <td></td>
                     <td>
                         <asp:CheckBox ID="chkUpdateComputerName" runat="server"
-                            meta:resourcekey="chkUpdateComputerName" Text="Update computer network name" />
+                            meta:resourcekey="chkUpdateComputerName" Text="Update computer network name" OnClick="updateNameChanged(this);" />
                     </td>
                 </tr>
             </table>
+        </div>
+        <div style="color:red; text-align:center;" id="divReboot" class="hidden">
+            <asp:Localize ID="locReboot" runat="server" Text="Restart required" meta:resourcekey="locReboot"></asp:Localize>
         </div>
         <div class="popup-buttons text-right">
             <CPCC:StyleButton ID="btnCancelHostname" CssClass="btn btn-warning" runat="server" CausesValidation="false"><i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnCancelHostnameText" />

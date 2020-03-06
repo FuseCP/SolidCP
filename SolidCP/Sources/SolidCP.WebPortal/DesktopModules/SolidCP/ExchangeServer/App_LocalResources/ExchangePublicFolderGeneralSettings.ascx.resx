@@ -159,4 +159,10 @@
   <data name="btnSaveText.Text" xml:space="preserve">
     <value>Save Changes</value>
   </data>
+  <data name="locAllAccounts.Text" xml:space="preserve">
+    <value>Accounts:</value>
+  </data>
+  <data name="locName.Text" xml:space="preserve">
+    <value>Folder Name: *</value>
+  </data>
 </root>
