@@ -1360,7 +1360,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (string.IsNullOrEmpty(gpoId))
             {
                 gpoId = CreateAndLinkPolicy(runspace, gpoName, organizationId, collectionName);
-                SetPolicyPermissions(runspace, gpoName, entry, collectionComputersEntry);
+                SetPolicyPermissions(runspace, gpoName, gpoId, entry, collectionComputersEntry);
                 SetRegistryValue(runspace, RDSSessionGpoKey, gpoName, "2", RDSSessionGpoValueName, "DWord");
             }
             else
@@ -1383,7 +1383,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (string.IsNullOrEmpty(gpoId))
             {
                 gpoId = CreateAndLinkPolicy(runspace, gpoName, organizationId, collectionName);
-                SetPolicyPermissions(runspace, gpoName, entry, collectionComputersEntry);
+                SetPolicyPermissions(runspace, gpoName, gpoId, entry, collectionComputersEntry);
             }
             else
             {
@@ -1423,11 +1423,13 @@ namespace SolidCP.Providers.RemoteDesktopServices
             runspace.ExecuteRemoteShellCommand(PrimaryDomainController, scripts, PrimaryDomainController, out errors);
         }
 
-        private void SetPolicyPermissions(Runspace runspace, string gpoName, DirectoryEntry entry, DirectoryEntry collectionComputersEntry)
+        private void SetPolicyPermissions(Runspace runspace, string gpoName, string gpoId, DirectoryEntry entry, DirectoryEntry collectionComputersEntry)
         {
             var scripts = new List<string>
             {
-                string.Format("Set-GPPermissions -Name {0} -Replace -PermissionLevel None -TargetName 'Authenticated Users' -TargetType group", gpoName),
+                string.Format("$ADSI = [ADSI] \"{0}\"", GetGpoPath(gpoId)),
+                "$ADSI.psbase.ObjectSecurity.Access | ForEach-Object {\nif ($_.IdentityReference –eq 'NT AUTHORITY\\Authenticated Users') {\n$ADSI.psbase.ObjectSecurity.RemoveAccessRule($_)\n}\n}\n$ADSI.psbase.CommitChanges()",
+                string.Format("Set-GPPermissions -Name {0} -TargetName 'Authenticated Users' -TargetType Group -PermissionLevel GpoRead", gpoName),
                 string.Format("Set-GPPermissions -Name {0} -PermissionLevel gpoapply -TargetName {1} -TargetType group", gpoName, string.Format("'{0}'", ActiveDirectoryUtils.GetADObjectProperty(entry, "sAMAccountName").ToString())),
                 string.Format("Set-GPPermissions -Name {0} -PermissionLevel gpoapply -TargetName {1} -TargetType group", gpoName, string.Format("'{0}'", ActiveDirectoryUtils.GetADObjectProperty(collectionComputersEntry, "sAMAccountName").ToString()))
             };
