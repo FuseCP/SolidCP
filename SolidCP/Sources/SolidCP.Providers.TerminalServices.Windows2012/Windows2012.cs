@@ -1428,8 +1428,12 @@ namespace SolidCP.Providers.RemoteDesktopServices
             var scripts = new List<string>
             {
                 string.Format("$ADSI = [ADSI] \"{0}\"", GetGpoPath(gpoId)),
-                "$ADSI.psbase.ObjectSecurity.Access | ForEach-Object {\nif ($_.IdentityReference –eq 'NT AUTHORITY\\Authenticated Users') {\n$ADSI.psbase.ObjectSecurity.RemoveAccessRule($_)\n}\n}\n$ADSI.psbase.CommitChanges()",
-                string.Format("Set-GPPermissions -Name {0} -TargetName 'Authenticated Users' -TargetType Group -PermissionLevel GpoRead", gpoName),
+                "$SID = New-Object System.Security.Principal.SecurityIdentifier(\"S-1-5-11\")",
+                "$AthUsers = $SID.Translate([System.Security.Principal.NTAccount]).value",
+                "$ADSI.psbase.ObjectSecurity.Access | ForEach-Object {\nif ($_.IdentityReference –eq $AthUsers) {\n$ADSI.psbase.ObjectSecurity.RemoveAccessRule($_)\n}\n}",
+                "$AclRule = New-Object System.DirectoryServices.ActiveDirectoryAccessRule([System.Security.Principal.IdentityReference]$SID.Translate([System.Security.Principal.NTAccount]), [System.DirectoryServices.ActiveDirectoryRights]\"GenericRead\", [System.Security.AccessControl.AccessControlType]\"Allow\")",
+                "$ADSI.psbase.ObjectSecurity.AddAccessRule($AclRule)",
+                "$ADSI.psbase.CommitChanges()",
                 string.Format("Set-GPPermissions -Name {0} -PermissionLevel gpoapply -TargetName {1} -TargetType group", gpoName, string.Format("'{0}'", ActiveDirectoryUtils.GetADObjectProperty(entry, "sAMAccountName").ToString())),
                 string.Format("Set-GPPermissions -Name {0} -PermissionLevel gpoapply -TargetName {1} -TargetType group", gpoName, string.Format("'{0}'", ActiveDirectoryUtils.GetADObjectProperty(collectionComputersEntry, "sAMAccountName").ToString()))
             };
