@@ -1048,6 +1048,7 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Name", vm.Name);
 
                 PowerShell.Execute(cmd, true);
+                System.Threading.Thread.Sleep(3500);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)
@@ -1106,6 +1107,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var snapshot = GetSnapshot(snapshotId);
                 SnapshotHelper.Delete(PowerShell, snapshot, false);
+                System.Threading.Thread.Sleep(3000);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)
@@ -1121,6 +1123,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var snapshot = GetSnapshot(snapshotId);
                 SnapshotHelper.Delete(PowerShell, snapshot, true);
+                System.Threading.Thread.Sleep(3000);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)

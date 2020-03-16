@@ -21,7 +21,7 @@
 				            <td valign="top">
 				            
                                 <div class="FormButtonsBarClean">
-                                    <CPCC:StyleButton id="btnTakeSnapshot" CssClass="btn btn-success" runat="server" onclick="btnTakeSnapshot_Click"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnTakeSnapshotText"/> </CPCC:StyleButton>
+                                    <CPCC:StyleButton id="btnTakeSnapshot" CssClass="btn btn-success" runat="server" onclick="btnTakeSnapshot_Click" meta:resourcekey="btnTakeSnapshot"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnTakeSnapshotText"/> </CPCC:StyleButton>
                                 </div>
                                 <br />
                                 
@@ -79,7 +79,7 @@
 		    </div>
 	    </div>
 
-<asp:Panel ID="RenamePanel" runat="server" style="display:none;">
+<asp:Panel ID="RenamePanel" runat="server" style="display:none;" Width="380">
 	 <div class="widget">
              <div class="widget-header clearfix">
                            <h3><i class="fa fa-i-cursor"></i>  <asp:Localize ID="locRenameSnapshot" runat="server" Text="Rename snapshot" meta:resourcekey="locRenameSnapshot"></asp:Localize></h3>
