@@ -178,5 +178,6 @@ namespace SolidCP.Providers.Virtualization
         public string CustomPrivateMask { get; set; }
         [Persistent]
         public string ClusterName { get; set; }
+        public bool IsClustered { get; set; }
     }
 }
