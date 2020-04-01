@@ -399,6 +399,12 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 CreateUsersPolicy(runSpace, organizationId, string.Format("{0}-users", collection.Name), new DirectoryEntry(GetUsersGroupPath(organizationId, collection.Name))
                     , new DirectoryEntry(collectionComputersPath), collection.Name);
                 CreateHelpDeskPolicy(runSpace, new DirectoryEntry(GetHelpDeskGroupPath(RDSHelpDeskGroup)), new DirectoryEntry(collectionComputersPath), organizationId, collection.Name);
+
+                if (!CheckCollectionUserGroups(runSpace, collection.Name, new List<string> { GetUsersGroupName(collection.Name) }))
+                {
+                    RemoveCollection(organizationId, collection.Name, collection.Servers);
+                    throw new Exception("Collection not created - user groups configuration error");
+                }
             }                   
             finally
             {
@@ -406,7 +412,36 @@ namespace SolidCP.Providers.RemoteDesktopServices
             }
 
             return result;
-        }        
+        }
+
+        private bool CheckCollectionUserGroups(Runspace runSpace, string collectionName, List<string> groups)
+        {
+            Command cmd = new Command("Get-RDSessionCollectionConfiguration");
+            cmd.Parameters.Add("CollectionName", collectionName);
+            cmd.Parameters.Add("UserGroup");
+            cmd.Parameters.Add("ConnectionBroker", ConnectionBroker);
+
+            PSObject result = runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController).FirstOrDefault();
+            List<string> ug = new List<string>((string[])result.Members["UserGroup"].Value);
+
+            if (ug.Count != groups.Count) return false;
+
+            foreach (string item in groups)
+            {
+                bool res = false;
+                foreach (string ugItem in ug)
+                {
+                    if (ugItem.ToLower().Contains(item.ToLower()))
+                    {
+                        res = true;
+                        break;
+                    }
+                }
+                if (!res) return false;
+            }
+
+            return true;
+        }
 
         public void EditRdsCollectionSettings(RdsCollection collection)
         {            
