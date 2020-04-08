@@ -18,23 +18,23 @@
 }
 else
 {
-   @Html.Partial("_ShowContentTopMenu", Model)
-    
-   @Html.Action("ContentList", "FileSystem", new { model = Model });
+    @Html.Partial("_ShowContentTopMenu", Model)
+
+    @Html.Action("ContentList", "FileSystem", new { model = Model });
 }
 
 
 @section scripts{
-    
+
     <script>
-        scp.fileBrowser.setSettings({ 
-            deletionUrl: "@Url.RouteUrl(FileSystemRouteNames.DeleteFiles)", 
+        scp.fileBrowser.setSettings({
+            deletionUrl: "@Url.RouteUrl(FileSystemRouteNames.DeleteFiles)",
             fileExistUrl: "@Url.RouteUrl(FileSystemRouteNames.ItemExist)",
             textItemExist: "@UI.ItemExist." });
     </script>
 
     @Scripts.Render("~/bundles/appScripts-webdav")
-    
+
     @if (Model.UserSettings.WebDavViewType == FolderViewTypes.BigIcons)
     {
         @Scripts.Render("~/bundles/bigIconsScripts")
@@ -82,6 +82,30 @@ else
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">@UI.Cancel</button>
                     <a href="@Url.RouteUrl(FileSystemRouteNames.NewWebDavItem)" data-href="@Url.RouteUrl(FileSystemRouteNames.NewWebDavItem)" id="create-button" class="btn btn-success danger">@UI.Create</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="newFolderDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-process-dialog-title" data-backdrop="static" data-keyboard="false" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="create-dalog-label" data-title="@UI.Create">@UI.Create</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="foldernameForm" method="post" action="@Url.RouteUrl(FileSystemRouteNames.NewFolder)">
+                        <div class="form-group has-feedback">
+                            <label for="foldername">@UI.FolderName</label>
+                            <input type="text" class="form-control" id="foldername" name="foldername" autofocus required placeholder="@UI.EnterFolderName">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">@UI.Cancel</button>
+                            <button type="submit" class="btn btn-success danger">@UI.Create</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

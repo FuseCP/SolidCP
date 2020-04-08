@@ -304,6 +304,14 @@ namespace SolidCP.WebDavPortal.Controllers
             return Json(model);
         }
 
+        [HttpPost]
+        public ActionResult NewFolder(string org, string pathPart)
+        {
+            string folderPath = pathPart + "/" + Request["foldername"];
+            SCP.Services.EnterpriseStorage.CreateEnterpriseSubFolder(ScpContext.User.ItemId, folderPath);
+            return new RedirectToRouteResult(FileSystemRouteNames.ShowContentPath, null);
+        }
+
         public ActionResult NewWebDavItem(string org, string pathPart)
         {
             var permissions = _webDavAuthorizationService.GetPermissions(ScpContext.User, pathPart);

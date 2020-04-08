@@ -420,4 +420,13 @@
   <data name="SendPincodeTo" xml:space="preserve">
     <value>When you click the send button below, a Password Reset PIN will be sent to your Cell Phone or Email Address.</value>
   </data>
+  <data name="EnterFolderName" xml:space="preserve">
+    <value>Please enter folder name</value>
+  </data>
+  <data name="FolderName" xml:space="preserve">
+    <value>Folder Name</value>
+  </data>
+  <data name="NewFolder" xml:space="preserve">
+    <value>New Folder</value>
+  </data>
 </root>

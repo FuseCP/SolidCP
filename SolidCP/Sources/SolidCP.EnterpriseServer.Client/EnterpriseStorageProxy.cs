@@ -54,7 +54,9 @@ namespace SolidCP.EnterpriseServer {
         private System.Threading.SendOrPostCallback GetEnterpriseFolderWithExtraDataOperationCompleted;
         
         private System.Threading.SendOrPostCallback CreateEnterpriseFolderOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback CreateEnterpriseSubFolderOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteEnterpriseFolderOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetEnterpriseFolderPermissionsOperationCompleted;
@@ -149,7 +151,10 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         public event CreateEnterpriseFolderCompletedEventHandler CreateEnterpriseFolderCompleted;
-        
+
+        /// <remarks/>
+        public event CreateEnterpriseSubFolderCompletedEventHandler CreateEnterpriseSubFolderCompleted;
+
         /// <remarks/>
         public event DeleteEnterpriseFolderCompletedEventHandler DeleteEnterpriseFolderCompleted;
         
@@ -674,7 +679,59 @@ namespace SolidCP.EnterpriseServer {
                 this.CreateEnterpriseFolderCompleted(this, new CreateEnterpriseFolderCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateEnterpriseSubFolder", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ResultObject CreateEnterpriseSubFolder(int itemId, string folderPath)
+        {
+            object[] results = this.Invoke("CreateEnterpriseSubFolder", new object[] {
+                        itemId,
+                        folderPath});
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateEnterpriseSubFolder(int itemId, string folderPath, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateEnterpriseSubFolder", new object[] {
+                        itemId,
+                        folderPath}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ResultObject EndCreateEnterpriseSubFolder(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ResultObject)(results[0]));
+        }
+
+        /// <remarks/>
+        public void CreateEnterpriseSubFolderAsync(int itemId, string folderPath)
+        {
+            this.CreateEnterpriseSubFolderAsync(itemId, folderPath, null);
+        }
+
+        /// <remarks/>
+        public void CreateEnterpriseSubFolderAsync(int itemId, string folderPath, object userState)
+        {
+            if ((this.CreateEnterpriseSubFolderOperationCompleted == null))
+            {
+                this.CreateEnterpriseSubFolderOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateEnterpriseSubFolderOperationCompleted);
+            }
+            this.InvokeAsync("CreateEnterpriseSubFolder", new object[] {
+                        itemId,
+                        folderPath}, this.CreateEnterpriseSubFolderOperationCompleted, userState);
+        }
+
+        private void OnCreateEnterpriseSubFolderOperationCompleted(object arg)
+        {
+            if ((this.CreateEnterpriseSubFolderCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateEnterpriseSubFolderCompleted(this, new CreateEnterpriseSubFolderCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteEnterpriseFolder", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public ResultObject DeleteEnterpriseFolder(int itemId, string folderName) {
@@ -2300,7 +2357,37 @@ namespace SolidCP.EnterpriseServer {
             }
         }
     }
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void CreateEnterpriseSubFolderCompletedEventHandler(object sender, CreateEnterpriseSubFolderCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CreateEnterpriseSubFolderCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal CreateEnterpriseSubFolderCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ResultObject Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ResultObject)(this.results[0]));
+            }
+        }
+    }
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void DeleteEnterpriseFolderCompletedEventHandler(object sender, DeleteEnterpriseFolderCompletedEventArgs e);
