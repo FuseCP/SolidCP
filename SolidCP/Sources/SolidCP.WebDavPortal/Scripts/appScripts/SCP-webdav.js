@@ -49,6 +49,15 @@ $(document).on('click', '.file-deletion #delete-button', function (e) {
     scp.dialogs.showConfirmDialog(title, content, buttonText, scp.fileBrowser.deleteSelectedItems, dialogId);
 });
 
+$(document).on('click', '.file-deletion #delete-all-button', function (e) {
+    var dialogId = $(this).data('target');
+    var buttonText = $(this).data('target-positive-button-text');
+    var content = $(this).data('target-content');
+    var title = $(this).data('target-title-text');
+    
+    scp.dialogs.showConfirmDialog(title, content, buttonText, scp.fileBrowser.deleteNonEmptyFolder, dialogId);
+});
+
 
 $(document).click(function (event) {
     if (!$(event.target).closest('.element-container, .prevent-deselect').length) {

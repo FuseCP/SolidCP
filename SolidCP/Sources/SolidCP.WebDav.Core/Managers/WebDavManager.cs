@@ -202,7 +202,7 @@ namespace SolidCP.WebDav.Core.Managers
             resource.Lock();
         }
 
-        public void DeleteResource(string path)
+        public void DeleteResource(string path, bool deleteNonEmptyFolder)
         {
             path = RemoveLeadingFromPath(path, "office365");
             path = RemoveLeadingFromPath(path, "view");
@@ -217,9 +217,11 @@ namespace SolidCP.WebDav.Core.Managers
 
             IResource resource = _currentFolder.GetResource(resourceName);
 
-            if (resource.ItemType == ItemType.Folder && GetFoldersItemsCount(path) > 0)
+            if (resource == null) return;
+
+            if (resource.ItemType == ItemType.Folder && GetFoldersItemsCount(path) > 0 && !deleteNonEmptyFolder)
             {
-                throw new WebDavException(string.Format(WebDavResources.FolderIsNotEmptyFormat, resource.DisplayName));
+                throw new WebDavException(string.Format(WebDavResources.FolderIsNotEmptyFormat, resourceName), new Exception("NON_EMPTY_FOLDER"));
             }
 
             resource.Delete();

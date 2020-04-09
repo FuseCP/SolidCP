@@ -58,6 +58,13 @@
                    data-target-title-text="@UI.DeleteFileQuestion"
                    data-target-content="@UI.DialogsContentConfrimFileDeletion">@UI.Delete</a>
             </div>
+            <div class="file-deletion hidden">
+                <a id="delete-all-button" class="hidden" role="button"
+                   data-target="#confirm-dialog-2"
+                   data-target-positive-button-text="@UI.DeleteAll"
+                   data-target-title-text="@UI.ThisFolderNotEmpty"
+                   data-target-content="@UI.DeleteFolderAnyway">@UI.Delete</a>
+            </div>
             if (Model.Permissions.HasFlag(WebDavPermissions.OwaEdit))
             {
                 <div class="dropdown create-new-item navbar-left">

@@ -54,16 +54,58 @@ ScpFileBrowser.prototype = {
         $.ajax({
             type: 'POST',
             url: scp.fileBrowser.settings.deletionUrl,
-            data: { filePathes: scp.fileBrowser.getSelectedItemsPaths() },
+            data: { filePathes: scp.fileBrowser.getSelectedItemsPaths(), deleteNonEmptyFolder: false },
             dataType: "json",
-            success: function(model) {
-                scp.messages.showMessages(model.Messages);
+            success: function (model) {
+                var showDialog = false;
+                $.each(model.Messages, function (i, message) {
+                    if (message.Value == 'NON_EMPTY_FOLDER') {
+                        showDialog = true;
+                        return;
+                    }
+                });
+                if (showDialog) {
+                    model.Messages = null;
+                    scp.dialogs.hideProcessDialog();
+                    document.getElementById('delete-all-button').click();
+                } else {
+                    scp.messages.showMessages(model.Messages);
 
-                scp.fileBrowser.clearDeletedItems(model.DeletedFiles);
+                    scp.fileBrowser.clearDeletedItems(model.DeletedFiles);
+                    scp.fileBrowser.refreshDeletionBlock();
+                    scp.fileBrowser.refreshDataTable(scp.fileBrowser.itemsTable);
+
+                    scp.dialogs.hideProcessDialog();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                scp.messages.addErrorMessage(errorThrown);
+
                 scp.fileBrowser.refreshDeletionBlock();
                 scp.fileBrowser.refreshDataTable(scp.fileBrowser.itemsTable);
 
                 scp.dialogs.hideProcessDialog();
+            }
+        });
+
+        scp.dialogs.showProcessDialog();
+    },
+
+    deleteNonEmptyFolder: function (e) {
+
+        $.ajax({
+            type: 'POST',
+            url: scp.fileBrowser.settings.deletionUrl,
+            data: { filePathes: scp.fileBrowser.getSelectedItemsPaths(), deleteNonEmptyFolder: true },
+            dataType: "json",
+            success: function (model) {
+                    scp.messages.showMessages(model.Messages);
+
+                    scp.fileBrowser.clearDeletedItems(model.DeletedFiles);
+                    scp.fileBrowser.refreshDeletionBlock();
+                    scp.fileBrowser.refreshDataTable(scp.fileBrowser.itemsTable);
+
+                    scp.dialogs.hideProcessDialog();
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 scp.messages.addErrorMessage(errorThrown);

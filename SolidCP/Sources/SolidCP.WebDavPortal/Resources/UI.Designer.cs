@@ -241,11 +241,29 @@ namespace SolidCP.WebDavPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete All.
+        /// </summary>
+        public static string DeleteAll {
+            get {
+                return ResourceManager.GetString("DeleteAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete File?.
         /// </summary>
         public static string DeleteFileQuestion {
             get {
                 return ResourceManager.GetString("DeleteFileQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This folder is not empty. Delete anyway?.
+        /// </summary>
+        public static string DeleteFolderAnyway {
+            get {
+                return ResourceManager.GetString("DeleteFolderAnyway", resourceCulture);
             }
         }
         
@@ -912,6 +930,15 @@ namespace SolidCP.WebDavPortal.Resources {
         public static string TerabyteShort {
             get {
                 return ResourceManager.GetString("TerabyteShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This folder is not empty.
+        /// </summary>
+        public static string ThisFolderNotEmpty {
+            get {
+                return ResourceManager.GetString("ThisFolderNotEmpty", resourceCulture);
             }
         }
         

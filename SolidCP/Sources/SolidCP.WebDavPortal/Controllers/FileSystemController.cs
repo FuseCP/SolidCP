@@ -271,7 +271,7 @@ namespace SolidCP.WebDavPortal.Controllers
         }
 
         [HttpPost]
-        public JsonResult DeleteFiles(IEnumerable<string> filePathes = null)
+        public JsonResult DeleteFiles(IEnumerable<string> filePathes = null, bool deleteNonEmptyFolder = false)
         {
             var model = new DeleteFilesModel();
 
@@ -286,13 +286,20 @@ namespace SolidCP.WebDavPortal.Controllers
             {
                 try
                 {
-                    _webdavManager.DeleteResource(Server.UrlDecode(file));
+                    _webdavManager.DeleteResource(Server.UrlDecode(file), deleteNonEmptyFolder);
 
                     model.DeletedFiles.Add(file);
                 }
                 catch (WebDavException exception)
                 {
-                    model.AddMessage(MessageType.Error, exception.Message);
+                    if (exception.InnerException != null && !String.IsNullOrEmpty(exception.InnerException.Message))
+                    {
+                        model.AddMessage(MessageType.Error, exception.InnerException.Message);
+                    }
+                    else
+                    {
+                        model.AddMessage(MessageType.Error, exception.Message);
+                    }
                 }
             }
 
