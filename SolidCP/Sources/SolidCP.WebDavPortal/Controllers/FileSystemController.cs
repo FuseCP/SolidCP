@@ -315,6 +315,15 @@ namespace SolidCP.WebDavPortal.Controllers
         public ActionResult NewFolder(string org, string pathPart)
         {
             string folderPath = pathPart + "/" + Request["foldername"];
+            var permissions = _webDavAuthorizationService.GetPermissions(ScpContext.User, pathPart);
+            if (!permissions.HasFlag(WebDavPermissions.Write))
+            {
+                var model = new ErrorModel
+                {
+                    Message = "Permission denied"
+                };
+                return Json(model);
+            }
             SCP.Services.EnterpriseStorage.CreateEnterpriseSubFolder(ScpContext.User.ItemId, folderPath);
             return new RedirectToRouteResult(FileSystemRouteNames.ShowContentPath, null);
         }
