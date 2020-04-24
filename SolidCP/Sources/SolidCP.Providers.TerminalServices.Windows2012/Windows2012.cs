@@ -588,6 +588,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
                 foreach(var server in servers)
                 {
+                    RemoveRdsServerFromDeployment(runSpace, server);
                     RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                     RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
                     MoveRdsServerToTenantOU(server.Name, organizationId);
@@ -708,6 +709,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
                 RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                 RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
+                RemoveRdsServerFromDeployment(runSpace, server);
                 MoveRdsServerToTenantOU(server.Name, organizationId);
                 Log.WriteInfo("RemoveSessionHostServerFromCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
                 ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
@@ -1881,7 +1883,22 @@ namespace SolidCP.Providers.RemoteDesktopServices
             cmd.Parameters.Add("ConnectionBroker", ConnectionBroker);
 
             runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController);
-        }   
+        }
+
+        private void RemoveRdsServerFromDeployment(Runspace runSpace, RdsServer server)
+        {
+            try
+            {
+                Command cmd = new Command("Remove-RDserver");
+                cmd.Parameters.Add("Server", server.FqdName);
+                cmd.Parameters.Add("Role", "RDS-RD-SERVER");
+                cmd.Parameters.Add("ConnectionBroker", ConnectionBroker);
+                cmd.Parameters.Add("Force", true);
+
+                runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController);
+            }
+            catch (Exception) { }
+        }
 
         private bool ExistRdsServerInDeployment(Runspace runSpace, RdsServer server)
         {
