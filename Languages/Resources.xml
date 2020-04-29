@@ -20253,7 +20253,7 @@
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsWebPolicy.ascx.resx</File>
     <Key>lblFoldersDescription.Text</Key>
-    <DefaultValue>* All folders are relative to Space home&lt;br&gt;* [DOMAIN_NAME] variable is allowed</DefaultValue>
+    <DefaultValue>* All folders are relative to Space home&lt;br&gt;* Allowed variables are [DOMAIN_NAME], [HOST] and [DOMAIN]</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsWebPolicy.ascx.resx</File>
