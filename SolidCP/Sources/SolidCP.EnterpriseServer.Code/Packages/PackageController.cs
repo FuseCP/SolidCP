@@ -573,6 +573,7 @@ namespace SolidCP.EnterpriseServer
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.VPS, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.VPS2012, domain, "");
                                     ServerController.AddServiceDNSRecords(packageId, ResourceGroups.VPSForPC, domain, "");
+                                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.RDS, domain, "");
                                 }
                             }
 
