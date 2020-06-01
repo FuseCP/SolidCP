@@ -485,18 +485,18 @@ namespace SolidCP.EnterpriseServer
 
         [WebMethod]
         public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom,
-            int addressesNumber, string[] addresses)
+            int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             return VirtualizationServerController2012.AddVirtualMachinePrivateIPAddressesByInject(itemId, selectRandom,
-                addressesNumber, addresses);
+                addressesNumber, addresses, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
         [WebMethod]
         public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom,
-            int addressesNumber, string[] addresses)
+            int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             return VirtualizationServerController2012.AddVirtualMachinePrivateIPAddresses(itemId, selectRandom,
-                addressesNumber, addresses, true);
+                addressesNumber, addresses, true, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
         }
 
         [WebMethod]

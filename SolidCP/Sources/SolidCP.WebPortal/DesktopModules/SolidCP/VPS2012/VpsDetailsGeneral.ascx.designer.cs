@@ -31,15 +31,6 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.Timer operationTimer;
         
         /// <summary>
-        /// litRdpPageUrl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litRdpPageUrl;
-        
-        /// <summary>
         /// tabs control.
         /// </summary>
         /// <remarks>
@@ -209,6 +200,24 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel UpdatePanel2;
+        
+        /// <summary>
+        /// pRDPLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pRDPLink;
+        
+        /// <summary>
+        /// litRdpPageUrl control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label litRdpPageUrl;
         
         /// <summary>
         /// locStatus control.
@@ -578,6 +587,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkUpdateComputerName;
+        
+        /// <summary>
+        /// locReboot control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locReboot;
         
         /// <summary>
         /// btnCancelHostname control.

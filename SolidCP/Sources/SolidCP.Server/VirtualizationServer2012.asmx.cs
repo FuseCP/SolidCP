@@ -216,12 +216,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public JobResult RenameVirtualMachine(string vmId, string name)
+        public JobResult RenameVirtualMachine(string vmId, string name, string clusterName)
         {
             try
             {
                 Log.WriteStart("'{0}' RenameVirtualMachine", ProviderSettings.ProviderName);
-                JobResult result = VirtualizationProvider.RenameVirtualMachine(vmId, name);
+                JobResult result = VirtualizationProvider.RenameVirtualMachine(vmId, name, clusterName);
                 Log.WriteEnd("'{0}' RenameVirtualMachine", ProviderSettings.ProviderName);
                 return result;
             }
@@ -233,12 +233,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public JobResult DeleteVirtualMachine(string vmId)
+        public JobResult DeleteVirtualMachine(string vmId, string clusterName)
         {
             try
             {
                 Log.WriteStart("'{0}' DeleteVirtualMachine", ProviderSettings.ProviderName);
-                JobResult result = VirtualizationProvider.DeleteVirtualMachine(vmId);
+                JobResult result = VirtualizationProvider.DeleteVirtualMachine(vmId, clusterName);
                 Log.WriteEnd("'{0}' DeleteVirtualMachine", ProviderSettings.ProviderName);
                 return result;
             }
@@ -250,12 +250,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public JobResult DeleteVirtualMachineExtended(string vmId)
+        public JobResult DeleteVirtualMachineExtended(string vmId, string clusterName)
         {
             try
             {
                 Log.WriteStart("'{0}' DeleteVirtualMachineExtended", ProviderSettings.ProviderName);
-                JobResult result = VirtualizationProvider.DeleteVirtualMachineExtended(vmId);
+                JobResult result = VirtualizationProvider.DeleteVirtualMachineExtended(vmId, clusterName);
                 Log.WriteEnd("'{0}' DeleteVirtualMachineExtended", ProviderSettings.ProviderName);
                 return result;
             }

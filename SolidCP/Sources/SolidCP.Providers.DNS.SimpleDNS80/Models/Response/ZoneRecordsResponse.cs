@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2016, SolidCP
+// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -89,7 +89,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
             //Build up the response
             response.Name = record.RecordName;
             response.Type = record.RecordType.ToString();
-            response.Ttl = record.RecordText == null ? minimumTTL : Convert.ToInt32(record.RecordText.Split('\t')[1]);
+            //response.Ttl = record.RecordText == null ? minimumTTL : Convert.ToInt32(record.RecordText.Split('\t')[1]);
             // ReSharper disable once SwitchStatementMissingSomeCases
             switch (record.RecordType)
             {
@@ -102,6 +102,11 @@ namespace SolidCP.Providers.DNS.SimpleDNS80.Models.Response
                     response.Data = $"{record.MxPriority} {record.RecordData}";
                     break;
                 case DnsRecordType.SRV:
+                    if (!record.RecordData.EndsWith(".") && record.RecordData.Length > 0)
+                    {
+                        response.Data = $"{record.SrvPriority} {record.SrvWeight} {record.SrvPort} {record.RecordData}.";
+                        break;
+                    }
                     response.Data = $"{record.SrvPriority} {record.SrvWeight} {record.SrvPort} {record.RecordData}";
                     break;
                 case DnsRecordType.CNAME:

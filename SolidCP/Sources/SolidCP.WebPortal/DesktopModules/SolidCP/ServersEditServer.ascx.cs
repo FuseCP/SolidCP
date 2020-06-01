@@ -138,6 +138,12 @@ namespace SolidCP.Portal
             Utils.SelectListItem(ddlAdAuthType, server.ADAuthenticationType);
             txtDomainName.Text = server.ADRootDomain;
             txtAdUsername.Text = server.ADUsername;
+            txtAdParentDomain.Text = server.ADParentDomain;
+            txtAdParentDomainController.Text = server.ADParentDomainController;
+
+            chkUseAdParentDomain.Checked = !string.IsNullOrEmpty(server.ADParentDomain);
+
+            chkUseAdParentDomain_StateChanged(null, null);
 
             // Preview Domain
             txtPreviewDomain.Text = server.InstantDomainAlias;
@@ -185,6 +191,7 @@ namespace SolidCP.Portal
             server.ADAuthenticationType = ddlAdAuthType.SelectedValue;
             server.ADRootDomain = txtDomainName.Text;
             server.ADUsername = txtAdUsername.Text;
+            server.ADParentDomain = txtAdParentDomain.Text;
 
             // Preview Domain
             server.InstantDomainAlias = txtPreviewDomain.Text;
@@ -294,6 +301,21 @@ namespace SolidCP.Portal
             get
             {
                 return PanelRequest.GetBool("IpAddressesCollapsed", true);
+            }
+        }
+
+        protected void chkUseAdParentDomain_StateChanged(object sender, EventArgs e)
+        {
+            //divParentDomain.Visible = chkUseAdParentDomain.Checked;
+            //trParentDomainController.Visible = chkUseAdParentDomain.Checked;
+            lblAdParentDomain.Visible = chkUseAdParentDomain.Checked;
+            lblAdParentDomainController.Visible = chkUseAdParentDomain.Checked;
+            txtAdParentDomain.Visible = chkUseAdParentDomain.Checked;
+            txtAdParentDomainController.Visible = chkUseAdParentDomain.Checked;
+
+            if (!chkUseAdParentDomain.Checked)
+            {
+                txtAdParentDomain.Text = null;
             }
         }
     }

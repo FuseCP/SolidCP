@@ -1191,8 +1191,13 @@ namespace SolidCP.Providers.Mail
 				if (!result.Result)
 					throw new Exception(result.Message);
 
-				// set additional settings
-				result = users.SetRequestedUserSettings(AdminUsername, AdminPassword, mailbox.Name, mailbox.PrepareSetRequestedUserSettingsWebMethodParams());
+                // set forwarding settings - Not tracking errors as this only applies to some versions due to API change (The above wont error)
+                result = users.UpdateUserForwardingInfo2(AdminUsername, AdminPassword,
+                    mailbox.Name, mailbox.DeleteOnForward,
+                    (mailbox.ForwardingAddresses != null ? String.Join(", ", mailbox.ForwardingAddresses) : ""));
+
+                // set additional settings
+                result = users.SetRequestedUserSettings(AdminUsername, AdminPassword, mailbox.Name, mailbox.PrepareSetRequestedUserSettingsWebMethodParams());
 
 				if (!result.Result)
 					throw new Exception(result.Message);
@@ -1257,8 +1262,13 @@ namespace SolidCP.Providers.Mail
 				if (!result.Result)
 					throw new Exception(result.Message);
 
-				// Set additional settings
-				result = users.SetRequestedUserSettings(AdminUsername, AdminPassword, mailbox.Name, mailbox.PrepareSetRequestedUserSettingsWebMethodParams());
+                // set forwarding settings - Not tracking errors as this only applies to some versions due to API change (The above wont error)
+                result = users.UpdateUserForwardingInfo2(AdminUsername, AdminPassword,
+                    mailbox.Name, mailbox.DeleteOnForward,
+                    (mailbox.ForwardingAddresses != null ? String.Join(", ", mailbox.ForwardingAddresses) : ""));
+
+                // Set additional settings
+                result = users.SetRequestedUserSettings(AdminUsername, AdminPassword, mailbox.Name, mailbox.PrepareSetRequestedUserSettingsWebMethodParams());
 
 				if (!result.Result)
 					throw new Exception(result.Message);
@@ -2116,7 +2126,7 @@ namespace SolidCP.Providers.Mail
                         {
                             productName = (string)subkey.GetValue("DisplayName");
                         }
-                    if (productName != null && productName.Equals("SmarterMail"))
+                    if (productName != null && productName.Contains("SmarterMail"))
                     {
                         if (subkey != null)
                             productVersion = (string)subkey.GetValue("DisplayVersion");
@@ -2157,7 +2167,7 @@ namespace SolidCP.Providers.Mail
                         productName = (string)subkey.GetValue("DisplayName");
                     }
                 if (productName != null)
-                    if (productName.Equals("SmarterMail"))
+                    if (productName.Contains("SmarterMail"))
                     {
                         if (subkey != null) productVersion = (string)subkey.GetValue("DisplayVersion");
                         break;

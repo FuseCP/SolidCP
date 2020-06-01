@@ -261,6 +261,16 @@ namespace SolidCP.Providers.HostedSolution
             DeleteMailboxInternal(accountName);
         }
 
+        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName)
+        {
+            return GetMailboxAutoReplySettingsInternal(accountName);
+        }
+
+        public void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings)
+        {
+            SetMailboxAutoReplySettingsInternal(accountName, settings);
+        }
+
         public ExchangeMailbox GetMailboxGeneralSettings(string accountName)
         {
             return GetMailboxGeneralSettingsInternal(accountName);
@@ -2309,6 +2319,63 @@ namespace SolidCP.Providers.HostedSolution
             }
 
             return retUser;
+        }
+
+        internal virtual ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettingsInternal(string accountName)
+        {
+            /*ExchangeLog.LogStart("GetMailboxAutoReplySettingsInternal");
+            ExchangeLog.DebugInfo("Account: {0}", accountName);*/
+
+            ExchangeMailboxAutoReplySettings ret = new ExchangeMailboxAutoReplySettings();
+            /*Runspace runSpace = null;
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("Get-MailboxAutoReplyConfiguration");//Exchange Server 2010+
+                cmd.Parameters.Add("Identity", accountName);
+                Collection<PSObject> result = ExecuteShellCommand(runSpace, cmd);
+                PSObject ar = result[0];
+                ret.AutoReplyState = (OofState)GetPSObjectProperty(ar, "AutoReplyState");
+                ret.ExternalAudience = (ExternalAudience)GetPSObjectProperty(ar, "ExternalAudience");
+                ret.ExternalMessage = (string)GetPSObjectProperty(ar, "ExternalMessage");
+                ret.InternalMessage = (string)GetPSObjectProperty(ar, "InternalMessage");
+                ret.StartTime = (DateTime)GetPSObjectProperty(ar, "StartTime");
+                ret.EndTime = (DateTime)GetPSObjectProperty(ar, "EndTime");
+            }
+            finally
+            {
+
+                CloseRunspace(runSpace);
+            }
+            ExchangeLog.LogEnd("GetMailboxAutoReplySettingsInternal");*/
+            return ret;
+        }
+
+        internal virtual void SetMailboxAutoReplySettingsInternal(string accountName, ExchangeMailboxAutoReplySettings settings)
+        {
+            /*ExchangeLog.LogStart("SetMailboxAutoReplySettingsInternal");
+            ExchangeLog.DebugInfo("Account: {0}", accountName);
+
+            Runspace runSpace = null;
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("Set-MailboxAutoReplyConfiguration");//Exchange Server 2010+
+                cmd.Parameters.Add("Identity", accountName);
+                cmd.Parameters.Add("AutoReplyState", settings.AutoReplyState);
+                cmd.Parameters.Add("ExternalAudience", settings.ExternalAudience);
+                cmd.Parameters.Add("InternalMessage", settings.InternalMessage);
+                cmd.Parameters.Add("ExternalMessage", settings.ExternalMessage);
+                cmd.Parameters.Add("StartTime", settings.StartTime);
+                cmd.Parameters.Add("EndTime", settings.EndTime);
+                ExecuteShellCommand(runSpace, cmd);
+            }
+            finally
+            {
+
+                CloseRunspace(runSpace);
+            }
+            ExchangeLog.LogEnd("SetMailboxAutoReplySettingsInternal");*/
         }
 
         internal virtual ExchangeMailbox GetMailboxGeneralSettingsInternal(string accountName)

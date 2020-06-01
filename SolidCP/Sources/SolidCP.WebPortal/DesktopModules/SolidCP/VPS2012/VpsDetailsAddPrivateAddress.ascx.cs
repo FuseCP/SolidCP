@@ -37,6 +37,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.Providers.Common;
 using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.Portal.VPS2012
 {
@@ -73,6 +74,10 @@ namespace SolidCP.Portal.VPS2012
                 txtPrivateAddressesNumber.Text = maxPrivate.ToString();
                 litMaxPrivateAddresses.Text = String.Format(GetLocalizedString("litMaxPrivateAddresses.Text"), maxPrivate);
                 btnAdd.Enabled = btnAddByInject.Enabled = maxPrivate > 0;
+                txtGateway.Text = nic.DefaultGateway;
+                txtDNS1.Text = nic.PreferredNameServer;
+                txtDNS2.Text = nic.AlternateNameServer;
+                txtMask.Text = nic.SubnetMask;
             }
         }
 
@@ -95,12 +100,12 @@ namespace SolidCP.Portal.VPS2012
             {
                 ResultObject res = null;
 
-                if(byNewMethod)
+                if (byNewMethod)
                     res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddressesByInject(PanelRequest.ItemID,
-                    radioPrivateRandom.Checked, number, privIps);
+                    radioPrivateRandom.Checked, number, privIps, chkCustomGateway.Checked, txtGateway.Text, txtDNS1.Text, txtDNS2.Text, txtMask.Text);
                 else
                     res = ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID,
-                    radioPrivateRandom.Checked, number, privIps);
+                    radioPrivateRandom.Checked, number, privIps, chkCustomGateway.Checked, txtGateway.Text, txtDNS1.Text, txtDNS2.Text, txtMask.Text);
 
                 if (res.IsSuccess)
                 {
@@ -133,6 +138,7 @@ namespace SolidCP.Portal.VPS2012
             // private network
             PrivateAddressesNumberRow.Visible = radioPrivateRandom.Checked;
             PrivateAddressesListRow.Visible = radioPrivateSelected.Checked;
+            trCustomGateway.Visible = chkCustomGateway.Checked;
         }
     }
 }

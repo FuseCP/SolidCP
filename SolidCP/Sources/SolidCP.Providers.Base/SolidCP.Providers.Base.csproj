@@ -110,6 +110,7 @@
     <Compile Include="HostedSolution\BlackBerryStatsItem.cs" />
     <Compile Include="HostedSolution\BlackBerryUserDeleteState.cs" />
     <Compile Include="HostedSolution\ExchangeDisclaimer.cs" />
+    <Compile Include="HostedSolution\ExchangeMailboxAutoReplySettings.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxPlanRetentionPolicyTag.cs" />
     <Compile Include="HostedSolution\ExchangeOrganization.cs" />
     <Compile Include="HostedSolution\ExchangeAcceptedDomainType.cs" />

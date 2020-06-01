@@ -3855,24 +3855,34 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachinePrivateIPAddressesByInje" +
             "ct", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        public ResultObject AddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             object[] results = this.Invoke("AddVirtualMachinePrivateIPAddressesByInject", new object[] {
                         itemId,
                         selectRandom,
                         addressesNumber,
-                        addresses});
+                        addresses,
+                        customGatewayAndDns,
+                        gateway,
+                        dns1,
+                        dns2,
+                        subnetMask});
             return ((ResultObject)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddressesByInject(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("AddVirtualMachinePrivateIPAddressesByInject", new object[] {
                         itemId,
                         selectRandom,
                         addressesNumber,
-                        addresses}, callback, asyncState);
+                        addresses,
+                        customGatewayAndDns,
+                        gateway,
+                        dns1,
+                        dns2,
+                        subnetMask}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -3883,13 +3893,13 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public void AddVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        public void AddVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
-            this.AddVirtualMachinePrivateIPAddressesByInjectAsync(itemId, selectRandom, addressesNumber, addresses, null);
+            this.AddVirtualMachinePrivateIPAddressesByInjectAsync(itemId, selectRandom, addressesNumber, addresses, customGatewayAndDns, gateway, dns1, dns2, subnetMask, null);
         }
 
         /// <remarks/>
-        public void AddVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, object userState)
+        public void AddVirtualMachinePrivateIPAddressesByInjectAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask, object userState)
         {
             if ((this.AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted == null))
             {
@@ -3899,7 +3909,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         itemId,
                         selectRandom,
                         addressesNumber,
-                        addresses}, this.AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted, userState);
+                        addresses,
+                        customGatewayAndDns,
+                        gateway,
+                        dns1,
+                        dns2,
+                        subnetMask}, this.AddVirtualMachinePrivateIPAddressesByInjectOperationCompleted, userState);
         }
 
         private void OnAddVirtualMachinePrivateIPAddressesByInjectOperationCompleted(object arg)
@@ -3913,24 +3928,34 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AddVirtualMachinePrivateIPAddresses", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        public ResultObject AddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
             object[] results = this.Invoke("AddVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         selectRandom,
                         addressesNumber,
-                        addresses});
+                        addresses,
+                        customGatewayAndDns,
+                        gateway,
+                        dns1,
+                        dns2,
+                        subnetMask});
             return ((ResultObject)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginAddVirtualMachinePrivateIPAddresses(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("AddVirtualMachinePrivateIPAddresses", new object[] {
                         itemId,
                         selectRandom,
                         addressesNumber,
-                        addresses}, callback, asyncState);
+                        addresses,
+                        customGatewayAndDns,
+                        gateway,
+                        dns1,
+                        dns2,
+                        subnetMask}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -3941,13 +3966,13 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses)
+        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
         {
-            this.AddVirtualMachinePrivateIPAddressesAsync(itemId, selectRandom, addressesNumber, addresses, null);
+            this.AddVirtualMachinePrivateIPAddressesAsync(itemId, selectRandom, addressesNumber, addresses, customGatewayAndDns, gateway, dns1, dns2, subnetMask, null);
         }
 
         /// <remarks/>
-        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, object userState)
+        public void AddVirtualMachinePrivateIPAddressesAsync(int itemId, bool selectRandom, int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask, object userState)
         {
             if ((this.AddVirtualMachinePrivateIPAddressesOperationCompleted == null))
             {
@@ -3957,7 +3982,12 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
                         itemId,
                         selectRandom,
                         addressesNumber,
-                        addresses}, this.AddVirtualMachinePrivateIPAddressesOperationCompleted, userState);
+                        addresses,
+                        customGatewayAndDns,
+                        gateway,
+                        dns1,
+                        dns2,
+                        subnetMask}, this.AddVirtualMachinePrivateIPAddressesOperationCompleted, userState);
         }
 
         private void OnAddVirtualMachinePrivateIPAddressesOperationCompleted(object arg)

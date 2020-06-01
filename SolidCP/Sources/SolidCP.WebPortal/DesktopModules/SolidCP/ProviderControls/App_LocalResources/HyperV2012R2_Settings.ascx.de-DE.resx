@@ -543,4 +543,28 @@
   <data name="chkAssignVLANAutomatically.Text" xml:space="preserve">
     <value>VLANs bei Bereich-Anlage automatisch zuweisen</value>
   </data>
+  <data name="locGuacamoleHyperVAdministratorPassword.Text" xml:space="preserve">
+    <value>Hyper-V Kennwort:</value>
+  </data>
+  <data name="locGuacamoleHyperVUser.Text" xml:space="preserve">
+    <value>Hyper-V Benutzer:</value>
+  </data>
+  <data name="lblCurrPassword.Text" xml:space="preserve">
+    <value>Aktuelles Hyper-V Kennwort:</value>
+  </data>
+  <data name="chkUseFailoverCluster.Text" xml:space="preserve">
+    <value>Failover Cluster benutzen</value>
+  </data>
+  <data name="ClusterNameValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen Clusternamen ein</value>
+  </data>
+  <data name="locClusterName.Text" xml:space="preserve">
+    <value>Cluster FQDN Name:</value>
+  </data>
+  <data name="locFailoverCluster.Text" xml:space="preserve">
+    <value>Failover Cluster</value>
+  </data>
+  <data name="locDiskSize.Text" xml:space="preserve">
+    <value>VHD-Festplattengröße (GB):</value>
+  </data>
 </root>

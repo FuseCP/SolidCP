@@ -4337,6 +4337,15 @@ ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
 END
 GO
 
+-- Exchange2013 Auto Reply
+
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='ExchangeMailboxPlans' AND COLS.name='EnableAutoReply')
+BEGIN
+ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
+[EnableAutoReply] [bit] NULL
+END
+GO
+
 
 ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan] 
 (
@@ -6006,11 +6015,11 @@ AND @FilterValue <> '' AND @FilterValue IS NOT NULL
 BEGIN
 	IF @FilterColumn = 'PrimaryEmailAddress' AND @AccountTypes <> '2'
 	BEGIN		
-		SET @condition = @condition + ' AND EA.AccountID IN (SELECT EAEA.AccountID FROM ExchangeAccountEmailAddresses EAEA WHERE EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
+		SET @condition = @condition + ' AND EA.AccountID IN (SELECT EAEA.AccountID FROM ExchangeAccountEmailAddresses EAEA WHERE EAEA.EmailAddress LIKE ''%' + @FilterValue + '%'')'
 	END
 	ELSE
 	BEGIN		
-		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'''
 	END
 END
 
@@ -7130,6 +7139,15 @@ IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2013.Re
 BEGIN
 INSERT [dbo].[Quotas]  ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) 
 VALUES (428, 12, 31, N'Exchange2013.ResourceMailboxes', N'Resource Mailboxes per Organization', 2, 0, NULL, NULL)
+END
+GO
+
+-- Exchange2013 Automatic Replies Quota
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2013.AutoReply')
+BEGIN
+INSERT [dbo].[Quotas]  ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) 
+VALUES (729, 12, 32, N'Exchange2013.AutoReply', N'Automatic Replies via SolidCP Allowed', 1, 0, NULL, NULL)
 END
 GO
 
@@ -8929,6 +8947,7 @@ ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan]
 	@EnableMAPI bit,
 	@EnableOWA bit,
 	@EnablePOP bit,
+	@EnableAutoReply bit,
 	@IsDefault bit,
 	@IssueWarningPct int,
 	@KeepDeletedItemsDays int,
@@ -8974,6 +8993,7 @@ INSERT INTO ExchangeMailboxPlans
 	EnableMAPI,
 	EnableOWA,
 	EnablePOP,
+	EnableAutoReply,
 	IsDefault,
 	IssueWarningPct,
 	KeepDeletedItemsDays,
@@ -9005,6 +9025,7 @@ VALUES
 	@EnableMAPI,
 	@EnableOWA,
 	@EnablePOP,
+	@EnableAutoReply,
 	@IsDefault,
 	@IssueWarningPct,
 	@KeepDeletedItemsDays,
@@ -9042,6 +9063,7 @@ ALTER PROCEDURE [dbo].[UpdateExchangeMailboxPlan]
 	@EnableMAPI bit,
 	@EnableOWA bit,
 	@EnablePOP bit,
+	@EnableAutoReply bit,
 	@IsDefault bit,
 	@IssueWarningPct int,
 	@KeepDeletedItemsDays int,
@@ -9073,6 +9095,7 @@ UPDATE ExchangeMailboxPlans SET
 	EnableMAPI = @EnableMAPI,
 	EnableOWA = @EnableOWA,
 	EnablePOP = @EnablePOP,
+	EnableAutoReply = @EnableAutoReply,
 	IsDefault = @IsDefault,
 	IssueWarningPct= @IssueWarningPct,
 	KeepDeletedItemsDays = @KeepDeletedItemsDays,
@@ -9113,6 +9136,7 @@ SELECT
 	EnableMAPI,
 	EnableOWA,
 	EnablePOP,
+	EnableAutoReply,
 	IsDefault,
 	IssueWarningPct,
 	KeepDeletedItemsDays,
@@ -9156,6 +9180,7 @@ SELECT
 	EnableMAPI,
 	EnableOWA,
 	EnablePOP,
+	EnableAutoReply,
 	IsDefault,
 	IssueWarningPct,
 	KeepDeletedItemsDays,
@@ -15920,6 +15945,61 @@ COMMIT TRAN
 RETURN
 GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER OFF
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualServices')
+BEGIN
+DROP PROCEDURE GetVirtualServices
+END
+GO
+
+CREATE PROCEDURE [dbo].[GetVirtualServices]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+-- virtual groups
+SELECT
+	VRG.VirtualGroupID,
+	RG.GroupID,
+	RG.GroupName,
+	ISNULL(VRG.DistributionType, 1) AS DistributionType,
+	ISNULL(VRG.BindDistributionToPrimary, 1) AS BindDistributionToPrimary
+FROM ResourceGroups AS RG
+LEFT OUTER JOIN VirtualGroups AS VRG ON RG.GroupID = VRG.GroupID AND VRG.ServerID = @ServerID
+WHERE
+	(@IsAdmin = 1 OR @forAutodiscover = 1) AND (ShowGroup = 1)
+ORDER BY RG.GroupOrder
+
+-- services
+SELECT
+	VS.ServiceID,
+	S.ServiceName,
+	S.Comments,
+	P.GroupID,
+	P.DisplayName,
+	SRV.ServerName
+FROM VirtualServices AS VS
+INNER JOIN Services AS S ON VS.ServiceID = S.ServiceID
+INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE
+	VS.ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+GO
+
 -- Private Network VLANs
 
 IF NOT EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'PrivateNetworkVLANs')
@@ -21574,4 +21654,729 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+
+
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Servers' AND COLS.name='AdParentDomain')
+BEGIN
+ALTER TABLE [dbo].[Servers] ADD
+	[AdParentDomain] [nvarchar](200) NULL,
+	[AdParentDomainController] [nvarchar](200) NULL
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServer')
+DROP PROCEDURE UpdateServer
+GO
+
+CREATE PROCEDURE UpdateServer
+(
+	@ServerID int,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(100),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@ADParentDomain nvarchar(200),
+	@ADParentDomainController nvarchar(200)
+)
+AS
+
+IF @PrimaryGroupID = 0
+SET @PrimaryGroupID = NULL
+
+UPDATE Servers SET
+	ServerName = @ServerName,
+	ServerUrl = @ServerUrl,
+	Password = @Password,
+	Comments = @Comments,
+	InstantDomainAlias = @InstantDomainAlias,
+	PrimaryGroupID = @PrimaryGroupID,
+	ADEnabled = @ADEnabled,
+	ADRootDomain = @ADRootDomain,
+	ADUsername = @ADUsername,
+	ADPassword = @ADPassword,
+	ADAuthenticationType = @ADAuthenticationType,
+	ADParentDomain = @ADParentDomain,
+	ADParentDomainController = @ADParentDomainController
+WHERE ServerID = @ServerID
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServer')
+DROP PROCEDURE GetServer
+GO
+
+CREATE PROCEDURE [dbo].[GetServer]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController
+FROM Servers
+WHERE
+	ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServerInternal')
+DROP PROCEDURE GetServerInternal
+GO
+
+CREATE PROCEDURE GetServerInternal
+(
+	@ServerID int
+)
+AS
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController
+FROM Servers
+WHERE
+	ServerID = @ServerID
+
+RETURN
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServerByName')
+DROP PROCEDURE GetServerByName
+GO
+
+CREATE PROCEDURE GetServerByName
+(
+	@ActorID int,
+	@ServerName nvarchar(100)
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController
+FROM Servers
+WHERE
+	ServerName = @ServerName
+	AND @IsAdmin = 1
+
+RETURN
+GO
+
+-- Audit Log Sources and Tasks
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'REMOTE_DESKTOP_SERVICES')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'REMOTE_DESKTOP_SERVICES')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'OCS')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'OCS')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'ORGANIZATION')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'ORGANIZATION')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'VPS2012')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'VPS2012')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'AUTO_DISCOVERY')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'AUTO_DISCOVERY')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'STORAGE_SPACES')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'STORAGE_SPACES')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'ENTERPRISE_STORAGE')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'ENTERPRISE_STORAGE')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'VLAN')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'VLAN')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'WAG_INSTALLER')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'WAG_INSTALLER')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'HOSTING_SPACE_WR')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'HOSTING_SPACE_WR')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogSources] WHERE [SourceName] = 'HOSTING_SPACE')
+BEGIN
+	INSERT [dbo].[AuditLogSources] ([SourceName]) VALUES (N'HOSTING_SPACE')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'HOSTING_SPACE_WR' AND [TaskName] = 'ADD')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'HOSTING_SPACE_WR', N'ADD', N'Add')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'HOSTING_SPACE' AND [TaskName] = 'ADD')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'HOSTING_SPACE', N'ADD', N'Add')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'REMOTE_DESKTOP_SERVICES' AND [TaskName] = 'ADD_RDS_SERVER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'REMOTE_DESKTOP_SERVICES', N'ADD_RDS_SERVER', N'Add RDS server')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'REMOTE_DESKTOP_SERVICES' AND [TaskName] = 'RESTART_RDS_SERVER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'REMOTE_DESKTOP_SERVICES', N'RESTART_RDS_SERVER', N'Restart RDS server')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'REMOTE_DESKTOP_SERVICES' AND [TaskName] = 'SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'REMOTE_DESKTOP_SERVICES', N'SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED', N'Set RDS new connection allowed')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'CREATE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'CREATE', N'Create VM')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'REINSTALL')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'REINSTALL', N'Reinstall VM')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ENTERPRISE_STORAGE' AND [TaskName] = 'GET_ORG_STATS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ENTERPRISE_STORAGE', N'GET_ORG_STATS', N'Get organization statistics')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ENTERPRISE_STORAGE' AND [TaskName] = 'CREATE_MAPPED_DRIVE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ENTERPRISE_STORAGE', N'CREATE_MAPPED_DRIVE', N'Create mapped drive')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ENTERPRISE_STORAGE' AND [TaskName] = 'DELETE_MAPPED_DRIVE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ENTERPRISE_STORAGE', N'DELETE_MAPPED_DRIVE', N'Delete mapped drive')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ENTERPRISE_STORAGE' AND [TaskName] = 'CREATE_FOLDER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ENTERPRISE_STORAGE', N'CREATE_FOLDER', N'Create folder')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ENTERPRISE_STORAGE' AND [TaskName] = 'DELETE_FOLDER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ENTERPRISE_STORAGE', N'DELETE_FOLDER', N'Delete folder')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ENTERPRISE_STORAGE' AND [TaskName] = 'SET_ENTERPRISE_FOLDER_GENERAL_SETTINGS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ENTERPRISE_STORAGE', N'SET_ENTERPRISE_FOLDER_GENERAL_SETTINGS', N'Set enterprise folder general settings')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'GET_ORG_STATS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'GET_ORG_STATS', N'Get organization statistics')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'GET_SUPPORT_SERVICE_LEVELS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'GET_SUPPORT_SERVICE_LEVELS', N'Get support service levels')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'GET_SECURITY_GROUPS_BYMEMBER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'GET_SECURITY_GROUPS_BYMEMBER', N'Get security groups by member')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'GET_SECURITY_GROUP_GENERAL')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'GET_SECURITY_GROUP_GENERAL', N'Get security group general settings')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'SET_USER_PASSWORD')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'SET_USER_PASSWORD', N'Set user password')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'SET_USER_USERPRINCIPALNAME')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'SET_USER_USERPRINCIPALNAME', N'Set user principal name')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'UPDATE_USER_GENERAL')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'UPDATE_USER_GENERAL', N'Update user general settings')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'CREATE_USER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'CREATE_USER', N'Create user')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'REMOVE_USER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'REMOVE_USER', N'Remove user')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'CREATE_ORG')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'CREATE_ORG', N'Create organization')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'DELETE_ORG')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'DELETE_ORG', N'Delete organization')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'CREATE_ORGANIZATION_ENTERPRISE_STORAGE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'CREATE_ORGANIZATION_ENTERPRISE_STORAGE', N'Create organization enterprise storage')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'SEND_USER_PASSWORD_RESET_EMAIL_PINCODE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'SEND_USER_PASSWORD_RESET_EMAIL_PINCODE', N'Send user password reset email pincode')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'UPDATE_PASSWORD_SETTINGS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'UPDATE_PASSWORD_SETTINGS', N'Update password settings')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'CREATE_SECURITY_GROUP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'CREATE_SECURITY_GROUP', N'Create security group')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'UPDATE_SECURITY_GROUP_GENERAL')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'UPDATE_SECURITY_GROUP_GENERAL', N'Update security group general settings')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'ORGANIZATION' AND [TaskName] = 'DELETE_SECURITY_GROUP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'ORGANIZATION', N'DELETE_SECURITY_GROUP', N'Delete security group')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'AUTO_DISCOVERY' AND [TaskName] = 'IS_INSTALLED')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'AUTO_DISCOVERY', N'IS_INSTALLED', N'Is installed')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_EXCHANGE_MAILBOXPLANS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_EXCHANGE_MAILBOXPLANS', N'Get Exchange Mailbox plans')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_EXCHANGE_MAILBOXPLAN')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_EXCHANGE_MAILBOXPLAN', N'Get Exchange Mailbox plan')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_EXCHANGE_ACCOUNTDISCLAIMERID')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_EXCHANGE_ACCOUNTDISCLAIMERID', N'Get Exchange account disclaimer id')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_EXCHANGE_EXCHANGEDISCLAIMER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_EXCHANGE_EXCHANGEDISCLAIMER', N'Get Exchange disclaimer')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'ADD_EXCHANGE_EXCHANGEDISCLAIMER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'ADD_EXCHANGE_EXCHANGEDISCLAIMER', N'Add Exchange disclaimer')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_MAILBOX_STATS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_MAILBOX_STATS', N'Get Mailbox statistics')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_ACTIVESYNC_POLICY')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_ACTIVESYNC_POLICY', N'Get Activesync policy')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'SET_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'SET_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING', N'Set Mailbox plan retention policy archiving')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_EXCHANGE_RETENTIONPOLICYTAG')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_EXCHANGE_RETENTIONPOLICYTAG', N'Get Exchange retention policy tag')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'ADD_EXCHANGE_RETENTIONPOLICYTAG')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'ADD_EXCHANGE_RETENTIONPOLICYTAG', N'Add Exchange retention policy tag')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_EXCHANGE_RETENTIONPOLICYTAGS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_EXCHANGE_RETENTIONPOLICYTAGS', N'Get Exchange retention policy tags')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'DELETE_EXCHANGE_RETENTIONPOLICYTAG')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'DELETE_EXCHANGE_RETENTIONPOLICYTAG', N'Delete Exchange retention policy tag')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'UPDATE_EXCHANGE_RETENTIONPOLICYTAG')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'UPDATE_EXCHANGE_RETENTIONPOLICYTAG', N'Update Exchange retention policy tag')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'ADD_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'ADD_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIVING', N'Add Exchange archiving retention policy')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'DELETE_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIV')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'DELETE_EXCHANGE_MAILBOXPLAN_RETENTIONPOLICY_ARCHIV', N'Delete Exchange archiving retention policy')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_PICTURE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_PICTURE', N'Get picture')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'UPDATE_MAILBOX_AUTOREPLY')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'UPDATE_MAILBOX_AUTOREPLY', N'Update Mailbox autoreply')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_MAILBOX_AUTOREPLY')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_MAILBOX_AUTOREPLY', N'Get Mailbox autoreply')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_DISTR_LIST_BYMEMBER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_DISTR_LIST_BYMEMBER', N'Get distributions list by member')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_DISTRIBUTION_LIST_RESULT')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_DISTRIBUTION_LIST_RESULT', N'Get distributions list result')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_MOBILE_DEVICES')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_MOBILE_DEVICES', N'Get mobile devices')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_MAILBOX_PERMISSIONS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_MAILBOX_PERMISSIONS', N'Get Mailbox permissions')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'DISABLE_MAILBOX')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'DISABLE_MAILBOX', N'Disable Mailbox')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'SET_EXCHANGE_ACCOUNTDISCLAIMERID')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'SET_EXCHANGE_ACCOUNTDISCLAIMERID', N'Set exchange account disclaimer id')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'SET_EXCHANGE_MAILBOXPLAN')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'SET_EXCHANGE_MAILBOXPLAN', N'Set exchange Mailbox plan')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'STORAGE_SPACES' AND [TaskName] = 'SAVE_STORAGE_SPACE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'STORAGE_SPACES', N'SAVE_STORAGE_SPACE', N'Save storage space')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'STORAGE_SPACES' AND [TaskName] = 'SAVE_STORAGE_SPACE_LEVEL')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'STORAGE_SPACES', N'SAVE_STORAGE_SPACE_LEVEL', N'Save storage space level')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'STORAGE_SPACES' AND [TaskName] = 'REMOVE_STORAGE_SPACE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'STORAGE_SPACES', N'REMOVE_STORAGE_SPACE', N'Remove storage space')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'DOMAIN' AND [TaskName] = 'ENABLE_DNS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'DOMAIN', N'ENABLE_DNS', N'Enable DNS')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VLAN' AND [TaskName] = 'ADD')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VLAN', N'ADD', N'Add')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VLAN' AND [TaskName] = 'ADD_RANGE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VLAN', N'ADD_RANGE', N'Add range')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VLAN' AND [TaskName] = 'DELETE_RANGE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VLAN', N'DELETE_RANGE', N'Delete range')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VLAN' AND [TaskName] = 'UPDATE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VLAN', N'UPDATE', N'Update')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VLAN' AND [TaskName] = 'ALLOCATE_PACKAGE_VLAN')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VLAN', N'ALLOCATE_PACKAGE_VLAN', N'Allocate package VLAN')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VLAN' AND [TaskName] = 'DEALLOCATE_PACKAGE_VLAN')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VLAN', N'DEALLOCATE_PACKAGE_VLAN', N'Deallocate package VLAN')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WAG_INSTALLER' AND [TaskName] = 'GET_GALLERY_APPS_TASK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WAG_INSTALLER', N'GET_GALLERY_APPS_TASK', N'Get gallery applications')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WAG_INSTALLER' AND [TaskName] = 'GET_GALLERY_CATEGORIES_TASK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WAG_INSTALLER', N'GET_GALLERY_CATEGORIES_TASK', N'Get gallery categories')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WAG_INSTALLER' AND [TaskName] = 'GET_GALLERY_APP_DETAILS_TASK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WAG_INSTALLER', N'GET_GALLERY_APP_DETAILS_TASK', N'Get gallery application details')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WAG_INSTALLER' AND [TaskName] = 'INSTALL_WEB_APP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WAG_INSTALLER', N'INSTALL_WEB_APP', N'Install Web application')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WAG_INSTALLER' AND [TaskName] = 'GET_APP_PARAMS_TASK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WAG_INSTALLER', N'GET_APP_PARAMS_TASK', N'Get application parameters')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WAG_INSTALLER' AND [TaskName] = 'GET_SRV_GALLERY_APPS_TASK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WAG_INSTALLER', N'GET_SRV_GALLERY_APPS_TASK', N'Get server gallery applications')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'WEB_SITE' AND [TaskName] = 'GET_STATE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'WEB_SITE', N'GET_STATE', N'Get state')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'OCS' AND [TaskName] = 'CREATE_OCS_USER')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'OCS', N'CREATE_OCS_USER', N'Create OCS user')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'OCS' AND [TaskName] = 'GET_OCS_USERS_COUNT')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'OCS', N'GET_OCS_USERS_COUNT', N'Get OCS users count')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'OCS' AND [TaskName] = 'GET_OCS_USERS')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'OCS', N'GET_OCS_USERS', N'Get OCS users')
+END
+GO
+
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddPackage')
+DROP PROCEDURE AddPackage
+GO
+
+
+CREATE PROCEDURE [dbo].[AddPackage]
+(
+	@ActorID int,
+	@PackageID int OUTPUT,
+	@UserID int,
+	@PackageName nvarchar(300),
+	@PackageComments ntext,
+	@StatusID int,
+	@PlanID int,
+	@PurchaseDate datetime
+)
+AS
+
+
+DECLARE @ParentPackageID int, @PlanServerID int
+SELECT @ParentPackageID = PackageID, @PlanServerID = ServerID FROM HostingPlans
+WHERE PlanID = @PlanID
+
+IF @ParentPackageID = 0 OR @ParentPackageID IS NULL
+SELECT @ParentPackageID = PackageID FROM Packages
+WHERE ParentPackageID IS NULL -- root space
+
+
+DECLARE @datelastyear datetime = DATEADD(year,-1,GETDATE())
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @ParentPackageID) = 0
+BEGIN
+	RAISERROR('You are not allowed to access this package', 16, 1);
+	RETURN;
+END
+
+BEGIN TRAN
+-- insert package
+INSERT INTO Packages
+(
+	ParentPackageID,
+	UserID,
+	PackageName,
+	PackageComments,
+	ServerID,
+	StatusID,
+	PlanID,
+	PurchaseDate,
+	BandwidthUpdated
+)
+VALUES
+(
+	@ParentPackageID,
+	@UserID,
+	@PackageName,
+	@PackageComments,
+	@PlanServerID,
+	@StatusID,
+	@PlanID,
+	@PurchaseDate,
+	@datelastyear
+)
+
+SET @PackageID = SCOPE_IDENTITY()
+
+-- add package to packages cache
+INSERT INTO PackagesTreeCache (ParentPackageID, PackageID)
+SELECT PackageID, @PackageID FROM dbo.PackageParents(@PackageID)
+
+DECLARE @ExceedingQuotas AS TABLE (QuotaID int, QuotaName nvarchar(50), QuotaValue int)
+INSERT INTO @ExceedingQuotas
+SELECT * FROM dbo.GetPackageExceedingQuotas(@ParentPackageID) WHERE QuotaValue > 0
+
+SELECT * FROM @ExceedingQuotas
+
+IF EXISTS(SELECT * FROM @ExceedingQuotas)
+BEGIN
+	ROLLBACK TRAN
+	RETURN
+END
+
+COMMIT TRAN
+
+RETURN
+GO
+
+
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Web Application Engines'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;6;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'SolidCPPolicy' AND [PropertyName] = 'PasswordPolicy' AND [PropertyValue] LIKE N'True;6;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;0;0;False;False;0;' Where [SettingsName] = 'WebPolicy' AND [PropertyName] = 'SecuredUserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;0;0;False;False;0;' Where [SettingsName] = 'WebPolicy' AND [PropertyName] = 'FrontPagePasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'FtpPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;-;1;20;;;'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;;;False;False;0;' Where [SettingsName] = 'MailPolicy' AND [PropertyName] = 'AccountPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;0;0;False;False;0;' Where [SettingsName] = 'MsSqlPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;0;0;False;False;0;' Where [SettingsName] = 'MySqlPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;False;;0;;;False;False;0;' Where [SettingsName] = 'MariaDBPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;False'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'SharePointPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;False;False;0;' Where [SettingsName] = 'SharePointPolicy' AND [PropertyName] = 'UserPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;2;0;True;;0;;;False;False;0;' Where [SettingsName] = 'ExchangePolicy' AND [PropertyName] = 'MailboxPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
 GO

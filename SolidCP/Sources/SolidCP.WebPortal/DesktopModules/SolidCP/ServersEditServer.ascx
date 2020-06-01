@@ -85,6 +85,28 @@
                         </td>
                     </tr>
 
+                    <tr id="trUseAdParentDomain" runat="server">
+                        <td class="SubHead">
+                            <asp:Label ID="lblAdUseParentDomain" runat="server" meta:resourcekey="lblAdUseParentDomain"></asp:Label></td>
+                        <td class="Normal">
+                            <asp:CheckBox ID="chkUseAdParentDomain" runat="server" AutoPostBack="true" OnCheckedChanged="chkUseAdParentDomain_StateChanged" />
+                        </td>
+                    </tr>
+
+                    <tr id="trParentDomain" runat="server" >
+                        <td class="SubHead">
+                            <asp:Label ID="lblAdParentDomain" runat="server" meta:resourcekey="lblAdParentDomain"></asp:Label></td>
+                        <td class="Normal">
+                            <asp:TextBox ID="txtAdParentDomain" runat="server" CssClass="form-control" Width="100%"></asp:TextBox></td>
+                    </tr>
+
+                    <tr id="trParentDomainController" runat="server" >
+                        <td class="SubHead">
+                            <asp:Label ID="lblAdParentDomainController" runat="server" meta:resourcekey="lblAdParentDomainController"></asp:Label></td>
+                        <td class="Normal">
+                            <asp:TextBox ID="txtAdParentDomainController" runat="server" CssClass="form-control" Width="100%"></asp:TextBox></td>
+                    </tr>
+
                     <tr id="trAddDomain" runat="server">
                         <td class="SubHead">
                             <asp:Label ID="lblAdDomain" runat="server" meta:resourcekey="lblAdDomain"></asp:Label></td>

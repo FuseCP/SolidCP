@@ -44,11 +44,24 @@ namespace SolidCP.Providers.HostedSolution
         public static SecurityIdentifier AuthenticatedUsersIdentity => new SecurityIdentifier(WellKnownSidType.AuthenticatedUserSid, null);
         public static SecurityIdentifier PreWindows2000Identity => new SecurityIdentifier(WellKnownSidType.BuiltinPreWindows2000CompatibleAccessSid, null);
 
-        public static void SetOUAclPermissions(OrganizationProvider orgProvider, string organizationId, string rootDomain, string rootDomainPath)
+        public static void SetOUAclPermissions(OrganizationProvider orgProvider, string organizationId, string rootDomain, string rootDomainPath, string parentdomain)
         {
             string OUPath = orgProvider.GetOrganizationPath(organizationId);
 
-            string dSHeuristicsOU = orgProvider.GetdSHeuristicsOU(rootDomain);
+            string dSHeuristicsDomain = rootDomain;
+
+            if (!string.IsNullOrEmpty(parentdomain))
+            {
+                dSHeuristicsDomain = parentdomain;
+                Log.WriteInfo("SetOUAclPermissions Parentdomain found: {0}", parentdomain);
+            }
+            else
+            {
+                Log.WriteInfo("SetOUAclPermissions Parentdomain not found {0}", parentdomain);
+            }
+
+
+            string dSHeuristicsOU = orgProvider.GetdSHeuristicsOU(dSHeuristicsDomain);
             Log.WriteInfo("dSHeuristicsOU: {0}", dSHeuristicsOU);
 
             DirectoryEntry GetdSHeuristicspath = new DirectoryEntry(dSHeuristicsOU);

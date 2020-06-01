@@ -78,6 +78,7 @@ namespace SolidCP.Portal.ProviderControls
             txtGuacamoleHyperVIP.Text = settings["GuacamoleHyperVIP"];
             ViewState["PWD"] = settings["GuacamoleHyperVAdministratorPassword"];
             rowPassword.Visible = ((string)ViewState["PWD"]) != "";
+            if (!String.IsNullOrEmpty(settings["GuacamoleHyperVUser"])) txtGuacamoleHyperVUser.Text = settings["GuacamoleHyperVUser"];
 
             // general settings
             txtVpsRootFolder.Text = settings["RootFolder"];
@@ -155,6 +156,12 @@ namespace SolidCP.Portal.ProviderControls
             txtReplicaPath.Text = settings["ReplicaServerPath"];
             ReplicaServerId = settings["ReplicaServerId"];
 
+            // Failover Cluster
+            chkUseFailoverCluster.Checked = Utils.ParseBool(settings["UseFailoverCluster"], false);
+            tbClusterName.Text = settings["ClusterName"];
+            tbClusterName.Enabled = chkUseFailoverCluster.Checked;
+            ClusterNameValidator.Enabled = chkUseFailoverCluster.Checked;
+
             ToggleControls();
 
             // replica
@@ -187,6 +194,7 @@ namespace SolidCP.Portal.ProviderControls
             settings["GuacamoleHyperVIP"] = txtGuacamoleHyperVIP.Text.Trim();
             settings["GuacamoleHyperVDomain"] = txtGuacamoleHyperVDomain.Text.Trim();
             settings["GuacamoleHyperVAdministratorPassword"] = (txtGuacamoleHyperVAdministratorPassword.Text.Length > 0) ? txtGuacamoleHyperVAdministratorPassword.Text : (string)ViewState["PWD"];
+            settings["GuacamoleHyperVUser"] = txtGuacamoleHyperVUser.Text.Trim();
 
             // general settings
             settings["RootFolder"] = txtVpsRootFolder.Text.Trim();
@@ -261,6 +269,10 @@ namespace SolidCP.Portal.ProviderControls
             settings["ReplicaServerId"] = ddlReplicaServer.SelectedValue;
             settings["ReplicaServerPath"] = txtReplicaPath.Text;
             settings["ReplicaServerThumbprint"] = CertificateThumbprint;
+
+            // Failover Cluster
+            settings["UseFailoverCluster"] = chkUseFailoverCluster.Checked.ToString();
+            settings["ClusterName"] = tbClusterName.Text;
 
             SetUnsetReplication();
         }
@@ -551,6 +563,10 @@ namespace SolidCP.Portal.ProviderControls
 
                 template.VhdBlockSizeBytes = GetBlockSizeBytes(item, "txtVhdBlockSizeBytes");
 
+                int diskSize = 0;
+                Int32.TryParse(GetTextBoxText(item, "txtDiskSize"), out diskSize);
+                template.DiskSize = diskSize;
+
                 string timeZone = GetDropDownListSelectedValue(item, "ddlTemplateTimeZone");
                 template.TimeZoneId = string.IsNullOrEmpty(timeZone) ? GetTextBoxText(item, "txtManualTempplateTimeZone") : timeZone;
                 template.CDKey = GetTextBoxText(item, "txtTemplateCDKey");
@@ -720,6 +736,12 @@ namespace SolidCP.Portal.ProviderControls
         protected void chkGetSwitchesByPS_CheckedChanged(object sender, EventArgs e)
         {
             BindNetworksList();
+        }
+
+        protected void chkUseFailoverCluster_CheckedChanged(object sender, EventArgs e)
+        {
+            tbClusterName.Enabled = chkUseFailoverCluster.Checked;
+            ClusterNameValidator.Enabled = chkUseFailoverCluster.Checked;
         }
     }
 }

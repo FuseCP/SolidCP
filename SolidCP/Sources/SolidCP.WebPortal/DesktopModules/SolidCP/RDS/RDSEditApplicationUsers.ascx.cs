@@ -52,7 +52,7 @@ namespace SolidCP.Portal.RDS
 
             if (!IsPostBack)
             {                
-                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
                 var applications = ES.Services.RDS.GetCollectionRemoteApplications(PanelRequest.ItemID, collection.Name);
                 var remoteApp = applications.Where(x => x.Alias.Equals(PanelRequest.ApplicationID, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
                 var organizationUsers = ES.Services.Organizations.GetOrganizationUsersPaged(PanelRequest.ItemID, null, null, null, 0, Int32.MaxValue).PageUsers;
@@ -106,7 +106,7 @@ namespace SolidCP.Portal.RDS
         {
             try
             {
-                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
                 var applications = ES.Services.RDS.GetCollectionRemoteApplications(PanelRequest.ItemID, collection.Name);
                 var remoteApp = applications.Where(x => x.Alias.Equals(PanelRequest.ApplicationID, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault();
                 remoteApp.DisplayName = txtApplicationName.Text;

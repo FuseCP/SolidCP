@@ -74,7 +74,7 @@
                                                 </div>
 
                                         <div class="col-sm-10">
-                                            <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="true"
+                                            <asp:CheckBox ID="chkAutoHostName" runat="server" AutoPostBack="true" Checked="false"
                                                 Text="Generate hostname automatically" meta:resourcekey="chkAutoHostName" />
                                         </div>
                                  </div>
@@ -395,6 +395,13 @@
                                                 <asp:Localize ID="locDNS2" runat="server"
                                                         meta:resourcekey="locDNS2" Text="Alternate DNS server:"></asp:Localize>
                                                 <asp:TextBox ID="txtDNS2" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
+
+                                                <asp:RequiredFieldValidator ID="maskValidator" runat="server" Text="*" Display="Dynamic"
+                                                        ControlToValidate="txtMask" meta:resourcekey="maskValidator" SetFocusOnError="true"
+                                                        ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                                <asp:Localize ID="locMask" runat="server"
+                                                        meta:resourcekey="locMask" Text="Subnet mask:"></asp:Localize>
+                                                <asp:TextBox ID="txtMask" runat="server" CssClass="form-control form-control" Width="150" Text=""></asp:TextBox>
                                             </td>
                                             <td>
                                                 

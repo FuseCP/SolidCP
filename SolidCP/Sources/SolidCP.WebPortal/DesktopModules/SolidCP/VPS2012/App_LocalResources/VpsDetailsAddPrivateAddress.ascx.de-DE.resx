@@ -153,4 +153,28 @@
   <data name="btnAddByInject.Text" xml:space="preserve">
     <value>Add and InjectIP (BETA)</value>
   </data>
+  <data name="chkCustomGateway.Text" xml:space="preserve">
+    <value>Gateway / DNS / Subnetzmaske ändern</value>
+  </data>
+  <data name="DNSValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die DNS-Server IP-Adresse</value>
+  </data>
+  <data name="GatewayValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie das Gateway ein</value>
+  </data>
+  <data name="locDNS1.Text" xml:space="preserve">
+    <value>Bevorzugter DNS-Server:</value>
+  </data>
+  <data name="locDNS2.Text" xml:space="preserve">
+    <value>Alternativer DNS-Server:</value>
+  </data>
+  <data name="locGateway.Text" xml:space="preserve">
+    <value>Gateway:</value>
+  </data>
+  <data name="locMask.Text" xml:space="preserve">
+    <value>Subnetzmaske:</value>
+  </data>
+  <data name="MaskValidator.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie die Subnetzmaske ein</value>
+  </data>
 </root>

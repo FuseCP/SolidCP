@@ -328,16 +328,18 @@ namespace SolidCP.EnterpriseServer {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetRdsCollection", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public RdsCollection GetRdsCollection(int collectionId) {
+        public RdsCollection GetRdsCollection(int collectionId, bool quick) {
             object[] results = this.Invoke("GetRdsCollection", new object[] {
-                        collectionId});
+                        collectionId,
+                        quick});
             return ((RdsCollection)(results[0]));
         }
         
         /// <remarks/>
-        public System.IAsyncResult BeginGetRdsCollection(int collectionId, System.AsyncCallback callback, object asyncState) {
+        public System.IAsyncResult BeginGetRdsCollection(int collectionId, bool quick, System.AsyncCallback callback, object asyncState) {
             return this.BeginInvoke("GetRdsCollection", new object[] {
-                        collectionId}, callback, asyncState);
+                        collectionId,
+                        quick}, callback, asyncState);
         }
         
         /// <remarks/>
@@ -347,17 +349,18 @@ namespace SolidCP.EnterpriseServer {
         }
         
         /// <remarks/>
-        public void GetRdsCollectionAsync(int collectionId) {
-            this.GetRdsCollectionAsync(collectionId, null);
+        public void GetRdsCollectionAsync(int collectionId, bool quick) {
+            this.GetRdsCollectionAsync(collectionId, quick, null);
         }
         
         /// <remarks/>
-        public void GetRdsCollectionAsync(int collectionId, object userState) {
+        public void GetRdsCollectionAsync(int collectionId, bool quick, object userState) {
             if ((this.GetRdsCollectionOperationCompleted == null)) {
                 this.GetRdsCollectionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRdsCollectionOperationCompleted);
             }
             this.InvokeAsync("GetRdsCollection", new object[] {
-                        collectionId}, this.GetRdsCollectionOperationCompleted, userState);
+                        collectionId,
+                        quick}, this.GetRdsCollectionOperationCompleted, userState);
         }
         
         private void OnGetRdsCollectionOperationCompleted(object arg) {

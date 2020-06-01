@@ -1,0 +1,12 @@
+{
+
+    "guacamoleVersion" : "1.0.0",
+
+    "name"      : "SolidCP Authentication Extension",
+    "namespace" : "guac-auth-solidcp",
+
+    "authProviders" : [
+        "org.apache.guacamole.auth.SolidCPAuthenticationProvider"
+    ]
+
+}

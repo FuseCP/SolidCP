@@ -39,21 +39,22 @@
             <asp:TemplateField meta:resourcekey="gvViewInfo">
                 <ItemStyle Width="10%" HorizontalAlign="Right"/>
                 <ItemTemplate>
-                    <CPCC:StyleButton OnClientClick="ShowProgressDialog('Getting Server Info ...');return true;" CssClass="btn btn-primary" Visible='<%# Eval("Status") != null && Eval("Status").ToString().StartsWith("Online") %>' CommandName="ViewInfo" CommandArgument='<%# Eval("FqdName")%>' ID="lbViewInfo" runat="server" Text="View Info"/>
+                    <CPCC:StyleButton OnClientClick="ShowProgressDialog('Getting Server Info ...');return true;" CssClass="btn btn-primary" Visible='<%# Eval("Status") != null && Eval("Status").ToString().StartsWith("Online") %>' 
+                        CommandName="ViewInfo" CommandArgument='<%# Eval("FqdName")%>' ID="lbViewInfo" runat="server" Text="View Info" meta:resourcekey="lbViewInfo"/>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField meta:resourcekey="gvRestart">
                 <ItemStyle Width="10%" HorizontalAlign="Right"/>
                 <ItemTemplate>
                     <CPCC:StyleButton ID="lbRestart" CommandName="Restart" CommandArgument='<%# Eval("FqdName")%>' CssClass="btn btn-warning" Visible='<%# Eval("Status") != null && Eval("Status").ToString().StartsWith("Online") %>'
-                        runat="server" Text="Restart" OnClientClick="return confirm('Are you sure you want to restart selected server?')"/>
+                        runat="server" Text="Restart" OnClientClick="return confirm('Are you sure you want to restart selected server?')" meta:resourcekey="lbRestart"/>
                 </ItemTemplate>
             </asp:TemplateField>
             <asp:TemplateField meta:resourcekey="gvShutdown">
                 <ItemStyle Width="10%" HorizontalAlign="Right"/>
                 <ItemTemplate>
                     <CPCC:StyleButton ID="lbShutdown" CommandName="ShutDown" CommandArgument='<%# Eval("FqdName")%>' CssClass="btn btn-danger" Visible='<%# Eval("Status") != null && Eval("Status").ToString().StartsWith("Online") %>'
-                        runat="server" Text="Shut Down" OnClientClick="return confirm('Are you sure you want to shu down selected server?')"/>
+                        runat="server" Text="Shut Down" OnClientClick="return confirm('Are you sure you want to shu down selected server?')" meta:resourcekey="lbShutdown"/>
                 </ItemTemplate>
             </asp:TemplateField>
 		</Columns>

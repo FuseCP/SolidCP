@@ -275,6 +275,18 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(int itemId, int accountId)
+        {
+            return ExchangeServerController.GetMailboxAutoReplySettings(itemId, accountId);
+        }
+
+        [WebMethod]
+        public int SetMailboxAutoReplySettings(int itemId, int accountId, ExchangeMailboxAutoReplySettings settings)
+        {
+            return ExchangeServerController.SetMailboxAutoReplySettings(itemId, accountId, settings);
+        }
+
+        [WebMethod]
         public ExchangeMailbox GetMailboxGeneralSettings(int itemId, int accountId)
         {
             return ExchangeServerController.GetMailboxGeneralSettings(itemId, accountId);

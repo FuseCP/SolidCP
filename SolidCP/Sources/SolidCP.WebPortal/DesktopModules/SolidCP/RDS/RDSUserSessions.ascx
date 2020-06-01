@@ -41,7 +41,7 @@
                     <scp:CollapsiblePanel id="secRdsUserSessions" runat="server" TargetControlID="panelRdsUserSessions" meta:resourcekey="secRdsUserSessions" Text=""></scp:CollapsiblePanel>
                     <asp:Panel runat="server" ID="panelRdsUserSessions">
                         <div style="padding: 10px;">
-                            <asp:GridView ID="gvRDSUserSessions" runat="server" AutoGenerateColumns="False" EnableViewState="true" Width="100%" EmptyDataText="No Sessions available" CssSelectorClass="NormalGridView" OnRowCommand="gvRDSCollections_RowCommand" AllowPaging="True" AllowSorting="True">
+                            <asp:GridView ID="gvRDSUserSessions" runat="server" AutoGenerateColumns="False" EnableViewState="true" Width="100%" EmptyDataText="No Sessions available" CssSelectorClass="NormalGridView" OnRowCommand="gvRDSCollections_RowCommand" AllowPaging="True" AllowSorting="True" meta:resourcekey="gvRDSUserSessions">
                                 <Columns>
                                     <asp:TemplateField meta:resourcekey="gvUserName" HeaderText="gvUserName">
                                         <ItemStyle Width="20%" Wrap="false"/>

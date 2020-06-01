@@ -58,9 +58,9 @@ namespace SolidCP.EnterpriseServer
     {
 
         [WebMethod]
-        public RdsCollection GetRdsCollection(int collectionId)
+        public RdsCollection GetRdsCollection(int collectionId, bool quick)
         {
-            return RemoteDesktopServicesController.GetRdsCollection(collectionId);
+            return RemoteDesktopServicesController.GetRdsCollection(collectionId, quick);
         }
 
         [WebMethod]

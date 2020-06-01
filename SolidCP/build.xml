@@ -3,7 +3,7 @@
 		<Version>$(Version)</Version>
 		<FileVersion>$(BUILD_NUMBER)</FileVersion>
 		<VersionLabel>$(BUILD_NUMBER)</VersionLabel>
-		<ReleaseDate>2019-10-17</ReleaseDate>
+		<ReleaseDate>2020-03-02</ReleaseDate>
 		<BuildConfiguration></BuildConfiguration>
 		<RootFolder>..</RootFolder>
 		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>
@@ -80,12 +80,12 @@
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
-		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2019 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2020 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFiles" DependsOnTargets="GenerateBuildVersionFilesInstaller">
-		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2019 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
-		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2019 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2020 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2020 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
 	<Target Name="CompileSources" DependsOnTargets="GenerateBuildVersionFiles">
@@ -421,6 +421,7 @@
                 ItemName="LocalizationToolkitMsi" />
 		</MSBuild>
 		<Copy SourceFiles="@(LocalizationToolkitMsi)" DestinationFolder="$(LocalizationToolkitBuild)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\bin\$(BuildConfiguration)\Data\en-US\Resources.xml" DestinationFolder="$(RootFolder)\Languages" />
 	</Target>
 
 	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">

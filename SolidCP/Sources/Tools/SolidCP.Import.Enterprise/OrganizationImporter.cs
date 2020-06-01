@@ -293,7 +293,7 @@ namespace SolidCP.Import.Enterprise
 			StringDictionary serviceSettings = ServerController.GetServiceSettingsAdmin(serviceId);
 
 			string tempDomain = serviceSettings["TempDomain"];
-			ServerInfo serverInfo = ServerController.GetServerById(serviceInfo.ServerId);
+			ServerInfo serverInfo = ServerController.GetServerById(serviceInfo.ServerId, false);
 
 			serviceId = PackageController.GetPackageServiceId(packageInfo.PackageId, ResourceGroups.Exchange);
 			serviceSettings = ServerController.GetServiceSettingsAdmin(serviceId);

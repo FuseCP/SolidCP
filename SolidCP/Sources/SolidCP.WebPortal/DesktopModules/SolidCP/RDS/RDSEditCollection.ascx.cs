@@ -51,7 +51,7 @@ namespace SolidCP.Portal.RDS
 
             if (!Page.IsPostBack)
             {
-                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
                 litCollectionName.Text = collection.DisplayName;                
             }
         }
@@ -79,7 +79,7 @@ namespace SolidCP.Portal.RDS
                     return false;
                 }
 
-                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, false);
                 collection.Servers = servers.GetServers();
 
                 ES.Services.RDS.EditRdsCollection(PanelRequest.ItemID, collection);

@@ -16,7 +16,7 @@ namespace SolidCP.Portal.RDS
 
             if (!IsPostBack)
             {
-                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, false);
                 RdsCollectionSettings settings = ES.Services.RDS.GetRdsCollectionSettings(PanelRequest.CollectionID);
                 collection.Settings = settings;
 
@@ -101,7 +101,7 @@ namespace SolidCP.Portal.RDS
         {
             try
             {
-                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                RdsCollection collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, false);
                 collection.Settings.RdsCollectionId = collection.Id;
                 collection.Settings = GetSettings(collection.Settings);                
                 ES.Services.RDS.EditRdsCollectionSettings(PanelRequest.ItemID, collection);

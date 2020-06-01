@@ -425,6 +425,25 @@ namespace SolidCP.Providers.DNS
             ApiPut($"zones/{zoneName}", request.ToJson());
         }
 
+        public override void DeleteServiceItems(ServiceProviderItem[] items)
+        {
+            foreach (ServiceProviderItem item in items)
+            {
+                if (item is DnsZone)
+                {
+                    try
+                    {
+                        // delete DNS zone
+                        DeleteZone(item.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteError(String.Format("Error deleting '{0}' SimpleDNS8 zone", item.Name), ex);
+                    }
+                }
+            }
+        }
+
         public void DeleteZone(string zoneName)
         {
             //Null checking
@@ -435,6 +454,7 @@ namespace SolidCP.Providers.DNS
             if (!ZoneExists(zoneName)) return;
 
             //Call the API endpoint to delete Zone
+            Log.WriteInfo("SimpleDNS8 Removing Zone: {0}", zoneName);
             ApiDelete($"zones/{zoneName}");
         }
 
@@ -472,8 +492,15 @@ namespace SolidCP.Providers.DNS
             //Get all the records for the specific zone
             var records = ZoneRecordsResponse.FromJson(ApiGet($"zones/{zoneName}/records"));
 
-            //Return the resulting array
-            return records.ToDnsRecordArray();
+            //Return the resulting array without SOA and DNSSEC records
+            List<string> dnsTypes = new List<string> { "A","AAAA","CAA","MX", "NS", "TXT", "CNAME", "SRV" };
+            List<ZoneRecordsResponse> recordlist = new List<ZoneRecordsResponse>();
+            foreach (ZoneRecordsResponse rec in records)
+            {
+                if (dnsTypes.Contains(rec.Type))
+                    recordlist.Add(rec);
+            }
+            return recordlist.ToDnsRecordArray();
         }
 
         public void AddZoneRecord(string zoneName, DnsRecord record)
@@ -507,6 +534,8 @@ namespace SolidCP.Providers.DNS
 
             //Declare content to be patched
             var content = records.Select(record => record.ToZoneRecordsResponse(MinimumTTL, zoneName)).ToList();
+
+            Log.WriteInfo("AddZoneRecords: JSON content zone: {0} \n data: {1}", zoneName, content.ToJson());
 
             //Call API to PATCH records
             ApiPatch($"zones/{zoneName}/records", content.ToJson());

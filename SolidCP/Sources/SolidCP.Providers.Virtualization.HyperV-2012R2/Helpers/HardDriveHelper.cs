@@ -144,19 +144,26 @@ namespace SolidCP.Providers.Virtualization
         {
             if (disks != null && disks.GetLength(0) > 0)
             {
-                foreach (VirtualHardDiskInfo disk in disks)
+                foreach (VirtualHardDiskInfo diskItem in disks)
                 {
-                    if (!string.IsNullOrEmpty(serverNameSettings))
+                    VirtualHardDiskInfo disk = diskItem;
+                    do
                     {
-                        string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
-                        powerShell.Execute(new Command(cmd, true), false);
-                    }
-                    else
-                    {
-                        Command cmd = new Command("Remove-item");
-                        cmd.Parameters.Add("path", disk.Path);
-                        powerShell.Execute(cmd, false);
-                    }                    
+                        if (!string.IsNullOrEmpty(serverNameSettings))
+                        {
+                            string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
+                            powerShell.Execute(new Command(cmd, true), false);
+                        }
+                        else
+                        {
+                            Command cmd = new Command("Remove-item");
+                            cmd.Parameters.Add("path", disk.Path);
+                            powerShell.Execute(cmd, false);
+                        }
+                        // remove all parent disks
+                        disk.Path = disk.ParentPath;
+                        if (!String.IsNullOrEmpty(disk.Path)) GetVirtualHardDiskDetail(powerShell, disk.Path, ref disk);
+                    } while (!String.IsNullOrEmpty(disk.Path));
                 }
             }
         }

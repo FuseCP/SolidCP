@@ -60,18 +60,18 @@
                                 </tr> 
                                 <tr>
                                     <td colspan="2">
-                                        <asp:RadioButton ID="chDisconnect" GroupName="collectionBroken" runat="server" Text="Disconnect from the session"/>                                        
+                                        <asp:RadioButton ID="chDisconnect" GroupName="collectionBroken" runat="server" Text="Disconnect from the session" meta:resourcekey="chDisconnect"/>                                        
                                     </td>
                                 </tr>    
                                 <tr>
                                     <td style="width:20px;"></td>
                                     <td>
-                                        <asp:CheckBox ID="chAutomaticReconnection" Text="Enable automatic reconnection" runat="server"/>
+                                        <asp:CheckBox ID="chAutomaticReconnection" Text="Enable automatic reconnection" runat="server" meta:resourcekey="chAutomaticReconnection"/>
                                     </td>
                                 </tr> 
                                 <tr>
                                     <td colspan="2">
-                                        <asp:RadioButton ID="chEndSession" GroupName="collectionBroken" runat="server" Text="End the session"/>                                        
+                                        <asp:RadioButton ID="chEndSession" GroupName="collectionBroken" runat="server" Text="End the session" meta:resourcekey="chEndSession"/>                                        
                                     </td>
                                 </tr>                   
                             </table> 
@@ -82,12 +82,12 @@
                                 </tr> 
                                 <tr>
                                     <td>
-                                        <asp:CheckBox id="chDeleteOnExit" runat="server" Text="Delete temporary folders on exit"/>
+                                        <asp:CheckBox id="chDeleteOnExit" runat="server" Text="Delete temporary folders on exit" meta:resourcekey="chDeleteOnExit"/>
                                     </td>
                                 </tr>    
                                 <tr>                                   
                                     <td>
-                                        <asp:CheckBox ID="chUseFolders" Text="Use temporary folders per session" runat="server"/>
+                                        <asp:CheckBox ID="chUseFolders" Text="Use temporary folders per session" runat="server" meta:resourcekey="chUseFolders"/>
                                     </td>
                                 </tr>                   
                             </table>
@@ -106,32 +106,32 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="chAudioVideo" Text="Audio and video playback" runat="server"/>
+                                        <asp:CheckBox ID="chAudioVideo" Text="Audio and video playback" runat="server" meta:resourcekey="chAudioVideo"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="chAudioRecording" Text="Audio recording" runat="server"/>
+                                        <asp:CheckBox ID="chAudioRecording" Text="Audio recording" runat="server" meta:resourcekey="chAudioRecording"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="chSmartCards" Text="Smart cards" runat="server"/>
+                                        <asp:CheckBox ID="chSmartCards" Text="Smart cards" runat="server" meta:resourcekey="chSmartCards"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="chPlugPlay" Text="Plug and play devices" runat="server"/>
+                                        <asp:CheckBox ID="chPlugPlay" Text="Plug and play devices" runat="server" meta:resourcekey="chPlugPlay"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="chDrives" Text="Drives" runat="server"/>
+                                        <asp:CheckBox ID="chDrives" Text="Drives" runat="server" meta:resourcekey="chDrives"/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:CheckBox ID="chClipboard" Text="Clipboard" runat="server"/>
+                                        <asp:CheckBox ID="chClipboard" Text="Clipboard" runat="server" meta:resourcekey="chClipboard"/>
                                     </td>
                                 </tr>
                             </table>
@@ -142,19 +142,19 @@
                                 </tr> 
                                 <tr>
                                     <td colspan="2">
-                                        <asp:CheckBox ID="chPrinterRedirection" Text="Allow client printer redirection" runat="server"/>
+                                        <asp:CheckBox ID="chPrinterRedirection" Text="Allow client printer redirection" runat="server" meta:resourcekey="chPrinterRedirection"/>
                                     </td>
                                 </tr>    
                                 <tr>
                                     <td style="width:20px;"></td>
                                     <td>
-                                        <asp:CheckBox ID="chDefaultDevice" Text="Use the client default printing device" runat="server"/>
+                                        <asp:CheckBox ID="chDefaultDevice" Text="Use the client default printing device" runat="server" meta:resourcekey="chDefaultDevice"/>
                                     </td>
                                 </tr>                   
                                 <tr>
                                     <td style="width:20px;"></td>
                                     <td>
-                                        <asp:CheckBox ID="chEasyPrint" Text="Use the Remote Desktop Easy Print print driver first " runat="server"/>
+                                        <asp:CheckBox ID="chEasyPrint" Text="Use the Remote Desktop Easy Print print driver first" runat="server" meta:resourcekey="chEasyPrint"/>
                                     </td>
                                 </tr>                   
                             </table>                         
@@ -203,7 +203,7 @@
                                 </tr> 
                                 <tr>                                    
                                     <td colspan="2">
-                                        <asp:CheckBox ID="cbAuthentication" Text="Allow connections only from computers running Remote Desktop with Network Level Authentication" runat="server"/>
+                                        <asp:CheckBox ID="cbAuthentication" Text="Allow connections only from computers running Remote Desktop with Network Level Authentication" runat="server" meta:resourcekey="cbAuthentication"/>
                                     </td>
                                 </tr>                               
                             </table>

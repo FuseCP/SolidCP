@@ -129,7 +129,7 @@
   <data name="gvUserName.HeaderText" xml:space="preserve">
     <value>User Name</value>
   </data>
-  <data name="locTitle" xml:space="preserve">
+  <data name="locTitle.Text" xml:space="preserve">
     <value>Edit RDS Collection</value>
   </data>
   <data name="secRdsUserSessions" xml:space="preserve">

@@ -214,7 +214,7 @@
     <value>Standard-Dokumente:</value>
   </data>
   <data name="lblFoldersDescription.Text" xml:space="preserve">
-    <value>* Alle Ordner sind relativ zur Bereichsübersicht&lt;br&gt;* [DOMAIN_NAME] - Variable ist erlaubt</value>
+    <value>* Alle Verzeichnisse sind relativ zum Home-Verzeichnis des Bereichs&lt;br&gt;* Erlaubte Variablen lauten [DOMAIN_NAME], [HOST] und [DOMAIN]</value>
   </data>
   <data name="lblFrontPagePassword.Text" xml:space="preserve">
     <value>Passwortrichtlinie</value>

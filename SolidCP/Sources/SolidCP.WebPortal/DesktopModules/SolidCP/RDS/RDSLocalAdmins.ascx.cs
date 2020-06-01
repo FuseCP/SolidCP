@@ -21,7 +21,7 @@ namespace SolidCP.Portal.RDS
             if (!IsPostBack)
             {                
                 var collectionLocalAdmins = ES.Services.RDS.GetRdsCollectionLocalAdmins(PanelRequest.CollectionID);
-                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID);
+                var collection = ES.Services.RDS.GetRdsCollection(PanelRequest.CollectionID, true);
 
                 litCollectionName.Text = collection.DisplayName;
 

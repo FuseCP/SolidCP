@@ -344,7 +344,9 @@ namespace SolidCP.Portal.VPS2012
                     // show success message
                     messageBox.ShowSuccessMessage("VPS_CHANGE_VM_HOSTNAME");
                     BindGeneralDetails();
-
+                    lnkHostname.Text = txtHostname.Text.Trim().ToUpper();
+                    litHostname.Text = lnkHostname.Text;
+                    litDomain.Text = txtDomain.Text.Trim();
                     // clear fields
                     //txtHostname.Text = "";
                     //txtDomain.Text = "";

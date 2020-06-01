@@ -313,7 +313,7 @@
         <tr>
             <td class="Normal"></td>
             <td class="Normal">
-                <asp:Label ID="lblFoldersDescription" runat="server" meta:resourcekey="lblFoldersDescription" Text="* All folders are relative to Space home<br/>* [DOMAIN_NAME] variable is allowed"></asp:Label>
+                <asp:Label ID="lblFoldersDescription" runat="server" meta:resourcekey="lblFoldersDescription" Text="* All folders are relative to Space home<br/>* Allowed variables are [DOMAIN_NAME], [HOST] and [DOMAIN]"></asp:Label>
             </td>
         </tr>
         <tr>
