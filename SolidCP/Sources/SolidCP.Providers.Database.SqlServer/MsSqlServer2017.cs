@@ -34,7 +34,7 @@ namespace SolidCP.Providers.Database
     {
         public override bool IsInstalled()
         {
-            return CheckVersion("14.");
+            return true;
         }
 
         public override void TruncateDatabase(string databaseName)
