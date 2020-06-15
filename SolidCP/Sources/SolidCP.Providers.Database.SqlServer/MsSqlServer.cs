@@ -86,6 +86,16 @@ namespace SolidCP.Providers.Database
                 return connectionString;
             }
         }
+
+        protected string DatabaseBackupLocation
+        {
+            get { return ProviderSettings["DatabaseBackupLocation"]; }
+        }
+
+        protected string DatabaseBackupNetworkPath
+        {
+            get { return ProviderSettings["DatabaseBackupNetworkPath"]; }
+        }
         #endregion
 
         #region Databases
@@ -540,15 +550,33 @@ namespace SolidCP.Providers.Database
 
         private string BackupBak(string databaseName, string backupName)
         {
-            string tempPath = Path.GetTempPath();
             if (backupName == null)
                 backupName = databaseName + ".bak";
-            string bakFile = Path.Combine(tempPath, backupName);
-            //string backupName = databaseName + " Database Backup";
 
-            // backup database
-            ExecuteNonQuery(String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}'", // WITH INIT, NAME = '{2}'
-                databaseName, EscapeSql(bakFile)/*, backupName*/));
+            string bakFile;
+            if (DatabaseBackupLocation != "" && DatabaseBackupNetworkPath != "")
+            {
+                bakFile = Path.Combine(DatabaseBackupLocation, backupName);
+                string networkBakFile = DatabaseBackupNetworkPath + "/" + backupName;
+
+                // backup database
+                Log.WriteInfo("Backing up Database {0} \n Network disk {1} \n Local Disk {2}", databaseName, networkBakFile, bakFile);
+                ExecuteNonQuery(String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}'", // WITH INIT, NAME = '{2}'
+                    databaseName, EscapeSql(networkBakFile)/*, backupName*/));
+
+            }
+            else
+            {
+                string tempPath = Path.GetTempPath();
+                bakFile = Path.Combine(tempPath, backupName);
+                //string backupName = databaseName + " Database Backup";
+
+                // backup database
+                Log.WriteInfo("Backing up Database {0} \n Local Disk {2}", databaseName, bakFile);
+                ExecuteNonQuery(String.Format(@"BACKUP DATABASE [{0}] TO DISK = N'{1}'", // WITH INIT, NAME = '{2}'
+                    databaseName, EscapeSql(bakFile)/*, backupName*/));
+            }
+
 
             return bakFile;
         }
@@ -715,6 +743,8 @@ namespace SolidCP.Providers.Database
                 }
 
                 // restore database
+                Log.WriteInfo("RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH REPLACE, {2}",
+                    database.Name, EscapeSql(bakFile), String.Join(", ", movings));
                 ExecuteNonQuery(String.Format(@"RESTORE DATABASE [{0}] FROM DISK = '{1}' WITH REPLACE, {2}",
                     database.Name, EscapeSql(bakFile), String.Join(", ", movings)));
 

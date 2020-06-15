@@ -150,6 +150,15 @@
   <data name="lblLocation.Text" xml:space="preserve">
     <value>Databases Location:</value>
   </data>
+  <data name="lblBackup.Text" xml:space="preserve">
+    <value>Backup Options:</value>
+  </data>
+  <data name="lblBackupPath.Text" xml:space="preserve">
+    <value>SolidCP Server backup path:</value>
+  </data>
+  <data name="lblBackupNetworkPath.Text" xml:space="preserve">
+    <value>Network path or linux mount point:</value>
+  </data>
   <data name="lblPassword.Text" xml:space="preserve">
     <value>Password:</value>
   </data>

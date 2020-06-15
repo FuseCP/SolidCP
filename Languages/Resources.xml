@@ -31007,6 +31007,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>Save Changes</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangePublicFolderGeneralSettings.ascx.resx</File>
+    <Key>locAllAccounts.Text</Key>
+    <DefaultValue>Accounts:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangePublicFolderGeneralSettings.ascx.resx</File>
+    <Key>locName.Text</Key>
+    <DefaultValue>Folder Name: *</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangePublicFolderMailEnable.ascx.resx</File>
     <Key>btnCancel.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
@@ -42103,6 +42113,21 @@ for your installation of ADO.NET Driver for MySQL (also known as MySQL Connector
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
     <Key>lblLocation.Text</Key>
     <DefaultValue>Databases Location:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
+    <Key>lblBackup.Text</Key>
+    <DefaultValue>Backup Options:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
+    <Key>lblBackupPath.Text</Key>
+    <DefaultValue>SolidCP Server backup path:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
+    <Key>lblBackupNetworkPath.Text</Key>
+    <DefaultValue>Network path or linux mount point:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MSSQL_Settings.ascx.resx</File>
@@ -57321,6 +57346,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.resx</File>
     <Key>locHVHost.Text</Key>
     <DefaultValue>HV Host:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.resx</File>
+    <Key>locReboot.Text</Key>
+    <DefaultValue>Restart required</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsHelp.ascx.resx</File>

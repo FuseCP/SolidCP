@@ -92,6 +92,31 @@
 			</table>
 		</td>
 	</tr>
+    	<tr>
+		<td valign="top" class="SubHead">
+		    <asp:Label ID="lblBackup" runat="server" meta:resourcekey="lblBackup" Text="Backup Options:"></asp:Label>
+		</td>
+		<td>
+			<table id="tblBackup" runat="server" width="100%">
+				<tr>
+                    <td class="SubHead">
+						<asp:Label ID="lblBackupPath" runat="server" meta:resourcekey="lblBackupPath" Text="SolidCP Server backup path:"></asp:Label>
+					</td>
+					<td>
+						<asp:TextBox Runat="server" ID="txtBackupPath" CssClass="form-control" Width="300px" Placeholder="C:\SolidCP\SQLBackupTmp"></asp:TextBox>
+					</td>
+				</tr>
+				<tr>
+                    <td class="SubHead">
+						<asp:Label ID="lblBackupNetworkPath" runat="server" meta:resourcekey="lblBackupNetworkPath" Text="Network path or linux mount point:"></asp:Label>
+					</td>
+					<td>
+						<asp:TextBox Runat="server" ID="txtBackupNetworkPath" CssClass="form-control" Width="300px" Placeholder="/mnt/sqlbackuptmp or \\server\SQLBackupTmp"></asp:TextBox>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	<tr>
 		<td colspan="2">&nbsp;</td>
 	</tr>
