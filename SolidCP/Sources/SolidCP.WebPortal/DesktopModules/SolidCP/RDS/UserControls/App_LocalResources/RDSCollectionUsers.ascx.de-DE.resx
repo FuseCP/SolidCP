@@ -159,6 +159,9 @@
   <data name="gvAccountsEmail.HeaderText" xml:space="preserve">
     <value>E-Mail</value>
   </data>
+  <data name="gvEmail.HeaderText" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
   <data name="gvPopupAccounts.EmptyDataText" xml:space="preserve">
     <value>Keine Konten gefunden.</value>
   </data>
