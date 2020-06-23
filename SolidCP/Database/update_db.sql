@@ -22380,3 +22380,9 @@ GO
 
 UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;2;0;True;;0;;;False;False;0;' Where [SettingsName] = 'ExchangePolicy' AND [PropertyName] = 'MailboxPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
 GO
+
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Microsoft SQL Server 2017'
+GO
+
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Microsoft SQL Server 2019'
+GO
