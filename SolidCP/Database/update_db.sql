@@ -21268,6 +21268,12 @@ INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [Pro
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1800')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1800, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
+GO
+
 -- HyperV2019
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2019')
