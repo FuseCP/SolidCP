@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
                 return "";
             }
 
-            cookiedata.security = "nla";
+            cookiedata.security = "vmconnect";
             cookiedata.protocol = "rdp";
             cookiedata.port = "2179";
             cookiedata.vmhostname = vm.Hostname;
