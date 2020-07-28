@@ -11280,7 +11280,7 @@ Set @ExchangeMailboxSetupLetterHtmlBody = N'<html xmlns="http://www.w3.org/1999/
     <h1>
     Outlook (Windows Clients)</h1>
     <p>
-    To configure Outlook 2013 to work with the servers, please reference:
+    To configure MS Outlook to work with the servers, please reference:
     </p>
     <p>
     <a href="" target="_blank"></a>
@@ -11289,7 +11289,7 @@ Set @ExchangeMailboxSetupLetterHtmlBody = N'<html xmlns="http://www.w3.org/1999/
     If you need to download and install the Outlook client:</p>
         
         <table>
-            <tr><td colspan="2" class="Label"><font size="3">Outlook 2013 Client</font></td></tr>
+            <tr><td colspan="2" class="Label"><font size="3">MS Outlook Client</font></td></tr>
             <tr>
                 <td class="Label">
                     Download URL:</td>
@@ -11445,13 +11445,13 @@ Webmail (OWA, Outlook Web Access)
 Outlook (Windows Clients)
 =================================
 
-To configure Outlook 2010 to work with servers, please reference:
+To configure MS Outlook to work with servers, please reference:
 
 
 
-If you need to download and install the Outlook 2010 client:
+If you need to download and install the MS Outlook client:
 
-Outlook 2010 Download URL:
+MS Outlook Download URL:
 
 KEY: 
 
