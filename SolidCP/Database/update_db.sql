@@ -156,6 +156,19 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1901')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'AdminLogin', N'Admin')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'ExpireLimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'MinimumTTL', N'86400')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'NameServers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RefreshInterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'ResponsiblePerson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RetryDelay', N'600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'SimpleDnsUrl', N'http://127.0.0.1:8053')
+END
+GO
+
 -- MSSQL 2016 / Maria DB quota fix:
 
 UPDATE [Quotas] SET [ItemTypeID] = '71' WHERE [QuotaID] = '701' AND [ItemTypeID] = '39'
@@ -21265,6 +21278,12 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2019')
 BEGIN
 INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1800, 1, N'Windows2019', N'Windows Server 2019', N'SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019', N'Windows2012', null)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1800')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1800, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
 END
 GO
 
