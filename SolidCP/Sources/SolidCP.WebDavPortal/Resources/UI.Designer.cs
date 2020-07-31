@@ -19,7 +19,7 @@ namespace SolidCP.WebDavPortal.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UI {
@@ -241,11 +241,29 @@ namespace SolidCP.WebDavPortal.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete All.
+        /// </summary>
+        public static string DeleteAll {
+            get {
+                return ResourceManager.GetString("DeleteAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete File?.
         /// </summary>
         public static string DeleteFileQuestion {
             get {
                 return ResourceManager.GetString("DeleteFileQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This folder is not empty. Delete anyway?.
+        /// </summary>
+        public static string DeleteFolderAnyway {
+            get {
+                return ResourceManager.GetString("DeleteFolderAnyway", resourceCulture);
             }
         }
         
@@ -291,6 +309,15 @@ namespace SolidCP.WebDavPortal.Resources {
         public static string EnterFileName {
             get {
                 return ResourceManager.GetString("EnterFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter folder name.
+        /// </summary>
+        public static string EnterFolderName {
+            get {
+                return ResourceManager.GetString("EnterFolderName", resourceCulture);
             }
         }
         
@@ -372,6 +399,15 @@ namespace SolidCP.WebDavPortal.Resources {
         public static string FirstName {
             get {
                 return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder Name.
+        /// </summary>
+        public static string FolderName {
+            get {
+                return ResourceManager.GetString("FolderName", resourceCulture);
             }
         }
         
@@ -543,6 +579,15 @@ namespace SolidCP.WebDavPortal.Resources {
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Folder.
+        /// </summary>
+        public static string NewFolder {
+            get {
+                return ResourceManager.GetString("NewFolder", resourceCulture);
             }
         }
         
@@ -885,6 +930,15 @@ namespace SolidCP.WebDavPortal.Resources {
         public static string TerabyteShort {
             get {
                 return ResourceManager.GetString("TerabyteShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This folder is not empty.
+        /// </summary>
+        public static string ThisFolderNotEmpty {
+            get {
+                return ResourceManager.GetString("ThisFolderNotEmpty", resourceCulture);
             }
         }
         

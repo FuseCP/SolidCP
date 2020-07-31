@@ -14572,7 +14572,7 @@ SET @EndRow = @StartRow + @MaximumRows
 
 DECLARE @Folders TABLE
 (
-	ItemPosition int IDENTITY(0,1),
+	ItemPosition int IDENTITY(1,1),
 	Id int
 )
 INSERT INTO @Folders (Id)

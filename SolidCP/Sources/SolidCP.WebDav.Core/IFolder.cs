@@ -148,12 +148,19 @@ namespace SolidCP.WebDav.Core
             /// <returns>Resource corresponding to requested name.</returns>
             public IResource GetResource(string name)
             {
-                IHierarchyItem item =
-                    _children.Single(i => i.DisplayName.ToLowerInvariant().Trim('/') == name.ToLowerInvariant().Trim('/'));
-                var resource = new WebDavResource();
-                resource.SetCredentials(_credentials);
-                resource.SetHierarchyItem(item);
-                return resource;
+                try
+                {
+                    IHierarchyItem item =
+                        _children.Single(i => i.DisplayName.ToLowerInvariant().Trim('/') == name.ToLowerInvariant().Trim('/'));
+                    var resource = new WebDavResource();
+                    resource.SetCredentials(_credentials);
+                    resource.SetHierarchyItem(item);
+                    return resource;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
 
             /// <summary>

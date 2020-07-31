@@ -906,6 +906,61 @@ namespace SolidCP.EnterpriseServer
             return storage.ServerId == esService.ServerId;
         }
 
+        public static ResultObject CreateSubFolder(int itemId, string folderPath)
+        {
+            ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "CREATE_SUB_FOLDER");
+            try
+            {
+                Organization org = OrganizationController.GetOrganization(itemId);
+                if (org == null)
+                {
+                    result.IsSuccess = false;
+                    result.AddError("", new NullReferenceException("Organization not found"));
+                    return result;
+                }
+
+                EnterpriseStorage es = GetEnterpriseStorage(GetEnterpriseStorageServiceID(org.PackageId));
+
+                if (String.IsNullOrEmpty(folderPath) || !folderPath.Contains("/"))
+                {
+                    result.IsSuccess = false;
+                    result.AddError("", new NullReferenceException("Wrong folder path"));
+                    return result;
+                }
+                string folderName = folderPath.Substring(0, folderPath.IndexOf("/"));
+
+                var webDavSetting = ObjectUtils.FillObjectFromDataReader<WebDavSetting>(
+                    DataProvider.GetEnterpriseFolder(itemId, folderName));
+                if (webDavSetting == null)
+                {
+                    result.IsSuccess = false;
+                    result.AddError("", new NullReferenceException("Enterprise folder not found"));
+                    return result;
+                }
+
+                folderPath = folderPath.Replace("/", @"\");
+
+                es.CreateFolder(org.OrganizationId, folderPath, webDavSetting);
+            }
+            catch (Exception ex)
+            {
+                result.AddError("ENTERPRISE_STORAGE_CREATE_SUB_FOLDER", ex);
+            }
+            finally
+            {
+                if (!result.IsSuccess)
+                {
+                    TaskManager.CompleteResultTask(result);
+                }
+                else
+                {
+                    TaskManager.CompleteResultTask();
+                }
+            }
+
+            return result;
+        }
+
         protected static ResultObject CreateFolderInternal(int itemId, string folderName, int quota, QuotaType quotaType, bool addDefaultGroup, bool rootFolder = false)
         {
             ResultObject result = TaskManager.StartResultTask<ResultObject>("ENTERPRISE_STORAGE", "CREATE_FOLDER");

@@ -17,7 +17,7 @@ namespace SolidCP.WebDav.Core.Interfaces.Managers
         IEnumerable<IHierarchyItem> SearchFiles(int itemId, string pathPart, string searchValue, string uesrPrincipalName, bool recursive);
         IResource GetResource(string path);
         string GetFileUrl(string path);
-        void DeleteResource(string path);
+        void DeleteResource(string path, bool deleteNonEmptyFolder);
         void LockFile(string path);
         string GetFileFolderPath(string path);
     }

@@ -194,6 +194,7 @@ namespace SolidCP.Providers.Virtualization
                     vm.Heartbeat = VirtualMachineHelper.GetVMHeartBeatStatus(PowerShell, vm.Name);
                     vm.CreatedDate = result[0].GetProperty<DateTime>("CreationTime");
                     vm.ReplicationState = result[0].GetEnum<ReplicationState>("ReplicationState");
+                    vm.IsClustered = result[0].GetBool("IsClustered");
 
                     if (extendedInfo)
                     {
@@ -694,7 +695,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 try
                 {
-                    jobResult = ChangeVirtualMachineState(vmId, newState);
+                    jobResult = ChangeVirtualMachineState(vmId, newState, null);
                     System.Threading.Thread.Sleep(1000);
                     loop = false;
                 }
@@ -718,7 +719,47 @@ namespace SolidCP.Providers.Virtualization
             return jobResult;
         }
 
-        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
+        private JobResult StartClusteredVM(string vmName, string clusterName)
+        {
+            try
+            {
+                Command cmd = new Command("Start-VM");
+                cmd.Parameters.Add("Name", vmName);
+                PowerShell.Execute(cmd, true, true);
+
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("0x8007000E")) // Not enough memory on Hyper-V host
+                {
+                    Command cmd = new Command("Move-ClusterVirtualMachineRole");
+                    cmd.Parameters.Add("Name", vmName);
+                    cmd.Parameters.Add("Cluster", clusterName);
+                    cmd.Parameters.Add("MigrationType", "Quick");
+                    Collection<PSObject> result = PowerShell.Execute(cmd, false, false);
+
+                    string hostName = null;
+                    if (result.Count > 0) hostName = result[0].GetProperty("OwnerNode").ToString();
+
+                    if (!String.IsNullOrEmpty(hostName))
+                    {
+                        cmd = new Command("Start-VM");
+                        cmd.Parameters.Add("Name", vmName);
+                        cmd.Parameters.Add("ComputerName", hostName);
+                        PowerShell.Execute(cmd, false, true);
+                    }
+                }
+                else
+                {
+                    HostedSolutionLog.LogError("ChangeVirtualMachineState", ex);
+                    throw;
+                }
+            }
+            HostedSolutionLog.LogEnd("ChangeVirtualMachineState");
+            return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+        }
+
+        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, string clusterName)
         {
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
             var jobResult = new JobResult();
@@ -739,6 +780,10 @@ namespace SolidCP.Providers.Virtualization
                 {
                     case VirtualMachineRequestedState.Start:
                         cmdTxt = "Start-VM";
+                        if (vm.IsClustered && !String.IsNullOrEmpty(clusterName))
+                        {
+                            return StartClusteredVM(vm.Name, clusterName);
+                        }
                         break;
                     case VirtualMachineRequestedState.Pause:
                         cmdTxt = "Suspend-VM";
@@ -766,7 +811,7 @@ namespace SolidCP.Providers.Virtualization
                 }
 
                 Command cmd = new Command(cmdTxt);
-
+                
                 cmd.Parameters.Add("Name", vm.Name);
                 //cmd.Parameters.Add("AsJob");
                 paramList.ForEach(p => cmd.Parameters.Add(p));
@@ -784,7 +829,7 @@ namespace SolidCP.Providers.Virtualization
                         case VirtualMachineRequestedState.Start: //sometimes we can get an error here, but it in 90% does not mean anything.
                             vm = GetVirtualMachine(vmId);
                             if (vm.Heartbeat != OperationalStatus.Ok || vm.State != VirtualMachineState.Running)
-                                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Reset);
+                                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Reset, clusterName);
                             cmdTxt = "";
                             break;
                         case VirtualMachineRequestedState.ShutDown: //get problem with Shutdown = turnoff
@@ -808,7 +853,7 @@ namespace SolidCP.Providers.Virtualization
                         PowerShell.Execute(cmd, true, true);
 
                         if (startVM)
-                            ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Start);
+                            ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Start, clusterName);
                     }                    
                 }
                 
@@ -833,7 +878,7 @@ namespace SolidCP.Providers.Virtualization
             if (isServerStatusOK)
                 VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
             else
-                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.TurnOff);
+                ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.TurnOff, null);
 
             return ReturnCode.OK;
         }
@@ -1003,6 +1048,7 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("Name", vm.Name);
 
                 PowerShell.Execute(cmd, true);
+                System.Threading.Thread.Sleep(3500);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)
@@ -1061,6 +1107,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var snapshot = GetSnapshot(snapshotId);
                 SnapshotHelper.Delete(PowerShell, snapshot, false);
+                System.Threading.Thread.Sleep(3000);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)
@@ -1076,6 +1123,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var snapshot = GetSnapshot(snapshotId);
                 SnapshotHelper.Delete(PowerShell, snapshot, true);
+                System.Threading.Thread.Sleep(3000);
                 return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
             }
             catch (Exception ex)

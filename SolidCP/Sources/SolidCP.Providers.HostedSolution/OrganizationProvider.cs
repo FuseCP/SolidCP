@@ -441,14 +441,25 @@ namespace SolidCP.Providers.HostedSolution
             string msExchVersion = ActiveDirectoryUtils.GetADObjectStringProperty(entry, "msExchVersion");
             if (!string.IsNullOrEmpty(msExchVersion))
             {
-                filter =
-                string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)(!{0}=disabled))",
-                              ADAttributes.CustomAttribute2);
+                if (enabled)
+                {
+                    filter = string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)({0}=disabled))", ADAttributes.CustomAttribute2);
+                }
+                else
+                {
+                    filter = string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)(!{0}=disabled))", ADAttributes.CustomAttribute2);
+                }
             }
             else
             {
-                filter =
-                string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))");
+                if (enabled)
+                {
+                    filter = string.Format(CultureInfo.InvariantCulture, "(|(&(objectCategory=user)(memberOf={0}))(&(objectClass=computer)(userAccountControl:1.2.840.113556.1.4.803:=2)))", org.SecurityGroup);
+                }
+                else
+                {
+                    filter = string.Format(CultureInfo.InvariantCulture, "(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))");
+                }
             }
 
             using (DirectorySearcher searcher = new DirectorySearcher(entry, filter))

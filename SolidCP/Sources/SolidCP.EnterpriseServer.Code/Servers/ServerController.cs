@@ -2348,26 +2348,8 @@ namespace SolidCP.EnterpriseServer
 			{
 				if (domain.ZoneItemId != 0)
 				{
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.Os, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.Dns, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.Ftp, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2000, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2005, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2008, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2012, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2014, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2016, domain, "");
-                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2017, domain, "");
-                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MsSql2019, domain, "");
-                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql4, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql5, domain, "");
-                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MySql8, domain, "");
-                    ServerController.AddServiceDNSRecords(packageId, ResourceGroups.MariaDB, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.Statistics, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.VPS, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.VPS2012, domain, "");
-					ServerController.AddServiceDNSRecords(packageId, ResourceGroups.VPSForPC, domain, "");
-				}
+                    AddAllServiceDNS(domain);
+                }
 
 				UpdateDomainWhoisData(domain);
 			}
@@ -2908,164 +2890,8 @@ namespace SolidCP.EnterpriseServer
 
 					domain = GetDomain(domainId);
 
-
-					PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
-					if (cntx != null)
-					{
-						// fill dictionaries
-						foreach (HostingPlanGroupInfo group in cntx.GroupsArray)
-						{
-							try
-							{
-								bool bFound = false;
-								switch (group.GroupName)
-								{
-									case ResourceGroups.Dns:
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Ftp, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2000, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2005, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2008, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2012, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2014, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2016, domain, "");
-                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
-                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2019, domain, "");
-                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
-                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");
-                                        ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MariaDB, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Statistics, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS2012, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPSForPC, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Dns, domain, "");
-										break;
-									case ResourceGroups.Os:
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Os, domain, "");
-										break;
-									case ResourceGroups.HostedOrganizations:
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedOrganizations, domain, "");
-										ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedCRM, domain, "");
-										break;
-									case ResourceGroups.Mail:
-										List<DomainInfo> myDomains = ServerController.GetMyDomains(domain.PackageId);
-										foreach (DomainInfo mailDomain in myDomains)
-										{
-											if ((mailDomain.MailDomainId != 0) && (domain.DomainName.ToLower() == mailDomain.DomainName.ToLower()))
-											{
-												bFound = true;
-												break;
-											}
-										}
-										if (bFound) ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Mail, domain, "");
-										break;
-									case ResourceGroups.Exchange:
-										List<Organization> orgs = OrganizationController.GetOrganizations(domain.PackageId, false);
-										foreach (Organization o in orgs)
-										{
-											List<OrganizationDomainName> names = OrganizationController.GetOrganizationDomains(o.Id);
-											foreach (OrganizationDomainName name in names)
-											{
-												if (domain.DomainName.ToLower() == name.DomainName.ToLower())
-												{
-													bFound = true;
-													break;
-												}
-											}
-											if (bFound) break;
-										}
-										if (bFound)
-										{
-											ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Exchange, domain, "");
-											ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.BlackBerry, domain, "");
-											ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.OCS, domain, "");
-										}
-										break;
-									case ResourceGroups.Lync:
-										List<Organization> orgsLync = OrganizationController.GetOrganizations(domain.PackageId, false);
-										foreach (Organization o in orgsLync)
-										{
-											if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
-												(o.LyncTenantId != null))
-											{
-												bFound = true;
-												break;
-											}
-										}
-										if (bFound)
-										{
-											ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Lync, domain, "");
-										}
-										break;
-									case ResourceGroups.SfB:
-										List<Organization> orgsSfB = OrganizationController.GetOrganizations(domain.PackageId, false);
-										foreach (Organization o in orgsSfB)
-										{
-											if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
-												(o.SfBTenantId != null))
-											{
-												bFound = true;
-												break;
-											}
-										}
-										if (bFound)
-										{
-											ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.SfB, domain, "");
-										}
-										break;
-									case ResourceGroups.Web:
-										List<WebSite> sites = WebServerController.GetWebSites(domain.PackageId, false);
-										foreach (WebSite w in sites)
-										{
-											if ((w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
-												(w.SiteId.ToLower() == domain.DomainName.ToLower()))
-											{
-												WebServerController.AddWebSitePointer(w.Id,
-																						(w.SiteId.ToLower() == domain.DomainName.ToLower()) ? "" : w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
-																						domain.DomainId, false, true, true);
-											}
-
-											List<DomainInfo> pointers = WebServerController.GetWebSitePointers(w.Id);
-											foreach (DomainInfo pointer in pointers)
-											{
-												if ((pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
-													(pointer.DomainName.ToLower() == domain.DomainName.ToLower()))
-												{
-													WebServerController.AddWebSitePointer(w.Id,
-																							(pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
-																							domain.DomainId, false, true, true);
-												}
-											}
-										}
-
-										if (sites.Count == 1)
-										{
-											// load site item
-											IPAddressInfo ip = ServerController.GetIPAddress(sites[0].SiteIPAddressId);
-
-											string serviceIp = (ip != null) ? ip.ExternalIP : null;
-
-											if (string.IsNullOrEmpty(serviceIp))
-											{
-												StringDictionary settings = ServerController.GetServiceSettings(sites[0].ServiceId);
-												if (settings["PublicSharedIP"] != null)
-													serviceIp = settings["PublicSharedIP"].ToString();
-											}
-
-											ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Web, domain, serviceIp, true);
-										}
-
-										break;
-								}
-							}
-							catch (Exception ex)
-							{
-								TaskManager.WriteError(ex);
-							}
-						}
-					}
-
-				}
+                    AddAllServiceDNS(domain);
+                }
 
 				// add web site DNS records
 				int res = AddWebSiteZoneRecords("", domainId);
@@ -3083,6 +2909,168 @@ namespace SolidCP.EnterpriseServer
 				TaskManager.CompleteTask();
 			}
 		}
+
+        private static void AddAllServiceDNS(DomainInfo domain)
+        {
+            PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
+            if (cntx != null)
+            {
+                // fill dictionaries
+                foreach (HostingPlanGroupInfo group in cntx.GroupsArray)
+                {
+                    try
+                    {
+                        bool bFound = false;
+                        switch (group.GroupName)
+                        {
+                            case ResourceGroups.Dns:
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Ftp, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2000, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2005, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2008, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2012, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2014, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2016, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2019, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MariaDB, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Statistics, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS2012, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPSForPC, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Dns, domain, "");
+                                break;
+                            case ResourceGroups.Os:
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Os, domain, "");
+                                break;
+                            case ResourceGroups.RDS:
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.RDS, domain, "");
+                                break;
+                            case ResourceGroups.HostedOrganizations:
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedOrganizations, domain, "");
+                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedCRM, domain, "");
+                                break;
+                            case ResourceGroups.Mail:
+                                List<DomainInfo> myDomains = ServerController.GetMyDomains(domain.PackageId);
+                                foreach (DomainInfo mailDomain in myDomains)
+                                {
+                                    if ((mailDomain.MailDomainId != 0) && (domain.DomainName.ToLower() == mailDomain.DomainName.ToLower()))
+                                    {
+                                        bFound = true;
+                                        break;
+                                    }
+                                }
+                                if (bFound) ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Mail, domain, "");
+                                break;
+                            case ResourceGroups.Exchange:
+                                List<Organization> orgs = OrganizationController.GetOrganizations(domain.PackageId, false);
+                                foreach (Organization o in orgs)
+                                {
+                                    List<OrganizationDomainName> names = OrganizationController.GetOrganizationDomains(o.Id);
+                                    foreach (OrganizationDomainName name in names)
+                                    {
+                                        if (domain.DomainName.ToLower() == name.DomainName.ToLower())
+                                        {
+                                            bFound = true;
+                                            break;
+                                        }
+                                    }
+                                    if (bFound) break;
+                                }
+                                if (bFound)
+                                {
+                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Exchange, domain, "");
+                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.BlackBerry, domain, "");
+                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.OCS, domain, "");
+                                }
+                                break;
+                            case ResourceGroups.Lync:
+                                List<Organization> orgsLync = OrganizationController.GetOrganizations(domain.PackageId, false);
+                                foreach (Organization o in orgsLync)
+                                {
+                                    if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
+                                        (o.LyncTenantId != null))
+                                    {
+                                        bFound = true;
+                                        break;
+                                    }
+                                }
+                                if (bFound)
+                                {
+                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Lync, domain, "");
+                                }
+                                break;
+                            case ResourceGroups.SfB:
+                                List<Organization> orgsSfB = OrganizationController.GetOrganizations(domain.PackageId, false);
+                                foreach (Organization o in orgsSfB)
+                                {
+                                    if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
+                                        (o.SfBTenantId != null))
+                                    {
+                                        bFound = true;
+                                        break;
+                                    }
+                                }
+                                if (bFound)
+                                {
+                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.SfB, domain, "");
+                                }
+                                break;
+                            case ResourceGroups.Web:
+                                List<WebSite> sites = WebServerController.GetWebSites(domain.PackageId, false);
+                                foreach (WebSite w in sites)
+                                {
+                                    if ((w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
+                                        (w.SiteId.ToLower() == domain.DomainName.ToLower()))
+                                    {
+                                        WebServerController.AddWebSitePointer(w.Id,
+                                                                                (w.SiteId.ToLower() == domain.DomainName.ToLower()) ? "" : w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
+                                                                                domain.DomainId, false, true, true);
+                                    }
+
+                                    List<DomainInfo> pointers = WebServerController.GetWebSitePointers(w.Id);
+                                    foreach (DomainInfo pointer in pointers)
+                                    {
+                                        if ((pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
+                                            (pointer.DomainName.ToLower() == domain.DomainName.ToLower()))
+                                        {
+                                            WebServerController.AddWebSitePointer(w.Id,
+                                                                                    (pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
+                                                                                    domain.DomainId, false, true, true);
+                                        }
+                                    }
+                                }
+
+                                if (sites.Count == 1)
+                                {
+                                    // load site item
+                                    IPAddressInfo ip = ServerController.GetIPAddress(sites[0].SiteIPAddressId);
+
+                                    string serviceIp = (ip != null) ? ip.ExternalIP : null;
+
+                                    if (string.IsNullOrEmpty(serviceIp))
+                                    {
+                                        StringDictionary settings = ServerController.GetServiceSettings(sites[0].ServiceId);
+                                        if (settings["PublicSharedIP"] != null)
+                                            serviceIp = settings["PublicSharedIP"].ToString();
+                                    }
+
+                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Web, domain, serviceIp, true);
+                                }
+
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskManager.WriteError(ex);
+                    }
+                }
+            }
+        }
 
 		private static int AddWebSiteZoneRecords(string hostName, int domainId)
 		{

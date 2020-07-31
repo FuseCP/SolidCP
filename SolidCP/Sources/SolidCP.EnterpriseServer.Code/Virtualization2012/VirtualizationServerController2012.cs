@@ -1242,7 +1242,7 @@ namespace SolidCP.EnterpriseServer
                 try
                 {
                     // start virtual machine
-                    result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.Start);
+                    result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.Start, vm.ClusterName);
 
                     // check return
                     if (result.ReturnValue == ReturnCode.JobStarted)
@@ -2397,7 +2397,7 @@ namespace SolidCP.EnterpriseServer
                     else if (state == VirtualMachineRequestedState.Reset)
                     {
                         // reset machine
-                        JobResult result = vps.ChangeVirtualMachineState(machine.VirtualMachineId, VirtualMachineRequestedState.Reset);
+                        JobResult result = vps.ChangeVirtualMachineState(machine.VirtualMachineId, VirtualMachineRequestedState.Reset, machine.ClusterName);
 
                         if (result.Job.JobState == ConcreteJobState.Completed)
                         {
@@ -2429,7 +2429,7 @@ namespace SolidCP.EnterpriseServer
                         if (state == VirtualMachineRequestedState.Resume)
                             state = VirtualMachineRequestedState.Start;
 
-                        JobResult result = vps.ChangeVirtualMachineState(machine.VirtualMachineId, state);
+                        JobResult result = vps.ChangeVirtualMachineState(machine.VirtualMachineId, state, machine.ClusterName);
 
                         if (result.Job.JobState == ConcreteJobState.Completed)
                         {
@@ -2686,6 +2686,8 @@ namespace SolidCP.EnterpriseServer
                 // load service settings
                 StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
 
+                vm.ClusterName = (Utils.ParseBool(settings["UseFailoverCluster"], false)) ? settings["ClusterName"] : null;
+
                 #region setup external network
                 if (vm.ExternalNetworkEnabled
                     && String.IsNullOrEmpty(vm.ExternalNicMacAddress))
@@ -2755,7 +2757,7 @@ namespace SolidCP.EnterpriseServer
                         else
                         {
                             // turn off
-                            result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                            result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff, vm.ClusterName);
                             if (!JobCompleted(vs, result.Job))
                             {
                                 LogJobResult(res, result.Job);
@@ -2793,7 +2795,7 @@ namespace SolidCP.EnterpriseServer
                 if (wasStarted && !isSuccessChangedWihoutReboot)
                 {
                     TaskManager.Write(String.Format("Starting the server..."));
-                    result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.Start);
+                    result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.Start, vm.ClusterName);
                     if (!JobCompleted(vs, result.Job))
                     {
                         LogJobResult(res, result.Job);
@@ -3127,7 +3129,7 @@ namespace SolidCP.EnterpriseServer
                 // stop virtual machine
                 if (vps.State != VirtualMachineState.Off)
                 {
-                    result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                    result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff, vm.ClusterName);
                     if (!JobCompleted(vs, result.Job))
                     {
                         LogJobResult(res, result.Job);
@@ -4390,7 +4392,7 @@ namespace SolidCP.EnterpriseServer
                     if (vps.State != VirtualMachineState.Off)
                     {
                         TaskManager.Write("VPS_DELETE_TURN_OFF");
-                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff, vm.ClusterName);
                         // check result
                         if (result.ReturnValue != ReturnCode.JobStarted)
                         {
@@ -4590,7 +4592,7 @@ namespace SolidCP.EnterpriseServer
                     if (vps.State != VirtualMachineState.Off)
                     {
                         TaskManager.Write("VPS_DELETE_TURN_OFF");
-                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                        result = vs.ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff, vm.ClusterName);
 
                         // check result
                         if (result.ReturnValue != ReturnCode.JobStarted)

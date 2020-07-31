@@ -145,7 +145,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 		protected void BindPopupAccounts()
 		{
 			ExchangeAccount[] accounts = ES.Services.EnterpriseStorage.SearchESAccounts(PanelRequest.ItemID,
-				ddlSearchColumn.SelectedValue, txtSearchValue.Text + "%", "");
+				ddlSearchColumn.SelectedValue, "%" + txtSearchValue.Text + "%", "");
 
             accounts = accounts.Where(x => !GetPemissions().Select(p => p.Account).Contains(x.AccountName)).ToArray();
             Array.Sort(accounts, CompareAccount);

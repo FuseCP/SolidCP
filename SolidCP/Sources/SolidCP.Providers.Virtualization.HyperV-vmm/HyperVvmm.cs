@@ -457,7 +457,7 @@ namespace SolidCP.Providers.Virtualization
             return false;
         }
 
-        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
+        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, string clusterName)
         {
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
             var jobResult = new JobResult();
@@ -1531,7 +1531,7 @@ namespace SolidCP.Providers.Virtualization
                     if (vps.State == VirtualMachineState.Paused)
                         state = VirtualMachineRequestedState.Resume;
 
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state);
+                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state, null);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1566,7 +1566,7 @@ namespace SolidCP.Providers.Virtualization
 
                     // turn off
                     VirtualMachineRequestedState state = VirtualMachineRequestedState.TurnOff;
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state);
+                    result = ChangeVirtualMachineState(vm.VirtualMachineId, state, null);
 
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -1611,7 +1611,7 @@ namespace SolidCP.Providers.Virtualization
                 #region Turn off (if required)
                 if (vps.State != VirtualMachineState.Off)
                 {
-                    result = ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff);
+                    result = ChangeVirtualMachineState(vm.VirtualMachineId, VirtualMachineRequestedState.TurnOff, null);
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
                     {

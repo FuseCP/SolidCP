@@ -399,6 +399,12 @@ namespace SolidCP.Providers.RemoteDesktopServices
                 CreateUsersPolicy(runSpace, organizationId, string.Format("{0}-users", collection.Name), new DirectoryEntry(GetUsersGroupPath(organizationId, collection.Name))
                     , new DirectoryEntry(collectionComputersPath), collection.Name);
                 CreateHelpDeskPolicy(runSpace, new DirectoryEntry(GetHelpDeskGroupPath(RDSHelpDeskGroup)), new DirectoryEntry(collectionComputersPath), organizationId, collection.Name);
+
+                if (!CheckCollectionUserGroups(runSpace, collection.Name, new List<string> { GetUsersGroupName(collection.Name) }))
+                {
+                    RemoveCollection(organizationId, collection.Name, collection.Servers);
+                    throw new Exception("Collection not created - user groups configuration error");
+                }
             }                   
             finally
             {
@@ -406,7 +412,36 @@ namespace SolidCP.Providers.RemoteDesktopServices
             }
 
             return result;
-        }        
+        }
+
+        private bool CheckCollectionUserGroups(Runspace runSpace, string collectionName, List<string> groups)
+        {
+            Command cmd = new Command("Get-RDSessionCollectionConfiguration");
+            cmd.Parameters.Add("CollectionName", collectionName);
+            cmd.Parameters.Add("UserGroup");
+            cmd.Parameters.Add("ConnectionBroker", ConnectionBroker);
+
+            PSObject result = runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController).FirstOrDefault();
+            List<string> ug = new List<string>((string[])result.Members["UserGroup"].Value);
+
+            if (ug.Count != groups.Count) return false;
+
+            foreach (string item in groups)
+            {
+                bool res = false;
+                foreach (string ugItem in ug)
+                {
+                    if (ugItem.ToLower().Contains(item.ToLower()))
+                    {
+                        res = true;
+                        break;
+                    }
+                }
+                if (!res) return false;
+            }
+
+            return true;
+        }
 
         public void EditRdsCollectionSettings(RdsCollection collection)
         {            
@@ -553,6 +588,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
                 foreach(var server in servers)
                 {
+                    RemoveRdsServerFromDeployment(runSpace, server);
                     RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                     RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
                     MoveRdsServerToTenantOU(server.Name, organizationId);
@@ -673,6 +709,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
                 RemoveGroupFromLocalAdmin(server.FqdName, server.Name, GetLocalAdminsGroupName(collectionName), runSpace);
                 RemoveComputerFromCollectionAdComputerGroup(organizationId, collectionName, server);
+                RemoveRdsServerFromDeployment(runSpace, server);
                 MoveRdsServerToTenantOU(server.Name, organizationId);
                 Log.WriteInfo("RemoveSessionHostServerFromCollection Security 0: {0}, 1: {1} 2: {2}", GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$");
                 ActiveDirectoryUtils.RemoveOUSecurityfromUser(GetOrganizationPath(organizationId), ServerSettings.ADRootDomain.ToLower(), server.Name + "$", ActiveDirectoryRights.GenericRead, AccessControlType.Allow, ActiveDirectorySecurityInheritance.SelfAndChildren);
@@ -1360,7 +1397,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (string.IsNullOrEmpty(gpoId))
             {
                 gpoId = CreateAndLinkPolicy(runspace, gpoName, organizationId, collectionName);
-                SetPolicyPermissions(runspace, gpoName, entry, collectionComputersEntry);
+                SetPolicyPermissions(runspace, gpoName, gpoId, entry, collectionComputersEntry);
                 SetRegistryValue(runspace, RDSSessionGpoKey, gpoName, "2", RDSSessionGpoValueName, "DWord");
             }
             else
@@ -1383,7 +1420,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             if (string.IsNullOrEmpty(gpoId))
             {
                 gpoId = CreateAndLinkPolicy(runspace, gpoName, organizationId, collectionName);
-                SetPolicyPermissions(runspace, gpoName, entry, collectionComputersEntry);
+                SetPolicyPermissions(runspace, gpoName, gpoId, entry, collectionComputersEntry);
             }
             else
             {
@@ -1423,11 +1460,17 @@ namespace SolidCP.Providers.RemoteDesktopServices
             runspace.ExecuteRemoteShellCommand(PrimaryDomainController, scripts, PrimaryDomainController, out errors);
         }
 
-        private void SetPolicyPermissions(Runspace runspace, string gpoName, DirectoryEntry entry, DirectoryEntry collectionComputersEntry)
+        private void SetPolicyPermissions(Runspace runspace, string gpoName, string gpoId, DirectoryEntry entry, DirectoryEntry collectionComputersEntry)
         {
             var scripts = new List<string>
             {
-                string.Format("Set-GPPermissions -Name {0} -Replace -PermissionLevel None -TargetName 'Authenticated Users' -TargetType group", gpoName),
+                string.Format("$ADSI = [ADSI] \"{0}\"", GetGpoPath(gpoId)),
+                "$SID = New-Object System.Security.Principal.SecurityIdentifier(\"S-1-5-11\")",
+                "$AthUsers = $SID.Translate([System.Security.Principal.NTAccount]).value",
+                "$ADSI.psbase.ObjectSecurity.Access | ForEach-Object {\nif ($_.IdentityReference –eq $AthUsers) {\n$ADSI.psbase.ObjectSecurity.RemoveAccessRule($_)\n}\n}",
+                "$AclRule = New-Object System.DirectoryServices.ActiveDirectoryAccessRule([System.Security.Principal.IdentityReference]$SID.Translate([System.Security.Principal.NTAccount]), [System.DirectoryServices.ActiveDirectoryRights]\"GenericRead\", [System.Security.AccessControl.AccessControlType]\"Allow\")",
+                "$ADSI.psbase.ObjectSecurity.AddAccessRule($AclRule)",
+                "$ADSI.psbase.CommitChanges()",
                 string.Format("Set-GPPermissions -Name {0} -PermissionLevel gpoapply -TargetName {1} -TargetType group", gpoName, string.Format("'{0}'", ActiveDirectoryUtils.GetADObjectProperty(entry, "sAMAccountName").ToString())),
                 string.Format("Set-GPPermissions -Name {0} -PermissionLevel gpoapply -TargetName {1} -TargetType group", gpoName, string.Format("'{0}'", ActiveDirectoryUtils.GetADObjectProperty(collectionComputersEntry, "sAMAccountName").ToString()))
             };
@@ -1840,7 +1883,22 @@ namespace SolidCP.Providers.RemoteDesktopServices
             cmd.Parameters.Add("ConnectionBroker", ConnectionBroker);
 
             runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController);
-        }   
+        }
+
+        private void RemoveRdsServerFromDeployment(Runspace runSpace, RdsServer server)
+        {
+            try
+            {
+                Command cmd = new Command("Remove-RDserver");
+                cmd.Parameters.Add("Server", server.FqdName);
+                cmd.Parameters.Add("Role", "RDS-RD-SERVER");
+                cmd.Parameters.Add("ConnectionBroker", ConnectionBroker);
+                cmd.Parameters.Add("Force", true);
+
+                runSpace.ExecuteShellCommand(cmd, false, PrimaryDomainController);
+            }
+            catch (Exception) { }
+        }
 
         private bool ExistRdsServerInDeployment(Runspace runSpace, RdsServer server)
         {
