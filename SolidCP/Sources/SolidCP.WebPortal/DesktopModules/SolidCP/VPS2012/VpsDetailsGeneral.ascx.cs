@@ -138,7 +138,7 @@ namespace SolidCP.Portal.VPS2012
                 litStatus.Text = GetLocalizedString("State." + vm.State);
                 litCreated.Text = string.IsNullOrEmpty(vm.CreationTime) ? vm.CreatedDate.ToString() : vm.CreationTime;
                 litHeartbeat.Text = GetLocalizedString("Heartbeat." + vm.Heartbeat);
-                trHVHost.Visible = PanelSecurity.EffectiveUser.Role != UserRole.User;
+                trHVHost.Visible = PanelSecurity.EffectiveUser.Role == UserRole.Administrator; //It is hardcoded that GetServiceInfo can get only the Adminstrator
                 if (trHVHost.Visible)
                 {
                     ServiceInfo info = SolidCP.Portal.ES.Services.Servers.GetServiceInfo(vm.ServiceId);
