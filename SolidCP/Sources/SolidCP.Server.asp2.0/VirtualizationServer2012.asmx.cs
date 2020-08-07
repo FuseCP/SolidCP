@@ -1224,5 +1224,24 @@ namespace SolidCP.Server
         }
         #endregion
 
+        [WebMethod, SoapHeader("settings")]
+        public JobResult ExecuteCustomPsScript(string script)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' ExecuteCustomPsScript", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.ExecuteCustomPsScript(script);
+                Log.WriteEnd("'{0}' ExecuteCustomPsScript", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' ExecuteCustomPsScript", ProviderSettings.ProviderName), ex);
+                var jobResult = new JobResult();
+                jobResult.ReturnValue = ReturnCode.Failed;
+                return jobResult;
+            }
+        }
+
     }
 }

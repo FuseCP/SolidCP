@@ -41,6 +41,7 @@ namespace SolidCP.Providers.Virtualization
         // Virtual Machines
         VirtualMachine GetVirtualMachine(string vmId);
         VirtualMachine GetVirtualMachineEx(string vmId);
+        JobResult ExecuteCustomPsScript(string script);
         List<VirtualMachine> GetVirtualMachines();
         byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
         VirtualMachine CreateVirtualMachine(VirtualMachine vm);

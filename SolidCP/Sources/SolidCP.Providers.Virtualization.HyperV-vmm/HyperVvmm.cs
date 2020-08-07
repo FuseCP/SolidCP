@@ -2272,5 +2272,14 @@ namespace SolidCP.Providers.Virtualization
             PowerShell.Execute(cmd, true);
         }
         #endregion
+
+        public JobResult ExecuteCustomPsScript(string script)
+        {
+            var jobResult = new JobResult();
+            Command cmd = new Command(script, true);
+            PowerShell.Execute(cmd, false, true);
+            jobResult.ReturnValue = ReturnCode.OK;
+            return jobResult;
+        }
     }
 }

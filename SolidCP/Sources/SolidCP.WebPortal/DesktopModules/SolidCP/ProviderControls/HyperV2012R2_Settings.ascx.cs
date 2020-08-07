@@ -103,6 +103,10 @@ namespace SolidCP.Portal.ProviderControls
             repDvdLibrary.DataSource = new ConfigFile(settings["DvdLibrary"]).LibraryItems;
             repDvdLibrary.DataBind();
 
+            // PS Script
+            repPsScript.DataSource = new ConfigFile(settings["PsScript"]).LibraryItems;
+            repPsScript.DataBind();
+
             // VHD type
             radioVirtualDiskType.SelectedValue = settings["VirtualDiskType"];
 
@@ -215,6 +219,9 @@ namespace SolidCP.Portal.ProviderControls
             // DVD library
             settings["DvdLibrary"] = GetConfigXml(GetDvds());
             settings["DvdLibraryPath"] = txtDvdLibraryPath.Text.Trim();
+
+            // PS Script
+            settings["PsScript"] = GetConfigXml(GetPsScripts());
 
             // VHD type
             settings["VirtualDiskType"] = radioVirtualDiskType.SelectedValue;
@@ -731,6 +738,67 @@ namespace SolidCP.Portal.ProviderControls
         {
             repDvdLibrary.DataSource = dvds;
             repDvdLibrary.DataBind();
+        }
+
+        //PS Script
+        protected void btnAddPsScript_Click(object sender, EventArgs e)
+        {
+            var psscripts = GetPsScripts();
+
+            psscripts.Add(new LibraryItem());
+
+            RebindPsScripts(psscripts);
+        }
+
+        protected void btnRemovePsScript_OnCommand(object sender, CommandEventArgs e)
+        {
+            var psscripts = GetPsScripts();
+
+            psscripts.RemoveAt(Convert.ToInt32(e.CommandArgument));
+
+            RebindPsScripts(psscripts);
+        }
+
+        private List<LibraryItem> GetPsScripts()
+        {
+            var result = new List<LibraryItem>();
+
+            foreach (RepeaterItem item in repPsScript.Items)
+            {
+                var psscripts = new LibraryItem();
+
+                psscripts.Name = GetDropDownListSelectedValue(item, "ddlRunAt");
+                psscripts.Description = GetTextBoxText(item, "txtPsScript");
+
+                result.Add(psscripts);
+            }
+
+            return result;
+        }
+
+        public int GetPsScriptIndex(RepeaterItem item, Object val)
+        {
+            try
+            {
+                if (val != null && item != null)
+                {
+                    DropDownList ddl = (item.FindControl("ddlRunAt") as DropDownList);
+                    int i = 0;
+                    foreach (ListItem ddlItem in ddl.Items)
+                    {
+                        if (ddlItem.Value.Equals(val)) return i;
+                        i++;
+                    }
+                }
+            }
+            catch { }
+            return 0;
+        }
+
+        private void RebindPsScripts(List<LibraryItem> psscripts)
+        {
+            repPsScript.DataSource = psscripts;
+            repPsScript.DataBind();
         }
 
         protected void chkGetSwitchesByPS_CheckedChanged(object sender, EventArgs e)
