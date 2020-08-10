@@ -49479,6 +49479,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
+    <Key>gvEmail.HeaderText</Key>
+    <DefaultValue>Email</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
     <Key>gvPopupAccounts.EmptyDataText</Key>
     <DefaultValue>No accounts found.</DefaultValue>
   </Resource>
