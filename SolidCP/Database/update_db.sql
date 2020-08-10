@@ -21517,7 +21517,7 @@ WHERE
 		or (@RdsCollectionId is not Null AND S.RDSCollectionId = @RdsCollectionId)))'
 
 IF @FilterColumn <> '' AND @FilterValue <> ''
-SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'''
 
 IF @Controller <> ''
 SET @sql = @sql + ' AND Controller = @Controller '
