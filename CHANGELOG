@@ -17,7 +17,7 @@ Version 1.4.7
 - [Shared Folders] Search and sort fixed - bluechip
 - [Shared Folders] Folder Permissions -> Add - Search fixed - bluechip
 - [RDS] RDS Collection -> RDS Users - Add Email column - bluechip
-- [Guacamole] Use "vmconnect" for last Guacamole version *Latest Guacamole version required* - bluechip
+- [Guacamole] Use "vmconnect" for last Guacamole version **Latest Guacamole version required** - bluechip
 - Modified AddUser API to allow optional notes to be added when creating an account. - gybol
 - [Portal] A hot fix for the 1.4.6. (CSR roles try to get an Administrator information and get a null exception.) - berkut1
 - Disabling MsSQL 2017/2019 autodiscover
@@ -28,6 +28,7 @@ Version 1.4.7
 - remove reference to old Outlook version. - holoncom
 - web.config changes to fix issues caused by ASP update (KB4566516)
 - Powershell script update to fix issues caused by ASP update (KB4566516)
+- Changes to support remote MsSQL Server for SQL 2017 and 2019 on Remote machines (Linux Support)
 
 Version 1.4.6
 - [HyperV2012R2+] Ability to configure custom Gateway and DNS for a private network / RDS-Servers: optimize status update and fix search - IvanSchulz
