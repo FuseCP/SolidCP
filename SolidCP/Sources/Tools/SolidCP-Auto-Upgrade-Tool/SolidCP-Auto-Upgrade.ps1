@@ -12,6 +12,7 @@ v1.7    28th September 2016: Resolved various issues with the SQL Backup, also i
 v1.8    16th January   2017: Improved the component backups to save time and to remove old files that are no longer in use by SolidCP. Added timer to show run time of this script
 v1.9	27th May 2017:		 Removal of LE Files from the project when the update is ran
 V2.0	17th May 2018		 Added support for CRM2016 and the asp.net server folders
+v2.1	10th August 2020	 Fix for the Security settings needed for newer ASP update
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
 Updated By Trevor Robinson.
