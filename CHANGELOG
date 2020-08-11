@@ -28,7 +28,7 @@ Version 1.4.7
 - remove reference to old Outlook version. - holoncom
 - web.config changes to fix issues caused by ASP update (KB4566516)
 - Powershell script update to fix issues caused by ASP update (KB4566516)
-- Changes to support remote MsSQL Server for SQL 2017 and 2019 on Remote machines (Linux Support)
+- Added remote Microsoft SQL Server (2017 and 2019) support (Windows & Linux sql supported)
 
 Version 1.4.6
 - [HyperV2012R2+] Ability to configure custom Gateway and DNS for a private network / RDS-Servers: optimize status update and fix search - IvanSchulz
