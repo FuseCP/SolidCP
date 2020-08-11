@@ -63,7 +63,7 @@ namespace SolidCP.Setup
         {
             return WebDavPortal.UpdateBase(obj,
                 minimalInstallerVersion: "1.0.1",
-                versionToUpgrade: "1.4.5,1.4.4",
+                versionToUpgrade: "1.4.6,1.4.5,1.4.4",
                 updateSql: false);
         }
     }

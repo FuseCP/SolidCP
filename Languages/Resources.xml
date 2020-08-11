@@ -49479,6 +49479,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
+    <Key>gvEmail.HeaderText</Key>
+    <DefaultValue>Email</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\RDS\UserControls\App_LocalResources\RDSCollectionUsers.ascx.resx</File>
     <Key>gvPopupAccounts.EmptyDataText</Key>
     <DefaultValue>No accounts found.</DefaultValue>
   </Resource>
@@ -50645,7 +50650,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\SkinControls\App_LocalResources\SiteFooter.ascx.resx</File>
     <Key>locPoweredBy.Text</Key>
-    <DefaultValue>Control Panel Powered by &lt;a href="https://solidcp.com" target="_blank"&gt;SolidCP&lt;/a&gt;. Copyright &amp;copy; 2019 all rights reserved.</DefaultValue>
+    <DefaultValue>Powered by &lt;a href="https://solidcp.com" target="_blank"&gt;SolidCP&lt;/a&gt;.</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\SkinControls\App_LocalResources\SiteFooter.ascx.resx</File>

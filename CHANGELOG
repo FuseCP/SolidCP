@@ -1,5 +1,34 @@
 Version 1.4.7
 - Fix to load the footer version based on DLL file version
+- German language fix  - bluechip
+- [RDS] Remove Authenticated Users from collections GPO - bluechip
+- [HyperV2012R2+] Move clustered VM to another host if not enough memory to start - bluechip
+- [HyperV2012R2+] Interface update fix when creating or deleting snapshots - bluechip
+- [RDS] Check user groups after collection creating - bluechip
+- [WebDavPortal] Ability to create subfolders - bluechip
+- [WebDavPortal] Delete non empty folder with confirm dialog - bluechip
+- [WebDavPortal] Checking users permissions when creating a subfolder - bluechip
+- Create Organization - fix default Org ID filling - bluechip
+- [RDS] Remove not used RDS Server from deployment - bluechip
+- [Hosted Organization] Activate users in OU, after activation of the SolidCP account. - bluechip
+- Space Quotas - small localization changes - bluechip
+-  Add custom DNS records from RDS service ( #40 )  - bluechip
+- [DNS] Add Service DNS records at Domain creation - bluechip
+- [Shared Folders] Search and sort fixed - bluechip
+- [Shared Folders] Folder Permissions -> Add - Search fixed - bluechip
+- [RDS] RDS Collection -> RDS Users - Add Email column - bluechip
+- [Guacamole] Use "vmconnect" for last Guacamole version **Latest Guacamole version required** - bluechip
+- Modified AddUser API to allow optional notes to be added when creating an account. - gybol
+- [Portal] A hot fix for the 1.4.6. (CSR roles try to get an Administrator information and get a null exception.) - berkut1
+- Disabling MsSQL 2017/2019 autodiscover
+- Default Provider Properties for Windows 2019
+- Default Provider Properties for SimpleDNS Plus 8.x
+- remove duplicate SQL instructions - holoncom
+- use the same default FROM address as all other Templates - holoncom
+- remove reference to old Outlook version. - holoncom
+- web.config changes to fix issues caused by ASP update (KB4566516)
+- Powershell script update to fix issues caused by ASP update (KB4566516)
+- Added remote Microsoft SQL Server (2017 and 2019) support (Windows & Linux sql supported)
 
 Version 1.4.6
 - [HyperV2012R2+] Ability to configure custom Gateway and DNS for a private network / RDS-Servers: optimize status update and fix search - IvanSchulz
