@@ -102,10 +102,6 @@ namespace SolidCP.Portal.ExchangeServer
                 // delete domain
                 int domainId = Utils.ParseInt(e.CommandArgument.ToString(), 0);
 
-                // domain name
-                DomainInfo domain = ES.Services.Servers.GetDomain(domainId);
-                var DomainName = domain.DomainName;
-
                 try
                 {
                     int result = ES.Services.Organizations.DeleteOrganizationDomain(PanelRequest.ItemID, domainId);
@@ -115,8 +111,6 @@ namespace SolidCP.Portal.ExchangeServer
                             "SpaceID=" + PanelSecurity.PackageId, "DomainID=" + domainId));
                         return;
                     }
-                    //Delete Domain to Mail Cleaner
-                    Knom.Helpers.Net.APIMailCleanerHelper.DomainRemove(DomainName);
 
                     // rebind domains
                     BindDomainNames();

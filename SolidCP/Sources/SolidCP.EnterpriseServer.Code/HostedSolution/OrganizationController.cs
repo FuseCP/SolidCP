@@ -273,6 +273,8 @@ namespace SolidCP.EnterpriseServer
                 return checkResult;
             }
 
+            APIMailCleanerHelper.DomainAdd(domainName, packageId);
+
             // create domain if required
             if (domain == null)
             {
@@ -536,6 +538,9 @@ namespace SolidCP.EnterpriseServer
                         return -1;
                     }
                 }
+
+                //Delete Domain from Mail Cleaner
+                APIMailCleanerHelper.DomainRemove(domain.DomainName, domain.PackageId);
 
                 // unregister domain
                 DataProvider.DeleteExchangeOrganizationDomain(itemId, domainId);
@@ -1529,6 +1534,9 @@ namespace SolidCP.EnterpriseServer
                 {
                     OCSController.AddDomain(domain.DomainName, itemId);
                 }
+
+                //Add to Mail Cleaner
+                APIMailCleanerHelper.DomainAdd(domain.DomainName, domain.PackageId);
 
                 return 0;
             }

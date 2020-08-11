@@ -260,9 +260,6 @@ namespace SolidCP.Portal
 					ShowResultMessage(domainId);
 					return;
 				}
-                //Add Domain to Mail Cleaner
-                if (type == DomainType.Domain && PointMailDomain.Checked) //Only For domain -- Ignore Subdomains 
-                     Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(domainName);
             }
 			catch (Exception ex)
 			{

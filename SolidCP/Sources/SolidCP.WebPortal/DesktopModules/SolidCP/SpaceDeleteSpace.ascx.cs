@@ -86,14 +86,10 @@ namespace SolidCP.Portal
         {
             Response.Redirect(NavigateURL(PortalUtils.SPACE_ID_PARAM, PanelSecurity.PackageId.ToString()));
         }
-        protected bool IsValidDomainName(string name)
-        {
-            return Uri.CheckHostName(name) != UriHostNameType.Unknown;
-        }
+        
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             int ownerId = PanelSecurity.SelectedUserId;
-            DataSet l_oPackageData = ES.Services.Packages.GetRawPackageItems(PanelSecurity.PackageId);
 
             //old temp fix, not need more.
             //PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
@@ -121,14 +117,6 @@ namespace SolidCP.Portal
                 {
                     ShowErrorMessage("PACKAGE_DELETE_PACKAGE", ex);
                     return;
-                }
-                var oPackageInfo = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
-                
-                //Delete domain from Mail Cleaner
-                foreach(DataRow l_oRow in l_oPackageData.Tables[0].Rows)
-                { 
-                    if(IsValidDomainName( Convert.ToString(l_oRow["ItemName"])))
-                         Knom.Helpers.Net.APIMailCleanerHelper.DomainRemove(Convert.ToString(l_oRow["ItemName"]));
                 }
 
                 // return to the listgv

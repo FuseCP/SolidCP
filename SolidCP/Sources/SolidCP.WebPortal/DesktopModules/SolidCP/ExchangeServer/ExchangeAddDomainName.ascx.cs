@@ -139,8 +139,6 @@ namespace SolidCP.Portal.ExchangeServer
                         return;
                     }
                 }
-                //Add Mail Cleaner
-                Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(ddlDomains.SelectedValue);
 
                 Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "domains",
                     "SpaceID=" + PanelSecurity.PackageId));

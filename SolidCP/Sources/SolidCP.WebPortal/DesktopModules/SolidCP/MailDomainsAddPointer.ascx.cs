@@ -56,10 +56,6 @@ namespace SolidCP.Portal
             try
             {
                 ES.Services.MailServers.AddMailDomainPointer(PanelRequest.ItemID, domainsSelectDomainControl.DomainId);
-
-                string domainname = domainsSelectDomainControl.DomainName.ToString();
-                //Add Mail Cleaner
-                Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(domainname);
             }
             catch (Exception ex)
             {

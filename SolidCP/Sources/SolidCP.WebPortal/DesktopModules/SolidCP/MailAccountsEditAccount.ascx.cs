@@ -283,8 +283,6 @@ namespace SolidCP.Portal
                     ShowErrorMessage("MAIL_ADD_ACCOUNT", ex);
                     return;
                 }
-                //Add Mail Cleaner
-                Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(mailEditAddress.Domain);
             }
             else
             {
