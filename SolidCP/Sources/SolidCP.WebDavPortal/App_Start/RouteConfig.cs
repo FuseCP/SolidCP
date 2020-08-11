@@ -109,6 +109,12 @@ namespace SolidCP.WebDavPortal
                 );
 
             routes.MapRoute(
+                name: FileSystemRouteNames.NewFolder,
+                url: "storage/new-folder/{org}/{*pathPart}",
+                defaults: new { controller = "FileSystem", action = "NewFolder" }
+                );
+
+            routes.MapRoute(
                     name: FileSystemRouteNames.SearchFiles,
                     url: "storage/search/{org}/{*pathPart}",
                     defaults: new { controller = "FileSystem", action = "SearchFiles", pathPart = UrlParameter.Optional }

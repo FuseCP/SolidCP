@@ -38,6 +38,7 @@ using System.Xml;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using System.Linq;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -390,6 +391,29 @@ namespace SolidCP.EnterpriseServer
 		{
 			// get users from database
 			return DataProvider.GetUsers(SecurityContext.User.UserId, ownerId, recursive);
+		}
+
+		public static int AddUser(UserInfo user, bool sendLetter, string password, string[] notes)
+		{
+			int userId = AddUser(user, sendLetter, password);
+
+			if (userId > 0 && notes != null)
+			{
+				foreach(string note in notes)
+				{
+					// user added successfully, save the notes
+					DataProvider.AddComment(
+						SecurityContext.User.UserId,
+						"USER", 
+						userId,
+						note, 
+						1
+						);
+				}
+
+			}
+			
+			return userId;
 		}
 
 		public static int AddUser(UserInfo user, bool sendLetter, string password)

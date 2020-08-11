@@ -285,6 +285,7 @@ namespace SolidCP.Portal.RDS.UserControls
                 OrganizationUser user = new OrganizationUser();
                 user.AccountName = (string)gvUsers.DataKeys[i][0];
                 user.DisplayName = ((Literal)row.FindControl("litAccount")).Text;
+                user.PrimaryEmailAddress = ((Literal)row.FindControl("litEmail")).Text;
                 user.SamAccountName = ((HiddenField)row.FindControl("hdnSamAccountName")).Value;
                 user.IsVIP = Convert.ToBoolean(((HiddenField)row.FindControl("hdnIsVip")).Value);
 
@@ -313,6 +314,7 @@ namespace SolidCP.Portal.RDS.UserControls
                     {
                         AccountName = (string)gvPopupAccounts.DataKeys[i][0],
                         DisplayName = ((Literal)row.FindControl("litDisplayName")).Text,
+                        PrimaryEmailAddress = ((Literal)row.FindControl("litPrimaryEmailAddress")).Text,
                         SamAccountName = ((HiddenField)row.FindControl("hdnSamName")).Value,
                         IsVIP = Convert.ToBoolean(((HiddenField)row.FindControl("hdnLocalAdmin")).Value)
                     });

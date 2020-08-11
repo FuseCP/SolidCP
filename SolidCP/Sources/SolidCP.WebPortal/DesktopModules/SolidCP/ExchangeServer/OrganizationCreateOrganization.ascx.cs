@@ -80,14 +80,13 @@ namespace SolidCP.Portal.ExchangeServer
                         }
                     }
                 }
+                SetDefaultOrgId();
             }
 
             if (ddlDomains.Items.Count == 0)
             {
                 ddlDomains.Visible = btnCreate.Enabled = false;
             }
-
-            SetDefaultOrgId();
         }
 
         private string GetOrgId(string orgIdPolicy, string domainName, int packageId)

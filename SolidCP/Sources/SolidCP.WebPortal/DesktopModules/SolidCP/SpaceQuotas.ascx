@@ -157,19 +157,19 @@
         <td class="Normal"><scp:Quota ID="quotaRdsUsers" runat="server" QuotaName="RDS.Users" DisplayGauge="True" /></td>
     </tr>
      <tr ID="pnlVPS2012Servers" runat="server">
-        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012Servers" runat="server" meta:resourcekey="lblVPS2012Servers" Text="VPS 2012 Servers:"></asp:Label></td>
+        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012Servers" runat="server" meta:resourcekey="lblVPS2012Servers" Text="VPS Servers:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotavps2012servers" runat="server" QuotaName="VPS2012.ServersNumber" DisplayGauge="True" /></td>
     </tr>
     <tr ID="pnlVPS2012CpuQuota" runat="server">
-        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012CpuQuota" runat="server" meta:resourcekey="lblVPS2012CpuQuota" Text="VPS 2012 Cpu:"></asp:Label></td>
+        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012CpuQuota" runat="server" meta:resourcekey="lblVPS2012CpuQuota" Text="VPS Cpu:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotavps2012cpuquota" runat="server" QuotaName="VPS2012.CpuNumber" DisplayGauge="True" /></td>
     </tr>
     <tr ID="pnlVPS2012RamQuota" runat="server">
-        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012RamQuota" runat="server" meta:resourcekey="lblVPS2012RamQuota" Text="VPS 2012 Ram, MB:"></asp:Label></td>
+        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012RamQuota" runat="server" meta:resourcekey="lblVPS2012RamQuota" Text="VPS Ram, MB:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotavps2012ramquota" runat="server" QuotaName="VPS2012.Ram" DisplayGauge="True" /></td>
     </tr>
     <tr ID="pnlVPS2012HddQuota" runat="server">
-        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012HddQuota" runat="server" meta:resourcekey="lblVPS2012HddQuota" Text="VPS 2012 Hdd, GB:"></asp:Label></td>
+        <td class="SubHead" nowrap><asp:Label ID="lblVPS2012HddQuota" runat="server" meta:resourcekey="lblVPS2012HddQuota" Text="VPS Hdd, GB:"></asp:Label></td>
         <td class="Normal"><scp:Quota ID="quotavps2012hddquota" runat="server" QuotaName="VPS2012.Hdd" DisplayGauge="True" /></td>
     </tr>
 </table>

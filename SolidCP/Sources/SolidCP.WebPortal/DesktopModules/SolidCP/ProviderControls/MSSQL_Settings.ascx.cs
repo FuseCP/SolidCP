@@ -65,8 +65,11 @@ namespace SolidCP.Portal.ProviderControls
             rblDbLocation.SelectedIndex = Utils.ParseBool(settings["UseDefaultDatabaseLocation"], true) ? 0 : 1;
             txtDatabasesLocation.Text = settings["DatabaseLocation"];
 
-			// add default collation
-			ddlCollation.Items.Insert(0, new ListItem(GetLocalizedString("DefaultLocation.Text"), ""));
+            txtBackupPath.Text = settings["DatabaseBackupLocation"];
+            txtBackupNetworkPath.Text = settings["DatabaseBackupNetworkPath"];
+
+            // add default collation
+            ddlCollation.Items.Insert(0, new ListItem(GetLocalizedString("DefaultLocation.Text"), ""));
 
 			txtBrowseUrl.Text = settings["BrowseURL"];
 			Utils.SelectListItem(ddlBrowseMethod, settings["BrowseMethod"]);
@@ -86,7 +89,11 @@ namespace SolidCP.Portal.ProviderControls
             settings["UseDefaultDatabaseLocation"] = Convert.ToString(rblDbLocation.SelectedIndex == 0);
             settings["DatabaseLocation"] = txtDatabasesLocation.Text.Trim();
 
-			settings["BrowseURL"] = txtBrowseUrl.Text.Trim();
+            settings["DatabaseBackupLocation"] = txtBackupPath.Text;
+            settings["DatabaseBackupNetworkPath"] = txtBackupNetworkPath.Text;
+
+
+            settings["BrowseURL"] = txtBrowseUrl.Text.Trim();
 			settings["BrowseMethod"] = ddlBrowseMethod.SelectedValue;
 			settings["BrowseParameters"] = txtBrowseParameters.Text;
         }

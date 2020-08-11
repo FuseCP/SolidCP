@@ -650,20 +650,22 @@ namespace SolidCP.Providers.Virtualization2016
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/ChangeVirtualMachineState", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
+        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, string clusterName)
         {
             object[] results = this.Invoke("ChangeVirtualMachineState", new object[] {
                         vmId,
-                        newState});
+                        newState,
+                        clusterName});
             return ((JobResult)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, string clusterName, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("ChangeVirtualMachineState", new object[] {
                         vmId,
-                        newState}, callback, asyncState);
+                        newState,
+                        clusterName}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -674,13 +676,13 @@ namespace SolidCP.Providers.Virtualization2016
         }
 
         /// <remarks/>
-        public void ChangeVirtualMachineStateAsync(string vmId, VirtualMachineRequestedState newState)
+        public void ChangeVirtualMachineStateAsync(string vmId, VirtualMachineRequestedState newState, string clusterName)
         {
-            this.ChangeVirtualMachineStateAsync(vmId, newState, null);
+            this.ChangeVirtualMachineStateAsync(vmId, newState, clusterName, null);
         }
 
         /// <remarks/>
-        public void ChangeVirtualMachineStateAsync(string vmId, VirtualMachineRequestedState newState, object userState)
+        public void ChangeVirtualMachineStateAsync(string vmId, VirtualMachineRequestedState newState, string clusterName, object userState)
         {
             if ((this.ChangeVirtualMachineStateOperationCompleted == null))
             {
@@ -688,7 +690,8 @@ namespace SolidCP.Providers.Virtualization2016
             }
             this.InvokeAsync("ChangeVirtualMachineState", new object[] {
                         vmId,
-                        newState}, this.ChangeVirtualMachineStateOperationCompleted, userState);
+                        newState,
+                        clusterName}, this.ChangeVirtualMachineStateOperationCompleted, userState);
         }
 
         private void OnChangeVirtualMachineStateOperationCompleted(object arg)

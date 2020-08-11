@@ -142,9 +142,9 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public int AddUser(UserInfo user, bool sendLetter, string password)
+        public int AddUser(UserInfo user, bool sendLetter, string password, string[] notes)
         {
-            return UserController.AddUser(user, sendLetter, password);
+            return UserController.AddUser(user, sendLetter, password, notes);
         }
 
         [WebMethod]

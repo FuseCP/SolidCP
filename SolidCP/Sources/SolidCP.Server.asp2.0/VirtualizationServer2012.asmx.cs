@@ -165,12 +165,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState)
+        public JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, string clusterName)
         {
             try
             {
                 Log.WriteStart("'{0}' ChangeVirtualMachineState", ProviderSettings.ProviderName);
-                JobResult result = VirtualizationProvider.ChangeVirtualMachineState(vmId, newState);
+                JobResult result = VirtualizationProvider.ChangeVirtualMachineState(vmId, newState, clusterName);
                 Log.WriteEnd("'{0}' ChangeVirtualMachineState", ProviderSettings.ProviderName);
                 return result;
             }

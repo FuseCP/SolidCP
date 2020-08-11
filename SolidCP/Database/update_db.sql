@@ -156,6 +156,19 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1901')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'AdminLogin', N'Admin')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'ExpireLimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'MinimumTTL', N'86400')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'NameServers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RefreshInterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'ResponsiblePerson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'RetryDelay', N'600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1901, N'SimpleDnsUrl', N'http://127.0.0.1:8053')
+END
+GO
+
 -- MSSQL 2016 / Maria DB quota fix:
 
 UPDATE [Quotas] SET [ItemTypeID] = '71' WHERE [QuotaID] = '701' AND [ItemTypeID] = '39'
@@ -11118,22 +11131,10 @@ END
 GO
 
 
-
 -- Exchange setup EMAIL TEMPLATE
 IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'ExchangeMailboxSetupLetter' AND [PropertyName]= N'From' )
 BEGIN
-INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'ExchangeMailboxSetupLetter', N'From', N'')
-END
-GO
-
-DECLARE @ExchangeMailboxSetupLetterHtmlBody nvarchar(max)
--- Exchange setup EMAIL TEMPLATE
-
-
-
-IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'ExchangeMailboxSetupLetter' AND [PropertyName]= N'From' )
-BEGIN
-INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'ExchangeMailboxSetupLetter', N'From', N'')
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'ExchangeMailboxSetupLetter', N'From', N'support@HostingCompany.com')
 END
 GO
 
@@ -11267,7 +11268,7 @@ Set @ExchangeMailboxSetupLetterHtmlBody = N'<html xmlns="http://www.w3.org/1999/
     <h1>
     Outlook (Windows Clients)</h1>
     <p>
-    To configure Outlook 2013 to work with the servers, please reference:
+    To configure MS Outlook to work with the servers, please reference:
     </p>
     <p>
     <a href="" target="_blank"></a>
@@ -11276,7 +11277,7 @@ Set @ExchangeMailboxSetupLetterHtmlBody = N'<html xmlns="http://www.w3.org/1999/
     If you need to download and install the Outlook client:</p>
         
         <table>
-            <tr><td colspan="2" class="Label"><font size="3">Outlook 2013 Client</font></td></tr>
+            <tr><td colspan="2" class="Label"><font size="3">MS Outlook Client</font></td></tr>
             <tr>
                 <td class="Label">
                     Download URL:</td>
@@ -11432,13 +11433,13 @@ Webmail (OWA, Outlook Web Access)
 Outlook (Windows Clients)
 =================================
 
-To configure Outlook 2010 to work with servers, please reference:
+To configure MS Outlook to work with servers, please reference:
 
 
 
-If you need to download and install the Outlook 2010 client:
+If you need to download and install the MS Outlook client:
 
-Outlook 2010 Download URL:
+MS Outlook Download URL:
 
 KEY: 
 
@@ -14571,7 +14572,7 @@ SET @EndRow = @StartRow + @MaximumRows
 
 DECLARE @Folders TABLE
 (
-	ItemPosition int IDENTITY(0,1),
+	ItemPosition int IDENTITY(1,1),
 	Id int
 )
 INSERT INTO @Folders (Id)
@@ -21268,6 +21269,12 @@ INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [Pro
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1800')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1800, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
+GO
+
 -- HyperV2019
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2019')
@@ -22379,4 +22386,10 @@ UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;1;0;True;;0;;;Fa
 GO
 
 UPDATE [dbo].[UserSettings] SET [PropertyValue] = N'True;5;20;0;2;0;True;;0;;;False;False;0;' Where [SettingsName] = 'ExchangePolicy' AND [PropertyName] = 'MailboxPasswordPolicy' AND [PropertyValue] LIKE N'True;5;20;0;1;0;True'
+GO
+
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Microsoft SQL Server 2017'
+GO
+
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Microsoft SQL Server 2019'
 GO

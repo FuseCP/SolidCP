@@ -45,7 +45,7 @@ namespace SolidCP.Providers.Virtualization
         byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
         VirtualMachine CreateVirtualMachine(VirtualMachine vm);
         VirtualMachine UpdateVirtualMachine(VirtualMachine vm);
-        JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState);
+        JobResult ChangeVirtualMachineState(string vmId, VirtualMachineRequestedState newState, string clusterName);
         ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason);
         List<ConcreteJob> GetVirtualMachineJobs(string vmId);
         JobResult RenameVirtualMachine(string vmId, string name, string clusterName);

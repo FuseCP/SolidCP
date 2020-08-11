@@ -65,7 +65,7 @@
                 <asp:HiddenField ID="hdnFolderName" runat="server" Value='<%# Eval("Name") %>' />
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:TemplateField HeaderText="gvFolderName" SortExpression="Name">
+        <asp:TemplateField HeaderText="gvFolderName" SortExpression="FolderName">
             <ItemStyle Width="20%"></ItemStyle>
             <ItemTemplate>
                 <asp:hyperlink id="lnkFolderName" runat="server" NavigateUrl='<%# GetFolderEditUrl(Eval("Name").ToString()) %>'>
@@ -73,13 +73,13 @@
                 </asp:hyperlink>
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:TemplateField HeaderText="gvFolderQuota" SortExpression="FRSMQuotaGB">
+        <asp:TemplateField HeaderText="gvFolderQuota" SortExpression="FolderQuota">
             <ItemStyle Width="15%"></ItemStyle>
             <ItemTemplate>
                 <asp:Literal id="litFolderQuota" runat="server" Text='<%# ConvertMBytesToGB(Eval("FRSMQuotaMB")).ToString() + " Gb" %>'></asp:Literal>
             </ItemTemplate>
         </asp:TemplateField>
-        <asp:TemplateField HeaderText="gvFolderSize" SortExpression="Size">
+        <asp:TemplateField HeaderText="gvFolderSize">
             <ItemStyle Width="15%"></ItemStyle>
             <ItemTemplate>
                 <asp:Literal id="litFolderSize" runat="server" Text='...'></asp:Literal>

@@ -122,6 +122,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ResultObject CreateEnterpriseSubFolder(int itemId, string folderPath)
+        {
+            return EnterpriseStorageController.CreateSubFolder(itemId, folderPath);
+        }
+
+        [WebMethod]
         public ResultObject DeleteEnterpriseFolder(int itemId, string folderName)
         {
             return EnterpriseStorageController.DeleteFolder(itemId, folderName);

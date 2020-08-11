@@ -12,6 +12,7 @@ v1.7    28th September 2016: Resolved various issues with the SQL Backup, also i
 v1.8    16th January   2017: Improved the component backups to save time and to remove old files that are no longer in use by SolidCP. Added timer to show run time of this script
 v1.9	27th May 2017:		 Removal of LE Files from the project when the update is ran
 V2.0	17th May 2018		 Added support for CRM2016 and the asp.net server folders
+v2.1	10th August 2020	 Fix for the Security settings needed for newer ASP update
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
 Updated By Trevor Robinson.
@@ -602,6 +603,13 @@ function UpgradeSCPPortal() # Function to upgrade the SolidCP Portal Component
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']" "dependentAssembly"
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "assemblyIdentity" @( ("name","WebGrease"), ("publicKeyToken","31bf3856ad364e35"), ("culture","neutral") )
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/runtime/assemblyBinding[@xmlns-temp='urn:schemas-microsoft-com:asm.v1']/dependentAssembly" "bindingRedirect" @( ("oldVersion","0.0.0.0-1.5.2.14234"), ("newVersion","1.5.2.14234") )
+				# Fix for the Security settings needed for newer ASP update
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/configSections" "sectionGroup" @( ("name","system.data.dataset.serialization"), ("type","System.Data.SerializationSettingsSectionGroup, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/configSections/sectionGroup[@name='system.data.dataset.serialization']" "section" @( ("name","allowedTypes"), ("type","System.Data.AllowedTypesSectionHandler, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration" "system.data.dataset.serialization"
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization" "allowedTypes"
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.6.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				
 				# Add the edditional "<dependentAssembly>" tags in the Runtime section and remove any additional charichter returns from the end of the file
 				((Get-Content "$SCP_Portal_Dir\web.config" -Raw) -replace '        <bindingRedirect oldVersion="0\.0\.0\.0-9\.0\.0\.0" newVersion="9\.0\.0\.0" \/>[\r\n]+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" \/>', "        <bindingRedirect oldVersion=`"0.0.0.0-9.0.0.0`" newVersion=`"9.0.0.0`" />`r`n      </dependentAssembly>`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=`"WebGrease`" publicKeyToken=`"31bf3856ad364e35`" culture=`"neutral`" />" -replace '</configuration>[\r\n]+', "</configuration>") | Set-Content "$SCP_Portal_Dir\web.config"
 				# Update the web.config to change the "xmlns-temp" back to "xmlns" now we have finished parsing the XML file

@@ -383,6 +383,10 @@ tr.selected-file {
     max-width: 100%;
 }
 
+#foldernameForm input {
+    max-width: 100%;
+}
+
 /* Theme Mods */
 
 input,div{border-radius:0px!important;}
