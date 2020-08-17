@@ -64,7 +64,7 @@
     <None Include="letsencrypt.exe.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="settings_default.config">
+    <None Include="settings_default.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="wacs.exe.config">
