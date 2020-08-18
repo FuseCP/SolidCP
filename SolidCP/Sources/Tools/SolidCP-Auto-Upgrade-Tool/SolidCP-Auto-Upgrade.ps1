@@ -14,6 +14,7 @@ v1.9	27th May 2017:		 Removal of LE Files from the project when the update is ra
 V2.0	17th May 2018		 Added support for CRM2016 and the asp.net server folders
 v2.1	10th August 2020	 Fix for the Security settings needed for newer ASP update
 v2.1.1	10th August 2020	 Fix for v1.4.7 web.config version
+v2.2	18th August 2020	 Fix for the Database not backed up, better support for the changes in v2.1 to prevent duplicates and version added to the window title.
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
 Updated By Trevor Robinson.
@@ -53,10 +54,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 All Code provided as is and used at your own risk.
 ####################################################################################################>
 #Requires -RunAsAdministrator
+$scriptversion = "v2.2"
 # Set the window size as Server 2016 comes up small
-$host.UI.RawUI.BufferSize  = New-Object -TypeName System.Management.Automation.Host.Size -ArgumentList (120, 50)
+#$host.UI.RawUI.BufferSize  = New-Object -TypeName System.Management.Automation.Host.Size -ArgumentList (120, 50)
 $host.UI.RawUI.WindowSize  = New-Object -TypeName System.Management.Automation.Host.Size -ArgumentList (120, 50)
-$Host.UI.RawUI.WindowTitle = "$([Environment]::UserName): --  SolidCP - Auto Upgrade Script  --"
+$Host.UI.RawUI.WindowTitle = "$([Environment]::UserName): --  SolidCP - Auto Upgrade Script $scriptversion --"
 Write-Host "
         ****************************************
         *                                      *
@@ -164,7 +166,7 @@ Function SCPupgradeMenu() # Ask the user if they want to use the Stable Release 
 		$SCP_Prev_Stable_Version = ((([xml](New-Object System.Net.WebClient).DownloadString("$SCP_Installer_Site/Data/ProductReleasesFeed.xml")).SelectNodes("//release").version) | select -Unique | sort -Descending)["1"] # SolidCP Previous Stable Version
 
 		cls
-		Write-Host "`n`tSolidCP Upgrade Menu`n" -ForegroundColor Magenta
+		Write-Host "`n`tSolidCP Upgrade Menu $scriptversion`n" -ForegroundColor Magenta
 		Write-Host "`t`tPlease select version of SolidCP you would like to upgrade your deployment to`n" -ForegroundColor Cyan
 		Write-Host "`t`t 1. SolidCP v$SCP_Stable_Version - `"Stable`"" -ForegroundColor Cyan
 		Write-Host "`t`t 2. SolidCP v$SCP_BETA_Version -  `"BETA`"" -ForegroundColor Cyan
@@ -332,7 +334,7 @@ function UpgradeSCPDownloadFiles() # Function to download the files from the Sol
 			(New-Item -ItemType Directory -Path "$SCP_UpdateDir\Updates" -Force) | Out-Null
 			# Check if user wants to download the files from the installer site - Mainly for Developers what want to build the source on thier machine and update the servers from that
 			$choiceDownload = ""
-			while ($choiceDownload -notmatch "[y|n]") { $choiceDownload = read-host "`n`tWould you like to download the update files from the SolidCP website`"`? (Y/N)" }
+			while ($choiceDownload -notmatch "[y|n]") { $choiceDownload = read-host "`n`tWould you like to download the update files from the SolidCP website`? (Y/N)" }
 			if ($choiceDownload -eq "y") {
 				# Start a timer to see how long the script takes to upgrade all of the servers
 				$script:StopWatch = [System.Diagnostics.Stopwatch]::StartNew()
@@ -398,12 +400,15 @@ function UpgradeSCPentSvr() # Function to upgrade the SolidCP Enterprise Server 
 						(New-Item -ItemType Directory -Path "$SCP_UpdateDir\Enterprise Server - Database" -Force) | Out-Null
 					}
 					# Set the permissions on the SQL Database backup directory for full access
+					Write-Host "`t`t Set the permissions on the SQL Database backup directory for full access"
 					$acl = Get-Acl -Path "$SCP_UpdateDir\Enterprise Server - Database"
 					$acl.SetAccessRule($(New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList 'Everyone', 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'))
 					$acl | Set-Acl -Path "$SCP_UpdateDir\Enterprise Server - Database"
 					# Create temporary Share for SQL Backup
+					Write-Host "`t`t Create temporary Share for SQL Backup"
 					New-SMBShare -Name "SCPUpgrade$" -Path "$SCP_UpdateDir\Enterprise Server - Database" -FullAccess "Everyone" -Temporary | Out-Null
 					# Backup the SQL Database
+					Write-Host "`t`t Backup the SQL Database"
 					push-location
 					# Import the SQL PowerShell Module
 					Import-Module SQLPS -DisableNameChecking
@@ -413,14 +418,29 @@ function UpgradeSCPentSvr() # Function to upgrade the SolidCP Enterprise Server 
 						Backup-SqlDatabase -ServerInstance "$SCP_Database_Servr" -Database "$SCP_Database_Name" -BackupFile "\\$dIPV4\SCPUpgrade$\$SCP_Database_Name - $SCP_Backup_Time.bak" -Credential (Get-Credential "sa")
 					}
 					Pop-Location
-					do {Start-Sleep -Milliseconds 500} until (Test-Path "$SCP_UpdateDir\Enterprise Server - Database\$SCP_Database_Name - $SCP_Backup_Time.bak")
-					# Zip the backup to save space
-					[System.IO.Compression.ZipFile]::CreateFromDirectory("$SCP_UpdateDir\Enterprise Server - Database", "$SCP_UpdateDir\Enterprise Server - Backup\Database.zip")
-					# Remove the temporary Share for SQL Backup
-					(Remove-SmbShare -Name "SCPUpgrade$" -Force) | Out-Null
-					# Remove the SQL Database backup directory as it is no longer required
-					(Remove-Item "$SCP_UpdateDir\Enterprise Server - Database" -Recurse -Force -confirm:$false) | Out-Null
-					Write-Host "`t The `"Enterprise Server`" Database has been backed up successfully" -ForegroundColor Green
+					$loop = 0
+					do {Start-Sleep -Milliseconds 500; $loop++; If ($loop -ge "61") {break}} until (Test-Path "$SCP_UpdateDir\Enterprise Server - Database\$SCP_Database_Name - $SCP_Backup_Time.bak")
+					If ($loop -ge 60) {
+						$choicedbbackupfailed = ""
+						while ($choicedbbackupfailed -notmatch "[y]") { $choicedbbackupfailed = read-host "`n`tDatabase backup timed out, please confirm you have an manual backup before proceeding (Y)" }
+						if ($choicedbbackupfailed -eq "y") {
+							# Remove the temporary Share for SQL Backup
+							Write-Host "`t`t Remove the temporary Share for SQL Backup"
+							(Remove-SmbShare -Name "SCPUpgrade$" -Force) | Out-Null
+						}
+					}
+					else {
+						# Zip the backup to save space
+						Write-Host "`t`t Zip the backup to save space"
+						[System.IO.Compression.ZipFile]::CreateFromDirectory("$SCP_UpdateDir\Enterprise Server - Database", "$SCP_UpdateDir\Enterprise Server - Backup\Database.zip")
+						# Remove the temporary Share for SQL Backup
+						Write-Host "`t`t Remove the temporary Share for SQL Backup"
+						(Remove-SmbShare -Name "SCPUpgrade$" -Force) | Out-Null
+						# Remove the SQL Database backup directory as it is no longer required
+						Write-Host "`t`t Remove the SQL Database backup directory as it is no longer required" 
+						(Remove-Item "$SCP_UpdateDir\Enterprise Server - Database" -Recurse -Force -confirm:$false) | Out-Null
+						Write-Host "`t`t The `"Enterprise Server`" Database has been backed up successfully" -ForegroundColor Green
+					}
 				}
 
 				# Remove old Enterprise Server Files that are no longer in use or will be replaced by the upgraded files
@@ -609,6 +629,7 @@ function UpgradeSCPPortal() # Function to upgrade the SolidCP Portal Component
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/configSections/sectionGroup[@name='system.data.dataset.serialization']" "section" @( ("name","allowedTypes"), ("type","System.Data.AllowedTypesSectionHandler, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") )
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration" "system.data.dataset.serialization"
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization" "allowedTypes"
+				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.7.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.7.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
 				
 				# Add the edditional "<dependentAssembly>" tags in the Runtime section and remove any additional charichter returns from the end of the file
