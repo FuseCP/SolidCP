@@ -1217,6 +1217,10 @@ namespace SolidCP.EnterpriseServer
                     item.RemoteDesktopEnabled = true;
                     item.AdministratorPassword = CryptoUtils.Encrypt(adminPassword);
                 }
+                if (!String.IsNullOrEmpty(settings["GuacamoleConnectScript"]) && !String.IsNullOrEmpty(settings["GuacamoleHyperVIP"]))
+                {
+                    item.RemoteDesktopEnabled = true;
+                }
 
                 // set OS template
                 string templatesPath = settings["OsTemplatesPath"];
