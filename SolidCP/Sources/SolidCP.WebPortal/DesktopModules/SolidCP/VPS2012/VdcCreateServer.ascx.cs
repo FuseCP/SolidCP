@@ -46,6 +46,12 @@ namespace SolidCP.Portal.VPS2012
 {
     public partial class VdcCreate : SolidCPModuleBase
     {
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            // remove non-required steps
+            ToggleWizardSteps();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
@@ -59,12 +65,8 @@ namespace SolidCP.Portal.VPS2012
                 BindFormControls();
             }
 
-            // remove non-required steps
-            ToggleWizardSteps();
-
             // toggle
             ToggleControls();
-
         }
         
         private void ToggleWizardSteps()
@@ -564,12 +566,12 @@ namespace SolidCP.Portal.VPS2012
                 string summaryEmail = chkSendSummary.Checked ? txtSummaryEmail.Text.Trim() : null;
 
                 //virtualMachine.ExternalNetworkEnabled = false;
-                if ((Convert.ToInt32(listVlanLists.SelectedValue) >= 0) && chkExternalNetworkEnabled.Checked)
+                if (chkExternalNetworkEnabled.Checked && !String.IsNullOrEmpty(listVlanLists.SelectedValue) && (Convert.ToInt32(listVlanLists.SelectedValue) >= 0))
                     virtualMachine.ExternalNetworkEnabled = true;
 
 
                 // set default selected vlan
-                virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);//external network vlan
+                if (!String.IsNullOrEmpty(listVlanLists.SelectedValue)) virtualMachine.defaultaccessvlan = Convert.ToInt32(listVlanLists.SelectedValue);//external network vlan
 
                 // set private network vlan
                 if (listPrivateNetworkVLAN.Items.Count > 0)

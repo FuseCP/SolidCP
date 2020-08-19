@@ -44,15 +44,18 @@ namespace SolidCP.Portal.VPS
 {
     public partial class VdcCreate : SolidCPModuleBase
     {
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            // remove non-required steps
+            ToggleWizardSteps();
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 BindFormControls();
             }
-
-            // remove non-required steps
-            ToggleWizardSteps();
 
             // toggle
             ToggleControls();
