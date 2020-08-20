@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnAdd.Text" xml:space="preserve">
     <value>Hinzufügen</value>
@@ -140,5 +140,8 @@
   </data>
   <data name="UseDefault.Text" xml:space="preserve">
     <value>&lt;Befindet sich auf dem selben Server&gt;</value>
+  </data>
+  <data name="chkIgnoreCheckSSL.Text" xml:space="preserve">
+    <value>SSL-Zertifikatprüfung deaktivieren</value>
   </data>
 </root>

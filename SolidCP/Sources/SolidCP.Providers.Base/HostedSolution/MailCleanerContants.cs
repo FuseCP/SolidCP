@@ -26,11 +26,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿namespace SolidCP.Providers.Filters
- {
-     public class MailCleanerContants
+namespace SolidCP.Providers.Filters
+{
+    public class MailCleanerContants
     {
-         public const string APITitle = "APITitle";
-         public const string APIUrl= "APIUrl";
-     }
- }
+        public const string APITitle = "APITitle";
+        public const string APIUrl = "APIUrl";
+        public const string IgnoreCheckSSL = "IgnoreCheckSSL";
+    }
+}

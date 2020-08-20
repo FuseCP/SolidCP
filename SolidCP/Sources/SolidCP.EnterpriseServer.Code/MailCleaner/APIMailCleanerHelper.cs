@@ -35,6 +35,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Xml;
+using SolidCP.Providers.Filters;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -120,6 +121,8 @@ namespace SolidCP.EnterpriseServer
 
         private static void APICall(String f_stParam, int packageId, int f_iPlanID = 0)
         {
+            int serviceId = DataProvider.GetPackageServiceId(SecurityContext.User.UserId, packageId, ResourceGroups.Filters);
+            StringDictionary settings = ServerController.GetServiceSettings(serviceId);
             String l_URL = string.Empty;
             try
             {
@@ -141,9 +144,12 @@ namespace SolidCP.EnterpriseServer
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             //"https://10.2.150.107/api/"
             // Create a request for the URL. 
-            WebRequest request = WebRequest.Create(l_URL + f_stParam);
+            HttpWebRequest request = HttpWebRequest.CreateHttp(l_URL + f_stParam);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
+            if (Utils.ParseBool(settings[MailCleanerContants.IgnoreCheckSSL], true)) {
+                request.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+            }
             // Get the response.
             WebResponse response = request.GetResponse();
             // Display the status.
