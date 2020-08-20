@@ -231,4 +231,10 @@
   <data name="locAutoReplyEnabled.Text" xml:space="preserve">
     <value>Automatic Replies via SolidCP</value>
   </data>
+  <data name="bntAddTag.Text" xml:space="preserve">
+    <value>Add tag</value>
+  </data>
+  <data name="secRetentionPolicyTags.Text" xml:space="preserve">
+    <value>Retention policy tags</value>
+  </data>
 </root>
