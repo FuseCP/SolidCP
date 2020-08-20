@@ -42,10 +42,42 @@ namespace SolidCP.Portal.ExchangeServer
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            DomainInfo[] domains = ES.Services.Servers.GetMyDomains(PanelSecurity.PackageId).Where(d => !Utils.IsIdnDomain(d.DomainName)).ToArray();
+            Organization[] orgs = ES.Services.Organizations.GetOrganizations(PanelSecurity.PackageId, false);
+            var list = new List<OrganizationDomainName>();
             SetPolicy(PanelSecurity.PackageId, UserSettings.EXCHANGE_POLICY, "OrgIdPolicy");
+
+            foreach (Organization o in orgs)
+            {
+                OrganizationDomainName[] tmpList = ES.Services.Organizations.GetOrganizationDomains(o.Id);
+
+                foreach (OrganizationDomainName name in tmpList)
+                {
+                    list.Add(name);
+                }
+            }
 
             if (!IsPostBack)
             {
+                foreach (DomainInfo d in domains)
+                {
+                    if (!d.IsDomainPointer)
+                    {
+                        bool bAdd = true;
+                        foreach (OrganizationDomainName acceptedDomain in list)
+                        {
+                            if (d.DomainName.ToLower() == acceptedDomain.DomainName.ToLower())
+                            {
+                                bAdd = false;
+                                break;
+                            }
+                        }
+                        if (bAdd)
+                        {
+                            ddlDomains.Items.Add(d.DomainName.ToLower());
+                        }
+                    }
+                }
                 SetDefaultOrgId();
             }
 
