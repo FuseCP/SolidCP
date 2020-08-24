@@ -567,4 +567,46 @@
   <data name="locDiskSize.Text" xml:space="preserve">
     <value>VHD-Festplattengröße (GB):</value>
   </data>
+  <data name="btnAddPsScript.Text" xml:space="preserve">
+    <value>PS Script hinzufügen</value>
+  </data>
+  <data name="btnRemovePsScript.Text" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="locPsScript.Text" xml:space="preserve">
+    <value>Benutzerdefinierte PowerShell-Skripts</value>
+  </data>
+  <data name="locRunAt.Text" xml:space="preserve">
+    <value>Ausführen bei:</value>
+  </data>
+  <data name="locScript.Text" xml:space="preserve">
+    <value>PS-Script:</value>
+  </data>
+  <data name="locVar.Text" xml:space="preserve">
+    <value>Folgenden Variablen sind unterstützt:</value>
+  </data>
+  <data name="liRunAtAfterCreation.Text" xml:space="preserve">
+    <value>Nach der VM-Erstellung</value>
+  </data>
+  <data name="liRunAtAfterRenaming.Text" xml:space="preserve">
+    <value>Nach dem Umbenennen der VM</value>
+  </data>
+  <data name="liRunAtBeforeDeletion.Text" xml:space="preserve">
+    <value>Vor dem Löschen der VM</value>
+  </data>
+  <data name="liRunAtBeforeRenaming.Text" xml:space="preserve">
+    <value>Vor dem Umbenennen der VM</value>
+  </data>
+  <data name="liRunAtDisabled.Text" xml:space="preserve">
+    <value>Untauglich</value>
+  </data>
+  <data name="liRunAtExtNetwork.Text" xml:space="preserve">
+    <value>Externe Netzwerkkonfiguration</value>
+  </data>
+  <data name="liRunAtMngNetwork.Text" xml:space="preserve">
+    <value>Management Netzwerkkonfiguration</value>
+  </data>
+  <data name="liRunAtPrivNetwork.Text" xml:space="preserve">
+    <value>Private Netzwerkkonfiguration</value>
+  </data>
 </root>

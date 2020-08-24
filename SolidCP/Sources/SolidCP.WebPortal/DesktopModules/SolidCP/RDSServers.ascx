@@ -77,7 +77,7 @@
 	        AllowPaging="True" AllowSorting="True"
 	        CssSelectorClass="NormalGridView"
             OnRowCommand="gvRDSServers_RowCommand"
-	        DataSourceID="odsRDSServersPaged" EnableViewState="False"
+	        DataSourceID="odsRDSServersPaged" EnableViewState="True"
 	        EmptyDataText="gvRDSServers">
 	        <Columns>
                 <asp:TemplateField>

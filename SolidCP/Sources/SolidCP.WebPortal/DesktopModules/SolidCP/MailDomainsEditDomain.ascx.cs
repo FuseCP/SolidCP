@@ -162,8 +162,6 @@ namespace SolidCP.Portal
                     ShowResultMessage(result);
                     return;
                 }
-                //Delete Domain to Mail Cleaner
-                Knom.Helpers.Net.APIMailCleanerHelper.DomainRemove(litDomainName.Text);
             }
             catch (Exception ex)
             {

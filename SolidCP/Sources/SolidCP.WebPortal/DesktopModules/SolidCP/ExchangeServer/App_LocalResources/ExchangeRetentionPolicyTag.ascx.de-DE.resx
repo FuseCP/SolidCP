@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="gvPolicy.Header" xml:space="preserve">
     <value>Aufbewahrungsrichtlinie</value>
@@ -136,7 +136,7 @@
     <value>*</value>
   </data>
   <data name="locTitle.Text" xml:space="preserve">
-    <value>Postfach-Pläne</value>
+    <value>Aufbewahrungsrichtlinien-Tags</value>
   </data>
   <data name="Text.PageName" xml:space="preserve">
     <value>Aufbewahrungsrichtlinien-Tags</value>
@@ -149,5 +149,20 @@
   </data>
   <data name="btnUpdatePolicy.Text" xml:space="preserve">
     <value>Aktualisieren</value>
+  </data>
+  <data name="locAgeLimitForRetention.Text" xml:space="preserve">
+    <value>Altersgrenze für die Aufbewahrung (Tage):</value>
+  </data>
+  <data name="locRetentionAction.Text" xml:space="preserve">
+    <value>Aufbewahrungsmaßnahme :</value>
+  </data>
+  <data name="locType.Text" xml:space="preserve">
+    <value>Typ :</value>
+  </data>
+  <data name="secPolicy.Text" xml:space="preserve">
+    <value>Richtlinie</value>
+  </data>
+  <data name="secPolicyFeatures.Text" xml:space="preserve">
+    <value>Richtlinien-Tag-Eigenschaften</value>
   </data>
 </root>

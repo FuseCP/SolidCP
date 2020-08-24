@@ -482,6 +482,70 @@
 
 <fieldset>
     <legend>
+        <asp:Localize ID="locPsScript" runat="server" meta:resourcekey="locPsScript" Text="Custom PowerShell Scripts"></asp:Localize>
+    </legend>
+    <div style="margin-top: 15px;margin-bottom: 25px;margin-left: 10px;">
+        <table>
+            <tr>
+                <td style="width: 250px;">
+                    <asp:Localize ID="locVar" runat="server" meta:resourcekey="locVar" Text="The following variables are supported:"></asp:Localize>
+                </td>
+                <td>
+                    <asp:Label ID="labPsVars" Font-Names="Consolas" runat="server" Text="$vmName, $vmId, $vmObject, $extIpAddresses, $extMasks, $extGateway,
+                        $extAdapterName, $extAdapterMac, $privIpAddresses, $privMasks, $privGateway, $privAdapterName, $privAdapterMac,
+                        $mngIpAddresses, $mngMasks, $mngGateway, $mngAdapterName, $mngAdapterMac"></asp:Label>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="margin-top: 15px;margin-bottom: 25px;margin-left: 10px;">
+        <CPCC:StyleButton id="btnAddPsScript" CssClass="btn btn-success" runat="server" OnClick="btnAddPsScript_Click" CausesValidation="false"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnAddPsScript"/> </CPCC:StyleButton>
+    </div>
+    <asp:Repeater ID="repPsScript" runat="server">
+        <HeaderTemplate>
+        </HeaderTemplate>
+        <ItemTemplate>
+            <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">
+                <tr>
+                    <td class="SubHead" style="width: 200px;">
+                        <asp:Localize ID="locRunAt" runat="server" meta:resourcekey="locRunAt" Text="Execute at:"></asp:Localize>
+                    </td>
+                    <td>
+                        <asp:DropDownList ID="ddlRunAt" runat="server" CssClass="form-control" Width="450"
+                            SelectedIndex='<%# GetPsScriptIndex(Container, Eval("Name")) %>'>
+                                <asp:ListItem meta:resourcekey="liRunAtDisabled" Text="Disabled" Value="disabled"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtAfterCreation" Text="After VM creation" Value="after_creation"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtBeforeDeletion" Text="Before VM deletion" Value="before_deletion"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtBeforeRenaming" Text="Before VM renaming" Value="before_renaming"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtAfterRenaming" Text="After VM renaming" Value="after_renaming"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtExtNetwork" Text="External network configuration" Value="external_network_configuration"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtPrivNetwork" Text="Private network configuration" Value="private_network_configuration"></asp:ListItem>
+                                <asp:ListItem meta:resourcekey="liRunAtMngNetwork" Text="Management network configuration" Value="management_network_configuration"></asp:ListItem>
+                        </asp:DropDownList>
+                    </td>
+                    <td rowspan="3">
+                        <CPCC:StyleButton id="btnRemovePsScript" CssClass="btn btn-danger" runat="server" CausesValidation="false" CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemovePsScript_OnCommand"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnRemovePsScript"/> </CPCC:StyleButton>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <asp:Localize ID="locScript" runat="server" meta:resourcekey="locScript" Text="PS Script:"></asp:Localize>
+                    </td>
+                    <td>
+                        <asp:TextBox runat="server" Font-Names="Consolas" Font-Size="11" ID="txtPsScript" TextMode="MultiLine" Rows="10" Width="100%" Spellcheck="false" Text='<%# Eval("Description") %>'></asp:TextBox>
+                    </td>
+                </tr>
+            </table>
+        </ItemTemplate>
+        <SeparatorTemplate>
+            <br/>
+        </SeparatorTemplate>
+    </asp:Repeater>
+</fieldset>
+<br />
+
+<fieldset>
+    <legend>
         <asp:Localize ID="locReplication" runat="server" meta:resourcekey="locReplication" Text="Replication"></asp:Localize>
     </legend>
     <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px; width: 100%;">

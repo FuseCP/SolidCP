@@ -51,8 +51,7 @@ namespace SolidCP.Portal.ProviderControls
         { 
             txtServerName.Text = settings[MailCleanerContants.APITitle];
             txtSimpleUrlBase.Text = settings[MailCleanerContants.APIUrl];
-
-
+            chkIgnoreCheckSSL.Checked = Utils.ParseBool(settings[MailCleanerContants.IgnoreCheckSSL], true);
             MailCleanerServers = settings["MailCleanerServiceID"];
         }
 
@@ -60,7 +59,7 @@ namespace SolidCP.Portal.ProviderControls
         {
             settings[MailCleanerContants.APITitle] = txtServerName.Text.Trim();
             settings[MailCleanerContants.APIUrl] = txtSimpleUrlBase.Text.Trim();
-
+            settings[MailCleanerContants.IgnoreCheckSSL] = chkIgnoreCheckSSL.Checked.ToString();
             settings["MailCleanerServiceID"] = MailCleanerServers;			
         }
 
@@ -78,7 +77,7 @@ namespace SolidCP.Portal.ProviderControls
         }
 
 
-        protected void btnAddMailCleanerServer_Click(object sender, EventArgs e)
+        /*protected void btnAddMailCleanerServer_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(MailCleanerServers))
                 MailCleanerServers += ",";
@@ -87,7 +86,7 @@ namespace SolidCP.Portal.ProviderControls
 
             BindMailCleanerServices(ddlMailCleanerServers);
 
-        }
+        }*/
 
         public List<ServiceInfo> GetServices(string data)
         {
@@ -105,11 +104,11 @@ namespace SolidCP.Portal.ProviderControls
             return list;
         }
 
-        private void UpdateMailCleanerServersGrid()
+        /*private void UpdateMailCleanerServersGrid()
         {
             gvMailCleanerServers.DataSource = GetServices(MailCleanerServers);
             gvMailCleanerServers.DataBind();
-        }
+        }*/
 
 
         public void BindMailCleanerServices(DropDownList ddl)
@@ -145,7 +144,7 @@ namespace SolidCP.Portal.ProviderControls
             }
 
             ddl.Visible = ddl.Items.Count != 0;
-            btnAddMailCleanerServer.Visible = ddl.Items.Count != 0;
+            //btnAddMailCleanerServer.Visible = ddl.Items.Count != 0;
 
         }
 
@@ -165,8 +164,8 @@ namespace SolidCP.Portal.ProviderControls
                 }
 
                 MailCleanerServers = str.TrimEnd(',');
-                UpdateMailCleanerServersGrid();
-                BindMailCleanerServices(ddlMailCleanerServers);
+                //UpdateMailCleanerServersGrid();
+                //BindMailCleanerServices(ddlMailCleanerServers);
             }
         }
 

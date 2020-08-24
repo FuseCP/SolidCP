@@ -539,6 +539,9 @@ namespace SolidCP.EnterpriseServer
                                 route.Route = exSettings["MailFilterDestinations"];
                                 SpamExpertsController.AddDomainFilter(route);
                             }
+
+                            //Add to Mail Cleaner
+                            APIMailCleanerHelper.DomainAdd(domain.DomainName, domain.PackageId);
                         }
                     }
 
@@ -685,7 +688,7 @@ namespace SolidCP.EnterpriseServer
                 StringDictionary exSettings = ServerController.GetServiceSettings(exchangeServiceId);
                 foreach (var dom in acceptedDomains)
                 {
-                    
+
                     if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
                     {
                         DomainInfo domain = ServerController.GetDomain(dom.DomainId);
@@ -1696,6 +1699,9 @@ namespace SolidCP.EnterpriseServer
                         route.Route = exSettings["MailFilterDestinations"];
                         SpamExpertsController.AddDomainFilter(route);
                     }
+
+                    //Add to Mail Cleaner
+                    APIMailCleanerHelper.DomainAdd(domain.DomainName, domain.PackageId);
                 }
 
                 return 0;
@@ -1838,9 +1844,10 @@ namespace SolidCP.EnterpriseServer
                     {
                         SpamExpertsController.DeleteDomainFilter(domain);
                     }
+
+                    //Delete Domain from Mail Cleaner
+                    APIMailCleanerHelper.DomainRemove(domain.DomainName, domain.PackageId);
                 }
-
-
 
                 return 0;
             }

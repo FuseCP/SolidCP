@@ -67,15 +67,12 @@ function SolidCP_ConfigOptions()
 				 'Send Hosting Space Summary Email' => array( 'Type' => 'yesno', 'Description' => 'Tick to send the "Hosting Space Summary" letter'),
 				 'Create Mail Account' => array( 'Type' => 'yesno', 'Description' => 'Tick to create mail account' ),
 				 'Create FTP Account' => array( 'Type' => 'yesno', 'Description' => 'Tick to create FTP account' ),
-                                 'Create Temporary Domain' => array( 'Type' => 'yesno', 'Description' => 'Tick to create a temporary domain' ),
+                 'Create Temporary Domain' => array( 'Type' => 'yesno', 'Description' => 'Tick to create a temporary domain' ),
 				 'Send HTML Email' => array( 'Type' => 'yesno', 'Description' => 'Tick enable HTML email from SolidCP' ),
 				 'Create Website' => array( 'Type' => 'yesno', 'Description' => 'Tick to create Website' ),
 				 'Count Bandwidth / Diskspace' => array( 'Type' => 'yesno', 'Description' => 'Tick to update diskpace / bandwidth in WHMCS'),
 				 'Default Pointer' => array( 'Type' => 'text', 'Size' => 25, 'Description' => 'The default pointer (hostname) to use when creating a Website' ),
-				 'Create DNS Zone' => array( 'Type' => 'yesno', 'Description' => 'Tick to create domain DNS zone'),
-                                 'Add domain to Mailcleaner' => array( 'Type' => 'yesno', 'Description' => 'Tick to add domain to Mailcleaner via API'),
-                                 'Mailcleaner API' => array( 'Type' => 'text', 'Size' => 25, 'Description' => 'Mailcleaner API URL, with http(s)://, no trailing slash'));
-        
+				 'Create DNS Zone' => array( 'Type' => 'yesno', 'Description' => 'Tick to create domain DNS zone'));  
 }
 
 /**
@@ -173,8 +170,6 @@ function SolidCP_CreateAccount($params)
 	$createWebsite = ($params['configoption14'] == 'on');
 	$websitePointerName = $params['configoption16'];
 	$createZoneRecord = ($params['configoption17'] == 'on');
-	$createMailcleanerDomain = ($params['configoption18'] == 'on');
-	$mailcleanerApiUrl = ($params['configoption19']);
 	
 	try
 	{
@@ -299,11 +294,6 @@ function SolidCP_CreateAccount($params)
                 }
             }
             
-            //Create a mailcleaner domain
-            if($createMailcleanerDomain && $mailcleanerApiUrl != "" && $domain != ""){
-                $url = $mailcleanerApiUrl."/api/domain/add/name/".$domain;
-                SolidCP_callExtApiUrl($url);
-            }
             // Notify success
 	    return 'success';
 	}
@@ -348,8 +338,6 @@ function SolidCP_TerminateAccount($params)
 	$userId = $clientsDetails['userid'];
 	$serviceid = $params['serviceid'];
 	$domain = $params['domain'];
-        $createMailcleanerDomain = ($params['configoption18'] == 'on');
-	$mailcleanerApiUrl = ($params['configoption19']);
 	
 	try
 	{
@@ -373,12 +361,6 @@ function SolidCP_TerminateAccount($params)
 		
 		// Log the module call
 		SolidCP_logModuleCall(__FUNCTION__, $params, $result);
-
-                //Create a mailcleaner domain
-                if($createMailcleanerDomain && $mailcleanerApiUrl != "" && $domain != ""){
-                    $url = $mailcleanerApiUrl."/api/domain/remove/name/".$domain;
-                    SolidCP_callExtApiUrl($url);
-                }
 
 		// Notify success
 		return 'success';
@@ -631,8 +613,6 @@ function SolidCP_ChangePackage($params)
 	$userId = $clientsDetails['userid'];
 	$serviceid = $params['serviceid'];
 	$domain = $params['domain'];
-        $createMailcleanerDomain = ($params['configoption18'] == 'on');
-	$mailcleanerApiUrl = ($params['configoption19']);
 	
 	// SolidCP API parameters
 	$planId = $params['configoption4'];
@@ -770,17 +750,6 @@ function SolidCP_ChangePackage($params)
 
 		// Log the module call
 		SolidCP_logModuleCall(__FUNCTION__, $params, $result);
-
-                //Create or delete a mailcleaner domain
-                //Depends if the Add Mailcleaner domain checkbox is ticked.
-                if($createMailcleanerDomain && $mailcleanerApiUrl != "" && $domain != ""){
-                    $url = $mailcleanerApiUrl."/api/domain/add/name/".$domain;
-                    SolidCP_callExtApiUrl($url);
-                }
-                elseif($mailcleanerApiUrl != "" && $domain != ""){
-                    $url = $mailcleanerApiUrl."/api/domain/remove/name/".$domain;
-                    SolidCP_callExtApiUrl($url);
-                }
 
 		// Notify success
 		return 'success';

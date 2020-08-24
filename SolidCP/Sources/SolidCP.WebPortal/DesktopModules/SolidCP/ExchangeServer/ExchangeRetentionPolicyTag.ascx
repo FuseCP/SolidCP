@@ -11,7 +11,7 @@
 <div class="panel-heading">
     <h3 class="panel-title">
         <asp:Image ID="Image1" SkinID="ExchangeRetentionPolicyTag48" runat="server" />
-        <asp:Localize ID="locTitle" runat="server" Text="Retention policy tag"></asp:Localize>
+        <asp:Localize ID="locTitle" runat="server" meta:resourcekey="locTitle" Text="Retention policy tag"></asp:Localize>
     </h3>
 </div>
 <div class="panel-body form-horizontal">
@@ -72,7 +72,7 @@
         </div>
         <div class="form-group">
             <asp:Label runat="server" CssClass="control-label col-sm-2" AssociatedControlID="ageLimitForRetention">
-                <asp:Localize ID="locAgeLimitForRetention" runat="server" meta:resourcekey="locAgeLimitForRetention" Text="Age limit for retention :"></asp:Localize>
+                <asp:Localize ID="locAgeLimitForRetention" runat="server" meta:resourcekey="locAgeLimitForRetention" Text="Age limit for retention (Days):"></asp:Localize>
             </asp:Label>
             <div class="form-inline">
                  <uc1:QuotaEditor id="ageLimitForRetention" runat="server" QuotaTypeID="2" QuotaValue="1" QuotaMinValue="1" QuotaMaxValue="24855" ParentQuotaValue="-1"></uc1:QuotaEditor>
