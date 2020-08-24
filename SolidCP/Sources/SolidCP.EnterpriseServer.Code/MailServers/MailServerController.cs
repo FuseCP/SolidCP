@@ -165,9 +165,6 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 TaskManager.ItemId = itemId;
-
-                //Add to Mail Cleaner
-                APIMailCleanerHelper.DomainAdd(domainName, item.PackageId);
             }
 			catch (Exception ex)
 			{
@@ -1150,6 +1147,9 @@ namespace SolidCP.EnterpriseServer
                     route.Route = settings["MailFilterDestinations"];
                     SpamExpertsController.AddDomainFilter(route);
                 }
+
+                //Add to Mail Cleaner
+                APIMailCleanerHelper.DomainAdd(item.Name, item.PackageId);
 
                 return itemId;
 			}

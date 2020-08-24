@@ -2394,10 +2394,6 @@ namespace SolidCP.EnterpriseServer
                 }
             }
 
-            //Add Domain to Mail Cleaner
-            if (domainType == DomainType.Domain && pointMailDomainId != 0) //Only For domain -- Ignore Subdomains 
-                APIMailCleanerHelper.DomainAdd(domainName, packageId);
-
             return domainId;
 		}
 
@@ -2797,9 +2793,6 @@ namespace SolidCP.EnterpriseServer
 
 				// delete domain
 				DataProvider.DeleteDomain(SecurityContext.User.UserId, domainId);
-
-                //Delete Domain from Mail Cleaner
-                APIMailCleanerHelper.DomainRemove(domain.DomainName, domain.PackageId);
 
                 return 0;
 			}
