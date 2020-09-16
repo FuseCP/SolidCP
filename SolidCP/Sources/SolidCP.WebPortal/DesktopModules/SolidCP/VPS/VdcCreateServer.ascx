@@ -140,7 +140,7 @@
                                                 <td style="width:60px;"><asp:Label ID="lblCpu" runat="server" AssociatedControlID="ddlCpu"
                                                         meta:resourcekey="lblCpu" Text="CPU:" CssClass="MediumBold" /></td>
                                                 <td>
-                                                    <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="70">
+                                                    <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="80">
                                                     </asp:DropDownList>
                                                 </td>
                                                 <td><asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/></td>

@@ -32,7 +32,7 @@
                             <asp:Label ID="lblCpu" runat="server" AssociatedControlID="ddlCpu"
                                         meta:resourcekey="lblCpu" Text="CPU:" CssClass="col-sm-1" />
                             <div class="col-sm-11 form-inline">
-                                <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="70">
+                                <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="80">
                                     </asp:DropDownList>
                                 <asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/>
                             </div>
