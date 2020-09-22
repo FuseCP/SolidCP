@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using SolidCP.Providers;
+using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -205,7 +206,10 @@ namespace SolidCP.EnterpriseServer
                                 if (changeState)
                                     prov.ChangeServiceItemsState(objItems.ToArray(), enabled);
                                 else
+                                {
+                                    if (items[i] is VirtualMachine) VirtualizationServerController2012.CheckCustomPsScript(VirtualizationServerController2012.PsScriptPoint.before_deletion, (VirtualMachine)items[i]);
                                     prov.DeleteServiceItems(objItems.ToArray());
+                                }
 
                                 // exit from the loop
                                 success = true;

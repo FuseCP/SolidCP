@@ -5390,7 +5390,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region PsScripts
-        private enum PsScriptPoint
+        public enum PsScriptPoint
         {
             disabled,
             after_creation,
@@ -5402,7 +5402,7 @@ namespace SolidCP.EnterpriseServer
             management_network_configuration
         }
 
-        private static void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
+        public static void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
         {
             try
             {

@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.Linq;
+using System.Web;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Base.Virtualization;
@@ -768,7 +769,7 @@ namespace SolidCP.Portal.ProviderControls
                 var psscripts = new LibraryItem();
 
                 psscripts.Name = GetDropDownListSelectedValue(item, "ddlRunAt");
-                psscripts.Description = GetTextBoxText(item, "txtPsScript");
+                psscripts.Description = HttpUtility.HtmlEncode(GetTextBoxText(item, "txtPsScript"));
 
                 result.Add(psscripts);
             }
