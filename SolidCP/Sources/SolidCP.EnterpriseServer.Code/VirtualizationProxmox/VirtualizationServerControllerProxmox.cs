@@ -482,7 +482,7 @@ namespace SolidCP.EnterpriseServer
                 vm.Generation = otherSettings.Generation;
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
+                vm.HddSize = new[] { hddGB };
                 vm.SnapshotsNumber = snapshots;
                 vm.DvdDriveInstalled = dvdInstalled;
                 vm.BootFromCD = bootFromCD;
@@ -520,7 +520,7 @@ namespace SolidCP.EnterpriseServer
                             osTemplate = item;
 
                             // check minimal disk size
-                            if (osTemplate.DiskSize > 0 && vm.HddSize < osTemplate.DiskSize)
+                            if (osTemplate.DiskSize > 0 && vm.HddSize[0] < osTemplate.DiskSize)
                             {
                                 TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.QUOTA_TEMPLATE_DISK_MINIMAL_SIZE + ":" + osTemplate.DiskSize);
                                 return res;
@@ -1995,7 +1995,7 @@ namespace SolidCP.EnterpriseServer
 
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.PROXMOX_CPU_NUMBER, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.PROXMOX_RAM, currentRam, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.PROXMOX_HDD, vm.HddSize, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.PROXMOX_HDD, vm.HddSize[0], hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.PROXMOX_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
 
             QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.PROXMOX_DVD_ENABLED, dvdInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
@@ -2071,7 +2071,7 @@ namespace SolidCP.EnterpriseServer
                 // update meta-item
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
+                vm.HddSize = new[] { hddGB };
                 vm.SnapshotsNumber = snapshots;
 
                 vm.BootFromCD = bootFromCD;

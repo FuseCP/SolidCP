@@ -4785,6 +4785,9 @@
   <data name="VPS.VPS_QUOTA_EXCEEDED_HDD" xml:space="preserve">
     <value>Die maximale Festplattengröße, die angegeben werden kann: {1} GB</value>
   </data>
+  <data name="VPS.VPS_QUOTA_EXCEEDED_ADDITIONAL_HDD" xml:space="preserve">
+    <value>Die maximale zusätzliche Festplattenanzahl, die angegeben werden kann: {1}</value>
+  </data>
   <data name="VPS.VPS_QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED" xml:space="preserve">
     <value>Anhalten, Fortsetzen sind im Hosting-Plan nicht erlaubt</value>
   </data>
@@ -5765,6 +5768,9 @@
   </data>
   <data name="Quota.VPS2012.Hdd" xml:space="preserve">
     <value>Festplattengröße [GB]</value>
+  </data>
+  <data name="Quota.VPS2012.AdditionalVhdCount" xml:space="preserve">
+    <value>Zusätzliche Festplatten pro VPS</value>
   </data>
   <data name="Quota.VPS2012.ManagingAllowed" xml:space="preserve">
     <value>Benutzer darf VPS anlegen/löschen</value>

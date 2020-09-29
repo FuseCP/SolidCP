@@ -274,14 +274,14 @@ namespace SolidCP.Providers.Virtualization
                     if (extendedInfo)
                     {
                         vm.CpuCores = result.Data.cpus;
-                        vm.HddSize = Convert.ToInt32(result.Data.maxdisk / Constants.Size1G);
+                        vm.HddSize = new[] { Convert.ToInt32(result.Data.maxdisk / Constants.Size1G) };
 
                         // Hard Disk Bootdisk
                         var harddisks = ProxmoxVHDHelper.Get(vmconfig.Content);
                         foreach (var disk in harddisks)
                         {
                             if (disk.Name  == vmconfig.Data.bootdisk)
-                                vm.VirtualHardDrivePath = disk.Path;
+                                vm.VirtualHardDrivePath = new[] { disk.Path };
                         }
                         
 
@@ -432,7 +432,7 @@ namespace SolidCP.Providers.Virtualization
             sshcmd = sshcmd.Replace("[FQDN]", vm.Name);
             sshcmd = sshcmd.Replace("[CPUCORES]", vm.CpuCores.ToString());
             sshcmd = sshcmd.Replace("[RAMSIZE]", vm.RamSize.ToString());
-            sshcmd = sshcmd.Replace("[HDDSIZE]", vm.HddSize.ToString());
+            sshcmd = sshcmd.Replace("[HDDSIZE]", vm.HddSize[0].ToString());
             sshcmd = sshcmd.Replace("[OSTEMPLATENAME]", vm.OperatingSystemTemplate);
             sshcmd = sshcmd.Replace("[OSTEMPLATEFILE]", vm.OperatingSystemTemplatePath);
             sshcmd = sshcmd.Replace("[ADMINPASS]", vm.AdministratorPassword);
@@ -521,8 +521,8 @@ namespace SolidCP.Providers.Virtualization
 
                 ApiClientSetup();
                 var vmconfig = client.VMConfig(vm.VirtualMachineId);
-                if (vm.HddSize != realVm.HddSize)
-                     client.ResizeDisk(vm.VirtualMachineId, vmconfig.Data.bootdisk, String.Format("{0}G", vm.HddSize));
+                if (vm.HddSize[0] != realVm.HddSize[0])
+                     client.ResizeDisk(vm.VirtualMachineId, vmconfig.Data.bootdisk, String.Format("{0}G", vm.HddSize[0]));
                 client.UpdateConfig(vm.VirtualMachineId, configuration);
                 ProxmoxDvdDriveHelper.Update(client, realVm, vm.DvdDriveInstalled);
 

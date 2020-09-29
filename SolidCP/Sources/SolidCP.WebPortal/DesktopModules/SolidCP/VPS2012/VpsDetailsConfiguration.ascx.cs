@@ -81,7 +81,8 @@ namespace SolidCP.Portal.VPS2012
 
                 litCpu.Text = String.Format(GetLocalizedString("CpuCores.Text"), vm.CpuCores);
                 litRam.Text = String.Format(GetLocalizedString("Ram.Text"), vm.RamSize);
-                litHdd.Text = String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize);
+                litHdd.Text = String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize[0]);
+                BindAdditionalHddInfo(vm);
                 litHddMinIOPS.Text = String.Format(GetLocalizedString("HddMinIOPS.Text"), vm.HddMinimumIOPS);
                 litHddMaxIOPS.Text = String.Format(GetLocalizedString("HddMaxIOPS.Text"), vm.HddMaximumIOPS);               
                 
@@ -141,6 +142,25 @@ namespace SolidCP.Portal.VPS2012
         {
             Response.Redirect(EditUrl("ItemID", PanelRequest.ItemID.ToString(), "vps_edit_config",
                 "SpaceID=" + PanelSecurity.PackageId.ToString()));
+        }
+
+        private void BindAdditionalHddInfo(VirtualMachine vm)
+        {
+            repAdditionalHdd.DataSource = GetAdditionalHdd(vm);
+            repAdditionalHdd.DataBind();
+        }
+
+        private List<AdditionalHdd> GetAdditionalHdd(VirtualMachine vm)
+        {
+            var result = new List<AdditionalHdd>();
+            if (vm.HddSize.Length < 2) return result;
+            for (int i = 1; i < vm.HddSize.Length; i++)
+            {
+                AdditionalHdd hdd = new AdditionalHdd(String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize[i]), "");
+                result.Add(hdd);
+            }
+
+            return result;
         }
     }
 }

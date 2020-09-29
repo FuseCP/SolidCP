@@ -345,6 +345,7 @@
     <Compile Include="StorageSpaces\StorageSpaceLevel.cs" />
     <Compile Include="StorageSpaces\StorageSpaceLevelPaged.cs" />
     <Compile Include="StorageSpaces\StorageSpacesPaged.cs" />
+    <Compile Include="Virtualization\AdditionalHdd.cs" />
     <Compile Include="Virtualization\AutomaticStopAction.cs" />
     <Compile Include="Virtualization\AutomaticStartAction.cs" />
     <Compile Include="Virtualization\BiosInfo.cs" />

@@ -222,4 +222,16 @@
   <data name="locNotEnoughExternalAddresses.Text" xml:space="preserve">
     <value>Der Pool verfügbarer externer IP-Adressen ist leer. Alle IP-Adressen, die dem derzeitigen Hosting-Bereich zugewiesen sind, sind vorhandenen virtuellen Servern zugeordnet.</value>
   </data>
+  <data name="btnAddHdd.Text" xml:space="preserve">
+    <value>HDD hinzufügen</value>
+  </data>
+  <data name="locRemoveHdd.Text" xml:space="preserve">
+    <value>HDD löschen</value>
+  </data>
+  <data name="btnRemoveHdd.OnClientClick" xml:space="preserve">
+    <value>if(!confirm('Die virtuelle Festplatte wird entfernt.\n\nMöchten Sie fortfahren?')) return false;</value>
+  </data>
+  <data name="valHddSize.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen numerischen Wert ein</value>
+  </data>
 </root>

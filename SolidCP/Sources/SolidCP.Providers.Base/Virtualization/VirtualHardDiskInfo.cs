@@ -38,6 +38,40 @@ namespace SolidCP.Providers.Virtualization
 {
     public class VirtualHardDiskInfo
     {
+        public VirtualHardDiskInfo()
+        {
+
+        }
+
+        public VirtualHardDiskInfo(long fileSize, bool inSavedState, bool inUse, long maxInternalSize, string parentPath, VirtualHardDiskType diskType,
+            bool supportPersistentReservations, ulong maximumIOPS, ulong minimumIOPS, ControllerType vhdControllerType, int controllerNumber, int controllerLocation,
+            string name, string path, VirtualHardDiskFormat diskFormat, bool attached, uint blockSizeBytes)
+        {
+            FileSize = fileSize;
+            InSavedState = inSavedState;
+            InUse = inUse;
+            MaxInternalSize = maxInternalSize;
+            ParentPath = parentPath;
+            DiskType = diskType;
+            SupportPersistentReservations = supportPersistentReservations;
+            MaximumIOPS = maximumIOPS;
+            MinimumIOPS = minimumIOPS;
+            VHDControllerType = vhdControllerType;
+            ControllerNumber = controllerNumber;
+            ControllerLocation = controllerLocation;
+            Name = name;
+            Path = path;
+            DiskFormat = diskFormat;
+            Attached = attached;
+            BlockSizeBytes = blockSizeBytes;
+        }
+
+        public VirtualHardDiskInfo Clone()
+        {
+            return new VirtualHardDiskInfo(FileSize, InSavedState, InUse, MaxInternalSize, ParentPath, DiskType, SupportPersistentReservations, MaximumIOPS,
+                MinimumIOPS, VHDControllerType, ControllerNumber, ControllerLocation, Name, Path, DiskFormat, Attached, BlockSizeBytes);
+        }
+
         public long FileSize { get; set; }
         public bool InSavedState { get; set; }
         public bool InUse { get; set; }
@@ -54,5 +88,6 @@ namespace SolidCP.Providers.Virtualization
         public string Path { get; set; }
         public VirtualHardDiskFormat DiskFormat { get; set; }
         public bool Attached { get; set; }
+        public uint BlockSizeBytes { get; set; }
     }
 }

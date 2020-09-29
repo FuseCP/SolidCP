@@ -57,6 +57,33 @@
                                 <asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/>
                                 <asp:HiddenField id="hiddenTxtValHdd" runat="server" />
                             </div>
+                            <div style="margin-top:15px; margin-bottom:25px; margin-left:10px;">
+                                <CPCC:StyleButton id="btnAddHdd" CssClass="btn btn-success" runat="server" OnClick="btnAddHdd_Click" CausesValidation="false"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnAddHdd"/> </CPCC:StyleButton>
+                            </div>
+                            <asp:Repeater ID="repHdd" runat="server">
+                                <HeaderTemplate>
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                    <asp:Label ID="lblAdditionalHdd" meta:resourcekey="lblHdd" runat="server" Text="HDD:" CssClass="col-sm-1" AssociatedControlID="txtAdditionalHdd"></asp:Label>
+                                    <div class="col-sm-11 form-inline">
+                                        <asp:TextBox ID="txtAdditionalHdd" runat="server" CssClass="form-control form-control" Width="70" Text='<%# Eval("DiskSize") %>'></asp:TextBox>
+                                        <asp:HiddenField id="txtAdditionalHddPath" Value='<%# Eval("DiskPath") %>' runat="server" />
+                                        <asp:RequiredFieldValidator ID="RequireHddValidator" runat="server" Text="*" Display="Dynamic"
+                                            ControlToValidate="txtAdditionalHdd" meta:resourcekey="RequireHddValidator" SetFocusOnError="true"
+                                            ValidationGroup="Vps">*</asp:RequiredFieldValidator>
+                                        <asp:RegularExpressionValidator id="valHddSize" runat="server" Text="*" meta:resourcekey="valHddSize"
+										    ValidationExpression="^[0-9]+$"
+											ControlToValidate="txtAdditionalHdd" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
+										</asp:RegularExpressionValidator>
+                                        <asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/>
+                                        <CPCC:StyleButton id="btnRemoveHdd" style="margin-left: 30px;" meta:resourcekey="btnRemoveHdd" CssClass="btn btn-danger" runat="server" CausesValidation="false" CommandName="Remove" CommandArgument="<%# Container.ItemIndex %>" OnCommand="btnRemoveHdd_OnCommand"
+                                            OnClientClick="if(!confirm('Virtual hard drive will be removed.\n\nDo you want to proceed?')) return false;"> <i class="fa fa-times">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="locRemoveHdd"/> </CPCC:StyleButton>
+                                    </div>
+                                </ItemTemplate>
+                                <SeparatorTemplate>
+                                    <br/>
+                                </SeparatorTemplate>
+                            </asp:Repeater>
                             <div class="col-sm-11">
                             <asp:CheckBox ID="chkIgnoreHddWarning" runat="server" 
                                 Text="Ignore reduce size warning (You'll reduce only quota number!)" meta:resourcekey="chkIgnoreHddWarning" />                                

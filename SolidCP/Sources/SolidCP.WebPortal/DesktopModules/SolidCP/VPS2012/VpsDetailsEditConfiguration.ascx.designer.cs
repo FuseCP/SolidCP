@@ -184,6 +184,24 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.HiddenField hiddenTxtValHdd;
         
         /// <summary>
+        /// btnAddHdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton btnAddHdd;
+        
+        /// <summary>
+        /// repHdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repHdd;
+        
+        /// <summary>
         /// chkIgnoreHddWarning control.
         /// </summary>
         /// <remarks>

@@ -465,7 +465,7 @@ namespace SolidCP.EnterpriseServer
                 vm.Generation = generation;
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
+                vm.HddSize = new[] { hddGB };
                 vm.SnapshotsNumber = snapshots;
                 vm.DvdDriveInstalled = dvdInstalled;
                 vm.BootFromCD = bootFromCD;
@@ -494,7 +494,7 @@ namespace SolidCP.EnterpriseServer
                             osTemplate = item;
 
                             // check minimal disk size
-                            if (osTemplate.DiskSize > 0 && vm.HddSize < osTemplate.DiskSize)
+                            if (osTemplate.DiskSize > 0 && vm.HddSize[0] < osTemplate.DiskSize)
                             {
                                 TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.QUOTA_TEMPLATE_DISK_MINIMAL_SIZE + ":" + osTemplate.DiskSize);
                                 return res;
@@ -527,7 +527,7 @@ namespace SolidCP.EnterpriseServer
                 vm.RootFolderPath = EvaluateItemVariables(rootFolderPattern, vm);
                 var correctVhdPath = GetCorrectTemplateFilePath(templatesPath, osTemplateFile);
                 vm.OperatingSystemTemplatePath = correctVhdPath;
-                vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, hostname + Path.GetExtension(correctVhdPath));
+                vm.VirtualHardDrivePath = new[] { Path.Combine(vm.RootFolderPath, hostname + Path.GetExtension(correctVhdPath)) };
 
                 // save meta-item
                 try
@@ -765,13 +765,13 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.Write("VPS_CREATE_OS_TEMPLATE", osTemplate.Name);
                 TaskManager.Write("VPS_CREATE_CONVERT_VHD");
                 TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
-                TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
+                TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath[0]);
                 TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
                 try
                 {
                     // convert VHD
                     VirtualHardDiskType vhdType = (VirtualHardDiskType)Enum.Parse(typeof(VirtualHardDiskType), settings["VirtualDiskType"], true);
-                    result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath, vhdType);
+                    result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath[0], vhdType);
 
                     // check return
                     if (result.ReturnValue != ReturnCode.JobStarted)
@@ -798,7 +798,7 @@ namespace SolidCP.EnterpriseServer
                 VirtualHardDiskInfo vhdInfo = null;
                 try
                 {
-                    vhdInfo = vs.GetVirtualHardDiskInfo(vm.VirtualHardDrivePath);
+                    vhdInfo = vs.GetVirtualHardDiskInfo(vm.VirtualHardDrivePath[0]);
                 }
                 catch (Exception ex)
                 {
@@ -817,12 +817,12 @@ namespace SolidCP.EnterpriseServer
                 int hddSizeGB = Convert.ToInt32(vhdInfo.MaxInternalSize / Size1G);
 
                 TaskManager.Write("VPS_CREATE_EXPAND_SOURCE_VHD_SIZE", hddSizeGB.ToString());
-                TaskManager.Write("VPS_CREATE_EXPAND_DEST_VHD_SIZE", vm.HddSize.ToString());
+                TaskManager.Write("VPS_CREATE_EXPAND_DEST_VHD_SIZE", vm.HddSize[0].ToString());
                 #endregion
 
                 #region Expand VHD
                 bool expanded = false;
-                if (vm.HddSize > hddSizeGB)
+                if (vm.HddSize[0] > hddSizeGB)
                 {
                     TaskManager.Write("VPS_CREATE_EXPAND_VHD");
                     TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
@@ -830,7 +830,7 @@ namespace SolidCP.EnterpriseServer
                     // expand VHD
                     try
                     {
-                        result = vs.ExpandVirtualHardDisk(vm.VirtualHardDrivePath, (ulong)vm.HddSize);
+                        result = vs.ExpandVirtualHardDisk(vm.VirtualHardDrivePath[0], (ulong)vm.HddSize[0]);
                     }
                     catch (Exception ex)
                     {
@@ -870,7 +870,7 @@ namespace SolidCP.EnterpriseServer
                     try
                     {
                         #region Mount VHD
-                        MountedDiskInfo mountedInfo = vs.MountVirtualHardDisk(vm.VirtualHardDrivePath);
+                        MountedDiskInfo mountedInfo = vs.MountVirtualHardDisk(vm.VirtualHardDrivePath[0]);
                         if (mountedInfo == null)
                         {
                             // mount returned NULL
@@ -940,7 +940,7 @@ namespace SolidCP.EnterpriseServer
                         #region Unmount VHD
                         try
                         {
-                            code = vs.UnmountVirtualHardDisk(vm.VirtualHardDrivePath);
+                            code = vs.UnmountVirtualHardDisk(vm.VirtualHardDrivePath[0]);
                             if (code != ReturnCode.OK)
                             {
                                 TaskManager.WriteError("VPS_CREATE_UNMOUNT_ERROR_JOB_START", code.ToString());
@@ -1200,7 +1200,7 @@ namespace SolidCP.EnterpriseServer
                 item.RamSize = vm.RamSize;
                 item.HddSize = vm.HddSize;
                 item.VirtualHardDrivePath = vm.VirtualHardDrivePath;
-                item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath);
+                item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath[0]);
                 item.SnapshotsNumber = cntx.Quotas[Quotas.VPS_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
                 item.DvdDriveInstalled = vm.DvdDriveInstalled;
                 item.BootFromCD = vm.BootFromCD;
@@ -1988,7 +1988,7 @@ namespace SolidCP.EnterpriseServer
 
             CheckNumericQuota(cntx, quotaResults, Quotas.VPS_CPU_NUMBER, vm.CpuCores, cpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             CheckNumericQuota(cntx, quotaResults, Quotas.VPS_RAM, vm.RamSize, ramMB, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-            CheckNumericQuota(cntx, quotaResults, Quotas.VPS_HDD, vm.HddSize, hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+            CheckNumericQuota(cntx, quotaResults, Quotas.VPS_HDD, vm.HddSize[0], hddGB, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
             CheckNumericQuota(cntx, quotaResults, Quotas.VPS_SNAPSHOTS_NUMBER, snapshots, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
 
             CheckBooleanQuota(cntx, quotaResults, Quotas.VPS_DVD_ENABLED, dvdInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
@@ -2064,7 +2064,7 @@ namespace SolidCP.EnterpriseServer
                 // update meta-item
                 vm.CpuCores = cpuCores;
                 vm.RamSize = ramMB;
-                vm.HddSize = hddGB;
+                vm.HddSize = new[] { hddGB };
                 vm.SnapshotsNumber = snapshots;
 
                 vm.BootFromCD = bootFromCD;

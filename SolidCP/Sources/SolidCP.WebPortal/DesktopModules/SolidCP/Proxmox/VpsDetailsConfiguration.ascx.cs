@@ -80,7 +80,7 @@ namespace SolidCP.Portal.Proxmox
 
                 litCpu.Text = String.Format(GetLocalizedString("CpuCores.Text"), vm.CpuCores);
                 litRam.Text = String.Format(GetLocalizedString("Ram.Text"), vm.RamSize);
-                litHdd.Text = String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize);
+                litHdd.Text = String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize[0]);
                 litSnapshots.Text = vm.SnapshotsNumber.ToString();
 
                 optionDvdInstalled.Value = vm.DvdDriveInstalled;

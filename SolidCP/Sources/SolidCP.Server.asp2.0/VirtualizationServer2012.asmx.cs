@@ -854,6 +854,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' CreateVirtualHardDisk", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.CreateVirtualHardDisk(destinationPath, diskType, blockSizeBytes, sizeGB);
+                Log.WriteEnd("'{0}' CreateVirtualHardDisk", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' CreateVirtualHardDisk", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public void DeleteRemoteFile(string path)
         {
             try

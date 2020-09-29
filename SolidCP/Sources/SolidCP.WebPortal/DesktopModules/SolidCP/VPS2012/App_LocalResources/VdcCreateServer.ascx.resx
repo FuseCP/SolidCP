@@ -438,4 +438,19 @@
   <data name="maskValidator.ErrorMessage" xml:space="preserve">
     <value>Enter subnet mask</value>
   </data>
+  <data name="btnAddHdd.Text" xml:space="preserve">
+    <value>Add HDD</value>
+  </data>
+  <data name="btnRemoveHdd.Text" xml:space="preserve">
+    <value>Remove HDD</value>
+  </data>
+  <data name="lblAdditionalHdd.Text" xml:space="preserve">
+    <value>Additional HDD:</value>
+  </data>
+  <data name="locAdditionalHdd.Text" xml:space="preserve">
+    <value>Additional HDD, GB:</value>
+  </data>
+  <data name="valHddSize.ErrorMessage" xml:space="preserve">
+    <value>Enter a numeric value</value>
+  </data>
 </root>

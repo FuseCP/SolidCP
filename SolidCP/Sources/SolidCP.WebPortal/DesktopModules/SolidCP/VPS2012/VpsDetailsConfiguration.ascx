@@ -76,6 +76,22 @@
                                     <asp:Literal ID="litHdd" runat="server" Text="[hdd]"></asp:Literal>
                                 </td>
                             </tr>
+                            <asp:Repeater ID="repAdditionalHdd" runat="server">
+                                <HeaderTemplate>
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                    <tr>
+                                        <td class="Medium">
+                                            <asp:Localize ID="lblAdditionalHdd" runat="server" meta:resourcekey="lblHdd" Text="HDD:" />
+                                        </td>
+                                        <td class="MediumBold">
+                                            <asp:Literal ID="litAdditionalHdd" runat="server" Text='<%# Eval("DiskSize") %>'></asp:Literal>
+                                        </td>
+                                    </tr>
+                                </ItemTemplate>
+                                <SeparatorTemplate>
+                                </SeparatorTemplate>
+                            </asp:Repeater>
                         </table>
                     </asp:Panel>
 

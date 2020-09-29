@@ -4783,6 +4783,9 @@
   <data name="VPS.VPS_QUOTA_EXCEEDED_HDD" xml:space="preserve">
     <value>The maximum HDD size that could be specified: {1} GB</value>
   </data>
+  <data name="VPS.VPS_QUOTA_EXCEEDED_ADDITIONAL_HDD" xml:space="preserve">
+    <value>The maximum additional HDD count that could be specified: {1}</value>
+  </data>
   <data name="VPS.VPS_QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED" xml:space="preserve">
     <value>Pause, resume are not allowed in the hosting plan</value>
   </data>
@@ -5763,6 +5766,9 @@
   </data>
   <data name="Quota.VPS2012.Hdd" xml:space="preserve">
     <value>Hard Drive size, GB</value>
+  </data>
+  <data name="Quota.VPS2012.AdditionalVhdCount" xml:space="preserve">
+    <value>Additional Hard Drives per VPS</value>
   </data>
   <data name="Quota.VPS2012.ManagingAllowed" xml:space="preserve">
     <value>Allow user to create, delete VPS</value>

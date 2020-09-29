@@ -9265,7 +9265,7 @@ IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL DROP TABLE #TempTable
 CREATE TABLE #TempTable(
 	ItemID int,
 	PropertyName nvarchar(50),
-	PropertyValue  nvarchar(3000))
+	PropertyValue  nvarchar(max))
 
 INSERT INTO #TempTable (ItemID, PropertyName, PropertyValue)
 SELECT
@@ -9275,7 +9275,7 @@ SELECT
 FROM OPENXML(@idoc, '/properties/property',1) WITH 
 (
 	PropertyName nvarchar(50) '@name',
-	PropertyValue nvarchar(3000) '@value'
+	PropertyValue nvarchar(max) '@value'
 ) as PV
 
 -- Move data from temp table to real table
@@ -10606,7 +10606,7 @@ WHERE ItemID = @ItemID
 CREATE TABLE #TempTable(
 	ItemID int,
 	PropertyName nvarchar(50),
-	PropertyValue  nvarchar(3000))
+	PropertyValue  nvarchar(max))
 
 INSERT INTO #TempTable (ItemID, PropertyName, PropertyValue)
 SELECT
@@ -10616,7 +10616,7 @@ SELECT
 FROM OPENXML(@idoc, '/properties/property',1) WITH 
 (
 	PropertyName nvarchar(50) '@name',
-	PropertyValue nvarchar(3000) '@value'
+	PropertyValue nvarchar(max) '@value'
 ) as PV
 
 -- Move data from temp table to real table
@@ -16500,6 +16500,17 @@ BEGIN
 END
 GO
 
+-- Additional VHD count per VM
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.AdditionalVhdCount')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (730, 33, 6, N'VPS2012.AdditionalVhdCount', N'Additional Hard Drives per VPS', 3, 0, NULL, NULL)
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'ServiceItemProperties')
+ALTER TABLE [dbo].[ServiceItemProperties] ALTER COLUMN [PropertyValue] [nvarchar](MAX) NULL; 
+GO
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -20998,6 +21009,7 @@ AS
 			RETURN 0
 
 		DECLARE @Result int
+		DECLARE @vhd TABLE (Size int)
 
 		IF @QuotaID = 52 -- diskspace
 			SET @Result = dbo.CalculatePackageDiskspace(@PackageID)
@@ -21030,10 +21042,14 @@ AS
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 306 -- HDD of VPS
-			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+		BEGIN
+			INSERT INTO @vhd
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
-							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID)
+							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+			SET @Result = (SELECT SUM(Size) FROM @vhd)
+		END
 		ELSE IF @QuotaID = 309 -- External IP addresses of VPS
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -21060,10 +21076,14 @@ AS
 			SET @Result = CASE WHEN isnull(@Result1,0) > isnull(@Result2,0) THEN @Result1 ELSE @Result2 END
 		END
 		ELSE IF @QuotaID = 559 -- HDD of VPS2012
-			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+		BEGIN
+			INSERT INTO @vhd
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
-							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID)
+							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+			SET @Result = (SELECT SUM(Size) FROM @vhd)
+		END
 		ELSE IF @QuotaID = 562 -- External IP addresses of VPS2012
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -21090,10 +21110,14 @@ AS
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 351 -- HDD of VPSforPc
-			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+		BEGIN
+			INSERT INTO @vhd
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
-							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID)
+							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+			SET @Result = (SELECT SUM(Size) FROM @vhd)
+		END
 		ELSE IF @QuotaID = 354 -- External IP addresses of VPSforPc
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
