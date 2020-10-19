@@ -1,4 +1,10 @@
 Version
+- Move Mail Cleaner API to Enterprise Server
+- Remove Mail Cleaner API from WHMCS module
+- Update to WACS v2.1.10.896 (x64, ReleasePluggable)
+- Hyper-V - VM Import: enable remote desktop when Guacamole is set up
+- [HyperV] Fix #48 (Create VM without External Network enabled)
+- [Mail cleaner] Option to disable SSL checking
 - Changes to speed up Hosted Org User MembersOf Tab
 
 Version 1.4.7
