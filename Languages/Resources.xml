@@ -28722,6 +28722,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>Automatic Replies via SolidCP</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeAddMailboxPlan.ascx.resx</File>
+    <Key>bntAddTag.Text</Key>
+    <DefaultValue>Add tag</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeAddMailboxPlan.ascx.resx</File>
+    <Key>secRetentionPolicyTags.Text</Key>
+    <DefaultValue>Retention policy tags</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCheckDomainName.ascx.resx</File>
     <Key>locTitle.Text</Key>
     <DefaultValue>Domain Dependencies</DefaultValue>
@@ -31179,7 +31189,7 @@ After creating your virtual directory go to FP administrator and create a subweb
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
     <Key>locTitle.Text</Key>
-    <DefaultValue>Mailbox plans</DefaultValue>
+    <DefaultValue>Retention policy tags</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
@@ -31200,6 +31210,31 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
     <Key>btnUpdatePolicy.Text</Key>
     <DefaultValue>Update</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
+    <Key>locAgeLimitForRetention.Text</Key>
+    <DefaultValue>Age limit for retention (Days):</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
+    <Key>locRetentionAction.Text</Key>
+    <DefaultValue>Retention action :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
+    <Key>locType.Text</Key>
+    <DefaultValue>Type :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
+    <Key>secPolicy.Text</Key>
+    <DefaultValue>Policy</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeRetentionPolicyTag.ascx.resx</File>
+    <Key>secPolicyFeatures.Text</Key>
+    <DefaultValue>Policy Tag Features</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeStorageUsage.ascx.resx</File>
@@ -38057,6 +38092,76 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
     <DefaultValue>VHD Disk Size (GB):</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>btnAddPsScript.Text</Key>
+    <DefaultValue>Add PS Script</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>btnRemovePsScript.Text</Key>
+    <DefaultValue>Remove</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locPsScript.Text</Key>
+    <DefaultValue>Custom PowerShell Scripts</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locRunAt.Text</Key>
+    <DefaultValue>Execute at:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locScript.Text</Key>
+    <DefaultValue>PS Script:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locVar.Text</Key>
+    <DefaultValue>The following variables are supported:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtAfterCreation.Text</Key>
+    <DefaultValue>After VM creation</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtAfterRenaming.Text</Key>
+    <DefaultValue>After VM renaming</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtBeforeDeletion.Text</Key>
+    <DefaultValue>Before VM deletion</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtBeforeRenaming.Text</Key>
+    <DefaultValue>Before VM renaming</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtDisabled.Text</Key>
+    <DefaultValue>Disabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtExtNetwork.Text</Key>
+    <DefaultValue>External network configuration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtMngNetwork.Text</Key>
+    <DefaultValue>Management network configuration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>liRunAtPrivNetwork.Text</Key>
+    <DefaultValue>Private network configuration</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx</File>
     <Key>chkVpsFolderIncludesUsername.Text</Key>
     <DefaultValue>User name</DefaultValue>
@@ -41200,6 +41305,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MailCleaner_Settings.ascx.resx</File>
     <Key>UseDefault.Text</Key>
     <DefaultValue>&lt;Located on the same server&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MailCleaner_Settings.ascx.resx</File>
+    <Key>chkIgnoreCheckSSL.Text</Key>
+    <DefaultValue>Disable SSL certificate checking</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\MailEnable_EditAccount.ascx.resx</File>
