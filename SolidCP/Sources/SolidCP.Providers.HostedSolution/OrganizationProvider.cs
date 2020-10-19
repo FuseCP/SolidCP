@@ -52,6 +52,7 @@ using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.OS;
 using System.Reflection;
 using System.Threading;
+using System.DirectoryServices.AccountManagement;
 
 namespace SolidCP.Providers.HostedSolution
 {
@@ -1734,6 +1735,54 @@ namespace SolidCP.Providers.HostedSolution
             string groupPath = GetGroupPath(organizationId, groupName);
 
             ActiveDirectoryUtils.RemoveObjectFromGroup(objectPath, groupPath);
+        }
+
+        public ExchangeAccount[] GetUserGroups(string userName, int organizationId)
+        {
+            return GetUserGroupsInternal(userName, organizationId);
+        }
+               
+        internal ExchangeAccount[] GetUserGroupsInternal(string userName, int organizationId)
+        {
+            HostedSolutionLog.LogStart("GetUserGroupsInternal");
+            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
+            HostedSolutionLog.DebugInfo("accountName : {0}", userName);
+
+            PrincipalSearchResult<Principal> principalgroups = null;
+            List<ExchangeAccount> ret = new List<ExchangeAccount>();
+
+            var ouPath = GetUserPath(organizationId.ToString(), userName);
+            
+
+            PrincipalContext ctx = new PrincipalContext(ContextType.Domain, RootDomain);
+
+            principalgroups = UserPrincipal.FindByIdentity(ctx, userName).GetGroups();
+            HostedSolutionLog.DebugInfo("Groups: {0}", principalgroups.ToString());
+
+            foreach (Principal principalgroup in principalgroups)
+            {
+                HostedSolutionLog.DebugInfo("Group Name: {0}", principalgroup.Name);
+                HostedSolutionLog.DebugInfo("path: {0}\n SamAccountName {1}\n Name: {2}\n UPN: {3}\n StructuralObjectClass: {4}\n Context: {5}\nContext: {6}\n DisplayName: {7}\n ContextType: {8}", principalgroup.DistinguishedName, principalgroup.SamAccountName, principalgroup.Name, principalgroup.UserPrincipalName, principalgroup.StructuralObjectClass, principalgroup.Context.ToString(), principalgroup.Context, principalgroup.DisplayName, principalgroup.ContextType.ToString());
+                string path = ActiveDirectoryUtils.AddADPrefix(principalgroup.DistinguishedName);
+                DirectoryEntry groupEntry = ActiveDirectoryUtils.GetADObject(path);
+
+                string tmpUserPrincipalName = ActiveDirectoryUtils.GetADObjectStringProperty(groupEntry, ADAttributes.UserPrincipalName);
+                string tmpExternalEmail = ActiveDirectoryUtils.GetADObjectStringProperty(groupEntry, ADAttributes.ExternalEmail);
+                HostedSolutionLog.DebugInfo("UserPrincipalName: {0}\n ExternalEmail: {1}", tmpUserPrincipalName, tmpExternalEmail);
+
+                ret.Add(new ExchangeAccount
+                {
+                    AccountName = principalgroup.SamAccountName,
+                    SamAccountName = principalgroup.SamAccountName,
+                    DisplayName = principalgroup.DisplayName ?? principalgroup.Name,
+                    PrimaryEmailAddress = tmpExternalEmail
+                    
+                });
+            }
+
+            HostedSolutionLog.LogEnd("GetUserGroupsInternal");
+
+            return ret.ToArray();
         }
 
         #endregion

@@ -7,11 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.HostedSolution {
-    
-    
-    public partial class UserMemberOf {
-        
+namespace SolidCP.Portal.HostedSolution
+{
+
+
+    public partial class UserMemberOf
+    {
+
+        /// <summary>
+        /// scriptManager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager scriptManager;
+
         /// <summary>
         /// asyncTasks control.
         /// </summary>
@@ -20,7 +31,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.EnableAsyncTasksSupport asyncTasks;
-        
+
         /// <summary>
         /// Image1 control.
         /// </summary>
@@ -29,7 +40,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image Image1;
-        
+
         /// <summary>
         /// locTitle control.
         /// </summary>
@@ -38,7 +49,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locTitle;
-        
+
         /// <summary>
         /// litDisplayName control.
         /// </summary>
@@ -47,7 +58,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litDisplayName;
-        
+
         /// <summary>
         /// UserTabsId control.
         /// </summary>
@@ -56,7 +67,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.UserTabs UserTabsId;
-        
+
         /// <summary>
         /// MailboxTabsId control.
         /// </summary>
@@ -65,7 +76,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.MailboxTabs MailboxTabsId;
-        
+
         /// <summary>
         /// messageBox control.
         /// </summary>
@@ -74,7 +85,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// secGroups control.
         /// </summary>
@@ -83,7 +94,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secGroups;
-        
+
         /// <summary>
         /// GroupsPanel control.
         /// </summary>
@@ -92,7 +103,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel GroupsPanel;
-        
+
         /// <summary>
         /// GeneralUpdatePanel control.
         /// </summary>
@@ -101,7 +112,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.UpdatePanel GeneralUpdatePanel;
-        
+
         /// <summary>
         /// groups control.
         /// </summary>
@@ -110,7 +121,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.AccountsList groups;
-        
+
         /// <summary>
         /// buttonPanel control.
         /// </summary>
@@ -119,7 +130,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ItemButtonPanel buttonPanel;
-        
+
         /// <summary>
         /// ValidationSummary1 control.
         /// </summary>

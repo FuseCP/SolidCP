@@ -171,7 +171,9 @@ namespace SolidCP.EnterpriseServer.HostedSolution {
         private System.Threading.SendOrPostCallback AddAdditionalGroupOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetSupportServiceLevelsOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback GetUserGroupsOperationCompleted;
+
         /// <remarks/>
         public esOrganizations() {
             this.Url = "http://127.0.0.1:9002/esOrganizations.asmx";
@@ -380,7 +382,10 @@ namespace SolidCP.EnterpriseServer.HostedSolution {
         
         /// <remarks/>
         public event GetSupportServiceLevelsCompletedEventHandler GetSupportServiceLevelsCompleted;
-        
+
+        /// <remarks/>
+        public event GetUserGroupsCompletedEventHandler GetUserGroupsCompleted;
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/UpdateSupportServiceLevel", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void UpdateSupportServiceLevel(int levelID, string levelName, string levelDescription) {
@@ -3720,6 +3725,58 @@ namespace SolidCP.EnterpriseServer.HostedSolution {
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetUserGroups", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ExchangeAccount[] GetUserGroups(int itemId, int accountId)
+        {
+            object[] results = this.Invoke("GetUserGroups", new object[] {
+                        itemId,
+                        accountId});
+            return ((ExchangeAccount[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetUserGroups(int itemId, int accountId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetUserGroups", new object[] {
+                        itemId,
+                        accountId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ExchangeAccount[] EndGetUserGroups(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ExchangeAccount[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetUserGroupsAsync(int itemId, int accountId)
+        {
+            this.GetUserGroupsAsync(itemId, accountId, null);
+        }
+
+        /// <remarks/>
+        public void GetUserGroupsAsync(int itemId, int accountId, object userState)
+        {
+            if ((this.GetUserGroupsOperationCompleted == null))
+            {
+                this.GetUserGroupsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetUserGroupsOperationCompleted);
+            }
+            this.InvokeAsync("GetUserGroups", new object[] {
+                        itemId,
+                        accountId}, this.GetUserGroupsOperationCompleted, userState);
+        }
+
+        private void OnGetUserGroupsOperationCompleted(object arg)
+        {
+            if ((this.GetUserGroupsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetUserGroupsCompleted(this, new GetUserGroupsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
     }
     
     /// <remarks/>
@@ -5266,6 +5323,36 @@ namespace SolidCP.EnterpriseServer.HostedSolution {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((ServiceLevel[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void GetUserGroupsCompletedEventHandler(object sender, GetUserGroupsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetUserGroupsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetUserGroupsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ExchangeAccount[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ExchangeAccount[])(this.results[0]));
             }
         }
     }
