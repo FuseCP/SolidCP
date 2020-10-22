@@ -116,7 +116,7 @@ namespace SolidCP.Portal.HostedSolution
                 if (EnableSecurityGroups)
                 {
                     //Security Groups
-                    ExchangeAccount[] securGroups = ES.Services.Organizations.GetSecurityGroupsByMember(PanelRequest.ItemID, PanelRequest.AccountID);
+                    ExchangeAccount[] securGroups = ES.Services.Organizations.GetUserGroups(PanelRequest.ItemID, PanelRequest.AccountID);
 
                     foreach (ExchangeAccount secGroup in securGroups)
                     {

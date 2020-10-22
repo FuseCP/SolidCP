@@ -289,5 +289,11 @@ namespace SolidCP.Server
         {
             Organization.SetOUAclPermissions(organizationId);
         }
+
+        [WebMethod, SoapHeader("settings")]
+        public ExchangeAccount[] GetUserGroups(string userName, int organizationId)
+        {
+            return Organization.GetUserGroups(userName, organizationId);
+        }
     }
 }

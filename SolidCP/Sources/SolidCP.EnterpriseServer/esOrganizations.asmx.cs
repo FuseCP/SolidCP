@@ -476,6 +476,12 @@ namespace SolidCP.EnterpriseServer
                 includeOnlySecurityGroups);
         }
 
+        [WebMethod]
+        public ExchangeAccount[] GetUserGroups(int itemId, int accountId)
+        {
+            return OrganizationController.GetUserGroups(itemId, accountId);
+        }
+
         #endregion
 
         #region Additional Default Groups

@@ -110,5 +110,7 @@ namespace SolidCP.Providers.HostedSolution
         OrganizationUser GetOrganizationUserWithExtraData(string loginName, string organizationId);
 
         void SetOUAclPermissions(string organizationId);
+
+        ExchangeAccount[] GetUserGroups(string userName, int ouPath);
     }
 }
