@@ -48,7 +48,7 @@
 
 
         <asp:Panel ID="AddAccountsPanel" runat="server" Style="display: none">
-            <div class="widget" style="min-width: 480px;">
+            <div class="widget">
                 <div class="widget-header clearfix">
                     <h3><i class="fa fa-user"></i>
                         <asp:Localize ID="headerAddAccounts" runat="server" meta:resourcekey="headerAddAccounts"></asp:Localize><h3 />
