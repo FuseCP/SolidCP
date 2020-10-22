@@ -195,7 +195,7 @@ namespace SolidCP.Portal.ExchangeServer
             SaveSettings();
 
             Response.Redirect(PortalUtils.EditUrl("ItemID", PanelRequest.ItemID.ToString(),
-                "mailboxes",
+                (PanelRequest.Context == "JournalingMailbox" ? "journaling_mailboxes" : "mailboxes"),
                 "SpaceID=" + PanelSecurity.PackageId));
         }
 

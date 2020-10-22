@@ -256,6 +256,24 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public string CreateJournalRule(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            return ExchangeServerController.CreateJournalRule(itemId, journalEmail, scope, recipientEmail, enabled);
+        }
+
+        [WebMethod]
+        public ExchangeJournalRule GetJournalRule(int itemId, string journalEmail)
+        {
+            return ExchangeServerController.GetJournalRule(itemId, journalEmail);
+        }
+
+        [WebMethod]
+        public int SetJournalRule(int itemId, ExchangeJournalRule rule)
+        {
+            return ExchangeServerController.SetJournalRule(itemId, rule);
+        }
+
+        [WebMethod]
         public int DeleteMailbox(int itemId, int accountId)
         {
             return ExchangeServerController.DeleteMailbox(itemId, accountId);

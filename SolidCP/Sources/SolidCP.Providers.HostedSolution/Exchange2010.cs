@@ -86,6 +86,145 @@ namespace SolidCP.Providers.HostedSolution
             ExchangeLog.LogEnd("SetCalendarSettings");
         }
 
+        internal override string CreateJournalRuleInternal(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            ExchangeLog.LogStart("CreateJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", journalEmail);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("New-JournalRule");
+                cmd.Parameters.Add("Name", GetJournalRuleName(journalEmail));
+                cmd.Parameters.Add("JournalEmailAddress", journalEmail);
+                cmd.Parameters.Add("Scope", scope);
+                cmd.Parameters.Add("Recipient", recipientEmail);
+                cmd.Parameters.Add("Enabled", enabled);
+                Collection<PSObject> result = ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("CreateJournalRule");
+                if (result.Count == 0) return null;
+                return ObjToString(GetPSObjectProperty(result[0], "Name"));
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("CreateJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        internal override ExchangeJournalRule GetJournalRuleInternal(string journalEmail)
+        {
+            ExchangeJournalRule ret = new ExchangeJournalRule();
+
+            ExchangeLog.LogStart("GetJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", journalEmail);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("Get-JournalRule");
+                cmd.Parameters.Add("Identity", GetJournalRuleName(journalEmail));
+                Collection<PSObject> result = ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("GetJournalRule");
+                if (result.Count == 0) return null;
+                ret.Name = ObjToString(GetPSObjectProperty(result[0], "Name"));
+                ret.JournalEmailAddress = ObjToString(GetPSObjectProperty(result[0], "JournalEmailAddress"));
+                ret.Recipient = ObjToString(GetPSObjectProperty(result[0], "Recipient"));
+                ret.Scope = ObjToString(GetPSObjectProperty(result[0], "Scope"));
+                ret.Enabled = ObjToBoolean(GetPSObjectProperty(result[0], "Enabled"));
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("GetJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        internal override void SetJournalRuleInternal(ExchangeJournalRule rule)
+        {
+            ExchangeLog.LogStart("SetJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", rule.JournalEmailAddress);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd;
+                if (rule.Enabled)
+                {
+                    cmd = new Command("Enable-JournalRule");
+                    cmd.Parameters.Add("Identity", rule.Name);
+                    ExecuteShellCommand(runSpace, cmd);
+                }
+                else
+                {
+                    cmd = new Command("Disable-JournalRule");
+                    cmd.Parameters.Add("Identity", rule.Name);
+                    ExecuteShellCommand(runSpace, cmd);
+                }
+                cmd = new Command("Set-JournalRule");
+                cmd.Parameters.Add("Identity", rule.Name);
+                cmd.Parameters.Add("Scope", rule.Scope);
+                cmd.Parameters.Add("Recipient", rule.Recipient);
+                ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("SetJournalRule");
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("SetJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        internal override void RemoveJournalRuleInternal(string journalEmail)
+        {
+            ExchangeLog.LogStart("RemoveJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", journalEmail);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("Remove-JournalRule");
+                cmd.Parameters.Add("Identity", GetJournalRuleName(journalEmail));
+                ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("RemoveJournalRule");
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("RemoveJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        private string GetJournalRuleName(string journalEmail)
+        {
+            return "Journal " + journalEmail;
+        }
+
         internal override ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettingsInternal(string accountName)
         {
             ExchangeLog.LogStart("GetMailboxAutoReplySettingsInternal");

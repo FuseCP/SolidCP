@@ -219,9 +219,9 @@ namespace SolidCP.EnterpriseServer
                     stats.UsedDiskSpace = tempStats.UsedDiskSpace;
                     stats.UsedLitigationHoldSpace = tempStats.UsedLitigationHoldSpace;
                     stats.UsedArchingStorage = tempStats.UsedArchingStorage;
-
+                    stats.CreatedJournalingMailboxes = tempStats.CreatedJournalingMailboxes;
                     stats.CreatedSharedMailboxes = tempStats.CreatedSharedMailboxes;
-                    stats.CreatedResourceMailboxes = tempStats.CreatedResourceMailboxes;        
+                    stats.CreatedResourceMailboxes = tempStats.CreatedResourceMailboxes;
                 }
                 else
                 {
@@ -253,7 +253,7 @@ namespace SolidCP.EnterpriseServer
                                     stats.UsedDiskSpace += tempStats.UsedDiskSpace;
                                     stats.UsedLitigationHoldSpace += tempStats.UsedLitigationHoldSpace;
                                     stats.UsedArchingStorage += tempStats.UsedArchingStorage;
-
+                                    stats.CreatedJournalingMailboxes += tempStats.CreatedJournalingMailboxes;
                                     stats.CreatedSharedMailboxes += tempStats.CreatedSharedMailboxes;
                                     stats.CreatedResourceMailboxes += tempStats.CreatedResourceMailboxes;
                                 }
@@ -277,7 +277,7 @@ namespace SolidCP.EnterpriseServer
                     stats.AllocatedDiskSpace = cntx.Quotas[Quotas.EXCHANGE2007_DISKSPACE].QuotaAllocatedValuePerOrganization;
                     stats.AllocatedLitigationHoldSpace = cntx.Quotas[Quotas.EXCHANGE2007_RECOVERABLEITEMSSPACE].QuotaAllocatedValuePerOrganization;
                     stats.AllocatedArchingStorage = cntx.Quotas[Quotas.EXCHANGE2013_ARCHIVINGSTORAGE].QuotaAllocatedValuePerOrganization;
-
+                    stats.AllocatedJournalingMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_JOURNALINGMAILBOXES].QuotaAllocatedValuePerOrganization;
                     stats.AllocatedSharedMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_SHAREDMAILBOXES].QuotaAllocatedValuePerOrganization;
                     stats.AllocatedResourceMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_RESOURCEMAILBOXES].QuotaAllocatedValuePerOrganization;
                 }
@@ -290,7 +290,7 @@ namespace SolidCP.EnterpriseServer
                     stats.AllocatedDiskSpace = cntx.Quotas[Quotas.EXCHANGE2007_DISKSPACE].QuotaAllocatedValue;
                     stats.AllocatedLitigationHoldSpace = cntx.Quotas[Quotas.EXCHANGE2007_RECOVERABLEITEMSSPACE].QuotaAllocatedValue;
                     stats.AllocatedArchingStorage = cntx.Quotas[Quotas.EXCHANGE2013_ARCHIVINGSTORAGE].QuotaAllocatedValue;
-
+                    stats.AllocatedJournalingMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_JOURNALINGMAILBOXES].QuotaAllocatedValue;
                     stats.AllocatedSharedMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_SHAREDMAILBOXES].QuotaAllocatedValue;
                     stats.AllocatedResourceMailboxes = cntx.Quotas[Quotas.EXCHANGE2013_RESOURCEMAILBOXES].QuotaAllocatedValue;
                 }
@@ -672,6 +672,10 @@ namespace SolidCP.EnterpriseServer
                     DeletePublicFolder(itemId, folder.AccountId);
 
                 exchange.DeletePublicFolder(org.OrganizationId, "\\" + org.OrganizationId);
+
+                // delete journaling rules
+                List<ExchangeAccount> journalingMailboxes = GetAccounts(itemId, ExchangeAccountType.JournalingMailbox);
+                foreach (ExchangeAccount item in journalingMailboxes) exchange.RemoveJournalRule(item.PrimaryEmailAddress);
 
                 bool successful = exchange.DeleteOrganization(
                     org.OrganizationId,
@@ -1883,6 +1887,99 @@ namespace SolidCP.EnterpriseServer
                 (string.IsNullOrEmpty(subscriberNumber) ? null : subscriberNumber.Trim()), EnableArchiving);
         }
 
+        public static string CreateJournalRule(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0) return null;
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "CREATE_JOURNAL_RULE", journalEmail, itemId);
+
+            // Log Extension
+            LogExtension.WriteVariables(new { journalEmail, scope, recipientEmail });
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null) return null;
+
+                int exchangeServiceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.Exchange);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+
+                return exchange.CreateJournalRule(journalEmail, scope, recipientEmail, enabled);
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        public static ExchangeJournalRule GetJournalRule(int itemId, string journalEmail)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0) return null;
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "GET_JOURNAL_RULE", journalEmail, itemId);
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null) return null;
+
+                int exchangeServiceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.Exchange);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+
+                return exchange.GetJournalRule(journalEmail);
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        public static int SetJournalRule(int itemId, ExchangeJournalRule rule)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0) return -1;
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "SET_JOURNAL_RULE", rule.JournalEmailAddress, itemId);
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null) return -1;
+
+                int exchangeServiceId = PackageController.GetPackageServiceId(org.PackageId, ResourceGroups.Exchange);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+
+                exchange.SetJournalRule(rule);
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
 
         public static int CreateMailbox(int itemId, int accountId, ExchangeAccountType accountType, string accountName,
             string displayName, string name, string domain, string password, bool sendSetupInstructions, string setupInstructionMailAddress, int mailboxPlanId, int archivedPlanId, string subscriberNumber, bool EnableArchiving)
@@ -1902,6 +1999,11 @@ namespace SolidCP.EnterpriseServer
             {
                 if ((orgStats.AllocatedResourceMailboxes > -1) && (orgStats.CreatedResourceMailboxes >= orgStats.AllocatedResourceMailboxes))
                     return BusinessErrorCodes.ERROR_EXCHANGE_MAILBOXES_QUOTA_LIMIT;
+            }
+            else if (accountType == ExchangeAccountType.JournalingMailbox)
+            {
+                if ((orgStats.AllocatedJournalingMailboxes > -1) && (orgStats.CreatedJournalingMailboxes >= orgStats.AllocatedJournalingMailboxes))
+                    return BusinessErrorCodes.ERROR_EXCHANGE_JOURNALING_MAILBOXES_QUOTA_LIMIT;
             }
             else
             {
@@ -1933,7 +2035,7 @@ namespace SolidCP.EnterpriseServer
 
                 // e-mail
                 string email = name + "@" + domain;
-                bool enabled = (accountType == ExchangeAccountType.Mailbox);
+                bool enabled = (accountType == ExchangeAccountType.Mailbox || accountType == ExchangeAccountType.JournalingMailbox);
 
 
                 //  string accountName = string.Empty;
@@ -2170,6 +2272,8 @@ namespace SolidCP.EnterpriseServer
                 ExchangeServer exchange = GetExchangeServer(serviceExchangeId, org.ServiceId);
                 exchange.DisableMailbox(account.UserPrincipalName);
 
+                if (account.AccountType == ExchangeAccountType.JournalingMailbox) exchange.RemoveJournalRule(account.PrimaryEmailAddress);
+
                 account.AccountType = ExchangeAccountType.User;
                 account.MailEnabledPublicFolder = false;
                 UpdateAccount(account);
@@ -2256,6 +2360,8 @@ namespace SolidCP.EnterpriseServer
                 ExchangeServer exchange = GetExchangeServer(serviceExchangeId, org.ServiceId);
                 exchange.DisableMailbox(account.UserPrincipalName);
 
+                if (account.AccountType == ExchangeAccountType.JournalingMailbox) exchange.RemoveJournalRule(account.PrimaryEmailAddress);
+
                 return 0;
             }
             catch (Exception ex)
@@ -2299,6 +2405,9 @@ namespace SolidCP.EnterpriseServer
                 // delete mailbox
                 int serviceExchangeId = GetExchangeServiceID(org.PackageId);
                 ExchangeServer exchange = GetExchangeServer(serviceExchangeId, org.ServiceId);
+
+                if (account.AccountType == ExchangeAccountType.JournalingMailbox) exchange.RemoveJournalRule(account.PrimaryEmailAddress);
+
                 exchange.DeleteMailbox(account.UserPrincipalName);
 
 
@@ -3515,7 +3624,7 @@ namespace SolidCP.EnterpriseServer
                                                         mailboxPlan.MaxSendMessageSizeKB, mailboxPlan.ProhibitSendPct, mailboxPlan.ProhibitSendReceivePct, mailboxPlan.HideFromAddressBook, mailboxPlan.MailboxPlanType,
                                                         mailboxPlan.AllowLitigationHold, mailboxPlan.RecoverableItemsSpace, mailboxPlan.RecoverableItemsWarningPct,
                                                         mailboxPlan.LitigationHoldUrl, mailboxPlan.LitigationHoldMsg, mailboxPlan.Archiving, mailboxPlan.EnableArchiving,
-                                                        mailboxPlan.ArchiveSizeMB, mailboxPlan.ArchiveWarningPct, mailboxPlan.EnableForceArchiveDeletion);
+                                                        mailboxPlan.ArchiveSizeMB, mailboxPlan.ArchiveWarningPct, mailboxPlan.EnableForceArchiveDeletion, mailboxPlan.IsForJournaling);
             }
             catch (Exception ex)
             {
@@ -3599,7 +3708,7 @@ namespace SolidCP.EnterpriseServer
                                                         mailboxPlan.MaxSendMessageSizeKB, mailboxPlan.ProhibitSendPct, mailboxPlan.ProhibitSendReceivePct, mailboxPlan.HideFromAddressBook, mailboxPlan.MailboxPlanType,
                                                         mailboxPlan.AllowLitigationHold, mailboxPlan.RecoverableItemsSpace, mailboxPlan.RecoverableItemsWarningPct,
                                                         mailboxPlan.LitigationHoldUrl, mailboxPlan.LitigationHoldMsg, mailboxPlan.Archiving, mailboxPlan.EnableArchiving,
-                                                        mailboxPlan.ArchiveSizeMB, mailboxPlan.ArchiveWarningPct, mailboxPlan.EnableForceArchiveDeletion);
+                                                        mailboxPlan.ArchiveSizeMB, mailboxPlan.ArchiveWarningPct, mailboxPlan.EnableForceArchiveDeletion, mailboxPlan.IsForJournaling);
 
                 // Log Extension
                 LogExtension.LogPropertiesIfChanged(oldMailboxPlan, mailboxPlan);

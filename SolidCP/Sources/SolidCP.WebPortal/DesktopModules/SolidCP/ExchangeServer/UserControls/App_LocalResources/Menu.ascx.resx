@@ -162,6 +162,9 @@
   <data name="Text.PublicFolders" xml:space="preserve">
     <value>Public Folders</value>
   </data>
+  <data name="Text.JournalingMailboxes" xml:space="preserve">
+    <value>Journaling Mailboxes</value>
+  </data>
   <data name="Text.Setup" xml:space="preserve">
     <value>Setup</value>
   </data>

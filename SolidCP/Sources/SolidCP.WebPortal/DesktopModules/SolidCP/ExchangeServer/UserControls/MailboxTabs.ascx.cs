@@ -71,17 +71,24 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 
             List<Tab> tabsList = new List<Tab>();
             tabsList.Add(CreateTab("edit_user", "Tab.General"));
-            tabsList.Add(CreateTab("mailbox_settings", "Tab.Settings"));
-            if (!hideItems) tabsList.Add(CreateTab("mailbox_addresses", "Tab.Addresses"));
-            if (!hideItems) tabsList.Add(CreateTab("mailbox_mailflow", "Tab.Mailflow"));
-            if (!hideItems) tabsList.Add(CreateTab("mailbox_permissions", "Tab.Permissions"));
-            if (plan != null && plan.EnableAutoReply) tabsList.Add(CreateTab("mailbox_autoreply", "Tab.AutoReply"));
+            if (PanelRequest.Context == "JournalingMailbox")
+            {
+                tabsList.Add(CreateTab("journaling_mailbox_settings", "Tab.Settings"));
+            }
+            else
+            {
+                tabsList.Add(CreateTab("mailbox_settings", "Tab.Settings"));
+            }
+            if (!hideItems && PanelRequest.Context == "Mailbox") tabsList.Add(CreateTab("mailbox_addresses", "Tab.Addresses"));
+            if (!hideItems && PanelRequest.Context == "Mailbox") tabsList.Add(CreateTab("mailbox_mailflow", "Tab.Mailflow"));
+            if (!hideItems && PanelRequest.Context == "Mailbox") tabsList.Add(CreateTab("mailbox_permissions", "Tab.Permissions"));
+            if (plan != null && plan.EnableAutoReply && PanelRequest.Context == "Mailbox") tabsList.Add(CreateTab("mailbox_autoreply", "Tab.AutoReply"));
 
             string instructions = ES.Services.ExchangeServer.GetMailboxSetupInstructions(PanelRequest.ItemID, PanelRequest.AccountID, false, false, false, " ");
-            if (!string.IsNullOrEmpty(instructions))
+            if (!string.IsNullOrEmpty(instructions) && PanelRequest.Context == "Mailbox")
                 tabsList.Add(CreateTab("mailbox_setup", "Tab.Setup"));
 
-            if (!hideItems) tabsList.Add(CreateTab("mailbox_mobile", "Tab.Mobile"));
+            if (!hideItems && PanelRequest.Context == "Mailbox") tabsList.Add(CreateTab("mailbox_mobile", "Tab.Mobile"));
             //tabsList.Add(CreateTab("mailbddox_spam", "Tab.Spam"));
 
             if (Utils.CheckQouta(Quotas.EXCHANGE2007_DISTRIBUTIONLISTS, cntx))
@@ -107,7 +114,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
                 HostModule.EditUrl("AccountID", PanelRequest.AccountID.ToString(), id,
                 "SpaceID=" + PanelSecurity.PackageId.ToString(),
                 "ItemID=" + PanelRequest.ItemID.ToString(),
-                "Context=Mailbox"));
+                "Context=" + PanelRequest.Context));
         }
 
 

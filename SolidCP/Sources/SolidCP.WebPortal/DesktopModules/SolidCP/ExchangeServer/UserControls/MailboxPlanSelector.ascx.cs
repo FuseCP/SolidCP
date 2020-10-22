@@ -58,12 +58,12 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             get {
                 if (ddlMailboxPlan.SelectedItem != null)
                     return ddlMailboxPlan.SelectedItem.Value;
-                return mailboxPlanToSelect; 
+                return mailboxPlanToSelect;
             }
-            set 
-            { 
-                mailboxPlanToSelect = value; 
-                UpdateMailboxPlanSelected(); 
+            set
+            {
+                mailboxPlanToSelect = value;
+                UpdateMailboxPlanSelected();
             }
         }
 
@@ -89,6 +89,32 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             set { archiving = value; }
         }
 
+        private bool isForJournaling = false;
+        public bool IsForJournaling
+        {
+            get { return isForJournaling; }
+            set { isForJournaling = value; }
+        }
+
+        public string ValidationGroup
+        {
+            get
+            {
+                return valMailboxPlan.ValidationGroup;
+            }
+            set
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    valMailboxPlan.Enabled = false;
+                }
+                else
+                {
+                    valMailboxPlan.Enabled = true;
+                    valMailboxPlan.ValidationGroup = value;
+                }
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -119,6 +145,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
 
             foreach (SolidCP.Providers.HostedSolution.ExchangeMailboxPlan plan in plans)
             {
+                if (!archiving && plan.IsForJournaling != isForJournaling) continue;
                 ListItem li = new ListItem();
                 li.Text = plan.MailboxPlan;
                 li.Value = plan.MailboxPlanId.ToString();

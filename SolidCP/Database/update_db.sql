@@ -4359,6 +4359,14 @@ ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
 END
 GO
 
+-- Exchange2013 Journaling
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='ExchangeMailboxPlans' AND COLS.name='IsForJournaling')
+BEGIN
+ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
+[IsForJournaling] [bit] NULL
+END
+GO
+
 
 ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan] 
 (
@@ -7164,6 +7172,14 @@ VALUES (729, 12, 32, N'Exchange2013.AutoReply', N'Automatic Replies via SolidCP 
 END
 GO
 
+-- Exchange2013 Journaling mailboxes
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2013.JournalingMailboxes')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota])
+	VALUES (731, 12, 31, N'Exchange2013.JournalingMailboxes', N'Journaling Mailboxes per Organization', 2, 0, NULL, NULL)
+END
+GO
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -8981,7 +8997,8 @@ ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan]
 	@EnableArchiving bit,
 	@ArchiveSizeMB int,
 	@ArchiveWarningPct int,
-	@EnableForceArchiveDeletion bit
+	@EnableForceArchiveDeletion bit,
+	@IsForJournaling bit
 )
 AS
 
@@ -9027,7 +9044,8 @@ INSERT INTO ExchangeMailboxPlans
 	EnableArchiving,
 	ArchiveSizeMB,
 	ArchiveWarningPct,
-	EnableForceArchiveDeletion
+	EnableForceArchiveDeletion,
+	IsForJournaling
 )
 VALUES
 (
@@ -9059,7 +9077,8 @@ VALUES
 	@EnableArchiving,
 	@ArchiveSizeMB,
 	@ArchiveWarningPct,
-	@EnableForceArchiveDeletion
+	@EnableForceArchiveDeletion,
+	@IsForJournaling
 )
 
 SET @MailboxPlanId = SCOPE_IDENTITY()
@@ -9097,7 +9116,8 @@ ALTER PROCEDURE [dbo].[UpdateExchangeMailboxPlan]
 	@EnableArchiving bit,
 	@ArchiveSizeMB int,
 	@ArchiveWarningPct int,
-	@EnableForceArchiveDeletion bit
+	@EnableForceArchiveDeletion bit,
+	@IsForJournaling bit
 )
 AS
 
@@ -9129,7 +9149,8 @@ UPDATE ExchangeMailboxPlans SET
 	EnableArchiving = @EnableArchiving,
 	ArchiveSizeMB = @ArchiveSizeMB,
 	ArchiveWarningPct = @ArchiveWarningPct,
-	EnableForceArchiveDeletion = @EnableForceArchiveDeletion
+	EnableForceArchiveDeletion = @EnableForceArchiveDeletion,
+	IsForJournaling = @IsForJournaling
 WHERE MailboxPlanId = @MailboxPlanId
 
 RETURN
@@ -9170,7 +9191,8 @@ SELECT
 	EnableArchiving,
 	ArchiveSizeMB,
 	ArchiveWarningPct,
-	EnableForceArchiveDeletion
+	EnableForceArchiveDeletion,
+	IsForJournaling
 FROM
 	ExchangeMailboxPlans
 WHERE
@@ -9209,7 +9231,8 @@ SELECT
 	EnableArchiving,
 	ArchiveSizeMB,
 	ArchiveWarningPct,
-	EnableForceArchiveDeletion
+	EnableForceArchiveDeletion,
+	IsForJournaling
 FROM
 	ExchangeMailboxPlans
 WHERE
@@ -15585,7 +15608,7 @@ LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.Mail
 WHERE
 	E.ItemID = @ItemID AND
 	E.MailboxPlanId IS NULL AND
-	E.AccountType IN (1,5,6,10) 
+	E.AccountType IN (1,5,6,10,12) 
 RETURN
 
 END
@@ -15615,7 +15638,7 @@ LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
 LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
 WHERE
 	E.MailboxPlanId = @MailboxPlanId AND
-	E.AccountType IN (1,5,6,10) 
+	E.AccountType IN (1,5,6,10,12) 
 END
 ELSE
 BEGIN
@@ -15643,7 +15666,7 @@ LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.Mail
 WHERE
 	E.ItemID = @ItemID AND
 	E.MailboxPlanId = @MailboxPlanId AND
-	E.AccountType IN (1,5,6,10) 
+	E.AccountType IN (1,5,6,10,12) 
 RETURN
 END
 Go
@@ -15671,6 +15694,7 @@ WHERE QuotaName in (
 	'Exchange2013.ArchivingMailboxes',
 	'Exchange2013.ResourceMailboxes',
 	'Exchange2013.SharedMailboxes',
+	'Exchange2013.JournalingMailboxes',
 	'HostedSolution.DeletedUsers',
 	'HostedSolution.DeletedUsersBackupStorageSpace',
 	
@@ -16538,6 +16562,7 @@ SELECT
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 2 AND ItemID = @ItemID) AS CreatedContacts,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 3 AND ItemID = @ItemID) AS CreatedDistributionLists,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
 	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
 	(SELECT MIN(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10)) AS UsedDiskSpace,
 	(SELECT MIN(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
@@ -16552,6 +16577,7 @@ SELECT
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 2 AND ItemID = @ItemID) AS CreatedContacts,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 3 AND ItemID = @ItemID) AS CreatedDistributionLists,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
 	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
 	(SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10)) AS UsedDiskSpace,
 	(SELECT SUM(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,

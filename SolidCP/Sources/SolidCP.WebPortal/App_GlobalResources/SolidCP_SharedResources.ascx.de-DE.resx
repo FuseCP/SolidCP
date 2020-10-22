@@ -3414,6 +3414,9 @@
   <data name="Error.EXCHANGE_CREATE_MAILBOX" xml:space="preserve">
     <value>Fehler beim Erstellen des Postfaches. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
+  <data name="Error.EXCHANGE_CREATE_JOURNALING_MAILBOX" xml:space="preserve">
+    <value>Fehler beim Erstellen des Journal-Postfaches. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
+  </data>
   <data name="Error.HOSTED_SHAREPOINT_RECALCULATE_SIZE" xml:space="preserve">
     <value>Fehler beim Neuberechnen der Festplattengröße. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
@@ -3434,6 +3437,9 @@
   </data>
   <data name="Error.EXCHANGE_DELETE_MAILBOX" xml:space="preserve">
     <value>Fehler beim Löschen des Postfachs. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
+  </data>
+  <data name="Error.EXCHANGE_DELETE_JOURNALING_MAILBOX" xml:space="preserve">
+    <value>Fehler beim Löschen des Journal-Postfachs. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
   <data name="Error.EXCHANGE_DELETE_MAILBOXPLAN" xml:space="preserve">
     <value>Postfach-Plan konnte nicht gelöscht werden. Stellen Sie sicher, dass es keinem Postfach zugeordnet ist.</value>
@@ -3507,6 +3513,9 @@
   <data name="Error.EXCHANGE_GET_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Fehler beim Lesen der allgemeinen Postfacheinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
+  <data name="Error.EXCHANGE_GET_JOURNALING_MAILBOX_SETTINGS" xml:space="preserve">
+    <value>Fehler beim Lesen der allgemeinen Journal-Postfacheinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
+  </data>
   <data name="Error.ORGANIZATION_GET_USER_SETTINGS" xml:space="preserve">
     <value>Fehler beim Lesen der allgemeinen Benutzereinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
@@ -3564,6 +3573,9 @@
   <data name="Error.EXCHANGE_UPDATE_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Fehler beim Aktualisieren der allgemeinen Postfacheinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
+  <data name="Error.EXCHANGE_UPDATE_JOURNALING_MAILBOX_SETTINGS" xml:space="preserve">
+    <value>Fehler beim Aktualisieren der allgemeinen Journal-Postfacheinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
+  </data>
   <data name="Error.ORGANIZATION_UPDATE_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Fehler beim Aktualisieren der allgemeinen Benutzereinstellungen. Überprüfen Sie das Auditprotokoll für weitere Details.</value>
   </data>
@@ -3581,6 +3593,9 @@
   </data>
   <data name="Error.EXCHANGE_GET_MAILBOXES" xml:space="preserve">
     <value>Fehler beim Lesen der Postfächer der Organisation</value>
+  </data>
+  <data name="Error.EXCHANGE_GET_JOURNALING_MAILBOXES" xml:space="preserve">
+    <value>Fehler beim Lesen der Journal-Postfächer der Organisation</value>
   </data>
   <data name="Error.EXCHANGE_GET_CONTACTS" xml:space="preserve">
     <value>Fehler beim Lesen der Kontakte der Organisation</value>
@@ -3608,6 +3623,9 @@
   </data>
   <data name="Success.EXCHANGE_UPDATE_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Allgemeine Postfacheinstellungen wurden erfolgreich aktualisiert.</value>
+  </data>
+  <data name="Success.EXCHANGE_UPDATE_JOURNALING_MAILBOX_SETTINGS" xml:space="preserve">
+    <value>Allgemeine Journal-Postfacheinstellungen wurden erfolgreich aktualisiert.</value>
   </data>
   <data name="Success.ORGANIZATION_UPDATE_USER_SETTINGS" xml:space="preserve">
     <value>Allgemeine Benutzereinstellungen wurden erfolgreich aktualisiert.</value>
@@ -3707,6 +3725,9 @@
   </data>
   <data name="Warning.2613" xml:space="preserve">
     <value>Ungültiges Kontingent für Wiederherstellungsobjekte angegeben, sollte größer oder gleich 6144 MB sein</value>
+  </data>
+  <data name="Warning.2614" xml:space="preserve">
+    <value>Kontingent an Exchange-Journal-Postfächern wurde verbraucht</value>
   </data>
   <data name="AuditLogTask.EXCHANGE_CALCULATE_DISKSPACE" xml:space="preserve">
     <value>Organisations-Festplattenspeicher berechnen</value>
@@ -6560,6 +6581,9 @@
   </data>
   <data name="Quota.Exchange2013.ResourceMailboxes" xml:space="preserve">
     <value>Ressourcen-Postfächer pro Organisation</value>
+  </data>
+  <data name="Quota.Exchange2013.JournalingMailboxes" xml:space="preserve">
+    <value>Journal-Postfächer pro Organisation</value>
   </data>
   <data name="Quota.Exchange2013.SharedMailboxes" xml:space="preserve">
     <value>Geteilte Postfächer pro Organisation</value>

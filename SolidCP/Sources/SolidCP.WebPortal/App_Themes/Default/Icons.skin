@@ -42,6 +42,7 @@ Default skin template. The following skins are provided as examples only.
 <%--  Exchange Icons --%>
 <asp:Image SkinID="ExchangeMailbox48" runat="server" ImageUrl="Icons/exchange_mailboxes_48.png" ImageAlign="AbsMiddle" Width="48" Height="48"></asp:Image>
 <asp:Image SkinID="ExchangeMailboxAdd48" runat="server" ImageUrl="Icons/exchange_mailboxes_48.png" ImageAlign="AbsMiddle" Width="48" Height="48"></asp:Image>
+<asp:Image SkinID="ExchangeJournalingMailbox48" runat="server" ImageUrl="Icons/exchange_journaling_mailboxes_48.png" ImageAlign="AbsMiddle" Width="48" Height="48"></asp:Image>
 <asp:Image SkinID="ExchangeContact48" runat="server" ImageUrl="Icons/exchange_contacts_48.png" ImageAlign="AbsMiddle" Width="48" Height="48"></asp:Image>
 <asp:Image SkinID="ExchangeContactAdd48" runat="server" ImageUrl="Icons/exchange_contacts_48.png" ImageAlign="AbsMiddle" Width="48" Height="48"></asp:Image>
 <asp:Image SkinID="ExchangePublicFolder48" runat="server" ImageUrl="Icons/exchange_public_folders_48.png" ImageAlign="AbsMiddle" Width="48" Height="48"></asp:Image>

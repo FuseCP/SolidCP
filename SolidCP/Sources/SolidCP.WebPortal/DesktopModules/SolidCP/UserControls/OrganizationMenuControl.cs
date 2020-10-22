@@ -118,9 +118,29 @@ namespace SolidCP.Portal.UserControls
                     {
                         ctl = "organization_settings_password_settings";
                     }
-                    else if (ctl.Equals("create_mailbox", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_settings", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_addresses", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mailflow", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_permissions", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_setup", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mobile", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_memberof", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_autoreply", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("archivingmailboxes", StringComparison.CurrentCultureIgnoreCase))
+                    else if (ctl.Equals("create_mailbox", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_settings", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_addresses", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mailflow", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_permissions", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_setup", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_mobile", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("mailbox_autoreply", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("archivingmailboxes", StringComparison.CurrentCultureIgnoreCase))
                     {
                         ctl = "mailboxes";
+                    }
+                    else if (ctl.Equals("create_journaling_mailbox", StringComparison.CurrentCultureIgnoreCase) || ctl.Equals("journaling_mailbox_settings", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        ctl = "journaling_mailboxes";
+                    }
+                    else if (ctl.Equals("mailbox_memberof", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        if (Request.QueryString.Get("Context") != null)
+                        {
+                            string Context = Request.QueryString.Get("Context").ToString();
+                            if (Context.Equals("JournalingMailbox", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                ctl = "journaling_mailboxes";
+                            }
+                            else
+                            {
+                                ctl = "mailboxes";
+                            }
+                        }
+                        else ctl = "mailboxes";
                     }
                     else if (ctl.Equals("edit_user", StringComparison.CurrentCultureIgnoreCase))
                     {
@@ -130,8 +150,14 @@ namespace SolidCP.Portal.UserControls
                             if (Context.Equals("Mailbox", StringComparison.CurrentCultureIgnoreCase))
                             {
                                 ctl = "mailboxes";
-                            } else {
-                              ctl = "users";
+                            }
+                            else if (Context.Equals("JournalingMailbox", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                ctl = "journaling_mailboxes";
+                            }
+                            else
+                            {
+                                ctl = "users";
                             }
                         }
                     }
@@ -378,6 +404,9 @@ namespace SolidCP.Portal.UserControls
 
             if (Utils.CheckQouta(Quotas.EXCHANGE2007_PUBLICFOLDERS, Cntx))
                 exchangeItems.Add(CreateMenuItem("PublicFolders", "public_folders", @"Icons/exchange_public_folders_48.png"));
+
+            if (Utils.CheckQouta(Quotas.EXCHANGE2013_JOURNALINGMAILBOXES, Cntx))
+                exchangeItems.Add(CreateMenuItem("JournalingMailboxes", "journaling_mailboxes", @"Icons/exchange_journaling_mailboxes_48.png"));
 
             if (!hideItems)
                 if (Utils.CheckQouta(Quotas.EXCHANGE2007_ACTIVESYNCALLOWED, Cntx))

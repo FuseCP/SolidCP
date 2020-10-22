@@ -1941,6 +1941,47 @@ namespace SolidCP.Providers.HostedSolution
             return temp.ToArray();
         }
 
+        public string CreateJournalRule(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            return CreateJournalRuleInternal(journalEmail, scope, recipientEmail, enabled);
+        }
+
+        internal virtual string CreateJournalRuleInternal(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            // not implemented
+            return null;
+        }
+
+        public ExchangeJournalRule GetJournalRule(string journalEmail)
+        {
+            return GetJournalRuleInternal(journalEmail);
+        }
+
+        internal virtual ExchangeJournalRule GetJournalRuleInternal(string journalEmail)
+        {
+            // not implemented
+            return null;
+        }
+
+        public void SetJournalRule(ExchangeJournalRule rule)
+        {
+            SetJournalRuleInternal(rule);
+        }
+
+        internal virtual void SetJournalRuleInternal(ExchangeJournalRule rule)
+        {
+            // not implemented
+        }
+
+        public void RemoveJournalRule(string journalEmail)
+        {
+            RemoveJournalRuleInternal(journalEmail);
+        }
+
+        internal virtual void RemoveJournalRuleInternal(string journalEmail)
+        {
+            // not implemented
+        }
 
         public string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName,
             string securityGroup, string organizationDomain,
@@ -2085,6 +2126,18 @@ namespace SolidCP.Providers.HostedSolution
                 if (accountType == ExchangeAccountType.Equipment || accountType == ExchangeAccountType.Room)
                 {
                     SetCalendarSettings(runSpace, id);
+                }
+
+                if (accountType == ExchangeAccountType.JournalingMailbox)
+                {
+                    cmd = new Command("Get-OrganizationConfig");
+                    result = ExecuteShellCommand(runSpace, cmd);
+                    string exchangeSmtpAddress = ObjToString(GetPSObjectProperty(result[0], "MicrosoftExchangeRecipientPrimarySmtpAddress"));
+                    cmd = new Command("Set-Mailbox");
+                    cmd.Parameters.Add("Identity", id);
+                    cmd.Parameters.Add("AcceptMessagesOnlyFromSendersOrMembers", exchangeSmtpAddress);
+                    cmd.Parameters.Add("RequireSenderAuthenticationEnabled", true);
+                    ExecuteShellCommand(runSpace, cmd);
                 }
 
                 ret = string.Format("{0}\\{1}", GetNETBIOSDomainName(), accountName);
@@ -6999,6 +7052,12 @@ namespace SolidCP.Providers.HostedSolution
             return ret;
         }
 
+        internal bool ObjToBoolean(object obj)
+        {
+            bool ret = false;
+            if (obj != null) ret = Convert.ToBoolean(obj);
+            return ret;
+        }
 
         #endregion
 

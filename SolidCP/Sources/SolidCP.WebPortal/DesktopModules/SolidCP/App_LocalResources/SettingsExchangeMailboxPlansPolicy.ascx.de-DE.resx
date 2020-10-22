@@ -126,7 +126,7 @@
   <data name="chkActiveSync.Text" xml:space="preserve">
     <value>ActiveSync</value>
   </data>
-  <data name="chkHideFromAddressBook" xml:space="preserve">
+  <data name="chkHideFromAddressBook.Text" xml:space="preserve">
     <value>Im Adressbuch verstecken</value>
   </data>
   <data name="chkIMAP.Text" xml:space="preserve">
@@ -269,5 +269,8 @@
   </data>
   <data name="locAutoReplyEnabled.Text" xml:space="preserve">
     <value>Automatische Antworten über SolidCP</value>
+  </data>
+  <data name="chkIsForJournaling.Text" xml:space="preserve">
+    <value>Nur für Journal-Postfächer</value>
   </data>
 </root>

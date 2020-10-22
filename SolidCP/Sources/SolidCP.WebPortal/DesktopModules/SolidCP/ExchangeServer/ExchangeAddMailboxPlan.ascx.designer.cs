@@ -184,6 +184,15 @@ namespace SolidCP.Portal.ExchangeServer {
         protected global::System.Web.UI.WebControls.CheckBox chkHideFromAddressBook;
         
         /// <summary>
+        /// chkIsForJournaling control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkIsForJournaling;
+        
+        /// <summary>
         /// secStorageQuotas control.
         /// </summary>
         /// <remarks>

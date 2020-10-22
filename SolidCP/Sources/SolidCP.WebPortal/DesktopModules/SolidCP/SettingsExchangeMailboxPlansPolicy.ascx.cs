@@ -170,6 +170,7 @@ namespace SolidCP.Portal
                 plan.ArchiveSizeMB = archiveQuota.QuotaValue;
                 plan.ArchiveWarningPct = archiveWarningQuota.ValueKB;
                 if ((plan.ArchiveWarningPct == 0)) plan.ArchiveWarningPct = 100;
+                plan.IsForJournaling = chkIsForJournaling.Checked;
 
             }
 
@@ -252,7 +253,7 @@ namespace SolidCP.Portal
                         recoverableItemsWarning.ValueKB = -1;
                         txtLitigationHoldMsg.Text = string.Empty;
                         txtLitigationHoldUrl.Text = string.Empty;
-
+                        chkIsForJournaling.Checked = false;
                         chkEnableArchiving.Checked = false;
                         archiveQuota.QuotaValue = 0;
                         archiveWarningQuota.ValueKB = 0;
@@ -315,7 +316,7 @@ namespace SolidCP.Portal
                             recoverableItemsWarning.ValueKB = plan.RecoverableItemsWarningPct;
                             txtLitigationHoldMsg.Text = plan.LitigationHoldMsg;
                             txtLitigationHoldUrl.Text = plan.LitigationHoldUrl;
-
+                            chkIsForJournaling.Checked = plan.IsForJournaling;
                             chkEnableArchiving.Checked = plan.EnableArchiving;
 
                             archiveQuota.QuotaValue = plan.ArchiveSizeMB;
@@ -427,7 +428,7 @@ namespace SolidCP.Portal
                 if ((plan.RecoverableItemsWarningPct == 0)) plan.RecoverableItemsWarningPct = 100;
                 plan.LitigationHoldMsg = txtLitigationHoldMsg.Text.Trim();
                 plan.LitigationHoldUrl = txtLitigationHoldUrl.Text.Trim();
-
+                plan.IsForJournaling = chkIsForJournaling.Checked;
                 plan.EnableArchiving = chkEnableArchiving.Checked;
 
                 plan.ArchiveSizeMB = archiveQuota.QuotaValue;

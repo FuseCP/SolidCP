@@ -1696,7 +1696,7 @@ namespace SolidCP.EnterpriseServer
             }
             #endregion
 
-            string accountTypes = string.Format("{0}, {1}, {2}, {3}", ((int)ExchangeAccountType.User), ((int)ExchangeAccountType.Mailbox), ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment));
+            string accountTypes = string.Format("{0}, {1}, {2}, {3}, {4}", ((int)ExchangeAccountType.User), ((int)ExchangeAccountType.Mailbox), ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment), ((int)ExchangeAccountType.JournalingMailbox));
 
 
             DataSet ds =

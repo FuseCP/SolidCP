@@ -2211,6 +2211,144 @@ namespace SolidCP.Providers.HostedSolution
             return temp.ToArray();
         }
 
+        public string CreateJournalRule(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            ExchangeLog.LogStart("CreateJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", journalEmail);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("New-JournalRule");
+                cmd.Parameters.Add("Name", GetJournalRuleName(journalEmail));
+                cmd.Parameters.Add("JournalEmailAddress", journalEmail);
+                cmd.Parameters.Add("Scope", scope);
+                cmd.Parameters.Add("Recipient", recipientEmail);
+                cmd.Parameters.Add("Enabled", enabled);
+                Collection<PSObject> result = ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("CreateJournalRule");
+                if (result.Count == 0) return null;
+                return ObjToString(GetPSObjectProperty(result[0], "Name"));
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("CreateJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        public ExchangeJournalRule GetJournalRule(string journalEmail)
+        {
+            ExchangeJournalRule ret = new ExchangeJournalRule();
+
+            ExchangeLog.LogStart("GetJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", journalEmail);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("Get-JournalRule");
+                cmd.Parameters.Add("Identity", GetJournalRuleName(journalEmail));
+                Collection<PSObject> result = ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("GetJournalRule");
+                if (result.Count == 0) return null;
+                ret.Name = ObjToString(GetPSObjectProperty(result[0], "Name"));
+                ret.JournalEmailAddress = ObjToString(GetPSObjectProperty(result[0], "JournalEmailAddress"));
+                ret.Recipient = ObjToString(GetPSObjectProperty(result[0], "Recipient"));
+                ret.Scope = ObjToString(GetPSObjectProperty(result[0], "Scope"));
+                ret.Enabled = ObjToBoolean(GetPSObjectProperty(result[0], "Enabled"));
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("GetJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        public void SetJournalRule(ExchangeJournalRule rule)
+        {
+            ExchangeLog.LogStart("SetJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", rule.JournalEmailAddress);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd;
+                if (rule.Enabled)
+                {
+                    cmd = new Command("Enable-JournalRule");
+                    cmd.Parameters.Add("Identity", rule.Name);
+                    ExecuteShellCommand(runSpace, cmd);
+                }
+                else
+                {
+                    cmd = new Command("Disable-JournalRule");
+                    cmd.Parameters.Add("Identity", rule.Name);
+                    ExecuteShellCommand(runSpace, cmd);
+                }
+                cmd = new Command("Set-JournalRule");
+                cmd.Parameters.Add("Identity", rule.Name);
+                cmd.Parameters.Add("Scope", rule.Scope);
+                cmd.Parameters.Add("Recipient", rule.Recipient);
+                ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("SetJournalRule");
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("SetJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        public void RemoveJournalRule(string journalEmail)
+        {
+            ExchangeLog.LogStart("RemoveJournalRule");
+            ExchangeLog.DebugInfo("journalEmail: {0}", journalEmail);
+
+            Runspace runSpace = null;
+
+            try
+            {
+                runSpace = OpenRunspace();
+                Command cmd = new Command("Remove-JournalRule");
+                cmd.Parameters.Add("Identity", GetJournalRuleName(journalEmail));
+                ExecuteShellCommand(runSpace, cmd);
+                ExchangeLog.LogEnd("RemoveJournalRule");
+            }
+            catch (Exception ex)
+            {
+                ExchangeLog.LogError("RemoveJournalRule", ex);
+                throw;
+            }
+            finally
+            {
+                CloseRunspace(runSpace);
+            }
+        }
+
+        private string GetJournalRuleName(string journalEmail)
+        {
+            return "Journal " + journalEmail;
+        }
 
         public string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName,
             string securityGroup, string organizationDomain,
@@ -2394,6 +2532,18 @@ namespace SolidCP.Providers.HostedSolution
                 cmd.Parameters.Add("AccessRights", "None");
                 cmd.Parameters.Add("User", "Default");
                 ExecuteShellCommand(runSpace, cmd);
+
+                if (accountType == ExchangeAccountType.JournalingMailbox)
+                {
+                    cmd = new Command("Get-OrganizationConfig");
+                    result = ExecuteShellCommand(runSpace, cmd);
+                    string exchangeSmtpAddress = ObjToString(GetPSObjectProperty(result[0], "MicrosoftExchangeRecipientPrimarySmtpAddress"));
+                    cmd = new Command("Set-Mailbox");
+                    cmd.Parameters.Add("Identity", id);
+                    cmd.Parameters.Add("AcceptMessagesOnlyFromSendersOrMembers", exchangeSmtpAddress);
+                    cmd.Parameters.Add("RequireSenderAuthenticationEnabled", true);
+                    ExecuteShellCommand(runSpace, cmd);
+                }
 
                 ret = string.Format("{0}\\{1}", GetNETBIOSDomainName(), accountName);
                 ExchangeLog.LogEnd("CreateMailEnableUserInternal");
@@ -7800,6 +7950,12 @@ namespace SolidCP.Providers.HostedSolution
             return ret;
         }
 
+        internal bool ObjToBoolean(object obj)
+        {
+            bool ret = false;
+            if (obj != null) ret = Convert.ToBoolean(obj);
+            return ret;
+        }
 
         #endregion
 

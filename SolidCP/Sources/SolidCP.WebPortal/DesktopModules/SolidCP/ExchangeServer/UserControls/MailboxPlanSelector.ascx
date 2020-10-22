@@ -1,2 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MailboxPlanSelector.ascx.cs" Inherits="SolidCP.Portal.ExchangeServer.UserControls.MailboxPlanSelector" %>
 <asp:DropDownList ID="ddlMailboxPlan" CssClass="form-control col-sm-4" runat="server" OnSelectedIndexChanged="ddlMailboxPlan_SelectedIndexChanged"></asp:DropDownList>
+<asp:RequiredFieldValidator ID="valMailboxPlan" runat="server" meta:resourcekey="valMailboxPlan" ControlToValidate="ddlMailboxPlan"
+                    ErrorMessage="Create Mailbox plan first" Display="Dynamic" Text="*" SetFocusOnError="True"></asp:RequiredFieldValidator>

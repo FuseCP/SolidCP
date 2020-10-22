@@ -129,6 +129,7 @@ order by rg.groupOrder
 
         public const string EXCHANGE2013_SHAREDMAILBOXES = "Exchange2013.SharedMailboxes"; // Shared and resource mailboxes
         public const string EXCHANGE2013_RESOURCEMAILBOXES = "Exchange2013.ResourceMailboxes";
+        public const string EXCHANGE2013_JOURNALINGMAILBOXES = "Exchange2013.JournalingMailboxes";
         public const string EXCHANGE2013_AUTOREPLY = "Exchange2013.AutoReply";
 
         public const string MSSQL2000_DATABASES = "MsSQL2000.Databases";  // Databases

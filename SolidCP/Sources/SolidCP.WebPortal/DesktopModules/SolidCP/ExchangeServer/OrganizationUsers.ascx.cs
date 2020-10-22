@@ -204,6 +204,9 @@ namespace SolidCP.Portal.HostedSolution
                 case ExchangeAccountType.Equipment:
                     imgName = "equipment_16.gif";
                     break;
+                case ExchangeAccountType.JournalingMailbox:
+                    imgName = "journaling_mailbox_16.png";
+                    break;
                 default:
                     imgName = "admin_16.png";
                     break;
