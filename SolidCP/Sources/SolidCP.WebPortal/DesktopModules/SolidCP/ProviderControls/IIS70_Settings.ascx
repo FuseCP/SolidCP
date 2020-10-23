@@ -493,7 +493,7 @@
 
     <table width="100%" cellpadding="4">
 	    <tr>
-	        <td class="Normal" valign="top">
+	        <td class="Normal col-md-3" valign="top">
 	            <asp:Label ID="lblSharedSslSites" runat="server" meta:resourcekey="lblSharedSslSites" Text="Shared SSL Sites:"></asp:Label>
 	        </td>
 	        <td valign="top">
@@ -503,7 +503,7 @@
 	    </tr>
         <tbody runat="server" ID="IIS80SSLSettings" Visible="False">
         <tr>
-	        <td class="Normal" valign="top">
+	        <td class="Normal col-md-3" valign="top">
 	            <asp:Label ID="lblUseSNI" runat="server" Text="Use SNI (Server Name Indication):"></asp:Label>
 	        </td>
             <td valign="top">
@@ -511,7 +511,7 @@
             </td>
         </tr>
         <tr>
-	        <td class="Normal" valign="top">
+	        <td class="Normal col-md-3" valign="top">
 	            <asp:Label ID="lblUseCCS" runat="server" Text="Use Centralized Certificate Store:"></asp:Label>
 	        </td>
             <td valign="top">
@@ -520,8 +520,7 @@
         </tr>
 
 			<tr>
-				<td class="Normal" valign="top" />
-				<td class="Normal" valign="top">
+				<td class="Normal col-md-3" valign="top">
 					<asp:Label ID="lblCCSUNCPath" runat="server" Text="Centralized Certificate Store UNC path :"></asp:Label>
 				</td>
 				<td valign="top">
@@ -529,8 +528,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td class="Normal" valign="top" width="10%"/>
-				<td class="Normal" valign="top">
+				<td class="Normal col-md-3" valign="top">
 					<asp:Label ID="lblCCSUNCCommonPassword" runat="server" Text="Centralized Certificate Store common password (blank for none):"></asp:Label>
 				</td>
 				<td valign="top">
@@ -538,7 +536,7 @@
 				</td>
 			</tr>
 		<tr>
-		    <td class="Normal" valign="top" >
+		    <td class="Normal col-md-3" valign="top" >
 		        <asp:Label ID="lblLeEmail" runat="server" meta:resourcekey="lblLeEmail" Text="Lets encrypt notification email:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
