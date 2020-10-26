@@ -4485,10 +4485,18 @@ namespace SolidCP.EnterpriseServer
 
         public static ExchangeAccount[] GetUserGroups(int itemId, int accountId)
         {
-            // load organization
-            Organization org = GetOrganization(itemId);
-            if (org == null)
-                return null;
+
+            // place log record
+            TaskManager.StartTask("ORGANIZATION", "GET_USER_GROUPS");
+            TaskManager.ItemId = itemId;
+
+            try
+            {
+
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null)
+                    return null;
 
                 List<ExchangeAccount> ret = new List<ExchangeAccount>();
                 Organizations orgProxy = GetOrganizationProxy(org.ServiceId);
@@ -4499,41 +4507,56 @@ namespace SolidCP.EnterpriseServer
 
                 foreach (ExchangeAccount group in groups)
                 {
-                    if(group.PrimaryEmailAddress.Length > 1)
+                    if (group.PrimaryEmailAddress.Length > 1)
                     {
-                        LogExtension.WriteVariable("Found Group PrimaryEmailAddress", group.PrimaryEmailAddress);
-                        ExchangeAccount accountGroup = ExchangeServerController.GetAccountByAccountName(group.PrimaryEmailAddress);
+                        //LogExtension.WriteVariable("Found Group PrimaryEmailAddress", group.PrimaryEmailAddress);
+                        ExchangeAccount accountGroup = ExchangeServerController.GetAccountByAccountName(group.PrimaryEmailAddress) ?? null;
                         if (accountGroup != null)
                         {
+                            LogExtension.WriteVariable("-Added Group PrimaryEmailAddress", group.PrimaryEmailAddress); 
                             ret.Add(accountGroup);
                         }
                         else
                         {
-                            string groupfinddisplayname = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).DisplayName;
-                            if (groupfinddisplayname != null)
+                            LogExtension.WriteVariable("-Checking Default Security Group", group.AccountName);
+                            if (defaultsecuritygroup.Count() >= 1)
                             {
-                                string groupfindSamAccountName = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).SamAccountName;
-                                string groupfindPrimaryEmailAddress = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).PrimaryEmailAddress ?? null;
-                                ExchangeAccountType groupfindAccountType = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).AccountType;
-                                ret.Add(new ExchangeAccount
+                                //LogExtension.WriteVariable("--Found Default Security Group", group.AccountName);
+                                string groupfinddisplayname = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).DisplayName ?? null;
+                                if (groupfinddisplayname != null)
                                 {
-                                    AccountName = groupfinddisplayname,
-                                    SamAccountName = groupfindSamAccountName,
-                                    DisplayName = groupfinddisplayname,
-                                    PrimaryEmailAddress = groupfindPrimaryEmailAddress,
-                                    AccountType = groupfindAccountType
-                                });
+                                    //LogExtension.WriteVariable("---Found Accounts Display name", group.AccountName);
+                                    string groupfindSamAccountName = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).SamAccountName;
+                                    LogExtension.WriteVariable("---Found Account SamAccountName:", groupfindSamAccountName);
+                                    string groupfindPrimaryEmailAddress = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).PrimaryEmailAddress ?? null;
+                                    //LogExtension.WriteVariable("---Found Account PrimaryEmailAddress:", groupfindPrimaryEmailAddress);
+                                    ExchangeAccountType groupfindAccountType = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).AccountType;
+                                    //LogExtension.WriteVariable("---Found Account AccountType:", groupfindAccountType.ToString());
+                                    ret.Add(new ExchangeAccount
+                                    {
+                                        AccountName = groupfinddisplayname,
+                                        SamAccountName = groupfindSamAccountName,
+                                        DisplayName = groupfinddisplayname,
+                                        PrimaryEmailAddress = groupfindPrimaryEmailAddress,
+                                        AccountType = groupfindAccountType
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                LogExtension.WriteVariable("No Default Security Group", itemId.ToString());
                             }
                         }
                     }
                     else
                     {
-                        ExchangeAccount secgroupfind = securitygroups.Find(i => i.AccountName == group.AccountName);
+                        ExchangeAccount secgroupfind = securitygroups.Find(i => i.AccountName == group.AccountName) ?? null;
                         if (secgroupfind != null)
                         {
-                            string secgroupfinddisplayname = securitygroups.Find(i => i.AccountName == group.AccountName).DisplayName ?? null; 
+                            string secgroupfinddisplayname = securitygroups.Find(i => i.AccountName == group.AccountName).DisplayName ?? null;
                             string secgroupfindSamAccountName = securitygroups.Find(i => i.AccountName == group.AccountName).SamAccountName;
                             string secgroupfindPrimaryEmailAddress = securitygroups.Find(i => i.AccountName == group.AccountName).PrimaryEmailAddress ?? null;
+                            LogExtension.WriteVariable("Found Group Name", secgroupfindSamAccountName);
                             ExchangeAccountType secgroupfindAccountType = securitygroups.Find(i => i.AccountName == group.AccountName).AccountType;
                             ret.Add(new ExchangeAccount
                             {
@@ -4549,12 +4572,21 @@ namespace SolidCP.EnterpriseServer
 
                 ExchangeAccount[] ret1 = ret.ToArray();
                 return ret1;
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
         }
 
 
-        #region Service Levels
+            #region Service Levels
 
-        public static int AddSupportServiceLevel(string levelName, string levelDescription)
+            public static int AddSupportServiceLevel(string levelName, string levelDescription)
         {
             if (string.IsNullOrEmpty(levelName))
                 throw new ArgumentNullException("levelName");
