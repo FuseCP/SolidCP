@@ -190,7 +190,7 @@
     <value>*</value>
   </data>
   <data name="SharedMailbox.Text" xml:space="preserve">
-    <value>Geteiltes Postfach</value>
+    <value>Freigegebenes Postfach</value>
   </data>
   <data name="chkUserMustChangePassword.Text" xml:space="preserve">
     <value>Benutzer muss Passwort bei der nächsten Anmeldung ändern</value>

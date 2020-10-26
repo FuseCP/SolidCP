@@ -5929,7 +5929,7 @@
     <value>Standard-Sicherheitsgruppe</value>
   </data>
   <data name="UserItemType.SharedMailbox" xml:space="preserve">
-    <value>Geteiltes Postfach</value>
+    <value>Freigegebenes Postfach</value>
   </data>
   <data name="UserItemType.DeletedUser" xml:space="preserve">
     <value>Gelöschter Benutzer</value>
@@ -6592,7 +6592,7 @@
     <value> (Raumpostfach)</value>
   </data>
   <data name="SharedMailbox.Text" xml:space="preserve">
-    <value> (Geteiltes Postfach)</value>
+    <value> (Freigegebenes Postfach)</value>
   </data>
   <data name="EquipmentMailbox.Text" xml:space="preserve">
     <value> (Gerätepostfach)</value>
