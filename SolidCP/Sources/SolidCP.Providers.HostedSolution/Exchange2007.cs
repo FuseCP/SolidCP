@@ -4738,9 +4738,14 @@ namespace SolidCP.Providers.HostedSolution
                 for (int i = 0; i < count; i++)
                 {
                     account = GetExchangeAccount(runSpace, userId);
+                    if (account == null)
+                    {
+                        account = new ExchangeAccount();
+                        account.AccountName = userId;
+                        account.DisplayName = userId;
+                    }
                     string permission = ObjToString(GetObjectIndexerValue(rights, i));
-                    if (account != null)
-                        account.PublicFolderPermission = permission;
+                    account.PublicFolderPermission = permission;
                     list.Add(account);
                     break;
                 }
@@ -4776,7 +4781,7 @@ namespace SolidCP.Providers.HostedSolution
                     {
                         RemovePublicFolderClientPermission(runSpace,
                                                             folder,
-                                                            existingAccount.AccountName.Contains("@") ? existingAccount.AccountName : @"\" + existingAccount.AccountName,
+                                                            existingAccount.AccountName,
                                                             existingAccount.PublicFolderPermission);
                     }
                     catch (Exception)
