@@ -4684,6 +4684,9 @@
   <data name="Error.VPS_LOAD_VM_META_ITEM" xml:space="preserve">
     <value>Cannot load virtual machine meta-item</value>
   </data>
+  <data name="Warning.VPS_CHANGE_VM_CONFIGURATION_SNAPSHOT" xml:space="preserve">
+    <value>Configuration changes can only be made when no snapshots have been taken</value>
+  </data>
   <data name="Success.VPS_CHANGE_VM_CONFIGURATION" xml:space="preserve">
     <value>VPS configuration has been changed</value>
   </data>

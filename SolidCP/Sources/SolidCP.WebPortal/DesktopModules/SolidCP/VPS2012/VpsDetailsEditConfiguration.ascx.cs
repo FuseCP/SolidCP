@@ -53,6 +53,18 @@ namespace SolidCP.Portal.VPS2012
 
             secHddQOS.Visible = QOSManag.Visible = PanelSecurity.EffectiveUser.Role != UserRole.User;
 
+            // check snapshots
+            VirtualMachineSnapshot[] snapshots = ES.Services.VPS2012.GetVirtualMachineSnapshots(PanelRequest.ItemID);
+            if (snapshots.Length > 0)
+            {
+                messageBox.ShowWarningMessage("VPS_CHANGE_VM_CONFIGURATION_SNAPSHOT");
+                btnUpdate.Enabled = false;
+            }
+            else
+            {
+                btnUpdate.Enabled = true;
+            }
+
             if (!IsPostBack)
             {
                 BindConfiguration();
@@ -202,6 +214,13 @@ namespace SolidCP.Portal.VPS2012
                 // check rights
                 bool manageAllowed = VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId);
                 if (!manageAllowed)
+                {
+                    return;
+                }
+
+                // check snapshots
+                VirtualMachineSnapshot[] snapshots = ES.Services.VPS2012.GetVirtualMachineSnapshots(PanelRequest.ItemID);
+                if (snapshots.Length > 0)
                 {
                     return;
                 }

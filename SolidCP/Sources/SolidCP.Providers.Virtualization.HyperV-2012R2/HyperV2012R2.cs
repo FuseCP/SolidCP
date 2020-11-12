@@ -551,6 +551,13 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
+                // check snapshots
+                List<VirtualMachineSnapshot> snapshots = GetVirtualMachineSnapshots(vm.VirtualMachineId);
+                if (snapshots.Count > 0)
+                {
+                    throw new Exception("Configuration changes can only be made when no snapshots have been taken.");
+                }
+
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
@@ -581,6 +588,13 @@ namespace SolidCP.Providers.Virtualization
 
             try //not all Templates support hot chnage values, we get an exception if it doesn't.
             {
+                // check snapshots
+                List<VirtualMachineSnapshot> snapshots = GetVirtualMachineSnapshots(vm.VirtualMachineId);
+                if (snapshots.Count > 0)
+                {
+                    return false;
+                }
+
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
                 bool canChangeValueWihoutReboot = false;
                 if (realVm.CpuCores == vm.CpuCores)
