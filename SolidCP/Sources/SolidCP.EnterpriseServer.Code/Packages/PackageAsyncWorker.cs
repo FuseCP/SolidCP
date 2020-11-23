@@ -89,14 +89,29 @@ namespace SolidCP.EnterpriseServer
                 List<ServiceProviderItem> items = PackageController.GetServiceItemsForStatistics(
                     0, package.PackageId, false, false, false, true); // disposable items
 
+                // check vm serviceId
+                bool changed = false;
+                for (int i = 0; i < items.Count; i++)
+                {
+                    if (items[i] is VirtualMachine)
+                    {
+                        int newServiceId = VirtualizationServerController2012.DiscoverVirtualMachine(items[i].Id);
+                        if (items[i].ServiceId != newServiceId && newServiceId != -1) changed = true;
+                    }
+                }
+                if (changed)
+                {
+                    items = PackageController.GetServiceItemsForStatistics(0, package.PackageId, false, false, false, true);
+                }
+
                 // order items by service
                 Dictionary<int, List<ServiceProviderItem>> orderedItems =
-                    PackageController.OrderServiceItemsByServices(items);
+                PackageController.OrderServiceItemsByServices(items);
 
                 // delete service items by service sets
                 foreach (int serviceId in orderedItems.Keys)
                 {
-                    
+
                     ServiceInfo service = ServerController.GetServiceInfo(serviceId);
                     //Delete Exchange Organization 
                     if (service.ProviderId == 103 /*Organizations*/)
@@ -105,8 +120,8 @@ namespace SolidCP.EnterpriseServer
                         //int exchangeId = PackageController.GetPackageServiceId(package.PackageId, ResourceGroups.Exchange2007);
                         //ExchangeServerController.DeleteOrganization(orderedItems[serviceId][0].Id);                                                                                                
                     }
-                    else                
-                        ProcessServiceItems(false, false, serviceId, orderedItems[serviceId] );
+                    else
+                        ProcessServiceItems(false, false, serviceId, orderedItems[serviceId]);
                 }
 
                 // delete package from database
