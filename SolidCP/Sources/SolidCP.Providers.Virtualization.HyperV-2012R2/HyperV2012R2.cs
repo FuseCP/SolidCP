@@ -763,21 +763,54 @@ namespace SolidCP.Providers.Virtualization
             {
                 if (ex.Message.Contains("0x8007000E")) // Not enough memory on Hyper-V host
                 {
-                    Command cmd = new Command("Move-ClusterVirtualMachineRole");
-                    cmd.Parameters.Add("Name", vmName);
+                    Command cmd = new Command("Get-ClusterNode");
                     cmd.Parameters.Add("Cluster", clusterName);
-                    cmd.Parameters.Add("MigrationType", "Quick");
-                    Collection<PSObject> result = PowerShell.Execute(cmd, false, false);
-
-                    string hostName = null;
-                    if (result.Count > 0) hostName = result[0].GetProperty("OwnerNode").ToString();
-
-                    if (!String.IsNullOrEmpty(hostName))
+                    Collection<PSObject> nodes = PowerShell.Execute(cmd, false, false);
+                    int maxMemory = 0;
+                    string maxMemoryHostName = null;
+                    foreach (PSObject node in nodes)
                     {
-                        cmd = new Command("Start-VM");
+                        string hvHost = node.Members["Name"].Value.ToString();
+                        if (!String.IsNullOrEmpty(hvHost))
+                        {
+                            cmd = new Command("Get-WmiObject");
+                            cmd.Parameters.Add("Class", "Win32_OperatingSystem");
+                            cmd.Parameters.Add("Namespace", "root\\cimv2");
+                            cmd.Parameters.Add("ComputerName", hvHost);
+                            Collection<PSObject> res = PowerShell.Execute(cmd, false, false);
+                            int freeMemory = Convert.ToInt32(res[0].Members["FreePhysicalMemory"].Value);
+                            if (freeMemory > maxMemory)
+                            {
+                                maxMemory = freeMemory;
+                                maxMemoryHostName = hvHost;
+                            }
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(maxMemoryHostName))
+                    {
+                        cmd = new Command("Move-ClusterVirtualMachineRole");
                         cmd.Parameters.Add("Name", vmName);
-                        cmd.Parameters.Add("ComputerName", hostName);
-                        PowerShell.Execute(cmd, false, true);
+                        cmd.Parameters.Add("Cluster", clusterName);
+                        cmd.Parameters.Add("Node", maxMemoryHostName);
+                        cmd.Parameters.Add("MigrationType", "Quick");
+                        Collection<PSObject> result = PowerShell.Execute(cmd, false, false);
+
+                        string hostName = null;
+                        if (result.Count > 0) hostName = result[0].GetProperty("OwnerNode").ToString();
+
+                        if (!String.IsNullOrEmpty(hostName))
+                        {
+                            cmd = new Command("Start-VM");
+                            cmd.Parameters.Add("Name", vmName);
+                            cmd.Parameters.Add("ComputerName", hostName);
+                            PowerShell.Execute(cmd, false, true);
+                        }
+                    }
+                    else
+                    {
+                        HostedSolutionLog.LogError("ChangeVirtualMachineState", ex);
+                        throw;
                     }
                 }
                 else
