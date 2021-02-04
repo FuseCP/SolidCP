@@ -54,7 +54,7 @@ namespace SolidCP.Portal.HostedSolution
 
                 BindPicture();
 
-                MailboxTabsId.Visible = (PanelRequest.Context == "Mailbox");
+                MailboxTabsId.Visible = (PanelRequest.Context == "Mailbox" || PanelRequest.Context == "JournalingMailbox");
                 UserTabsId.Visible = (PanelRequest.Context == "User");
                 pnlThumbnailphoto.Visible = true;
 
@@ -403,7 +403,7 @@ namespace SolidCP.Portal.HostedSolution
             SaveSettings();
 
             Response.Redirect(PortalUtils.EditUrl("ItemID", PanelRequest.ItemID.ToString(),
-                (PanelRequest.Context == "Mailbox") ? "mailboxes" : "users", 
+                (PanelRequest.Context == "Mailbox") ? "mailboxes" : (PanelRequest.Context == "JournalingMailbox") ? "journaling_mailboxes" : "users",
                 "SpaceID=" + PanelSecurity.PackageId));
         }
 
@@ -474,7 +474,7 @@ namespace SolidCP.Portal.HostedSolution
             Response.Redirect(PortalUtils.EditUrl("ItemID", PanelRequest.ItemID.ToString(),
                 "user_reset_password",
                 "SpaceID=" + PanelSecurity.PackageId,
-                "Context=" + ((PanelRequest.Context == "Mailbox") ? "Mailbox" : "User"),
+                "Context=" + ((PanelRequest.Context == "Mailbox") ? "Mailbox" : (PanelRequest.Context == "JournalingMailbox") ? "JournalingMailbox" : "User"),
                 "AccountID=" + PanelRequest.AccountID));
         }
 

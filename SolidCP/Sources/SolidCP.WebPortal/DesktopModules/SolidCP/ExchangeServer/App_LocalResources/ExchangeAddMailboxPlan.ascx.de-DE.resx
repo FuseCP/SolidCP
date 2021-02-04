@@ -237,4 +237,7 @@
   <data name="secRetentionPolicyTags.Text" xml:space="preserve">
     <value>Aufbewahrungsrichtlinien-Tags</value>
   </data>
+  <data name="chkIsForJournaling.Text" xml:space="preserve">
+    <value>Nur für Journal-Postfächer</value>
+  </data>
 </root>

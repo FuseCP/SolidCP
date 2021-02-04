@@ -134,8 +134,10 @@ namespace SolidCP.Portal.VPS2012
                     // bind VM
                     CpuCores.Text = vm.CpuCores.ToString();
                     RamSize.Text = vm.RamSize.ToString();
-                    HddSize.Text = vm.HddSize.ToString();
-                    VhdPath.Text = vm.VirtualHardDrivePath;
+                    HddSize.Text = vm.HddSize[0].ToString();
+                    VhdPath.Text = vm.VirtualHardDrivePath[0];
+
+                    BindAdditionalHddInfo(vm);
 
                     this.BindSettingsControls(vm);
 
@@ -286,6 +288,26 @@ namespace SolidCP.Portal.VPS2012
         protected void ManagementAdapters_SelectedIndexChanged(object sender, EventArgs e)
         {
             BindManagementAddresses();
+        }
+
+        private void BindAdditionalHddInfo(VirtualMachine vm)
+        {
+            repHdd.DataSource = GetAdditionalHdd(vm);
+            repHdd.DataBind();
+        }
+
+        private List<AdditionalHdd> GetAdditionalHdd(VirtualMachine vm)
+        {
+            List<AdditionalHdd> result = new List<AdditionalHdd>();
+            if (vm.HddSize.Length < 2 || vm.HddSize.Length != vm.VirtualHardDrivePath.Length) return result;
+            for (int i = 1; i < vm.HddSize.Length; i++)
+            {
+                if (String.IsNullOrEmpty(vm.VirtualHardDrivePath[i])) continue;
+                AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i].ToString(), vm.VirtualHardDrivePath[i]);
+                result.Add(hdd);
+            }
+
+            return result;
         }
     }
 }

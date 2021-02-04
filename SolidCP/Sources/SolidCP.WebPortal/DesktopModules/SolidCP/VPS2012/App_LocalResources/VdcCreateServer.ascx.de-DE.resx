@@ -408,4 +408,19 @@
   <data name="maskValidator.ErrorMessage" xml:space="preserve">
     <value>Geben Sie die Subnetzmaske ein</value>
   </data>
+  <data name="btnAddHdd.Text" xml:space="preserve">
+    <value>HDD hinzufügen</value>
+  </data>
+  <data name="btnRemoveHdd.Text" xml:space="preserve">
+    <value>HDD löschen</value>
+  </data>
+  <data name="lblAdditionalHdd.Text" xml:space="preserve">
+    <value>Zusätzliche HDD:</value>
+  </data>
+  <data name="locAdditionalHdd.Text" xml:space="preserve">
+    <value>Zusätzliche HDD, GB:</value>
+  </data>
+  <data name="valHddSize.ErrorMessage" xml:space="preserve">
+    <value>Geben Sie einen numerischen Wert ein</value>
+  </data>
 </root>

@@ -400,6 +400,8 @@ namespace SolidCP.EnterpriseServer.Base.HostedSolution
         public int AllocatedRdsServers { get; set; }
         public int AllocatedRdsCollections { get; set; }
         public int AllocatedRdsUsers { get; set; }
+        public int CreatedJournalingMailboxes { get; set; }
+        public int AllocatedJournalingMailboxes { get; set; }
 
         public List<QuotaValueInfo> ServiceLevels { get; set; }
     }

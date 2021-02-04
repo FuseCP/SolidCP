@@ -615,6 +615,70 @@ namespace SolidCP.Server
             }
         }
 
+        [WebMethod, SoapHeader("settings")]
+        public string CreateJournalRule(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            try
+            {
+                LogStart("CreateJournalRule");
+                string ret = ES.CreateJournalRule(journalEmail, scope, recipientEmail, enabled);
+                LogEnd("CreateJournalRule");
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("CreateJournalRule", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public ExchangeJournalRule GetJournalRule(string journalEmail)
+        {
+            try
+            {
+                LogStart("GetJournalRule");
+                ExchangeJournalRule ret = ES.GetJournalRule(journalEmail);
+                LogEnd("GetJournalRule");
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("GetJournalRule", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public void SetJournalRule(ExchangeJournalRule rule)
+        {
+            try
+            {
+                LogStart("SetJournalRule");
+                ES.SetJournalRule(rule);
+                LogEnd("SetJournalRule");
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("SetJournalRule", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public void RemoveJournalRule(string journalEmail)
+        {
+            try
+            {
+                LogStart("RemoveJournalRule");
+                ES.RemoveJournalRule(journalEmail);
+                LogEnd("RemoveJournalRule");
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("RemoveJournalRule", ex);
+            }
+        }
 
         #endregion
 

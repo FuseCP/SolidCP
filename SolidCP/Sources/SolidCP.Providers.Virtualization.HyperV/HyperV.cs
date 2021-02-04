@@ -223,12 +223,12 @@ namespace SolidCP.Providers.Virtualization
 
             if(objVhd != null)
             {
-                vm.VirtualHardDrivePath = ((string[])objVhd["Connection"])[0];
+                vm.VirtualHardDrivePath = new[] { ((string[])objVhd["Connection"])[0] };
 
                 // get VHD size
-                VirtualHardDiskInfo vhdInfo = GetVirtualHardDiskInfo(vm.VirtualHardDrivePath);
+                VirtualHardDiskInfo vhdInfo = GetVirtualHardDiskInfo(vm.VirtualHardDrivePath[0]);
                 if (vhdInfo != null)
-                    vm.HddSize = Convert.ToInt32(vhdInfo.MaxInternalSize / Size1G);
+                    vm.HddSize = new[] { Convert.ToInt32(vhdInfo.MaxInternalSize / Size1G) };
             }
 
             // network adapters
@@ -327,7 +327,7 @@ namespace SolidCP.Providers.Virtualization
             // evaluate paths
             vm.RootFolderPath               = FileUtils.EvaluateSystemVariables(vm.RootFolderPath);
             vm.OperatingSystemTemplatePath  = FileUtils.EvaluateSystemVariables(vm.OperatingSystemTemplatePath);
-            vm.VirtualHardDrivePath         = FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath);
+            vm.VirtualHardDrivePath         = new[] { FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath[0]) };
 
             string vmID = null;
 
@@ -397,7 +397,7 @@ namespace SolidCP.Providers.Virtualization
             ManagementObject objAddedHDD = AddVirtualMachineResources(objVM, objHdd);
 
             // attach VHD
-            string fullVhdPath = vm.VirtualHardDrivePath;
+            string fullVhdPath = vm.VirtualHardDrivePath[0];
             ManagementObject objDefaultVHD = wmi.GetWmiObject(
                 "Msvm_ResourceAllocationSettingData", "ResourceSubType = 'Microsoft Virtual Hard Disk'"
                     + " and InstanceID like '%Default'");

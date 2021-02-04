@@ -210,7 +210,8 @@ namespace SolidCP.Portal.ExchangeServer
 
                 Response.Redirect(EditUrl("AccountID", accountId.ToString(), "mailbox_settings",
                     "SpaceID=" + PanelSecurity.PackageId.ToString(),
-                    "ItemID=" + PanelRequest.ItemID.ToString()));
+                    "ItemID=" + PanelRequest.ItemID.ToString(),
+                    "Context=Mailbox"));
             }
             catch (Exception ex)
             {

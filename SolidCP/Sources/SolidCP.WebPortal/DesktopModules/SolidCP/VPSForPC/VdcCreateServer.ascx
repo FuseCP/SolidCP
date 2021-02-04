@@ -120,7 +120,7 @@
                                                     Text="CPU:" CssClass="MediumBold" />
                                             </td>
                                             <td>
-                                                <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="70">
+                                                <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="80">
                                                 </asp:DropDownList>
                                             </td>
                                             <td>

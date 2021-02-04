@@ -33,13 +33,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
 using SolidCP.Portal.Code.Helpers;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 
 namespace SolidCP.Portal.VPS2012
@@ -329,6 +327,12 @@ namespace SolidCP.Portal.VPS2012
                 }
             }
 
+            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_ADDITIONAL_VHD_COUNT))
+            {
+                QuotaValueInfo additionalHddQuota = cntx.Quotas[Quotas.VPS2012_ADDITIONAL_VHD_COUNT];
+                if (additionalHddQuota.QuotaAllocatedValue == -1 || additionalHddQuota.QuotaAllocatedValue > 0) btnAddHdd.Visible = true;
+            }
+
             // IOPS number
             // TODO: checke
             txtHddMinIOPS.Text = "0";
@@ -481,6 +485,7 @@ namespace SolidCP.Portal.VPS2012
             litCpu.Text = PortalAntiXSS.Encode(ddlCpu.SelectedValue);
             litRam.Text = PortalAntiXSS.Encode(txtRam.Text.Trim());
             litHdd.Text = PortalAntiXSS.Encode(txtHdd.Text.Trim());
+            BindAdditionalHddInfo();
             litHddIOPSmin.Text = PortalAntiXSS.Encode(txtHddMinIOPS.Text.Trim());
             litHddIOPSmax.Text = PortalAntiXSS.Encode(txtHddMaxIOPS.Text.Trim());
             litSnapshots.Text = PortalAntiXSS.Encode(txtSnapshots.Text.Trim());
@@ -536,7 +541,15 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.PackageId = PanelSecurity.PackageId;
                 virtualMachine.CpuCores = Utils.ParseInt(ddlCpu.SelectedValue);
                 virtualMachine.RamSize = Utils.ParseInt(txtRam.Text.Trim());
-                virtualMachine.HddSize = Utils.ParseInt(txtHdd.Text.Trim());
+                List<int> hddSize = new List<int>();
+                hddSize.Add(Utils.ParseInt(txtHdd.Text.Trim()));
+                List<AdditionalHdd> additionalHdd = GetAdditionalHdd();
+                foreach (AdditionalHdd hdd in additionalHdd)
+                {
+                    int size = Utils.ParseInt(hdd.DiskSize.Trim());
+                    if (size > 0) hddSize.Add(size);
+                }
+                virtualMachine.HddSize = hddSize.ToArray();
                 virtualMachine.HddMinimumIOPS = Utils.ParseInt(txtHddMinIOPS.Text.Trim());
                 virtualMachine.HddMaximumIOPS = Utils.ParseInt(txtHddMaxIOPS.Text.Trim());
                 virtualMachine.SnapshotsNumber = Utils.ParseInt(txtSnapshots.Text.Trim());
@@ -638,7 +651,6 @@ namespace SolidCP.Portal.VPS2012
             BindSummary();
         }
 
-
         protected void VlanLists_SelectedIndexChanged(object sender, EventArgs e)
         {
             PackageIPAddress[] ips = ES.Services.Servers.GetPackageUnassignedIPAddresses(PanelSecurity.PackageId, 0, IPAddressPool.VpsExternalNetwork);
@@ -649,12 +661,84 @@ namespace SolidCP.Portal.VPS2012
 
         }
 
-
         protected void wizard_NextButtonClick(object sender, WizardNavigationEventArgs e)
         {
             // save password
             if (wizard.ActiveStepIndex == 0)
                 ViewState["Password"] = password.Password;
+        }
+
+        protected void btnAddHdd_Click(object sender, EventArgs e)
+        {
+            var hdd = GetAdditionalHdd();
+            hdd.Add(new AdditionalHdd());
+            RebindAdditionalHdd(hdd);
+        }
+
+        protected void btnRemoveHdd_OnCommand(object sender, CommandEventArgs e)
+        {
+            var hdd = GetAdditionalHdd();
+            hdd.RemoveAt(Convert.ToInt32(e.CommandArgument));
+            RebindAdditionalHdd(hdd);
+        }
+
+        private void RebindAdditionalHdd(List<AdditionalHdd> hdd)
+        {
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_ADDITIONAL_VHD_COUNT))
+            {
+                QuotaValueInfo additionalHddQuota = cntx.Quotas[Quotas.VPS2012_ADDITIONAL_VHD_COUNT];
+                int quotaHddCount = additionalHddQuota.QuotaAllocatedValue;
+                int maxHddCount = 62;
+                LibraryItem[] osTemplates = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
+                foreach (LibraryItem item in osTemplates)
+                {
+                    if (String.Compare(item.Path, listOperatingSystems.SelectedValue, true) == 0)
+                    {
+                        if (item.Generation > 1)
+                        {
+                            maxHddCount = 62;
+                        }
+                        else
+                        {
+                            maxHddCount = 2;
+                        }
+                        break;
+                    }
+                }
+                if (quotaHddCount == -1 || quotaHddCount > maxHddCount) quotaHddCount = maxHddCount;
+                btnAddHdd.Enabled = (hdd.Count < quotaHddCount);
+            }
+            else
+            {
+                btnAddHdd.Enabled = false;
+            }
+            repHdd.DataSource = hdd;
+            repHdd.DataBind();
+        }
+
+        private void BindAdditionalHddInfo()
+        {
+            repHddInfo.DataSource = GetAdditionalHdd();
+            repHddInfo.DataBind();
+        }
+
+        private List<AdditionalHdd> GetAdditionalHdd()
+        {
+            var result = new List<AdditionalHdd>();
+
+            foreach (RepeaterItem item in repHdd.Items)
+            {
+                AdditionalHdd hdd = new AdditionalHdd(GetTextBoxText(item, "txtAdditionalHdd"), "");
+                result.Add(hdd);
+            }
+
+            return result;
+        }
+
+        private string GetTextBoxText(RepeaterItem item, string name)
+        {
+            return (item.FindControl(name) as TextBox).Text;
         }
     }
 }

@@ -237,4 +237,7 @@
   <data name="secRetentionPolicyTags.Text" xml:space="preserve">
     <value>Retention policy tags</value>
   </data>
+  <data name="chkIsForJournaling.Text" xml:space="preserve">
+    <value>For journaling mailboxes only</value>
+  </data>
 </root>

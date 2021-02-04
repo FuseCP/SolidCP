@@ -110,6 +110,7 @@
     <Compile Include="HostedSolution\BlackBerryStatsItem.cs" />
     <Compile Include="HostedSolution\BlackBerryUserDeleteState.cs" />
     <Compile Include="HostedSolution\ExchangeDisclaimer.cs" />
+    <Compile Include="HostedSolution\ExchangeJournalRule.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxAutoReplySettings.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxPlanRetentionPolicyTag.cs" />
     <Compile Include="HostedSolution\ExchangeOrganization.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="StorageSpaces\StorageSpaceLevel.cs" />
     <Compile Include="StorageSpaces\StorageSpaceLevelPaged.cs" />
     <Compile Include="StorageSpaces\StorageSpacesPaged.cs" />
+    <Compile Include="Virtualization\AdditionalHdd.cs" />
     <Compile Include="Virtualization\AutomaticStopAction.cs" />
     <Compile Include="Virtualization\AutomaticStartAction.cs" />
     <Compile Include="Virtualization\BiosInfo.cs" />

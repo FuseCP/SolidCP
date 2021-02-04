@@ -163,7 +163,7 @@
                         </label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <scp:MailboxPlanSelector ID="mailboxPlanSelector" runat="server" Archiving="false" OnChanged="mailboxPlanSelector_Change" />
+                                <scp:MailboxPlanSelector ID="mailboxPlanSelector" runat="server" Archiving="false" ValidationGroup="CreateMailbox" IsForJournaling="false" OnChanged="mailboxPlanSelector_Change" />
                             </div>
                         </div>
                     </div>
@@ -174,7 +174,7 @@
                         </label>
                         <div class="col-sm-10">
                             <div class="input-group">
-                                <scp:MailboxPlanSelector ID="archivingMailboxPlanSelector" runat="server" Archiving="true" AddNone="true" />
+                                <scp:MailboxPlanSelector ID="archivingMailboxPlanSelector" runat="server" ValidationGroup="CreateMailbox" Archiving="true" AddNone="true" />
                             </div>
                         </div>
                     </div>

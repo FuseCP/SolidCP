@@ -47,6 +47,8 @@ guacd-port:    4822
 solidcp-key: {Guacamole Encryption Password}
 #Connection link lifetime in seconds
 solidcp-link-exp-time: 60
+#Server keyboard layout (http://guacamole.apache.org/doc/gug/configuring-guacamole.html#rdp-session-settings)
+server-layout: en-us-qwerty
 
 	- Restart Tomcat: systemctl restart tomcat
 

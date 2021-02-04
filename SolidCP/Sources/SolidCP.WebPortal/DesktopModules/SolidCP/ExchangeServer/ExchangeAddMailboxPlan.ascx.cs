@@ -129,6 +129,7 @@ namespace SolidCP.Portal.ExchangeServer
                         archiveQuota.QuotaValue = plan.ArchiveSizeMB;
                         archiveWarningQuota.ValueKB = plan.ArchiveWarningPct;
                         chkEnableForceArchiveDeletion.Checked = plan.EnableForceArchiveDeletion;
+                        chkIsForJournaling.Checked = plan.IsForJournaling;
                     }
 
                     locTitle.Text = plan.MailboxPlan;
@@ -197,7 +198,9 @@ namespace SolidCP.Portal.ExchangeServer
                                     chkEnableLitigationHold.Checked = Convert.ToBoolean(quota.QuotaAllocatedValue);
                                     chkEnableLitigationHold.Enabled = Convert.ToBoolean(quota.QuotaAllocatedValue);
                                     break;
-
+                                case 731:
+                                    chkIsForJournaling.Enabled = quota.QuotaAllocatedValue > 0;
+                                    break;
                             }
 
                             sizeIssueWarning.ValueKB = 95;
@@ -268,7 +271,7 @@ namespace SolidCP.Portal.ExchangeServer
                             continue;
                     }
 
-                    ddTags.Items.Add(new System.Web.UI.WebControls.ListItem(tag.TagName, tag.TagID.ToString()));
+                    ddTags.Items.Add(new ListItem(tag.TagName, tag.TagID.ToString()));
                 }
             }
         }
@@ -287,7 +290,7 @@ namespace SolidCP.Portal.ExchangeServer
         {
             try
             {
-                Providers.HostedSolution.ExchangeMailboxPlan plan = new Providers.HostedSolution.ExchangeMailboxPlan();
+                ExchangeMailboxPlan plan = new ExchangeMailboxPlan();
                 plan.MailboxPlan = txtMailboxPlan.Text;
                 plan.Archiving = RetentionPolicy;
 
@@ -332,6 +335,7 @@ namespace SolidCP.Portal.ExchangeServer
                         plan.ArchiveWarningPct = 100;
                     }
                     plan.EnableForceArchiveDeletion = chkEnableForceArchiveDeletion.Checked;
+                    plan.IsForJournaling = chkIsForJournaling.Checked;
                 }
 
                 int planId = ES.Services.ExchangeServer.AddExchangeMailboxPlan(PanelRequest.ItemID,

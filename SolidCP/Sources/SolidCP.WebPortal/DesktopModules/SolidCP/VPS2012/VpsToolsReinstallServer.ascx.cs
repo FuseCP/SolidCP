@@ -156,7 +156,9 @@ namespace SolidCP.Portal.VPS2012
             //show summary
             litCpu.Text = vm.CpuCores.ToString();
             litRam.Text = vm.RamSize.ToString();
-            litHdd.Text = vm.HddSize.ToString();
+            litHdd.Text = vm.HddSize[0].ToString();
+
+            BindAdditionalHddInfo(vm);
 
             litHddIOPSmin.Visible = litHddIOPSmax.Visible = manageAllowed; //Technical information, it makes no sense to show the user if it can not create the server
             litHddIOPSmin.Text = vm.HddMinimumIOPS.ToString();
@@ -281,6 +283,25 @@ namespace SolidCP.Portal.VPS2012
 
                 }
             }
+        }
+
+        private void BindAdditionalHddInfo(VirtualMachine vm)
+        {
+            repHdd.DataSource = GetAdditionalHdd(vm);
+            repHdd.DataBind();
+        }
+
+        private List<AdditionalHdd> GetAdditionalHdd(VirtualMachine vm)
+        {
+            var result = new List<AdditionalHdd>();
+            if (vm.HddSize.Length < 2) return result;
+            for (int i = 1; i < vm.HddSize.Length; i++)
+            {
+                AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i].ToString(), "");
+                result.Add(hdd);
+            }
+
+            return result;
         }
     }
 }

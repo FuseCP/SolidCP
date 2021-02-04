@@ -131,8 +131,8 @@ namespace SolidCP.Portal.Proxmox
                     // bind VM
                     CpuCores.Text = vm.CpuCores.ToString();
                     RamSize.Text = vm.RamSize.ToString();
-                    HddSize.Text = vm.HddSize.ToString();
-                    VhdPath.Text = vm.VirtualHardDrivePath;
+                    HddSize.Text = vm.HddSize[0].ToString();
+                    VhdPath.Text = vm.VirtualHardDrivePath[0];
 
                     this.BindSettingsControls(vm);
 

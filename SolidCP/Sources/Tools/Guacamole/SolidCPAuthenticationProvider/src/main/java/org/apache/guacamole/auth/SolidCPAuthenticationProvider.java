@@ -61,6 +61,12 @@ public class SolidCPAuthenticationProvider extends SimpleAuthenticationProvider 
 		public String getName() { return "solidcp-link-exp-time"; }
 
 	};
+	final StringGuacamoleProperty serverLayout = 
+			new StringGuacamoleProperty() {
+		@Override
+		public String getName() { return "server-layout"; }
+
+	};
 
 	@Override
 	public String getIdentifier() {
@@ -125,6 +131,8 @@ public class SolidCPAuthenticationProvider extends SimpleAuthenticationProvider 
 		config.setParameter("ignore-cert", "true");
 		config.setParameter("preconnection-id", "");
 		config.setParameter("preconnection-blob", vmId);
+		String layout = environment.getProperty(serverLayout);
+		if (layout != null && !layout.isEmpty()) config.setParameter("server-layout", layout);
 		configs.put(vmHostname, config);
 		return configs;
 	}

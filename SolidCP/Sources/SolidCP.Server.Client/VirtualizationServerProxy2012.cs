@@ -125,6 +125,8 @@ namespace SolidCP.Providers.Virtualization2012
 
         private System.Threading.SendOrPostCallback ConvertVirtualHardDiskOperationCompleted;
 
+        private System.Threading.SendOrPostCallback CreateVirtualHardDiskOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteRemoteFileOperationCompleted;
 
         private System.Threading.SendOrPostCallback ExpandDiskVolumeOperationCompleted;
@@ -314,6 +316,9 @@ namespace SolidCP.Providers.Virtualization2012
 
         /// <remarks/>
         public event ConvertVirtualHardDiskCompletedEventHandler ConvertVirtualHardDiskCompleted;
+
+        /// <remarks/>
+        public event CreateVirtualHardDiskCompletedEventHandler CreateVirtualHardDiskCompleted;
 
         /// <remarks/>
         public event DeleteRemoteFileCompletedEventHandler DeleteRemoteFileCompleted;
@@ -2747,6 +2752,65 @@ namespace SolidCP.Providers.Virtualization2012
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ConvertVirtualHardDiskCompleted(this, new ConvertVirtualHardDiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/CreateVirtualHardDisk", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            object[] results = this.Invoke("CreateVirtualHardDisk", new object[] {
+                        destinationPath,
+                        diskType,
+                        blockSizeBytes,
+                        sizeGB});
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateVirtualHardDisk", new object[] {
+                        destinationPath,
+                        diskType,
+                        blockSizeBytes,
+                        sizeGB}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public JobResult EndCreateVirtualHardDisk(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void CreateVirtualHardDiskAsync(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            this.CreateVirtualHardDiskAsync(destinationPath, diskType, blockSizeBytes, sizeGB, null);
+        }
+
+        /// <remarks/>
+        public void CreateVirtualHardDiskAsync(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, object userState)
+        {
+            if ((this.CreateVirtualHardDiskOperationCompleted == null))
+            {
+                this.CreateVirtualHardDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateVirtualHardDiskOperationCompleted);
+            }
+            this.InvokeAsync("CreateVirtualHardDisk", new object[] {
+                        destinationPath,
+                        diskType,
+                        blockSizeBytes,
+                        sizeGB}, this.CreateVirtualHardDiskOperationCompleted, userState);
+        }
+
+        private void OnCreateVirtualHardDiskOperationCompleted(object arg)
+        {
+            if ((this.CreateVirtualHardDiskCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateVirtualHardDiskCompleted(this, new CreateVirtualHardDiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -5269,6 +5333,36 @@ namespace SolidCP.Providers.Virtualization2012
         private object[] results;
 
         internal ConvertVirtualHardDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public JobResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((JobResult)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void CreateVirtualHardDiskCompletedEventHandler(object sender, CreateVirtualHardDiskCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CreateVirtualHardDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal CreateVirtualHardDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;

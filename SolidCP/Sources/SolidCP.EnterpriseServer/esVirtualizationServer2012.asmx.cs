@@ -319,7 +319,7 @@ namespace SolidCP.EnterpriseServer
             return VirtualizationServerController2012.UpdateVirtualMachineResource(itemId, vmSettings);
         }
         [WebMethod]
-        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
+        public ResultObject UpdateVirtualMachineConfiguration(int itemId, int cpuCores, int ramMB, int[] hddGB, int snapshots,
                     bool dvdInstalled, bool bootFromCD, bool numLock,
                     bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                     bool externalNetworkEnabled,

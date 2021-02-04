@@ -107,6 +107,22 @@
                                         <td><asp:Localize ID="locHdd" runat="server" meta:resourcekey="locHdd" Text="Hard disk size, GB:" /></td>
                                         <td><asp:Literal ID="litHdd" runat="server"></asp:Literal></td>
                                     </tr>
+                                    <asp:Repeater ID="repHdd" runat="server">
+                                        <HeaderTemplate>
+                                        </HeaderTemplate>
+                                        <ItemTemplate>
+                                            <tr>
+                                                <td>
+                                                    <asp:Localize ID="locAdditionalHdd" runat="server" meta:resourcekey="locHdd" Text="Hard disk size, GB:" />
+                                                </td>
+                                                <td>
+                                                    <asp:Literal ID="litAdditionalHdd" runat="server" Text='<%# Eval("DiskSize") %>'></asp:Literal>
+                                                </td>
+                                            </tr>
+                                        </ItemTemplate>
+                                        <SeparatorTemplate>
+                                        </SeparatorTemplate>
+                                    </asp:Repeater>
                                     <tr>
                                         <td><asp:Localize ID="locHddIOPSmin" runat="server" meta:resourcekey="locHddIOPSmin" Text="HDD minimum IOPS:" /></td>
                                         <td><asp:Literal ID="litHddIOPSmin" runat="server"></asp:Literal></td>

@@ -178,6 +178,12 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback CreateMailboxOperationCompleted;
 
+        private System.Threading.SendOrPostCallback CreateJournalRuleOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetJournalRuleOperationCompleted;
+
+        private System.Threading.SendOrPostCallback SetJournalRuleOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteMailboxOperationCompleted;
 
         private System.Threading.SendOrPostCallback DisableMailboxOperationCompleted;
@@ -475,6 +481,15 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event CreateMailboxCompletedEventHandler CreateMailboxCompleted;
+
+        /// <remarks/>
+        public event CreateJournalRuleCompletedEventHandler CreateJournalRuleCompleted;
+
+        /// <remarks/>
+        public event GetJournalRuleCompletedEventHandler GetJournalRuleCompleted;
+
+        /// <remarks/>
+        public event SetJournalRuleCompletedEventHandler SetJournalRuleCompleted;
 
         /// <remarks/>
         public event DeleteMailboxCompletedEventHandler DeleteMailboxCompleted;
@@ -4522,6 +4537,171 @@ namespace SolidCP.EnterpriseServer
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CreateMailboxCompleted(this, new CreateMailboxCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CreateJournalRule", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string CreateJournalRule(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            object[] results = this.Invoke("CreateJournalRule", new object[] {
+                        itemId,
+                        journalEmail,
+                        scope,
+                        recipientEmail,
+                        enabled});
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateJournalRule(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateJournalRule", new object[] {
+                        itemId,
+                        journalEmail,
+                        scope,
+                        recipientEmail,
+                        enabled}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public string EndCreateJournalRule(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public void CreateJournalRuleAsync(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            this.CreateJournalRuleAsync(itemId, journalEmail, scope, recipientEmail, enabled, null);
+        }
+
+        /// <remarks/>
+        public void CreateJournalRuleAsync(int itemId, string journalEmail, string scope, string recipientEmail, bool enabled, object userState)
+        {
+            if ((this.CreateJournalRuleOperationCompleted == null))
+            {
+                this.CreateJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("CreateJournalRule", new object[] {
+                        itemId,
+                        journalEmail,
+                        scope,
+                        recipientEmail,
+                        enabled}, this.CreateJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnCreateJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.CreateJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateJournalRuleCompleted(this, new CreateJournalRuleCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetJournalRule", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ExchangeJournalRule GetJournalRule(int itemId, string journalEmail)
+        {
+            object[] results = this.Invoke("GetJournalRule", new object[] {
+                        itemId,
+                        journalEmail});
+            return ((ExchangeJournalRule)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetJournalRule(int itemId, string journalEmail, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetJournalRule", new object[] {
+                        itemId,
+                        journalEmail}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ExchangeJournalRule EndGetJournalRule(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ExchangeJournalRule)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetJournalRuleAsync(int itemId, string journalEmail)
+        {
+            this.GetJournalRuleAsync(itemId, journalEmail, null);
+        }
+
+        /// <remarks/>
+        public void GetJournalRuleAsync(int itemId, string journalEmail, object userState)
+        {
+            if ((this.GetJournalRuleOperationCompleted == null))
+            {
+                this.GetJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("GetJournalRule", new object[] {
+                        itemId,
+                        journalEmail}, this.GetJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnGetJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.GetJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetJournalRuleCompleted(this, new GetJournalRuleCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SetJournalRule", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int SetJournalRule(int itemId, ExchangeJournalRule rule)
+        {
+            object[] results = this.Invoke("SetJournalRule", new object[] {
+                        itemId,
+                        rule});
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginSetJournalRule(int itemId, ExchangeJournalRule rule, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("SetJournalRule", new object[] {
+                        itemId,
+                        rule}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public int EndSetJournalRule(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public void SetJournalRuleAsync(int itemId, ExchangeJournalRule rule)
+        {
+            this.SetJournalRuleAsync(itemId, rule, null);
+        }
+
+        /// <remarks/>
+        public void SetJournalRuleAsync(int itemId, ExchangeJournalRule rule, object userState)
+        {
+            if ((this.SetJournalRuleOperationCompleted == null))
+            {
+                this.SetJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("SetJournalRule", new object[] {
+                        itemId,
+                        rule}, this.SetJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnSetJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.SetJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetJournalRuleCompleted(this, new SetJournalRuleCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -8978,6 +9158,96 @@ namespace SolidCP.EnterpriseServer
         private object[] results;
 
         internal CreateMailboxCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public int Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void CreateJournalRuleCompletedEventHandler(object sender, CreateJournalRuleCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CreateJournalRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal CreateJournalRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public string Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetJournalRuleCompletedEventHandler(object sender, GetJournalRuleCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetJournalRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetJournalRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ExchangeJournalRule Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ExchangeJournalRule)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void SetJournalRuleCompletedEventHandler(object sender, SetJournalRuleCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetJournalRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal SetJournalRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;

@@ -216,10 +216,15 @@ namespace SolidCP.Providers.Virtualization
 
                         if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                         {
-                            vm.VirtualHardDrivePath = vm.Disks[0].Path;
-                            vm.HddSize = Convert.ToInt32(vm.Disks[0].MaxInternalSize / Constants.Size1G);
                             vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
                             vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
+                            vm.VirtualHardDrivePath = new string[vm.Disks.GetLength(0)];
+                            vm.HddSize = new int[vm.Disks.GetLength(0)];
+                            for (int i = 0; i < vm.Disks.GetLength(0); i++)
+                            {
+                                vm.VirtualHardDrivePath[i] = vm.Disks[i].Path;
+                                vm.HddSize[i] = Convert.ToInt32(vm.Disks[i].MaxInternalSize / Constants.Size1G);
+                            }
                         }
 
                         // network adapters
@@ -477,7 +482,10 @@ namespace SolidCP.Providers.Virtualization
             vm.RootFolderPath = FileUtils.EvaluateSystemVariables(vm.RootFolderPath);
             string msHyperVFolderPath = vm.RootFolderPath.Substring(0, vm.RootFolderPath.Length - vm.Name.Length);
             vm.OperatingSystemTemplatePath = FileUtils.EvaluateSystemVariables(vm.OperatingSystemTemplatePath);
-            vm.VirtualHardDrivePath = FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath);
+            for (int i = 0; i < vm.VirtualHardDrivePath.Length; i++)
+            {
+                vm.VirtualHardDrivePath[i] = FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath[i]);
+            }
 
             try
             {
@@ -485,11 +493,14 @@ namespace SolidCP.Providers.Virtualization
                 Command cmdNew = new Command("New-VM");
                 cmdNew.Parameters.Add("Name", vm.Name);
                 cmdNew.Parameters.Add("Generation", vm.Generation > 1 ? vm.Generation : 1);
-                cmdNew.Parameters.Add("VHDPath", vm.VirtualHardDrivePath);
+                cmdNew.Parameters.Add("VHDPath", vm.VirtualHardDrivePath[0]);
                 cmdNew.Parameters.Add("Path", msHyperVFolderPath);
                 if(CheckVersionConfigSupport(ConvertNullableToDouble(vm.Version)))
                     cmdNew.Parameters.Add("Version", vm.Version);
-                PowerShell.Execute(cmdNew, true, true);
+                Collection<PSObject> result = PowerShell.Execute(cmdNew, true, true);
+
+                // Get created machine Id
+                vm.VirtualMachineId = result[0].GetProperty("VMId").ToString();
 
                 // Delete default adapter (MacAddress in not running and newly created VM is 00-00-00-00-00-00)
                 if(vm.ExternalNetworkEnabled || vm.PrivateNetworkEnabled) //leave the adapter as default if we do not configure a new one (bugfix for Windows Server 2019, ******* MS!)
@@ -511,13 +522,6 @@ namespace SolidCP.Providers.Virtualization
                 if (autoStopAction != AutomaticStopAction.Undefined)
                     cmdSet.Parameters.Add("AutomaticStopAction", autoStopAction.ToString());
                 PowerShell.Execute(cmdSet, true);
-
-                // Get created machine Id
-                //var createdMachine = GetVirtualMachines().FirstOrDefault(m => m.Name == vm.Name);
-                var createdMachine = GetVirtualMachinesByName(vm.Name).FirstOrDefault(m => m.Name == vm.Name);
-                if (createdMachine == null)
-                    throw new Exception("Can't find created machine");
-                vm.VirtualMachineId = createdMachine.VirtualMachineId;
 
                 // add to Failover Cluster
                 if (!String.IsNullOrEmpty(vm.ClusterName))
@@ -547,6 +551,13 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
+                // check snapshots
+                List<VirtualMachineSnapshot> snapshots = GetVirtualMachineSnapshots(vm.VirtualMachineId);
+                if (snapshots.Count > 0)
+                {
+                    throw new Exception("Configuration changes can only be made when no snapshots have been taken.");
+                }
+
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
@@ -554,7 +565,7 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, realVm, vm.HddSize);
+                HardDriveHelper.Update(PowerShell, PowerShellWithJobs, realVm, vm, ServerNameSettings);
                 HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
@@ -577,11 +588,31 @@ namespace SolidCP.Providers.Virtualization
 
             try //not all Templates support hot chnage values, we get an exception if it doesn't.
             {
+                // check snapshots
+                List<VirtualMachineSnapshot> snapshots = GetVirtualMachineSnapshots(vm.VirtualMachineId);
+                if (snapshots.Count > 0)
+                {
+                    return false;
+                }
+
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
                 bool canChangeValueWihoutReboot = false;
                 if (realVm.CpuCores == vm.CpuCores)
                 {
-                    if (realVm.HddSize == vm.HddSize && realVm.EnableSecureBoot == vm.EnableSecureBoot)
+                    bool hddChanged = true;
+                    if (realVm.HddSize.Length == vm.HddSize.Length)
+                    {
+                        hddChanged = false;
+                        for (int i = 0; i < vm.HddSize.Length; i++)
+                        {
+                            if (realVm.HddSize[i] != vm.HddSize[i] || !Path.GetFileName(realVm.VirtualHardDrivePath[i]).ToLower().Equals(Path.GetFileName(vm.VirtualHardDrivePath[i]).ToLower()))
+                            {
+                                hddChanged = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!hddChanged && realVm.EnableSecureBoot == vm.EnableSecureBoot)
                     {
                         if (realVm.Generation > 1 || realVm.BootFromCD == vm.BootFromCD)
                         {
@@ -732,21 +763,54 @@ namespace SolidCP.Providers.Virtualization
             {
                 if (ex.Message.Contains("0x8007000E")) // Not enough memory on Hyper-V host
                 {
-                    Command cmd = new Command("Move-ClusterVirtualMachineRole");
-                    cmd.Parameters.Add("Name", vmName);
+                    Command cmd = new Command("Get-ClusterNode");
                     cmd.Parameters.Add("Cluster", clusterName);
-                    cmd.Parameters.Add("MigrationType", "Quick");
-                    Collection<PSObject> result = PowerShell.Execute(cmd, false, false);
-
-                    string hostName = null;
-                    if (result.Count > 0) hostName = result[0].GetProperty("OwnerNode").ToString();
-
-                    if (!String.IsNullOrEmpty(hostName))
+                    Collection<PSObject> nodes = PowerShell.Execute(cmd, false, false);
+                    int maxMemory = 0;
+                    string maxMemoryHostName = null;
+                    foreach (PSObject node in nodes)
                     {
-                        cmd = new Command("Start-VM");
+                        string hvHost = node.Members["Name"].Value.ToString();
+                        if (!String.IsNullOrEmpty(hvHost))
+                        {
+                            cmd = new Command("Get-WmiObject");
+                            cmd.Parameters.Add("Class", "Win32_OperatingSystem");
+                            cmd.Parameters.Add("Namespace", "root\\cimv2");
+                            cmd.Parameters.Add("ComputerName", hvHost);
+                            Collection<PSObject> res = PowerShell.Execute(cmd, false, false);
+                            int freeMemory = Convert.ToInt32(res[0].Members["FreePhysicalMemory"].Value);
+                            if (freeMemory > maxMemory)
+                            {
+                                maxMemory = freeMemory;
+                                maxMemoryHostName = hvHost;
+                            }
+                        }
+                    }
+
+                    if (!String.IsNullOrEmpty(maxMemoryHostName))
+                    {
+                        cmd = new Command("Move-ClusterVirtualMachineRole");
                         cmd.Parameters.Add("Name", vmName);
-                        cmd.Parameters.Add("ComputerName", hostName);
-                        PowerShell.Execute(cmd, false, true);
+                        cmd.Parameters.Add("Cluster", clusterName);
+                        cmd.Parameters.Add("Node", maxMemoryHostName);
+                        cmd.Parameters.Add("MigrationType", "Quick");
+                        Collection<PSObject> result = PowerShell.Execute(cmd, false, false);
+
+                        string hostName = null;
+                        if (result.Count > 0) hostName = result[0].GetProperty("OwnerNode").ToString();
+
+                        if (!String.IsNullOrEmpty(hostName))
+                        {
+                            cmd = new Command("Start-VM");
+                            cmd.Parameters.Add("Name", vmName);
+                            cmd.Parameters.Add("ComputerName", hostName);
+                            PowerShell.Execute(cmd, false, true);
+                        }
+                    }
+                    else
+                    {
+                        HostedSolutionLog.LogError("ChangeVirtualMachineState", ex);
+                        throw;
                     }
                 }
                 else
@@ -1890,6 +1954,21 @@ namespace SolidCP.Providers.Virtualization
             catch (Exception ex)
             {
                 HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
+                throw;
+            }
+        }
+
+        public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            try
+            {
+                var result = HardDriveHelper.CreateVirtualHardDisk(PowerShellWithJobs, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
+
+                return JobHelper.CreateResultFromPSResults(result);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("CreateVirtualHardDisk", ex);
                 throw;
             }
         }

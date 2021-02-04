@@ -45,6 +45,7 @@ namespace SolidCP.Providers.HostedSolution
         SecurityGroup = 8,
         DefaultSecurityGroup = 9,
         SharedMailbox = 10,
-        DeletedUser = 11
+        DeletedUser = 11,
+        JournalingMailbox = 12
 	}
 }

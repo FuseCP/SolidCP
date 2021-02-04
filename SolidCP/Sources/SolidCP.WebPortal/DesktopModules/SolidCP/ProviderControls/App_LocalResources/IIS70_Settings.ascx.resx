@@ -274,4 +274,7 @@
   <data name="btnResetText.Text" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="lblLeEmail.Text" xml:space="preserve">
+    <value>Lets encrypt notification email:</value>
+  </data>
 </root>

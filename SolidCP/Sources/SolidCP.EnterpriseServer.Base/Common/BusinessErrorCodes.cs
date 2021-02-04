@@ -336,7 +336,8 @@ namespace SolidCP.EnterpriseServer
 		public const int ERROR_EXCHANGE_DOMAINS_QUOTA_LIMIT = -2611;
         public const int ERROR_EXCHANGE_STORAGE_QUOTAS_EXCEED_HOST_VALUES = -2612;
         public const int ERROR_EXCHANGE_INVALID_RECOVERABLEITEMS_QUOTA = -2613;
-		#endregion
+        public const int ERROR_EXCHANGE_JOURNALING_MAILBOXES_QUOTA_LIMIT = -2614;
+        #endregion
 
         #region Organizations
 

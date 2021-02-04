@@ -3054,7 +3054,7 @@ namespace SolidCP.EnterpriseServer
                                                     bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
                                                     int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
                                                     bool enabledLitigationHold, int recoverabelItemsSpace, int recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
-                                                    bool archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion)
+                                                    bool archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
         {
             SqlParameter outParam = new SqlParameter("@MailboxPlanId", SqlDbType.Int);
             outParam.Direction = ParameterDirection.Output;
@@ -3092,7 +3092,8 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@EnableArchiving", EnableArchiving),
                 new SqlParameter("@ArchiveSizeMB", ArchiveSizeMB),
                 new SqlParameter("@ArchiveWarningPct", ArchiveWarningPct),
-                new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion)
+                new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion),
+                new SqlParameter("@IsForJournaling", isForJournaling)
             );
 
             return Convert.ToInt32(outParam.Value);
@@ -3104,7 +3105,7 @@ namespace SolidCP.EnterpriseServer
                                             bool isDefault, int issueWarningPct, int keepDeletedItemsDays, int mailboxSizeMB, int maxReceiveMessageSizeKB, int maxRecipients,
                                             int maxSendMessageSizeKB, int prohibitSendPct, int prohibitSendReceivePct, bool hideFromAddressBook, int mailboxPlanType,
                                             bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg,
-                                            bool Archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion)
+                                            bool Archiving, bool EnableArchiving, int ArchiveSizeMB, int ArchiveWarningPct, bool enableForceArchiveDeletion, bool isForJournaling)
         {
             SqlHelper.ExecuteNonQuery(
                 ConnectionString,
@@ -3138,7 +3139,8 @@ namespace SolidCP.EnterpriseServer
 	            new SqlParameter("@EnableArchiving", EnableArchiving),
                 new SqlParameter("@ArchiveSizeMB", ArchiveSizeMB),
                 new SqlParameter("@ArchiveWarningPct", ArchiveWarningPct),
-                new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion)
+                new SqlParameter("@EnableForceArchiveDeletion", enableForceArchiveDeletion),
+                new SqlParameter("@IsForJournaling", isForJournaling)
             );
         }
 

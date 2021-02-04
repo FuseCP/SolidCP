@@ -241,12 +241,33 @@
     <Compile Include="Code\ReportingServices\ReportingServicesUtils.cs" />
     <Compile Include="Code\UserControls\Tab.cs" />
     <Compile Include="App_Code\IPAddressExtensions.cs" />
+    <Compile Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx.cs">
+      <DependentUpon>ExchangeCreateJournalingMailbox.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx.designer.cs">
+      <DependentUpon>ExchangeCreateJournalingMailbox.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ExchangeServer\ExchangeMailboxAutoReply.ascx.cs">
       <DependentUpon>ExchangeMailboxAutoReply.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="ExchangeServer\ExchangeMailboxAutoReply.ascx.designer.cs">
       <DependentUpon>ExchangeMailboxAutoReply.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ExchangeServer\ExchangeJournalingMailboxes.ascx.cs">
+      <DependentUpon>ExchangeJournalingMailboxes.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExchangeServer\ExchangeJournalingMailboxes.ascx.designer.cs">
+      <DependentUpon>ExchangeJournalingMailboxes.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx.cs">
+      <DependentUpon>ExchangeJournalingMailboxGeneralSettings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx.designer.cs">
+      <DependentUpon>ExchangeJournalingMailboxGeneralSettings.ascx</DependentUpon>
     </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
@@ -5513,7 +5534,10 @@
   <ItemGroup>
     <Content Include="ApplyEnableHardQuotaFeature.ascx" />
     <Content Include="AutoUpdateServers.ascx" />
+    <Content Include="ExchangeServer\ExchangeCreateJournalingMailbox.ascx" />
     <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
+    <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />
+    <Content Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
     <Content Include="ProviderControls\SpamExperts_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
@@ -6124,7 +6148,9 @@
     <Content Include="CRM\App_LocalResources\CRMOrganizationDetails.ascx.de-DE.resx" />
     <Content Include="CRM\App_LocalResources\CRMStorageSettings.ascx.de-DE.resx" />
     <Content Include="CRM\App_LocalResources\CRMUserRoles.ascx.de-DE.resx" />
-    <Content Include="CRM\App_LocalResources\CRMUsers.ascx.de-DE.resx" />
+    <Content Include="CRM\App_LocalResources\CRMUsers.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\App_LocalResources\EnterpriseStorageCreateDriveMap.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\EnterpriseStorageCreateFolder.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\EnterpriseStorageDriveMaps.ascx.de-DE.resx" />
@@ -6136,13 +6162,17 @@
     <Content Include="ExchangeServer\App_LocalResources\ExchangeActiveSyncSettings.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeAddDomainName.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeAddMailboxPlan.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\App_LocalResources\ExchangeCheckDomainName.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeCheckDomainName.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\App_LocalResources\ExchangeContactGeneralSettings.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeContactMailFlowSettings.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeContacts.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeCreateContact.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeCreateDistributionList.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\App_LocalResources\ExchangeCreatePublicFolder.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeDisclaimerGeneralSettings.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeDisclaimers.ascx.de-DE.resx" />
@@ -6194,7 +6224,9 @@
     <Content Include="ExchangeServer\App_LocalResources\OrganizationUserSetupInstructions.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\AcceptedSenders.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\AccountsList.ascx.de-DE.resx" />
-    <Content Include="ExchangeServer\UserControls\App_LocalResources\AccountsListWithPermissions.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\AccountsListWithPermissions.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="ExchangeServer\UserControls\App_LocalResources\Breadcrumb.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\ContactTabs.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\DaysBox.ascx.de-DE.resx" />
@@ -6454,6 +6486,20 @@
     <Content Include="App_LocalResources\VLANs.ascx.de-DE.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx" />
     <Content Include="ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.de-DE.resx" />
+    <Content Include="ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.resx" />
+    <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.de-DE.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
