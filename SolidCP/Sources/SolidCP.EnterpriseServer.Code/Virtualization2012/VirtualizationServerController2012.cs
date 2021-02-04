@@ -582,12 +582,14 @@ namespace SolidCP.EnterpriseServer
 
                 try
                 {
+                    bool isTemplateExist = false;
                     LibraryItem[] osTemplates = GetOperatingSystemTemplates(vm.PackageId);
                     foreach (LibraryItem item in osTemplates)
                     {
                         if (String.Compare(item.Path, osTemplateFile, true) == 0)
                         {
                             osTemplate = item;
+                            isTemplateExist = true;
 
                             // check minimal disk size
                             if (osTemplate.DiskSize > 0 && vm.HddSize[0] < osTemplate.DiskSize)
@@ -605,6 +607,9 @@ namespace SolidCP.EnterpriseServer
                             vm.RemoteDesktopEnabled = osTemplate.RemoteDesktop;
                             break;
                         }
+                    }
+                    if (!isTemplateExist) { //give a description of the error for Third party services if they use SOAP
+                        throw new Exception("The template " + osTemplateFile + " was not found in the HyperV Service Template Library.");
                     }
                 }
                 catch (Exception ex)
