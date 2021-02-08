@@ -123,6 +123,11 @@
 						<asp:CheckBox ID="chkHideFromAddressBook" runat="server" meta:resourcekey="chkHideFromAddressBook" Text="Hide from Addressbook"></asp:CheckBox>
 					</td>
 				</tr>
+                <tr>
+				    <td>
+					    <asp:CheckBox ID="chkIsForJournaling" runat="server" meta:resourcekey="chkIsForJournaling" Text="For journaling mailboxes only" Checked="false"></asp:CheckBox>
+					</td>
+				</tr>
 			</table>
 			<br />
 		</asp:Panel>

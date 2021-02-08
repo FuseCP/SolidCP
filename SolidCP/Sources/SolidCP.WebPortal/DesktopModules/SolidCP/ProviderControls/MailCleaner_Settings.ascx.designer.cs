@@ -67,39 +67,12 @@ namespace SolidCP.Portal.ProviderControls {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
         
         /// <summary>
-        /// locLynServers control.
+        /// chkIgnoreCheckSSL control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locMailCleanerServers;
-        
-        /// <summary>
-        /// ddlSfBServers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlMailCleanerServers;
-        
-        /// <summary>
-        /// btnAddSfBServer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddMailCleanerServer;
-        
-        /// <summary>
-        /// gvSfBServers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvMailCleanerServers;
+        protected global::System.Web.UI.WebControls.CheckBox chkIgnoreCheckSSL;
     }
 }

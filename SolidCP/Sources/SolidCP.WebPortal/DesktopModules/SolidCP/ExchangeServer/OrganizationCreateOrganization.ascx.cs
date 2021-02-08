@@ -75,8 +75,6 @@ namespace SolidCP.Portal.ExchangeServer
                         if (bAdd)
                         {
                             ddlDomains.Items.Add(d.DomainName.ToLower());
-                            //Add Mail Cleaner
-                            Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(d.DomainName.ToLower());
                         }
                     }
                 }

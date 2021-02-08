@@ -89,7 +89,7 @@
 						<tr>
 							<td class="SubHead" width="150" nowrap><asp:Label ID="lblRecordType" runat="server" meta:resourcekey="lblRecordType" Text="Record Type:"></asp:Label></td>
 							<td class="NormalBold" width="100%">
-								<asp:DropDownList ID="ddlRecordType" runat="server" SelectedValue='<%# Bind("RecordType") %>' CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="ddlRecordType_SelectedIndexChanged">
+								<asp:DropDownList ID="ddlRecordType" runat="server" Width="120px" SelectedValue='<%# Bind("RecordType") %>' CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="ddlRecordType_SelectedIndexChanged">
                                     <asp:ListItem>A</asp:ListItem>
 									<asp:ListItem>AAAA</asp:ListItem>
                                     <asp:ListItem>MX</asp:ListItem>

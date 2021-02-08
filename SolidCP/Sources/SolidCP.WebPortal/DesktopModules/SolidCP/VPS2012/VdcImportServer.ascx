@@ -105,6 +105,24 @@
                                 <div class="col-sm-11">
                                     <asp:Literal ID="VhdPath" runat="server" Text="0"></asp:Literal>
                                 </div>
+
+                                <asp:Repeater ID="repHdd" runat="server">
+                                    <HeaderTemplate>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="locAdditionalHDD" runat="server" CssClass="col-sm-1" meta:resourcekey="locHDD" Text="HDD:"></asp:Label>
+                                        <div class="col-sm-11">
+                                            <asp:Literal ID="AdditionalHddSize" runat="server" Text='<%# Eval("DiskSize") %>'></asp:Literal>
+                                        </div>
+
+                                        <asp:Label ID="locAdditionalVhdPath" runat="server" CssClass="col-sm-1" meta:resourcekey="locVhdPath" Text="VHD location:"></asp:Label>
+                                        <div class="col-sm-11">
+                                            <asp:Literal ID="AdditionalVhdPath" runat="server" Text='<%# Eval("DiskPath") %>'></asp:Literal>
+                                        </div>
+                                    </ItemTemplate>
+                                    <SeparatorTemplate>
+                                    </SeparatorTemplate>
+                                </asp:Repeater>
                             </div>
                         </asp:Panel>
                         

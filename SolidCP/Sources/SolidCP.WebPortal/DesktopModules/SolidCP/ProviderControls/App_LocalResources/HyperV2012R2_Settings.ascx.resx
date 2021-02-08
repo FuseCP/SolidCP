@@ -579,4 +579,46 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="locDiskSize.Text" xml:space="preserve">
     <value>VHD Disk Size (GB):</value>
   </data>
+  <data name="btnAddPsScript.Text" xml:space="preserve">
+    <value>Add PS Script</value>
+  </data>
+  <data name="btnRemovePsScript.Text" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="locPsScript.Text" xml:space="preserve">
+    <value>Custom PowerShell Scripts</value>
+  </data>
+  <data name="locRunAt.Text" xml:space="preserve">
+    <value>Execute at:</value>
+  </data>
+  <data name="locScript.Text" xml:space="preserve">
+    <value>PS Script:</value>
+  </data>
+  <data name="locVar.Text" xml:space="preserve">
+    <value>The following variables are supported:</value>
+  </data>
+  <data name="liRunAtAfterCreation.Text" xml:space="preserve">
+    <value>After VM creation</value>
+  </data>
+  <data name="liRunAtAfterRenaming.Text" xml:space="preserve">
+    <value>After VM renaming</value>
+  </data>
+  <data name="liRunAtBeforeDeletion.Text" xml:space="preserve">
+    <value>Before VM deletion</value>
+  </data>
+  <data name="liRunAtBeforeRenaming.Text" xml:space="preserve">
+    <value>Before VM renaming</value>
+  </data>
+  <data name="liRunAtDisabled.Text" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="liRunAtExtNetwork.Text" xml:space="preserve">
+    <value>External network configuration</value>
+  </data>
+  <data name="liRunAtMngNetwork.Text" xml:space="preserve">
+    <value>Management network configuration</value>
+  </data>
+  <data name="liRunAtPrivNetwork.Text" xml:space="preserve">
+    <value>Private network configuration</value>
+  </data>
 </root>

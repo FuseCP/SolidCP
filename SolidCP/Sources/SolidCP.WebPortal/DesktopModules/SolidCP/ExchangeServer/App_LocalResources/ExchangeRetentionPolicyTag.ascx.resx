@@ -136,7 +136,7 @@
     <value>*</value>
   </data>
   <data name="locTitle.Text" xml:space="preserve">
-    <value>Mailbox plans</value>
+    <value>Retention policy tags</value>
   </data>
   <data name="Text.PageName" xml:space="preserve">
     <value>Retention policy tags</value>
@@ -149,5 +149,20 @@
   </data>
   <data name="btnUpdatePolicy.Text" xml:space="preserve">
     <value>Update</value>
+  </data>
+  <data name="locAgeLimitForRetention.Text" xml:space="preserve">
+    <value>Age limit for retention (Days):</value>
+  </data>
+  <data name="locRetentionAction.Text" xml:space="preserve">
+    <value>Retention action :</value>
+  </data>
+  <data name="locType.Text" xml:space="preserve">
+    <value>Type :</value>
+  </data>
+  <data name="secPolicy.Text" xml:space="preserve">
+    <value>Policy</value>
+  </data>
+  <data name="secPolicyFeatures.Text" xml:space="preserve">
+    <value>Policy Tag Features</value>
   </data>
 </root>

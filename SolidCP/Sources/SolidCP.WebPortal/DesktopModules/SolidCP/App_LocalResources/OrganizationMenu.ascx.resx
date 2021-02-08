@@ -210,6 +210,9 @@
   <data name="Text.PublicFolders" xml:space="preserve">
     <value>Public Folders</value>
   </data>
+  <data name="Text.JournalingMailboxes" xml:space="preserve">
+    <value>Journaling Mailboxes</value>
+  </data>
   <data name="Text.SecurityGroups" xml:space="preserve">
     <value>Groups</value>
   </data>

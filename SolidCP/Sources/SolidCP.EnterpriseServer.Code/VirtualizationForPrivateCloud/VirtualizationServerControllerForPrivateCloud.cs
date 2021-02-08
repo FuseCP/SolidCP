@@ -1196,7 +1196,7 @@ namespace SolidCP.EnterpriseServer
                 item.RamSize = vm.RamSize;
                 item.HddSize = vm.HddSize;
                 item.VirtualHardDrivePath = vm.VirtualHardDrivePath;
-                item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath);
+                item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath[0]);
                 item.SnapshotsNumber = cntx.Quotas[Quotas.VPS_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
                 item.DvdDriveInstalled = vm.DvdDriveInstalled;
                 item.BootFromCD = vm.BootFromCD;

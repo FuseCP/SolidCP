@@ -4359,6 +4359,14 @@ ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
 END
 GO
 
+-- Exchange2013 Journaling
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='ExchangeMailboxPlans' AND COLS.name='IsForJournaling')
+BEGIN
+ALTER TABLE [dbo].[ExchangeMailboxPlans] ADD
+[IsForJournaling] [bit] NULL
+END
+GO
+
 
 ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan] 
 (
@@ -7164,6 +7172,14 @@ VALUES (729, 12, 32, N'Exchange2013.AutoReply', N'Automatic Replies via SolidCP 
 END
 GO
 
+-- Exchange2013 Journaling mailboxes
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2013.JournalingMailboxes')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota])
+	VALUES (731, 12, 31, N'Exchange2013.JournalingMailboxes', N'Journaling Mailboxes per Organization', 2, 0, NULL, NULL)
+END
+GO
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -8981,7 +8997,8 @@ ALTER PROCEDURE [dbo].[AddExchangeMailboxPlan]
 	@EnableArchiving bit,
 	@ArchiveSizeMB int,
 	@ArchiveWarningPct int,
-	@EnableForceArchiveDeletion bit
+	@EnableForceArchiveDeletion bit,
+	@IsForJournaling bit
 )
 AS
 
@@ -9027,7 +9044,8 @@ INSERT INTO ExchangeMailboxPlans
 	EnableArchiving,
 	ArchiveSizeMB,
 	ArchiveWarningPct,
-	EnableForceArchiveDeletion
+	EnableForceArchiveDeletion,
+	IsForJournaling
 )
 VALUES
 (
@@ -9059,7 +9077,8 @@ VALUES
 	@EnableArchiving,
 	@ArchiveSizeMB,
 	@ArchiveWarningPct,
-	@EnableForceArchiveDeletion
+	@EnableForceArchiveDeletion,
+	@IsForJournaling
 )
 
 SET @MailboxPlanId = SCOPE_IDENTITY()
@@ -9097,7 +9116,8 @@ ALTER PROCEDURE [dbo].[UpdateExchangeMailboxPlan]
 	@EnableArchiving bit,
 	@ArchiveSizeMB int,
 	@ArchiveWarningPct int,
-	@EnableForceArchiveDeletion bit
+	@EnableForceArchiveDeletion bit,
+	@IsForJournaling bit
 )
 AS
 
@@ -9129,7 +9149,8 @@ UPDATE ExchangeMailboxPlans SET
 	EnableArchiving = @EnableArchiving,
 	ArchiveSizeMB = @ArchiveSizeMB,
 	ArchiveWarningPct = @ArchiveWarningPct,
-	EnableForceArchiveDeletion = @EnableForceArchiveDeletion
+	EnableForceArchiveDeletion = @EnableForceArchiveDeletion,
+	IsForJournaling = @IsForJournaling
 WHERE MailboxPlanId = @MailboxPlanId
 
 RETURN
@@ -9170,7 +9191,8 @@ SELECT
 	EnableArchiving,
 	ArchiveSizeMB,
 	ArchiveWarningPct,
-	EnableForceArchiveDeletion
+	EnableForceArchiveDeletion,
+	IsForJournaling
 FROM
 	ExchangeMailboxPlans
 WHERE
@@ -9209,7 +9231,8 @@ SELECT
 	EnableArchiving,
 	ArchiveSizeMB,
 	ArchiveWarningPct,
-	EnableForceArchiveDeletion
+	EnableForceArchiveDeletion,
+	IsForJournaling
 FROM
 	ExchangeMailboxPlans
 WHERE
@@ -9265,7 +9288,7 @@ IF OBJECT_ID('tempdb..#TempTable') IS NOT NULL DROP TABLE #TempTable
 CREATE TABLE #TempTable(
 	ItemID int,
 	PropertyName nvarchar(50),
-	PropertyValue  nvarchar(3000))
+	PropertyValue  nvarchar(max))
 
 INSERT INTO #TempTable (ItemID, PropertyName, PropertyValue)
 SELECT
@@ -9275,7 +9298,7 @@ SELECT
 FROM OPENXML(@idoc, '/properties/property',1) WITH 
 (
 	PropertyName nvarchar(50) '@name',
-	PropertyValue nvarchar(3000) '@value'
+	PropertyValue nvarchar(max) '@value'
 ) as PV
 
 -- Move data from temp table to real table
@@ -10606,7 +10629,7 @@ WHERE ItemID = @ItemID
 CREATE TABLE #TempTable(
 	ItemID int,
 	PropertyName nvarchar(50),
-	PropertyValue  nvarchar(3000))
+	PropertyValue  nvarchar(max))
 
 INSERT INTO #TempTable (ItemID, PropertyName, PropertyValue)
 SELECT
@@ -10616,7 +10639,7 @@ SELECT
 FROM OPENXML(@idoc, '/properties/property',1) WITH 
 (
 	PropertyName nvarchar(50) '@name',
-	PropertyValue nvarchar(3000) '@value'
+	PropertyValue nvarchar(max) '@value'
 ) as PV
 
 -- Move data from temp table to real table
@@ -15585,7 +15608,7 @@ LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.Mail
 WHERE
 	E.ItemID = @ItemID AND
 	E.MailboxPlanId IS NULL AND
-	E.AccountType IN (1,5,6,10) 
+	E.AccountType IN (1,5,6,10,12) 
 RETURN
 
 END
@@ -15615,7 +15638,7 @@ LEFT OUTER JOIN ExchangeMailboxPlans AS P ON E.MailboxPlanId = P.MailboxPlanId
 LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.MailboxPlanId
 WHERE
 	E.MailboxPlanId = @MailboxPlanId AND
-	E.AccountType IN (1,5,6,10) 
+	E.AccountType IN (1,5,6,10,12) 
 END
 ELSE
 BEGIN
@@ -15643,7 +15666,7 @@ LEFT OUTER JOIN ExchangeMailboxPlans AS AP ON E.ArchivingMailboxPlanId = AP.Mail
 WHERE
 	E.ItemID = @ItemID AND
 	E.MailboxPlanId = @MailboxPlanId AND
-	E.AccountType IN (1,5,6,10) 
+	E.AccountType IN (1,5,6,10,12) 
 RETURN
 END
 Go
@@ -15671,6 +15694,7 @@ WHERE QuotaName in (
 	'Exchange2013.ArchivingMailboxes',
 	'Exchange2013.ResourceMailboxes',
 	'Exchange2013.SharedMailboxes',
+	'Exchange2013.JournalingMailboxes',
 	'HostedSolution.DeletedUsers',
 	'HostedSolution.DeletedUsersBackupStorageSpace',
 	
@@ -16500,6 +16524,17 @@ BEGIN
 END
 GO
 
+-- Additional VHD count per VM
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'VPS2012.AdditionalVhdCount')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (730, 33, 6, N'VPS2012.AdditionalVhdCount', N'Additional Hard Drives per VPS', 3, 0, NULL, NULL)
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'ServiceItemProperties')
+ALTER TABLE [dbo].[ServiceItemProperties] ALTER COLUMN [PropertyValue] [nvarchar](MAX) NULL; 
+GO
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -16527,6 +16562,7 @@ SELECT
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 2 AND ItemID = @ItemID) AS CreatedContacts,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 3 AND ItemID = @ItemID) AS CreatedDistributionLists,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
 	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
 	(SELECT MIN(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10)) AS UsedDiskSpace,
 	(SELECT MIN(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
@@ -16541,6 +16577,7 @@ SELECT
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 2 AND ItemID = @ItemID) AS CreatedContacts,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 3 AND ItemID = @ItemID) AS CreatedDistributionLists,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
+	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
 	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
 	(SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10)) AS UsedDiskSpace,
 	(SELECT SUM(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
@@ -20998,6 +21035,7 @@ AS
 			RETURN 0
 
 		DECLARE @Result int
+		DECLARE @vhd TABLE (Size int)
 
 		IF @QuotaID = 52 -- diskspace
 			SET @Result = dbo.CalculatePackageDiskspace(@PackageID)
@@ -21030,10 +21068,14 @@ AS
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 306 -- HDD of VPS
-			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+		BEGIN
+			INSERT INTO @vhd
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
-							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID)
+							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+			SET @Result = (SELECT SUM(Size) FROM @vhd)
+		END
 		ELSE IF @QuotaID = 309 -- External IP addresses of VPS
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -21060,10 +21102,14 @@ AS
 			SET @Result = CASE WHEN isnull(@Result1,0) > isnull(@Result2,0) THEN @Result1 ELSE @Result2 END
 		END
 		ELSE IF @QuotaID = 559 -- HDD of VPS2012
-			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+		BEGIN
+			INSERT INTO @vhd
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
-							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID)
+							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+			SET @Result = (SELECT SUM(Size) FROM @vhd)
+		END
 		ELSE IF @QuotaID = 562 -- External IP addresses of VPS2012
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -21090,10 +21136,14 @@ AS
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'CpuCores' AND PT.ParentPackageID = @PackageID)
 		ELSE IF @QuotaID = 351 -- HDD of VPSforPc
-			SET @Result = (SELECT SUM(CAST(SIP.PropertyValue AS int)) FROM ServiceItemProperties AS SIP
+		BEGIN
+			INSERT INTO @vhd
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
-							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID)
+							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
+			SET @Result = (SELECT SUM(Size) FROM @vhd)
+		END
 		ELSE IF @QuotaID = 354 -- External IP addresses of VPSforPc
 			SET @Result = (SELECT COUNT(PIP.PackageAddressID) FROM PackageIPAddresses AS PIP
 							INNER JOIN IPAddresses AS IP ON PIP.AddressID = IP.AddressID
@@ -21517,7 +21567,7 @@ WHERE
 		or (@RdsCollectionId is not Null AND S.RDSCollectionId = @RdsCollectionId)))'
 
 IF @FilterColumn <> '' AND @FilterValue <> ''
-SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'''
 
 IF @Controller <> ''
 SET @sql = @sql + ' AND Controller = @Controller '

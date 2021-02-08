@@ -589,6 +589,51 @@ namespace SolidCP.Portal.ProviderControls {
         protected global::System.Web.UI.WebControls.Repeater repDvdLibrary;
         
         /// <summary>
+        /// locPsScript control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locPsScript;
+        
+        /// <summary>
+        /// locVar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locVar;
+        
+        /// <summary>
+        /// labPsVars control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label labPsVars;
+        
+        /// <summary>
+        /// btnAddPsScript control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton btnAddPsScript;
+        
+        /// <summary>
+        /// repPsScript control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repPsScript;
+        
+        /// <summary>
         /// locReplication control.
         /// </summary>
         /// <remarks>

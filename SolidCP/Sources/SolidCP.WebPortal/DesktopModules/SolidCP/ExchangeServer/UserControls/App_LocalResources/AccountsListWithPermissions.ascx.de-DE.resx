@@ -157,7 +157,7 @@
     <value>Räume</value>
   </data>
   <data name="chkIncludeSharedMailbox.Text" xml:space="preserve">
-    <value>Geteiltes Postfach</value>
+    <value>Freigegebenes Postfach</value>
   </data>
   <data name="ddlSearchColumnDisplayName.Text" xml:space="preserve">
     <value>Anzeigename</value>

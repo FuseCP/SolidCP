@@ -115,6 +115,8 @@ namespace SolidCP.Providers.Virtualization2016
 
         private System.Threading.SendOrPostCallback ConvertVirtualHardDiskOperationCompleted;
 
+        private System.Threading.SendOrPostCallback CreateVirtualHardDiskOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteRemoteFileOperationCompleted;
 
         private System.Threading.SendOrPostCallback ExpandDiskVolumeOperationCompleted;
@@ -156,6 +158,8 @@ namespace SolidCP.Providers.Virtualization2016
         private System.Threading.SendOrPostCallback PauseReplicationOperationCompleted;
 
         private System.Threading.SendOrPostCallback ResumeReplicationOperationCompleted;
+
+        private System.Threading.SendOrPostCallback ExecuteCustomPsScriptOperationCompleted;
 
         /// <remarks/>
         public VirtualizationServer2016()
@@ -284,6 +288,9 @@ namespace SolidCP.Providers.Virtualization2016
         public event ConvertVirtualHardDiskCompletedEventHandler ConvertVirtualHardDiskCompleted;
 
         /// <remarks/>
+        public event CreateVirtualHardDiskCompletedEventHandler CreateVirtualHardDiskCompleted;
+
+        /// <remarks/>
         public event DeleteRemoteFileCompletedEventHandler DeleteRemoteFileCompleted;
 
         /// <remarks/>
@@ -345,6 +352,9 @@ namespace SolidCP.Providers.Virtualization2016
 
         /// <remarks/>
         public event ResumeReplicationCompletedEventHandler ResumeReplicationCompleted;
+
+        /// <remarks/>
+        public event ExecuteCustomPsScriptCompletedEventHandler ExecuteCustomPsScriptCompleted;
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
@@ -2408,6 +2418,65 @@ namespace SolidCP.Providers.Virtualization2016
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/CreateVirtualHardDisk", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            object[] results = this.Invoke("CreateVirtualHardDisk", new object[] {
+                        destinationPath,
+                        diskType,
+                        blockSizeBytes,
+                        sizeGB});
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateVirtualHardDisk", new object[] {
+                        destinationPath,
+                        diskType,
+                        blockSizeBytes,
+                        sizeGB}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public JobResult EndCreateVirtualHardDisk(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void CreateVirtualHardDiskAsync(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            this.CreateVirtualHardDiskAsync(destinationPath, diskType, blockSizeBytes, sizeGB, null);
+        }
+
+        /// <remarks/>
+        public void CreateVirtualHardDiskAsync(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, object userState)
+        {
+            if ((this.CreateVirtualHardDiskOperationCompleted == null))
+            {
+                this.CreateVirtualHardDiskOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateVirtualHardDiskOperationCompleted);
+            }
+            this.InvokeAsync("CreateVirtualHardDisk", new object[] {
+                        destinationPath,
+                        diskType,
+                        blockSizeBytes,
+                        sizeGB}, this.CreateVirtualHardDiskOperationCompleted, userState);
+        }
+
+        private void OnCreateVirtualHardDiskOperationCompleted(object arg)
+        {
+            if ((this.CreateVirtualHardDiskCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateVirtualHardDiskCompleted(this, new CreateVirtualHardDiskCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/DeleteRemoteFile", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void DeleteRemoteFile(string path)
         {
@@ -3456,6 +3525,56 @@ namespace SolidCP.Providers.Virtualization2016
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ResumeReplicationCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/ExecuteCustomPsScript", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public JobResult ExecuteCustomPsScript(string script)
+        {
+            object[] results = this.Invoke("ExecuteCustomPsScript", new object[] {
+                        script});
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginExecuteCustomPsScript(string script, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("ExecuteCustomPsScript", new object[] {
+                        script}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public JobResult EndExecuteCustomPsScript(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((JobResult)(results[0]));
+        }
+
+        /// <remarks/>
+        public void ExecuteCustomPsScriptAsync(string script)
+        {
+            this.ExecuteCustomPsScriptAsync(script, null);
+        }
+
+        /// <remarks/>
+        public void ExecuteCustomPsScriptAsync(string script, object userState)
+        {
+            if ((this.ExecuteCustomPsScriptOperationCompleted == null))
+            {
+                this.ExecuteCustomPsScriptOperationCompleted = new System.Threading.SendOrPostCallback(this.OnExecuteCustomPsScriptOperationCompleted);
+            }
+            this.InvokeAsync("ExecuteCustomPsScript", new object[] {
+                        script}, this.ExecuteCustomPsScriptOperationCompleted, userState);
+        }
+
+        private void OnExecuteCustomPsScriptOperationCompleted(object arg)
+        {
+            if ((this.ExecuteCustomPsScriptCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ExecuteCustomPsScriptCompleted(this, new ExecuteCustomPsScriptCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -4668,6 +4787,36 @@ namespace SolidCP.Providers.Virtualization2016
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void CreateVirtualHardDiskCompletedEventHandler(object sender, CreateVirtualHardDiskCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CreateVirtualHardDiskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal CreateVirtualHardDiskCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public JobResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((JobResult)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void DeleteRemoteFileCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 
     /// <remarks/>
@@ -4972,6 +5121,36 @@ namespace SolidCP.Providers.Virtualization2016
             {
                 this.RaiseExceptionIfNecessary();
                 return ((ReplicationDetailInfo)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void ExecuteCustomPsScriptCompletedEventHandler(object sender, ExecuteCustomPsScriptCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ExecuteCustomPsScriptCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal ExecuteCustomPsScriptCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public JobResult Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((JobResult)(this.results[0]));
             }
         }
     }

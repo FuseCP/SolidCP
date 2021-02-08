@@ -252,4 +252,16 @@
   <data name="locNotEnoughExternalAddresses.Text" xml:space="preserve">
     <value>The pool of available external IP addresses is empty. All IP addresses allocated to the current hosting space are assigned to existing virtual servers.</value>
   </data>
+  <data name="btnAddHdd.Text" xml:space="preserve">
+    <value>Add HDD</value>
+  </data>
+  <data name="locRemoveHdd.Text" xml:space="preserve">
+    <value>Remove HDD</value>
+  </data>
+  <data name="btnRemoveHdd.OnClientClick" xml:space="preserve">
+    <value>if(!confirm('Virtual hard drive will be removed.\n\nDo you want to proceed?')) return false;</value>
+  </data>
+  <data name="valHddSize.ErrorMessage" xml:space="preserve">
+    <value>Enter a numeric value</value>
+  </data>
 </root>

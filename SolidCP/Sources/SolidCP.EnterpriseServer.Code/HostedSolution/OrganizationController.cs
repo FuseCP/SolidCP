@@ -1696,7 +1696,7 @@ namespace SolidCP.EnterpriseServer
             }
             #endregion
 
-            string accountTypes = string.Format("{0}, {1}, {2}, {3}", ((int)ExchangeAccountType.User), ((int)ExchangeAccountType.Mailbox), ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment));
+            string accountTypes = string.Format("{0}, {1}, {2}, {3}, {4}", ((int)ExchangeAccountType.User), ((int)ExchangeAccountType.Mailbox), ((int)ExchangeAccountType.Room), ((int)ExchangeAccountType.Equipment), ((int)ExchangeAccountType.JournalingMailbox));
 
 
             DataSet ds =
@@ -4483,10 +4483,110 @@ namespace SolidCP.EnterpriseServer
             //return accounts;
         }
 
+        public static ExchangeAccount[] GetUserGroups(int itemId, int accountId)
+        {
 
-        #region Service Levels
+            // place log record
+            TaskManager.StartTask("ORGANIZATION", "GET_USER_GROUPS");
+            TaskManager.ItemId = itemId;
 
-        public static int AddSupportServiceLevel(string levelName, string levelDescription)
+            try
+            {
+
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null)
+                    return null;
+
+                List<ExchangeAccount> ret = new List<ExchangeAccount>();
+                Organizations orgProxy = GetOrganizationProxy(org.ServiceId);
+                ExchangeAccount account = ExchangeServerController.GetAccount(itemId, accountId);
+                ExchangeAccount[] groups = orgProxy.GetUserGroups(account.SamAccountName, org.Id);
+                List<ExchangeAccount> defaultsecuritygroup = ExchangeServerController.GetAccounts(itemId, ExchangeAccountType.DefaultSecurityGroup);
+                List<ExchangeAccount> securitygroups = ExchangeServerController.GetAccounts(itemId, ExchangeAccountType.SecurityGroup);
+
+                foreach (ExchangeAccount group in groups)
+                {
+                    if (group.PrimaryEmailAddress.Length > 1)
+                    {
+                        //LogExtension.WriteVariable("Found Group PrimaryEmailAddress", group.PrimaryEmailAddress);
+                        ExchangeAccount accountGroup = ExchangeServerController.GetAccountByAccountName(group.PrimaryEmailAddress) ?? null;
+                        if (accountGroup != null)
+                        {
+                            LogExtension.WriteVariable("-Added Group PrimaryEmailAddress", group.PrimaryEmailAddress); 
+                            ret.Add(accountGroup);
+                        }
+                        else
+                        {
+                            LogExtension.WriteVariable("-Checking Default Security Group", group.AccountName);
+                            if (defaultsecuritygroup.Count() >= 1)
+                            {
+                                //LogExtension.WriteVariable("--Found Default Security Group", group.AccountName);
+                                string groupfinddisplayname = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).DisplayName ?? null;
+                                if (groupfinddisplayname != null)
+                                {
+                                    //LogExtension.WriteVariable("---Found Accounts Display name", group.AccountName);
+                                    string groupfindSamAccountName = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).SamAccountName;
+                                    LogExtension.WriteVariable("---Found Account SamAccountName:", groupfindSamAccountName);
+                                    string groupfindPrimaryEmailAddress = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).PrimaryEmailAddress ?? null;
+                                    //LogExtension.WriteVariable("---Found Account PrimaryEmailAddress:", groupfindPrimaryEmailAddress);
+                                    ExchangeAccountType groupfindAccountType = defaultsecuritygroup.Find(i => i.AccountName == group.AccountName).AccountType;
+                                    //LogExtension.WriteVariable("---Found Account AccountType:", groupfindAccountType.ToString());
+                                    ret.Add(new ExchangeAccount
+                                    {
+                                        AccountName = groupfinddisplayname,
+                                        SamAccountName = groupfindSamAccountName,
+                                        DisplayName = groupfinddisplayname,
+                                        PrimaryEmailAddress = groupfindPrimaryEmailAddress,
+                                        AccountType = groupfindAccountType
+                                    });
+                                }
+                            }
+                            else
+                            {
+                                LogExtension.WriteVariable("No Default Security Group", itemId.ToString());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ExchangeAccount secgroupfind = securitygroups.Find(i => i.AccountName == group.AccountName) ?? null;
+                        if (secgroupfind != null)
+                        {
+                            string secgroupfinddisplayname = securitygroups.Find(i => i.AccountName == group.AccountName).DisplayName ?? null;
+                            string secgroupfindSamAccountName = securitygroups.Find(i => i.AccountName == group.AccountName).SamAccountName;
+                            string secgroupfindPrimaryEmailAddress = securitygroups.Find(i => i.AccountName == group.AccountName).PrimaryEmailAddress ?? null;
+                            LogExtension.WriteVariable("Found Group Name", secgroupfindSamAccountName);
+                            ExchangeAccountType secgroupfindAccountType = securitygroups.Find(i => i.AccountName == group.AccountName).AccountType;
+                            ret.Add(new ExchangeAccount
+                            {
+                                AccountName = secgroupfinddisplayname,
+                                SamAccountName = secgroupfindSamAccountName,
+                                DisplayName = secgroupfinddisplayname,
+                                PrimaryEmailAddress = secgroupfindPrimaryEmailAddress,
+                                AccountType = secgroupfindAccountType
+                            });
+                        }
+                    }
+                }
+
+                ExchangeAccount[] ret1 = ret.ToArray();
+                return ret1;
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+
+            #region Service Levels
+
+            public static int AddSupportServiceLevel(string levelName, string levelDescription)
         {
             if (string.IsNullOrEmpty(levelName))
                 throw new ArgumentNullException("levelName");

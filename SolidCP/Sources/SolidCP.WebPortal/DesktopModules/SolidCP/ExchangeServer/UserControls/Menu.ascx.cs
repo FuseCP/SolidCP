@@ -136,6 +136,9 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             if (Utils.CheckQouta(Quotas.EXCHANGE2007_PUBLICFOLDERS, cntx))
                 exchangeGroup.MenuItems.Add(CreateMenuItem("PublicFolders", "public_folders"));
 
+            if (Utils.CheckQouta(Quotas.EXCHANGE2013_JOURNALINGMAILBOXES, cntx))
+                exchangeGroup.MenuItems.Add(CreateMenuItem("JournalingMailboxes", "journaling_mailboxes"));
+
             if (!hideItems)
                 if (Utils.CheckQouta(Quotas.EXCHANGE2007_ACTIVESYNCALLOWED, cntx))
                     exchangeGroup.MenuItems.Add(CreateMenuItem("ActiveSyncPolicy", "activesync_policy"));

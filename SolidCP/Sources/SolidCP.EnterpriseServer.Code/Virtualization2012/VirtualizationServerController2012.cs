@@ -387,7 +387,16 @@ namespace SolidCP.EnterpriseServer
 
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, VMSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, VMSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                    int totalHddSize = 0;
+                    for (int i = 0; i < VMSettings.HddSize.Length; i++)
+                    {
+                        totalHddSize += VMSettings.HddSize[i];
+                    }
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, totalHddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                    if (VMSettings.HddSize.Length > 1)
+                    {
+                        QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_ADDITIONAL_VHD_COUNT, VMSettings.HddSize.Length-1, VirtualizationErrorCodes.QUOTA_EXCEEDED_ADDITIONAL_HDD);
+                    }
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, VMSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
                 }
                 QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, VMSettings.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
@@ -439,8 +448,11 @@ namespace SolidCP.EnterpriseServer
                 // check acceptable values
                 if (VMSettings.RamSize <= 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
-                if (VMSettings.HddSize <= 0)
-                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+                foreach (var hddSize in VMSettings.HddSize)
+                {
+                    if (hddSize <= 0)
+                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+                }
                 if (VMSettings.SnapshotsNumber < 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
@@ -580,7 +592,7 @@ namespace SolidCP.EnterpriseServer
                             isTemplateExist = true;
 
                             // check minimal disk size
-                            if (osTemplate.DiskSize > 0 && vm.HddSize < osTemplate.DiskSize)
+                            if (osTemplate.DiskSize > 0 && vm.HddSize[0] < osTemplate.DiskSize)
                             {
                                 TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.QUOTA_TEMPLATE_DISK_MINIMAL_SIZE + ":" + osTemplate.DiskSize);
                                 return res;
@@ -627,15 +639,22 @@ namespace SolidCP.EnterpriseServer
                 var correctVhdPath = GetCorrectTemplateFilePath(templatesPath, osTemplateFile);
                 vm.OperatingSystemTemplatePath = correctVhdPath;
                 string msHddHyperVFolderName = "Virtual Hard Disks\\" + vm.Name;
-                vm.VirtualHardDrivePath = Path.Combine(vm.RootFolderPath, msHddHyperVFolderName + Path.GetExtension(correctVhdPath));
+                vm.VirtualHardDrivePath = new string[VMSettings.HddSize.Length];
+                for (int i = 0; i < VMSettings.HddSize.Length; i++)
+                {
+                    vm.VirtualHardDrivePath[i] = Path.Combine(vm.RootFolderPath, msHddHyperVFolderName + (i>0 ? i.ToString() : "") + Path.GetExtension(correctVhdPath));
+                }
                 #endregion
 
                 // check hdd file
                 try
                 {
                     VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
-                    if (vs.FileExists(vm.VirtualHardDrivePath))
-                        throw new Exception(vm.VirtualHardDrivePath + " is already present in the system");
+                    foreach (var virtualHardDrivePath in vm.VirtualHardDrivePath)
+                    {
+                        if (vs.FileExists(virtualHardDrivePath))
+                            throw new Exception(virtualHardDrivePath + " is already present in the system");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -722,7 +741,7 @@ namespace SolidCP.EnterpriseServer
             otherSettings.Name = hostname;
             otherSettings.CpuCores = cpuCores;
             otherSettings.RamSize = ramMB;
-            otherSettings.HddSize = hddGB;
+            otherSettings.HddSize = new[] { hddGB };
             //otherSettings.HddMinimumIOPS = hddMinimumIOPS;
             //otherSettings.HddMaximumIOPS = hddMaximumIOPS;
             otherSettings.SnapshotsNumber = snapshots;
@@ -944,20 +963,31 @@ namespace SolidCP.EnterpriseServer
                 {
                     // convert VHD
                     VirtualHardDiskType vhdType = (VirtualHardDiskType)Enum.Parse(typeof(VirtualHardDiskType), settings["VirtualDiskType"], true);
-                    result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath, vhdType, osTemplate.VhdBlockSizeBytes);
 
-                    // check return
-                    if (result.ReturnValue != ReturnCode.JobStarted)
+                    for (int i = 0; i < vm.VirtualHardDrivePath.Length; i++)
                     {
-                        TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_START", result.ReturnValue.ToString());
-                        return;
-                    }
+                        if (i == 0)
+                        {
+                            result = vs.ConvertVirtualHardDisk(vm.OperatingSystemTemplatePath, vm.VirtualHardDrivePath[i], vhdType, osTemplate.VhdBlockSizeBytes);
+                        }
+                        else
+                        {
+                            result = vs.CreateVirtualHardDisk(vm.VirtualHardDrivePath[i], vhdType, osTemplate.VhdBlockSizeBytes, (ulong)vm.HddSize[i]);
+                        }
 
-                    // wait for completion
-                    if (!JobCompleted(vs, result.Job))
-                    {
-                        TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
-                        return;
+                        // check return
+                        if (result.ReturnValue != ReturnCode.JobStarted)
+                        {
+                            TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_START", result.ReturnValue.ToString());
+                            return;
+                        }
+
+                        // wait for completion
+                        if (!JobCompleted(vs, result.Job))
+                        {
+                            TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
+                            return;
+                        }
                     }
 
                     isDiskConverted = true; //We are sure that the disc was copied.
@@ -973,7 +1003,7 @@ namespace SolidCP.EnterpriseServer
                 VirtualHardDiskInfo vhdInfo = null;
                 try
                 {
-                    vhdInfo = vs.GetVirtualHardDiskInfo(vm.VirtualHardDrivePath);
+                    vhdInfo = vs.GetVirtualHardDiskInfo(vm.VirtualHardDrivePath[0]);
                 }
                 catch (Exception ex)
                 {
@@ -992,12 +1022,12 @@ namespace SolidCP.EnterpriseServer
                 int hddSizeGB = Convert.ToInt32(vhdInfo.MaxInternalSize / Size1G);
 
                 TaskManager.Write("VPS_CREATE_EXPAND_SOURCE_VHD_SIZE", hddSizeGB.ToString());
-                TaskManager.Write("VPS_CREATE_EXPAND_DEST_VHD_SIZE", vm.HddSize.ToString());
+                TaskManager.Write("VPS_CREATE_EXPAND_DEST_VHD_SIZE", vm.HddSize[0].ToString());
                 #endregion
 
                 #region Expand VHD
                 bool expanded = false;
-                if (vm.HddSize > hddSizeGB)
+                if (vm.HddSize[0] > hddSizeGB)
                 {
                     TaskManager.Write("VPS_CREATE_EXPAND_VHD");
                     TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
@@ -1005,7 +1035,7 @@ namespace SolidCP.EnterpriseServer
                     // expand VHD
                     try
                     {
-                        result = vs.ExpandVirtualHardDisk(vm.VirtualHardDrivePath, (ulong)vm.HddSize);
+                        result = vs.ExpandVirtualHardDisk(vm.VirtualHardDrivePath[0], (ulong)vm.HddSize[0]);
                     }
                     catch (Exception ex)
                     {
@@ -1039,8 +1069,7 @@ namespace SolidCP.EnterpriseServer
 
                 #region Process VHD contents
                 // mount VHD
-                if ((expanded && osTemplate.ProcessVolume != -1)
-                    || (osTemplate.SysprepFiles != null && osTemplate.SysprepFiles.Length > 0))
+                if ((expanded && osTemplate.ProcessVolume != -1) || (osTemplate.SysprepFiles != null && osTemplate.SysprepFiles.Length > 0))
                 {
                     try
                     {
@@ -1053,7 +1082,7 @@ namespace SolidCP.EnterpriseServer
                             try
                             {
                                 //TODO: Is possible to lose vm.VirtualHardDrivePath ? Add Check?
-                                mountedInfo = vs.MountVirtualHardDisk(vm.VirtualHardDrivePath);
+                                mountedInfo = vs.MountVirtualHardDisk(vm.VirtualHardDrivePath[0]);
                                 attemps = 0;
                             }
                             catch (Exception ex)
@@ -1137,7 +1166,7 @@ namespace SolidCP.EnterpriseServer
                         #region Unmount VHD
                         try
                         {
-                            code = vs.UnmountVirtualHardDisk(vm.VirtualHardDrivePath);
+                            code = vs.UnmountVirtualHardDisk(vm.VirtualHardDrivePath[0]);
                             if (code != ReturnCode.OK)
                             {
                                 TaskManager.WriteError("VPS_CREATE_UNMOUNT_ERROR_JOB_START", code.ToString());
@@ -1239,6 +1268,8 @@ namespace SolidCP.EnterpriseServer
                     }
                 }
                 #endregion
+
+                CheckCustomPsScript(PsScriptPoint.after_creation, vm);
 
                 #region Start VPS
                 TaskManager.Write("VPS_CREATE_START_VPS");
@@ -1371,11 +1402,12 @@ namespace SolidCP.EnterpriseServer
                 item.HddMinimumIOPS = vm.HddMinimumIOPS;
                 item.HddMaximumIOPS = vm.HddMaximumIOPS;
                 item.VirtualHardDrivePath = vm.VirtualHardDrivePath;
-                item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath);
+                item.RootFolderPath = Path.GetDirectoryName(vm.VirtualHardDrivePath[0]);
                 string msHddHyperVFolderName = "Virtual Hard Disks";
                 if (item.RootFolderPath.EndsWith(msHddHyperVFolderName)) //We have to know root folder of VM, not of hdd.
                     item.RootFolderPath = item.RootFolderPath.Substring(0, item.RootFolderPath.Length - msHddHyperVFolderName.Length);
                 item.SnapshotsNumber = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
+                if (item.SnapshotsNumber == -1) item.SnapshotsNumber = 50;
                 item.DvdDriveInstalled = IsDvdInstalled; //vm.DvdDriveInstalled;
                 item.BootFromCD = IsBootFromCd; //vm.BootFromCD;
                 item.NumLockEnabled = vm.NumLockEnabled;
@@ -1390,6 +1422,10 @@ namespace SolidCP.EnterpriseServer
                 {
                     item.RemoteDesktopEnabled = true;
                     item.AdministratorPassword = CryptoUtils.Encrypt(adminPassword);
+                }
+                if (!String.IsNullOrEmpty(settings["GuacamoleConnectScript"]) && !String.IsNullOrEmpty(settings["GuacamoleHyperVIP"]))
+                {
+                    item.RemoteDesktopEnabled = true;
                 }
 
                 // set OS template
@@ -1437,7 +1473,16 @@ namespace SolidCP.EnterpriseServer
 
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, item.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, item.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                    int totalHddSize = 0;
+                    for (int i = 0; i < item.HddSize.Length; i++)
+                    {
+                        totalHddSize += item.HddSize[i];
+                    }
+                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, totalHddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+                    if (item.HddSize.Length > 1)
+                    {
+                        QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_ADDITIONAL_VHD_COUNT, item.HddSize.Length - 1, VirtualizationErrorCodes.QUOTA_EXCEEDED_ADDITIONAL_HDD);
+                    }
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, item.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
 
                     QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, item.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
@@ -1455,8 +1500,11 @@ namespace SolidCP.EnterpriseServer
                     // check acceptable values
                     if (item.RamSize <= 0)
                         quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
-                    if (item.HddSize <= 0)
-                        quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+                    foreach (var hddSize in item.HddSize)
+                    {
+                        if (hddSize <= 0)
+                            quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+                    }
                     if (item.SnapshotsNumber < 0)
                         quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
@@ -1568,6 +1616,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // external
                 nic = GetExternalNetworkAdapterDetails(itemId);
+                CheckCustomPsScript(PsScriptPoint.external_network_configuration, vm);
             }
             else if (String.Compare(adapterName, "private", true) == 0)
             {
@@ -1577,11 +1626,13 @@ namespace SolidCP.EnterpriseServer
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateMask)) nic.SubnetMask = vm.CustomPrivateMask;
+                CheckCustomPsScript(PsScriptPoint.private_network_configuration, vm);
             }
             else
             {
                 // management
                 nic = GetManagementNetworkAdapterDetails(itemId);
+                CheckCustomPsScript(PsScriptPoint.management_network_configuration, vm);
             }
 
             // network format
@@ -1647,6 +1698,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // external
                 nic = GetExternalNetworkAdapterDetails(itemId);
+                CheckCustomPsScript(PsScriptPoint.external_network_configuration, vm);
             }
             else if (String.Compare(adapterName, "private", true) == 0)
             {
@@ -1656,11 +1708,13 @@ namespace SolidCP.EnterpriseServer
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS1)) nic.PreferredNameServer = vm.CustomPrivateDNS1;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateDNS2)) nic.AlternateNameServer = vm.CustomPrivateDNS2;
                 if (!String.IsNullOrEmpty(vm.CustomPrivateMask)) nic.SubnetMask = vm.CustomPrivateMask;
+                CheckCustomPsScript(PsScriptPoint.private_network_configuration, vm);
             }
             else
             {
                 // management
                 nic = GetManagementNetworkAdapterDetails(itemId);
+                CheckCustomPsScript(PsScriptPoint.management_network_configuration, vm);
             }
 
             // network format
@@ -2207,6 +2261,8 @@ namespace SolidCP.EnterpriseServer
                 return res;
             }
 
+            CheckCustomPsScript(PsScriptPoint.before_renaming, vm);
+
             #region Check account and space statuses
             // check account
             if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
@@ -2259,6 +2315,8 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.CHANGE_ADMIN_PASSWORD_ERROR, ex);
                 return res;
             }
+
+            CheckCustomPsScript(PsScriptPoint.after_renaming, vm);
 
             TaskManager.CompleteResultTask();
             return res;
@@ -2602,7 +2660,21 @@ namespace SolidCP.EnterpriseServer
 
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_CPU_NUMBER, vm.CpuCores, vmSettings.CpuCores, VirtualizationErrorCodes.QUOTA_EXCEEDED_CPU);
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_RAM, currentRam, newRam, VirtualizationErrorCodes.QUOTA_EXCEEDED_RAM);
-            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, vm.HddSize, vmSettings.HddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+            int newTotalHddSize = 0;
+            int currentTotalHddSize = 0;
+            for (int i = 0; i < vmSettings.HddSize.Length; i++)
+            {
+                newTotalHddSize += vmSettings.HddSize[i];
+            }
+            for (int i = 0; i < vm.HddSize.Length; i++)
+            {
+                currentTotalHddSize += vm.HddSize[i];
+            }
+            QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, currentTotalHddSize, newTotalHddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
+            if (vmSettings.HddSize.Length > 1)
+            {
+                QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_ADDITIONAL_VHD_COUNT, vmSettings.HddSize.Length - 1, VirtualizationErrorCodes.QUOTA_EXCEEDED_ADDITIONAL_HDD);
+            }
             QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, vmSettings.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
 
             QuotaHelper.CheckBooleanQuota(cntx, quotaResults, Quotas.VPS2012_DVD_ENABLED, vmSettings.DvdDriveInstalled, VirtualizationErrorCodes.QUOTA_EXCEEDED_DVD_ENABLED);
@@ -2620,8 +2692,11 @@ namespace SolidCP.EnterpriseServer
             // check acceptable values
             if (vmSettings.RamSize <= 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
-            if (vmSettings.HddSize <= 0)
-                quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+            foreach (var hddSize in vmSettings.HddSize)
+            {
+                if (hddSize <= 0)
+                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+            }
             if (vmSettings.SnapshotsNumber < 0)
                 quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_SNAPSHOTS);
 
@@ -2653,6 +2728,7 @@ namespace SolidCP.EnterpriseServer
                 vm.CpuCores = vmSettings.CpuCores;
                 vm.RamSize = vmSettings.RamSize;
                 vm.HddSize = vmSettings.HddSize;
+                vm.VirtualHardDrivePath = vmSettings.VirtualHardDrivePath;
                 vm.HddMinimumIOPS = vmSettings.HddMinimumIOPS;
                 vm.HddMaximumIOPS = vmSettings.HddMaximumIOPS;
                 vm.SnapshotsNumber = vmSettings.SnapshotsNumber;
@@ -2820,7 +2896,7 @@ namespace SolidCP.EnterpriseServer
         }
         //[Obsolete("UpdateVirtualMachineConfiguration is deprecated, please use UpdateVirtualMachineResource instead.")]
         public static ResultObject UpdateVirtualMachineConfiguration(
-            int itemId, int cpuCores, int ramMB, int hddGB, int snapshots,
+            int itemId, int cpuCores, int ramMB, int[] hddGB, int snapshots,
             bool dvdInstalled, bool bootFromCD, bool numLock, bool startShutdownAllowed, bool pauseResumeAllowed,
             bool rebootAllowed, bool resetAllowed, bool reinstallAllowed, bool externalNetworkEnabled, bool privateNetworkEnabled, VirtualMachine otherSettings)
         {
@@ -4363,6 +4439,8 @@ namespace SolidCP.EnterpriseServer
                 return res;
             }
 
+            CheckCustomPsScript(PsScriptPoint.before_deletion, vm);
+
             #region Check account and space statuses
             // check account
             if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
@@ -4575,6 +4653,8 @@ namespace SolidCP.EnterpriseServer
             // start task
             int maximumExecutionSeconds = 60 * 20;
             TaskManager.StartTask(taskId, "VPS", "DELETE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
+
+            CheckCustomPsScript(PsScriptPoint.before_deletion, vm);
 
             try
             {
@@ -5372,6 +5452,120 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
+        #endregion
+
+        #region PsScripts
+        public enum PsScriptPoint
+        {
+            disabled,
+            after_creation,
+            before_deletion,
+            before_renaming,
+            after_renaming,
+            external_network_configuration,
+            private_network_configuration,
+            management_network_configuration
+        }
+
+        public static void CheckCustomPsScript(PsScriptPoint point, VirtualMachine vm)
+        {
+            try
+            {
+                StringDictionary settings = ServerController.GetServiceSettings(vm.ServiceId);
+                string xml = settings["PsScript"];
+                var config = new ConfigFile(xml);
+                LibraryItem[] scripts = config.LibraryItems;
+                foreach (LibraryItem item in scripts)
+                {
+                    if (!String.IsNullOrEmpty(item.Name) && !String.IsNullOrEmpty(item.Description) && item.Name.Equals(point.ToString()))
+                    {
+                        string script = PreparePsScript(item.Description, vm);
+                        VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+                        if (vs != null) vs.ExecuteCustomPsScript(script);
+                    }
+                }
+            } catch (Exception) { }
+        }
+
+        private static string PreparePsScript(string script, VirtualMachine vm)
+        {
+            string vars = "";
+            try
+            {
+                if (script.Contains("$vmName")) vars += "$vmName = \"" + vm.Name + "\"" + Environment.NewLine;
+                if (script.Contains("$vmId")) vars += "$vmId = \"" + vm.VirtualMachineId + "\"" + Environment.NewLine;
+                if (script.Contains("$vmObject")) vars += "$vmObject = Get-VM -Id \"" + vm.VirtualMachineId + "\"" + Environment.NewLine;
+                PrepareNetworkVariables(script, ref vars, vm, "ext");
+                PrepareNetworkVariables(script, ref vars, vm, "priv");
+                PrepareNetworkVariables(script, ref vars, vm, "mng");
+            } catch (Exception) {  }
+            return vars + script;
+        }
+
+        private static void PrepareNetworkVariables(string script, ref string vars, VirtualMachine vm, string networkPrefix)
+        {
+            try
+            {
+                string vIps = "$" + networkPrefix + "IpAddresses";
+                string vMasks = "$" + networkPrefix + "Masks";
+                string vGateway = "$" + networkPrefix + "Gateway";
+                string vAdapterName = "$" + networkPrefix + "AdapterName";
+                string vAdapterMac = "$" + networkPrefix + "AdapterMac";
+                if (script.Contains(vIps) || script.Contains(vGateway) || script.Contains(vMasks) || script.Contains(vAdapterName) || script.Contains(vAdapterMac))
+                {
+                    string ips = "";
+                    string masks = "";
+                    string gateway = "";
+                    string adapterName = "";
+                    string adapterMac = "";
+                    NetworkAdapterDetails nic = null;
+                    if (networkPrefix.Equals("ext")) nic = GetExternalNetworkAdapterDetails(vm.Id);
+                    if (networkPrefix.Equals("priv")) nic = GetPrivateNetworkAdapterDetails(vm.Id);
+                    if (networkPrefix.Equals("mng")) nic = GetManagementNetworkAdapterDetails(vm.Id);
+                    if (nic != null)
+                    {
+                        if (script.Contains(vAdapterName))
+                        {
+                            VirtualizationServer2012 vs = GetVirtualizationProxy(vm.ServiceId);
+                            VirtualMachine vmex = vs.GetVirtualMachineEx(vm.VirtualMachineId);
+                            if (vmex.Adapters != null)
+                            {
+                                foreach (var adapter in vmex.Adapters)
+                                {
+                                    if (adapter == null || String.IsNullOrEmpty(adapter.MacAddress) || String.IsNullOrEmpty(nic.MacAddress)) continue;
+                                    string nicMac = nic.MacAddress.Replace("-", "");
+                                    if (adapter.MacAddress.ToLower().Equals(nicMac.ToLower())) adapterName = "\"" + adapter.Name + "\"";
+                                }
+                            }
+                        }
+                        if (!String.IsNullOrEmpty(nic.MacAddress)) adapterMac = "\"" + nic.MacAddress.Replace("-", "") + "\"";
+                        for (int i = 0; i < nic.IPAddresses.Length; i++)
+                        {
+                            string comma = ",";
+                            if (i == nic.IPAddresses.Length - 1) comma = "";
+                            ips += "\"" + nic.IPAddresses[i].IPAddress + "\"" + comma;
+                            masks += "\"" + nic.IPAddresses[i].SubnetMask + "\"" + comma;
+                            if (i == 0)
+                            {
+                                if (networkPrefix.Equals("priv") && !String.IsNullOrEmpty(vm.CustomPrivateGateway))
+                                {
+                                    gateway = "\"" + vm.CustomPrivateGateway + "\"";
+                                }
+                                else
+                                {
+                                    gateway = "\"" + nic.IPAddresses[i].DefaultGateway + "\"";
+                                }
+                            }
+                        }
+                    }
+                    vars += vIps + " = @(" + ips + ")" + Environment.NewLine;
+                    vars += vMasks + " = @(" + masks + ")" + Environment.NewLine;
+                    if (!String.IsNullOrEmpty(gateway)) vars += vGateway + " = " + gateway + Environment.NewLine;
+                    if (!String.IsNullOrEmpty(adapterName)) vars += vAdapterName + " = " + adapterName + Environment.NewLine;
+                    if (!String.IsNullOrEmpty(adapterMac)) vars += vAdapterMac + " = " + adapterMac + Environment.NewLine;
+                }
+            } catch (Exception) { }
+        }
         #endregion
 
     }

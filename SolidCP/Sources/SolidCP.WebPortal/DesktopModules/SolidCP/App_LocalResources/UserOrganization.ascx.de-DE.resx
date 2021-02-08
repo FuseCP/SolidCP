@@ -237,6 +237,9 @@
   <data name="Text.PublicFolders" xml:space="preserve">
     <value>Öffentliche Ordner</value>
   </data>
+  <data name="Text.JournalingMailboxes" xml:space="preserve">
+    <value>Journal-Postfächer</value>
+  </data>
   <data name="Text.RetentionPolicy" xml:space="preserve">
     <value>Aufbewahrungs-Richtlinie</value>
   </data>

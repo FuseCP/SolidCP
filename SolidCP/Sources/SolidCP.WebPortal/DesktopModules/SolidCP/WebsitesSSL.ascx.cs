@@ -304,8 +304,12 @@ namespace SolidCP.Portal
         {
             PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
             UserInfo user = UsersHelper.GetUser(package.UserId);
+            WebSite site = ES.Services.WebServers.GetWebSite(webSiteId);
+            StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettings(site.ServiceId));
 
-            ResultObject result = ES.Services.WebServers.LEInstallCertificate(webSiteId, user.Email);
+            string mail = String.IsNullOrEmpty(settings["SSLLeEmail"]) ? user.Email : settings["SSLLeEmail"];
+
+            ResultObject result = ES.Services.WebServers.LEInstallCertificate(webSiteId, mail);
             // Check the operation status
             if (!result.IsSuccess)
             {
@@ -681,6 +685,17 @@ namespace SolidCP.Portal
         protected void btnDeleteAll_Click(object sender, EventArgs e)
         {
             DeleteCertificate(SiteId, new SSLCertificate());
+        }
+
+        public static StringDictionary ConvertArrayToDictionary(string[] settings)
+        {
+            StringDictionary r = new StringDictionary();
+            foreach (string setting in settings)
+            {
+                int idx = setting.IndexOf('=');
+                r.Add(setting.Substring(0, idx), setting.Substring(idx + 1));
+            }
+            return r;
         }
     }
 }

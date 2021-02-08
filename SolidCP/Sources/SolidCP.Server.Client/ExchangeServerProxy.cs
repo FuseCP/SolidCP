@@ -97,9 +97,17 @@ namespace SolidCP.Providers.Exchange {
         private System.Threading.SendOrPostCallback GetMailboxStatisticsOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetDefaultPublicFolderMailboxOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback CreateJournalRuleOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetJournalRuleOperationCompleted;
+
+        private System.Threading.SendOrPostCallback SetJournalRuleOperationCompleted;
+
+        private System.Threading.SendOrPostCallback RemoveJournalRuleOperationCompleted;
+
         private System.Threading.SendOrPostCallback CreateContactOperationCompleted;
-        
+
         private System.Threading.SendOrPostCallback DeleteContactOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetContactGeneralSettingsOperationCompleted;
@@ -299,7 +307,19 @@ namespace SolidCP.Providers.Exchange {
         
         /// <remarks/>
         public event SetDefaultPublicFolderMailboxCompletedEventHandler SetDefaultPublicFolderMailboxCompleted;
-        
+
+        /// <remarks/>
+        public event CreateJournalRuleCompletedEventHandler CreateJournalRuleCompleted;
+
+        /// <remarks/>
+        public event GetJournalRuleCompletedEventHandler GetJournalRuleCompleted;
+
+        /// <remarks/>
+        public event SetJournalRuleCompletedEventHandler SetJournalRuleCompleted;
+
+        /// <remarks/>
+        public event RemoveJournalRuleCompletedEventHandler RemoveJournalRuleCompleted;
+
         /// <remarks/>
         public event CreateContactCompletedEventHandler CreateContactCompleted;
         
@@ -2193,7 +2213,212 @@ namespace SolidCP.Providers.Exchange {
                 this.SetDefaultPublicFolderMailboxCompleted(this, new SetDefaultPublicFolderMailboxCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/CreateJournalRule", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string CreateJournalRule(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            object[] results = this.Invoke("CreateJournalRule", new object[] {
+                        journalEmail,
+                        scope,
+                        recipientEmail,
+                        enabled});
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginCreateJournalRule(string journalEmail, string scope, string recipientEmail, bool enabled, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("CreateJournalRule", new object[] {
+                        journalEmail,
+                        scope,
+                        recipientEmail,
+                        enabled}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public string EndCreateJournalRule(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public void CreateJournalRuleAsync(string journalEmail, string scope, string recipientEmail, bool enabled)
+        {
+            this.CreateJournalRuleAsync(journalEmail, scope, recipientEmail, enabled, null);
+        }
+
+        /// <remarks/>
+        public void CreateJournalRuleAsync(string journalEmail, string scope, string recipientEmail, bool enabled, object userState)
+        {
+            if ((this.CreateJournalRuleOperationCompleted == null))
+            {
+                this.CreateJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCreateJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("CreateJournalRule", new object[] {
+                        journalEmail,
+                        scope,
+                        recipientEmail,
+                        enabled}, this.CreateJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnCreateJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.CreateJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CreateJournalRuleCompleted(this, new CreateJournalRuleCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetJournalRule", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ExchangeJournalRule GetJournalRule(string journalEmail)
+        {
+            object[] results = this.Invoke("GetJournalRule", new object[] {
+                        journalEmail});
+            return ((ExchangeJournalRule)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetJournalRule(string journalEmail, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetJournalRule", new object[] {
+                        journalEmail}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ExchangeJournalRule EndGetJournalRule(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ExchangeJournalRule)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetJournalRuleAsync(string journalEmail)
+        {
+            this.GetJournalRuleAsync(journalEmail, null);
+        }
+
+        /// <remarks/>
+        public void GetJournalRuleAsync(string journalEmail, object userState)
+        {
+            if ((this.GetJournalRuleOperationCompleted == null))
+            {
+                this.GetJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("GetJournalRule", new object[] {
+                        journalEmail}, this.CreateJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnGetJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.GetJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetJournalRuleCompleted(this, new GetJournalRuleCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/SetJournalRule", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SetJournalRule(ExchangeJournalRule rule)
+        {
+            this.Invoke("SetJournalRule", new object[] {
+                        rule});
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginSetJournalRule(ExchangeJournalRule rule, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("SetJournalRule", new object[] {
+                        rule}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public void EndSetJournalRule(System.IAsyncResult asyncResult)
+        {
+            this.EndInvoke(asyncResult);
+        }
+
+        /// <remarks/>
+        public void SetJournalRuleAsync(ExchangeJournalRule rule)
+        {
+            this.SetJournalRuleAsync(rule, null);
+        }
+
+        /// <remarks/>
+        public void SetJournalRuleAsync(ExchangeJournalRule rule, object userState)
+        {
+            if ((this.SetJournalRuleOperationCompleted == null))
+            {
+                this.SetJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("SetJournalRule", new object[] {
+                        rule}, this.SetJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnSetJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.SetJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetJournalRuleCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/RemoveJournalRule", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void RemoveJournalRule(string journalEmail)
+        {
+            this.Invoke("RemoveJournalRule", new object[] {
+                        journalEmail});
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginRemoveJournalRule(string journalEmail, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("RemoveJournalRule", new object[] {
+                        journalEmail}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public void EndRemoveJournalRule(System.IAsyncResult asyncResult)
+        {
+            this.EndInvoke(asyncResult);
+        }
+
+        /// <remarks/>
+        public void RemoveJournalRuleAsync(string journalEmail)
+        {
+            this.RemoveJournalRuleAsync(journalEmail, null);
+        }
+
+        /// <remarks/>
+        public void RemoveJournalRuleAsync(string journalEmail, object userState)
+        {
+            if ((this.RemoveJournalRuleOperationCompleted == null))
+            {
+                this.RemoveJournalRuleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRemoveJournalRuleOperationCompleted);
+            }
+            this.InvokeAsync("RemoveJournalRule", new object[] {
+                        journalEmail}, this.RemoveJournalRuleOperationCompleted, userState);
+        }
+
+        private void OnRemoveJournalRuleOperationCompleted(object arg)
+        {
+            if ((this.RemoveJournalRuleCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.RemoveJournalRuleCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/CreateContact", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -5390,7 +5615,75 @@ namespace SolidCP.Providers.Exchange {
             }
         }
     }
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void CreateJournalRuleCompletedEventHandler(object sender, CreateJournalRuleCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CreateJournalRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal CreateJournalRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public string Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void GetJournalRuleCompletedEventHandler(object sender, GetJournalRuleCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetJournalRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetJournalRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ExchangeJournalRule Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ExchangeJournalRule)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void SetJournalRuleCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void RemoveJournalRuleCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void CreateContactCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);

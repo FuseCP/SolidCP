@@ -854,6 +854,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' CreateVirtualHardDisk", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.CreateVirtualHardDisk(destinationPath, diskType, blockSizeBytes, sizeGB);
+                Log.WriteEnd("'{0}' CreateVirtualHardDisk", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' CreateVirtualHardDisk", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public void DeleteRemoteFile(string path)
         {
             try
@@ -1223,6 +1240,25 @@ namespace SolidCP.Server
             }
         }
         #endregion
+
+        [WebMethod, SoapHeader("settings")]
+        public JobResult ExecuteCustomPsScript(string script)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' ExecuteCustomPsScript", ProviderSettings.ProviderName);
+                JobResult result = VirtualizationProvider.ExecuteCustomPsScript(script);
+                Log.WriteEnd("'{0}' ExecuteCustomPsScript", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' ExecuteCustomPsScript", ProviderSettings.ProviderName), ex);
+                var jobResult = new JobResult();
+                jobResult.ReturnValue = ReturnCode.Failed;
+                return jobResult;
+            }
+        }
 
     }
 }

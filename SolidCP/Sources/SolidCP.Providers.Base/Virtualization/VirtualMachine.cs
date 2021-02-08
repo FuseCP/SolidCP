@@ -58,7 +58,7 @@ namespace SolidCP.Providers.Virtualization
         [Persistent]
         public string RootFolderPath { get; set; }
         [Persistent]
-        public string VirtualHardDrivePath { get; set; }
+        public string[] VirtualHardDrivePath { get; set; }
         [Persistent]
         public string OperatingSystemTemplate { get; set; }
         [Persistent]
@@ -86,7 +86,7 @@ namespace SolidCP.Providers.Virtualization
         public DynamicMemory DynamicMemory { get; set; }
 
         [Persistent]
-        public int HddSize { get; set; }
+        public int[] HddSize { get; set; }
         public LogicalDisk[] HddLogicalDisks { get; set; }
         [Persistent]
         public int HddMaximumIOPS { get; set; }

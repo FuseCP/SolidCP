@@ -144,7 +144,14 @@ namespace SolidCP.Portal.SkinControls
                 string curCtrlKey = PanelRequest.Ctl.ToLower();
                 string ctrlKey = PortalUtils.GetGeneralESControlKey(Request[DefaultPage.CONTROL_ID_PARAM].ToLower(System.Globalization.CultureInfo.InvariantCulture));
 
-                if (curCtrlKey == "edit_user") ctrlKey = PanelRequest.Context.ToLower() == "user" ? "users" : "mailboxes";
+                if (curCtrlKey == "edit_user")
+                {
+                    ctrlKey = PanelRequest.Context.ToLower() == "user" ? "users" : PanelRequest.Context.ToLower() == "journalingmailbox" ? "journaling_mailboxes" : "mailboxes";
+                }
+                else if (curCtrlKey == "mailbox_memberof")
+                {
+                    ctrlKey = PanelRequest.Context.ToLower() == "journalingmailbox" ? "journaling_mailboxes" : "mailboxes";
+                }
 
                 ModuleDefinition definition = PortalConfiguration.ModuleDefinitions[EXCHANGE_SERVER_MODULE_DEFINTION_ID];
                 ModuleControl control = null;

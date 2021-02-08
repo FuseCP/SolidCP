@@ -172,7 +172,7 @@
     <value>Sicherheitsgruppe</value>
   </data>
   <data name="SharedMailbox.Text" xml:space="preserve">
-    <value>Geteiltes Postfach</value>
+    <value>Freigegebenes Postfach</value>
   </data>
   <data name="User.Text" xml:space="preserve">
     <value>Organisationsbenutzer</value>

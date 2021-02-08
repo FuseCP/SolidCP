@@ -231,4 +231,13 @@
   <data name="locAutoReplyEnabled.Text" xml:space="preserve">
     <value>Automatische Antworten über SolidCP</value>
   </data>
+  <data name="bntAddTag.Text" xml:space="preserve">
+    <value>Tag hinzufügen</value>
+  </data>
+  <data name="secRetentionPolicyTags.Text" xml:space="preserve">
+    <value>Aufbewahrungsrichtlinien-Tags</value>
+  </data>
+  <data name="chkIsForJournaling.Text" xml:space="preserve">
+    <value>Nur für Journal-Postfächer</value>
+  </data>
 </root>

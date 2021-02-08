@@ -123,8 +123,6 @@ namespace SolidCP.Portal.ExchangeServer
                             "SpaceID=" + PanelSecurity.PackageId, "DomainID=" + domainId));
                         return;
                     }
-                    //Delete Domain to Mail Cleaner
-                    Knom.Helpers.Net.APIMailCleanerHelper.DomainRemove(DomainName);
 
                     // rebind domains
                     BindDomainNames();

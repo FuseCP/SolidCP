@@ -129,6 +129,7 @@ order by rg.groupOrder
 
         public const string EXCHANGE2013_SHAREDMAILBOXES = "Exchange2013.SharedMailboxes"; // Shared and resource mailboxes
         public const string EXCHANGE2013_RESOURCEMAILBOXES = "Exchange2013.ResourceMailboxes";
+        public const string EXCHANGE2013_JOURNALINGMAILBOXES = "Exchange2013.JournalingMailboxes";
         public const string EXCHANGE2013_AUTOREPLY = "Exchange2013.AutoReply";
 
         public const string MSSQL2000_DATABASES = "MsSQL2000.Databases";  // Databases
@@ -221,6 +222,7 @@ order by rg.groupOrder
         public const string VPS2012_BOOT_CD_ENABLED = "VPS2012.BootCdEnabled";		// Boot from CD
         public const string VPS2012_RAM = "VPS2012.Ram";		// RAM size, MB
         public const string VPS2012_HDD = "VPS2012.Hdd";		// Hard Drive size, GB
+        public const string VPS2012_ADDITIONAL_VHD_COUNT = "VPS2012.AdditionalVhdCount";		// Additional Hard Drives per VPS
         public const string VPS2012_DVD_ENABLED = "VPS2012.DvdEnabled";		// DVD drive
         public const string VPS2012_EXTERNAL_NETWORK_ENABLED = "VPS2012.ExternalNetworkEnabled";		// External Network
         public const string VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER = "VPS2012.ExternalIPAddressesNumber";		// Number of External IP addresses

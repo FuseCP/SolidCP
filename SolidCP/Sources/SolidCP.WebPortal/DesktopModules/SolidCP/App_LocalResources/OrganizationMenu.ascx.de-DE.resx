@@ -210,6 +210,9 @@
   <data name="Text.PublicFolders" xml:space="preserve">
     <value>Öffentliche Ordner</value>
   </data>
+  <data name="Text.JournalingMailboxes" xml:space="preserve">
+    <value>Journal-Postfächer</value>
+  </data>
   <data name="Text.SecurityGroups" xml:space="preserve">
     <value>Gruppen</value>
   </data>

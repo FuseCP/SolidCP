@@ -223,16 +223,8 @@ namespace SolidCP.Portal
                                     ShowErrorMessage("USERWIZARD_CREATE_ACCOUNT");
                                     return;
                                 }
-
-                                //Add Mail Cleaner
-                                Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(domainName, Utils.ParseInt(ddlPlans.SelectedValue, 0));
                             }
                         }
-                    }
-                    if ((chkCreateMailAccount.Checked) & !string.IsNullOrEmpty(domainName))
-                    {
-                        //Add Mail Cleaner
-                        Knom.Helpers.Net.APIMailCleanerHelper.DomainAdd(domainName, Utils.ParseInt(ddlPlans.SelectedValue, 0));
                     }
                 }
             }

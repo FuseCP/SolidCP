@@ -267,6 +267,13 @@ namespace SolidCP.Providers.HostedSolution
             set { this.enableForceArchiveDeletion = value; }
         }
 
+        bool isForJournaling;
+        public bool IsForJournaling
+        {
+            get { return this.isForJournaling; }
+            set { this.isForJournaling = value; }
+        }
+
         [LogProperty("Mailbox Plan Unique Name")]
         public string SCPUniqueName
         {

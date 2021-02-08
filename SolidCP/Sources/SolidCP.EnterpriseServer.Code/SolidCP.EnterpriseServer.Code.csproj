@@ -80,7 +80,7 @@
     <Reference Include="SolidCP.Providers.Base">
       <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
     </Reference>
-    <Reference Include="SolidCP.Server.Client">
+	<Reference Include="SolidCP.Server.Client">
       <HintPath>..\..\Bin\SolidCP.Server.Client.dll</HintPath>
     </Reference>
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -131,6 +131,7 @@
     <Compile Include="HostedSolution\OrganizationController.cs" />
     <Compile Include="HostedSolution\ReportController.cs" />
     <Compile Include="Log\AuditLog.cs" />
+    <Compile Include="MailCleaner\APIMailCleanerHelper.cs" />
     <Compile Include="MailServers\MailServerController.cs" />
     <Compile Include="MailServers\QuotaLimit.cs" />
     <Compile Include="OperatingSystems\OperatingSystemController.cs" />

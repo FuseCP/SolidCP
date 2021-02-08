@@ -84,6 +84,10 @@ namespace SolidCP.Providers.HostedSolution
         ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName);
         ExchangeMailboxStatistics GetMailboxStatistics(string accountName);
         string[] SetDefaultPublicFolderMailbox(string id, string organizationId, string organizationDistinguishedName);
+        string CreateJournalRule(string journalEmail, string scope, string recipientEmail, bool enabled);
+        ExchangeJournalRule GetJournalRule(string journalEmail);
+        void SetJournalRule(ExchangeJournalRule rule);
+        void RemoveJournalRule(string journalEmail);
 
 
         // Contacts

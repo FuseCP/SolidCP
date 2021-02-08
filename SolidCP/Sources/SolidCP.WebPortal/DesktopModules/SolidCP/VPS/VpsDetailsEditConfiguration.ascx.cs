@@ -109,7 +109,7 @@ namespace SolidCP.Portal.VPS
                 // bind item
                 ddlCpu.SelectedValue = vm.CpuCores.ToString();
                 txtRam.Text = vm.RamSize.ToString();
-                txtHdd.Text = vm.HddSize.ToString();
+                txtHdd.Text = vm.HddSize[0].ToString();
                 txtSnapshots.Text = vm.SnapshotsNumber.ToString();
 
                 chkDvdInstalled.Checked = vm.DvdDriveInstalled;

@@ -233,7 +233,8 @@ namespace SolidCP.Portal.ProviderControls
                 cbUseSNI.Checked = Utils.ParseBool(settings["SSLUseSNI"], false);
 		        txtCCSUNCPath.Text = settings["SSLCCSUNCPath"];
                 txtCCSCommonPassword.Text = settings["SSLCCSCommonPassword"];
-             }
+                txtLeEmail.Text = settings["SSLLeEmail"];
+            }
 		}
 
 		public void SaveSettings(StringDictionary settings)
@@ -331,6 +332,7 @@ namespace SolidCP.Portal.ProviderControls
 		        settings["SSLUseSNI"] = cbUseSNI.Checked.ToString();
 		        settings["SSLCCSUNCPath"] = txtCCSUNCPath.Text;
 		        settings["SSLCCSCommonPassword"] = txtCCSCommonPassword.Text;
+                settings["SSLLeEmail"] = txtLeEmail.Text;
             }
 		}
 

@@ -141,7 +141,7 @@
                                                 <td class="FormLabel150"><asp:Label ID="lblCpu" runat="server" 
                                                         meta:resourcekey="lblCpu" Text="CPU:" /></td>
                                                 <td>
-                                                    <asp:DropDownList ID="ddlCpu" runat="server" CssClass="HugeTextBox" Width="70">
+                                                    <asp:DropDownList ID="ddlCpu" runat="server" CssClass="HugeTextBox" Width="80">
                                                     </asp:DropDownList>
                                                 </td>
                                                 <td><asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/></td>

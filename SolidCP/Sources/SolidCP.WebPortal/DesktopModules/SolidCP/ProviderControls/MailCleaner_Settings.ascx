@@ -18,6 +18,14 @@
             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtSimpleUrlBase" ErrorMessage="*" Display="Dynamic" />
         </td>
     </tr>
+    <tr>
+        <td class="Normal">
+            
+        </td>
+        <td>
+            <asp:CheckBox id="chkIgnoreCheckSSL" runat="server" Text="Disable SSL certificate checking" meta:resourcekey="chkIgnoreCheckSSL"></asp:CheckBox>
+        </td>
+    </tr>
      
 
 </table>

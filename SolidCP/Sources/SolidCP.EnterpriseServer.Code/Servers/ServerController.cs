@@ -2794,7 +2794,7 @@ namespace SolidCP.EnterpriseServer
 				// delete domain
 				DataProvider.DeleteDomain(SecurityContext.User.UserId, domainId);
 
-				return 0;
+                return 0;
 			}
 			catch (Exception ex)
 			{

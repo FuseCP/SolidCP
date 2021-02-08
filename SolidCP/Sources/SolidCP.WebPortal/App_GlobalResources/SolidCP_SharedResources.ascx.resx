@@ -3411,6 +3411,9 @@
   <data name="Error.EXCHANGE_CREATE_MAILBOX" xml:space="preserve">
     <value>Error creating mailbox. See audit log for more details.</value>
   </data>
+  <data name="Error.EXCHANGE_CREATE_JOURNALING_MAILBOX" xml:space="preserve">
+    <value>Error creating journaling mailbox. See audit log for more details.</value>
+  </data>
   <data name="Error.HOSTED_SHAREPOINT_RECALCULATE_SIZE" xml:space="preserve">
     <value>Error recalculating disk size. See audit log for more details.</value>
   </data>
@@ -3431,6 +3434,9 @@
   </data>
   <data name="Error.EXCHANGE_DELETE_MAILBOX" xml:space="preserve">
     <value>Error deleting mailbox. See audit log for more details.</value>
+  </data>
+  <data name="Error.EXCHANGE_DELETE_JOURNALING_MAILBOX" xml:space="preserve">
+    <value>Error deleting journaling mailbox. See audit log for more details.</value>
   </data>
   <data name="Error.EXCHANGE_DELETE_MAILBOXPLAN" xml:space="preserve">
     <value>Unable to delete mailboxplan. Make sure the mailbox plan is not assigned to any mailbox</value>
@@ -3505,6 +3511,9 @@
   <data name="Error.EXCHANGE_GET_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Error reading mailbox general settings. See audit log for more details.</value>
   </data>
+  <data name="Error.EXCHANGE_GET_JOURNALING_MAILBOX_SETTINGS" xml:space="preserve">
+    <value>Error reading journaling mailbox general settings. See audit log for more details.</value>
+  </data>
   <data name="Error.ORGANIZATION_GET_USER_SETTINGS" xml:space="preserve">
     <value>Error reading user general settings. See audit log for more details.</value>
   </data>
@@ -3562,6 +3571,9 @@
   <data name="Error.EXCHANGE_UPDATE_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Error updating mailbox general settings. See audit log for more details.</value>
   </data>
+  <data name="Error.EXCHANGE_UPDATE_JOURNALING_MAILBOX_SETTINGS" xml:space="preserve">
+    <value>Error updating journaling mailbox general settings. See audit log for more details.</value>
+  </data>
   <data name="Error.ORGANIZATION_UPDATE_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Error updating user general settings. See audit log for more details.</value>
   </data>
@@ -3579,6 +3591,9 @@
   </data>
   <data name="Error.EXCHANGE_GET_MAILBOXES" xml:space="preserve">
     <value>Error reading organization mailboxes</value>
+  </data>
+  <data name="Error.EXCHANGE_GET_JOURNALING_MAILBOXES" xml:space="preserve">
+    <value>Error reading organization journaling mailboxes</value>
   </data>
   <data name="Error.EXCHANGE_GET_CONTACTS" xml:space="preserve">
     <value>Error reading organization contacts</value>
@@ -3606,6 +3621,9 @@
   </data>
   <data name="Success.EXCHANGE_UPDATE_MAILBOX_SETTINGS" xml:space="preserve">
     <value>Mailbox general settings have been successfully updated.</value>
+  </data>
+  <data name="Success.EXCHANGE_UPDATE_JOURNALING_MAILBOX_SETTINGS" xml:space="preserve">
+    <value>Journaling mailbox general settings have been successfully updated.</value>
   </data>
   <data name="Success.ORGANIZATION_UPDATE_USER_SETTINGS" xml:space="preserve">
     <value>User general settings have been successfully updated.</value>
@@ -3705,6 +3723,9 @@
   </data>
   <data name="Warning.2613" xml:space="preserve">
     <value>Invalid recoverable items quota specified, should be greater or equal to 6144MB</value>
+  </data>
+  <data name="Warning.2614" xml:space="preserve">
+    <value>Exchange journaling mailboxes quota has been reached</value>
   </data>
   <data name="AuditLogTask.EXCHANGE_CALCULATE_DISKSPACE" xml:space="preserve">
     <value>Calculate organization disk space</value>
@@ -4663,6 +4684,9 @@
   <data name="Error.VPS_LOAD_VM_META_ITEM" xml:space="preserve">
     <value>Cannot load virtual machine meta-item</value>
   </data>
+  <data name="Warning.VPS_CHANGE_VM_CONFIGURATION_SNAPSHOT" xml:space="preserve">
+    <value>Configuration changes can only be made when no snapshots have been taken</value>
+  </data>
   <data name="Success.VPS_CHANGE_VM_CONFIGURATION" xml:space="preserve">
     <value>VPS configuration has been changed</value>
   </data>
@@ -4782,6 +4806,9 @@
   </data>
   <data name="VPS.VPS_QUOTA_EXCEEDED_HDD" xml:space="preserve">
     <value>The maximum HDD size that could be specified: {1} GB</value>
+  </data>
+  <data name="VPS.VPS_QUOTA_EXCEEDED_ADDITIONAL_HDD" xml:space="preserve">
+    <value>The maximum additional HDD count that could be specified: {1}</value>
   </data>
   <data name="VPS.VPS_QUOTA_EXCEEDED_PAUSE_RESUME_ALLOWED" xml:space="preserve">
     <value>Pause, resume are not allowed in the hosting plan</value>
@@ -5764,6 +5791,9 @@
   <data name="Quota.VPS2012.Hdd" xml:space="preserve">
     <value>Hard Drive size, GB</value>
   </data>
+  <data name="Quota.VPS2012.AdditionalVhdCount" xml:space="preserve">
+    <value>Additional Hard Drives per VPS</value>
+  </data>
   <data name="Quota.VPS2012.ManagingAllowed" xml:space="preserve">
     <value>Allow user to create, delete VPS</value>
   </data>
@@ -6552,6 +6582,9 @@
   </data>
   <data name="Quota.Exchange2013.ResourceMailboxes" xml:space="preserve">
     <value>Resource Mailboxes per Organization</value>
+  </data>
+  <data name="Quota.Exchange2013.JournalingMailboxes" xml:space="preserve">
+    <value>Journaling Mailboxes per Organization</value>
   </data>
   <data name="Quota.Exchange2013.SharedMailboxes" xml:space="preserve">
     <value>Shared Mailboxes per Organization</value>

@@ -346,6 +346,24 @@ namespace SolidCP.Portal.VPS2012 {
         protected global::System.Web.UI.WebControls.Localize locGB;
         
         /// <summary>
+        /// btnAddHdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton btnAddHdd;
+        
+        /// <summary>
+        /// repHdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repHdd;
+        
+        /// <summary>
         /// secHddQOS control.
         /// </summary>
         /// <remarks>
@@ -1235,6 +1253,15 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litHdd;
+        
+        /// <summary>
+        /// repHddInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater repHddInfo;
         
         /// <summary>
         /// locHddIOPSmin control.

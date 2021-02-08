@@ -141,4 +141,7 @@
   <data name="UseDefault.Text" xml:space="preserve">
     <value>&lt;Located on the same server&gt;</value>
   </data>
+  <data name="chkIgnoreCheckSSL.Text" xml:space="preserve">
+    <value>Disable SSL certificate checking</value>
+  </data>
 </root>

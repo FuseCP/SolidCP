@@ -41,6 +41,7 @@ namespace SolidCP.Providers.Virtualization
         // Virtual Machines
         VirtualMachine GetVirtualMachine(string vmId);
         VirtualMachine GetVirtualMachineEx(string vmId);
+        JobResult ExecuteCustomPsScript(string script);
         List<VirtualMachine> GetVirtualMachines();
         byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size);
         VirtualMachine CreateVirtualMachine(VirtualMachine vm);
@@ -100,6 +101,7 @@ namespace SolidCP.Providers.Virtualization
         ReturnCode UnmountVirtualHardDisk(string vhdPath);
         JobResult ExpandVirtualHardDisk(string vhdPath, UInt64 sizeGB);
         JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes);
+        JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB);
         void ExpandDiskVolume(string diskAddress, string volumeName);
         void DeleteRemoteFile(string path);
         string ReadRemoteFile(string path);

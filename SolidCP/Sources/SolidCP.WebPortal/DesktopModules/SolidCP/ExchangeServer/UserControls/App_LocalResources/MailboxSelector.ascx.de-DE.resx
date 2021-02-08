@@ -166,6 +166,6 @@
     <value>&amp;lt;i class='fa fa-folder-open-o' aria-hidden='true'&amp;gt;&amp;lt;/i&amp;gt;&amp;nbsp;Benutzer nachschlagen</value>
   </data>
   <data name="chkIncludeSharedMailbox.Text" xml:space="preserve">
-    <value>Geteiltes Postfach</value>
+    <value>Freigegebenes Postfach</value>
   </data>
 </root>

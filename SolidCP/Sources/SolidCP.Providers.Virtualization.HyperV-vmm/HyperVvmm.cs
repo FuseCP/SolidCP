@@ -203,8 +203,8 @@ namespace SolidCP.Providers.Virtualization
 
                         if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                         {
-                            vm.VirtualHardDrivePath = vm.Disks[0].Path;
-                            vm.HddSize = Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G);
+                            vm.VirtualHardDrivePath = new[] { vm.Disks[0].Path };
+                            vm.HddSize = new[] { Convert.ToInt32(vm.Disks[0].FileSize / Constants.Size1G) };
                         }
 
                         // network adapters
@@ -346,7 +346,7 @@ namespace SolidCP.Providers.Virtualization
             // evaluate paths
             vm.RootFolderPath = FileUtils.EvaluateSystemVariables(vm.RootFolderPath);
             vm.OperatingSystemTemplatePath = FileUtils.EvaluateSystemVariables(vm.OperatingSystemTemplatePath);
-            vm.VirtualHardDrivePath = FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath);
+            vm.VirtualHardDrivePath = new[] { FileUtils.EvaluateSystemVariables(vm.VirtualHardDrivePath[0]) };
             
             try
             {
@@ -1281,6 +1281,11 @@ namespace SolidCP.Providers.Virtualization
         }
 
         public JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes)
+        {
+            return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+        }
+
+        public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
         {
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
         }
@@ -2272,5 +2277,14 @@ namespace SolidCP.Providers.Virtualization
             PowerShell.Execute(cmd, true);
         }
         #endregion
+
+        public JobResult ExecuteCustomPsScript(string script)
+        {
+            var jobResult = new JobResult();
+            Command cmd = new Command(script, true);
+            PowerShell.Execute(cmd, false, true);
+            jobResult.ReturnValue = ReturnCode.OK;
+            return jobResult;
+        }
     }
 }

@@ -165,8 +165,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 TaskManager.ItemId = itemId;
-
-			}
+            }
 			catch (Exception ex)
 			{
 				TaskManager.WriteError(ex);
@@ -1149,6 +1148,9 @@ namespace SolidCP.EnterpriseServer
                     SpamExpertsController.AddDomainFilter(route);
                 }
 
+                //Add to Mail Cleaner
+                APIMailCleanerHelper.DomainAdd(item.Name, item.PackageId);
+
                 return itemId;
 			}
 			catch (Exception ex)
@@ -1252,7 +1254,10 @@ namespace SolidCP.EnterpriseServer
                     }
                 }
 
-				return 0;
+                //Delete Domain from Mail Cleaner
+                APIMailCleanerHelper.DomainRemove(domain.DomainName, domain.PackageId);
+
+                return 0;
 			}
 			catch (Exception ex)
 			{
@@ -1335,6 +1340,9 @@ namespace SolidCP.EnterpriseServer
                     DomainInfo topDomain = ServerController.GetDomain(mailDomain.Name, true, false);
                     SpamExpertsController.AddDomainFilterAlias(topDomain, domain.DomainName);
                 }
+
+                //Add to Mail Cleaner
+                APIMailCleanerHelper.DomainAdd(domain.DomainName, domain.PackageId);
 
                 return 0;
 			}
