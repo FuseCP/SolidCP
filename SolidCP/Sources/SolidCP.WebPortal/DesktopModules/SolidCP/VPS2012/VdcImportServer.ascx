@@ -128,6 +128,22 @@
                         
                         <scp:DynamicMemoryControl runat="server" ID="DynamicMemorySetting" Mode="Display"/>
 
+                        <scp:CollapsiblePanel id="secSnapshots" runat="server"
+                                        TargetControlID="SnapshotsPanel" meta:resourcekey="secSnapshots" Text="Snapshots quota">
+                                    </scp:CollapsiblePanel>
+                                    <asp:Panel ID="SnapshotsPanel" runat="server" Height="0" style="overflow:hidden;padding:5px;">
+                                        <div class="form-group">
+                                        <asp:Label ID="locSnapshots" meta:resourcekey="locSnapshots" runat="server" Text="Number of snapshots:" CssClass="col-sm-2"  AssociatedControlID="txtSnapshots"></asp:Label>
+                                                <div class="col-sm-10 form-inline">
+                                                    <asp:TextBox ID="txtSnapshots" runat="server" CssClass="form-control form-control" Width="150" Text="0"></asp:TextBox>
+                                                    
+                                                    <asp:RequiredFieldValidator ID="SnapshotsValidator" runat="server" Text="*" Display="Dynamic"
+                                                        ControlToValidate="txtSnapshots" meta:resourcekey="SnapshotsValidator" SetFocusOnError="true"
+                                                        ValidationGroup="ImportWizard">*</asp:RequiredFieldValidator>
+                                                </div>
+                                            </div>
+                                    </asp:Panel>
+
                         <scp:CollapsiblePanel id="secBios" runat="server"
                             TargetControlID="BiosPanel" meta:resourcekey="secBios" Text="BIOS">
                         </scp:CollapsiblePanel>

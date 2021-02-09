@@ -1,0 +1,35 @@
+{
+  "schema": "1.0",
+  "type": "SolidCP-servers",
+  "name": "SolidCP",
+  "license": "Creative Commons Share-alike",
+  "category": "provisioning",
+  "description": {
+    "name": "SolidCP",
+    "tagline": "SolidCP Module for automating product configurable options, addons and sync to SolidCP",
+    "long": "This plugin automates the process of creating resources inside SolidCP",
+    "features": [
+      "SolidCP User",
+      "SolidCP Hosting Space",
+      "Domain name",
+      "DNS",
+      "Website",
+      "Catch all email",
+      "automated Hosting space mail"
+    ]
+  },
+  "support": {
+    "homepage": "https://www.SolidCP.com",
+    "docs_url": "https://www.SolidCP.com/kb/",
+    "support_url": "https://www.solidcp.com/forum"
+  },
+  "logo": {
+    "filename": "logo.png"
+  },
+  "authors": [
+    {
+      "name": "SolidCP",
+      "homepage": "https:\/\/www.solidcp.com\/"
+    }
+  ]
+}

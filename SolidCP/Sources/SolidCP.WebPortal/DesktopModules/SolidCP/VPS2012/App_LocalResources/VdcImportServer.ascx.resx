@@ -246,4 +246,7 @@
   <data name="AllowReinstall.Text" xml:space="preserve">
     <value>Re-install</value>
   </data>
+  <data name="SnapshotsValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter the maximum number of snapshots</value>
+  </data>
 </root>

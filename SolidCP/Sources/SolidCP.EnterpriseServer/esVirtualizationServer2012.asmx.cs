@@ -228,6 +228,7 @@ namespace SolidCP.EnterpriseServer
             bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
             string externalNicMacAddress, int[] externalAddresses,
             string managementNicMacAddress, int managementAddress,
+            int maxSnapshots,
             bool ignoreChecks)
         {
             return VirtualizationServerController2012.ImportVirtualMachine(packageId,
@@ -237,6 +238,7 @@ namespace SolidCP.EnterpriseServer
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNicMacAddress, externalAddresses,
                 managementNicMacAddress, managementAddress,
+                maxSnapshots,
                 ignoreChecks);
         }
         #endregion
