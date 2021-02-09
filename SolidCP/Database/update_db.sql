@@ -16535,6 +16535,38 @@ IF EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'ServiceItemProperties')
 ALTER TABLE [dbo].[ServiceItemProperties] ALTER COLUMN [PropertyValue] [nvarchar](MAX) NULL; 
 GO
 
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type IN ('FN', 'IF', 'TF') AND name = 'SplitString')
+DROP FUNCTION [dbo].[SplitString]
+GO
+
+CREATE FUNCTION dbo.SplitString (@stringToSplit VARCHAR(MAX), @separator CHAR)
+RETURNS
+ @returnList TABLE ([value] [nvarchar] (500))
+AS
+BEGIN
+
+ DECLARE @value NVARCHAR(255)
+ DECLARE @pos INT
+
+ WHILE CHARINDEX(@separator, @stringToSplit) > 0
+ BEGIN
+  SELECT @pos  = CHARINDEX(@separator, @stringToSplit)  
+  SELECT @value = SUBSTRING(@stringToSplit, 1, @pos-1)
+
+  INSERT INTO @returnList 
+  SELECT @value
+
+  SELECT @stringToSplit = SUBSTRING(@stringToSplit, @pos+1, LEN(@stringToSplit)-@pos)
+ END
+
+ INSERT INTO @returnList
+ SELECT @stringToSplit
+
+ RETURN
+END
+GO
+
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -21070,7 +21102,7 @@ AS
 		ELSE IF @QuotaID = 306 -- HDD of VPS
 		BEGIN
 			INSERT INTO @vhd
-			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
@@ -21104,7 +21136,7 @@ AS
 		ELSE IF @QuotaID = 559 -- HDD of VPS2012
 		BEGIN
 			INSERT INTO @vhd
-			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
@@ -21138,7 +21170,7 @@ AS
 		ELSE IF @QuotaID = 351 -- HDD of VPSforPc
 		BEGIN
 			INSERT INTO @vhd
-			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
