@@ -207,6 +207,11 @@ namespace SolidCP.Providers.Virtualization
                         vm.EnableSecureBoot = biosInfo.SecureBootEnabled;
                         vm.SecureBootTemplate = biosInfo.SecureBootTemplate;
 
+                        // snapshots
+                        try {
+                            vm.SnapshotsNumber = GetVirtualMachineSnapshots(vm.VirtualMachineId).Count;
+                        }  catch { /** nothing */ }                        
+
                         // DVD drive
                         var dvdInfo = DvdDriveHelper.Get(PowerShell, vm.Name);
                         vm.DvdDriveInstalled = dvdInfo != null;

@@ -1350,6 +1350,7 @@ namespace SolidCP.EnterpriseServer
             bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
             string externalNicMacAddress, int[] externalAddresses,
             string managementNicMacAddress, int managementAddress,
+            int maxSnapshots,
             bool ignoreChecks)
         {
             // result object
@@ -1406,7 +1407,7 @@ namespace SolidCP.EnterpriseServer
                 string msHddHyperVFolderName = "Virtual Hard Disks";
                 if (item.RootFolderPath.EndsWith(msHddHyperVFolderName)) //We have to know root folder of VM, not of hdd.
                     item.RootFolderPath = item.RootFolderPath.Substring(0, item.RootFolderPath.Length - msHddHyperVFolderName.Length);
-                item.SnapshotsNumber = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
+                item.SnapshotsNumber = maxSnapshots; //cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue -> this return -1 if unlimited;
                 if (item.SnapshotsNumber == -1) item.SnapshotsNumber = 50;
                 item.DvdDriveInstalled = IsDvdInstalled; //vm.DvdDriveInstalled;
                 item.BootFromCD = IsBootFromCd; //vm.BootFromCD;

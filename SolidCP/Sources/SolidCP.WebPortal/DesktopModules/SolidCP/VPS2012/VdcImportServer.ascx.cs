@@ -128,6 +128,9 @@ namespace SolidCP.Portal.VPS2012
             string vmId = VirtualMachines.SelectedValue;
             if (serviceId > 0 && vmId != "")
             {
+                // load package context (quotas informations)
+                PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+
                 VirtualMachine vm = ES.Services.VPS2012.GetVirtualMachineExtendedInfo(serviceId, vmId);
                 if (vm != null)
                 {
@@ -136,10 +139,19 @@ namespace SolidCP.Portal.VPS2012
                     RamSize.Text = vm.RamSize.ToString();
                     HddSize.Text = vm.HddSize[0].ToString();
                     VhdPath.Text = vm.VirtualHardDrivePath[0];
+                    Snapshot.Text = vm.SnapshotsNumber.ToString();
 
                     BindAdditionalHddInfo(vm);
 
                     this.BindSettingsControls(vm);
+
+                    // snapshots number
+                    if (cntx.Quotas.ContainsKey(Quotas.VPS2012_SNAPSHOTS_NUMBER))
+                    {
+                        int snapsNumber = cntx.Quotas[Quotas.VPS2012_SNAPSHOTS_NUMBER].QuotaAllocatedValue;
+                        txtSnapshots.Text = (snapsNumber != -1) ? snapsNumber.ToString() : "";
+                        txtSnapshots.Enabled = (snapsNumber != 0);
+                    }
 
                     // other settings
                     NumLockEnabled.Value = chkNumLock.Checked = vm.NumLockEnabled;
@@ -242,6 +254,7 @@ namespace SolidCP.Portal.VPS2012
                     AllowStartShutdown.Checked, AllowPause.Checked, AllowReboot.Checked, AllowReset.Checked, AllowReinstall.Checked,
                     ExternalAdapters.SelectedValue, extIps.ToArray(),
                     ManagementAdapters.SelectedValue, manIp,
+                    Utils.ParseInt(txtSnapshots.Text.Trim()),
                     chkIgnoreCheckes.Checked);
 
                 if (res.IsSuccess)
