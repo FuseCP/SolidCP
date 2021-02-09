@@ -246,4 +246,7 @@
   <data name="locCPUQuota.Text" xml:space="preserve">
     <value>CPU's</value>
   </data>
+  <data name="SnapshotsValidator.ErrorMessage" xml:space="preserve">
+    <value>Enter the maximum number of snapshots</value>
+  </data>
 </root>
