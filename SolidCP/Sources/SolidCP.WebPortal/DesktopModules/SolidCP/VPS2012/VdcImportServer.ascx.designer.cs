@@ -303,24 +303,6 @@ namespace SolidCP.Portal.VPS2012
         protected global::System.Web.UI.WebControls.Literal VhdPath;
 
         /// <summary>
-        /// locSnapshot control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label locSnapshot;
-
-        /// <summary>
-        /// Snapshot control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal Snapshot;
-
-        /// <summary>
         /// repHdd control.
         /// </summary>
         /// <remarks>

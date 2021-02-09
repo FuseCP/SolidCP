@@ -205,12 +205,7 @@ namespace SolidCP.Providers.Virtualization
                         vm.NumLockEnabled = biosInfo.NumLockEnabled;
                         vm.BootFromCD = biosInfo.BootFromCD;
                         vm.EnableSecureBoot = biosInfo.SecureBootEnabled;
-                        vm.SecureBootTemplate = biosInfo.SecureBootTemplate;
-
-                        // snapshots
-                        try {
-                            vm.SnapshotsNumber = GetVirtualMachineSnapshots(vm.VirtualMachineId).Count;
-                        }  catch { /** nothing */ }                        
+                        vm.SecureBootTemplate = biosInfo.SecureBootTemplate;                     
 
                         // DVD drive
                         var dvdInfo = DvdDriveHelper.Get(PowerShell, vm.Name);

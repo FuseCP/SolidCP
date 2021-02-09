@@ -106,11 +106,6 @@
                                     <asp:Literal ID="VhdPath" runat="server" Text="0"></asp:Literal>
                                 </div>
 
-                                <asp:Label ID="locSnapshot" runat="server" CssClass="col-sm-1" meta:resourcekey="locSnapshot" Text="Snapshosts:"></asp:Label>
-                                <div class="col-sm-11">
-                                    <asp:Literal ID="Snapshot" runat="server" Text="0"></asp:Literal>
-                                </div>
-
                                 <asp:Repeater ID="repHdd" runat="server">
                                     <HeaderTemplate>
                                     </HeaderTemplate>

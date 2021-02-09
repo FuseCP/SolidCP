@@ -139,7 +139,6 @@ namespace SolidCP.Portal.VPS2012
                     RamSize.Text = vm.RamSize.ToString();
                     HddSize.Text = vm.HddSize[0].ToString();
                     VhdPath.Text = vm.VirtualHardDrivePath[0];
-                    Snapshot.Text = vm.SnapshotsNumber.ToString();
 
                     BindAdditionalHddInfo(vm);
 
