@@ -92,13 +92,8 @@ namespace SolidCP.Portal.ProviderControls
 
             // RAM
             txtRamReserve.Text = settings["RamReserve"];
-            txtRamReserve.Enabled = true;
             if (string.IsNullOrEmpty(txtRamReserve.Text))
                 txtRamReserve.Text = "0"; //unlimited or disabled
-            if((txtServerName.Text != ""))
-                txtRamReserve.Enabled = false; //remote HyperV not supported yet
-            
-                
 
             // Default Windows Configure Version
             ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
@@ -409,9 +404,15 @@ namespace SolidCP.Portal.ProviderControls
         {
             ServerNameRow.Visible = (radioServer.SelectedIndex == 1);
 
+            txtRamReserve.Enabled = true;
             if (radioServer.SelectedIndex == 0)
             {
-                txtServerName.Text = "";
+                txtServerName.Text = "";                
+            }
+            else
+            {
+                txtRamReserve.Text = "0";
+                txtRamReserve.Enabled = false;
             }
 
             // private network
