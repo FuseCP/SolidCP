@@ -1066,6 +1066,35 @@ namespace SolidCP.Server
         }
         #endregion
 
+        #region OS informations
+        [WebMethod]
+        public Memory GetMemory()
+        {            
+            try
+            {
+                Log.WriteStart("GetMemory");
+                Memory memory = new Memory();
+                
+                WmiHelper wmi = new WmiHelper("root\\cimv2");
+                ManagementObjectCollection objOses = wmi.ExecuteQuery("SELECT * FROM Win32_OperatingSystem");
+                foreach (ManagementObject objOs in objOses)
+                {
+                    memory.FreePhysicalMemoryKB = UInt64.Parse(objOs["FreePhysicalMemory"].ToString());
+                    memory.TotalVisibleMemorySizeKB = UInt64.Parse(objOs["TotalVisibleMemorySize"].ToString());
+                    memory.TotalVirtualMemorySizeKB = UInt64.Parse(objOs["TotalVirtualMemorySize"].ToString());
+                    memory.FreeVirtualMemoryKB = UInt64.Parse(objOs["FreeVirtualMemory"].ToString());
+                }
+                Log.WriteEnd("GetMemory");
+                return memory;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError("GetMemory", ex);
+                throw;
+            }
+        }
+        #endregion
+
         #region System Commands
         [WebMethod]
         public string ExecuteSystemCommand(string path, string args)

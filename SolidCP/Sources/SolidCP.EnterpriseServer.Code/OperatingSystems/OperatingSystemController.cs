@@ -611,6 +611,32 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region OS informations
+        public static Memory GetMemoryPackageId(int packageId)
+        {
+            PackageInfo package = PackageController.GetPackage(packageId);
+            if (package == null)
+            {
+                throw new Exception("PACKAGE_NOT_FOUND");
+            }
+            return GetMemoryInternal(package.ServerId);
+        }
+        public static Memory GetMemory(int serverId)
+        {
+            return GetMemoryInternal(serverId);
+        }
+        private static Memory GetMemoryInternal(int serverId)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo| DemandAccount.IsActive);
+            if (accountCheck < 0) 
+                throw new Exception("The account dont have permission");
+
+            return GetServerService(serverId).GetMemory();
+        }
+
+        #endregion
+
         #region IImportController Members
 
         public List<string> GetImportableItems(int packageId, int itemTypeId, Type itemType,
