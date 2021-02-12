@@ -90,6 +90,11 @@ namespace SolidCP.Portal.ProviderControls
             txtCpuReserve.Text = settings["CpuReserve"];
             txtCpuWeight.Text = settings["CpuWeight"];
 
+            // RAM
+            txtRamReserve.Text = settings["RamReserve"];
+            if (string.IsNullOrEmpty(txtRamReserve.Text))
+                txtRamReserve.Text = "0"; //unlimited or disabled
+
             // Default Windows Configure Version
             ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
 
@@ -209,6 +214,9 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuLimit"] = txtCpuLimit.Text.Trim();
             settings["CpuReserve"] = txtCpuReserve.Text.Trim();
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
+
+            // RAM
+            settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
 
             // Default Windows Configure Version
             settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;
