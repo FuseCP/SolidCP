@@ -648,7 +648,7 @@ namespace SolidCP.EnterpriseServer
 
                 // check RAM limit
                 ulong ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : UInt64.Parse(settings["RamReserve"]);
-                if(ramReserve > 0) //0 - no RAM reserve
+                if(ramReserve > 0 && createMetaItem) //0 - no RAM reserve. if createMetaItem = false - reinstallation, disable check.
                 {
                     try
                     {
