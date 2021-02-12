@@ -92,8 +92,13 @@ namespace SolidCP.Portal.ProviderControls
 
             // RAM
             txtRamReserve.Text = settings["RamReserve"];
+            txtRamReserve.Enabled = true;
             if (string.IsNullOrEmpty(txtRamReserve.Text))
                 txtRamReserve.Text = "0"; //unlimited or disabled
+            if((txtServerName.Text != ""))
+                txtRamReserve.Enabled = false; //remote HyperV not supported yet
+            
+                
 
             // Default Windows Configure Version
             ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
@@ -216,7 +221,12 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
 
             // RAM
-            settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
+            if (string.IsNullOrEmpty(settings["ServerName"])) {
+                settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
+            } else {
+                settings["RamReserve"] = "0";
+            }
+                
 
             // Default Windows Configure Version
             settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;

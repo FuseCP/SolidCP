@@ -647,30 +647,34 @@ namespace SolidCP.EnterpriseServer
                 #endregion
 
                 // check RAM limit
-                ulong ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : UInt64.Parse(settings["RamReserve"]);
-                if(ramReserve > 0 && createMetaItem) //0 - no RAM reserve. if createMetaItem = false - reinstallation, disable check.
+                bool isNotRemote = string.IsNullOrEmpty(settings["ServerName"]);
+
+                if(isNotRemote) //at this moment Remote HyperV not supported
                 {
-                    try
+                    ulong ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : UInt64.Parse(settings["RamReserve"]);
+                    if (ramReserve > 0 && createMetaItem) //0 - no RAM reserve. if createMetaItem = false - reinstallation, disable check.
                     {
-                        Server.Memory memory = OperatingSystemController.GetMemoryPackageId(packageId);
-
-                        long freePhysicalMemoryMB = (long)(memory.FreePhysicalMemoryKB / 1024);
-                        long futureFreeMemoryMB = freePhysicalMemoryMB - (long)vm.RamSize; //futureFreeMemoryMB can be negative
-                        bool isEnoughRAM = (futureFreeMemoryMB >= (long)ramReserve);
-
-                        if (!isEnoughRAM)
+                        try
                         {
-                            throw new Exception("Not enough Memory on the Node! Reserved: " + ramReserve.ToString() + "Available: " + freePhysicalMemoryMB.ToString());
-                        }
+                            Server.Memory memory = OperatingSystemController.GetMemoryPackageId(packageId);
 
-                    }
-                    catch (Exception ex)
-                    {
-                        res.AddError(VirtualizationErrorCodes.RAM_VM_RAM_RESERVE_ERROR, ex);
-                        return res;
+                            long freePhysicalMemoryMB = (long)(memory.FreePhysicalMemoryKB / 1024);
+                            long futureFreeMemoryMB = freePhysicalMemoryMB - (long)vm.RamSize; //futureFreeMemoryMB can be negative
+                            bool isEnoughRAM = (futureFreeMemoryMB >= (long)ramReserve);
+
+                            if (!isEnoughRAM)
+                            {
+                                throw new Exception("Not enough Memory on the Node! Reserved: " + ramReserve.ToString() + "Available: " + freePhysicalMemoryMB.ToString());
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            res.AddError(VirtualizationErrorCodes.RAM_VM_RAM_RESERVE_ERROR, ex);
+                            return res;
+                        }
                     }
                 }
-                
 
                 // check hdd file
                 try
