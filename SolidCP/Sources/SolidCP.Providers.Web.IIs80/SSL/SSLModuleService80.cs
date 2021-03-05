@@ -146,7 +146,8 @@ namespace SolidCP.Providers.Web.Iis
             Log.WriteStart("LEInstallCertificate IIS80");
             Runspace runSpace = null;
             //SSLCertificate cert = null;
-            object result = null;
+            Collection<PSObject> results = null;
+            string result = null;
             object[] errors = null;
 
             try
@@ -170,19 +171,22 @@ namespace SolidCP.Providers.Web.Iis
 
                 Log.WriteInfo("LE Command Strïng: {0}", scripts);
 
-                result = ExecuteLocalScript(runSpace, scripts, out errors);
-                Log.WriteInfo(result.ToString());
+                results = ExecuteLocalScript(runSpace, scripts, out errors);
+
+                // get result message from wacs output
+                if (results.Count > 0) result = results[results.Count - 1].ToString();
+
+                Log.WriteInfo(result);
                 CloseRunspace(runSpace);
-                
+
             }
             catch (Exception ex)
             {
                 Log.WriteError("Error adding Lets Encrypt certificate IIS80", ex);
                 return ex.ToString();
-                throw;
             }
             Log.WriteEnd("LEInstallCertificate IIS80");
-            return result.ToString();
+            return result;
         }
 
         public new List<SSLCertificate> GetServerCertificates()

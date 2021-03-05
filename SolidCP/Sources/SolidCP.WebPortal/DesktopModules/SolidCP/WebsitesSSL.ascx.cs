@@ -313,7 +313,7 @@ namespace SolidCP.Portal
             // Check the operation status
             if (!result.IsSuccess)
             {
-                messageBox.ShowErrorMessage("WEB_INSTALL_LE");
+                messageBox.ShowErrorMessage("WEB_INSTALL_LE", new Exception(String.Join(", ", result.ErrorCodes.ToArray())));
                 return;
             }
             pnlInstallCertificate.Visible = false;
