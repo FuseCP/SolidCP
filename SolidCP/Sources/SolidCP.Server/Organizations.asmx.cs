@@ -135,6 +135,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public string[] GetSecurityGroupsNotes(string[] groupNames, string organizationId)
+        {
+            return Organization.GetSecurityGroupsNotes(groupNames, organizationId);
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public void DeleteSecurityGroup(string groupName, string organizationId)
         {
             Organization.DeleteSecurityGroup(groupName, organizationId);
