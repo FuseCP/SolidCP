@@ -45,5 +45,6 @@ namespace SolidCP.Providers.Virtualization
         public string ParentId { get; set; }
         public DateTime Created { get; set; }
         public bool IsCurrent { get; set; }
+        public string SnapshotType { get; set; }
     }
 }
