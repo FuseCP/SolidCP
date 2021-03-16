@@ -4608,7 +4608,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 ServiceProviderProxy.Init(web, item.ServiceId);
                 string ret = web.LEinstallCertificate(item, email);
 
-                if (ret.Contains("Error ")) result.AddError("ERROR_LEInstallCertificate", new Exception(ret));
+                if (ret.Contains("Error ") || ret.Contains("failed:")) result.AddError("ERROR_LEInstallCertificate", new Exception(ret));
             }
             catch (Exception ex)
             {
