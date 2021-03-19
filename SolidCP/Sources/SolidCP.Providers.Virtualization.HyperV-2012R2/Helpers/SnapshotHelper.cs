@@ -19,7 +19,8 @@ namespace SolidCP.Providers.Virtualization
                 Name = psObject.GetString("Name"),
                 VMName = psObject.GetString("VMName"),
                 ParentId = psObject.GetString("ParentSnapshotId"),
-                Created = psObject.GetProperty<DateTime>("CreationTime")
+                Created = psObject.GetProperty<DateTime>("CreationTime"),
+                SnapshotType = psObject.GetString("SnapshotType")
             };
 
             if (string.IsNullOrEmpty(snapshot.ParentId))

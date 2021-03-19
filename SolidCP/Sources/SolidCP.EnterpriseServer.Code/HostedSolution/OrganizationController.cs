@@ -3999,6 +3999,58 @@ namespace SolidCP.EnterpriseServer
             return c;
         }
 
+        private static void FillSecurityGroupsNotes(int itemId, List<ExchangeAccount> accounts)
+        {
+            #region Demo Mode
+            if (IsDemoMode)
+            {
+                return;
+            }
+            #endregion
+
+            if (accounts == null || accounts.Count == 0) return;
+
+            TaskManager.StartTask("ORGANIZATION", "FILL_SECURITY_GROUPS_NOTES", itemId);
+
+            try
+            {
+                Organization org = GetOrganization(itemId);
+                if (org == null) return;
+                Organizations orgProxy = GetOrganizationProxy(org.ServiceId);
+
+                string[] groupNames = new string[accounts.Count];
+
+                for (int i = 0; i < accounts.Count; i++)
+                {
+                    OrganizationUser user = GetAccount(itemId, accounts[i].AccountId);
+                    string groupName;
+                    string[] parts = user.SamAccountName.Split('\\');
+                    if (parts.Length == 2)
+                        groupName = parts[1];
+                    else
+                        groupName = user.SamAccountName;
+                    groupNames[i] = groupName;
+                }
+
+                string[] notes = orgProxy.GetSecurityGroupsNotes(groupNames, org.OrganizationId);
+
+                if (notes == null) return;
+
+                for (int i = 0; i < accounts.Count; i++)
+                {
+                    accounts[i].Notes = notes[i];
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
         public static OrganizationSecurityGroup GetSecurityGroupGeneralSettings(int itemId, int accountId)
         {
             #region Demo Mode
@@ -4216,22 +4268,8 @@ namespace SolidCP.EnterpriseServer
 
             List<ExchangeAccount> Tmpaccounts = new List<ExchangeAccount>();
             ObjectUtils.FillCollectionFromDataView(Tmpaccounts, ds.Tables[1].DefaultView);
+            FillSecurityGroupsNotes(itemId, Tmpaccounts);
             result.PageItems = Tmpaccounts.ToArray();
-
-            List<ExchangeAccount> accounts = new List<ExchangeAccount>();
-
-            foreach (ExchangeAccount account in Tmpaccounts.ToArray())
-            {
-                OrganizationSecurityGroup tmpSecurityGroup = GetSecurityGroupGeneralSettings(itemId, account.AccountId);
-
-                if (tmpSecurityGroup != null)
-                {
-                    account.Notes = tmpSecurityGroup.Notes;
-                    accounts.Add(account);
-                }
-            }
-
-            result.PageItems = accounts.ToArray();
 
             return result;
         }

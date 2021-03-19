@@ -110,6 +110,14 @@
                                 <scp:QuotaViewer ID="mailboxesResourceStats" QuotaTypeId="2" runat="server" DisplayGauge="true" />
                             </td>
                         </tr>
+                        <tr class="OrgStatsRow"> 
+                            <td class="OrgStatsQuota" nowrap>
+                                <asp:HyperLink ID="lnkJournalingMailboxes" runat="server" meta:resourcekey="lnkJournalingMailboxes" Text="Resource mailboxes" />
+                            </td>
+                            <td>
+                                <scp:QuotaViewer ID="mailboxesJournalingStats" QuotaTypeId="2" runat="server" DisplayGauge="true" />
+                            </td>
+                        </tr>
 
                         <tr class="OrgStatsRow" id="rowContacts" runat="server">
                             <td class="OrgStatsQuota" nowrap>

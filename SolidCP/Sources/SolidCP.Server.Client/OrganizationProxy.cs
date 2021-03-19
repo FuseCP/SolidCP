@@ -52,7 +52,9 @@ namespace SolidCP.Providers.HostedSolution {
         private System.Threading.SendOrPostCallback CreateSecurityGroupOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetSecurityGroupGeneralSettingsOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback GetSecurityGroupsNotesOperationCompleted;
+
         private System.Threading.SendOrPostCallback DeleteSecurityGroupOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetSecurityGroupGeneralSettingsOperationCompleted;
@@ -134,7 +136,10 @@ namespace SolidCP.Providers.HostedSolution {
         
         /// <remarks/>
         public event GetSecurityGroupGeneralSettingsCompletedEventHandler GetSecurityGroupGeneralSettingsCompleted;
-        
+
+        /// <remarks/>
+        public event GetSecurityGroupsNotesCompletedEventHandler GetSecurityGroupsNotesCompleted;
+
         /// <remarks/>
         public event DeleteSecurityGroupCompletedEventHandler DeleteSecurityGroupCompleted;
         
@@ -611,7 +616,60 @@ namespace SolidCP.Providers.HostedSolution {
                 this.GetSecurityGroupGeneralSettingsCompleted(this, new GetSecurityGroupGeneralSettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetSecurityGroupsNotes", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string[] GetSecurityGroupsNotes(string[] groupNames, string organizationId)
+        {
+            object[] results = this.Invoke("GetSecurityGroupsNotes", new object[] {
+                        groupNames,
+                        organizationId});
+            return ((string[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetSecurityGroupsNotes(string[] groupNames, string organizationId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetSecurityGroupsNotes", new object[] {
+                        groupNames,
+                        organizationId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public string[] EndGetSecurityGroupsNotes(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetSecurityGroupsNotesAsync(string[] groupNames, string organizationId)
+        {
+            this.GetSecurityGroupsNotesAsync(groupNames, organizationId, null);
+        }
+
+        /// <remarks/>
+        public void GetSecurityGroupsNotesAsync(string[] groupNames, string organizationId, object userState)
+        {
+            if ((this.GetSecurityGroupsNotesOperationCompleted == null))
+            {
+                this.GetSecurityGroupsNotesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSecurityGroupsNotesOperationCompleted);
+            }
+            this.InvokeAsync("GetSecurityGroupsNotes", new object[] {
+                        groupNames,
+                        organizationId}, this.GetSecurityGroupsNotesOperationCompleted, userState);
+        }
+
+        private void OnGetSecurityGroupsNotesOperationCompleted(object arg)
+        {
+            if ((this.GetSecurityGroupsNotesCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetSecurityGroupsNotesCompleted(this, new GetSecurityGroupsNotesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/DeleteSecurityGroup", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -2099,7 +2157,37 @@ namespace SolidCP.Providers.HostedSolution {
             }
         }
     }
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void GetSecurityGroupsNotesCompletedEventHandler(object sender, GetSecurityGroupsNotesCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetSecurityGroupsNotesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetSecurityGroupsNotesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public string[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((string[])(this.results[0]));
+            }
+        }
+    }
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void DeleteSecurityGroupCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);

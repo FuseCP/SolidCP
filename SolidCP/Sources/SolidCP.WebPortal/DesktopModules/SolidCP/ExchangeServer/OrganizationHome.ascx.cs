@@ -65,6 +65,8 @@ namespace SolidCP.Portal.ExchangeServer
             lnkResourceMailboxes.NavigateUrl = EditUrl("ItemID", PanelRequest.ItemID.ToString(), "mailboxes",
             "SpaceID=" + PanelSecurity.PackageId.ToString());
 
+            lnkJournalingMailboxes.NavigateUrl = EditUrl("ItemID", PanelRequest.ItemID.ToString(), "journaling_mailboxes",
+            "SpaceID=" + PanelSecurity.PackageId.ToString());
 
             lnkContacts.NavigateUrl = EditUrl("ItemID", PanelRequest.ItemID.ToString(), "contacts",
             "SpaceID=" + PanelSecurity.PackageId.ToString());
@@ -96,6 +98,10 @@ namespace SolidCP.Portal.ExchangeServer
             mailboxesResourceStats.QuotaUsedValue = exchangeOrgStats.CreatedResourceMailboxes;
             mailboxesResourceStats.QuotaValue = exchangeOrgStats.AllocatedResourceMailboxes;
             if (exchangeOrgStats.AllocatedResourceMailboxes != -1) mailboxesResourceStats.QuotaAvailable = exchangeOrgStats.AllocatedResourceMailboxes - exchangeOrgStats.CreatedResourceMailboxes;
+
+            mailboxesJournalingStats.QuotaUsedValue = exchangeOrgStats.CreatedJournalingMailboxes;
+            mailboxesJournalingStats.QuotaValue = exchangeOrgStats.AllocatedJournalingMailboxes;
+            if (exchangeOrgStats.AllocatedJournalingMailboxes != -1) mailboxesJournalingStats.QuotaAvailable = exchangeOrgStats.AllocatedJournalingMailboxes - exchangeOrgStats.CreatedJournalingMailboxes;
 
             if (exchangeOrgStats.AllocatedContacts == 0) this.rowContacts.Style.Add("display", "none");
             else

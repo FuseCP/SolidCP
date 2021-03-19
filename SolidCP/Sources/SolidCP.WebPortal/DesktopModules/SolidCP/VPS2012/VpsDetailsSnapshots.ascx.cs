@@ -102,6 +102,11 @@ namespace SolidCP.Portal.VPS2012
                 imgThumbnail.ImageUrl =
                     string.Format("~/DesktopModules/SolidCP/VPS2012/VirtualMachineSnapshotImage.ashx?ItemID={0}&SnapshotID={1}&rnd={2}",
                     PanelRequest.ItemID, HttpUtility.UrlEncode(node.Value), DateTime.Now.Ticks);
+
+                if (snapshot != null && !String.IsNullOrEmpty(snapshot.SnapshotType) && snapshot.SnapshotType.Equals("Recovery"))
+                {
+                    btnApply.Enabled = btnDelete.Enabled = btnDeleteSubtree.Enabled = false;
+                }
             }
         }
 
