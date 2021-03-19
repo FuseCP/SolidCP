@@ -998,6 +998,20 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region OS informations
+        [WebMethod]
+        public Memory GetMemoryPackageId(int packageId)
+        {
+            return OperatingSystemController.GetMemoryPackageId(packageId);
+        }
+
+        [WebMethod]
+        public Memory GetMemory(int serverId)
+        {
+            return OperatingSystemController.GetMemory(serverId);
+        }
+        #endregion
+
         #region Helper methods
         private string[] ConvertDictionaryToArray(StringDictionary settings)
         {

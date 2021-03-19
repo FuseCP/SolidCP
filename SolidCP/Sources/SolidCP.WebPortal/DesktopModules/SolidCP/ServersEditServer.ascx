@@ -4,6 +4,7 @@
 <%@ Register Src="ServerIPAddressesControl.ascx" TagName="ServerIPAddressesControl" TagPrefix="uc2" %>
 <%@ Register Src="ServerDnsRecordsControl.ascx" TagName="ServerDnsRecordsControl" TagPrefix="uc3" %>
 <%@ Register Src="UserControls/ServerPasswordControl.ascx" TagName="ServerPasswordControl" TagPrefix="uc1" %>
+<%@ Register Src="UserControls/Gauge.ascx" TagName="Gauge" TagPrefix="scp" %>
 <%@ Register TagPrefix="scp" TagName="CollapsiblePanel" Src="UserControls/CollapsiblePanel.ascx" %>
 <%@ Register Src="UserControls/EnableAsyncTasksSupport.ascx" TagName="EnableAsyncTasksSupport" TagPrefix="scp" %>
 <%@ Register TagPrefix="scp" TagName="ProductVersion" Src="SkinControls/ProductVersion.ascx" %>
@@ -247,6 +248,7 @@
     <div class="panel panel-primary">
 
         <ul class="list-group">
+            
             <li class="list-group-item"><asp:Label ID="lblServerVersion" runat="server" meta:resourcekey="lblServerVersion" Text="SolidCP Server Version"></asp:Label>:<br/>
                 <asp:Localize ID="locVersion" runat="server" meta:resourcekey="locVersion" /> <asp:Label id="scpVersion" runat="server"/>
             </li>
@@ -257,8 +259,25 @@
              
         </ul>
         </div>
+    <br />
+    <div class="panel panel-primary">
+        <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-microchip">&nbsp;</i>&nbsp;<asp:Label ID="lblServerRAM" runat="server" meta:resourcekey="lblServerRAM" Text="Server RAM"></asp:Label></h3></div>
+        <ul class="list-group">
+            <li class="list-group-item"><asp:Label ID="lblFreeMemory" runat="server" meta:resourcekey="lblFreeMemory" Text="Free Memory"></asp:Label>:
+                <asp:Localize ID="locFreeMemory" runat="server" meta:resourcekey="locFreeMemory" /> <asp:Label id="freeMemory" runat="server"/> (MB)
+            </li>
+            <li class="list-group-item"><asp:Label ID="lblTotalMemory" runat="server" meta:resourcekey="lblTotalMemory" Text="Total Memory"></asp:Label>:
+                <asp:Localize ID="locTotalMemory" runat="server" meta:resourcekey="locTotalMemory" /> <asp:Label id="totalMemory" runat="server"/> (MB)
+            </li>
+            <li class="list-group-item">
+                Usage: <scp:Gauge ID="ramGauge" runat="server" Progress="0" Total="100" />
+             </li>
+        </ul>
+        </div>
+        
         </div>
     </div>
+    
 </div>
     </section>
 <div class="panel-footer text-right">

@@ -218,6 +218,27 @@
 	 </table>
 </fieldset>
 <br />
+
+<fieldset>
+    <legend>
+        <asp:Localize ID="locRamSettings" runat="server" meta:resourcekey="locRamSettings" Text="Memory Resource Settings"></asp:Localize>
+    </legend>
+    <table style="border-collapse: separate; border-spacing: 5px 3px; margin: 10px;">
+	    <tr>
+		    <td class="SubHead" style="width:200px;">
+		        <asp:Localize ID="locRamReserve" runat="server" meta:resourcekey="locRamReserve" Text="Node RAM reserve:"></asp:Localize>
+		    </td>
+		    <td>
+                <asp:TextBox Width="200px" CssClass="form-control" Runat="server" ID="txtRamReserve"></asp:TextBox>
+                <asp:RequiredFieldValidator ID="RamReserveValidator" runat="server" ControlToValidate="txtRamReserve"
+                    Text="*" meta:resourcekey="RamReserveValidator" Display="Dynamic" SetFocusOnError="true" />
+            </td>
+            <td>MB (0 = disabled)</td>
+	    </tr>
+	 </table>
+</fieldset>
+<br />
+
 <fieldset>
     <legend>
         <asp:Localize ID="locConfigVersion" runat="server" meta:resourcekey="locConfigVersion" Text="Virtual Machines Configuration Version"></asp:Localize>

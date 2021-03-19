@@ -77,6 +77,7 @@
         public const string CREATE_TASK_START_ERROR = "VPS_CREATE_TASK_START_ERROR";
         public const string CREATE_META_ITEM_ERROR = "VPS_CREATE_META_ITEM_ERROR";
         public const string HDD_VM_FILE_EXIST_ERROR = "HDD_VM_FILE_EXIST_ERROR";
+        public const string RAM_VM_RAM_RESERVE_ERROR = "RAM_VM_RAM_RESERVE_ERROR";
 
         // mail
         public const string SEND_SUMMARY_LETTER = "VPS_SEND_SUMMARY_LETTER";

@@ -90,6 +90,11 @@ namespace SolidCP.Portal.ProviderControls
             txtCpuReserve.Text = settings["CpuReserve"];
             txtCpuWeight.Text = settings["CpuWeight"];
 
+            // RAM
+            txtRamReserve.Text = settings["RamReserve"];
+            if (string.IsNullOrEmpty(txtRamReserve.Text))
+                txtRamReserve.Text = "0"; //unlimited or disabled
+
             // Default Windows Configure Version
             ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
 
@@ -209,6 +214,14 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuLimit"] = txtCpuLimit.Text.Trim();
             settings["CpuReserve"] = txtCpuReserve.Text.Trim();
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
+
+            // RAM
+            if (string.IsNullOrEmpty(settings["ServerName"])) {
+                settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
+            } else {
+                settings["RamReserve"] = "0";
+            }
+                
 
             // Default Windows Configure Version
             settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;
@@ -391,9 +404,15 @@ namespace SolidCP.Portal.ProviderControls
         {
             ServerNameRow.Visible = (radioServer.SelectedIndex == 1);
 
+            txtRamReserve.Enabled = true;
             if (radioServer.SelectedIndex == 0)
             {
-                txtServerName.Text = "";
+                txtServerName.Text = "";                
+            }
+            else
+            {
+                txtRamReserve.Text = "0";
+                txtRamReserve.Enabled = false;
             }
 
             // private network
