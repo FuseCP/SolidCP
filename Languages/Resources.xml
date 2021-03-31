@@ -7632,6 +7632,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_CREATE_JOURNALING_MAILBOX</Key>
+    <DefaultValue>Error creating journaling mailbox. See audit log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.HOSTED_SHAREPOINT_RECALCULATE_SIZE</Key>
     <DefaultValue>Error recalculating disk size. See audit log for more details.</DefaultValue>
   </Resource>
@@ -7664,6 +7669,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.EXCHANGE_DELETE_MAILBOX</Key>
     <DefaultValue>Error deleting mailbox. See audit log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_DELETE_JOURNALING_MAILBOX</Key>
+    <DefaultValue>Error deleting journaling mailbox. See audit log for more details.</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -7788,6 +7798,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_GET_JOURNALING_MAILBOX_SETTINGS</Key>
+    <DefaultValue>Error reading journaling mailbox general settings. See audit log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.ORGANIZATION_GET_USER_SETTINGS</Key>
     <DefaultValue>Error reading user general settings. See audit log for more details.</DefaultValue>
   </Resource>
@@ -7883,6 +7898,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_UPDATE_JOURNALING_MAILBOX_SETTINGS</Key>
+    <DefaultValue>Error updating journaling mailbox general settings. See audit log for more details.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.ORGANIZATION_UPDATE_MAILBOX_SETTINGS</Key>
     <DefaultValue>Error updating user general settings. See audit log for more details.</DefaultValue>
   </Resource>
@@ -7910,6 +7930,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Error.EXCHANGE_GET_MAILBOXES</Key>
     <DefaultValue>Error reading organization mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.EXCHANGE_GET_JOURNALING_MAILBOXES</Key>
+    <DefaultValue>Error reading organization journaling mailboxes</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -7955,6 +7980,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Success.EXCHANGE_UPDATE_MAILBOX_SETTINGS</Key>
     <DefaultValue>Mailbox general settings have been successfully updated.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Success.EXCHANGE_UPDATE_JOURNALING_MAILBOX_SETTINGS</Key>
+    <DefaultValue>Journaling mailbox general settings have been successfully updated.</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -8120,6 +8150,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Warning.2613</Key>
     <DefaultValue>Invalid recoverable items quota specified, should be greater or equal to 6144MB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Warning.2614</Key>
+    <DefaultValue>Exchange journaling mailboxes quota has been reached</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -9718,6 +9753,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Warning.VPS_CHANGE_VM_CONFIGURATION_SNAPSHOT</Key>
+    <DefaultValue>Configuration changes can only be made when no snapshots have been taken</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Success.VPS_CHANGE_VM_CONFIGURATION</Key>
     <DefaultValue>VPS configuration has been changed</DefaultValue>
   </Resource>
@@ -9915,6 +9955,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>VPS.VPS_QUOTA_EXCEEDED_HDD</Key>
     <DefaultValue>The maximum HDD size that could be specified: {1} GB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>VPS.VPS_QUOTA_EXCEEDED_ADDITIONAL_HDD</Key>
+    <DefaultValue>The maximum additional HDD count that could be specified: {1}</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -11553,6 +11598,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.VPS2012.AdditionalVhdCount</Key>
+    <DefaultValue>Additional Hard Drives per VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.VPS2012.ManagingAllowed</Key>
     <DefaultValue>Allow user to create, delete VPS</DefaultValue>
   </Resource>
@@ -12865,6 +12915,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.Exchange2013.ResourceMailboxes</Key>
     <DefaultValue>Resource Mailboxes per Organization</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.Exchange2013.JournalingMailboxes</Key>
+    <DefaultValue>Journaling Mailboxes per Organization</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -16522,6 +16577,11 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\OrganizationMenu.ascx.resx</File>
+    <Key>Text.JournalingMailboxes</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\OrganizationMenu.ascx.resx</File>
     <Key>Text.SecurityGroups</Key>
     <DefaultValue>Groups</DefaultValue>
   </Resource>
@@ -19142,7 +19202,7 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsExchangeMailboxPlansPolicy.ascx.resx</File>
-    <Key>chkHideFromAddressBook</Key>
+    <Key>chkHideFromAddressBook.Text</Key>
     <DefaultValue>Hide from Addressbook</DefaultValue>
   </Resource>
   <Resource>
@@ -19379,6 +19439,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsExchangeMailboxPlansPolicy.ascx.resx</File>
     <Key>locAutoReplyEnabled.Text</Key>
     <DefaultValue>Automatic Replies via SolidCP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsExchangeMailboxPlansPolicy.ascx.resx</File>
+    <Key>chkIsForJournaling.Text</Key>
+    <DefaultValue>For journaling mailboxes only</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsExchangeMailboxSetupLetter.ascx.resx</File>
@@ -24074,6 +24139,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\UserOrganization.ascx.resx</File>
+    <Key>Text.JournalingMailboxes</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\UserOrganization.ascx.resx</File>
     <Key>Text.RetentionPolicy</Key>
     <DefaultValue>Retention Policy</DefaultValue>
   </Resource>
@@ -28732,6 +28802,11 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>Retention policy tags</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeAddMailboxPlan.ascx.resx</File>
+    <Key>chkIsForJournaling.Text</Key>
+    <DefaultValue>For journaling mailboxes only</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCheckDomainName.ascx.resx</File>
     <Key>locTitle.Text</Key>
     <DefaultValue>Domain Dependencies</DefaultValue>
@@ -29305,6 +29380,131 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateDistributionList.ascx.resx</File>
     <Key>btnCreateText.Text</Key>
     <DefaultValue>Create Distribution List</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>btnCreate.OnClientClick</Key>
+    <DefaultValue>ShowProgressDialog('Creating journaling mailbox...');</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>btnCreateText.Text</Key>
+    <DefaultValue>Create Journaling Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>HSFormComments.Text</Key>
+    <DefaultValue />
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>lbtnCreateNewMailbox.Text</Key>
+    <DefaultValue>Create journaling mailbox for new user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>lbtnUseExistingUser.Text</Key>
+    <DefaultValue>Create journaling mailbox for existing user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locAccount.Text</Key>
+    <DefaultValue>E-mail Address: *</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locDisplayName.Text</Key>
+    <DefaultValue>Display Name: *</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locPassword.Text</Key>
+    <DefaultValue>Password: *</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locSubscriberNumber.Text</Key>
+    <DefaultValue>Account Number: *</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Create New Journaling Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>rbtnCreateNewMailbox.Text</Key>
+    <DefaultValue>New user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>rbtnUserExistingUser.Text</Key>
+    <DefaultValue>Existing user</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>Text.PageName</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>TopComments.Text</Key>
+    <DefaultValue>You can create a new user or select an existing user for whom you want to create a new journaling mailbox.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>valRequireDisplayName.ErrorMessage</Key>
+    <DefaultValue>Enter Display Name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>valRequireDisplayName.Text</Key>
+    <DefaultValue>*</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>valRequireSubscriberNumber.ErrorMessage</Key>
+    <DefaultValue>Enter Account Number</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>valRequireSubscriberNumber.Text</Key>
+    <DefaultValue>*</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>ddlScopeExternal.Text</Key>
+    <DefaultValue>External messages only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>ddlScopeGlobal.Text</Key>
+    <DefaultValue>All messages</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>ddlScopeInternal.Text</Key>
+    <DefaultValue>Internal messages only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locRecipient.Text</Key>
+    <DefaultValue>If the message is sent to or received from:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locScope.Text</Key>
+    <DefaultValue>Journal the following messages:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>locEnabled.Text</Key>
+    <DefaultValue>Enable journal rule</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateJournalingMailbox.ascx.resx</File>
+    <Key>OrganizationGroup</Key>
+    <DefaultValue>Default - all mailboxes</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeCreateMailbox.ascx.resx</File>
@@ -30055,6 +30255,216 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeDomainRecords.ascx.resx</File>
     <Key>Text.PageName</Key>
     <DefaultValue>Domain Records</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>btnCreateMailbox.Text</Key>
+    <DefaultValue>New Journaling Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>cmdDelete.OnClientClick</Key>
+    <DefaultValue>if(!confirm('Are you sure you want to delete this journaling mailbox?')) return false; else ShowProgressDialog('Deleting journaling mailbox...');</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>cmdDelete.ToolTip</Key>
+    <DefaultValue>Delete Journaling Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>cmdSearch.AlternateText</Key>
+    <DefaultValue>Search</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>ddlSearchColumnAccountName.Text</Key>
+    <DefaultValue>Domain Account</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>ddlSearchColumnDisplayName.Text</Key>
+    <DefaultValue>Display Name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>ddlSearchColumnEmail.Text</Key>
+    <DefaultValue>E-mail Address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvMailboxes.Empty</Key>
+    <DefaultValue>No journaling mailboxes have been created. To create a new mailbox click "New Journaling Mailbox" button.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvMailboxesDisplayName.Header</Key>
+    <DefaultValue>Display Name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvMailboxesEmail.Header</Key>
+    <DefaultValue>Primary E-mail Address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvMailboxesMailboxPlan.Header</Key>
+    <DefaultValue>Mailbox plan</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvSubscriberNumber.Header</Key>
+    <DefaultValue>Subscriber</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>HSFormComments.Text</Key>
+    <DefaultValue />
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>locQuota.Text</Key>
+    <DefaultValue>Total Journaling Mailboxes Created:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>Text.PageName</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>ddlSearchColumnUserPrincipalName.Text</Key>
+    <DefaultValue>Login</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvUsersLogin.Header</Key>
+    <DefaultValue>Login</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>gvServiceLevel.Header</Key>
+    <DefaultValue>Service Level</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxes.ascx.resx</File>
+    <Key>locIncludeSearch.Text</Key>
+    <DefaultValue>Include in search:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>buttonPanel.OnSaveClientClick</Key>
+    <DefaultValue>ShowProgressDialog('Updating journaling mailbox settings...');</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>chkDisable.Text</Key>
+    <DefaultValue>Disable Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>chkHideAddressBook.Text</Key>
+    <DefaultValue>Hide from Address Book</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>chkPmmAllowed.Text</Key>
+    <DefaultValue>Allow these settings to be managed from &lt;b&gt;Personal Mailbox Manager&lt;/b&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>HSFormComments.Text</Key>
+    <DefaultValue />
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locMailboxplanName.Text</Key>
+    <DefaultValue>Mailbox plan:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locQuota.Text</Key>
+    <DefaultValue>Mailbox size:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locTitle.Text</Key>
+    <DefaultValue>Edit Journaling Mailbox</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>secGeneral.Text</Key>
+    <DefaultValue>General</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>Text.PageName</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>valRequireDisplayName.ErrorMessage</Key>
+    <DefaultValue>Enter Display Name</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>valRequireDisplayName.Text</Key>
+    <DefaultValue>*</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locExchangeGuid.Text</Key>
+    <DefaultValue>Exchange Guid:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>secAdvancedInfo.Text</Key>
+    <DefaultValue>Advanced Information</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>ddlScopeExternal.Text</Key>
+    <DefaultValue>External messages only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>ddlScopeGlobal.Text</Key>
+    <DefaultValue>All messages</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>ddlScopeInternal.Text</Key>
+    <DefaultValue>Internal messages only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locEnabled.Text</Key>
+    <DefaultValue>Enable journal rule</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locRecipient.Text</Key>
+    <DefaultValue>If the message is sent to or received from:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>locScope.Text</Key>
+    <DefaultValue>Journal the following messages:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>secJournaling.Text</Key>
+    <DefaultValue>Journal Rules</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeJournalingMailboxGeneralSettings.ascx.resx</File>
+    <Key>OrganizationGroup</Key>
+    <DefaultValue>Default - all mailboxes</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxAutoReply.ascx.resx</File>
@@ -32267,6 +32677,11 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>Organization settings:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationHome.ascx.resx</File>
+    <Key>lnkJournalingMailboxes.Text</Key>
+    <DefaultValue>Journaling mailboxes:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\Organizations.ascx.resx</File>
     <Key>btnCreate.Text</Key>
     <DefaultValue>Create New Organization</DefaultValue>
@@ -33882,6 +34297,16 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>*</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.resx</File>
+    <Key>valMailboxPlan.ErrorMessage</Key>
+    <DefaultValue>Create Mailbox plan first</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.resx</File>
+    <Key>valMailboxPlan.Text</Key>
+    <DefaultValue>*</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxSelector.ascx.resx</File>
     <Key>btnCancel.Text</Key>
     <DefaultValue>Cancel</DefaultValue>
@@ -34095,6 +34520,11 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\Menu.ascx.resx</File>
     <Key>Text.PublicFolders</Key>
     <DefaultValue>Public Folders</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\Menu.ascx.resx</File>
+    <Key>Text.JournalingMailboxes</Key>
+    <DefaultValue>Journaling Mailboxes</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\Menu.ascx.resx</File>
@@ -41220,6 +41650,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
     <Key>btnResetText.Text</Key>
     <DefaultValue>Reset</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
+    <Key>lblLeEmail.Text</Key>
+    <DefaultValue>Lets encrypt notification email:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Lync_Settings.ascx.resx</File>
@@ -55983,6 +56418,31 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Enter subnet mask</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>btnAddHdd.Text</Key>
+    <DefaultValue>Add HDD</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>btnRemoveHdd.Text</Key>
+    <DefaultValue>Remove HDD</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>lblAdditionalHdd.Text</Key>
+    <DefaultValue>Additional HDD:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>locAdditionalHdd.Text</Key>
+    <DefaultValue>Additional HDD, GB:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valHddSize.ErrorMessage</Key>
+    <DefaultValue>Enter a numeric value</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcExternalNetwork.ascx.resx</File>
     <Key>FormComments.Text</Key>
     <DefaultValue>&lt;p&gt;The form displays the list of IP addresses from "VPS External Network" pool allocated to the hosting space. Alternatively, this form could be considered as a "map" of external IP addresses and their assignments to virtual machines.&lt;/p&gt;&lt;p&gt;If any IP has already assigned to some VPS then there will be VPS host name in the "Item name" column.&lt;/p&gt;&lt;p&gt;If there are lot of VPS in the hosting space you can easily search them by their external IP.&lt;/p&gt;&lt;p&gt;"Number of IP addresses" quota shows the maximum number of external IP addresses that could be allocated to this space.&lt;/p&gt;</DefaultValue>
@@ -56381,6 +56841,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcImportServer.ascx.resx</File>
     <Key>AllowReinstall.Text</Key>
     <DefaultValue>Re-install</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcImportServer.ascx.resx</File>
+    <Key>SnapshotsValidator.ErrorMessage</Key>
+    <DefaultValue>Enter the maximum number of snapshots</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcManagementNetwork.ascx.resx</File>
@@ -57141,6 +57606,26 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
     <Key>locNotEnoughExternalAddresses.Text</Key>
     <DefaultValue>The pool of available external IP addresses is empty. All IP addresses allocated to the current hosting space are assigned to existing virtual servers.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>btnAddHdd.Text</Key>
+    <DefaultValue>Add HDD</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>locRemoveHdd.Text</Key>
+    <DefaultValue>Remove HDD</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>btnRemoveHdd.OnClientClick</Key>
+    <DefaultValue>if(!confirm('Virtual hard drive will be removed.\n\nDo you want to proceed?')) return false;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>valHddSize.ErrorMessage</Key>
+    <DefaultValue>Enter a numeric value</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.resx</File>
