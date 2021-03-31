@@ -4603,6 +4603,9 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 //WebServer server = GetWebServer(item.ServiceId);
                 TaskManager.WriteParameter("item.ServiceId", item.ServiceId);
 
+                StringDictionary settings = ServerController.GetServiceSettings(item.ServiceId);
+                if (!String.IsNullOrEmpty(settings["SSLLeEmail"])) email = settings["SSLLeEmail"];
+
                 // get state
                 WebServer web = new WebServer();
                 ServiceProviderProxy.Init(web, item.ServiceId);

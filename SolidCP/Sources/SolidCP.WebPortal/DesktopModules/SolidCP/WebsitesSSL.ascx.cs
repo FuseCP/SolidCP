@@ -304,12 +304,8 @@ namespace SolidCP.Portal
         {
             PackageInfo package = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
             UserInfo user = UsersHelper.GetUser(package.UserId);
-            WebSite site = ES.Services.WebServers.GetWebSite(webSiteId);
-            StringDictionary settings = ConvertArrayToDictionary(ES.Services.Servers.GetServiceSettings(site.ServiceId));
-
-            string mail = String.IsNullOrEmpty(settings["SSLLeEmail"]) ? user.Email : settings["SSLLeEmail"];
-
-            ResultObject result = ES.Services.WebServers.LEInstallCertificate(webSiteId, mail);
+            
+            ResultObject result = ES.Services.WebServers.LEInstallCertificate(webSiteId, user.Email);
             // Check the operation status
             if (!result.IsSuccess)
             {
