@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.HostedSolution {
-    
-    
-    public partial class UserGeneralSettings {
-        
+namespace SolidCP.Portal.HostedSolution
+{
+
+
+    public partial class UserGeneralSettings
+    {
+
         /// <summary>
         /// asyncTasks control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.EnableAsyncTasksSupport asyncTasks;
-        
+
         /// <summary>
         /// Image1 control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image Image1;
-        
+
         /// <summary>
         /// locTitle control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locTitle;
-        
+
         /// <summary>
         /// litDisplayName control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litDisplayName;
-        
+
         /// <summary>
         /// imgVipUser control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgVipUser;
-        
+
         /// <summary>
         /// litServiceLevel control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label litServiceLevel;
-        
+
         /// <summary>
         /// UserTabsId control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.UserTabs UserTabsId;
-        
+
         /// <summary>
         /// MailboxTabsId control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.MailboxTabs MailboxTabsId;
-        
+
         /// <summary>
         /// messageBox control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// Generalinfo control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize Generalinfo;
-        
+
         /// <summary>
         /// lblUserPrincipalName control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUserPrincipalName;
-        
+
         /// <summary>
         /// upn control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.EmailAddress upn;
-        
+
         /// <summary>
         /// ddlEmailAddresses control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlEmailAddresses;
-        
+
         /// <summary>
         /// btnSetUserPrincipalName control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnSetUserPrincipalName;
-        
+
         /// <summary>
         /// locDisplayName control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locDisplayName;
-        
+
         /// <summary>
         /// txtDisplayName control.
         /// </summary>
@@ -155,7 +157,16 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDisplayName;
-        
+
+        /// <summary>
+        /// valRequireCorrectDisplayName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectDisplayName;
+
         /// <summary>
         /// valRequireDisplayName control.
         /// </summary>
@@ -164,7 +175,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireDisplayName;
-        
+
         /// <summary>
         /// sendToControl control.
         /// </summary>
@@ -173,7 +184,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SendToControl sendToControl;
-        
+
         /// <summary>
         /// PasswordBlock control.
         /// </summary>
@@ -182,7 +193,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl PasswordBlock;
-        
+
         /// <summary>
         /// password control.
         /// </summary>
@@ -191,7 +202,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.PasswordControl password;
-        
+
         /// <summary>
         /// btnSetUserPassword control.
         /// </summary>
@@ -200,7 +211,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnSetUserPassword;
-        
+
         /// <summary>
         /// chkUserMustChangePassword control.
         /// </summary>
@@ -209,7 +220,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkUserMustChangePassword;
-        
+
         /// <summary>
         /// chkDisable control.
         /// </summary>
@@ -218,7 +229,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkDisable;
-        
+
         /// <summary>
         /// chkInherit control.
         /// </summary>
@@ -227,7 +238,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkInherit;
-        
+
         /// <summary>
         /// chkLocked control.
         /// </summary>
@@ -236,7 +247,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkLocked;
-        
+
         /// <summary>
         /// locName control.
         /// </summary>
@@ -245,7 +256,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locName;
-        
+
         /// <summary>
         /// txtFirstName control.
         /// </summary>
@@ -254,7 +265,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFirstName;
-        
+
         /// <summary>
         /// txtInitials control.
         /// </summary>
@@ -263,7 +274,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtInitials;
-        
+
         /// <summary>
         /// txtLastName control.
         /// </summary>
@@ -272,7 +283,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLastName;
-        
+
         /// <summary>
         /// locSubscriberNumber control.
         /// </summary>
@@ -281,7 +292,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locSubscriberNumber;
-        
+
         /// <summary>
         /// txtSubscriberNumber control.
         /// </summary>
@@ -290,7 +301,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSubscriberNumber;
-        
+
         /// <summary>
         /// locExternalEmailAddress control.
         /// </summary>
@@ -299,7 +310,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locExternalEmailAddress;
-        
+
         /// <summary>
         /// txtExternalEmailAddress control.
         /// </summary>
@@ -308,7 +319,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtExternalEmailAddress;
-        
+
         /// <summary>
         /// locNotes control.
         /// </summary>
@@ -317,7 +328,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locNotes;
-        
+
         /// <summary>
         /// txtNotes control.
         /// </summary>
@@ -326,7 +337,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtNotes;
-        
+
         /// <summary>
         /// pnlThumbnailphoto control.
         /// </summary>
@@ -335,7 +346,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlThumbnailphoto;
-        
+
         /// <summary>
         /// locThumbnailphoto control.
         /// </summary>
@@ -344,7 +355,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locThumbnailphoto;
-        
+
         /// <summary>
         /// upThumbnailphoto control.
         /// </summary>
@@ -353,7 +364,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload upThumbnailphoto;
-        
+
         /// <summary>
         /// imgThumbnailphoto control.
         /// </summary>
@@ -362,7 +373,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Image imgThumbnailphoto;
-        
+
         /// <summary>
         /// btnLoadThumbnailphoto control.
         /// </summary>
@@ -371,7 +382,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnLoadThumbnailphoto;
-        
+
         /// <summary>
         /// btnClearThumbnailphoto control.
         /// </summary>
@@ -380,7 +391,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnClearThumbnailphoto;
-        
+
         /// <summary>
         /// secServiceLevels control.
         /// </summary>
@@ -389,7 +400,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl secServiceLevels;
-        
+
         /// <summary>
         /// locServiceLevel control.
         /// </summary>
@@ -398,7 +409,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locServiceLevel;
-        
+
         /// <summary>
         /// ddlServiceLevels control.
         /// </summary>
@@ -407,7 +418,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlServiceLevels;
-        
+
         /// <summary>
         /// locVIPUser control.
         /// </summary>
@@ -416,7 +427,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locVIPUser;
-        
+
         /// <summary>
         /// chkVIP control.
         /// </summary>
@@ -425,7 +436,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkVIP;
-        
+
         /// <summary>
         /// locJobTitle control.
         /// </summary>
@@ -434,7 +445,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locJobTitle;
-        
+
         /// <summary>
         /// txtJobTitle control.
         /// </summary>
@@ -443,7 +454,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtJobTitle;
-        
+
         /// <summary>
         /// locCompany control.
         /// </summary>
@@ -452,7 +463,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locCompany;
-        
+
         /// <summary>
         /// txtCompany control.
         /// </summary>
@@ -461,7 +472,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCompany;
-        
+
         /// <summary>
         /// locDepartment control.
         /// </summary>
@@ -470,7 +481,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locDepartment;
-        
+
         /// <summary>
         /// txtDepartment control.
         /// </summary>
@@ -479,7 +490,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtDepartment;
-        
+
         /// <summary>
         /// locOffice control.
         /// </summary>
@@ -488,7 +499,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locOffice;
-        
+
         /// <summary>
         /// txtOffice control.
         /// </summary>
@@ -497,7 +508,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtOffice;
-        
+
         /// <summary>
         /// locManager control.
         /// </summary>
@@ -506,7 +517,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locManager;
-        
+
         /// <summary>
         /// manager control.
         /// </summary>
@@ -515,7 +526,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.UserSelector manager;
-        
+
         /// <summary>
         /// locBusinessPhone control.
         /// </summary>
@@ -524,7 +535,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locBusinessPhone;
-        
+
         /// <summary>
         /// txtBusinessPhone control.
         /// </summary>
@@ -533,7 +544,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtBusinessPhone;
-        
+
         /// <summary>
         /// locFax control.
         /// </summary>
@@ -542,7 +553,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locFax;
-        
+
         /// <summary>
         /// txtFax control.
         /// </summary>
@@ -551,7 +562,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFax;
-        
+
         /// <summary>
         /// locHomePhone control.
         /// </summary>
@@ -560,7 +571,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locHomePhone;
-        
+
         /// <summary>
         /// txtHomePhone control.
         /// </summary>
@@ -569,7 +580,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtHomePhone;
-        
+
         /// <summary>
         /// locMobilePhone control.
         /// </summary>
@@ -578,7 +589,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locMobilePhone;
-        
+
         /// <summary>
         /// txtMobilePhone control.
         /// </summary>
@@ -587,7 +598,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMobilePhone;
-        
+
         /// <summary>
         /// locPager control.
         /// </summary>
@@ -596,7 +607,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locPager;
-        
+
         /// <summary>
         /// txtPager control.
         /// </summary>
@@ -605,7 +616,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPager;
-        
+
         /// <summary>
         /// locWebPage control.
         /// </summary>
@@ -614,7 +625,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locWebPage;
-        
+
         /// <summary>
         /// txtWebPage control.
         /// </summary>
@@ -623,7 +634,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWebPage;
-        
+
         /// <summary>
         /// locAddress control.
         /// </summary>
@@ -632,7 +643,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locAddress;
-        
+
         /// <summary>
         /// txtAddress control.
         /// </summary>
@@ -641,7 +652,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAddress;
-        
+
         /// <summary>
         /// locCity control.
         /// </summary>
@@ -650,7 +661,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locCity;
-        
+
         /// <summary>
         /// txtCity control.
         /// </summary>
@@ -659,7 +670,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtCity;
-        
+
         /// <summary>
         /// locState control.
         /// </summary>
@@ -668,7 +679,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locState;
-        
+
         /// <summary>
         /// txtState control.
         /// </summary>
@@ -677,7 +688,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtState;
-        
+
         /// <summary>
         /// locZip control.
         /// </summary>
@@ -686,7 +697,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locZip;
-        
+
         /// <summary>
         /// txtZip control.
         /// </summary>
@@ -695,7 +706,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtZip;
-        
+
         /// <summary>
         /// locCountry control.
         /// </summary>
@@ -704,7 +715,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locCountry;
-        
+
         /// <summary>
         /// country control.
         /// </summary>
@@ -713,7 +724,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ExchangeServer.UserControls.CountrySelector country;
-        
+
         /// <summary>
         /// locUserDomainName control.
         /// </summary>
@@ -722,7 +733,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locUserDomainName;
-        
+
         /// <summary>
         /// lblUserDomainName control.
         /// </summary>
@@ -731,7 +742,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUserDomainName;
-        
+
         /// <summary>
         /// buttonPanel control.
         /// </summary>
@@ -740,7 +751,7 @@ namespace SolidCP.Portal.HostedSolution {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ItemButtonPanel buttonPanel;
-        
+
         /// <summary>
         /// ValidationSummary1 control.
         /// </summary>
