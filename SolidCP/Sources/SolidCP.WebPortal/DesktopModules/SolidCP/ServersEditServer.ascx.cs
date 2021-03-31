@@ -42,6 +42,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 
 using SolidCP.EnterpriseServer;
+using SolidCP.Server;
 
 namespace SolidCP.Portal
 {
@@ -55,7 +56,8 @@ namespace SolidCP.Portal
                 {
                     BindTools();
                     BindServer();
-					BindServerVersion();
+                    BindServerMemory();
+                    BindServerVersion();
                     BindServerFilepath();
                 }
                 catch (Exception ex)
@@ -160,6 +162,23 @@ namespace SolidCP.Portal
 				ShowErrorMessage("SERVER_GET_SERVER");
 			}
 		}
+
+        private void BindServerMemory()
+        {
+            try
+            {
+                Memory memory = ES.Services.Servers.GetMemory(PanelRequest.ServerId);
+                freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
+                totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
+                ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
+                ramGauge.Progress = (int)((memory.TotalVisibleMemorySizeKB / 1024) - (memory.FreePhysicalMemoryKB / 1024));
+            }
+            catch
+            {
+                freeMemory.Text = "N/A";
+                totalMemory.Text = "N/A";
+            }
+        }
 
         private void BindServerFilepath() {
             try {

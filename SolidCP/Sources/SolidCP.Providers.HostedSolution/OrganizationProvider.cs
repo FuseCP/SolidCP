@@ -1543,6 +1543,23 @@ namespace SolidCP.Providers.HostedSolution
             return Errors.OK;
         }
 
+        public string[] GetSecurityGroupsNotes(string[] groupNames, string organizationId)
+        {
+            HostedSolutionLog.LogStart("GetSecurityGroupsNotes");
+            HostedSolutionLog.DebugInfo("groupNames : {0}", groupNames);
+            HostedSolutionLog.DebugInfo("organizationId : {0}", organizationId);
+            if (groupNames == null || groupNames.Length == 0 || string.IsNullOrEmpty(organizationId)) return null;
+            string[] notes = new string[groupNames.Length];
+            for (int i = 0; i < groupNames.Length; i++)
+            {
+                string path = GetGroupPath(organizationId, groupNames[i]);
+                DirectoryEntry entry = ActiveDirectoryUtils.GetADObject(path);
+                notes[i] = ActiveDirectoryUtils.GetADObjectStringProperty(entry, ADAttributes.Notes);
+            }
+            HostedSolutionLog.LogEnd("GetSecurityGroupsNotes");
+            return notes;
+        }
+
         public OrganizationSecurityGroup GetSecurityGroupGeneralSettings(string groupName, string organizationId)
         {
             return GetSecurityGroupGeneralSettingsInternal(groupName, organizationId);

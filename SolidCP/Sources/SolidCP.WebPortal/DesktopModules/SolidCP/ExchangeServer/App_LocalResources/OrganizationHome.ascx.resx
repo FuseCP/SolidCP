@@ -252,4 +252,7 @@
   <data name="OrganizationSettings.Text" xml:space="preserve">
     <value>Organization settings:</value>
   </data>
+  <data name="lnkJournalingMailboxes.Text" xml:space="preserve">
+    <value>Journaling mailboxes:</value>
+  </data>
 </root>

@@ -256,6 +256,24 @@ namespace SolidCP.Portal.ExchangeServer {
         protected global::SolidCP.Portal.QuotaViewer mailboxesResourceStats;
         
         /// <summary>
+        /// lnkJournalingMailboxes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkJournalingMailboxes;
+        
+        /// <summary>
+        /// mailboxesJournalingStats control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.QuotaViewer mailboxesJournalingStats;
+        
+        /// <summary>
         /// rowContacts control.
         /// </summary>
         /// <remarks>
