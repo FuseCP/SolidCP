@@ -172,7 +172,7 @@
     <value>PHP 4.x Executable Path:</value>
   </data>
   <data name="lblPhp5Path.Text" xml:space="preserve">
-    <value>PHP 5.x Executable Path:</value>
+    <value>PHP Executable Path:</value>
   </data>
   <data name="lblProtectedAccessFile.Text" xml:space="preserve">
     <value>IISPassword Access File:</value>

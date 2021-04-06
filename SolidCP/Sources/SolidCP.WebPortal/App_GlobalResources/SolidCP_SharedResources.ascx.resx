@@ -1714,7 +1714,7 @@
     <value>PHP 4.x</value>
   </data>
   <data name="Quota.Web.Php5" xml:space="preserve">
-    <value>PHP 5.x</value>
+    <value>PHP</value>
   </data>
   <data name="Quota.Web.Python" xml:space="preserve">
     <value>Python</value>

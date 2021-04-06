@@ -203,7 +203,7 @@
 		</tr>
 		<tr>
 		    <td class="Normal" valign="top" width="192">
-		        <asp:Label ID="lblPhp5Path" runat="server" meta:resourcekey="lblPhp5Path" Text="PHP 5.x Executable Path:"></asp:Label>
+		        <asp:Label ID="lblPhp5Path" runat="server" meta:resourcekey="lblPhp5Path" Text="PHP Executable Path:"></asp:Label>
 		    </td>
 		    <td valign="top">
                 <asp:TextBox ID="txtPhp5Path" runat="server" CssClass="form-control" Width="300px"></asp:TextBox></td>
