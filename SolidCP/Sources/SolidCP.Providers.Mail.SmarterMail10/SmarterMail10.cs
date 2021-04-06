@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Web.Services.Protocols;
+using System.Net;
 using SolidCP.Mail.SM10;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
@@ -2090,8 +2091,8 @@ namespace SolidCP.Providers.Mail
             // strip the last slash if any
             if (smarterUrl[smarterUrl.Length - 1] == '/')
                 smarterUrl = smarterUrl.Substring(0, smarterUrl.Length - 1);
-
-            proxy.Url = smarterUrl + proxy.Url.Substring(idx);
+			ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+			proxy.Url = smarterUrl + proxy.Url.Substring(idx);
         }
 
         protected string GetDomainName(string email)
