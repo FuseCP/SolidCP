@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching Application Block", "Caching Application Block", "{C8E6F2E4-A5B8-486A-A56E-92D864524682}"
 	ProjectSection(SolutionItems) = preProject
@@ -245,6 +245,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDes
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.SimpleDNS80", "SolidCP.Providers.DNS.SimpleDNS80\SolidCP.Providers.DNS.SimpleDNS80.csproj", "{6ABF020A-1BC1-4833-A5B4-017A23428AC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.MsDNS2016", "SolidCP.Providers.DNS.MsDNS2016\SolidCP.Providers.DNS.MsDNS2016.csproj", "{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1186,6 +1188,18 @@ Global
 		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|x86.ActiveCfg = Release|Any CPU
 		{6ABF020A-1BC1-4833-A5B4-017A23428AC5}.Release|x86.Build.0 = Release|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Debug|x86.Build.0 = Debug|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Release|x86.ActiveCfg = Release|Any CPU
+		{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

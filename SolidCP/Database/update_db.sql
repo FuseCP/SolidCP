@@ -3661,6 +3661,15 @@ BEGIN
 END
 GO
 
+-- MS DNS.2016
+
+IF NOT EXISTS ( SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = 1902 )
+BEGIN
+	INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES
+	(1902, 7, N'MSDNS.2016', N'Microsoft DNS Server 2016', N'SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016', N'MSDNS', NULL)
+END
+GO
+
 -- CRM Provider fix
 
 UPDATE Providers SET EditorControl = 'CRM2011' Where ProviderID = 1201;
@@ -22492,5 +22501,17 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'refreshinterval', N'3600')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'responsibleperson', N'hostmaster.[DOMAIN_NAME]')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'retrydelay', N'600')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1902')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'admode', N'False')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'expirelimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'minimumttl', N'86400')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'nameservers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'refreshinterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'responsibleperson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'retrydelay', N'600')
 END
 GO
