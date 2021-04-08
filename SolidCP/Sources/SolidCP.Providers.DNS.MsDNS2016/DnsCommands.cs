@@ -38,7 +38,7 @@ using System.Management.Automation.Runspaces;
 using System.Net;
 using SolidCP.Server.Utils;
 using Microsoft.Management.Infrastructure;
-
+using System.Collections.Generic;
 
 namespace SolidCP.Providers.DNS
 {
@@ -232,7 +232,7 @@ namespace SolidCP.Providers.DNS
             // Get-DnsServerResourceRecord -ZoneName xxxx.com
             var allRecords = ps.RunPipeline(new Command("Get-DnsServerResourceRecord").addParam("ZoneName", zoneName));
 
-            return allRecords.Select(o => o.asDnsRecord(zoneName, true))
+            DnsRecord[] records = allRecords.Select(o => o.asDnsRecord(zoneName, true))
                 .Where(r => null != r)
                 .Where(r => r.RecordType != DnsRecordType.SOA)
                 //	.Where( r => !( r.RecordName == "@" && DnsRecordType.NS == r.RecordType ) )
@@ -240,6 +240,18 @@ namespace SolidCP.Providers.DNS
                 .ThenBy(r => r.RecordType)
                 .ThenBy(r => r.RecordData)
                 .ToArray();
+            List<DnsRecord> result = new List<DnsRecord>();
+            foreach (DnsRecord record in records)
+            {
+                bool add = true;
+                foreach (DnsRecord res in result)
+                {
+                    if (res.RecordName.Equals(record.RecordName) && res.RecordType.Equals(record.RecordType)
+                        && res.RecordData.Equals(record.RecordData)) add = false;
+                }
+                if (add) result.Add(record);
+            }
+            return result.ToArray();
         }
 
         #region Records add / remove
