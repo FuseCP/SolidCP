@@ -190,7 +190,14 @@ namespace SolidCP.Providers.DNS
             var cmd = new Command("Get-DnsServerResourceRecord");
             cmd.addParam("ZoneName", zoneName);
             cmd.addParam("Name", Name);
-            if (!type.Equals("UNKNOWN") && !type.Equals("CAA")) cmd.addParam("RRType", type);
+            if (!type.Equals("UNKNOWN") && !type.Equals("CAA"))
+            {
+                cmd.addParam("RRType", type);
+            }
+            else
+            {
+                cmd.addParam("Type", 257);
+            }
             Collection<PSObject> resourceRecords = ps.RunPipeline(cmd);
 
             object inputObject = null;
