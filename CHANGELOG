@@ -10,6 +10,24 @@ Version
 - [HyperV2012R2+] Additional HDDs for VPS - bluechip
 - Changes for IIS Settings to allow for LeEmail
 - [Exchange] Journaling mailboxes - bluechip
+- [Exchange] Show and remove deleted users from Public folder permissions - bluechip
+- [Guacamole] Property for server keyboard layout - bluechip
+- [HyperV2012R2+] do not allow changing the VM configuration when snapshots have been taken - bluechip
+- [HyperV2012R2+] Check VM serviceId before DeleteServiceItems - bluechip
+- [HyperVController2012] - added an exception if osTemplateFile was not found. - berkut1
+- WHMCS Plugin Metadata info added
+- [VPS2012+] Added possibility to write a maximum number of snapshots when import a VM. - berkut1
+- Counting journaling mailboxes space in GetExchangeOrganizationStatistics and Exchange2007.DiskSpace quota - bluechip
+- [Servers] Added - show the Node RAM usage -berkut1
+- [HyperV2012R2+] Added the Node RAM reserve. (if the node have no enough Free RAM, a VM wont be installed). Disabled by default -berkut1
+- [Let's Encrypt] Install certificate - show error message - bluechip
+- [OrganizationGroups] Improve site performance - bluechip
+- [HyperV2012R2+] do not allow apply and delete DPM recovery snapshots - bluechip
+- ServiceDefaultProperties for MSDNS.2012
+- Adding PortalAntiXSS to Hosted Org pages - XSS Issue reported by Roberto Dagostino (IT Südwestfalen AG)
+- Smartermail TLS 1.1 and 1.2 support
+- PHP 5.x name change to PHP
+
 
 Version 1.4.7
 - Fix to load the footer version based on DLL file version
