@@ -31,46 +31,12 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Management;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Win32;
-
 using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
 
 namespace SolidCP.Providers.DNS
 {
-    public class MsDNS2016 : HostingServiceProviderBase, IDnsServer
+    public class MsDNS2016 : MsDNS2012, IDnsServer
     {
-
-        #region Properties
-        protected TimeSpan ExpireLimit
-        {
-            get { return ProviderSettings.GetTimeSpan("ExpireLimit"); }
-        }
-
-        protected TimeSpan MinimumTTL
-        {
-            get { return ProviderSettings.GetTimeSpan("MinimumTTL"); }
-        }
-
-        protected TimeSpan RefreshInterval
-        {
-            get { return ProviderSettings.GetTimeSpan("RefreshInterval"); }
-        }
-
-        protected TimeSpan RetryDelay
-        {
-            get { return ProviderSettings.GetTimeSpan("RetryDelay"); }
-        }
-
-        protected bool AdMode
-        {
-            get { return ProviderSettings.GetBool("AdMode"); }
-        }
-        #endregion
-
         private PowerShellHelper ps = null;
         private bool bulkRecords;
 
@@ -84,47 +50,12 @@ namespace SolidCP.Providers.DNS
 
         #region Zones
 
-        public virtual string[] GetZones()
-        {
-            return ps.Get_DnsServerZone_Names();
-        }
-
-        public virtual bool ZoneExists(string zoneName)
-        {
-            return ps.ZoneExists(zoneName);
-        }
-
-        public virtual DnsRecord[] GetZoneRecords(string zoneName)
+        public override DnsRecord[] GetZoneRecords(string zoneName)
         {
             return ps.GetZoneRecords(zoneName);
         }
 
-        public virtual void AddPrimaryZone(string zoneName, string[] secondaryServers)
-        {
-            ps.Add_DnsServerPrimaryZone(zoneName, secondaryServers, AdMode);
-
-            // remove ns records
-            ps.Remove_DnsServerResourceRecords(zoneName, "NS");
-        }
-
-        public virtual void AddSecondaryZone(string zoneName, string[] masterServers)
-        {
-            ps.Add_DnsServerSecondaryZone(zoneName, masterServers);
-        }
-
-        public virtual void DeleteZone(string zoneName)
-        {
-            try
-            {
-                ps.Remove_DnsServerZone(zoneName);
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError(ex);
-            }
-        }
-
-        public virtual void AddZoneRecord(string zoneName, DnsRecord record)
+        public override void AddZoneRecord(string zoneName, DnsRecord record)
         {
             try
             {
@@ -158,7 +89,7 @@ namespace SolidCP.Providers.DNS
             }
         }
 
-        public virtual void AddZoneRecords(string zoneName, DnsRecord[] records)
+        public override void AddZoneRecords(string zoneName, DnsRecord[] records)
         {
             bulkRecords = true;
             try
@@ -174,7 +105,7 @@ namespace SolidCP.Providers.DNS
             UpdateSoaRecord(zoneName);
         }
 
-        public virtual void DeleteZoneRecord(string zoneName, DnsRecord record)
+        public override void DeleteZoneRecord(string zoneName, DnsRecord record)
         {
             try
             {
@@ -190,16 +121,17 @@ namespace SolidCP.Providers.DNS
             }
         }
 
-        public virtual void DeleteZoneRecords(string zoneName, DnsRecord[] records)
+        public override void DeleteZoneRecords(string zoneName, DnsRecord[] records)
         {
             foreach (DnsRecord record in records)
                 DeleteZoneRecord(zoneName, record);
         }
-
         #endregion
 
+
         #region SOA Record
-        public virtual void UpdateSoaRecord(string zoneName, string host, string primaryNsServer, string primaryPerson)
+
+        public override void UpdateSoaRecord(string zoneName, string host, string primaryNsServer, string primaryPerson)
         {
             try
             {
@@ -225,32 +157,6 @@ namespace SolidCP.Providers.DNS
                 Log.WriteError(ex);
             }
         }
-
         #endregion
-
-
-        public override void DeleteServiceItems(ServiceProviderItem[] items)
-        {
-            foreach (ServiceProviderItem item in items)
-            {
-                if (item is DnsZone)
-                {
-                    try
-                    {
-                        // delete DNS zone
-                        DeleteZone(item.Name);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.WriteError(String.Format("Error deleting '{0}' MS DNS zone", item.Name), ex);
-                    }
-                }
-            }
-        }
-
-        public override bool IsInstalled()
-        {
-            return ps.Test_DnsServer();
-        }
     }
 }

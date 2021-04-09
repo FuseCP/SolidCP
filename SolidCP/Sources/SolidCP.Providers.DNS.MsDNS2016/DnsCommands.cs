@@ -35,8 +35,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Net;
-using SolidCP.Server.Utils;
 using Microsoft.Management.Infrastructure;
 using System.Collections.Generic;
 
@@ -66,162 +64,6 @@ namespace SolidCP.Providers.DNS
             cmd.Parameters.Add(name, true);
             return cmd;
         }
-
-        /// <summary>Create "Where-Object -Property ... -eq -Value ..." command</summary>
-        /// <param name="property"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static Command where(string property, object value)
-        {
-            return new Command("Where-Object")
-                .addParam("Property", property)
-                .addParam("eq")
-                .addParam("Value", value);
-        }
-
-        /// <summary>Test-DnsServer -IPAddress 127.0.0.1</summary>
-        /// <param name="ps">PowerShell host to use</param>
-        /// <returns>true if localhost is an MS DNS server</returns>
-        public static bool Test_DnsServer(this PowerShellHelper ps)
-        {
-            if (null == ps)
-                throw new ArgumentNullException("ps");
-
-            var cmd = new Command("Test-DnsServer")
-                .addParam("IPAddress", IPAddress.Loopback);
-
-            PSObject res = ps.RunPipeline(cmd).FirstOrDefault();
-            PSPropertyInfo p = res.Properties["Result"];
-            if (null == res || null == res.Properties)
-                return false;
-            else
-                return true;
-        }
-
-        #region Zones
-
-        /// <summary>Get-DnsServerZone | Select-Object -Property ZoneName</summary>
-        /// <remarks>Only primary DNS zones are returned</remarks>
-        /// <returns>Array of zone names</returns>
-        public static string[] Get_DnsServerZone_Names(this PowerShellHelper ps)
-        {
-            var allZones = ps.RunPipeline(new Command("Get-DnsServerZone"),
-                where("IsAutoCreated", false));
-
-            string[] res = allZones
-                .Select(pso => new
-                {
-                    name = (string)pso.Properties["ZoneName"].Value,
-                    type = (string)pso.Properties["ZoneType"].Value
-                })
-                .Where(obj => obj.type == "Primary")
-                .Select(obj => obj.name)
-                .ToArray();
-
-            Log.WriteInfo("Get_DnsServerZone_Names: {{{0}}}", String.Join(", ", res));
-            return res;
-        }
-
-        /// <summary>Returns true if the specified zone exists.</summary>
-        /// <remarks>The PS pipeline being run: Get-DnsServerZone | Where-Object -Property ZoneName -eq -Value "name"</remarks>
-        /// <param name="ps"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static bool ZoneExists(this PowerShellHelper ps, string name)
-        {
-            Log.WriteStart("ZoneExists {0}", name);
-            bool res = ps.RunPipeline(new Command("Get-DnsServerZone"),
-                where("ZoneName", name))
-                .Any();
-            Log.WriteEnd("ZoneExists: {0}", res);
-            return res;
-        }
-
-        /* public enum eReplicationScope: byte
-		{
-			Custom, Domain, Forest, Legacy
-		} */
-
-        /// <summary></summary>
-        /// <param name="ps"></param>
-        /// <param name="zoneName"></param>
-        /// <param name="replicationScope">Specifies a partition on which to store an Active Directory-integrated zone.</param>
-        /// <returns></returns>
-        public static void Add_DnsServerPrimaryZone(this PowerShellHelper ps, string zoneName, string[] secondaryServers, bool AdMode)
-        {
-            Log.WriteStart("Add_DnsServerPrimaryZone {0} {{{1}}}", zoneName, String.Join(", ", secondaryServers));
-
-            // Add-DnsServerPrimaryZone -Name zzz.com -ZoneFile zzz.com.dns
-            var cmd = new Command("Add-DnsServerPrimaryZone");
-            cmd.addParam("Name", zoneName);
-
-            // Add AD zone if required
-            if (AdMode)
-            { cmd.addParam("ReplicationScope", "Forest"); }
-            else
-            { cmd.addParam("ZoneFile", zoneName + ".dns"); }
-
-
-            ps.RunPipeline(cmd);
-
-            // Set-DnsServerPrimaryZone -Name zzz.com -SecureSecondaries ... -Notify ... Servers ..
-            cmd = new Command("Set-DnsServerPrimaryZone");
-            cmd.addParam("Name", zoneName);
-
-            if (secondaryServers == null || secondaryServers.Length == 0)
-            {
-                // transfers are not allowed
-                // inParams2[ "SecureSecondaries" ] = 3;
-                // inParams2[ "Notify" ] = 0;
-                cmd.addParam("SecureSecondaries", "NoTransfer");
-                cmd.addParam("Notify", "NoNotify");
-            }
-            else if (secondaryServers.Length == 1 && secondaryServers[0] == "*")
-            {
-                // allowed transfer from all servers
-                // inParams2[ "SecureSecondaries" ] = 0;
-                // inParams2[ "Notify" ] = 1;
-                cmd.addParam("SecureSecondaries", "TransferAnyServer");
-                cmd.addParam("Notify", "Notify");
-            }
-            else
-            {
-                // allowed transfer from specified servers
-                // inParams2[ "SecureSecondaries" ] = 2;
-                // inParams2[ "SecondaryServers" ] = secondaryServers;
-                // inParams2[ "NotifyServers" ] = secondaryServers;
-                // inParams2[ "Notify" ] = 2;
-                cmd.addParam("SecureSecondaries", "TransferToSecureServers");
-                cmd.addParam("Notify", "NotifyServers");
-                cmd.addParam("SecondaryServers", secondaryServers);
-                cmd.addParam("NotifyServers", secondaryServers);
-            }
-            ps.RunPipeline(cmd);
-            Log.WriteEnd("Add_DnsServerPrimaryZone");
-        }
-
-        /// <summary>Call Add-DnsServerSecondaryZone cmdlet</summary>
-        /// <param name="ps"></param>
-        /// <param name="zoneName">a name of a zone</param>
-        /// <param name="masterServers">an array of IP addresses of the master servers of the zone. You can use both IPv4 and IPv6.</param>
-        public static void Add_DnsServerSecondaryZone(this PowerShellHelper ps, string zoneName, string[] masterServers)
-        {
-            // Add-DnsServerSecondaryZone -Name zzz.com -ZoneFile zzz.com.dns -MasterServers ...
-            var cmd = new Command("Add-DnsServerSecondaryZone");
-            cmd.addParam("Name", zoneName);
-            cmd.addParam("ZoneFile", zoneName + ".dns");
-            cmd.addParam("MasterServers", masterServers);
-            ps.RunPipeline(cmd);
-        }
-
-        public static void Remove_DnsServerZone(this PowerShellHelper ps, string zoneName)
-        {
-            var cmd = new Command("Remove-DnsServerZone");
-            cmd.addParam("Name", zoneName);
-            cmd.addParam("Force");
-            ps.RunPipeline(cmd);
-        }
-        #endregion
 
         /// <summary>Get all records, except the SOA</summary>
         /// <param name="ps"></param>
@@ -398,24 +240,6 @@ namespace SolidCP.Providers.DNS
             ps.RunPipeline(cmd);
         }
 
-        public static void Remove_DnsServerResourceRecords(this PowerShellHelper ps, string zoneName, string type)
-        {
-            var cmd = new Command("Get-DnsServerResourceRecord");
-            cmd.addParam("ZoneName", zoneName);
-            cmd.addParam("RRType", type);
-            Collection<PSObject> resourceRecords = ps.RunPipeline(cmd);
-
-            foreach (PSObject resourceRecord in resourceRecords)
-            {
-                cmd = new Command("Remove-DnsServerResourceRecord");
-                cmd.addParam("ZoneName", zoneName);
-                cmd.addParam("InputObject", resourceRecord);
-
-                cmd.addParam("Force");
-                ps.RunPipeline(cmd);
-            }
-        }
-
         public static void Update_DnsServerResourceRecordSOA(this PowerShellHelper ps, string zoneName,
             TimeSpan ExpireLimit, TimeSpan MinimumTimeToLive, string PrimaryServer,
             TimeSpan RefreshInterval, string ResponsiblePerson, TimeSpan RetryDelay,
@@ -484,7 +308,6 @@ namespace SolidCP.Providers.DNS
             ps.RunPipeline(cmd);
 
         }
-
 
         #endregion
     }
