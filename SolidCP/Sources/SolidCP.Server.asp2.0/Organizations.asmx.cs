@@ -147,6 +147,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public string[] GetSecurityGroupsNotes(string[] groupNames, string organizationId)
+        {
+            return Organization.GetSecurityGroupsNotes(groupNames, organizationId);
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public void AddObjectToSecurityGroup(string organizationId, string accountName, string groupName)
         {
             Organization.AddObjectToSecurityGroup(organizationId, accountName, groupName);

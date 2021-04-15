@@ -256,7 +256,7 @@
     <value>Helicon Ape-Modul global registrieren:</value>
   </data>
   <data name="litPHP5Info.Text" xml:space="preserve">
-    <value>Falls sich irgendwelche PHP5 FastCGI Handler auf dem Server befinden, wird der oben angegebene PHP 5.x Executable Pfad ignoriert und nicht benutzt.</value>
+    <value>Falls sich irgendwelche PHP5 FastCGI Handler auf dem Server befinden, wird der oben angegebene PHP Executable Pfad ignoriert und nicht benutzt.</value>
   </data>
   <data name="btnCancelText.Text" xml:space="preserve">
     <value>Abbrechen</value>

@@ -145,7 +145,7 @@
     <value>ASP Library Path:</value>
   </data>
   <data name="lblPhpPath.Text" xml:space="preserve">
-    <value>PHP 5.x Executable Path:</value>
+    <value>PHP Executable Path (old - Recommended: PHP Manager):</value>
   </data>
   <data name="lblSharedIP.Text" xml:space="preserve">
     <value>Web Sites Shared IP Address:</value>
@@ -260,7 +260,7 @@
     <value>Register Helicon Ape module globally:</value>
   </data>
   <data name="litPHP5Info.Text" xml:space="preserve">
-    <value>If any PHP5 FastCGI handlers are present on the server, the PHP 5.x Executable Path given above will be ignored and not used.</value>
+    <value>If any PHP5 FastCGI handlers are present on the server, the PHP Executable Path given above will be ignored and not used.</value>
   </data>
   <data name="btnCancelText.Text" xml:space="preserve">
     <value>Cancel</value>

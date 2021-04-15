@@ -4,6 +4,7 @@
 <%@ Register Src="../UserControls/QuotaViewer.ascx" TagName="QuotaViewer" TagPrefix="scp" %>
 <%@ Register Src="../UserControls/EnableAsyncTasksSupport.ascx" TagName="EnableAsyncTasksSupport" TagPrefix="scp" %>
 <%@ Register Src="../UserControls/UserActions.ascx" TagName="UserActions" TagPrefix="scp" %>
+<%@ Import Namespace="SolidCP.Portal" %>
 
 <script type="text/javascript">
                 function checkAll(selectAllCheckbox) {
@@ -98,7 +99,7 @@
                         <ItemTemplate>
                             <asp:Image ID="img1" runat="server" ImageUrl='<%# GetAccountImage((int)Eval("AccountType"),(bool)Eval("IsVIP")) %>' ImageAlign="AbsMiddle" />
                             <asp:Hyperlink ID="lnk1" runat="server" NavigateUrl='<%# GetUserEditUrl(Eval("AccountId").ToString()) %>'>
-                                <%# Eval("DisplayName") %>
+                                <%# PortalAntiXSS.EncodeOld((string)Eval("DisplayName")) %>
                             </asp:Hyperlink>
                         </ItemTemplate>
                     </asp:TemplateField>

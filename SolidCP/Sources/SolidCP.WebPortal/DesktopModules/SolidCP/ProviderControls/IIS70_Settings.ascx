@@ -284,7 +284,7 @@
 		</tr>
 		<tr>
 		    <td class="Normal" valign="top">
-		        <asp:Label ID="lblPhpPath" runat="server" meta:resourcekey="lblPhpPath" Text="PHP 5.x Executable Path:"></asp:Label>
+		        <asp:Label ID="lblPhpPath" runat="server" meta:resourcekey="lblPhpPath" Text="PHP Executable Path:"></asp:Label>
 		    </td>
 		    <td class="Normal" valign="top">
                 <asp:TextBox ID="txtPhpPath" runat="server" CssClass="form-control" Width="300px"></asp:TextBox>
@@ -296,7 +296,7 @@
 		</tr>
         <tr>
             <td colspan="2" class="Normal">
-                <asp:Literal ID="litPHP5Info" runat="server" meta:resourcekey="litPHP5Info" Text="If any PHP5 FastCGI handlers are present on the server, the PHP 5.x Executable Path given above will be ignored and not used."></asp:Literal>
+                <asp:Literal ID="litPHP5Info" runat="server" meta:resourcekey="litPHP5Info" Text="If any PHP5 FastCGI handlers are present on the server, the PHP Executable Path given above will be ignored and not used."></asp:Literal>
             </td>
         </tr>
 		<tr>

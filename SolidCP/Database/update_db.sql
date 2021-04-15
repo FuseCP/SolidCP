@@ -3661,6 +3661,15 @@ BEGIN
 END
 GO
 
+-- MS DNS.2016
+
+IF NOT EXISTS ( SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = 1902 )
+BEGIN
+	INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES
+	(1902, 7, N'MSDNS.2016', N'Microsoft DNS Server 2016', N'SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016', N'MSDNS', NULL)
+END
+GO
+
 -- CRM Provider fix
 
 UPDATE Providers SET EditorControl = 'CRM2011' Where ProviderID = 1201;
@@ -16535,6 +16544,38 @@ IF EXISTS (SELECT * FROM SYS.TABLES WHERE name = 'ServiceItemProperties')
 ALTER TABLE [dbo].[ServiceItemProperties] ALTER COLUMN [PropertyValue] [nvarchar](MAX) NULL; 
 GO
 
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type IN ('FN', 'IF', 'TF') AND name = 'SplitString')
+DROP FUNCTION [dbo].[SplitString]
+GO
+
+CREATE FUNCTION dbo.SplitString (@stringToSplit VARCHAR(MAX), @separator CHAR)
+RETURNS
+ @returnList TABLE ([value] [nvarchar] (500))
+AS
+BEGIN
+
+ DECLARE @value NVARCHAR(255)
+ DECLARE @pos INT
+
+ WHILE CHARINDEX(@separator, @stringToSplit) > 0
+ BEGIN
+  SELECT @pos  = CHARINDEX(@separator, @stringToSplit)  
+  SELECT @value = SUBSTRING(@stringToSplit, 1, @pos-1)
+
+  INSERT INTO @returnList 
+  SELECT @value
+
+  SELECT @stringToSplit = SUBSTRING(@stringToSplit, @pos+1, LEN(@stringToSplit)-@pos)
+ END
+
+ INSERT INTO @returnList
+ SELECT @stringToSplit
+
+ RETURN
+END
+GO
+
+
 -- Exchange2013 Shared and resource mailboxes Organization statistics
 
 ALTER PROCEDURE [dbo].[GetExchangeOrganizationStatistics] 
@@ -16550,7 +16591,7 @@ BEGIN
 END
 ELSE
 BEGIN
-	SET @ARCHIVESIZE = (SELECT SUM(B.ArchiveSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.EnableArchiving = 1)
+	SET @ARCHIVESIZE = (SELECT SUM(B.ArchiveSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12) AND B.EnableArchiving = 1)
 END
 
 IF -1 IN (SELECT B.MailboxSizeMB FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID)
@@ -16564,8 +16605,8 @@ SELECT
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
 	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
-	(SELECT MIN(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10)) AS UsedDiskSpace,
-	(SELECT MIN(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
+	(SELECT MIN(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12)) AS UsedDiskSpace,
+	(SELECT MIN(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
 	@ARCHIVESIZE AS UsedArchingStorage
 END
 ELSE
@@ -16579,8 +16620,8 @@ SELECT
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 4 AND ItemID = @ItemID) AS CreatedPublicFolders,
 	(SELECT COUNT(*) FROM ExchangeAccounts WHERE AccountType = 12 AND ItemID = @ItemID) AS CreatedJournalingMailboxes,
 	(SELECT COUNT(*) FROM ExchangeOrganizationDomains WHERE ItemID = @ItemID) AS CreatedDomains,
-	(SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10)) AS UsedDiskSpace,
-	(SELECT SUM(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
+	(SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12)) AS UsedDiskSpace,
+	(SELECT SUM(B.RecoverableItemsSpace) FROM ExchangeAccounts AS A INNER JOIN ExchangeMailboxPlans AS B ON A.MailboxPlanId = B.MailboxPlanId WHERE A.ItemID=@ItemID AND A.AccountType in (1, 5, 6, 10, 12) AND B.AllowLitigationHold = 1) AS UsedLitigationHoldSpace,
 	@ARCHIVESIZE AS UsedArchingStorage
 END
 
@@ -21070,7 +21111,7 @@ AS
 		ELSE IF @QuotaID = 306 -- HDD of VPS
 		BEGIN
 			INSERT INTO @vhd
-			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
@@ -21104,7 +21145,7 @@ AS
 		ELSE IF @QuotaID = 559 -- HDD of VPS2012
 		BEGIN
 			INSERT INTO @vhd
-			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
@@ -21138,7 +21179,7 @@ AS
 		ELSE IF @QuotaID = 351 -- HDD of VPSforPc
 		BEGIN
 			INSERT INTO @vhd
-			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM STRING_SPLIT(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
+			SELECT (SELECT SUM(CAST([value] AS int)) AS value FROM dbo.SplitString(SIP.PropertyValue,';')) FROM ServiceItemProperties AS SIP
 							INNER JOIN ServiceItems AS SI ON SIP.ItemID = SI.ItemID
 							INNER JOIN PackagesTreeCache AS PT ON SI.PackageID = PT.PackageID
 							WHERE SIP.PropertyName = 'HddSize' AND PT.ParentPackageID = @PackageID
@@ -21173,12 +21214,19 @@ AS
 				WHERE pt.ParentPackageID = @PackageID 
 				AND ea.AccountType IN (1)
 				AND ea.MailboxPlanId IS NOT NULL)
+		ELSE IF @QuotaID = 731 -- Exchange2013.JournalingMailboxes
+			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
+				INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
+				INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
+				WHERE pt.ParentPackageID = @PackageID 
+				AND ea.AccountType IN (12)
+				AND ea.MailboxPlanId IS NOT NULL)
 		ELSE IF @QuotaID = 77 -- Exchange2007.DiskSpace
 			SET @Result = (SELECT SUM(B.MailboxSizeMB) FROM ExchangeAccounts AS ea 
 			INNER JOIN ExchangeMailboxPlans AS B ON ea.MailboxPlanId = B.MailboxPlanId 
 			INNER JOIN ServiceItems  si ON ea.ItemID = si.ItemID
 			INNER JOIN PackagesTreeCache pt ON si.PackageID = pt.PackageID
-			WHERE pt.ParentPackageID = @PackageID AND ea.AccountType in (1, 5, 6, 10))
+			WHERE pt.ParentPackageID = @PackageID AND ea.AccountType in (1, 5, 6, 10, 12))
 		ELSE IF @QuotaID = 370 -- Lync.Users
 			SET @Result = (SELECT COUNT(ea.AccountID) FROM ExchangeAccounts AS ea
 				INNER JOIN LyncUsers lu ON ea.AccountID = lu.AccountID
@@ -22442,4 +22490,28 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 
 GO
 
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'Microsoft SQL Server 2019'
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '410')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'admode', N'False')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'expirelimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'minimumttl', N'86400')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'nameservers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'refreshinterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'responsibleperson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (410, N'retrydelay', N'600')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1902')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'admode', N'False')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'expirelimit', N'1209600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'minimumttl', N'86400')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'nameservers', N'ns1.yourdomain.com;ns2.yourdomain.com')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'refreshinterval', N'3600')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'responsibleperson', N'hostmaster.[DOMAIN_NAME]')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'retrydelay', N'600')
+END
 GO

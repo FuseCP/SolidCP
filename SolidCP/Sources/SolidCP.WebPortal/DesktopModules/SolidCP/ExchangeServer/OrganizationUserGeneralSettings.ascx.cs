@@ -99,37 +99,37 @@ namespace SolidCP.Portal.HostedSolution
                 lblUserDomainName.Text = user.DomainUserName;
 
                 // bind form
-                txtDisplayName.Text = user.DisplayName;
+                txtDisplayName.Text = PortalAntiXSS.Encode(user.DisplayName);
 
                 chkDisable.Checked = user.Disabled;
 
-                txtFirstName.Text = user.FirstName;
-                txtInitials.Text = user.Initials;
-                txtLastName.Text = user.LastName;
+                txtFirstName.Text = PortalAntiXSS.Encode(user.FirstName);
+                txtInitials.Text = PortalAntiXSS.Encode(user.Initials);
+                txtLastName.Text = PortalAntiXSS.Encode(user.LastName);
 
 
 
-                txtJobTitle.Text = user.JobTitle;
-                txtCompany.Text = user.Company;
-                txtDepartment.Text = user.Department;
-                txtOffice.Text = user.Office;
+                txtJobTitle.Text = PortalAntiXSS.Encode(user.JobTitle);
+                txtCompany.Text = PortalAntiXSS.Encode(user.Company);
+                txtDepartment.Text = PortalAntiXSS.Encode(user.Department);
+                txtOffice.Text = PortalAntiXSS.Encode(user.Office);
                 manager.SetAccount(user.Manager);
 
-                txtBusinessPhone.Text = user.BusinessPhone;
-                txtFax.Text = user.Fax;
-                txtHomePhone.Text = user.HomePhone;
-                txtMobilePhone.Text = user.MobilePhone;
-                txtPager.Text = user.Pager;
-                txtWebPage.Text = user.WebPage;
+                txtBusinessPhone.Text = PortalAntiXSS.Encode(user.BusinessPhone);
+                txtFax.Text = PortalAntiXSS.Encode(user.Fax);
+                txtHomePhone.Text = PortalAntiXSS.Encode(user.HomePhone);
+                txtMobilePhone.Text = PortalAntiXSS.Encode(user.MobilePhone);
+                txtPager.Text = PortalAntiXSS.Encode(user.Pager);
+                txtWebPage.Text = PortalAntiXSS.Encode(user.WebPage);
 
-                txtAddress.Text = user.Address;
-                txtCity.Text = user.City;
-                txtState.Text = user.State;
-                txtZip.Text = user.Zip;
+                txtAddress.Text = PortalAntiXSS.Encode(user.Address);
+                txtCity.Text = PortalAntiXSS.Encode(user.City);
+                txtState.Text = PortalAntiXSS.Encode(user.State);
+                txtZip.Text = PortalAntiXSS.Encode(user.Zip);
                 country.Country = user.Country;
 
-                txtNotes.Text = user.Notes;
-                txtExternalEmailAddress.Text = user.ExternalEmail;
+                txtNotes.Text = PortalAntiXSS.Encode(user.Notes);
+                txtExternalEmailAddress.Text = PortalAntiXSS.Encode(user.ExternalEmail);
 
                 txtExternalEmailAddress.Enabled = user.AccountType == ExchangeAccountType.User;
                 lblUserDomainName.Text = user.DomainUserName;

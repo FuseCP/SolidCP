@@ -47,7 +47,8 @@ namespace SolidCP.Providers.DNS
         TXT,
         SRV,
         CAA,
-        Other
+        Other,
+        UNKNOWN
     }
 }
 

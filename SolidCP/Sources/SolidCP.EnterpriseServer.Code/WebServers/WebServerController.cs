@@ -4603,11 +4603,15 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 //WebServer server = GetWebServer(item.ServiceId);
                 TaskManager.WriteParameter("item.ServiceId", item.ServiceId);
 
+                StringDictionary settings = ServerController.GetServiceSettings(item.ServiceId);
+                if (!String.IsNullOrEmpty(settings["SSLLeEmail"])) email = settings["SSLLeEmail"];
+
                 // get state
                 WebServer web = new WebServer();
                 ServiceProviderProxy.Init(web, item.ServiceId);
-                web.LEinstallCertificate(item, email);
+                string ret = web.LEinstallCertificate(item, email);
 
+                if (ret.Contains("Error ") || ret.Contains("failed:")) result.AddError("ERROR_LEInstallCertificate", new Exception(ret));
             }
             catch (Exception ex)
             {
