@@ -124,8 +124,42 @@ namespace SolidCP.EnterpriseServer
                         ProcessServiceItems(false, false, serviceId, orderedItems[serviceId]);
                 }
 
-                // delete package from database
-                DataProvider.DeletePackage(SecurityContext.User.UserId, package.PackageId);
+                #region Try to DeletePackage 
+                //Unfornatually, if we move that try-catch deeper in DataProvider, some SQL queries will execute extremely long. 
+                //That why try-catch implemented here and only for DeletePackage
+                int attempts = 4;
+                int attempt = 0;
+                bool success = false;
+                var exception = new Exception();
+                while (attempt < attempts)
+                {
+                    attempt++;
+                    try
+                    {
+                        // delete package from database
+                        DataProvider.DeletePackage(SecurityContext.User.UserId, package.PackageId);
+
+                        success = true;
+                        break;
+                    }
+                    catch (System.Data.SqlClient.SqlException ex)
+                    {
+                        exception = ex;
+                        TaskManager.WriteError(ex);
+                        Thread.Sleep(5000 * attempt); //wait, if we get a deadlock exception
+                    }
+                    catch (Exception ex) //Normally that Exception should never appears
+                    {
+                        exception = ex;
+                        TaskManager.WriteError(ex);
+                        Thread.Sleep(5000); //wait, if we get unknow exception
+                    }
+                }
+                //if all attempts were failed throw an unhandled exception and try to figure out how to fix them (it is a typical situation before was added this code).
+                //unhandled exceptions usually create stuck tasks in the serveradmin/users -> "Running Tasks"
+                if (!success)
+                    System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw(); //rethrow InnerException without losing stack trace
+                #endregion
             }
 
             // add log record
