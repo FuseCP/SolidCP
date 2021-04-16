@@ -883,7 +883,7 @@ namespace SolidCP.Providers.Database
             }
         }
 
-        private DataSet ExecuteQuery(string commandText)
+        protected DataSet ExecuteQuery(string commandText)
         {
             return ExecuteQuery(commandText, ConnectionString);
         }
