@@ -187,18 +187,42 @@ namespace SolidCP.EnterpriseServer
 
         public static void DomainAdd(String f_stDomain, int packageId)
         {
-            PackageContext cntx = PackageController.GetPackageContext(packageId);
-            if (cntx == null) return;
-            if (Convert.ToBoolean(cntx.Quotas["Filters.Enable"].QuotaAllocatedValue))
-                APICall("domain/add/name/" + f_stDomain, packageId);
+            TaskManager.StartTask("MAIL_CLEANER", "ADD_DOMAIN", f_stDomain);
+            try
+            {
+                PackageContext cntx = PackageController.GetPackageContext(packageId);
+                if (cntx == null) return;
+                if (Convert.ToBoolean(cntx.Quotas["Filters.Enable"].QuotaAllocatedValue))
+                    APICall("domain/add/name/" + f_stDomain, packageId);
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
         }
 
         public static void DomainRemove(String f_stDomain, int packageId)
         {
-            PackageContext cntx = PackageController.GetPackageContext(packageId);
-            if (cntx == null) return;
-            if (Convert.ToBoolean(cntx.Quotas["Filters.Enable"].QuotaAllocatedValue))
-                APICall("domain/remove/name/" + f_stDomain, packageId);
+            TaskManager.StartTask("MAIL_CLEANER", "DELETE_DOMAIN", f_stDomain);
+            try
+            {
+                PackageContext cntx = PackageController.GetPackageContext(packageId);
+                if (cntx == null) return;
+                if (Convert.ToBoolean(cntx.Quotas["Filters.Enable"].QuotaAllocatedValue))
+                    APICall("domain/remove/name/" + f_stDomain, packageId);
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
         }
     }
 }
