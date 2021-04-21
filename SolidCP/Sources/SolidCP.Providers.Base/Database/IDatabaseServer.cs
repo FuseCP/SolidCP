@@ -52,9 +52,10 @@ namespace SolidCP.Providers.Database
         void CreateDatabase(SqlDatabase database);
 		void UpdateDatabase(SqlDatabase database);
 		void DeleteDatabase(string databaseName);
+		long CalculateDatabaseSize(string database);
 
 		// database maintenaince
-        void TruncateDatabase(string databaseName);
+		void TruncateDatabase(string databaseName);
         byte[] GetTempFileBinaryChunk(string path, int offset, int length);
         string AppendTempFileBinaryChunk(string fileName, string path, byte[] chunk);
         string BackupDatabase(string databaseName, string backupFileName, bool zipBackupFile);
@@ -68,5 +69,5 @@ namespace SolidCP.Providers.Database
 		void UpdateUser(SqlUser user, string[] databases);
         void DeleteUser(string username, string[] databases);
 		void ChangeUserPassword(string username, string password);
-	}
+    }
 }

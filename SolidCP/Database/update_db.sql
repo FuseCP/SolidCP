@@ -22515,3 +22515,6 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1902, N'retrydelay', N'600')
 END
 GO
+
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'MariaDB 10.3'
+GO

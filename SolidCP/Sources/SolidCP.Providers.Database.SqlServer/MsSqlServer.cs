@@ -1386,6 +1386,11 @@ namespace SolidCP.Providers.Database
         {
             return CheckVersion("8.");
         }
+
+        public long CalculateDatabaseSize(string database)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

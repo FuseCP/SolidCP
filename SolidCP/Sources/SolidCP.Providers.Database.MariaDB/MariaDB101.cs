@@ -428,9 +428,23 @@ namespace SolidCP.Providers.Database
         }
 
         private string BackupDatabase(string databaseName, string backupName) {
-            if(backupName == null)
+            // Check executable
+            string MariaDBEXEPath = null;
+            if (File.Exists(Path.Combine(MariaDBBinFolder, "mysql.exe")))
+            {
+                MariaDBEXEPath = MariaDBBinFolder;
+                Log.WriteInfo("MariaDBEXE Path: {0}", MariaDBEXEPath);
+            }
+            else
+            {
+                MariaDBEXEPath = InstallFolder;
+                Log.WriteInfo("MariaDBEXE Path: {0}", MariaDBEXEPath);
+            }
+
+
+            if (backupName == null)
                 backupName = databaseName + ".sql";
-            string cmd = Path.Combine(MariaDBBinFolder, "mysqldump.exe");
+            string cmd = Path.Combine(MariaDBEXEPath, "mysqldump.exe");
             string bakFile = Path.Combine(BackupTempFolder, backupName);
 
             string args = string.Format(" --host={0} --port={1} --user={2} --password={3} --opt --skip-extended-insert --skip-quick --skip-comments --result-file=\"{4}\" {5}",
@@ -445,6 +459,20 @@ namespace SolidCP.Providers.Database
         public virtual void TruncateDatabase(string databaseName) {
             string zipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             FileUtils.CreateDirectory(zipPath);
+
+            // Check executable
+            string MariaDBEXEPath = null;
+            if (File.Exists(Path.Combine(MariaDBBinFolder, "mysql.exe")))
+            {
+                MariaDBEXEPath = MariaDBBinFolder;
+                Log.WriteInfo("MariaDBEXE Path: {0}", MariaDBEXEPath);
+            }
+            else
+            {
+                MariaDBEXEPath = InstallFolder;
+                Log.WriteInfo("MariaDBEXE Path: {0}", MariaDBEXEPath);
+            }
+
             // create temporary batchfile
             string batchfilename = Path.Combine(zipPath, "MariaDB_Truncate.bat");
             StreamWriter file = new StreamWriter(batchfilename);
@@ -455,7 +483,7 @@ namespace SolidCP.Providers.Database
             file.WriteLine("set user=%3%");
             file.WriteLine("set password=%4%");
             file.WriteLine("set dbname=%5%");
-            file.WriteLine("\"" + Path.Combine(MariaDBBinFolder, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% -N -e \"SELECT CONCAT('OPTIMIZE TABLE ', table_name, ';') FROM information_schema.tables WHERE table_schema = '%dbname%' AND data_free/1024/1024 > 5;\" | mysql --host=%host% --port=%port% --user=%user% --password=%password% %dbname%");
+            file.WriteLine("\"" + Path.Combine(MariaDBEXEPath, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% -N -e \"SELECT CONCAT('OPTIMIZE TABLE ', table_name, ';') FROM information_schema.tables WHERE table_schema = '%dbname%' AND data_free/1024/1024 > 5;\" | mysql --host=%host% --port=%port% --user=%user% --password=%password% %dbname%");
             file.Close();
 
             // close current database connections
@@ -523,6 +551,20 @@ namespace SolidCP.Providers.Database
 
             if(fromDump) {
                 // restore database
+
+                // Check executable
+                string MariaDBEXEPath = null;
+                if (File.Exists(Path.Combine(MariaDBBinFolder, "mysql.exe")))
+                {
+                    MariaDBEXEPath = MariaDBBinFolder;
+                    Log.WriteInfo("MariaDBEXE Path: {0}", MariaDBEXEPath);
+                }
+                else
+                {
+                    MariaDBEXEPath = InstallFolder;
+                    Log.WriteInfo("MariaDBEXE Path: {0}", MariaDBEXEPath);
+                }
+
                 // create temporary batchfile
                 string batchfilename = Path.Combine(zipPath, "MariaDB_Restore.bat");
                 StreamWriter file = new StreamWriter(batchfilename);
@@ -534,7 +576,7 @@ namespace SolidCP.Providers.Database
                 file.WriteLine("set password=%4%");
                 file.WriteLine("set dbname=%5%");
                 file.WriteLine("set dumpfile=%6%");
-                file.WriteLine("\"" + Path.Combine(MariaDBBinFolder, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% %dbname% < %dumpfile%");
+                file.WriteLine("\"" + Path.Combine(MariaDBEXEPath, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% %dbname% < %dumpfile%");
                 file.Close();
                 // restore from .SQL file
                 CloseDatabaseConnections(database.Name);
@@ -686,7 +728,7 @@ namespace SolidCP.Providers.Database
             }
         }
 
-        private long CalculateDatabaseSize(string database) {
+        public virtual long CalculateDatabaseSize(string database) {
             // read mySQL INI file
             string dataPath = null;
             string iniPath = Path.Combine(InstallFolder, "my.ini");
