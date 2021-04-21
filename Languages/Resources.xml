@@ -4803,7 +4803,7 @@
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.Web.Php5</Key>
-    <DefaultValue>PHP 5.x</DefaultValue>
+    <DefaultValue>PHP</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -41265,7 +41265,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS60_Settings.ascx.resx</File>
     <Key>lblPhp5Path.Text</Key>
-    <DefaultValue>PHP 5.x Executable Path:</DefaultValue>
+    <DefaultValue>PHP Executable Path:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS60_Settings.ascx.resx</File>
@@ -41440,7 +41440,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
     <Key>lblPhpPath.Text</Key>
-    <DefaultValue>PHP 5.x Executable Path:</DefaultValue>
+    <DefaultValue>PHP Executable Path (old - Recommended: PHP Manager):</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
@@ -41629,7 +41629,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>
     <Key>litPHP5Info.Text</Key>
-    <DefaultValue>If any PHP5 FastCGI handlers are present on the server, the PHP 5.x Executable Path given above will be ignored and not used.</DefaultValue>
+    <DefaultValue>If any PHP5 FastCGI handlers are present on the server, the PHP Executable Path given above will be ignored and not used.</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\IIS70_Settings.ascx.resx</File>

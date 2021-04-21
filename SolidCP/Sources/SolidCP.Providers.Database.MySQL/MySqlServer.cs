@@ -793,7 +793,7 @@ namespace SolidCP.Providers.Database
             }
         }
 
-		private long CalculateDatabaseSize(string database)
+		public virtual long CalculateDatabaseSize(string database)
 		{
 			// read mySQL INI file
 			string dataPath = null;

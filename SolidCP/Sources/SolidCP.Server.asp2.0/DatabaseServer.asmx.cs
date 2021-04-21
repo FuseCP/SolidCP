@@ -443,6 +443,11 @@ namespace SolidCP.Server
                 throw;
             }
         }
+
+        public long CalculateDatabaseSize(string database)
+        {
+            return DatabaseProvider.CalculateDatabaseSize(database);
+        }
         #endregion
     }
 }
