@@ -448,6 +448,10 @@ namespace SolidCP.EnterpriseServer
                 // check acceptable values
                 if (VMSettings.RamSize <= 0)
                     quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_RAM);
+
+                if(VMSettings.HddSize.Length == 0) //if we pass the empty array of HddSize it broke everything.
+                    quotaResults.Add(VirtualizationErrorCodes.QUOTA_WRONG_HDD);
+
                 foreach (var hddSize in VMSettings.HddSize)
                 {
                     if (hddSize <= 0)
