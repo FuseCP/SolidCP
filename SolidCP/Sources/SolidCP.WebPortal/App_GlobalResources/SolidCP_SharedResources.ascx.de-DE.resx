@@ -2118,6 +2118,9 @@
   <data name="SchedulerTask.SCHEDULE_TASK_SEND_MAIL" xml:space="preserve">
     <value>E-Mail-Benachrichtigung versenden</value>
   </data>
+  <data name="SchedulerTask.SCHEDULE_TASK_AUDIT_LOG_REPORT" xml:space="preserve">
+    <value>Auditprotokoll-Bericht senden</value>
+  </data>
   <data name="SchedulerTask.SCHEDULE_TASK_SUSPEND_PACKAGES" xml:space="preserve">
     <value>Überschrittene Hosting-Bereiche sperren</value>
   </data>

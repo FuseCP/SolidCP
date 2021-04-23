@@ -555,6 +555,13 @@
     <Compile Include="ProviderControls\SfB_Settings.ascx.designer.cs">
       <DependentUpon>SfB_Settings.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ScheduleTaskControls\AuditLogReportView.ascx.cs">
+      <DependentUpon>AuditLogReportView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ScheduleTaskControls\AuditLogReportView.ascx.designer.cs">
+      <DependentUpon>AuditLogReportView.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ServerVLANsControl.ascx.cs">
       <DependentUpon>ServerVLANsControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5580,6 +5587,7 @@
     <Content Include="ProviderControls\HyperVvmm_Settings.ascx" />
     <Content Include="ProviderControls\MailCleaner_Settings.ascx" />
     <Content Include="ProviderControls\SfB_Settings.ascx" />
+    <Content Include="ScheduleTaskControls\AuditLogReportView.ascx" />
     <Content Include="ServerVLANsControl.ascx" />
     <Content Include="SkinControls\BootstrapDropDownList.ascx" />
     <Content Include="UserControls\AllocatePackageVLANs.ascx" />
@@ -6816,6 +6824,10 @@
     <Content Include="UserControls\App_LocalResources\PackageVLANs.ascx.de-DE.resx" />
     <Content Include="UserControls\App_LocalResources\AllocatePackageVLANs.ascx.resx" />
     <Content Include="UserControls\App_LocalResources\AllocatePackageVLANs.ascx.de-DE.resx" />
+    <Content Include="ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.de-DE.resx" />
     <EmbeddedResource Include="UserControls\App_LocalResources\WebsiteActions.ascx.resx" />
     <Content Include="VPS\UserControls\App_LocalResources\Generation.ascx.resx">
       <SubType>Designer</SubType>
