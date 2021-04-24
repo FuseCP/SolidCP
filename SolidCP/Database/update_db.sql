@@ -22518,3 +22518,53 @@ GO
 
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'MariaDB 10.3'
 GO
+
+-- send audit log report task
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTasks] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT')
+BEGIN
+INSERT [dbo].[ScheduleTasks] ([TaskID], [TaskType], [RoleID]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'SolidCP.EnterpriseServer.AuditLogReportTask, SolidCP.EnterpriseServer.Code', 3)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'MAIL_TO')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'MAIL_TO', N'String', NULL, 1)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_SEVERITY')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_SEVERITY', N'List', N'-1=All;0=Information;1=Warning;2=Error', 2)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_SOURCE')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_SOURCE', N'List', N'', 3)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_TASK')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_TASK', N'List', N'', 4)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_DATE')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_DATE', N'List', N'today=Today;yesterday=Yesterday;schedule=Schedule', 5)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'SHOW_EXECUTION_LOG')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'SHOW_EXECUTION_LOG', N'List', N'0=No;1=Yes', 6)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskViewConfiguration] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT')
+BEGIN
+INSERT [dbo].[ScheduleTaskViewConfiguration] ([TaskID], [ConfigurationID], [Environment], [Description]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'ASP_NET', N'ASP.NET', N'~/DesktopModules/SolidCP/ScheduleTaskControls/AuditLogReportView.ascx')
+END
+GO
