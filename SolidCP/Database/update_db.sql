@@ -7022,7 +7022,11 @@ SELECT TOP 1
 	ClientPrinterRedirected,
 	ClientPrinterAsDefault,
 	RDEasyPrintDriverEnabled,
-	MaxRedirectedMonitors
+	MaxRedirectedMonitors,
+	SecurityLayer,
+	EncryptionLevel,
+	AuthenticateUsingNLA
+	
 	FROM RDSCollectionSettings
 	WHERE RDSCollectionID = @RDSCollectionID
 GO
@@ -7046,7 +7050,10 @@ CREATE PROCEDURE [dbo].[AddRDSCollectionSettings]
 	@ClientPrinterRedirected BIT,
 	@ClientPrinterAsDefault BIT,
 	@RDEasyPrintDriverEnabled BIT,
-	@MaxRedirectedMonitors INT
+	@MaxRedirectedMonitors INT,
+	@SecurityLayer NVARCHAR(20),
+	@EncryptionLevel NVARCHAR(20),
+	@AuthenticateUsingNLA BIT
 )
 AS
 
@@ -7064,7 +7071,10 @@ INSERT INTO RDSCollectionSettings
 	ClientPrinterRedirected,
 	ClientPrinterAsDefault,
 	RDEasyPrintDriverEnabled,
-	MaxRedirectedMonitors
+	MaxRedirectedMonitors,
+	SecurityLayer,
+	EncryptionLevel,
+	AuthenticateUsingNLA
 )
 VALUES
 (
@@ -7080,7 +7090,10 @@ VALUES
 	@ClientPrinterRedirected,
 	@ClientPrinterAsDefault,
 	@RDEasyPrintDriverEnabled,
-	@MaxRedirectedMonitors
+	@MaxRedirectedMonitors,
+	@SecurityLayer,
+	@EncryptionLevel,
+	@AuthenticateUsingNLA
 )
 
 SET @RDSCollectionSettingsID = SCOPE_IDENTITY()
@@ -7107,7 +7120,10 @@ CREATE PROCEDURE [dbo].[UpdateRDSCollectionSettings]
 	@ClientPrinterRedirected BIT,
 	@ClientPrinterAsDefault BIT,
 	@RDEasyPrintDriverEnabled BIT,
-	@MaxRedirectedMonitors INT
+	@MaxRedirectedMonitors INT,
+	@SecurityLayer NVARCHAR(20),
+	@EncryptionLevel NVARCHAR(20),
+	@AuthenticateUsingNLA BIT
 )
 AS
 
@@ -7125,7 +7141,10 @@ SET
 	ClientPrinterRedirected = @ClientPrinterRedirected,
 	ClientPrinterAsDefault = @ClientPrinterAsDefault,
 	RDEasyPrintDriverEnabled = @RDEasyPrintDriverEnabled,
-	MaxRedirectedMonitors = @MaxRedirectedMonitors
+	MaxRedirectedMonitors = @MaxRedirectedMonitors,
+	SecurityLayer = @SecurityLayer,
+	EncryptionLevel = @EncryptionLevel,
+	AuthenticateUsingNLA = @AuthenticateUsingNLA
 WHERE ID = @Id
 GO
 
