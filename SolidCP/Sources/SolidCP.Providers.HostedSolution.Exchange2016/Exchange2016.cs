@@ -4728,6 +4728,7 @@ namespace SolidCP.Providers.HostedSolution
             List<ExchangeAccount> list = new List<ExchangeAccount>();
             Command cmd = new Command("Get-DistributionGroupMember");
             cmd.Parameters.Add("Identity", groupId);
+            cmd.Parameters.Add("ResultSize", "unlimited");
             Collection<PSObject> result = ExecuteShellCommand(runSpace, cmd);
 
             ExchangeAccount account = null;
