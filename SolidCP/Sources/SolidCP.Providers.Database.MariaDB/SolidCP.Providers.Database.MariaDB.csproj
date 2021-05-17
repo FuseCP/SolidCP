@@ -73,6 +73,8 @@
     <Compile Include="MariaDB103.cs" />
     <Compile Include="MariaDB102.cs" />
     <Compile Include="MariaDB101.cs" />
+    <Compile Include="MariaDB104.cs" />
+    <Compile Include="MariaDB105.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

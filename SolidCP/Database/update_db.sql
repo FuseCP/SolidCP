@@ -7022,7 +7022,11 @@ SELECT TOP 1
 	ClientPrinterRedirected,
 	ClientPrinterAsDefault,
 	RDEasyPrintDriverEnabled,
-	MaxRedirectedMonitors
+	MaxRedirectedMonitors,
+	SecurityLayer,
+	EncryptionLevel,
+	AuthenticateUsingNLA
+	
 	FROM RDSCollectionSettings
 	WHERE RDSCollectionID = @RDSCollectionID
 GO
@@ -7046,7 +7050,10 @@ CREATE PROCEDURE [dbo].[AddRDSCollectionSettings]
 	@ClientPrinterRedirected BIT,
 	@ClientPrinterAsDefault BIT,
 	@RDEasyPrintDriverEnabled BIT,
-	@MaxRedirectedMonitors INT
+	@MaxRedirectedMonitors INT,
+	@SecurityLayer NVARCHAR(20),
+	@EncryptionLevel NVARCHAR(20),
+	@AuthenticateUsingNLA BIT
 )
 AS
 
@@ -7064,7 +7071,10 @@ INSERT INTO RDSCollectionSettings
 	ClientPrinterRedirected,
 	ClientPrinterAsDefault,
 	RDEasyPrintDriverEnabled,
-	MaxRedirectedMonitors
+	MaxRedirectedMonitors,
+	SecurityLayer,
+	EncryptionLevel,
+	AuthenticateUsingNLA
 )
 VALUES
 (
@@ -7080,7 +7090,10 @@ VALUES
 	@ClientPrinterRedirected,
 	@ClientPrinterAsDefault,
 	@RDEasyPrintDriverEnabled,
-	@MaxRedirectedMonitors
+	@MaxRedirectedMonitors,
+	@SecurityLayer,
+	@EncryptionLevel,
+	@AuthenticateUsingNLA
 )
 
 SET @RDSCollectionSettingsID = SCOPE_IDENTITY()
@@ -7107,7 +7120,10 @@ CREATE PROCEDURE [dbo].[UpdateRDSCollectionSettings]
 	@ClientPrinterRedirected BIT,
 	@ClientPrinterAsDefault BIT,
 	@RDEasyPrintDriverEnabled BIT,
-	@MaxRedirectedMonitors INT
+	@MaxRedirectedMonitors INT,
+	@SecurityLayer NVARCHAR(20),
+	@EncryptionLevel NVARCHAR(20),
+	@AuthenticateUsingNLA BIT
 )
 AS
 
@@ -7125,7 +7141,10 @@ SET
 	ClientPrinterRedirected = @ClientPrinterRedirected,
 	ClientPrinterAsDefault = @ClientPrinterAsDefault,
 	RDEasyPrintDriverEnabled = @RDEasyPrintDriverEnabled,
-	MaxRedirectedMonitors = @MaxRedirectedMonitors
+	MaxRedirectedMonitors = @MaxRedirectedMonitors,
+	SecurityLayer = @SecurityLayer,
+	EncryptionLevel = @EncryptionLevel,
+	AuthenticateUsingNLA = @AuthenticateUsingNLA
 WHERE ID = @Id
 GO
 
@@ -22517,4 +22536,99 @@ END
 GO
 
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = '1' WHERE [DisplayName] = 'MariaDB 10.3'
+GO
+
+-- send audit log report task
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTasks] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT')
+BEGIN
+INSERT [dbo].[ScheduleTasks] ([TaskID], [TaskType], [RoleID]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'SolidCP.EnterpriseServer.AuditLogReportTask, SolidCP.EnterpriseServer.Code', 3)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'MAIL_TO')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'MAIL_TO', N'String', NULL, 1)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_SEVERITY')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_SEVERITY', N'List', N'-1=All;0=Information;1=Warning;2=Error', 2)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_SOURCE')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_SOURCE', N'List', N'', 3)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_TASK')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_TASK', N'List', N'', 4)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'AUDIT_LOG_DATE')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'AUDIT_LOG_DATE', N'List', N'today=Today;yesterday=Yesterday;schedule=Schedule', 5)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT' AND [ParameterID] = N'SHOW_EXECUTION_LOG')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'SHOW_EXECUTION_LOG', N'List', N'0=No;1=Yes', 6)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskViewConfiguration] WHERE [TaskID] = N'SCHEDULE_TASK_AUDIT_LOG_REPORT')
+BEGIN
+INSERT [dbo].[ScheduleTaskViewConfiguration] ([TaskID], [ConfigurationID], [Environment], [Description]) VALUES (N'SCHEDULE_TASK_AUDIT_LOG_REPORT', N'ASP_NET', N'ASP.NET', N'~/DesktopModules/SolidCP/ScheduleTaskControls/AuditLogReportView.ascx')
+END
+GO
+
+
+-- MariaDB 10.4
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1571')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1571, 50, N'MariaDB', N'MariaDB 10.4', N'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB', N'MariaDB', N'1')
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1571'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1571')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.4')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1571, N'RootPassword', N'')
+END
+GO
+
+-- MariaDB 10.5
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1572')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', N'1')
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1572'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1572')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.5')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootPassword', N'')
+END
 GO

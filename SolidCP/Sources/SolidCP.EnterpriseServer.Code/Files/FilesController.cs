@@ -120,7 +120,7 @@ namespace SolidCP.EnterpriseServer
         {
             // clean path
             string correctedPath = Regex.Replace(relativePath.Replace("/", "\\"),
-                    @"\.\\|\.\.|\\\\|\?|\:|\""|\<|\>|\||%|\$", "");
+                    @"\.\\|\.\.|\\\\|\?|\:|\""|\<|\>|\||%|\$\\", "");
             if (correctedPath.StartsWith("\\"))
                 correctedPath = correctedPath.Substring(1);
             return correctedPath;

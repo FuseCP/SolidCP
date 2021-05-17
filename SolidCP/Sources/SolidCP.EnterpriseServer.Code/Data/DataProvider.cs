@@ -5686,12 +5686,12 @@ namespace SolidCP.EnterpriseServer
         {
             return AddRdsCollectionSettings(settings.RdsCollectionId, settings.DisconnectedSessionLimitMin, settings.ActiveSessionLimitMin, settings.IdleSessionLimitMin, settings.BrokenConnectionAction,
                 settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
-                settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors);
+                settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
         }
 
         private static int AddRdsCollectionSettings(int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
             bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
-            bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors)
+            bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
         {
             SqlParameter rdsCollectionSettingsId = new SqlParameter("@RDSCollectionSettingsID", SqlDbType.Int);
             rdsCollectionSettingsId.Direction = ParameterDirection.Output;
@@ -5713,7 +5713,10 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@ClientPrinterRedirected", ClientPrinterRedirected),
                 new SqlParameter("@ClientPrinterAsDefault", clientPrinterAsDefault),
                 new SqlParameter("@RDEasyPrintDriverEnabled", rdEasyPrintDriverEnabled),
-                new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors)
+                new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors),
+                new SqlParameter("@SecurityLayer", SecurityLayer),
+                new SqlParameter("@EncryptionLevel", EncryptionLevel),
+                new SqlParameter("@AuthenticateUsingNLA", AuthenticateUsingNLA)
             );
             
             return Convert.ToInt32(rdsCollectionSettingsId.Value);
@@ -5723,12 +5726,12 @@ namespace SolidCP.EnterpriseServer
         {
             UpdateRDSCollectionSettings(settings.Id, settings.RdsCollectionId, settings.DisconnectedSessionLimitMin, settings.ActiveSessionLimitMin, settings.IdleSessionLimitMin, settings.BrokenConnectionAction,
                 settings.AutomaticReconnectionEnabled, settings.TemporaryFoldersDeletedOnExit, settings.TemporaryFoldersPerSession, settings.ClientDeviceRedirectionOptions, settings.ClientPrinterRedirected,
-                settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors);
+                settings.ClientPrinterAsDefault, settings.RDEasyPrintDriverEnabled, settings.MaxRedirectedMonitors, settings.SecurityLayer, settings.EncryptionLevel, settings.AuthenticateUsingNLA);
         }
 
         public static void UpdateRDSCollectionSettings(int id, int rdsCollectionId, int disconnectedSessionLimitMin, int activeSessionLimitMin, int idleSessionLimitMin, string brokenConnectionAction,
             bool automaticReconnectionEnabled, bool temporaryFoldersDeletedOnExit, bool temporaryFoldersPerSession, string clientDeviceRedirectionOptions, bool ClientPrinterRedirected,
-            bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors)
+            bool clientPrinterAsDefault, bool rdEasyPrintDriverEnabled, int maxRedirectedMonitors, string SecurityLayer, string EncryptionLevel, bool AuthenticateUsingNLA)
         {
             SqlHelper.ExecuteNonQuery(
                 ConnectionString,
@@ -5747,7 +5750,10 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@ClientPrinterRedirected", ClientPrinterRedirected),
                 new SqlParameter("@ClientPrinterAsDefault", clientPrinterAsDefault),
                 new SqlParameter("@RDEasyPrintDriverEnabled", rdEasyPrintDriverEnabled),
-                new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors)                
+                new SqlParameter("@MaxRedirectedMonitors", maxRedirectedMonitors),
+                new SqlParameter("@SecurityLayer", SecurityLayer),
+                new SqlParameter("@EncryptionLevel", EncryptionLevel),
+                new SqlParameter("@AuthenticateUsingNLA", AuthenticateUsingNLA)
             );
         }
 
