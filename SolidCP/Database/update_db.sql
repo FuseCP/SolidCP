@@ -22632,3 +22632,546 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1572, N'RootPassword', N'')
 END
 GO
+
+----------------------------------------------
+-- INDEXES SECTION - ADD/REMOVE/MODIFY HERE --
+----------------------------------------------
+---[dbo].[AccessTokens] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'AccessTokensIdx_AccountID' AND [object_id] = OBJECT_ID('[dbo].[AccessTokens]'))
+BEGIN
+	CREATE INDEX AccessTokensIdx_AccountID ON [dbo].[AccessTokens] ([AccountID]);
+END
+GO
+
+---[dbo].[AuditLog] Indexes
+--- TODO: add missed FKs and indexes?
+--- PS: There are problems with type of data we keep in possible FKs, like 0 in ID columns (it is wrong)
+
+---[dbo].[BackgroundTaskLogs] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'BackgroundTaskLogsIdx_TaskID' AND [object_id] = OBJECT_ID('[dbo].[BackgroundTaskLogs]'))
+BEGIN
+	CREATE INDEX BackgroundTaskLogsIdx_TaskID ON [dbo].[BackgroundTaskLogs] ([TaskID]);
+END
+GO
+
+---[dbo].[BackgroundTaskParameters] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'BackgroundTaskParametersIdx_TaskID' AND [object_id] = OBJECT_ID('[dbo].[BackgroundTaskParameters]'))
+BEGIN
+	CREATE INDEX BackgroundTaskParametersIdx_TaskID ON [dbo].[BackgroundTaskParameters] ([TaskID]);
+END
+GO
+
+---[dbo].[BackgroundTasks] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[BackgroundTaskStack] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'BackgroundTaskStackIdx_TaskID' AND [object_id] = OBJECT_ID('[dbo].[BackgroundTaskStack]'))
+BEGIN
+	CREATE INDEX BackgroundTaskStackIdx_TaskID ON [dbo].[BackgroundTaskStack] ([TaskID]);
+END
+GO
+
+---[dbo].[BlackBerryUsers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'BlackBerryUsersIdx_AccountId' AND [object_id] = OBJECT_ID('[dbo].[BlackBerryUsers]'))
+BEGIN
+	CREATE INDEX BlackBerryUsersIdx_AccountId ON [dbo].[BlackBerryUsers] ([AccountId]);
+END
+GO
+
+---[dbo].[Comments] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'CommentsIdx_UserID' AND [object_id] = OBJECT_ID('[dbo].[Comments]'))
+BEGIN
+	CREATE INDEX CommentsIdx_UserID ON [dbo].[Comments] ([UserID]);
+END
+GO
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[CRMUsers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'CRMUsersIdx_AccountID' AND [object_id] = OBJECT_ID('[dbo].[CRMUsers]'))
+BEGIN
+	CREATE INDEX CRMUsersIdx_AccountID ON [dbo].[CRMUsers] ([AccountID]);
+END
+GO
+
+---[dbo].[DomainDnsRecords] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'DomainDnsRecordsIdx_DomainId' AND [object_id] = OBJECT_ID('[dbo].[DomainDnsRecords]'))
+BEGIN
+	CREATE INDEX DomainDnsRecordsIdx_DomainId ON [dbo].[DomainDnsRecords] ([DomainId]);
+END
+GO
+
+---[dbo].[Domains] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'DomainsIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[Domains]'))
+BEGIN
+	CREATE INDEX DomainsIdx_PackageID ON [dbo].[Domains] ([PackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'DomainsIdx_ZoneItemID' AND [object_id] = OBJECT_ID('[dbo].[Domains]'))
+BEGIN
+	CREATE INDEX DomainsIdx_ZoneItemID ON [dbo].[Domains] ([ZoneItemID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'DomainsIdx_WebSiteID' AND [object_id] = OBJECT_ID('[dbo].[Domains]'))
+BEGIN
+	CREATE INDEX DomainsIdx_WebSiteID ON [dbo].[Domains] ([WebSiteID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'DomainsIdx_MailDomainID' AND [object_id] = OBJECT_ID('[dbo].[Domains]'))
+BEGIN
+	CREATE INDEX DomainsIdx_MailDomainID ON [dbo].[Domains] ([MailDomainID]);
+END
+GO
+
+---[dbo].[EnterpriseFolders] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'EnterpriseFoldersIdx_StorageSpaceFolderId' AND [object_id] = OBJECT_ID('[dbo].[EnterpriseFolders]'))
+BEGIN
+	CREATE INDEX EnterpriseFoldersIdx_StorageSpaceFolderId ON [dbo].[EnterpriseFolders] ([StorageSpaceFolderId]);
+END
+GO
+
+---[dbo].[EnterpriseFoldersOwaPermissions] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'EnterpriseFoldersOwaPermissionsIdx_FolderID' AND [object_id] = OBJECT_ID('[dbo].[EnterpriseFoldersOwaPermissions]'))
+BEGIN
+	CREATE INDEX EnterpriseFoldersOwaPermissionsIdx_FolderID ON [dbo].[EnterpriseFoldersOwaPermissions] ([FolderID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'EnterpriseFoldersOwaPermissionsIdx_AccountID' AND [object_id] = OBJECT_ID('[dbo].[EnterpriseFoldersOwaPermissions]'))
+BEGIN
+	CREATE INDEX EnterpriseFoldersOwaPermissionsIdx_AccountID ON [dbo].[EnterpriseFoldersOwaPermissions] ([AccountID]);
+END
+GO
+
+---[dbo].[ExchangeAccountEmailAddresses] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeAccountEmailAddressesIdx_AccountID' AND [object_id] = OBJECT_ID('[dbo].[ExchangeAccountEmailAddresses]'))
+BEGIN
+	CREATE INDEX ExchangeAccountEmailAddressesIdx_AccountID ON [dbo].[ExchangeAccountEmailAddresses] ([AccountID]);
+END
+GO
+
+---[dbo].[ExchangeAccounts] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeAccountsIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[ExchangeAccounts]'))
+BEGIN
+	CREATE INDEX ExchangeAccountsIdx_ItemID ON [dbo].[ExchangeAccounts] ([ItemID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeAccountsIdx_MailboxPlanId' AND [object_id] = OBJECT_ID('[dbo].[ExchangeAccounts]'))
+BEGIN
+	CREATE INDEX ExchangeAccountsIdx_MailboxPlanId ON [dbo].[ExchangeAccounts] ([MailboxPlanId]);
+END
+GO
+
+---[dbo].[ExchangeDeletedAccounts] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[ExchangeDisclaimers] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[ExchangeMailboxPlanRetentionPolicyTags] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[ExchangeMailboxPlans] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeMailboxPlansIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[ExchangeMailboxPlans]'))
+BEGIN
+	CREATE INDEX ExchangeMailboxPlansIdx_ItemID ON [dbo].[ExchangeMailboxPlans] ([ItemID]);
+END
+GO
+
+---[dbo].[ExchangeOrganizationDomains] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeOrganizationDomainsIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[ExchangeOrganizationDomains]'))
+BEGIN
+	CREATE INDEX ExchangeOrganizationDomainsIdx_ItemID ON [dbo].[ExchangeOrganizationDomains] ([ItemID]);
+END
+GO
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[ExchangeOrganizations] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[ExchangeOrganizationSettings] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeOrganizationSettingsIdx_ItemId' AND [object_id] = OBJECT_ID('[dbo].[ExchangeOrganizationSettings]'))
+BEGIN
+	CREATE INDEX ExchangeOrganizationSettingsIdx_ItemId ON [dbo].[ExchangeOrganizationSettings] ([ItemId]);
+END
+GO
+
+---[dbo].[ExchangeOrganizationSsFolders] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeOrganizationSsFoldersIdx_ItemId' AND [object_id] = OBJECT_ID('[dbo].[ExchangeOrganizationSsFolders]'))
+BEGIN
+	CREATE INDEX ExchangeOrganizationSsFoldersIdx_ItemId ON [dbo].[ExchangeOrganizationSsFolders] ([ItemId]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId' AND [object_id] = OBJECT_ID('[dbo].[ExchangeOrganizationSsFolders]'))
+BEGIN
+	CREATE INDEX ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId ON [dbo].[ExchangeOrganizationSsFolders] ([StorageSpaceFolderId]);
+END
+GO
+
+---[dbo].[ExchangeRetentionPolicyTags] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[GlobalDnsRecords] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'GlobalDnsRecordsIdx_ServiceID' AND [object_id] = OBJECT_ID('[dbo].[GlobalDnsRecords]'))
+BEGIN
+	CREATE INDEX GlobalDnsRecordsIdx_ServiceID ON [dbo].[GlobalDnsRecords] ([ServiceID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'GlobalDnsRecordsIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[GlobalDnsRecords]'))
+BEGIN
+	CREATE INDEX GlobalDnsRecordsIdx_ServerID ON [dbo].[GlobalDnsRecords] ([ServerID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'GlobalDnsRecordsIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[GlobalDnsRecords]'))
+BEGIN
+	CREATE INDEX GlobalDnsRecordsIdx_PackageID ON [dbo].[GlobalDnsRecords] ([PackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'GlobalDnsRecordsIdx_IPAddressID' AND [object_id] = OBJECT_ID('[dbo].[GlobalDnsRecords]'))
+BEGIN
+	CREATE INDEX GlobalDnsRecordsIdx_IPAddressID ON [dbo].[GlobalDnsRecords] ([IPAddressID]);
+END
+GO
+
+---[dbo].[HostingPlans] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'HostingPlansIdx_UserID' AND [object_id] = OBJECT_ID('[dbo].[HostingPlans]'))
+BEGIN
+	CREATE INDEX HostingPlansIdx_UserID ON [dbo].[HostingPlans] ([UserID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'HostingPlansIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[HostingPlans]'))
+BEGIN
+	CREATE INDEX HostingPlansIdx_PackageID ON [dbo].[HostingPlans] ([PackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'HostingPlansIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[HostingPlans]'))
+BEGIN
+	CREATE INDEX HostingPlansIdx_ServerID ON [dbo].[HostingPlans] ([ServerID]);
+END
+GO
+
+---[dbo].[IPAddresses] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'IPAddressesIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[IPAddresses]'))
+BEGIN
+	CREATE INDEX IPAddressesIdx_ServerID ON [dbo].[IPAddresses] ([ServerID]);
+END
+GO
+
+---[dbo].[LyncUserPlans] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'LyncUserPlansIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[LyncUserPlans]'))
+BEGIN
+	CREATE INDEX LyncUserPlansIdx_ItemID ON [dbo].[LyncUserPlans] ([ItemID]);
+END
+GO
+
+---[dbo].[LyncUsers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'LyncUsersIdx_LyncUserPlanID' AND [object_id] = OBJECT_ID('[dbo].[LyncUsers]'))
+BEGIN
+	CREATE INDEX LyncUsersIdx_LyncUserPlanID ON [dbo].[LyncUsers] ([LyncUserPlanID]);
+END
+GO
+
+---[dbo].[OCSUsers] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[PackageAddons] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageAddonsIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[PackageAddons]'))
+BEGIN
+	CREATE INDEX PackageAddonsIdx_PackageID ON [dbo].[PackageAddons] ([PackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageAddonsIdx_PlanID' AND [object_id] = OBJECT_ID('[dbo].[PackageAddons]'))
+BEGIN
+	CREATE INDEX PackageAddonsIdx_PlanID ON [dbo].[PackageAddons] ([PlanID]);
+END
+GO
+
+---[dbo].[PackageIPAddresses] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIPAddressesIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[PackageIPAddresses]'))
+BEGIN
+	CREATE INDEX PackageIPAddressesIdx_PackageID ON [dbo].[PackageIPAddresses] ([PackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIPAddressesIdx_AddressID' AND [object_id] = OBJECT_ID('[dbo].[PackageIPAddresses]'))
+BEGIN
+	CREATE INDEX PackageIPAddressesIdx_AddressID ON [dbo].[PackageIPAddresses] ([AddressID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIPAddressesIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[PackageIPAddresses]'))
+BEGIN
+	CREATE INDEX PackageIPAddressesIdx_ItemID ON [dbo].[PackageIPAddresses] ([ItemID]);
+END
+GO
+
+---[dbo].[Packages] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIndex_ParentPackageID' AND [object_id] = OBJECT_ID('[dbo].[Packages]'))
+BEGIN
+	CREATE INDEX PackageIndex_ParentPackageID ON [dbo].[Packages] ([ParentPackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIndex_UserID' AND [object_id] = OBJECT_ID('[dbo].[Packages]'))
+BEGIN
+	CREATE INDEX PackageIndex_UserID ON [dbo].[Packages] ([UserID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIndex_ServerID' AND [object_id] = OBJECT_ID('[dbo].[Packages]'))
+BEGIN
+	CREATE INDEX PackageIndex_ServerID ON [dbo].[Packages] ([ServerID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageIndex_PlanID' AND [object_id] = OBJECT_ID('[dbo].[Packages]'))
+BEGIN
+	CREATE INDEX PackageIndex_PlanID ON [dbo].[Packages] ([PlanID]);
+END
+GO
+
+---[dbo].[PackagesTreeCache] Indexes TODO: should be it as a Primary key (PK)?
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackagesTreeCacheIndex' AND [object_id] = OBJECT_ID('[dbo].[PackagesTreeCache]'))
+BEGIN
+	CREATE CLUSTERED INDEX PackagesTreeCacheIndex ON [dbo].[PackagesTreeCache] ([ParentPackageID], [PackageID]); --Clustered cause those columns look like must be the PK, not just FKs
+END
+GO
+
+---[dbo].[PackageVLANs] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageVLANsIdx_VlanID' AND [object_id] = OBJECT_ID('[dbo].[PackageVLANs]'))
+BEGIN
+	CREATE INDEX PackageVLANsIdx_VlanID ON [dbo].[PackageVLANs] ([VlanID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PackageVLANsIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[PackageVLANs]'))
+BEGIN
+	CREATE INDEX PackageVLANsIdx_PackageID ON [dbo].[PackageVLANs] ([PackageID]);
+END
+GO
+
+---[dbo].[PrivateIPAddresses] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PrivateIPAddressesIdx_ItemID' AND [object_id] = OBJECT_ID('[dbo].[PrivateIPAddresses]'))
+BEGIN
+	CREATE INDEX PrivateIPAddressesIdx_ItemID ON [dbo].[PrivateIPAddresses] ([ItemID]);
+END
+GO
+
+---[dbo].[PrivateNetworkVLANs] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'PrivateNetworkVLANsIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[PrivateNetworkVLANs]'))
+BEGIN
+	CREATE INDEX PrivateNetworkVLANsIdx_ServerID ON [dbo].[PrivateNetworkVLANs] ([ServerID]);
+END
+GO
+
+---[dbo].[Providers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ProvidersIdx_GroupID' AND [object_id] = OBJECT_ID('[dbo].[Providers]'))
+BEGIN
+	CREATE INDEX ProvidersIdx_GroupID ON [dbo].[Providers] ([GroupID]);
+END
+GO
+
+---[dbo].[Quotas] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'QuotasIdx_GroupID' AND [object_id] = OBJECT_ID('[dbo].[Quotas]'))
+BEGIN
+	CREATE INDEX QuotasIdx_GroupID ON [dbo].[Quotas] ([GroupID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'QuotasIdx_ItemTypeID' AND [object_id] = OBJECT_ID('[dbo].[Quotas]'))
+BEGIN
+	CREATE INDEX QuotasIdx_ItemTypeID ON [dbo].[Quotas] ([ItemTypeID]);
+END
+GO
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[RDSCertificates] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[RDSCollections] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[RDSCollectionSettings] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'RDSCollectionSettingsIdx_RDSCollectionId' AND [object_id] = OBJECT_ID('[dbo].[RDSCollectionSettings]'))
+BEGIN
+	CREATE INDEX RDSCollectionSettingsIdx_RDSCollectionId ON [dbo].[RDSCollectionSettings] ([RDSCollectionId]);
+END
+GO
+
+---[dbo].[RDSCollectionUsers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'RDSCollectionUsersIdx_RDSCollectionId' AND [object_id] = OBJECT_ID('[dbo].[RDSCollectionUsers]'))
+BEGIN
+	CREATE INDEX RDSCollectionUsersIdx_RDSCollectionId ON [dbo].[RDSCollectionUsers] ([RDSCollectionId]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'RDSCollectionUsersIdx_AccountID' AND [object_id] = OBJECT_ID('[dbo].[RDSCollectionUsers]'))
+BEGIN
+	CREATE INDEX RDSCollectionUsersIdx_AccountID ON [dbo].[RDSCollectionUsers] ([AccountID]);
+END
+GO
+
+---[dbo].[RDSMessages] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'RDSMessagesIdx_RDSCollectionId' AND [object_id] = OBJECT_ID('[dbo].[RDSMessages]'))
+BEGIN
+	CREATE INDEX RDSMessagesIdx_RDSCollectionId ON [dbo].[RDSMessages] ([RDSCollectionId]);
+END
+GO
+
+---[dbo].[RDSServers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'RDSServersIdx_RDSCollectionId' AND [object_id] = OBJECT_ID('[dbo].[RDSServers]'))
+BEGIN
+	CREATE INDEX RDSServersIdx_RDSCollectionId ON [dbo].[RDSServers] ([RDSCollectionId]);
+END
+GO
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[ResourceGroupDnsRecords] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ResourceGroupDnsRecordsIdx_GroupID' AND [object_id] = OBJECT_ID('[dbo].[ResourceGroupDnsRecords]'))
+BEGIN
+	CREATE INDEX ResourceGroupDnsRecordsIdx_GroupID ON [dbo].[ResourceGroupDnsRecords] ([GroupID]);
+END
+GO
+
+---[dbo].[Schedule] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ScheduleIdx_TaskID' AND [object_id] = OBJECT_ID('[dbo].[Schedule]'))
+BEGIN
+	CREATE INDEX ScheduleIdx_TaskID ON [dbo].[Schedule] ([TaskID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ScheduleIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[Schedule]'))
+BEGIN
+	CREATE INDEX ScheduleIdx_PackageID ON [dbo].[Schedule] ([PackageID]);
+END
+GO
+
+---[dbo].[ScheduleTasks] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[Servers] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServersIdx_PrimaryGroupID' AND [object_id] = OBJECT_ID('[dbo].[Servers]'))
+BEGIN
+	CREATE INDEX ServersIdx_PrimaryGroupID ON [dbo].[Servers] ([PrimaryGroupID]);
+END
+GO
+
+---[dbo].[ServiceItems] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServiceItemsIdx_PackageID' AND [object_id] = OBJECT_ID('[dbo].[ServiceItems]'))
+BEGIN
+	CREATE INDEX ServiceItemsIdx_PackageID ON [dbo].[ServiceItems] ([PackageID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServiceItemsIdx_ItemTypeID' AND [object_id] = OBJECT_ID('[dbo].[ServiceItems]'))
+BEGIN
+	CREATE INDEX ServiceItemsIdx_ItemTypeID ON [dbo].[ServiceItems] ([ItemTypeID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServiceItemsIdx_ServiceID' AND [object_id] = OBJECT_ID('[dbo].[ServiceItems]'))
+BEGIN
+	CREATE INDEX ServiceItemsIdx_ServiceID ON [dbo].[ServiceItems] ([ServiceID]);
+END
+GO
+
+---[dbo].[ServiceItemTypes] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServiceItemTypesIdx_GroupID' AND [object_id] = OBJECT_ID('[dbo].[ServiceItemTypes]'))
+BEGIN
+	CREATE INDEX ServiceItemTypesIdx_GroupID ON [dbo].[ServiceItemTypes] ([GroupID]);
+END
+GO
+
+---[dbo].[Services] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServicesIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[Services]'))
+BEGIN
+	CREATE INDEX ServicesIdx_ServerID ON [dbo].[Services] ([ServerID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServicesIdx_ProviderID' AND [object_id] = OBJECT_ID('[dbo].[Services]'))
+BEGIN
+	CREATE INDEX ServicesIdx_ProviderID ON [dbo].[Services] ([ProviderID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'ServicesIdx_ClusterID' AND [object_id] = OBJECT_ID('[dbo].[Services]'))
+BEGIN
+	CREATE INDEX ServicesIdx_ClusterID ON [dbo].[Services] ([ClusterID]);
+END
+GO
+
+---[dbo].[SfBUserPlans] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[SfBUsers] Indexes
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[SSLCertificates] Indexes
+--- TODO: this table missed everything! 
+
+---[dbo].[StorageSpaceFolders] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'StorageSpaceFoldersIdx_StorageSpaceId' AND [object_id] = OBJECT_ID('[dbo].[StorageSpaceFolders]'))
+BEGIN
+	CREATE INDEX StorageSpaceFoldersIdx_StorageSpaceId ON [dbo].[StorageSpaceFolders] ([StorageSpaceId]);
+END
+GO
+
+---[dbo].[StorageSpaceLevelResourceGroups] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'StorageSpaceLevelResourceGroupsIdx_LevelId' AND [object_id] = OBJECT_ID('[dbo].[StorageSpaceLevelResourceGroups]'))
+BEGIN
+	CREATE INDEX StorageSpaceLevelResourceGroupsIdx_LevelId ON [dbo].[StorageSpaceLevelResourceGroups] ([LevelId]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'StorageSpaceLevelResourceGroupsIdx_GroupId' AND [object_id] = OBJECT_ID('[dbo].[StorageSpaceLevelResourceGroups]'))
+BEGIN
+	CREATE INDEX StorageSpaceLevelResourceGroupsIdx_GroupId ON [dbo].[StorageSpaceLevelResourceGroups] ([GroupId]);
+END
+GO
+
+---[dbo].[StorageSpaces] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'StorageSpacesIdx_ServiceId' AND [object_id] = OBJECT_ID('[dbo].[StorageSpaces]'))
+BEGIN
+	CREATE INDEX StorageSpacesIdx_ServiceId ON [dbo].[StorageSpaces] ([ServiceId]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'StorageSpacesIdx_ServerId' AND [object_id] = OBJECT_ID('[dbo].[StorageSpaces]'))
+BEGIN
+	CREATE INDEX StorageSpacesIdx_ServerId ON [dbo].[StorageSpaces] ([ServerId]);
+END
+GO
+
+---[dbo].[Users] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'UsersIdx_OwnerID' AND [object_id] = OBJECT_ID('[dbo].[Users]'))
+BEGIN
+	CREATE INDEX UsersIdx_OwnerID ON [dbo].[Users] ([OwnerID]);
+END
+GO
+
+---[dbo].[VirtualGroups] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'VirtualGroupsIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[VirtualGroups]'))
+BEGIN
+	CREATE INDEX VirtualGroupsIdx_ServerID ON [dbo].[VirtualGroups] ([ServerID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'VirtualGroupsIdx_GroupID' AND [object_id] = OBJECT_ID('[dbo].[VirtualGroups]'))
+BEGIN
+	CREATE INDEX VirtualGroupsIdx_GroupID ON [dbo].[VirtualGroups] ([GroupID]);
+END
+GO
+
+---[dbo].[VirtualServices] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'VirtualServicesIdx_ServerID' AND [object_id] = OBJECT_ID('[dbo].[VirtualServices]'))
+BEGIN
+	CREATE INDEX VirtualServicesIdx_ServerID ON [dbo].[VirtualServices] ([ServerID]);
+END
+GO
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'VirtualServicesIdx_ServiceID' AND [object_id] = OBJECT_ID('[dbo].[VirtualServices]'))
+BEGIN
+	CREATE INDEX VirtualServicesIdx_ServiceID ON [dbo].[VirtualServices] ([ServiceID]);
+END
+GO
+
+---[dbo].[WebDavAccessTokens] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'WebDavAccessTokensIdx_AccountID' AND [object_id] = OBJECT_ID('[dbo].[WebDavAccessTokens]'))
+BEGIN
+	CREATE INDEX WebDavAccessTokensIdx_AccountID ON [dbo].[WebDavAccessTokens] ([AccountID]);
+END
+GO
+--- TODO: add missed FKs and indexes?
+
+---[dbo].[WebDavPortalUsersSettings] Indexes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE [name] = 'WebDavPortalUsersSettingsIdx_AccountId' AND [object_id] = OBJECT_ID('[dbo].[WebDavPortalUsersSettings]'))
+BEGIN
+	CREATE INDEX WebDavPortalUsersSettingsIdx_AccountId ON [dbo].[WebDavPortalUsersSettings] ([AccountId]);
+END
+GO
+
+-------------------------
+-- END INDEXES SECTION --
+-------------------------
