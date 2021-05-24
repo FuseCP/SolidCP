@@ -161,8 +161,10 @@ namespace SolidCP.EnterpriseServer
 		public static UserInfo GetUserByUsernamePassword(string username, string password, string ip)
 		{
 			// place log record
-			TaskManager.StartTask("USER", "GET_BY_USERNAME_PASSWORD", username);
-			TaskManager.WriteParameter("IP", ip);
+			// TaskManager create backgroundtasklogs in db and them immediately remove and move them into auditlog (if it is a short task).
+			// The TaskManager is great for long tasks, but for short tasks that are called every second (from SOAP calls, for example) it puts a huge load on the DB.
+			//TaskManager.StartTask("USER", "GET_BY_USERNAME_PASSWORD", username);
+			//TaskManager.WriteParameter("IP", ip);
 
 			try
 			{
@@ -172,25 +174,37 @@ namespace SolidCP.EnterpriseServer
 				// check if the user exists
 				if (user == null)
 				{
-					TaskManager.WriteWarning("Account not found");
+					//TaskManager.WriteWarning("Account not found");
+					AuditLog.AddAuditLogWarningRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip, "Account not found" });
 					return null;
 				}
 
 				// compare user passwords
                 if ((CryptoUtils.SHA1(user.Password) == password) || (user.Password == password))
+                {
+					AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
 					return new UserInfo(user);
+				}
+					
 
 				return null;
 			}
 			catch (Exception ex)
 			{
-				throw TaskManager.WriteError(ex);
+				AuditLog.AddAuditLogErrorRecord("USER", "GET_BY_USERNAME_PASSWORD", username, 
+					new string[] { 
+						"IP: " + ip,
+						"Message: " + ex.Message,
+						"StackTrace: " + ex.StackTrace
+					});
+				//throw TaskManager.WriteError(ex);
+				throw ex;
 			}
-			finally
-			{
-				TaskManager.CompleteTask();
-			}
-		}
+            //finally
+            //{
+            //    TaskManager.CompleteTask();
+            //}
+        }
 
 		public static int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
 		{
