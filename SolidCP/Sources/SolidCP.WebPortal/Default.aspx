@@ -1,7 +1,7 @@
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="SolidCP.WebPortal.DefaultPage" %>
 
 <!DOCTYPE html>
-<html>
+<html runat="server" id="htmltheme">
 <head runat="server">
 <meta http-equiv="X-UA-Compatible" content="IE=9">
     <title>Solid CP</title>

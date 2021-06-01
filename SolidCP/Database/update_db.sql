@@ -22646,3 +22646,169 @@ BEGIN
 INSERT  [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (112, N'sslusesni', N'True')
 END
 GO
+
+-- Themes
+
+IF  NOT EXISTS (SELECT * FROM sys.objects 
+WHERE object_id = OBJECT_ID(N'[dbo].[Themes]') AND type in (N'U'))
+BEGIN
+CREATE TABLE Themes
+(
+	ThemeID INT NOT NULL,
+	DisplayName NVARCHAR(255),
+	LTRName NVARCHAR(255),
+	RTLName NVARCHAR(255),
+	Enabled INT NOT NULL,
+	DisplayOrder INT NOT NULL
+)
+END
+GO
+
+IF  NOT EXISTS (SELECT * FROM sys.objects 
+WHERE object_id = OBJECT_ID(N'[dbo].[ThemeSettings]') AND type in (N'U'))
+BEGIN
+CREATE TABLE ThemeSettings
+(
+	ThemeID INT NOT NULL,
+	SettingsName NVARCHAR(255) NOT NULL,
+	PropertyName NVARCHAR(255) NOT NULL,
+	PropertyValue NVARCHAR(255) NOT NULL
+)
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetThemes')
+DROP PROCEDURE GetThemes
+GO
+CREATE PROCEDURE GetThemes
+AS
+BEGIN
+	SET NOCOUNT ON;
+    SELECT
+		ThemeID,
+		DisplayName,
+		LTRName,
+		RTLName,
+		DisplayOrder
+	FROM
+		Themes
+	WHERE
+		Enabled = '1'
+	ORDER BY 
+		DisplayOrder;
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetThemeSettings')
+DROP PROCEDURE GetThemeSettings
+GO
+CREATE PROCEDURE GetThemeSettings
+(
+	@ThemeID int
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+    SELECT
+		ThemeID,
+		SettingsName,
+		PropertyName,
+		PropertyValue
+	FROM
+		ThemeSettings
+	WHERE
+		ThemeID = @ThemeID;
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetThemeSetting')
+DROP PROCEDURE GetThemeSetting
+GO
+CREATE PROCEDURE [dbo].[GetThemeSetting]
+(
+	@ThemeID int,
+	@SettingsName NVARCHAR(255)
+)
+AS
+BEGIN
+	SET NOCOUNT ON;
+    SELECT
+		ThemeID,
+		SettingsName,
+		PropertyName,
+		PropertyValue
+	FROM
+		ThemeSettings
+	WHERE
+		ThemeID = @ThemeID
+		AND SettingsName = @SettingsName;
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateUserThemeSetting')
+DROP PROCEDURE UpdateUserThemeSetting
+GO
+CREATE PROCEDURE [dbo].[UpdateUserThemeSetting]
+(
+	@ActorID int,
+	@UserID int,
+	@PropertyName NVARCHAR(255),
+	@PropertyValue NVARCHAR(255)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+BEGIN
+-- Update if present
+IF EXISTS ( SELECT * FROM UserSettings 
+						WHERE UserID = @UserID
+						AND SettingsName = N'Theme'
+						AND PropertyName = @PropertyName)
+		BEGIN
+			UPDATE UserSettings SET	PropertyValue = @PropertyValue
+				WHERE UserID = @UserID
+				AND SettingsName = N'Theme'
+				AND PropertyName = @PropertyName
+			Return
+		END
+	ELSE
+		BEGIN
+			INSERT UserSettings (UserID, SettingsName, PropertyName, PropertyValue) VALUES (@UserID, N'Theme', @PropertyName, @PropertyValue)
+		END
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Themes] WHERE [ThemeID] = '1')
+BEGIN
+INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (1, N'FuseCP v1', N'Default', N'Default', 1, 1)
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Light', N'light-theme')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Dark', N'dark-theme')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Semi Dark', N'semi-dark')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Minimal', N'minimal-theme')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#0727d7', N'headercolor1')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#23282c', N'headercolor2')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#e10a1f', N'headercolor3')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#157d4c', N'headercolor4')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#673ab7', N'headercolor5')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#795548', N'headercolor6')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#d3094e', N'headercolor7')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-header', N'#ff9800', N'headercolor8')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#6c85ec', N'sidebarcolor1')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#5b737f', N'sidebarcolor2')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#408851', N'sidebarcolor3')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#230924', N'sidebarcolor4')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#903a85', N'sidebarcolor5')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#a04846', N'sidebarcolor6')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#a65314', N'sidebarcolor7')
+INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'color-Sidebar', N'#1f0e3b', N'sidebarcolor8')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Themes] WHERE [ThemeID] = '2')
+BEGIN
+INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (2, N'SolidCP', N'SolidCP', N'SolidCP', 1, 9)
+END
+GO

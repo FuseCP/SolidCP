@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Data;
 using System.Web;
 using SolidCP.EnterpriseServer;
 using SCP = SolidCP.EnterpriseServer;
@@ -142,7 +143,7 @@ namespace SolidCP.Portal
             PortalUtils.LoadCultureDropDownList(ddlLanguage);
 
             // load themes
-            PortalUtils.LoadThemesDropDownList(ddlTheme);
+            BindThemes();
 
             // try to get the last login name from cookie
             HttpCookie cookie = Request.Cookies["SolidCPLogin"];
@@ -164,6 +165,13 @@ namespace SolidCP.Portal
                 ddlTheme.Visible = false;
                 lblTheme.Visible = false;
             }
+        }
+
+        private void BindThemes()
+        {
+            ddlTheme.DataSource = ES.Services.Authentication.GetLoginThemes();
+            ddlTheme.DataBind();
+            Utils.SelectListItem(ddlTheme, PortalUtils.CurrentTheme);
         }
 
         protected void cmdForgotPassword_Click(object sender, EventArgs e)
@@ -240,6 +248,47 @@ namespace SolidCP.Portal
             }
             else
             {
+                //Make Theme Cookies
+                DataSet UserThemeSettingsData = ES.Services.Users.GetUserThemeSettings(PanelSecurity.LoggedUserId);
+                if (UserThemeSettingsData.Tables.Count > 0)
+                {
+                    foreach (DataRow row in UserThemeSettingsData.Tables[0].Rows)
+                    {
+                        string RowPropertyName = row.Field<String>("PropertyName");
+                        string RowPropertyValue = row.Field<String>("PropertyValue");
+
+                        if (RowPropertyName == "Style")
+                        {
+                            string UserThemeStyle = RowPropertyValue;
+
+                            HttpCookie UserThemeStyleCrumb = new HttpCookie("UserThemeStyle", UserThemeStyle);
+                            UserThemeStyleCrumb.Expires = DateTime.Now.AddMonths(2);
+                            HttpContext.Current.Response.Cookies.Add(UserThemeStyleCrumb);
+
+                        }
+
+                        if (RowPropertyName == "colorHeader")
+                        {
+                            string UserThemecolorHeader = RowPropertyValue;
+
+                            HttpCookie UserThemecolorHeaderCrumb = new HttpCookie("UserThemecolorHeader", UserThemecolorHeader);
+                            UserThemecolorHeaderCrumb.Expires = DateTime.Now.AddMonths(2);
+                            HttpContext.Current.Response.Cookies.Add(UserThemecolorHeaderCrumb);
+
+                        }
+
+                        if (RowPropertyName == "colorSidebar")
+                        {
+                            string UserThemecolorSidebar = RowPropertyValue;
+
+                            HttpCookie UserThemecolorSidebarCrumb = new HttpCookie("UserThemecolorSidebar", UserThemecolorSidebar);
+                            UserThemecolorSidebarCrumb.Expires = DateTime.Now.AddMonths(2);
+                            HttpContext.Current.Response.Cookies.Add(UserThemecolorSidebarCrumb);
+
+                        }
+                    }
+                }
+
                 // redirect by shortcut
                 ShortcutRedirect();
 
@@ -337,18 +386,40 @@ namespace SolidCP.Portal
         private void SetCurrentLanguage()
         {
             PortalUtils.SetCurrentLanguage(ddlLanguage.SelectedValue);
-            Response.Redirect(Request.Url.ToString());
+        }
 
+        private void SetCurrentTheme()
+        {
+            string selectedTheme = ddlTheme.SelectedValue;
+
+            HttpCookie UserRTLCrub = Request.Cookies["UserRTL"];
+            if (UserRTLCrub != null)
+            {
+                if (HttpContext.Current.Response.Cookies["UserRTL"].Value == "1")
+                {
+                    DataSet themeData = ES.Services.Authentication.GetLoginThemes();
+                    selectedTheme = themeData.Tables[0].Rows[ddlTheme.SelectedIndex]["RTLName"].ToString();
+                }
+            }
+
+            PortalUtils.SetCurrentTheme(selectedTheme);
         }
 
         protected void ddlLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetCurrentLanguage();
+
+            if (!string.IsNullOrEmpty(HttpContext.Current.Response.Cookies["UserTheme"].Value))
+            {
+                SetCurrentTheme();
+            }
+            
+            Response.Redirect(Request.Url.ToString());
         }
 
         protected void ddlTheme_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PortalUtils.SetCurrentTheme(ddlTheme.SelectedValue);
+            SetCurrentTheme();
             Response.Redirect(Request.Url.ToString());
         }
     }

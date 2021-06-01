@@ -31,10 +31,13 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Text;
 
 using SolidCP.WebPortal;
+using System.Web;
+using SolidCP.Portal;
 
 namespace SolidCP.Portal
 {
@@ -42,7 +45,27 @@ namespace SolidCP.Portal
 	{
 		public override string GetTheme()
 		{
-			return PortalUtils.CurrentTheme;
+			string theme = PortalUtils.CurrentTheme;
+
+			if(theme == "" | theme == null)
+			{
+				DataSet themedata = ES.Services.Authentication.GetLoginThemes();
+
+				if (HttpContext.Current.Response.Cookies["UserRTL"].Value == "1")
+				{
+					theme = themedata.Tables[0].Rows[0]["RTLName"].ToString();
+	
+					HttpCookie cookieTheme = new HttpCookie("UserTheme", theme);
+					cookieTheme.Expires = DateTime.Now.AddMonths(2);
+					HttpContext.Current.Response.Cookies.Add(cookieTheme);
+				}
+				else
+                {
+					theme = themedata.Tables[0].Rows[0]["LTRName"].ToString();
+				}
+			}
+
+			return theme;
 		}
 	}
 }

@@ -114,6 +114,51 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
+        #region Theme Settings
+
+        public static DataSet GetThemes()
+        {
+            return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetThemes"
+            );
+        }
+
+        public static DataSet GetThemeSettings(int ThmemeID)
+        {
+            return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetThemeSettings",
+                new SqlParameter("@ThemeID", ThmemeID));
+        }
+
+        public static DataSet GetThemeSetting(int ThmemeID, string SettingsName)
+        {
+            return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetThemeSetting",
+                new SqlParameter("@ThemeID", ThmemeID),
+                new SqlParameter("@SettingsName", SettingsName));
+        }
+
+        public static DataSet GetUserThemeSettings(int actorId, int userId)
+        {
+            return SqlHelper.ExecuteDataset(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "GetUserSettings",
+                new SqlParameter("@ActorId", actorId),
+                new SqlParameter("@UserID", userId),
+                new SqlParameter("@SettingsName", "Theme"));
+        }
+
+        public static void UpdateUserThemeSetting(int actorId, int userId, string PropertyName, string PropertyValue)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "UpdateUserThemeSetting",
+                new SqlParameter("@ActorId", actorId),
+                new SqlParameter("@UserID", userId),
+                new SqlParameter("@PropertyName", PropertyName), 
+                new SqlParameter("@PropertyValue", PropertyValue));
+        }
+
+        #endregion
+
         #region Users
         public static bool CheckUserExists(string username)
         {

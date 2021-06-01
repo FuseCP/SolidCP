@@ -18,6 +18,7 @@ namespace SolidCP.EnterpriseServer {
     using System.Web.Services.Protocols;
     using System;
     using System.Diagnostics;
+    using System.Data;
     
     
     /// <remarks/>
@@ -35,6 +36,12 @@ namespace SolidCP.EnterpriseServer {
         
         private System.Threading.SendOrPostCallback SetSystemSettingsOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetThemesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetThemeSettingsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetThemeSettingOperationCompleted;
+
         /// <remarks/>
         public esSystem() {
             this.Url = "http://127.0.0.1:9002/esSystem.asmx";
@@ -52,6 +59,15 @@ namespace SolidCP.EnterpriseServer {
         /// <remarks/>
         public event SetSystemSettingsCompletedEventHandler SetSystemSettingsCompleted;
         
+        /// <remarks/>
+        public event GetThemesCompletedEventHandler GetThemesCompleted;
+        
+        /// <remarks/>
+        public event GetThemeSettingsCompletedEventHandler GetThemeSettingsCompleted;
+
+        /// <remarks/>
+        public event GetThemeSettingCompletedEventHandler GetThemeSettingCompleted;
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetSystemSettings", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public SystemSettings GetSystemSettings(string settingsName) {
@@ -220,6 +236,139 @@ namespace SolidCP.EnterpriseServer {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetThemes", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetThemes() {
+            object[] results = this.Invoke("GetThemes", new object[0]);
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public System.IAsyncResult BeginGetThemes(System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("GetThemes", new object[0], callback, asyncState);
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet EndGetThemes(System.IAsyncResult asyncResult) {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetThemesAsync() {
+            this.GetThemesAsync(null);
+        }
+        
+        /// <remarks/>
+        public void GetThemesAsync(object userState) {
+            if ((this.GetThemesOperationCompleted == null)) {
+                this.GetThemesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThemesOperationCompleted);
+            }
+            this.InvokeAsync("GetThemes", new object[0], this.GetThemesOperationCompleted, userState);
+        }
+        
+        private void OnGetThemesOperationCompleted(object arg) {
+            if ((this.GetThemesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetThemesCompleted(this, new GetThemesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetThemeSettings", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetThemeSettings(int ThemeID, string SettingsName) {
+            object[] results = this.Invoke("GetThemeSettings", new object[] {
+                        ThemeID,
+                        SettingsName});
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public System.IAsyncResult BeginGetThemeSettings(int ThemeID, string SettingsName, System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("GetThemeSettings", new object[] {
+                        ThemeID,
+                        SettingsName}, callback, asyncState);
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet EndGetThemeSettings(System.IAsyncResult asyncResult) {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetThemeSettingsAsync(int ThemeID) {
+            this.GetThemeSettingsAsync(ThemeID, null);
+        }
+        
+        /// <remarks/>
+        public void GetThemeSettingsAsync(int ThemeID, object userState) {
+            if ((this.GetThemeSettingsOperationCompleted == null)) {
+                this.GetThemeSettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThemeSettingsOperationCompleted);
+            }
+            this.InvokeAsync("GetThemeSettings", new object[] {
+                        ThemeID}, this.GetThemeSettingsOperationCompleted, userState);
+        }
+        
+        private void OnGetThemeSettingsOperationCompleted(object arg) {
+            if ((this.GetThemeSettingsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetThemeSettingsCompleted(this, new GetThemeSettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetThemeSetting", RequestNamespace = "http://tempuri.org/", ResponseNamespace = "http://tempuri.org/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetThemeSetting(int ThemeID, string SettingsName)
+        {
+            object[] results = this.Invoke("GetThemeSetting", new object[] {
+                        ThemeID,
+                        SettingsName});
+            return ((System.Data.DataSet)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetThemeSetting(int ThemeID, string SettingsName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetThemeSetting", new object[] {
+                        ThemeID,
+                        SettingsName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public System.Data.DataSet EndGetThemeSetting(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((System.Data.DataSet)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetThemeSettingAsync(int ThemeID, string SettingsName)
+        {
+            this.GetThemeSettingAsync(ThemeID, SettingsName, null);
+        }
+
+        /// <remarks/>
+        public void GetThemeSettingAsync(int ThemeID, string SettingsName, object userState)
+        {
+            if ((this.GetThemeSettingOperationCompleted == null))
+            {
+                this.GetThemeSettingOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThemeSettingOperationCompleted);
+            }
+            this.InvokeAsync("GetThemeSetting", new object[] {
+                        ThemeID,
+                        SettingsName}, this.GetThemeSettingOperationCompleted, userState);
+        }
+
+        private void OnGetThemeSettingOperationCompleted(object arg)
+        {
+            if ((this.GetThemeSettingCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetThemeSettingCompleted(this, new GetThemeSettingCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -325,6 +474,88 @@ namespace SolidCP.EnterpriseServer {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetThemesCompletedEventHandler(object sender, GetThemesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetThemesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetThemesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((System.Data.DataSet)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetThemeSettingsCompletedEventHandler(object sender, GetThemeSettingsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetThemeSettingsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetThemeSettingsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((System.Data.DataSet)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetThemeSettingCompletedEventHandler(object sender, GetThemeSettingCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetThemeSettingCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetThemeSettingCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public System.Data.DataSet Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((System.Data.DataSet)(this.results[0]));
             }
         }
     }

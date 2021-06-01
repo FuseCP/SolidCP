@@ -47,6 +47,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Globalization;
 using SolidCP.Portal;
+using System.Linq;
 
 namespace SolidCP.WebPortal
 {
@@ -67,7 +68,7 @@ namespace SolidCP.WebPortal
         public const string MODULE_ICON_CONTROL_ID = "imgModuleIcon";
         public const string DESKTOP_MODULES_FOLDER = "DesktopModules";
 
-		protected string CultureCookieName
+        protected string CultureCookieName
 		{
 			get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
 		}
@@ -134,9 +135,46 @@ namespace SolidCP.WebPortal
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            //Set RTL
+            HttpCookie UserRTLCrub = Request.Cookies["UserRTL"];
+            if (UserRTLCrub != null)
+            {
+                if (HttpContext.Current.Response.Cookies["UserRTL"].Value == "1")
+                {
+                    htmltheme.Attributes.Add("dir", "RTL");
+                }
+            }
+
+            //Set HTML Class
+            string sethtmlclassTheme = "";
+
+            HttpCookie UserThemeStyleCrub = Request.Cookies["UserThemeStyle"];
+            if (UserThemeStyleCrub != null)
+            {
+                sethtmlclassTheme = UserThemeStyleCrub.Value;
+            }
+
+            HttpCookie UserThemecolorHeaderCrumb = Request.Cookies["UserThemecolorHeader"];
+            if (UserThemecolorHeaderCrumb != null)
+            {
+                sethtmlclassTheme = sethtmlclassTheme + " color-header " + UserThemecolorHeaderCrumb.Value;
+            }
+
+            HttpCookie UserThemecolorSidebarCrub = Request.Cookies["UserThemecolorSidebar"];
+            if (UserThemecolorSidebarCrub != null)
+            {
+                sethtmlclassTheme = sethtmlclassTheme + " color-sidebar " + UserThemecolorSidebarCrub.Value;
+            }
+
+
+            if (sethtmlclassTheme != "")
+            {
+                htmltheme.Attributes.Add("class", sethtmlclassTheme);
+            }
+
         }
 
-		protected void Page_PreInit(object sender, EventArgs e)
+        protected void Page_PreInit(object sender, EventArgs e)
 		{
 			Theme = PortalThemeProvider.Instance.GetTheme();
 		}
@@ -396,6 +434,21 @@ namespace SolidCP.WebPortal
 					// Setting up culture
 					System.Threading.Thread.CurrentThread.CurrentCulture = ci;
 					System.Threading.Thread.CurrentThread.CurrentUICulture = ci;
+
+                    if (ci.TextInfo.IsRightToLeft)
+                    {
+                        HttpCookie UserRTL = new HttpCookie("UserRTL", "1");
+                        UserRTL.Expires = DateTime.Now.AddMonths(2);
+                        HttpContext.Current.Response.Cookies.Add(UserRTL);
+                    }
+                    else
+                    {
+                        HttpCookie UserRTLCrub = Request.Cookies["UserRTL"];
+                        if (UserRTLCrub != null)
+                        {
+                            HttpContext.Current.Response.Cookies.Remove("UserRTL");
+                        }
+                    }
 				}
 			}
 
@@ -481,5 +534,38 @@ namespace SolidCP.WebPortal
 			string className = fileName.Replace(".resx", "");
 			return (string)HttpContext.GetGlobalResourceObject(className, resourceKey);
 		}
+
+        public void Recreatehtmlclasses()
+        {
+            //clear any current classes
+            htmltheme.Attributes.Remove("class");
+
+            //Set HTML Class
+            string sethtmlclassTheme = "";
+
+            HttpCookie UserThemeStyleCrub = Request.Cookies["UserThemeStyle"];
+            if (UserThemeStyleCrub != null)
+            {
+                sethtmlclassTheme = UserThemeStyleCrub.Value;
+            }
+
+            HttpCookie UserThemecolorHeaderCrumb = Request.Cookies["UserThemecolorHeader"];
+            if (UserThemecolorHeaderCrumb != null)
+            {
+                sethtmlclassTheme = sethtmlclassTheme + " color-header " + UserThemecolorHeaderCrumb.Value;
+            }
+
+            HttpCookie UserThemecolorSidebarCrub = Request.Cookies["UserThemecolorSidebar"];
+            if (UserThemecolorSidebarCrub != null)
+            {
+                sethtmlclassTheme = sethtmlclassTheme + " color-sidebar " + UserThemecolorSidebarCrub.Value;
+            }
+
+
+            if (sethtmlclassTheme != "")
+            {
+                htmltheme.Attributes.Add("class", sethtmlclassTheme);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlEdit;
-        
+
         /// <summary>
         /// pnlAccount control.
         /// </summary>
@@ -29,7 +29,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlAccount;
-        
+
         /// <summary>
         /// rowUsernameReadonly control.
         /// </summary>
@@ -38,7 +38,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow rowUsernameReadonly;
-        
+
         /// <summary>
         /// lblUserNameText control.
         /// </summary>
@@ -47,7 +47,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUserNameText;
-        
+
         /// <summary>
         /// lblUsername control.
         /// </summary>
@@ -56,7 +56,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUsername;
-        
+
         /// <summary>
         /// userPassword control.
         /// </summary>
@@ -65,7 +65,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.PasswordControl userPassword;
-        
+
         /// <summary>
         /// rowChangePassword control.
         /// </summary>
@@ -74,7 +74,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow rowChangePassword;
-        
+
         /// <summary>
         /// cmdChangePassword control.
         /// </summary>
@@ -83,7 +83,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button cmdChangePassword;
-        
+
         /// <summary>
         /// lblChangePasswordWarning control.
         /// </summary>
@@ -92,7 +92,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblChangePasswordWarning;
-        
+
         /// <summary>
         /// lblFirstName control.
         /// </summary>
@@ -101,7 +101,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblFirstName;
-        
+
         /// <summary>
         /// txtFirstName control.
         /// </summary>
@@ -110,7 +110,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFirstName;
-        
+
         /// <summary>
         /// firstNameValidator control.
         /// </summary>
@@ -119,7 +119,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator firstNameValidator;
-        
+
         /// <summary>
         /// lblLastName control.
         /// </summary>
@@ -128,7 +128,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblLastName;
-        
+
         /// <summary>
         /// txtLastName control.
         /// </summary>
@@ -137,7 +137,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtLastName;
-        
+
         /// <summary>
         /// lastNameValidator control.
         /// </summary>
@@ -146,7 +146,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator lastNameValidator;
-        
+
         /// <summary>
         /// lblEmail control.
         /// </summary>
@@ -155,7 +155,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEmail;
-        
+
         /// <summary>
         /// txtEmail control.
         /// </summary>
@@ -164,7 +164,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.EmailControl txtEmail;
-        
+
         /// <summary>
         /// lblSecondaryEmail control.
         /// </summary>
@@ -173,7 +173,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSecondaryEmail;
-        
+
         /// <summary>
         /// txtSecondaryEmail control.
         /// </summary>
@@ -182,7 +182,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.EmailControl txtSecondaryEmail;
-        
+
         /// <summary>
         /// lblMailFormat control.
         /// </summary>
@@ -191,7 +191,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMailFormat;
-        
+
         /// <summary>
         /// ddlMailFormat control.
         /// </summary>
@@ -200,7 +200,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlMailFormat;
-        
+
         /// <summary>
         /// headContact control.
         /// </summary>
@@ -209,7 +209,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel headContact;
-        
+
         /// <summary>
         /// pnlContact control.
         /// </summary>
@@ -218,7 +218,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel pnlContact;
-        
+
         /// <summary>
         /// contact control.
         /// </summary>
@@ -227,7 +227,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.ContactDetails contact;
-        
+
         /// <summary>
         /// secDisplay control.
         /// </summary>
@@ -236,7 +236,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secDisplay;
-        
+
         /// <summary>
         /// DisplayPanel control.
         /// </summary>
@@ -245,7 +245,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel DisplayPanel;
-        
+
         /// <summary>
         /// tblDisplay control.
         /// </summary>
@@ -254,7 +254,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblDisplay;
-        
+
         /// <summary>
         /// lblLanguage control.
         /// </summary>
@@ -263,7 +263,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblLanguage;
-        
+
         /// <summary>
         /// ddlLanguage control.
         /// </summary>
@@ -272,7 +272,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlLanguage;
-        
+
         /// <summary>
         /// lblItemsPerPage control.
         /// </summary>
@@ -281,7 +281,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblItemsPerPage;
-        
+
         /// <summary>
         /// txtItemsPerPage control.
         /// </summary>
@@ -290,7 +290,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtItemsPerPage;
-        
+
         /// <summary>
         /// valRequireGridItems control.
         /// </summary>
@@ -299,7 +299,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator valRequireGridItems;
-        
+
         /// <summary>
         /// valCorrectGridItems control.
         /// </summary>
@@ -308,7 +308,79 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RegularExpressionValidator valCorrectGridItems;
-        
+
+        /// <summary>
+        /// lblTheme control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblTheme;
+
+        /// <summary>
+        /// ddlTheme control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTheme;
+
+        /// <summary>
+        /// lblThemeStyle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblThemeStyle;
+
+        /// <summary>
+        /// ddlThemeStyle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlThemeStyle;
+
+        /// <summary>
+        /// lblThemecolorHeader control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblThemecolorHeader;
+
+        /// <summary>
+        /// ThemecolorHeaderRepeater1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater ThemecolorHeaderRepeater1;
+
+        /// <summary>
+        /// lblThemecolorSidebar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblThemecolorSidebar;
+
+        /// <summary>
+        /// ThemecolorSidebarRepeater1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater ThemecolorSidebarRepeater1;
+
         /// <summary>
         /// btnUpdate control.
         /// </summary>

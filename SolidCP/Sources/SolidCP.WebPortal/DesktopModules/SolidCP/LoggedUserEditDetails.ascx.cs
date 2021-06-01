@@ -33,6 +33,12 @@
 using System;
 using SolidCP.EnterpriseServer;
 using System.Web.Security;
+using System.Data;
+using System.Web;
+using System.Drawing;
+using System.Globalization;
+using System.Web.UI.WebControls;
+using SolidCP.WebPortal;
 
 namespace SolidCP.Portal
 {
@@ -47,6 +53,7 @@ namespace SolidCP.Portal
             {
                 // bind form
                 BindLanguages();
+                BindThemes();
                 BindUser();
                 string changePasswordWarningText = GetSharedLocalizedString(changePasswordWarningKey);
                 if (!String.IsNullOrEmpty(changePasswordWarningText)) 
@@ -57,6 +64,45 @@ namespace SolidCP.Portal
         private void BindLanguages()
         {
 			PortalUtils.LoadCultureDropDownList(ddlLanguage);
+        }
+
+        private void BindThemes()
+        {
+            //PortalUtils.LoadThemesDropDownList(ddlTheme);
+            DataSet ThemeData = ES.Services.System.GetThemes();
+            ddlTheme.DataSource = ThemeData;
+            ddlTheme.DataBind();
+            Utils.SelectListItem(ddlTheme, PortalUtils.CurrentTheme);
+
+            BindThemeSettings(ThemeData);
+        }
+
+        private void BindThemeSettings(DataSet ThemeData)
+        {
+            DataSet ThemeStyleData = ES.Services.System.GetThemeSetting(int.Parse(ThemeData.Tables[0].Rows[ddlTheme.SelectedIndex]["ThemeID"].ToString()), "Style");
+            if (ThemeStyleData != null)
+            {
+                ddlThemeStyle.DataSource = ThemeStyleData;
+                ddlThemeStyle.DataBind();
+            }
+
+            DataSet ThemecolorHeaderData = ES.Services.System.GetThemeSetting(int.Parse(ThemeData.Tables[0].Rows[ddlTheme.SelectedIndex]["ThemeID"].ToString()), "color-Header");
+            if (ThemecolorHeaderData != null)
+            {
+                //ddlThemecolorHeader.DataSource = ThemecolorHeaderData;
+                //ddlThemecolorHeader.DataBind();
+                ThemecolorHeaderRepeater1.DataSource = ThemecolorHeaderData;
+                ThemecolorHeaderRepeater1.DataBind();
+            }
+
+            DataSet ThemecolorSidebarData = ES.Services.System.GetThemeSetting(int.Parse(ThemeData.Tables[0].Rows[ddlTheme.SelectedIndex]["ThemeID"].ToString()), "color-Sidebar");
+            if (ThemecolorSidebarData != null)
+            {
+                //ddlThemecolorSidebar.DataSource = ThemecolorSidebarData;
+                //ddlThemecolorSidebar.DataBind();
+                ThemecolorSidebarRepeater1.DataSource = ThemecolorSidebarData;
+                ThemecolorSidebarRepeater1.DataBind();
+            }
         }
 
         private void BindUser()
@@ -97,7 +143,34 @@ namespace SolidCP.Portal
                 // bind items per page
                 
                 txtItemsPerPage.Text = UsersHelper.GetDisplayItemsPerPage().ToString();
-                
+
+                DataSet UserThemeSettingsData = ES.Services.Users.GetUserThemeSettings(PanelSecurity.LoggedUserId);
+                if (UserThemeSettingsData.Tables.Count > 0)
+                {
+                    foreach (DataRow row in UserThemeSettingsData.Tables[0].Rows)
+                    {
+                        string RowPropertyName = row.Field<String>("PropertyName");
+                        string RowPropertyValue = row.Field<String>("PropertyValue");
+
+                        if (RowPropertyName == "Style")
+                        {
+                            Utils.SelectListItem(ddlThemeStyle, RowPropertyValue);
+                        }
+
+                        if (RowPropertyName == "color-Header")
+                        {
+                            //Utils.SelectListItem(ddlThemecolorHeader, RowPropertyValue);
+                        }
+
+                        if (RowPropertyName == "color-Sidebar")
+                        {
+                            //Utils.SelectListItem(ddlThemecolorSidebar, RowPropertyValue);
+                        }
+                    }
+                }
+
+                //TODO: Dynamically load the Theme Settings
+
             }
         }
 
@@ -126,7 +199,7 @@ namespace SolidCP.Portal
                 user.PrimaryPhone = contact.PrimaryPhone;
                 user.SecondaryPhone = contact.SecondaryPhone;
                 user.Fax = contact.Fax;
-                user.InstantMessenger = contact.MessengerId;                
+                user.InstantMessenger = contact.MessengerId;
 
                 // update existing user
                 try
@@ -145,6 +218,44 @@ namespace SolidCP.Portal
 
                     // set items per page
                     UsersHelper.SetDisplayItemsPerPage(Utils.ParseInt(txtItemsPerPage.Text.Trim(), 10));
+
+                    if (ddlLanguage.SelectedValue != PortalUtils.CurrentUICulture.ToString())
+                    {
+                        SetCurrentLanguage();
+                    }
+
+                    if (ddlTheme.SelectedValue != PortalUtils.CurrentTheme)
+                    {
+                        SetCurrentTheme();
+                    }
+
+                    if (!string.IsNullOrEmpty(ddlThemeStyle.SelectedValue))
+                    {
+                        HttpCookie UserThemeStyleCrum = new HttpCookie("UserThemeStyle", ddlThemeStyle.SelectedValue);
+                        UserThemeStyleCrum.Expires = DateTime.Now.AddMonths(2);
+                        HttpContext.Current.Response.Cookies.Add(UserThemeStyleCrum);
+
+                        ES.Services.Users.UpdateUserThemeSetting(PanelSecurity.LoggedUserId, "Style", ddlThemeStyle.SelectedValue);
+                    }
+
+                    //if (!string.IsNullOrEmpty(ddlThemecolorHeader.SelectedValue))
+                    //{
+                    //    HttpCookie UserThemecolorHeaderCrum = new HttpCookie("UserThemecolorHeader", ddlThemecolorHeader.SelectedValue);
+                    //    UserThemecolorHeaderCrum.Expires = DateTime.Now.AddMonths(2);
+                    //    HttpContext.Current.Response.Cookies.Add(UserThemecolorHeaderCrum);
+
+                    //    ES.Services.Users.UpdateUserThemeSetting(PanelSecurity.LoggedUserId, "color-Header", ddlThemecolorHeader.SelectedValue);
+                    //}
+
+                    //if (!string.IsNullOrEmpty(ddlThemecolorSidebar.SelectedValue))
+                    //{
+                    //    HttpCookie UserThemecolorSidebarCrum = new HttpCookie("UserThemecolorSidebar", ddlThemecolorSidebar.SelectedValue);
+                    //    UserThemecolorSidebarCrum.Expires = DateTime.Now.AddMonths(2);
+                    //    HttpContext.Current.Response.Cookies.Add(UserThemecolorSidebarCrum);
+
+                    //    ES.Services.Users.UpdateUserThemeSetting(PanelSecurity.LoggedUserId, "color-Sidebar", ddlThemecolorSidebar.SelectedValue);
+                    //}
+
                 }
                 catch (Exception ex)
                 {
@@ -195,5 +306,76 @@ namespace SolidCP.Portal
             // change password
             ChangeUserPassword();
         }
+
+        private void SetCurrentLanguage()
+        {
+            PortalUtils.SetCurrentLanguage(ddlLanguage.SelectedValue);
+        }
+
+        private void SetCurrentTheme()
+        {
+            string selectedTheme = ddlTheme.SelectedValue;
+
+            if (HttpContext.Current.Response.Cookies["UserRTL"].Value == "1")
+            {
+                DataSet themeData = ES.Services.Authentication.GetLoginThemes();
+                selectedTheme = themeData.Tables[0].Rows[ddlTheme.SelectedIndex]["RTLName"].ToString();
+            }
+
+            PortalUtils.SetCurrentTheme(selectedTheme);
+
+        }
+
+        protected void ddlLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetCurrentLanguage();
+
+            if (!string.IsNullOrEmpty(HttpContext.Current.Response.Cookies["UserTheme"].Value))
+            {
+                SetCurrentTheme();
+            }
+
+            Response.Redirect(Request.Url.ToString());
+        }
+
+        protected void ddlTheme_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetCurrentTheme();
+            Response.Redirect(Request.Url.ToString());
+
+        }
+
+        public Color ConvertFromHexToColor(string hex)
+        {
+            string colorcode = hex;
+            int argb = Int32.Parse(colorcode.Replace("#", ""), NumberStyles.HexNumber);
+            Color clr = Color.FromArgb(argb);
+            return clr;
+        }
+
+        protected void ThemecolorHeader_Click(object sender, CommandEventArgs e)
+        {
+            ES.Services.Users.UpdateUserThemeSetting(PanelSecurity.LoggedUserId, "color-Header", e.CommandArgument.ToString());
+
+            HttpCookie UserThemecolorCrum = new HttpCookie("UserThemecolorHeader", e.CommandArgument.ToString());
+            UserThemecolorCrum.Expires = DateTime.Now.AddMonths(2);
+            HttpContext.Current.Response.Cookies.Add(UserThemecolorCrum);
+
+            Response.Redirect(Request.Url.ToString());
+        }
+
+        protected void ThemecolorSidebar_Click(object sender, CommandEventArgs e)
+        {
+            ES.Services.Users.UpdateUserThemeSetting(PanelSecurity.LoggedUserId, "color-Sidebar", e.CommandArgument.ToString());
+
+            HttpCookie UserThemecolorCrum = new HttpCookie("UserThemecolorSidebar", e.CommandArgument.ToString());
+            UserThemecolorCrum.Expires = DateTime.Now.AddMonths(2);
+            HttpContext.Current.Response.Cookies.Add(UserThemecolorCrum);
+
+            Response.Redirect(Request.Url.ToString());
+
+        }
+
+
     }
 }

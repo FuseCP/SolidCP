@@ -868,8 +868,22 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        
 
-        #endregion
-    }
+
+		#endregion
+
+		#region Themes
+
+		public static DataSet GetUserThemeSettings(int userId)
+		{
+			return DataProvider.GetUserThemeSettings(SecurityContext.User.UserId, userId);
+		}
+
+		public static void UpdateUserThemeSetting(int userId, string PropertyName, string PropertyValue)
+		{
+			DataProvider.UpdateUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName, PropertyValue);
+		}
+
+		#endregion
+	}
 }
