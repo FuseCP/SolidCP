@@ -64,7 +64,7 @@ Write-Host "
         ****************************************
         *                                      *
         *        Welcome to the SolidCP        *
-        *          Automated Upgrader          *
+        *       Automated Upgrader $scriptversion        *
         *                                      *
         *       Please be patient whilst       *
         *          the menu is loaded          *
