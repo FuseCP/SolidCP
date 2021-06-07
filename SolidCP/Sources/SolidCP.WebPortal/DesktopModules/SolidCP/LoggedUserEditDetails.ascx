@@ -105,19 +105,67 @@
 					    <asp:Label ID="lblLanguage" runat="server" meta:resourcekey="lblLanguage" Text="Interface Language:"></asp:Label>
 				    </td>
 				    <td class="NormalBold">
-		                <asp:DropDownList ID="ddlLanguage" runat="server" CssClass="form-control"></asp:DropDownList>
+		                <asp:DropDownList ID="ddlLanguage" runat="server" CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="ddlLanguage_SelectedIndexChanged"></asp:DropDownList>
 				    </td>
 			    </tr>
 			    <tr>
-				    <td class="SubHead">
+				    <td class="SubHead" style="width:200px;">
 					    <asp:Label ID="lblItemsPerPage" runat="server" meta:resourcekey="lblItemsPerPage" Text="Items Per Page:"></asp:Label>
 				    </td>
 				    <td class="NormalBold">
-                        <asp:TextBox ID="txtItemsPerPage" runat="server" CssClass="form-control" Width="40"></asp:TextBox>
+                        <asp:TextBox ID="txtItemsPerPage" runat="server" CssClass="form-control" Width="100"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="valRequireGridItems" runat="server" ControlToValidate="txtItemsPerPage" meta:resourcekey="valRequireGridItems"
                             Display="Dynamic" ErrorMessage="*"></asp:RequiredFieldValidator>
                         <asp:RegularExpressionValidator ID="valCorrectGridItems" runat="server" ControlToValidate="txtItemsPerPage" meta:resourcekey="valCorrectGridItems"
                             Display="Dynamic" ErrorMessage="*" ValidationExpression="\d{1,3}"></asp:RegularExpressionValidator>
+				    </td>
+			    </tr>
+			    <tr>
+				    <td class="SubHead"  style="width:200px;">
+					    <asp:Label ID="lblTheme" runat="server" meta:resourcekey="lblTheme" Text="Theme:"></asp:Label>
+				    </td>
+				    <td class="NormalBold">
+		                <asp:DropDownList ID="ddlTheme" runat="server" CssClass="form-control" DataValueField="LTRName" DataTextField="DisplayName" AutoPostBack="True" OnSelectedIndexChanged="ddlTheme_SelectedIndexChanged"></asp:DropDownList>
+				    </td>
+			    </tr>
+				<tr>
+				    <td class="SubHead"  style="width:200px;">
+					    <asp:Label ID="lblThemeStyle" runat="server" meta:resourcekey="lblThemeStyle" Text="Style:"></asp:Label>
+				    </td>
+				    <td class="NormalBold">
+		                <asp:DropDownList ID="ddlThemeStyle" runat="server" CssClass="form-control" DataValueField="PropertyValue" DataTextField="PropertyName" ></asp:DropDownList>
+				    </td>
+			    </tr>
+			   <tr>
+				    <td class="SubHead"  style="width:200px;">
+					    <asp:Label ID="lblThemecolorHeader" runat="server" meta:resourcekey="lblThemecolorHeader" Text="Header Color:"></asp:Label>
+				    </td>
+					<td class="NormalBold">
+						<asp:panel runat="server" CssClass="row row-cols-auto g-3">
+							<asp:Repeater ID="ThemecolorHeaderRepeater1" runat="server">
+								<ItemTemplate>
+									<asp:panel ID="ThemecolorHeaderPanel" runat="server" Height="45" width="45" BorderWidth="10" BorderColor="Transparent" CssClass="col" >
+										<asp:button ID="ThemecolorHeaderButton" runat="server" BorderWidth="0" Height="40" width="40" BackColor='<%# ConvertFromHexToColor( Eval("PropertyName").ToString() )%>' oncommand='ThemecolorHeader_Click' CommandArgument='<%# Eval("PropertyValue").ToString()%>' CssClass="indigator" />
+									</asp:panel>
+								</ItemTemplate>	
+							</asp:Repeater>
+						</asp:panel>
+					</td>
+				   </tr>
+			   <tr>
+				    <td class="SubHead"  style="width:200px;">
+					    <asp:Label ID="lblThemecolorSidebar" runat="server" meta:resourcekey="lblThemecolorSidebar" Text="Sidebar Color:"></asp:Label>
+				    </td>
+				    <td class="NormalBold">
+		                <asp:panel runat="server" CssClass="row row-cols-auto g-3">
+							<asp:Repeater ID="ThemecolorSidebarRepeater1" runat="server">
+								<ItemTemplate>
+									<asp:panel ID="ThemecolorSidebarPanel" runat="server" Height="45" width="45" BorderWidth="10" BorderColor="Transparent" CssClass="col" >
+										<asp:button ID="ThemecolorSidebarButton" runat="server" BorderWidth="0" Height="40" width="40" BackColor='<%# ConvertFromHexToColor( Eval("PropertyName").ToString() )%>' oncommand='ThemecolorSidebar_Click' CommandArgument='<%# Eval("PropertyValue").ToString()%>' CssClass="indigator" />
+									</asp:panel>  
+								</ItemTemplate>	
+							</asp:Repeater>
+						</asp:panel>
 				    </td>
 			    </tr>
 		    </table>

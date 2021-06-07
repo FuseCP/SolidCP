@@ -7,11 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.WebPortal {
-    
-    
-    public partial class DefaultPage {
-        
+namespace SolidCP.WebPortal
+{
+
+
+    public partial class DefaultPage
+    {
+
+        /// <summary>
+        /// htmltheme control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlElement htmltheme;
+
         /// <summary>
         /// AdaptersInvariantImportCSS control.
         /// </summary>
@@ -20,7 +31,7 @@ namespace SolidCP.WebPortal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlLink AdaptersInvariantImportCSS;
-        
+
         /// <summary>
         /// IEMenu6CSS control.
         /// </summary>
@@ -29,7 +40,7 @@ namespace SolidCP.WebPortal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlLink IEMenu6CSS;
-        
+
         /// <summary>
         /// IEMenu7CSS control.
         /// </summary>
@@ -38,7 +49,7 @@ namespace SolidCP.WebPortal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlLink IEMenu7CSS;
-        
+
         /// <summary>
         /// form1 control.
         /// </summary>
@@ -47,7 +58,7 @@ namespace SolidCP.WebPortal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-        
+
         /// <summary>
         /// skinPlaceHolder control.
         /// </summary>

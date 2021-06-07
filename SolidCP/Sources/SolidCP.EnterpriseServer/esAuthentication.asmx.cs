@@ -87,5 +87,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			return SystemController.SetupControlPanelAccounts(passwordA, passwordB, ip);
 		}
+
+        [WebMethod]
+        public DataSet GetLoginThemes()
+        {
+            return SystemController.GetThemes();
+        }
     }
 }

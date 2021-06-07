@@ -300,6 +300,18 @@ namespace SolidCP.EnterpriseServer
             return UserController.UpdateUserSettings(settings);
         }
 
+        [WebMethod]
+        public DataSet GetUserThemeSettings(int userId)
+        {
+            return UserController.GetUserThemeSettings(userId);
+        }
+
+        [WebMethod]
+        public void UpdateUserThemeSetting(int userId, string PropertyName, string PropertyValue)
+        {
+            UserController.UpdateUserThemeSetting(userId, PropertyName, PropertyValue);
+        }
+
         #endregion
     }
 }

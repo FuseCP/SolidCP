@@ -59,7 +59,6 @@ namespace SolidCP.Portal
     {
         public const string SharedResourcesFile = "SharedResources.ascx.resx";
         public const string CONFIG_FOLDER = "~/App_Data/";
-        public const string SUPPORTED_THEMES_FILE = "SupportedThemes.config";
         public const string SUPPORTED_LOCALES_FILE = "SupportedLocales.config";
         public const string EXCHANGE_SERVER_HIERARCHY_FILE = "ESModule_ControlsHierarchy.config";
         public const string USER_ID_PARAM = "UserID";
@@ -109,33 +108,8 @@ namespace SolidCP.Portal
                         return theme;
                     }
                 }
-                else
-                {
-                    string appData = HttpContext.Current.Server.MapPath(CONFIG_FOLDER);
-                    string path = Path.Combine(appData, SUPPORTED_THEMES_FILE);
-
-                    XmlTextReader reader = new XmlTextReader(path);
-                    reader.XmlResolver = null;
-                    reader.WhitespaceHandling = WhitespaceHandling.None;
-                    reader.MoveToContent();
-                    if (reader.Name != null)
-                    {
-                        while (reader.Read())
-                        {
-                            if (reader.NodeType == XmlNodeType.Element)
-                            {
-                                if (reader.HasAttributes)
-                                {
-                                    reader.MoveToFirstAttribute();
-                                    theme = reader.Value;
-                                    return theme;
-                                }
-                            }
-                        }
-                    }
-                }
             }
-            return String.IsNullOrEmpty(theme) ? "Default" : theme;
+            return theme;
         }
 
         public static void SetCurrentTheme(string theme)
@@ -143,6 +117,7 @@ namespace SolidCP.Portal
             // theme
             if (!String.IsNullOrEmpty(theme))
             {
+                
                 HttpCookie cookieTheme = new HttpCookie(ThemeCookieName, theme);
                 cookieTheme.Expires = DateTime.Now.AddMonths(2);
                 HttpContext.Current.Response.Cookies.Add(cookieTheme);
@@ -816,38 +791,6 @@ namespace SolidCP.Portal
                             SetCurrentLanguage(list.Items[0].Value);
                             HttpContext.Current.Response.Redirect(HttpContext.Current.Request.Url.ToString());
                         }
-                    }
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        public static void LoadThemesDropDownList(DropDownList list)
-        {
-            string localesPath = HttpContext.Current.Server.MapPath(CONFIG_FOLDER + "SupportedThemes.config");
-
-            if (File.Exists(localesPath))
-            {
-                string themeToSelect = CurrentTheme;
-
-                try
-                {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(localesPath);
-
-                    XmlNodeList xmlThemes = doc.SelectNodes("//Theme");
-                    for (int i = 0; i < xmlThemes.Count; i++)
-                    {
-                        XmlElement xmlTheme = (XmlElement)xmlThemes[i];
-                        string themeName = xmlTheme.GetAttribute("name");
-                        string themeTitle = xmlTheme.GetAttribute("title");
-
-                        list.Items.Add(new ListItem(themeTitle, themeName));
-
-                        if (String.Compare(themeName, themeToSelect) == 0)
-                            list.Items[i].Selected = true;
                     }
                 }
                 catch

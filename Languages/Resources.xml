@@ -5472,6 +5472,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>SchedulerTask.SCHEDULE_TASK_AUDIT_LOG_REPORT</Key>
+    <DefaultValue>Send Audit Log Report</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>SchedulerTask.SCHEDULE_TASK_SUSPEND_PACKAGES</Key>
     <DefaultValue>Suspend Overused Hosting Spaces</DefaultValue>
   </Resource>
@@ -50076,6 +50081,96 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\Resources\Windows2008_Settings.ascx.resx</File>
     <Key>lblSpacesFolder.Text</Key>
     <DefaultValue>Hosting Spaces Folder:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>All.Text</Key>
+    <DefaultValue>&lt;All&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblAuditLogSource.Text</Key>
+    <DefaultValue>Audit Log Source:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblAuditLogTask.Text</Key>
+    <DefaultValue>Audit Log Task:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblMailFrom.Text</Key>
+    <DefaultValue>Mail From:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblMailTo.Text</Key>
+    <DefaultValue>Mail To:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>SMTPWarning.Text</Key>
+    <DefaultValue>You need to configure SMTP settings first</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblAuditLogDate.Text</Key>
+    <DefaultValue>Audit Log Date:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>schedule.Text</Key>
+    <DefaultValue>Task schedule</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>today.Text</Key>
+    <DefaultValue>Today</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>yesterday.Text</Key>
+    <DefaultValue>Yesterday</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>-1.Severity</Key>
+    <DefaultValue>&lt;All&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>0.Severity</Key>
+    <DefaultValue>Information</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>1.Severity</Key>
+    <DefaultValue>Warning</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>2.Severity</Key>
+    <DefaultValue>Error</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblAuditLogSeverity.Text</Key>
+    <DefaultValue>Audit Log Severity:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>0.ShowExecutionLog</Key>
+    <DefaultValue>No</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>1.ShowExecutionLog</Key>
+    <DefaultValue>Yes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\AuditLogReportView.ascx.resx</File>
+    <Key>lblExecutionLog.Text</Key>
+    <DefaultValue>Show Execution Log:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\Backup.ascx.resx</File>

@@ -45,12 +45,13 @@
 // 
 namespace SolidCP.EnterpriseServer
 {
-	using System.Xml.Serialization;
-	using System.Web.Services;
-	using System.ComponentModel;
+    using System.Xml.Serialization;
+    using System.Web.Services;
+    using System.ComponentModel;
 	using System.Web.Services.Protocols;
 	using System;
 	using System.Diagnostics;
+	using System.Data;
 
 
 	/// <remarks/>
@@ -63,39 +64,44 @@ namespace SolidCP.EnterpriseServer
 
 		private System.Threading.SendOrPostCallback AuthenticateUserOperationCompleted;
 
-		private System.Threading.SendOrPostCallback GetUserByUsernamePasswordOperationCompleted;
-
-		private System.Threading.SendOrPostCallback ChangeUserPasswordByUsernameOperationCompleted;
-
-		private System.Threading.SendOrPostCallback SendPasswordReminderOperationCompleted;
-
-		private System.Threading.SendOrPostCallback GetSystemSetupModeOperationCompleted;
-
-		private System.Threading.SendOrPostCallback SetupControlPanelAccountsOperationCompleted;
-
-		/// <remarks/>
+        private System.Threading.SendOrPostCallback GetUserByUsernamePasswordOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback ChangeUserPasswordByUsernameOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SendPasswordReminderOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetSystemSetupModeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SetupControlPanelAccountsOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetLoginThemesOperationCompleted;
+        
+        /// <remarks/>
 		public esAuthentication()
 		{
 			this.Url = "http://127.0.0.1:9002/esAuthentication.asmx";
-		}
-
-		/// <remarks/>
-		public event AuthenticateUserCompletedEventHandler AuthenticateUserCompleted;
-
-		/// <remarks/>
-		public event GetUserByUsernamePasswordCompletedEventHandler GetUserByUsernamePasswordCompleted;
-
-		/// <remarks/>
-		public event ChangeUserPasswordByUsernameCompletedEventHandler ChangeUserPasswordByUsernameCompleted;
-
-		/// <remarks/>
-		public event SendPasswordReminderCompletedEventHandler SendPasswordReminderCompleted;
-
-		/// <remarks/>
-		public event GetSystemSetupModeCompletedEventHandler GetSystemSetupModeCompleted;
-
-		/// <remarks/>
+        }
+        
+        /// <remarks/>
+        public event AuthenticateUserCompletedEventHandler AuthenticateUserCompleted;
+        
+        /// <remarks/>
+        public event GetUserByUsernamePasswordCompletedEventHandler GetUserByUsernamePasswordCompleted;
+        
+        /// <remarks/>
+        public event ChangeUserPasswordByUsernameCompletedEventHandler ChangeUserPasswordByUsernameCompleted;
+        
+        /// <remarks/>
+        public event SendPasswordReminderCompletedEventHandler SendPasswordReminderCompleted;
+        
+        /// <remarks/>
+        public event GetSystemSetupModeCompletedEventHandler GetSystemSetupModeCompleted;
+        
+        /// <remarks/>
 		public event SetupControlPanelAccountsCompletedEventHandler SetupControlPanelAccountsCompleted;
+		
+		/// <remarks/>
+		public event GetLoginThemesCompletedEventHandler GetLoginThemesCompleted;
 
 		/// <remarks/>
 		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AuthenticateUser", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -105,7 +111,7 @@ namespace SolidCP.EnterpriseServer
                         username,
                         password,
                         ip});
-			return ((int)(results[0]));
+            return ((int)(results[0]));
 		}
 
 		/// <remarks/>
@@ -160,7 +166,7 @@ namespace SolidCP.EnterpriseServer
                         username,
                         password,
                         ip});
-			return ((UserInfo)(results[0]));
+            return ((UserInfo)(results[0]));
 		}
 
 		/// <remarks/>
@@ -216,7 +222,7 @@ namespace SolidCP.EnterpriseServer
                         oldPassword,
                         newPassword,
                         ip});
-			return ((int)(results[0]));
+            return ((int)(results[0]));
 		}
 
 		/// <remarks/>
@@ -272,7 +278,7 @@ namespace SolidCP.EnterpriseServer
 			object[] results = this.Invoke("SendPasswordReminder", new object[] {
                         username,
                         ip});
-			return ((int)(results[0]));
+            return ((int)(results[0]));
 		}
 
 		/// <remarks/>
@@ -371,7 +377,7 @@ namespace SolidCP.EnterpriseServer
                         passwordA,
                         passwordB,
                         ip});
-			return ((int)(results[0]));
+            return ((int)(results[0]));
 		}
 
 		/// <remarks/>
@@ -407,29 +413,66 @@ namespace SolidCP.EnterpriseServer
                         passwordA,
                         passwordB,
                         ip}, this.SetupControlPanelAccountsOperationCompleted, userState);
-		}
-
-		private void OnSetupControlPanelAccountsOperationCompleted(object arg)
+        }
+        
+        private void OnSetupControlPanelAccountsOperationCompleted(object arg)
 		{
-			if ((this.SetupControlPanelAccountsCompleted != null))
+            if ((this.SetupControlPanelAccountsCompleted != null)) 
 			{
-				System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-				this.SetupControlPanelAccountsCompleted(this, new SetupControlPanelAccountsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-			}
-		}
-
-		/// <remarks/>
-		public new void CancelAsync(object userState)
-		{
-			base.CancelAsync(userState);
-		}
-	}
-
-	/// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-	public delegate void AuthenticateUserCompletedEventHandler(object sender, AuthenticateUserCompletedEventArgs e);
-
-	/// <remarks/>
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetupControlPanelAccountsCompleted(this, new SetupControlPanelAccountsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetLoginThemes", RequestNamespace="http://smbsaas/solidcp/enterpriseserver", ResponseNamespace="http://smbsaas/solidcp/enterpriseserver", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public System.Data.DataSet GetLoginThemes() {
+            object[] results = this.Invoke("GetLoginThemes", new object[0]);
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public System.IAsyncResult BeginGetLoginThemes(System.AsyncCallback callback, object asyncState) {
+            return this.BeginInvoke("GetLoginThemes", new object[0], callback, asyncState);
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet EndGetLoginThemes(System.IAsyncResult asyncResult) {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((System.Data.DataSet)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetLoginThemesAsync() {
+            this.GetLoginThemesAsync(null);
+        }
+        
+        /// <remarks/>
+        public void GetLoginThemesAsync(object userState) {
+            if ((this.GetLoginThemesOperationCompleted == null)) {
+                this.GetLoginThemesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetLoginThemesOperationCompleted);
+            }
+            this.InvokeAsync("GetLoginThemes", new object[0], this.GetLoginThemesOperationCompleted, userState);
+        }
+        
+        private void OnGetLoginThemesOperationCompleted(object arg) {
+            if ((this.GetLoginThemesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetLoginThemesCompleted(this, new GetLoginThemesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        public new void CancelAsync(object userState) {
+            base.CancelAsync(userState);
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void AuthenticateUserCompletedEventHandler(object sender, AuthenticateUserCompletedEventArgs e);
+    
+    /// <remarks/>
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -452,14 +495,14 @@ namespace SolidCP.EnterpriseServer
 				this.RaiseExceptionIfNecessary();
 				return ((int)(this.results[0]));
 			}
-		}
-	}
-
-	/// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-	public delegate void GetUserByUsernamePasswordCompletedEventHandler(object sender, GetUserByUsernamePasswordCompletedEventArgs e);
-
-	/// <remarks/>
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetUserByUsernamePasswordCompletedEventHandler(object sender, GetUserByUsernamePasswordCompletedEventArgs e);
+    
+    /// <remarks/>
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -482,14 +525,14 @@ namespace SolidCP.EnterpriseServer
 				this.RaiseExceptionIfNecessary();
 				return ((UserInfo)(this.results[0]));
 			}
-		}
-	}
-
-	/// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-	public delegate void ChangeUserPasswordByUsernameCompletedEventHandler(object sender, ChangeUserPasswordByUsernameCompletedEventArgs e);
-
-	/// <remarks/>
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void ChangeUserPasswordByUsernameCompletedEventHandler(object sender, ChangeUserPasswordByUsernameCompletedEventArgs e);
+    
+    /// <remarks/>
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -512,14 +555,14 @@ namespace SolidCP.EnterpriseServer
 				this.RaiseExceptionIfNecessary();
 				return ((int)(this.results[0]));
 			}
-		}
-	}
-
-	/// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-	public delegate void SendPasswordReminderCompletedEventHandler(object sender, SendPasswordReminderCompletedEventArgs e);
-
-	/// <remarks/>
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void SendPasswordReminderCompletedEventHandler(object sender, SendPasswordReminderCompletedEventArgs e);
+    
+    /// <remarks/>
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -542,14 +585,14 @@ namespace SolidCP.EnterpriseServer
 				this.RaiseExceptionIfNecessary();
 				return ((int)(this.results[0]));
 			}
-		}
-	}
-
-	/// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-	public delegate void GetSystemSetupModeCompletedEventHandler(object sender, GetSystemSetupModeCompletedEventArgs e);
-
-	/// <remarks/>
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetSystemSetupModeCompletedEventHandler(object sender, GetSystemSetupModeCompletedEventArgs e);
+    
+    /// <remarks/>
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -572,14 +615,14 @@ namespace SolidCP.EnterpriseServer
 				this.RaiseExceptionIfNecessary();
 				return ((bool)(this.results[0]));
 			}
-		}
-	}
-
-	/// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
-	public delegate void SetupControlPanelAccountsCompletedEventHandler(object sender, SetupControlPanelAccountsCompletedEventArgs e);
-
-	/// <remarks/>
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void SetupControlPanelAccountsCompletedEventHandler(object sender, SetupControlPanelAccountsCompletedEventArgs e);
+    
+    /// <remarks/>
 	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -594,14 +637,40 @@ namespace SolidCP.EnterpriseServer
 			this.results = results;
 		}
 
-		/// <remarks/>
+        /// <remarks/>
 		public int Result
 		{
 			get
 			{
-				this.RaiseExceptionIfNecessary();
-				return ((int)(this.results[0]));
-			}
-		}
-	}
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetLoginThemesCompletedEventHandler(object sender, GetLoginThemesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetLoginThemesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetLoginThemesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public System.Data.DataSet Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((System.Data.DataSet)(this.results[0]));
+            }
+        }
+    }
 }

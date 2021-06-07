@@ -692,6 +692,16 @@ namespace SolidCP.Server.Code
                         // it is internal Microsoft feed
                         _productManager.Load(new Uri(feed), true, true, true, _webPIinstallersFolder);
                     }
+                    else if (feed.IndexOf("windows.net", StringComparison.OrdinalIgnoreCase) > 0)
+                    {
+                        // it is internal Microsoft feed
+                        _productManager.Load(new Uri(feed), true, true, true, _webPIinstallersFolder);
+                    }
+                    else if(feed.IndexOf("fusecp.com", StringComparison.OrdinalIgnoreCase) > 0)
+                    {
+                        // it is FuseCP feed
+                        _productManager.Load(new Uri(feed), true, true, true, _webPIinstallersFolder);
+                    }
                     else
                     {
                         _productManager.LoadExternalFile(new Uri(feed));

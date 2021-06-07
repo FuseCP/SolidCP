@@ -1,4 +1,4 @@
-Version
+Version 1.4.8
 - Move Mail Cleaner API to Enterprise Server - bluechip
 - Remove Mail Cleaner API from WHMCS module - bluechip
 - Update to WACS v2.1.10.896 (x64, ReleasePluggable)
@@ -26,8 +26,18 @@ Version
 - ServiceDefaultProperties for MSDNS.2012
 - Adding PortalAntiXSS to Hosted Org pages - XSS Issue reported by Roberto Dagostino (IT Südwestfalen AG)
 - Smartermail TLS 1.1 and 1.2 support
-- PHP 5.x name change to PHP
-
+- [PHP] 5.x name change to PHP
+- [MS DNS] Add MS DNS 2016 provider with CAA (UNKNOWN) record - bluechip
+- [MS DNS] Fix for duplicate records if a record with .domain.com added - bluechip
+- [MailCleaner] Added logs to MailCleaner API - bluechip
+- [MsSQL 2019] Fix for when querying users to import #73
+- [MariaDB 10.3] Added support for Remote Servers
+- [VirtualizationServerController2012] Bug fix for (Additional HDDs for VPS) - berkut1
+- [Scheduled task] - New task to send audit log report - bluechip
+- [FileManager] Fix for issue #64 where $ is stripped from filename
+- [RDS] Fix for Security Settings not saving #54 
+- Add support for MariaDB 10.4 and 10.5
+- [Exchange 2013] members list Fixes result size of max 1000 in Distribution groups
 
 Version 1.4.7
 - Fix to load the footer version based on DLL file version

@@ -216,5 +216,21 @@ namespace SolidCP.EnterpriseServer
                 && !string.IsNullOrEmpty(settings.GetValueOrDefault(SystemSettings.TWILIO_AUTHTOKEN_KEY, string.Empty))
                 && !string.IsNullOrEmpty(settings.GetValueOrDefault(SystemSettings.TWILIO_PHONEFROM_KEY, string.Empty));
         }
+
+		//Theme options
+		public static DataSet GetThemes()
+		{
+			return DataProvider.GetThemes();
+		}
+
+		public static DataSet GetThemeSettings(int ThemeID)
+		{
+			return DataProvider.GetThemeSettings(ThemeID);
+		}
+
+		public static DataSet GetThemeSetting(int ThemeID, string SettingsName)
+		{
+			return DataProvider.GetThemeSetting(ThemeID, SettingsName);
+		}
 	}
 }

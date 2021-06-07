@@ -77,5 +77,23 @@ namespace SolidCP.EnterpriseServer
 				settings
 			);
 		}
+
+		[WebMethod]
+		public DataSet GetThemes()
+		{
+			return SystemController.GetThemes();
+		}
+
+		[WebMethod]
+		public DataSet GetThemeSettings(int ThemeID)
+		{
+			return SystemController.GetThemeSettings(ThemeID);
+		}
+
+		[WebMethod]
+		public DataSet GetThemeSetting(int ThemeID, string SettingsName)
+		{
+			return SystemController.GetThemeSetting(ThemeID, SettingsName);
+		}
 	}
 }

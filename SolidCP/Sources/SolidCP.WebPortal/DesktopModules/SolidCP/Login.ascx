@@ -46,7 +46,7 @@
         </div>
         <div class="col-xs-6">
             <asp:Label ID="lblTheme" runat="server" meta:resourcekey="lblTheme" Text="Theme:"></asp:Label>
-            <asp:DropDownList ID="ddlTheme" runat="server" Width="100%" AutoPostBack="True" OnSelectedIndexChanged="ddlTheme_SelectedIndexChanged"></asp:DropDownList>
+            <asp:DropDownList ID="ddlTheme" runat="server" Width="100%" DataValueField="LTRName" DataTextField="DisplayName" AutoPostBack="True" OnSelectedIndexChanged="ddlTheme_SelectedIndexChanged"></asp:DropDownList>
         </div>
     </div>
 </div>
