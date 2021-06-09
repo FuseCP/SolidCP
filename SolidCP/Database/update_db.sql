@@ -23189,20 +23189,6 @@ GO
 -------------------------
 -- END INDEXES SECTION --
 -------------------------
-=======
--- Fix for IIS8 and IIS10 SSL
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '105' AND [PropertyName] = N'sslusesni')
-BEGIN
-INSERT  [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (105, N'sslusesni', N'True')
-END
-GO
-
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '112' AND [PropertyName] = N'sslusesni')
-BEGIN
-INSERT  [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (112, N'sslusesni', N'True')
-END
-GO
 
 -- Themes
 
