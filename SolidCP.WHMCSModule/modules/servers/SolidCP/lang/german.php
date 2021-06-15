@@ -39,7 +39,7 @@
  * @link https://solidcp.com/
  * @access public
  * @name SolidCP
- * @version 1.1.2
+ * @version 1.1.3
  * @package WHMCS
  */
 $_MOD_LANG['SolidCP_clientarea_oneclicklogin'] = 'Im Control Panel anmelden (Ein-Click-Login)';
