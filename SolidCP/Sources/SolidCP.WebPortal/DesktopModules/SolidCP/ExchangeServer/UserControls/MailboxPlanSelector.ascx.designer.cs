@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.ExchangeServer.UserControls {
-    
-    
-    public partial class MailboxPlanSelector {
-        
+namespace SolidCP.Portal.ExchangeServer.UserControls
+{
+
+
+    public partial class MailboxPlanSelector
+    {
+
         /// <summary>
         /// ddlMailboxPlan control.
         /// </summary>
@@ -20,14 +22,5 @@ namespace SolidCP.Portal.ExchangeServer.UserControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlMailboxPlan;
-        
-        /// <summary>
-        /// valMailboxPlan control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator valMailboxPlan;
     }
 }
