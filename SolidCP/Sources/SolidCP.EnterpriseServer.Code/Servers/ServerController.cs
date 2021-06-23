@@ -1780,7 +1780,12 @@ namespace SolidCP.EnterpriseServer
 			// check if requested more than available
 			if (maxAvailableIPs != -1 &&
 				(addressesNumber > maxAvailableIPs))
-				addressesNumber = maxAvailableIPs;
+            {
+				res.ErrorCodes.Add("IP_ADDRESSES_POOL_IS_NOT_ENOUGH_IPS");
+				return res;
+				//addressesNumber = maxAvailableIPs; //it is not good to ignore problem
+			}
+				
 
 			res = TaskManager.StartResultTask<ResultObject>("IP_ADDRESS", "ALLOCATE_PACKAGE_IP", packageId);
 

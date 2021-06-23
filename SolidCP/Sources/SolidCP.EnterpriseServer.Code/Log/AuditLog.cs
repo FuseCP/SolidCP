@@ -34,6 +34,8 @@ using System;
 using System.Data;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
+using System.Xml;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -87,6 +89,46 @@ namespace SolidCP.EnterpriseServer
             return 0;
         }
 
+        public static void AddAuditLogInfoRecord(string sourceName, string taskName, string itemName, 
+            string[] executionValues, int packageId = 0, int itemId = 0)
+        {
+
+            AddAuditLogRecord(0, sourceName, taskName, itemName, executionValues);
+        }
+
+        public static void AddAuditLogWarningRecord(string sourceName, string taskName, string itemName,
+            string[] executionValues, int packageId = 0, int itemId = 0)
+        {
+
+            AddAuditLogRecord(1, sourceName, taskName, itemName, executionValues);
+        }
+
+        public static void AddAuditLogErrorRecord(string sourceName, string taskName, string itemName,
+            string[] executionValues, int packageId = 0, int itemId = 0)
+        {
+
+            AddAuditLogRecord(2, sourceName, taskName, itemName, executionValues);
+        }
+
+        public static void AddAuditLogRecord(int severityId, string sourceName, string taskName, string itemName,
+            string[] executionValues, int packageId = 0, int itemId = 0)
+        {
+            string recordId = Guid.NewGuid().ToString("N");
+            DateTime startAndfinishDate = DateTime.Now; //because it is an immediate action.
+            var user = SecurityContext.User;
+
+            int userId = user.OwnerId == 0
+                             ? user.UserId
+                             : user.OwnerId;
+
+            int effectiveUserId = user.UserId;
+            UserInfo userInternal = UserController.GetUserInternally(effectiveUserId);
+            string username = userInternal != null ? userInternal.Username : null;
+
+            AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
+                    startAndfinishDate, startAndfinishDate, sourceName, taskName, DummyFormatExecutionLog(startAndfinishDate, 0, executionValues));
+        }
+
         public static void AddAuditLogRecord(string recordId, int severityId, int userId, string username,
             int packageId, int itemId, string itemName, DateTime startDate, DateTime finishDate,
             string sourceName, string taskName, string executionLog)
@@ -107,6 +149,40 @@ namespace SolidCP.EnterpriseServer
         private static DateTime GetEndDate(DateTime d)
         {
             return new DateTime(d.Year, d.Month, d.Day, 23, 59, 59);
+        }
+
+        //extremely simple and dummy creating XML string.
+        private static string DummyFormatExecutionLog(DateTime startDate, int severityId, string[] values)
+        {
+            StringWriter sw = new StringWriter();
+            XmlWriter writer = new XmlTextWriter(sw);
+
+            writer.WriteStartElement("log");
+
+            // parameters
+            writer.WriteStartElement("parameters");
+            writer.WriteEndElement(); // parameters
+
+            // records
+            writer.WriteStartElement("records");
+            foreach (string value in values)
+            {
+                writer.WriteStartElement("record");
+                writer.WriteAttributeString("severity", severityId.ToString());
+                writer.WriteAttributeString("date", startDate.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                writer.WriteAttributeString("ident", "0"); //because it DB it write only with 0
+
+                // text
+                writer.WriteElementString("text", value);
+
+                // stack trace
+                writer.WriteElementString("stackTrace", null);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+
+            return sw.ToString();
         }
     }
 }
