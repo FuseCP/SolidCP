@@ -96,26 +96,6 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
             set { isForJournaling = value; }
         }
 
-        public string ValidationGroup
-        {
-            get
-            {
-                return valMailboxPlan.ValidationGroup;
-            }
-            set
-            {
-                if (String.IsNullOrEmpty(value))
-                {
-                    valMailboxPlan.Enabled = false;
-                }
-                else
-                {
-                    valMailboxPlan.Enabled = true;
-                    valMailboxPlan.ValidationGroup = value;
-                }
-            }
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)

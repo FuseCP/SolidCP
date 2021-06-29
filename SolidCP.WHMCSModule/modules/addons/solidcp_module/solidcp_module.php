@@ -38,7 +38,7 @@
  * @link https://solidcp.com/
  * @access public
  * @name SolidCP
- * @version 1.1.2
+ * @version 1.1.3
  * @package WHMCS
  * @final
  */
@@ -58,7 +58,7 @@ function solidcp_module_config()
 {
     return array('name' => 'SolidCP Module',
                  'description' => 'SolidCP Module for automating product configurable options, addons and sync to SolidCP',
-                 'version' => '1.1.2',
+                 'version' => '1.1.3',
                  'author' => '<a href="https://solidcp.com/" target="_blank">SolidCP</a>',
                  'language' => 'english');
 }

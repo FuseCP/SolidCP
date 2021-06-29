@@ -117,10 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="valMailboxPlan.ErrorMessage" xml:space="preserve">
-    <value>Erstellen Sie zuerst einen Postfachplan</value>
-  </data>
-  <data name="valMailboxPlan.Text" xml:space="preserve">
-    <value>*</value>
-  </data>
 </root>
