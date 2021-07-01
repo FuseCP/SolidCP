@@ -151,6 +151,11 @@ namespace SolidCP.Templates
                 TemplateStatement tmpStatement = statements[i] as TemplateStatement;
                 if (tmpStatement != null)
                 {
+                    if (context.Templates.ContainsKey(tmpStatement.Name))
+                    {
+                        throw new Exception($"Cannot add template Statement with name {tmpStatement.Name} as that template already exists");
+                    }
+
                     context.Templates.Add(tmpStatement.Name, tmpStatement);
                     statements.RemoveAt(i);
                     continue;
