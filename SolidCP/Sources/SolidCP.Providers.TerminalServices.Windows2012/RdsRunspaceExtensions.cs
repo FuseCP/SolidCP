@@ -5,6 +5,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
+using SolidCP.Providers.Utils;
 using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.RemoteDesktopServices
@@ -223,7 +224,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
 
         public static Collection<PSObject> ExecuteShellCommand(this Runspace runspace, List<string> scripts, out object[] errors)
         {
-            Log.WriteStart("ExecuteShellCommand");
+            Log.WriteStart("ExecuteShellCommand (scripts)");
             var errorList = new List<object>();
             Collection<PSObject> results;
 
@@ -248,7 +249,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             }
 
             errors = errorList.ToArray();
-            Log.WriteEnd("ExecuteShellCommand");
+            Log.WriteEnd($"ExecuteShellCommand (scripts) with errors: {JsonUtils.ConvertToJsonForLogging(errorList)}");
 
             return results;
         }
@@ -262,7 +263,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
         public static Collection<PSObject> ExecuteShellCommand(this Runspace runSpace, Command cmd, bool useDomainController, string primaryDomainController,
             out object[] errors)
         {
-            Log.WriteStart("ExecuteShellCommand");
+            Log.WriteStart($"ExecuteShellCommand: {cmd} with params: {JsonUtils.ConvertToJsonForLogging(cmd.Parameters, true, "ExecuteShellCommand")}");
             List<object> errorList = new List<object>();
 
             if (useDomainController)
@@ -300,7 +301,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             }
             pipeLine = null;
             errors = errorList.ToArray();
-            Log.WriteEnd("ExecuteShellCommand");
+            Log.WriteEnd($"ExecuteShellCommand with errors: {JsonUtils.ConvertToJsonForLogging(errorList)}");
             return results;
         }
 

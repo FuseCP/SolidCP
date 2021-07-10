@@ -1341,11 +1341,18 @@ namespace SolidCP.Providers.RemoteDesktopServices
    
         private void RemoveRegistryValue(Runspace runspace, string key, string gpoName)
         {
-            Command cmd = new Command("Remove-GPRegistryValue");
-            cmd.Parameters.Add("Name", gpoName);
-            cmd.Parameters.Add("Key", string.Format("\"{0}\"", key));
+            try
+            {
+                Command cmd = new Command("Remove-GPRegistryValue");
+                cmd.Parameters.Add("Name", gpoName);
+                cmd.Parameters.Add("Key", string.Format("\"{0}\"", key));
 
-            Collection<PSObject> result = runspace.ExecuteRemoteShellCommand(PrimaryDomainController, cmd, PrimaryDomainController);
+                Collection<PSObject> result = runspace.ExecuteRemoteShellCommand(PrimaryDomainController, cmd, PrimaryDomainController);
+            }
+            catch (Exception e)
+            {
+                Log.WriteError($"Error while trying to remove GPO {gpoName}|{key}. Maybe it did not exist?", e);
+            }
         }
 
         private void SetRegistryValue(RdsServerSetting setting, Runspace runspace, string key, string administratorsGpo, string usersGpo, string valueName, string value, string type)

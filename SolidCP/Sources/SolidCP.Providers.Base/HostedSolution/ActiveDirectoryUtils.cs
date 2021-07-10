@@ -460,7 +460,18 @@ namespace SolidCP.Providers.HostedSolution
 
         public static bool AdObjectExists(string path)
         {
-            return DirectoryEntry.Exists(path);
+            try
+            {
+                return DirectoryEntry.Exists(path);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message == "Unknown error (0x80005000)")
+                {
+                    throw new Exception("Probably an authentication issue. Did you set the Active Directory settings of the involved SCP Server correctly (NONE/yourADdomain.com/blank/blank)?", ex);
+                }
+                throw;
+            }
         }
 
         public static string RemoveADPrefix(string path)

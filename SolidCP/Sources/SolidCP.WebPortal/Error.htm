@@ -68,7 +68,7 @@
 					<td><strong>Enterprise Server issue:</strong><br />
 					The most common cause is a enterprise server issue.<br />
 					Please load up your SolidCP Enterprise server through RDP.<br />
-					Inside the browser load up the Enterprise local url<br />
+					Inside the browser load up the Enterprise local url (default on port 9003)<br />
 					It should provide an error that gets you further. <br />
 					A common error would be Error 503, This simply means the Enterprise Server application pool is not running.
 					</td>
@@ -79,6 +79,12 @@
 					The most likely cause is an conflicting piece of data in the database it self.<br />
 					Load up the Event log on the Enterprise Server --> Go to Applications and Services logs --> Click SolidCP.<br />
 					Check for any recent errors.
+					</td>
+				</tr>
+				<tr>
+					<td><strong>Third option:</strong><br />
+					Finally, you might want to try to perform your action in a browser on the server where the Portal is installed.<br />
+					Because this generic error is displayed on Remote hosts. On the local (Portal) host you will see a detailed error message, if any.
 					</td>
 				</tr>
 			</table>
