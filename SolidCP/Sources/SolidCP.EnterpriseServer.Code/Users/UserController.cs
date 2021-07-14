@@ -898,6 +898,11 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName, PropertyValue);
 		}
 
+		public static void DeleteUserThemeSetting(int userId, string PropertyName)
+		{
+			DataProvider.DeleteUserThemeSetting(SecurityContext.User.UserId, userId, PropertyName);
+		}
+
 		#endregion
 	}
 }

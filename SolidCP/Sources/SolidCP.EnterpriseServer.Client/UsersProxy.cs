@@ -116,7 +116,9 @@ namespace SolidCP.EnterpriseServer
         private System.Threading.SendOrPostCallback GetUserThemeSettingsOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateUserThemeSettingOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback DeleteUserThemeSettingOperationCompleted;
+
         /// <remarks/>
         public esUsers() {
             this.Url = "http://127.0.0.1:9002/esUsers.asmx";
@@ -203,6 +205,9 @@ namespace SolidCP.EnterpriseServer
         /// <remarks/>
         public event UpdateUserThemeSettingCompletedEventHandler UpdateUserThemeSettingCompleted;
         
+        /// <remarks/>
+        public event DeleteUserThemeSettingCompletedEventHandler DeleteUserThemeSettingCompleted;
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UserExists", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public bool UserExists(string username)
@@ -1887,7 +1892,57 @@ namespace SolidCP.EnterpriseServer
                 this.UpdateUserThemeSettingCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/DeleteUserThemeSetting", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void DeleteUserThemeSetting(int userId, string PropertyName)
+        {
+            this.Invoke("DeleteUserThemeSetting", new object[] {
+                        userId,
+                        PropertyName});
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginDeleteUserThemeSetting(int userId, string PropertyName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("DeleteUserThemeSetting", new object[] {
+                        userId,
+                        PropertyName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public void EndDeleteUserThemeSetting(System.IAsyncResult asyncResult)
+        {
+            this.EndInvoke(asyncResult);
+        }
+
+        /// <remarks/>
+        public void DeleteUserThemeSettingAsync(int userId, string PropertyName)
+        {
+            this.DeleteUserThemeSettingAsync(userId, PropertyName, null);
+        }
+
+        /// <remarks/>
+        public void DeleteUserThemeSettingAsync(int userId, string PropertyName, object userState)
+        {
+            if ((this.DeleteUserThemeSettingOperationCompleted == null))
+            {
+                this.DeleteUserThemeSettingOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteUserThemeSettingOperationCompleted);
+            }
+            this.InvokeAsync("DeleteUserThemeSetting", new object[] {
+                        userId,
+                        PropertyName}, this.DeleteUserThemeSettingOperationCompleted, userState);
+        }
+
+        private void OnDeleteUserThemeSettingOperationCompleted(object arg)
+        {
+            if ((this.DeleteUserThemeSettingCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteUserThemeSettingCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         public new void CancelAsync(object userState) 
 		{
@@ -2637,4 +2692,8 @@ namespace SolidCP.EnterpriseServer
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void UpdateUserThemeSettingCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void DeleteUserThemeSettingCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }

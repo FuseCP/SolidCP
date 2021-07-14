@@ -312,6 +312,12 @@ namespace SolidCP.EnterpriseServer
             UserController.UpdateUserThemeSetting(userId, PropertyName, PropertyValue);
         }
 
+        [WebMethod]
+        public void DeleteUserThemeSetting(int userId, string PropertyName)
+        {
+            UserController.DeleteUserThemeSetting(userId, PropertyName);
+        }
+
         #endregion
     }
 }
