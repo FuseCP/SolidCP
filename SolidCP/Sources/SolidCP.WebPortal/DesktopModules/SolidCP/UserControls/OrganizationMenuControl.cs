@@ -221,7 +221,7 @@ namespace SolidCP.Portal.UserControls
                         ctl = "rds_collections";
                     }
 
-                    if (f_MenuItem.NavigateUrl.IndexOf(pid) >= 0  && f_MenuItem.NavigateUrl.IndexOf(ctl) >= 0)
+                    if (f_MenuItem.NavigateUrl.IndexOf(pid) >= 0  && f_MenuItem.NavigateUrl.IndexOf("="+ctl) >= 0)
                     {
                         f_MenuItem.Selected = true;
                     }

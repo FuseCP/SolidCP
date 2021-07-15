@@ -86,7 +86,7 @@ namespace SolidCP.Portal.ExchangeServer
                 return;
             try
             {
-                if (!EnterpriseStorageHelper.ValidateFolderName(txtFolderName.Text))
+                if (!EnterpriseStorageHelper.ValidateFolderName(txtFolderName.Text.Trim()))
                 {
                     messageBox.ShowErrorMessage("FILES_INCORRECT_FOLDER_NAME");
 
@@ -100,7 +100,7 @@ namespace SolidCP.Portal.ExchangeServer
 
                 ResultObject result = ES.Services.EnterpriseStorage.CreateEnterpriseFolder(
                     PanelRequest.ItemID,
-                    txtFolderName.Text,
+                    txtFolderName.Text.Trim(),
                     (int)(decimal.Parse(txtFolderSize.Text) * OneGb),
                     rbtnQuotaSoft.Checked ? QuotaType.Soft : QuotaType.Hard,
                     chkAddDefaultGroup.Checked);
@@ -113,7 +113,7 @@ namespace SolidCP.Portal.ExchangeServer
                 }
 
                 Response.Redirect(EditUrl("SpaceID", PanelSecurity.PackageId.ToString(), "enterprisestorage_folder_settings",
-                    "FolderID=" + txtFolderName.Text,
+                    "FolderID=" + txtFolderName.Text.Trim(),
                     "ItemID=" + PanelRequest.ItemID));
             }
             catch (Exception ex)

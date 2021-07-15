@@ -121,7 +121,7 @@
     <value>Abbrechen</value>
   </data>
   <data name="btnUpdate.OnClientClick" xml:space="preserve">
-    <value>if(!confirm('Vor dem Anwenden der neuen Konfiguration wird der VPS angehalten.\n\nNach dem Ändern der Konfiguration wird er automatisch wieder gestartet.\n\nWollen Sie fortfahren?')) return false; ShowProgressDialog('Konfiguration wird aktualisiert...');</value>
+    <value>if(!confirm('Vor der Konfigurationsänderung muss die VM gestoppt werden.\n\nWenn die Änderung angewendet wurde startet die VM automatisch neu.\n\nMöchten Sie es jetzt ausführen?')) return false; ShowProgressDialog('Konfiguration wird aktualisiert...');</value>
   </data>
   <data name="btnUpdate.Text" xml:space="preserve">
     <value>Aktualisieren</value>
