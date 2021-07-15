@@ -135,6 +135,9 @@
   <data name="listItemAppendOrgId.Text" xml:space="preserve">
     <value>OrgID anhängen</value>
   </data>
+  <data name="listItemAppendCounterIfNeeded.Text" xml:space="preserve">
+    <value>Bei Bedarf Zähler anhängen</value>
+  </data>  
   <data name="lblArchiveStorageSpace.Text" xml:space="preserve">
     <value>Archiv-Speicherpfad:</value>
   </data>

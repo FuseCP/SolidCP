@@ -2597,27 +2597,41 @@ namespace SolidCP.EnterpriseServer
         public static string BuildAccountNameEx(Organization org, string name)
         {
             StringDictionary serviceSettings = ServerController.GetServiceSettings(org.ServiceId);
-            
-            return AppendOrgId(serviceSettings) ? BuildAccountNameWithOrgId(org.OrganizationId, name, org.ServiceId) : BuildAccountName(org.OrganizationId, name, org.ServiceId);
-        }
 
+            var type = GetUserFormatType(serviceSettings);
+            switch (type)
+            {
+                case UserFormatType.AppendCounter:
+                    return BuildAccountNameWithCounterIfNeeded(org.OrganizationId, name, org.ServiceId);
+                case UserFormatType.AppendOrgId:
+                    return BuildAccountNameWithOrgId(org.OrganizationId, name, org.ServiceId);
+                case UserFormatType.AppendLongCounter:
+                default:
+                    return BuildAccountName(org.OrganizationId, name, org.ServiceId);
+            }
+        }
 
         /// <summary> Checks should or not user name include organization id. </summary>
         /// <param name="serviceSettings"> The service settings. </param>
         /// <returns> True - if organization id should be appended. </returns>
-        private static bool AppendOrgId(StringDictionary serviceSettings)
+        private static UserFormatType GetUserFormatType(StringDictionary serviceSettings)
         {
             if (!serviceSettings.ContainsKey("usernameformat"))
             {
-                return false;
+                return UserFormatType.AppendLongCounter;
             }
 
-            if (!serviceSettings["usernameformat"].Equals("Append OrgId", StringComparison.CurrentCultureIgnoreCase))
+            if (serviceSettings["usernameformat"].Equals("Append OrgId", StringComparison.CurrentCultureIgnoreCase)) //todo: does this work in other languages / German??
             {
-                return false;
+                return UserFormatType.AppendOrgId;
             }
 
-            return true;
+            if (serviceSettings["usernameformat"].Equals("Append Counter if needed", StringComparison.CurrentCultureIgnoreCase)) //todo: does this work in languages / German??
+            {
+                return UserFormatType.AppendCounter;
+            }
+
+            return UserFormatType.AppendLongCounter;
         }
 
         public static int ImportUser(int itemId, string accountName, string displayName, string name, string domain, string password, string subscriberNumber)
@@ -2768,6 +2782,23 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
+        private static string BuildAccountNameWithCounterIfNeeded(string orgId, string name, int ServiceId)
+        {
+            string accountName = name = name.Replace(" ", ""); //todo: this mutation of name is asking for trouble, as we use it later in the flow also.
+            int counter = 0;
+            bool bFound = false;
+
+            do
+            {
+                string postfix = counter > 0 ? counter.ToString() : "";
+                accountName = genSamLogin(name, postfix);
+                if (!AccountExists(accountName, ServiceId)) bFound = true;
+                counter++;
+            }
+            while (!bFound);
+
+            return accountName;
+        }
 
         private static string genSamLogin(string login, string strCounter)
         {
@@ -4761,5 +4792,12 @@ namespace SolidCP.EnterpriseServer
         {
             return DataProvider.GetOrganizationObjectsByDomain(itemId, domainName);
         }
+    }
+
+    internal enum UserFormatType
+    {
+        AppendCounter,
+        AppendLongCounter,
+        AppendOrgId,
     }
 }
