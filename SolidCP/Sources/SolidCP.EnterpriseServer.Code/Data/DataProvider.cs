@@ -157,6 +157,15 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@PropertyValue", PropertyValue));
         }
 
+        public static void DeleteUserThemeSetting(int actorId, int userId, string PropertyName)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "DeleteUserThemeSetting",
+                new SqlParameter("@ActorId", actorId),
+                new SqlParameter("@UserID", userId),
+                new SqlParameter("@PropertyName", PropertyName));
+        }
+
         #endregion
 
         #region Users

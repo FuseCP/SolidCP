@@ -168,6 +168,13 @@
 						</asp:panel>
 				    </td>
 			    </tr>
+				<tr>
+					<td class="SubHead">
+					</td>
+					<td class="Normal">
+						<asp:Button id="ResetDisplay" runat="server" meta:resourcekey="cmdResetDisplay" Text="Reset Display Settings" CssClass="btn btn-primary" OnClick="cmdResetDisplay_Click"></asp:Button>
+					</td>
+				</tr>
 		    </table>
 		</asp:Panel>	
 </div>
