@@ -34302,16 +34302,6 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>*</DefaultValue>
   </Resource>
   <Resource>
-    <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.resx</File>
-    <Key>valMailboxPlan.ErrorMessage</Key>
-    <DefaultValue>Create Mailbox plan first</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.resx</File>
-    <Key>valMailboxPlan.Text</Key>
-    <DefaultValue>*</DefaultValue>
-  </Resource>
-  <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\UserControls\App_LocalResources\MailboxSelector.ascx.resx</File>
     <Key>btnCancel.Text</Key>
     <DefaultValue>Cancel</DefaultValue>

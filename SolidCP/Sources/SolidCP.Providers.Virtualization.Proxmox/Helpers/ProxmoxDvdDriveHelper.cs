@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,11 +18,15 @@ namespace SolidCP.Providers.Virtualization
 
             var result = client.VMConfig(vmId);
 
+            //vmconfig
+            JsonObject vmconfigjsonResponse = (JsonObject)SimpleJson.DeserializeObject(result.Content);
+            dynamic vmconfigconfigvalue = (JsonObject)SimpleJson.DeserializeObject(vmconfigjsonResponse["data"].ToString());
+
             if (result != null)
             {
-                if (result.Data.ide2 == null || !result.Data.ide2.Contains(",")) return info;
+                if (vmconfigconfigvalue.ide2 == null || !vmconfigconfigvalue.ide2.Contains(",")) return info;
                 info = new DvdDriveInfo();
-                Array resultarr = result.Data.ide2.Split(',');
+                Array resultarr = vmconfigconfigvalue.ide2.Split(',');
                 foreach (String val in resultarr)
                 {
                     if (val.Contains(":"))

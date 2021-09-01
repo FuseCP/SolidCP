@@ -213,7 +213,7 @@ namespace SolidCP.Providers.Virtualization
         private const string SNAPSHOT_DESCR = "WebsitePanel Snapshot";
         private const string PROXMOX_REALM = "pam";
         private ApiClient client;
-        private IRestResponse<ApiTicket> response;
+        private IRestResponse response;
         //private string upid;
 
         //private string node;
@@ -243,7 +243,7 @@ namespace SolidCP.Providers.Virtualization
         protected VirtualMachine GetVirtualMachineInternal(string vmId, bool extendedInfo)
         {
             HostedSolutionLog.LogStart("GetVirtualMachine");
-            HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
+            HostedSolutionLog.DebugInfo("GetVirtualMachine - Virtual Machine: {0}", vmId);
 
             VirtualMachine vm = new VirtualMachine();
             vm.VirtualMachineId = vmId;
@@ -251,17 +251,22 @@ namespace SolidCP.Providers.Virtualization
             {
                 ApiClientSetup();
                 var result = client.Status(vmId);
+                HostedSolutionLog.DebugInfo("GetVirtualMachine - Virtual Machine: {0}", vmId);
                 var vmconfig = client.VMConfig(vmId);
                 if (result != null)
                 {
-                    vm.Name = result.Data.name;
-                    vm.Uptime = Convert.ToInt64(result.Data.uptime);
-                    vm.State = getvmstate(result.Data.qmpstatus);
-                    vm.CpuUsage = ConvertNullableToInt32(result.Data.cpu * 100);
-                    vm.ProcessorCount = result.Data.cpus;
+                    HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - vm.Name: {0}, State: {1}, Uptime: {2}", result.data.name, result.data.qmpstatus, result.data.uptime); 
+                    vm.Name = result.data.name;
+                    vm.Uptime = result.data.uptime;
+                    string qmpstatus = result.data.qmpstatus;
+                    vm.State = getvmstate(qmpstatus);
+                    vm.CpuUsage = ConvertNullableToInt32(result.data.cpu * 100);
+                    vm.ProcessorCount = result.data.cpus;
                     vm.CreatedDate = DateTime.Now;
-                    vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result.Data.mem / Constants.Size1M));
-                    vm.RamSize = Convert.ToInt32(ConvertNullableToInt64(result.Data.maxmem / Constants.Size1M));
+                    Int64 mem = result.data.mem;
+                    vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(mem / Constants.Size1M));
+                    Int64 maxmem = result.data.maxmem;
+                    vm.RamSize = Convert.ToInt32(ConvertNullableToInt64(maxmem / Constants.Size1M));
 
                     // Proxmox Generation = 0
                     vm.Generation = 0;
@@ -273,17 +278,39 @@ namespace SolidCP.Providers.Virtualization
 
                     if (extendedInfo)
                     {
-                        vm.CpuCores = result.Data.cpus;
-                        vm.HddSize = new[] { Convert.ToInt32(result.Data.maxdisk / Constants.Size1G) };
+                        HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - extended - CpuCores, {0} maxdisk: {1}", result.data.cpus, result.data.maxdisk); 
+                        vm.CpuCores = result.data.cpus;
+                        Int64 maxdisk = result.data.maxdisk;
+                        vm.HddSize = new[] { Convert.ToInt32(maxdisk / Constants.Size1G) };
+
+                        //vmconfig
+                        JsonObject vmconfigjsonResponse = (JsonObject)SimpleJson.DeserializeObject(vmconfig.Content);
+                        dynamic vmconfigconfigvalue = (JsonObject)SimpleJson.DeserializeObject(vmconfigjsonResponse["data"].ToString());
+
+                        // Checking for bootdisk as newer VMs use boot not bootorder
+                        string bootdisk;
+                        if ( vmconfigconfigvalue.bootdisk == null)
+                        {
+                            string boot1 = vmconfigconfigvalue.boot;
+                            var bootvar = boot1.Replace("order=", "").Split(';');
+                            bootdisk = bootvar[0];
+
+                        }
+                        else
+                        {
+                            bootdisk = vmconfigconfigvalue.bootdisk;
+                        };
+                            
 
                         // Hard Disk Bootdisk
                         var harddisks = ProxmoxVHDHelper.Get(vmconfig.Content);
                         foreach (var disk in harddisks)
                         {
-                            if (disk.Name  == vmconfig.Data.bootdisk)
+                            if (disk.Name  == bootdisk)
                                 vm.VirtualHardDrivePath = new[] { disk.Path };
+                            HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - VirtualHardDrivePath {0}, Name: {1}, bootdisk {2}", disk.Path, disk.Name, bootdisk);
                         }
-                        
+
 
                         // network adapters
                         vm.Adapters = ProxmoxNetworkHelper.Get(vmconfig.Content);
@@ -302,6 +329,8 @@ namespace SolidCP.Providers.Virtualization
 
                     //      vm.DynamicMemory = MemoryHelper.GetDynamicMemory(PowerShell, vm.Name);
 
+                    HostedSolutionLog.LogInfo("GetVirtualMachine - vm.name: {0}", vm.Name);
+
                 }
             }
             catch (Exception ex)
@@ -309,7 +338,6 @@ namespace SolidCP.Providers.Virtualization
                 HostedSolutionLog.LogError("GetVirtualMachine", ex);
                 throw;
             }
-
             HostedSolutionLog.LogEnd("GetVirtualMachine");
             return vm;
         }
@@ -321,9 +349,11 @@ namespace SolidCP.Providers.Virtualization
             List<VirtualMachine> vmachines = new List<VirtualMachine>();
             try
             {
-                HostedSolutionLog.LogInfo("Proxmox Cluster Status");
+                //HostedSolutionLog.LogInfo("GetVirtualMachines - Proxmox Cluster Status");
                 ApiClientSetup();
+                //HostedSolutionLog.LogInfo("GetVirtualMachines - APIClientSetup Ran");
                 var RestResponse = client.ClusterVMList();
+                //HostedSolutionLog.LogInfo("GetVirtualMachines - ClusterVMList: {0}", RestResponse.Content.ToString());
                 JsonObject jsonResponse = (JsonObject)SimpleJson.DeserializeObject(RestResponse.Content);
                 JsonArray jsonResponsearray = (JsonArray)SimpleJson.DeserializeObject(jsonResponse["data"].ToString());
 
@@ -335,6 +365,7 @@ namespace SolidCP.Providers.Virtualization
                         if (resources["type"].ToString().Equals("qemu"))
                         {
                             string vmid = String.Format("{0}:{1}", resources["node"].ToString(), resources["vmid"].ToString());
+                            HostedSolutionLog.LogInfo("GetVirtualMachines - vmObject: {0}", vmid);
 
                             var vm = GetVirtualMachineInternal(vmid, true);
                             vmachines.Add(vm);
@@ -2174,21 +2205,26 @@ namespace SolidCP.Providers.Virtualization
         #region Proxmox Apiclient Setup
         public void ApiClientSetup()
         {
-            
+            //HostedSolutionLog.DebugInfo("ApiClientSetup");
             string clusterrealm = PROXMOX_REALM;
             if (ProxmoxClusterRealm != null && ProxmoxClusterRealm != "")
                clusterrealm = ProxmoxClusterRealm;
 
             user = new User { Username = ProxmoxClusterAdminUser, Password = ProxmoxClusterAdminPass, Realm = clusterrealm };
+            //HostedSolutionLog.DebugInfo("ApiClientSetup: user: {0}", user);
             server = new ProxmoxServer { Ip = ProxmoxClusterServerHost, Port = ProxmoxClusterServerPort };
+            //HostedSolutionLog.DebugInfo("ApiClientSetup: server: {0}", server);
 
             //client = new ApiClient(server, ProxmoxClusterNode);
             client = new ApiClient(server);
 
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
 
             response = client.Login(user);
+            //HostedSolutionLog.DebugInfo("ApiClientSetup: Login response: {0}", response.Content.ToString());
 
         }
 
@@ -2198,6 +2234,7 @@ namespace SolidCP.Providers.Virtualization
         #region Linux to Windows States & Formats
         private VirtualMachineState getvmstate(string state)
         {
+            HostedSolutionLog.LogInfo("getvmstate - state: {0}", state);
             VirtualMachineState vmstate;
             switch (state)
             {
