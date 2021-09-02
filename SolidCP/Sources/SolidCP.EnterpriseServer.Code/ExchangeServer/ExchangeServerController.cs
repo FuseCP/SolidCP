@@ -692,12 +692,14 @@ namespace SolidCP.EnterpriseServer
                 StringDictionary exSettings = ServerController.GetServiceSettings(exchangeServiceId);
                 foreach (var dom in acceptedDomains)
                 {
-
                     if (exSettings != null && Convert.ToBoolean(exSettings["EnableMailFilter"]))
                     {
                         DomainInfo domain = ServerController.GetDomain(dom.DomainId);
                         SpamExpertsController.DeleteDomainFilter(domain);
                     }
+
+                    //Delete Domain from Mail Cleaner
+                    APIMailCleanerHelper.DomainRemove(dom.DomainName, org.PackageId);
                 }
                 return successful ? 0 : BusinessErrorCodes.ERROR_EXCHANGE_DELETE_SOME_PROBLEMS;
             }
