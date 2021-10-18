@@ -88,7 +88,7 @@ namespace SolidCP.Portal.ExchangeServer
 
             ddlRecipient.Items.Clear();
             if (!String.IsNullOrEmpty(domain)) {
-                string mail = org.Name + "@" + domain;
+                string mail = org.OrganizationId + "@" + domain;
                 ddlRecipient.Items.Add(new ListItem(GetLocalizedString("OrganizationGroup"), mail, true));
             }
 
