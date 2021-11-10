@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal {
-    
-    
-    public partial class LoggedUserEditDetails {
-        
+namespace SolidCP.Portal
+{
+
+
+    public partial class LoggedUserEditDetails
+    {
+
         /// <summary>
         /// pnlEdit control.
         /// </summary>
@@ -380,6 +382,15 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater ThemecolorSidebarRepeater1;
+
+        /// <summary>
+        /// ResetDisplay control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ResetDisplay;
 
         /// <summary>
         /// btnUpdate control.

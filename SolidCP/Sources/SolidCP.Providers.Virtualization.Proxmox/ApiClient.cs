@@ -7,6 +7,9 @@ using System.Net;
 using RestSharp;
 using System.Threading;
 using SolidCP.Providers.Virtualization.Proxmox;
+using SolidCP.Providers.HostedSolution;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -24,69 +27,86 @@ namespace SolidCP.Providers.Virtualization
         {
             this.baseUrl = "https://" + server.Ip + ":" + server.Port + "/api2/json/";
             //this.node = node;
+            //HostedSolutionLog.DebugInfo("APIClient: {0}", this.baseUrl);
         }
 
-        public IRestResponse<ApiTicket> Login(User user)
+        public IRestResponse Login(User user)
         {
+            //HostedSolutionLog.DebugInfo("Login"); 
             var restClient = new RestClient(baseUrl);
+            restClient.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+            //HostedSolutionLog.DebugInfo("Login - baseUrl: {0}", baseUrl);
+            restClient.Timeout = -1;
             var request = new RestRequest("access/ticket", Method.POST);
+            //request.AddHeader("content-type", "application/json");
             request.RequestFormat = DataFormat.Json;
             request.AddParameter("username", user.Username);
             request.AddParameter("password", user.Password);
             request.AddParameter("realm", user.Realm);
-            request.RootElement = RequestRootElement;
-            var response = restClient.Execute<ApiTicket>(request);
-            apiTicket = response.Data;
+            //request.RootElement = RequestRootElement;
+            //HostedSolutionLog.DebugInfo("Login - request: {0}", request.ToString());
+            var response = restClient.Execute(request);
+            //HostedSolutionLog.DebugInfo("Login - response Content: {0}", response.Content.ToString());
+            dynamic json = JObject.Parse(response.Content);
+            ApiTicket apiTicketdata = new ApiTicket();
+            apiTicketdata.ticket = json.data.ticket;
+            apiTicketdata.username = json.data.username;
+            apiTicketdata.CSRFPreventionToken = json.data.CSRFPreventionToken;
+            apiTicket = apiTicketdata;
+            //HostedSolutionLog.DebugInfo("Login - apiTicket: {0}", apiTicket.ticket);
             return response;
         }
 
 
-        public IRestResponse<VMStatusInfo> Status(string vmId)
+        public dynamic Status(string vmId)
         {
             var client = new RestClient(baseUrl);
             var request = PrepareGetRequest(string.Format("nodes/{0}/qemu/{1}/status/current", nodeid(vmId).node, nodeid(vmId).id));
-            return client.Execute<VMStatusInfo>(request);
+            var response = client.Execute<VMStatusInfo>(request);
+            //HostedSolutionLog.DebugInfo("Status - response Content: {0}", response.Content.ToString());
+            dynamic json = JObject.Parse(response.Content);
+            return json;
         }
 
         public IRestResponse<Upid> Start(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/start", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/start", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
         public IRestResponse<Upid> Stop(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/stop", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/stop", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
         public IRestResponse<Upid> Shutdown(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/shutdown", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/shutdown", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
         public IRestResponse<Upid> Reset(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/reset", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/reset", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
         public IRestResponse<Upid> Suspend(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/suspend", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/suspend", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
         public IRestResponse<Upid> Resume(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/resume", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/status/resume", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
@@ -97,7 +117,7 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("name", newhostname);
             return client.Execute<Upid>(request);
         }
@@ -121,7 +141,7 @@ namespace SolidCP.Providers.Virtualization
         public IRestResponse<Upid> Delete(string vmId)
         {
             var client = new RestClient(baseUrl);
-            var request = PrepareDeleteRequest(string.Format("nodes/{0}/qemu/{1}", nodeid(vmId).node, nodeid(vmId).id), "");
+            var request = PrepareDeleteRequest(string.Format("nodes/{0}/qemu/{1}", nodeid(vmId).node, nodeid(vmId).id));
             return client.Execute<Upid>(request);
         }
 
@@ -132,7 +152,7 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("idlist", device);
             return client.Execute<Upid>(request);
         }
@@ -144,7 +164,7 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("snapname", name);
             request.AddParameter("description", description);
             return client.Execute<Upid>(request);
@@ -171,7 +191,7 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("description", description);
             return client.Execute<Upid>(request);
         }
@@ -186,7 +206,7 @@ namespace SolidCP.Providers.Virtualization
         public IRestResponse<Upid> rollback(string vmId, string snapshotid)
         {
             var client = new RestClient(baseUrl);
-            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/snapshot/{2}/rollback", nodeid(vmId).node, nodeid(vmId).id, snapshotid), "");
+            var request = PreparePostRequest(string.Format("nodes/{0}/qemu/{1}/snapshot/{2}/rollback", nodeid(vmId).node, nodeid(vmId).id, snapshotid));
             return client.Execute<Upid>(request);
         }
 
@@ -250,8 +270,11 @@ namespace SolidCP.Providers.Virtualization
 
         public IRestResponse ClusterVMList()
         {
+            //HostedSolutionLog.LogStart("ClusterVMList");
             var client = new RestClient(baseUrl);
+            client.RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             var request = PrepareGetRequest("cluster/resources?type=vm");
+            //HostedSolutionLog.LogEnd("ClusterVMList");
             return client.Execute(request);
         }
 
@@ -262,7 +285,7 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("cores", template.cores);
             request.AddParameter("memory", template.memory);
             return client.Execute<Upid>(request);
@@ -275,7 +298,7 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("ide2", template.ide2);
             return client.Execute<Upid>(request);
         }
@@ -287,39 +310,43 @@ namespace SolidCP.Providers.Virtualization
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = "root";
+            //request.RootElement = "root";
             request.AddParameter("disk", disk);
             request.AddParameter("size", size);
             return client.Execute<Upid>(request);
         }
 
 
-        private RestRequest PreparePostRequest(string resource, string rootElement = RequestRootElement)
+        private RestRequest PreparePostRequest(string resource)
         {
             var request = new RestRequest(resource, Method.POST);
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = rootElement;
+            //request.RootElement = rootElement;
             return request;
         }
 
-        private RestRequest PrepareGetRequest(string resource, string rootElement = RequestRootElement)
+        private RestRequest PrepareGetRequest(string resource)
         {
+            //HostedSolutionLog.DebugInfo("PrepareGetRequest");
             var request = new RestRequest(resource, Method.GET);
+            //HostedSolutionLog.DebugInfo("PrepareGetRequest Request: {0}", request.ToString());
             request.RequestFormat = DataFormat.Json;
+            //HostedSolutionLog.DebugInfo("PrepareGetRequest - PVEAuthCookie: {0)", apiTicket.ticket); 
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = rootElement;
+            //request.RootElement = rootElement;
+            //HostedSolutionLog.DebugInfo("PrepareGetRequest Request2: {0}", request);
             return request;
         }
 
-        private RestRequest PrepareDeleteRequest(string resource, string rootElement = RequestRootElement)
+        private RestRequest PrepareDeleteRequest(string resource)
         {
             var request = new RestRequest(resource, Method.DELETE);
             request.RequestFormat = DataFormat.Json;
             request.AddHeader("CSRFPreventionToken", apiTicket.CSRFPreventionToken);
             request.AddCookie("PVEAuthCookie", apiTicket.ticket);
-            request.RootElement = rootElement;
+            //request.RootElement = rootElement;
             return request;
         }
 

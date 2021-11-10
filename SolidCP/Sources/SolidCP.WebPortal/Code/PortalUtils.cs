@@ -91,6 +91,11 @@ namespace SolidCP.Portal
             get { return GetCurrentTheme(); }
         }
 
+        public static string CurrentThemeStyle
+        {
+            get { return GetCurrentThemeStyle(); }
+        }
+
         internal static string GetCurrentTheme()
         {
             string theme = (string) HttpContext.Current.Items[ThemeCookieName];
@@ -122,6 +127,27 @@ namespace SolidCP.Portal
                 cookieTheme.Expires = DateTime.Now.AddMonths(2);
                 HttpContext.Current.Response.Cookies.Add(cookieTheme);
             }
+        }
+
+        internal static string GetCurrentThemeStyle()
+        {
+            string themeStyle = (string)HttpContext.Current.Items["UserThemeStyle"];
+
+            if (themeStyle == null)
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies["UserThemeStyle"];
+                if (cookie != null)
+                {
+                    themeStyle = cookie.Value;
+
+                    if (!String.IsNullOrEmpty(themeStyle))
+                    {
+                        HttpContext.Current.Items["UserThemeStyle"] = themeStyle;
+                        return themeStyle;
+                    }
+                }
+            }
+            return themeStyle;
         }
 
         internal static System.Globalization.CultureInfo GetCurrentCulture()

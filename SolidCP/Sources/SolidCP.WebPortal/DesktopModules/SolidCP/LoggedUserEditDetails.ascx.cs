@@ -144,6 +144,7 @@ namespace SolidCP.Portal
                 
                 txtItemsPerPage.Text = UsersHelper.GetDisplayItemsPerPage().ToString();
 
+                string UserThemeStyle = "";
                 DataSet UserThemeSettingsData = ES.Services.Users.GetUserThemeSettings(PanelSecurity.LoggedUserId);
                 if (UserThemeSettingsData.Tables.Count > 0)
                 {
@@ -155,6 +156,8 @@ namespace SolidCP.Portal
                         if (RowPropertyName == "Style")
                         {
                             Utils.SelectListItem(ddlThemeStyle, RowPropertyValue);
+                            UserThemeStyle = RowPropertyValue;
+
                         }
 
                         if (RowPropertyName == "color-Header")
@@ -231,11 +234,17 @@ namespace SolidCP.Portal
 
                     if (!string.IsNullOrEmpty(ddlThemeStyle.SelectedValue))
                     {
+                        if (ddlThemeStyle.SelectedValue != PortalUtils.CurrentThemeStyle)
+                        {
+                            RemoveThemeOptions();
+                        }
+                        
                         HttpCookie UserThemeStyleCrum = new HttpCookie("UserThemeStyle", ddlThemeStyle.SelectedValue);
                         UserThemeStyleCrum.Expires = DateTime.Now.AddMonths(2);
                         HttpContext.Current.Response.Cookies.Add(UserThemeStyleCrum);
 
                         ES.Services.Users.UpdateUserThemeSetting(PanelSecurity.LoggedUserId, "Style", ddlThemeStyle.SelectedValue);
+
                     }
 
                     //if (!string.IsNullOrEmpty(ddlThemecolorHeader.SelectedValue))
@@ -322,6 +331,8 @@ namespace SolidCP.Portal
                 selectedTheme = themeData.Tables[0].Rows[ddlTheme.SelectedIndex]["RTLName"].ToString();
             }
 
+            RemoveThemeOptions();
+
             PortalUtils.SetCurrentTheme(selectedTheme);
 
         }
@@ -374,6 +385,31 @@ namespace SolidCP.Portal
 
             Response.Redirect(Request.Url.ToString());
 
+        }
+
+        protected void cmdResetDisplay_Click(object sender, EventArgs e)
+        {
+            RemoveThemeOptions();
+            Response.Redirect(Request.Url.ToString());
+        }
+
+        protected void RemoveThemeOptions()
+        {
+            ES.Services.Users.DeleteUserThemeSetting(PanelSecurity.LoggedUserId, "Style"); 
+            ES.Services.Users.DeleteUserThemeSetting(PanelSecurity.LoggedUserId, "color-Header");
+            ES.Services.Users.DeleteUserThemeSetting(PanelSecurity.LoggedUserId, "color-Sidebar");
+
+            HttpCookie UserThemeStyleCrum = new HttpCookie("UserThemeStyle", "");
+            UserThemeStyleCrum.Expires = DateTime.Now.AddMonths(-1);
+            HttpContext.Current.Response.Cookies.Add(UserThemeStyleCrum);
+
+            HttpCookie UserThemecolorHeaderCrum = new HttpCookie("UserThemecolorHeader", "");
+            UserThemecolorHeaderCrum.Expires = DateTime.Now.AddMonths(-1);
+            HttpContext.Current.Response.Cookies.Add(UserThemecolorHeaderCrum);
+
+            HttpCookie UserThemeSidebarCrum = new HttpCookie("UserThemecolorSidebar", "");
+            UserThemeSidebarCrum.Expires = DateTime.Now.AddMonths(-1);
+            HttpContext.Current.Response.Cookies.Add(UserThemeSidebarCrum);
         }
 
 

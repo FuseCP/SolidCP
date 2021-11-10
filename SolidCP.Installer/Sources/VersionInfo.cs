@@ -13,10 +13,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+[assembly: AssemblyInformationalVersion("1.4.5")]
 [assembly: AssemblyCompany("SolidCP")]
 [assembly: AssemblyCopyright("Copyright © 2020 SolidCP.")]
-[assembly: AssemblyVersion("1.4.8")]
 [assembly: AssemblyFileVersion("1.4.8")]
-[assembly: AssemblyInformationalVersion("1.4.5")]
+[assembly: AssemblyVersion("1.4.8")]
 
 

@@ -23324,6 +23324,29 @@ IF EXISTS ( SELECT * FROM UserSettings
 END
 GO
 
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeleteUserThemeSetting')
+DROP PROCEDURE DeleteUserThemeSetting
+GO
+CREATE PROCEDURE [dbo].[DeleteUserThemeSetting]
+(
+	@ActorID int,
+	@UserID int,
+	@PropertyName NVARCHAR(255)
+)
+AS
+
+-- check rights
+IF dbo.CheckActorUserRights(@ActorID, @UserID) = 0
+RAISERROR('You are not allowed to access this account', 16, 1)
+
+DELETE FROM UserSettings
+WHERE UserID = @UserID
+AND SettingsName = N'Theme'
+AND PropertyName = @PropertyName
+
+RETURN
+GO
+
 IF NOT EXISTS (SELECT * FROM [dbo].[Themes] WHERE [ThemeID] = '1')
 BEGIN
 INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (1, N'FuseCP v1', N'Default', N'Default', 1, 1)
