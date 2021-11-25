@@ -1252,10 +1252,10 @@ namespace SolidCP.EnterpriseServer
                     {
                         SpamExpertsController.DeleteDomainFilter(domain);
                     }
-                }
 
-                //Delete Domain from Mail Cleaner
-                APIMailCleanerHelper.DomainRemove(domain.DomainName, domain.PackageId);
+					//Delete Domain from Mail Cleaner
+					APIMailCleanerHelper.DomainRemove(domain.DomainName, domain.PackageId);
+				}
 
                 return 0;
 			}

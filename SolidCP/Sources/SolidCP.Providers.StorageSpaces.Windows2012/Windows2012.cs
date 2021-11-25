@@ -15,6 +15,8 @@ using Microsoft.Search.Interop;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
 using SolidCP.Server.Utils;
+using Scripting;
+
 namespace SolidCP.Providers.StorageSpaces
 {
     public class Windows2012 : SolidCP.Providers.OS.Windows2012, IStorageSpace
@@ -230,32 +232,8 @@ namespace SolidCP.Providers.StorageSpaces
 
             try
             {
-                DirectoryInfo treeRoot = new DirectoryInfo(fullPath);
-
-                if (treeRoot.Exists)
-                {
-                    DirectoryInfo[] dirs = treeRoot.GetDirectories();
-                    while (dirs.Length > 0)
-                    {
-                        foreach (DirectoryInfo dir in dirs)
-                        {
-                            DeleteFolder(dir.FullName);
-                        }
-
-                        dirs = treeRoot.GetDirectories();
-                    }
-
-                    // DELETE THE FILES UNDER THE CURRENT ROOT
-                    string[] files = Directory.GetFiles(treeRoot.FullName);
-                    foreach (string file in files)
-                    {
-                        File.SetAttributes(file, FileAttributes.Normal);
-                        File.Delete(file);
-                    }
-
-                    Directory.Delete(treeRoot.FullName, true);
-
-                }
+                FileSystemObject fso = new FileSystemObject();
+                fso.DeleteFolder(@"\\?\" + fullPath, true);
             }
             catch (Exception ex)
             {
@@ -275,7 +253,7 @@ namespace SolidCP.Providers.StorageSpaces
 
             try
             {
-                return (Directory.Exists(fullPath) || File.Exists(fullPath));
+                return (Directory.Exists(fullPath) || System.IO.File.Exists(fullPath));
             }
             catch (Exception ex)
             {

@@ -326,8 +326,11 @@ Class solidcp_database{
                     solidcp_configurable as c on o.optionid = c.whmcs_id
                 LEFT JOIN
                     tblproductconfigoptions as co on o.configid = co.id
-                WHERE 
-                    o.relid = ".$serviceid."
+                LEFT JOIN
+                    tblhosting as h on h.id=o.relid
+                WHERE
+                    (co.gid IN (SELECT cl.gid FROM tblproductconfiglinks AS cl WHERE cl.pid=h.packageid))
+                    AND o.relid = ".$serviceid."
             ");
             return $configurableoptions;
         }
