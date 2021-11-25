@@ -1450,7 +1450,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
             {
                 string.Format("$adgpo = [ADSI]\"{0}\"", GetGpoPath(gpoId)),
                 string.Format("$rule = New-Object System.DirectoryServices.ActiveDirectoryAccessRule([System.Security.Principal.NTAccount]\"{0}\\{1}\",\"ExtendedRight\",\"Deny\",[GUID]\"edacfd8f-ffb3-11d1-b41d-00a0c968f939\")",
-                    RootDomain.Split('.').First(), GetLocalAdminsGroupName(collectionName)),
+                    ActiveDirectoryUtils.GetNETBIOSDomainName(RootDomain), GetLocalAdminsGroupName(collectionName)),
                 string.Format("$acl = $adgpo.ObjectSecurity"),
                 string.Format("$acl.AddAccessRule($rule)"),
                 string.Format("$adgpo.CommitChanges()")
