@@ -6750,4 +6750,7 @@
   <data name="ResourceGroup.SpamExperts" xml:space="preserve">
     <value>SpamExperts Email Filter</value>
   </data>
+  <data name="Warning.VPS_CHANGE_HDD_SIZE" xml:space="preserve">
+    <value>Sie können die Festplattengröße nicht reduzieren! Bitte wenden Sie sich mit Ihren Anliegen an den technischen Support.</value>
+  </data>
 </root>

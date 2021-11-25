@@ -285,9 +285,13 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
                 virtualMachine.NeedReboot = chkForceReboot.Checked;
+                virtualMachine.defaultaccessvlan = vm.defaultaccessvlan;
+                virtualMachine.PrivateNetworkVlan = vm.PrivateNetworkVlan;
 
                 bool setupExternalNetwork = !vm.ExternalNetworkEnabled && chkExternalNetworkEnabled.Checked;
                 bool setupPrivateNetwork = !vm.PrivateNetworkEnabled && chkPrivateNetworkEnabled.Checked;
+                int[] ipId = new int[1];
+                int privAdrCount = 0;
 
                 if (setupExternalNetwork)
                 {
@@ -295,9 +299,7 @@ namespace SolidCP.Portal.VPS2012
                     if (ips.Length > 0)
                     {
                         virtualMachine.defaultaccessvlan = ips[0].VLAN;
-                        int[] ipId = new int[1];
                         ipId[0] = ips[0].PackageAddressID;
-                        ES.Services.VPS2012.AddVirtualMachineExternalIPAddresses(PanelRequest.ItemID, false, 1, ipId);
                     }
                 }
 
@@ -314,12 +316,7 @@ namespace SolidCP.Portal.VPS2012
                     if (cntx.Quotas.ContainsKey(Quotas.VPS2012_PRIVATE_IP_ADDRESSES_NUMBER))
                     {
                         QuotaValueInfo privQuota = cntx.Quotas[Quotas.VPS2012_PRIVATE_IP_ADDRESSES_NUMBER];
-                        int privAdrCount = 0;
                         if (privQuota.QuotaAllocatedValue > 0 || privQuota.QuotaAllocatedValue == -1) privAdrCount = 1;
-                        if (privAdrCount > 0)
-                        {
-                            ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, true, privAdrCount, new string[0], false, null, null, null, null);
-                        }
                     }
                 }
 
@@ -343,6 +340,16 @@ namespace SolidCP.Portal.VPS2012
 
                 if (res.IsSuccess)
                 {
+                    if (setupExternalNetwork && ipId[0] != 0)
+                    {
+                        ES.Services.VPS2012.AddVirtualMachineExternalIPAddresses(PanelRequest.ItemID, false, 1, ipId);
+                    }
+
+                    if (setupPrivateNetwork && privAdrCount > 0)
+                    {
+                        ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, true, privAdrCount, new string[0], false, null, null, null, null);
+                    }
+
                     // redirect back
                     RedirectBack("changed");
                 }
