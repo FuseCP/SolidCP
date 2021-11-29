@@ -516,7 +516,7 @@ final class SolidCP_EnterpriseServer
 		try
 		{
 			// Create the SoapClient
-			$client = new SoapClient($host, array('login' => $this->_username, 'password' => $this->_password, 'compression' => (($this->_compression) ? (SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP) : ''), 'cache_wsdl' => ($this->_caching) ? 1 : 0));
+			$client = new SoapClient($host, array('login' => $this->_username, 'password' => $this->_password, 'compression' => (($this->_compression) ? (SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP) : ''), 'keep_alive' => false, 'cache_wsdl' => ($this->_caching) ? 1 : 0));
 			
 			// Execute the request and process the results
 			return call_user_func(array($client, $method), $params);

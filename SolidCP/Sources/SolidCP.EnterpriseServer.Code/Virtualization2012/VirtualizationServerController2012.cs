@@ -1233,14 +1233,32 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.Write("VPS_CREATE_CREATE_VM");
                 TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
                 // create virtual machine
-                try
+                bool isCreatedVMConfigSuccess = false;
+                for (byte attempt = 1; attempt <= 3; attempt++)
                 {
-                    // create
-                    vm = vs.CreateVirtualMachine(vm);
+                    try
+                    {
+                        // create
+                        var tempVm = vs.CreateVirtualMachine(vm); //sometimes it just not works and returns nothing
+                        if (!String.IsNullOrEmpty(tempVm.VirtualMachineId))
+                        {
+                            vm = tempVm;
+                            isCreatedVMConfigSuccess = true;
+                            break;
+                        }
+                        TaskManager.Write("VPS_CREATE_CREATE_VM_ATTEMPT", attempt.ToString());
+                        System.Threading.Thread.Sleep(2000 * attempt);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskManager.WriteError(ex, "VPS_CREATE_CREATE_VM_ERROR");
+                        return;
+                    }
                 }
-                catch (Exception ex)
+                if (!isCreatedVMConfigSuccess)
                 {
-                    TaskManager.WriteError(ex, "VPS_CREATE_CREATE_VM_ERROR");
+                    TaskManager.WriteError("VPS_CREATE_CREATE_VM_ERROR");
                     return;
                 }
 

@@ -1977,7 +1977,7 @@
   <data name="Quota.MsSQL2019.Users" xml:space="preserve">
     <value>Benutzer</value>
   </data>
-    <data name="Quota.MySQL5.Backup" xml:space="preserve">
+  <data name="Quota.MySQL5.Backup" xml:space="preserve">
     <value>Datenbanksicherungen</value>
   </data>
   <data name="Quota.MySQL5.Databases" xml:space="preserve">
@@ -1999,9 +1999,6 @@
     <value>Datenbanken</value>
   </data>
   <data name="Quota.MySQL8.MaxDatabaseSize" xml:space="preserve">
-    <value>Max. Datenbankgröße [MB]</value>
-  </data>
-  <data name="Quota.MySQL4.MaxDatabaseSize" xml:space="preserve">
     <value>Max. Datenbankgröße [MB]</value>
   </data>
   <data name="Quota.MySQL8.Restore" xml:space="preserve">
@@ -6749,5 +6746,15 @@
   </data>
   <data name="ResourceGroup.SpamExperts" xml:space="preserve">
     <value>SpamExperts Email Filter</value>
+  </data>
+
+  <data name="TaskActivity.VPS_CREATE_CREATE_VM_ATTEMPT" xml:space="preserve">
+    <value>Creating Virtual Machine object attempt - {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_VHD_MAX_IOPS" xml:space="preserve">
+    <value>Maximum VHD IOPS: {0} </value>
+  </data>
+  <data name="Warning.VPS_CHANGE_HDD_SIZE" xml:space="preserve">
+    <value>Sie können die Festplattengröße nicht reduzieren! Bitte wenden Sie sich mit Ihren Anliegen an den technischen Support.</value>
   </data>
 </root>
