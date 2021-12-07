@@ -96,6 +96,7 @@ namespace SolidCP.Portal.ProviderControls
                 txtRamReserve.Text = "0"; //unlimited or disabled
 
             // Default Windows Configure Version
+            BindVMConfigVersionList();
             ddlHyperVConfig.SelectedValue = settings["HyperVConfigurationVersion"];
 
             // OS Templates
@@ -296,6 +297,15 @@ namespace SolidCP.Portal.ProviderControls
             settings["ClusterName"] = tbClusterName.Text;
 
             SetUnsetReplication();
+        }
+
+        private void BindVMConfigVersionList()
+        {
+            List<VMConfigurationVersion> configurationVersions;
+            configurationVersions = new List<VMConfigurationVersion>(ES.Services.VPS2012.GetVMConfigurationVersionSupportedList(PanelRequest.ServiceId));
+            configurationVersions.RemoveAll(p => p.Version == "254.0" || p.Version == "255.0"); //Remove Experimental version
+            ddlHyperVConfig.DataSource = configurationVersions;
+            ddlHyperVConfig.DataBind();
         }
 
         private void BindNetworksList()

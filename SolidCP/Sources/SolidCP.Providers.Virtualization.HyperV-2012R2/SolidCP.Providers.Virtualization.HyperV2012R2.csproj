@@ -58,6 +58,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions\PSObjectExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helpers\VmConfigurationVersionHelper.cs" />
     <Compile Include="Helpers\ReplicaHelper.cs" />
     <Compile Include="Helpers\BiosHelper.cs" />
     <Compile Include="Helpers\MemoryHelper.cs" />

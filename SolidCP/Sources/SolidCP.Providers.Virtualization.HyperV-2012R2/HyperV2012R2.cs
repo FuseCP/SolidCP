@@ -55,8 +55,8 @@ using SolidCP.Server.Utils;
 
 using Vds = Microsoft.Storage.Vds;
 using System.Configuration;
-﻿using System.Linq;
-﻿using SolidCP.Providers.Virtualization.Extensions;
+using System.Linq;
+using SolidCP.Providers.Virtualization.Extensions;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -495,8 +495,11 @@ namespace SolidCP.Providers.Virtualization
                 cmdNew.Parameters.Add("Generation", vm.Generation > 1 ? vm.Generation : 1);
                 cmdNew.Parameters.Add("VHDPath", vm.VirtualHardDrivePath[0]);
                 cmdNew.Parameters.Add("Path", msHyperVFolderPath);
-                if(CheckVersionConfigSupport(ConvertNullableToDouble(vm.Version)))
+                if(
+                    (new VmConfigurationVersionHelper(PowerShell)).IsVersionConfigSupports(ConvertNullableToVersionString(vm.Version))
+                    ){
                     cmdNew.Parameters.Add("Version", vm.Version);
+                }
                 Collection<PSObject> result = PowerShell.Execute(cmdNew, true, true);
 
                 // Get created machine Id
@@ -2144,6 +2147,12 @@ namespace SolidCP.Providers.Virtualization
             }
             return coreCount;
         }
+
+        public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
+        {
+            VmConfigurationVersionHelper vmConfiguration = new VmConfigurationVersionHelper(PowerShell);
+            return vmConfiguration.GetSupportedVersionList();
+        }
         #endregion
 
         #region IHostingServiceProvier methods
@@ -2379,55 +2388,11 @@ namespace SolidCP.Providers.Virtualization
         }
         #endregion
 
-        #region Private Methods
-        private bool CheckVersionConfigSupport(double version) //TODO: rework.
+        #region Private Methods        
+        internal string ConvertNullableToVersionString(object value)
         {
-            int CurrentBuild;
-            try
-            {
-                CurrentBuild = ConvertNullableToInt32(Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "CurrentBuild", ""));
-            }
-            catch
-            {
-                CurrentBuild = 0;
-            }
-
-            double[] VersionsConfig;
-            switch(CurrentBuild)
-            {
-                //case 9600: //Server 2012R2/Windows 8.1
-                //    VersionsConfig = new double[] { 5.0 };
-                //    break;
-                case 10586: //Windows 10 1511
-                    VersionsConfig = new double[] { 7.0, 6.2, 5.0 };
-                    break;
-                case 14393: //Windows Server 2016/Windows 10 1607
-                    VersionsConfig = new double[] { 8.0, 7.1, 7.0, 6.2, 5.0 };
-                    break;
-                case 15063: //Windows 10 1703
-                    VersionsConfig = new double[] { 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
-                    break;
-                case 16299: //Windows 10 1709
-                    VersionsConfig = new double[] { 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
-                    break;
-                case 17134: //Windows 10 1803
-                    VersionsConfig = new double[] { 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
-                    break;
-                case 17763: //Windows Server 2019 LTSC/Windows 10 1809 LTSC
-                    VersionsConfig = new double[] { 9.0, 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
-                    break;
-                case 18362: //Windows Server 2019/Windows 10 1903
-                case 18363: //Windows Server 2019/Windows 10 1909 (Service Pack)
-                    VersionsConfig = new double[] { 9.1, 9.0, 8.3, 8.2, 8.1, 8.0, 7.1, 7.0, 6.2, 5.0 };
-                    break;
-                default:    //If we don't know or Windwos too old (Windows 2012R2)
-                    VersionsConfig = new double[] { -1.0 };
-                    break;
-            }       
-            
-            return Array.IndexOf(VersionsConfig, version) != -1;
+            return value == null ? "0.0" : Convert.ToString(value);
         }
-
         internal double ConvertNullableToDouble(object value)
         {
             return value == null ? 0 : Convert.ToDouble(value);

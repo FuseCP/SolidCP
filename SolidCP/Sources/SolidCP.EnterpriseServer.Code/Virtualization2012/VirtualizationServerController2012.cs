@@ -4448,6 +4448,15 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region Virtual Machine Configuration versions 
+        public static VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
+        {
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetVMConfigurationVersionSupportedList();
+        }
+        #endregion
+
         #region Virtual Switches
         public static VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)
         {

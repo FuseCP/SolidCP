@@ -1459,6 +1459,12 @@ namespace SolidCP.Providers.Virtualization
             ManagementObject objCpu = w.GetWmiObject("win32_Processor");
             return Convert.ToInt32(objCpu["NumberOfCores"]);
         }
+
+        public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
+        {
+            //TODO: need to implement that method. Look in HyperV2012R2 class
+            return new List<VMConfigurationVersion>() { new VMConfigurationVersion { Version = "0.0", Name = "Default" } };
+        }
         #endregion
 
         #region IHostingServiceProvier methods

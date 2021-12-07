@@ -115,6 +115,7 @@ namespace SolidCP.Providers.Virtualization
 
         // Configuration
         int GetProcessorCoresNumber();
+        List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList();
 
         // Replication 
         List<CertificateInfo> GetCertificates(string remoteServer);

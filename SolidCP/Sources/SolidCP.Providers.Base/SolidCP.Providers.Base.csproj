@@ -425,6 +425,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Virtualization\VMComputerSystemStateInfo .cs" />
+    <Compile Include="Virtualization\VMConfigurationVersion.cs" />
     <Compile Include="Virtualization\VMForPCSettingsName.cs" />
     <Compile Include="WebAppGallery\DeploymentParameter.cs" />
     <Compile Include="WebAppGallery\GalleryApplication.cs" />

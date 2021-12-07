@@ -1023,6 +1023,22 @@ namespace SolidCP.Server
             }
         }
 
+        [WebMethod, SoapHeader("settings")]
+        public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetSupportedVersionList", ProviderSettings.ProviderName);
+                List<VMConfigurationVersion> result = VirtualizationProvider.GetVMConfigurationVersionSupportedList();
+                Log.WriteEnd("'{0}' GetSupportedVersionList", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetSupportedVersionList", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
         #endregion
 
 

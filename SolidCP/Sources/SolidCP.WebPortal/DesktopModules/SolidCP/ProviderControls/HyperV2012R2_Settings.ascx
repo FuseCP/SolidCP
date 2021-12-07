@@ -249,15 +249,7 @@
                     </td>
                     <td>
                         <asp:DropDownList ID="ddlHyperVConfig" runat="server" CssClass="form-control" Width="450"
-                            DataValueField="ConfigVersion" DataTextField="Name" SelectedIndex='<%# Eval("HyperVConfigurationVersion") %>'>
-                            <asp:ListItem Text="Default Windows Version" Value="0.0"></asp:ListItem>
-                            <asp:ListItem Text="5.0 - Windows Server 2012R2" Value="5.0"></asp:ListItem>
-                            <asp:ListItem Text="8.0 - Windows Server 2016 (version 1607) LTSB" Value="8.0"></asp:ListItem>
-                            <asp:ListItem Text="8.1 - Windows 10 (version 1703)" Value="8.1"></asp:ListItem>
-                            <asp:ListItem Text="8.2 - Windows 10 (version 1709)" Value="8.2"></asp:ListItem>
-                            <asp:ListItem Text="8.3 - Windows 10 (version 1803)" Value="8.3"></asp:ListItem>
-                            <asp:ListItem Text="9.0 - Windows Server 2019 (version 1809) LTSC" Value="9.0"></asp:ListItem>
-                            <asp:ListItem Text="9.1 - Windows Server 2019 (version 1903/1909)" Value="9.1"></asp:ListItem>
+                            DataValueField="Version" DataTextField="Name">
                         </asp:DropDownList>                        
                     </td>
                 </tr>
