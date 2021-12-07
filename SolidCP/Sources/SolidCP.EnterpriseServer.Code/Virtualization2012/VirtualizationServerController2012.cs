@@ -824,7 +824,7 @@ namespace SolidCP.EnterpriseServer
 
                 #region Setup External network
                 TaskManager.Write("VPS_CREATE_SETUP_EXTERNAL_NETWORK");
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = 0; // progress bar
 
                 try
                 {
@@ -868,7 +868,7 @@ namespace SolidCP.EnterpriseServer
 
                 #region Setup Management network
                 TaskManager.Write("VPS_CREATE_SETUP_MANAGEMENT_NETWORK");
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = 0; //keep it on 0, because previous tasks extremely fast.
 
                 try
                 {
@@ -929,7 +929,7 @@ namespace SolidCP.EnterpriseServer
 
                 #region Setup Private network
                 TaskManager.Write("VPS_CREATE_SETUP_PRIVATE_NETWORK");
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = 0; //keep it on 0, because previous tasks extremely fast.
 
                 try
                 {
@@ -992,7 +992,7 @@ namespace SolidCP.EnterpriseServer
                     TaskManager.Write("VPS_CREATE_CONVERT_SET_VHD_BLOCKSIZE", osTemplate.VhdBlockSizeBytes.ToString());
                 TaskManager.Write("VPS_CREATE_CONVERT_SOURCE_VHD", vm.OperatingSystemTemplatePath);
                 TaskManager.Write("VPS_CREATE_CONVERT_DEST_VHD", vm.VirtualHardDrivePath);
-                TaskManager.IndicatorCurrent = -1;
+                TaskManager.IndicatorCurrent = 0; //keep it on 0, because previous tasks extremely fast.
                 try
                 {
                     // convert VHD
@@ -1017,7 +1017,7 @@ namespace SolidCP.EnterpriseServer
                         }
 
                         // wait for completion
-                        if (!JobCompleted(vs, result.Job))
+                        if (!JobCompleted(vs, result.Job, false)) //there we are updating TaskManager.IndicatorCurrent
                         {
                             TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
                             return;
@@ -1032,6 +1032,9 @@ namespace SolidCP.EnterpriseServer
                     return;
                 }
                 #endregion
+                // reset the progress bar to 70, from 100 after VHD conversion, just to keep the progress bar nice
+                // in most case we anyway don't get 100, only if there are no empty blocks in the VHD template at the end of the VHD and Windows cannot skip them when converting (that usually happens if templates wasn't defragmentated).
+                TaskManager.IndicatorCurrent = 70;
 
                 #region Get VHD info
                 VirtualHardDiskInfo vhdInfo = null;
@@ -1064,7 +1067,7 @@ namespace SolidCP.EnterpriseServer
                 if (vm.HddSize[0] > hddSizeGB)
                 {
                     TaskManager.Write("VPS_CREATE_EXPAND_VHD");
-                    TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                    TaskManager.IndicatorCurrent = 71;
 
                     // expand VHD
                     try
@@ -1086,7 +1089,7 @@ namespace SolidCP.EnterpriseServer
                     }
 
                     // wait for completion
-                    if (!JobCompleted(vs, result.Job))
+                    if (!JobCompleted(vs, result.Job, false))
                     {
                         // error executing Expand job
                         TaskManager.WriteError("VPS_CREATE_EXPAND_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription);
@@ -1136,6 +1139,7 @@ namespace SolidCP.EnterpriseServer
                             return;
                         }
                         #endregion
+                        TaskManager.IndicatorCurrent = 75;
 
                         #region Expand volume
                         if (expanded && osTemplate.ProcessVolume != -1 && mountedInfo.DiskVolumes.Length > 0)
@@ -1154,6 +1158,7 @@ namespace SolidCP.EnterpriseServer
                             TaskManager.Write("VPS_CREATE_EXPAND_VHD_SKIP_NO_VOLUMES");
                         }
                         #endregion
+                        TaskManager.IndicatorCurrent = 80;
 
                         #region Sysprep
                         if (mountedInfo.DiskVolumes.Length > 0
@@ -1196,6 +1201,7 @@ namespace SolidCP.EnterpriseServer
                             }
                         }
                         #endregion
+                        TaskManager.IndicatorCurrent = 85;
 
                         #region Unmount VHD
                         try
@@ -1222,6 +1228,7 @@ namespace SolidCP.EnterpriseServer
                     }
                 } // end if (expanded ...
                 #endregion
+                TaskManager.IndicatorCurrent = 90;
 
                 vm.ClusterName = (Utils.ParseBool(settings["UseFailoverCluster"], false)) ? settings["ClusterName"] : null;
 
@@ -1231,7 +1238,7 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.Write("VPS_CREATE_VHD_MIN_IOPS", vm.HddMinimumIOPS.ToString());
                 TaskManager.Write("VPS_CREATE_VHD_MAX_IOPS", vm.HddMaximumIOPS.ToString());
                 TaskManager.Write("VPS_CREATE_CREATE_VM");
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = 95;
                 // create virtual machine
                 bool isCreatedVMConfigSuccess = false;
                 for (byte attempt = 1; attempt <= 3; attempt++)
@@ -1325,7 +1332,7 @@ namespace SolidCP.EnterpriseServer
 
                 #region Start VPS
                 TaskManager.Write("VPS_CREATE_START_VPS");
-                TaskManager.IndicatorCurrent = -1; // Some providers (for example HyperV2012R2) could not provide progress 
+                TaskManager.IndicatorCurrent = 98;
 
                 try
                 {
@@ -1336,7 +1343,7 @@ namespace SolidCP.EnterpriseServer
                     if (result.ReturnValue == ReturnCode.JobStarted)
                     {
                         // wait for completion
-                        if (!JobCompleted(vs, result.Job))
+                        if (!JobCompleted(vs, result.Job, false))
                         {
                             TaskManager.WriteWarning("VPS_CREATE_START_VPS_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
                         }
@@ -1360,7 +1367,7 @@ namespace SolidCP.EnterpriseServer
                     SendVirtualMachineSummaryLetter(vm.Id, summaryLetterEmail, null, true);
                 }
                 #endregion
-
+                TaskManager.IndicatorCurrent = 99; //CompleteTask make it to 100
             }
             catch (Exception ex)
             {
@@ -5285,7 +5292,7 @@ namespace SolidCP.EnterpriseServer
             res.ErrorCodes.Add(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":" + job.ErrorDescription);
         }
 
-        private static bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job)
+        private static bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
         {
             TaskManager.IndicatorMaximum = 100;
             bool jobCompleted = true;
@@ -5305,12 +5312,13 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.IndicatorCurrent = job.PercentComplete;
             }
 
-            if (job.JobState != ConcreteJobState.Completed)
-            {
+            if (job.JobState != ConcreteJobState.Completed) {
                 jobCompleted = false;
             }
-
-            TaskManager.IndicatorCurrent = 0;   // reset indicator
+            if (resetProgressBarIndicatorAfterFinish) {
+                TaskManager.IndicatorCurrent = 0;   // reset indicator
+            }
+            
             vs.ClearOldJobs();
 
             return jobCompleted;
