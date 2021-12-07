@@ -2150,6 +2150,7 @@ namespace SolidCP.Providers.Virtualization
 
         public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
         {
+            //NOTE: we have a computer remote name in HyperV2012 class when init them (and in PowerShell too), so not need to pass it again throug the function for Remote HyperV. 
             VmConfigurationVersionHelper vmConfiguration = new VmConfigurationVersionHelper(PowerShell);
             return vmConfiguration.GetSupportedVersionList();
         }
