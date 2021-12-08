@@ -1891,6 +1891,14 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@quotasXml", quotasXml),
                 new SqlParameter("@defaultTopPackage", defaultTopPackage));
         }
+        public static void ChangePackageUser(int actorId, int packageId, int userId)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "ChangePackageUser",                
+                new SqlParameter("@PackageId", packageId),
+                new SqlParameter("@ActorId", actorId),
+                new SqlParameter("@UserId", userId));
+        }
 
         public static void UpdatePackageName(int actorId, int packageId, string packageName,
             string packageComments)

@@ -888,6 +888,23 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
+        public static int ChangePackageUser(int packageId, int UserId)
+        {
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
+                | DemandAccount.IsResellerCSR);
+            if (accountCheck < 0) {
+                return accountCheck;
+            }
+
+            int actorId = SecurityContext.User.UserId;
+
+            TaskManager.StartTask(null, "HOSTING_SPACE", "CHANGE_USER", packageId, UserId);
+            DataProvider.ChangePackageUser(actorId, packageId, UserId);
+            TaskManager.CompleteTask();
+
+            return 0;
+        }
+
         public static int UpdatePackageName(int packageId, string packageName,
             string packageComments)
         {
