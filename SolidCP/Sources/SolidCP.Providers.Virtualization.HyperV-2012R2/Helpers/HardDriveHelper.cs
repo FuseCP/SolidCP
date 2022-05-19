@@ -312,7 +312,7 @@ namespace SolidCP.Providers.Virtualization
                     {
                         if (!string.IsNullOrEmpty(serverNameSettings))
                         {
-                            string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
+                            string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path \"" + disk.Path + "\" }";
                             powerShell.Execute(new Command(cmd, true), false);
                         }
                         else
@@ -335,7 +335,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 if (!string.IsNullOrEmpty(serverNameSettings))
                 {
-                    string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
+                    string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path \"" + disk.Path + "\" }";
                     powerShell.Execute(new Command(cmd, true), false);
                 }
                 else
