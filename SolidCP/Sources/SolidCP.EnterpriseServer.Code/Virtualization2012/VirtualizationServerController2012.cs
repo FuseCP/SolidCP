@@ -1017,7 +1017,7 @@ namespace SolidCP.EnterpriseServer
                         }
 
                         // wait for completion
-                        if (!JobCompleted(vs, result.Job, false)) //there we are updating TaskManager.IndicatorCurrent
+                        if (!TryJobCompleted(vs, result.Job, false)) //there we are updating TaskManager.IndicatorCurrent
                         {
                             TaskManager.WriteError("VPS_CREATE_CONVERT_VHD_ERROR_JOB_EXEC", result.Job.ErrorDescription.ToString());
                             return;
@@ -5290,6 +5290,35 @@ namespace SolidCP.EnterpriseServer
         private static void LogJobResult(ResultObject res, ConcreteJob job)
         {
             res.ErrorCodes.Add(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":" + job.ErrorDescription);
+        }
+
+        private static bool TryJobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
+        {
+            bool jobCompleted = false;
+            short timeout = 5;
+            while (timeout > 0)
+            {
+                timeout--;
+                try
+                {
+                    jobCompleted = JobCompleted(vs, job, resetProgressBarIndicatorAfterFinish);
+                }
+                catch (ThreadAbortException) //https://github.com/FuseCP/SolidCP/issues/103
+                {
+                    //maybe there need to use Thread.ResetAbort(); ???
+
+                    TaskManager.Write("VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT", timeout.ToString());
+                    job = vs.GetJob(job.Id); //get the last job state
+
+                    jobCompleted = (job.JobState == ConcreteJobState.Completed); //is job completed?                                      
+                }
+
+                if (jobCompleted) {
+                    timeout = 0;
+                }
+            }
+            
+            return jobCompleted;
         }
 
         private static bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
