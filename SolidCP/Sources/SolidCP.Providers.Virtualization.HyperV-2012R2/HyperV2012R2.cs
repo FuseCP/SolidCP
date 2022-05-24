@@ -1026,7 +1026,12 @@ namespace SolidCP.Providers.Virtualization
             }
             if (withExternalData)
             {
-                HardDriveHelper.Delete(PowerShell, vm.Disks, ServerNameSettings);
+                try {
+                    HardDriveHelper.Delete(PowerShell, vm.Disks, ServerNameSettings);
+                } catch (Exception ex) {
+                    return JobHelper.CreateUnsuccessResult(ReturnCode.Failed, ex.Message);
+                }
+                
                 SnapshotHelper.Delete(PowerShell, vm.Name);                
                 //something else???
             }            

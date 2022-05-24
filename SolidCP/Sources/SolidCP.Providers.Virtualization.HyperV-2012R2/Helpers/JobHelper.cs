@@ -21,6 +21,18 @@ namespace SolidCP.Providers.Virtualization
             };
         }
 
+        public static JobResult CreateUnsuccessResult(ReturnCode returnCode = ReturnCode.Failed, string errorString = "")
+        {
+            return new JobResult
+            {
+                Job = new ConcreteJob { 
+                    JobState = ConcreteJobState.Exception,
+                    ErrorDescription = errorString
+                },
+                ReturnValue = returnCode
+            };
+        }
+
         public static JobResult CreateResultFromPSResults(Collection<PSObject> objJob)
         {
             if (objJob == null || objJob.Count == 0)

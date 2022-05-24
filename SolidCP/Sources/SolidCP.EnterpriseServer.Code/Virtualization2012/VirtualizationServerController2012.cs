@@ -4721,7 +4721,7 @@ namespace SolidCP.EnterpriseServer
             string taskId = vm.CurrentTaskId;
             // start task
             int maximumExecutionSeconds = 60 * 20;
-            TaskManager.StartTask(taskId, "VPS", "DELETE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
+            TaskManager.StartTask(taskId, "VPS2012", "DELETE", vm.Name, vm.Id, vm.PackageId, maximumExecutionSeconds);
 
             CheckCustomPsScript(PsScriptPoint.before_deletion, vm);
 
@@ -4751,13 +4751,13 @@ namespace SolidCP.EnterpriseServer
                         // check result
                         if (result.ReturnValue != ReturnCode.JobStarted)
                         {
-                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR + ":", result.ReturnValue.ToString());
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR, result.ReturnValue.ToString());
                             return;
                         }
                         // wait for completion
                         if (!JobCompleted(vs, result.Job)) //TODO:
                         {
-                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":", result.Job.ErrorDescription.ToString());
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR, result.Job.ErrorDescription.ToString());
                             return;
                         }
                     }
@@ -4772,14 +4772,14 @@ namespace SolidCP.EnterpriseServer
                         // check result
                         if (result.ReturnValue != ReturnCode.JobStarted)
                         {
-                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR + ":", result.ReturnValue.ToString());
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR, result.ReturnValue.ToString());
                             return;
                         }
 
                         // wait for completion
                         if (!JobCompleted(vs, result.Job))
                         {
-                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":", result.Job.ErrorDescription.ToString());
+                            TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR, result.Job.ErrorDescription.ToString());
                             return;
                         }
                     }
@@ -4792,13 +4792,17 @@ namespace SolidCP.EnterpriseServer
                     // check result
                     if (result.ReturnValue != ReturnCode.JobStarted)
                     {
-                        TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR + ":", result.ReturnValue.ToString());
+                        TaskManager.WriteError(VirtualizationErrorCodes.JOB_START_ERROR, result.ReturnValue.ToString());
+                        if (!string.IsNullOrEmpty(result.Job.ErrorDescription))
+                        {
+                            TaskManager.WriteError("Error: {0}", result.Job.ErrorDescription);
+                        }                        
                         return;
                     }
                     // wait for completion
                     if (!JobCompleted(vs, result.Job))
                     {
-                        TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR + ":", result.Job.ErrorDescription.ToString());
+                        TaskManager.WriteError(VirtualizationErrorCodes.JOB_FAILED_ERROR, result.Job.ErrorDescription.ToString());
                         return;
                     }
                     #endregion
@@ -4828,7 +4832,7 @@ namespace SolidCP.EnterpriseServer
             }
             catch (Exception ex)
             {
-                TaskManager.WriteError(ex, VirtualizationErrorCodes.DELETE_ERROR + ":");
+                TaskManager.WriteError(ex, VirtualizationErrorCodes.DELETE_ERROR);
                 //return;
             }
             finally
