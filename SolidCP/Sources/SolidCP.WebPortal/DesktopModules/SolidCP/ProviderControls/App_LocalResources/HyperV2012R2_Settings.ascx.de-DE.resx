@@ -609,4 +609,13 @@
   <data name="liRunAtPrivNetwork.Text" xml:space="preserve">
     <value>Private Netzwerkkonfiguration</value>
   </data>
+  <data name="locMaintenanceModeText.Text" xml:space="preserve">
+    <value>If the maintenance mode is enabled, you disable the installation or reinstallation of the servers for clients.</value>
+  </data>
+  <data name="locRemoteServerHelp.Text" xml:space="preserve">
+    <value>Note: Check out the documentation on how to set up a remote connection if your servers don't use a domain. &lt;br&gt;
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting
+&lt;br&gt;
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting?view=powershell-7.2#how-to-connect-remotely-from-a-workgroup-based-computer</value>
+  </data>
 </root>
