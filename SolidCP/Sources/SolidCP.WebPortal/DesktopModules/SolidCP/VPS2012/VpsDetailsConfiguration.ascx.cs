@@ -156,7 +156,8 @@ namespace SolidCP.Portal.VPS2012
             if (vm.HddSize.Length < 2) return result;
             for (int i = 1; i < vm.HddSize.Length; i++)
             {
-                AdditionalHdd hdd = new AdditionalHdd(String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize[i]), "");
+                AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i], "");
+                hdd.DiskSizeTxt = String.Format(GetLocalizedString("Hdd.Text"), vm.HddSize[i]);
                 result.Add(hdd);
             }
 

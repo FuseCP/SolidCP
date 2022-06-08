@@ -50,7 +50,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             {
                 long maxValue = quota.QuotaAllocatedValue - quota.QuotaUsedValue + currentVal;
                 if (val > maxValue)
+                {
+                    if (messageKey == VirtualizationErrorCodes.QUOTA_EXCEEDED_HDDS) maxValue -= currentVal;
                     errors.Add(messageKey + ":" + maxValue);
+                }
             }
             else if (quota.QuotaTypeId == 3 && val > quota.QuotaAllocatedValue)
             {

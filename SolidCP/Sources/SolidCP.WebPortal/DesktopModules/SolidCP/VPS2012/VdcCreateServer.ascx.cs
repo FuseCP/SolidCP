@@ -546,7 +546,7 @@ namespace SolidCP.Portal.VPS2012
                 List<AdditionalHdd> additionalHdd = GetAdditionalHdd();
                 foreach (AdditionalHdd hdd in additionalHdd)
                 {
-                    int size = Utils.ParseInt(hdd.DiskSize.Trim());
+                    int size = hdd.DiskSize;
                     if (size > 0) hddSize.Add(size);
                 }
                 virtualMachine.HddSize = hddSize.ToArray();
@@ -670,9 +670,25 @@ namespace SolidCP.Portal.VPS2012
 
         protected void btnAddHdd_Click(object sender, EventArgs e)
         {
-            var hdd = GetAdditionalHdd();
-            hdd.Add(new AdditionalHdd());
-            RebindAdditionalHdd(hdd);
+            var hdds = GetAdditionalHdd();
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            int freeHddGb = 0;
+            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_HDD))
+            {
+                QuotaValueInfo hddQuota = cntx.Quotas[Quotas.VPS2012_HDD];
+                if (hddQuota.QuotaAllocatedValue != -1)
+                {
+                    int availSize = hddQuota.QuotaAllocatedValue - hddQuota.QuotaUsedValue;
+                    freeHddGb = availSize < 0 ? 0 : availSize;
+                }
+            }
+            freeHddGb -= Utils.ParseInt(txtHdd.Text.Trim());
+            foreach (AdditionalHdd hdd in hdds)
+            {
+                if (hdd.DiskSize > 0) freeHddGb -= hdd.DiskSize;
+            }
+            hdds.Add(new AdditionalHdd(freeHddGb, ""));
+            RebindAdditionalHdd(hdds);
         }
 
         protected void btnRemoveHdd_OnCommand(object sender, CommandEventArgs e)
@@ -729,7 +745,7 @@ namespace SolidCP.Portal.VPS2012
 
             foreach (RepeaterItem item in repHdd.Items)
             {
-                AdditionalHdd hdd = new AdditionalHdd(GetTextBoxText(item, "txtAdditionalHdd"), "");
+                AdditionalHdd hdd = new AdditionalHdd(Utils.ParseInt(GetTextBoxText(item, "txtAdditionalHdd").Trim()), "");
                 result.Add(hdd);
             }
 

@@ -315,7 +315,7 @@ namespace SolidCP.Portal.VPS2012
             for (int i = 1; i < vm.HddSize.Length; i++)
             {
                 if (String.IsNullOrEmpty(vm.VirtualHardDrivePath[i])) continue;
-                AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i].ToString(), vm.VirtualHardDrivePath[i]);
+                AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i], vm.VirtualHardDrivePath[i]);
                 result.Add(hdd);
             }
 
