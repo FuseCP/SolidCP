@@ -16804,6 +16804,7 @@ WHEN 8 THEN ''SecurityGroup''
 WHEN 9 THEN ''DefaultSecurityGroup''
 WHEN 10 THEN ''SharedMailbox''
 WHEN 11 THEN ''DeletedUser''
+WHEN 12 THEN ''JournalingMailbox''
 '
 
 SET @sql = '
@@ -16822,7 +16823,7 @@ SET @sql = '
  INNER JOIN Packages AS P ON P.PackageID = SI.PackageID
  INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
  WHERE
-  dbo.CheckUserParent(@UserID, P.UserID) = 1
+  dbo.CheckUserParent(@UserID, P.UserID) = 1 AND SI.ItemTypeID=29
  DECLARE @ItemsDomain TABLE
  (
   ItemID int,

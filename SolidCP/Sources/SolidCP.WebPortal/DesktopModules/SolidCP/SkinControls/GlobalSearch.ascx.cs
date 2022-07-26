@@ -179,6 +179,12 @@ namespace SolidCP.Portal.SkinControls
                                 PortalUtils.SPACE_ID_PARAM + "=" + spaceId, "ctl=edit_user",
                                 "AccountID=" + accountId, "Context=Mailbox", "moduleDefId=ExchangeServer");
                         }
+                        else if (fullType.Equals("JournalingMailbox"))
+                        {
+                            res = PortalUtils.NavigatePageURL(PID_SPACE_EXCHANGESERVER, "ItemID", itemId.ToString(),
+                                PortalUtils.SPACE_ID_PARAM + "=" + spaceId, "ctl=edit_user",
+                                "AccountID=" + accountId, "Context=JournalingMailbox", "moduleDefId=ExchangeServer");
+                        }
                         else if (fullType.Equals("Equipment"))
                         {
                             res = PortalUtils.NavigatePageURL(PID_SPACE_EXCHANGESERVER, "ItemID", itemId.ToString(),
