@@ -16811,19 +16811,21 @@ SET @sql = '
  DECLARE @ItemsService TABLE
  (
   ItemID int,
+  ItemTypeID int,
   Username nvarchar(100),
   Fullname nvarchar(100)
  )
- INSERT INTO @ItemsService (ItemID, Username, Fullname)
+ INSERT INTO @ItemsService (ItemID, ItemTypeID, Username, Fullname)
  SELECT
   SI.ItemID,
+  SI.ItemTypeID,
   U.Username,
   U.FirstName + '' '' + U.LastName as Fullname
  FROM ServiceItems AS SI
  INNER JOIN Packages AS P ON P.PackageID = SI.PackageID
  INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
  WHERE
-  dbo.CheckUserParent(@UserID, P.UserID) = 1 AND SI.ItemTypeID=29
+  dbo.CheckUserParent(@UserID, P.UserID) = 1
  DECLARE @ItemsDomain TABLE
  (
   ItemID int,
@@ -16944,9 +16946,10 @@ SET @sql = @sql + '
   I3.Fullname
  FROM @ItemsService AS I3
  INNER JOIN ServiceItems AS SI3 ON I3.ItemID = SI3.ItemID
- INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON I3.ItemID = EAEA.AccountID'
+ INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON I3.ItemID = EAEA.AccountID
+ WHERE I3.ItemTypeID = 29'
 IF @FilterValue <> ''
- SET @sql = @sql + ' WHERE (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
+ SET @sql = @sql + ' AND (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
  SET @sql = @sql + ')'
 IF @OnlyFind = 1
 	SET @sql = @sql + ' ORDER BY TextSearch';
