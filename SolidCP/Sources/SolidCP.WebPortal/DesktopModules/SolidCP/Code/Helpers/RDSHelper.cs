@@ -96,7 +96,7 @@ namespace SolidCP.Portal
 
         public RdsCollection[] GetRDSCollectonsPaged(int itemId, int maximumRows, int startRowIndex, string sortColumn, string filterValue)
         {
-            rdsCollections = ES.Services.RDS.GetRdsCollectionsPaged(itemId, "Name", filterValue, sortColumn, startRowIndex, maximumRows);
+            rdsCollections = ES.Services.RDS.GetRdsCollectionsPaged(itemId, "DisplayName", filterValue, sortColumn, startRowIndex, maximumRows);
 
             return rdsCollections.Collections;
 
