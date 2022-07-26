@@ -2376,7 +2376,8 @@ namespace SolidCP.EnterpriseServer
 
                 Organizations orgProxy = OrganizationController.GetOrganizationProxy(org.ServiceId);
 
-                List<MappedDrive> mappedDrives = orgProxy.GetDriveMaps(org.OrganizationId).Where(x => x.LabelAs.Contains(filterValue)).ToList();
+                if (!String.IsNullOrEmpty(filterValue)) filterValue = filterValue.ToLower();
+                List<MappedDrive> mappedDrives = orgProxy.GetDriveMaps(org.OrganizationId).Where(x => x.LabelAs.ToLower().Contains(filterValue)).ToList();
                 var resultItems = new List<MappedDrive>();
 
                 foreach (var folder in folders)
