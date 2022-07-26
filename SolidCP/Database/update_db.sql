@@ -23378,3 +23378,10 @@ BEGIN
 INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (2, N'SolidCP', N'SolidCP', N'SolidCP', 1, 9)
 END
 GO
+
+-- SimpleDNS 9.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1901' AND DisplayName = 'SimpleDNS Plus 9.x')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1903, 7, N'SimpleDNS', N'SimpleDNS Plus 9.x', N'SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90', N'SimpleDNS', NULL)
+END
+GO
