@@ -17263,6 +17263,51 @@ VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, 
 FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
 END
 
+/*------------------------------------VPS-IP------------------------------------------------*/
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SI.ItemID as ItemID,
+  SI.ItemName as TextSearch,
+  SIT.DisplayName as ColumnType,
+  SIT.DisplayName as FullType,
+  P.PackageID as PackageID,
+  0 as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM ServiceItems AS SI
+ INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+ INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN Users AS U ON U.UserID = P.UserID
+ LEFT JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID
+ LEFT JOIN PackageIPAddresses AS PACIP ON PACIP.ItemID = SI.ItemID
+ LEFT JOIN IPAddresses AS IPS ON IPS.AddressID = PACIP.AddressID
+ WHERE SIT.DisplayName = ''VirtualMachine''
+  AND ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND dbo.CheckUserParent(@UserID, P.UserID) = 1
+  AND (''' + @FilterValue + ''' LIKE ''%.%'' OR ''' + @FilterValue + ''' LIKE ''%:%'')
+  AND (PIP.IPAddress LIKE ''' + @FilterValue + ''' OR IPS.ExternalIP LIKE ''' + @FilterValue + ''')'
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ';open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
 /*------------------------------------SharePoint------------------------------------------------*/
 SET @sql = '
 SET @curValue = cursor local for
