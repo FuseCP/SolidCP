@@ -16707,7 +16707,7 @@ DECLARE @ItemsAll TABLE
   Username nvarchar(100),
   Fullname nvarchar(100)
  )
-DECLARE @sql nvarchar(4000)
+DECLARE @sql nvarchar(max)
 
 /*------------------------------------------------Users---------------------------------------------------------------*/
 DECLARE @columnUsername nvarchar(20)  
