@@ -123,9 +123,6 @@
   <data name="btnUpdate.OnClientClick" xml:space="preserve">
     <value>if(!confirm('Before applying new configuration VPS will be stopped.\n\nAfter the configuration is changed it will be started again automatically.\n\nDo you want to proceed?')) return false; ShowProgressDialog('Updating configuration...');</value>
   </data>
-  <data name="btnUpdate.Text" xml:space="preserve">
-    <value>Update</value>
-  </data>
   <data name="chkBootFromCd.Text" xml:space="preserve">
     <value>Boot from CD</value>
   </data>
