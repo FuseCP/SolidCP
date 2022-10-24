@@ -19,12 +19,12 @@
 
 		<DiffCmd>$(TrunkFolder)\Tools\Diff.exe</DiffCmd>
 		<!-- Lets keep all tools we need for the build together in a well-known place to avoid BUILD HELL -->
-		<SqlCmd Condition="Exists('$(RootFolder)\tools\sqlcmd\sqlcmd.exe')">"$(RootFolder)\tools\sqlcmd\sqlcmd.exe" -S (local)\SQLEXPRESS -E</SqlCmd>
+		<SqlCmd Condition="Exists('$(RootFolder)\tools\sqlcmd\sqlcmd.exe')">"$(RootFolder)\tools\sqlcmd\sqlcmd.exe" -S (local) -E</SqlCmd>
 		<MSDeployPath Condition="Exists('$(RootFolder)\tools\webdeploy\msdeploy.exe')">"$(RootFolder)\tools\webdeploy\msdeploy.exe"</MSDeployPath>
 		<ZipCmd>"$(RootFolder)\tools\7-Zip\7z.exe"</ZipCmd>
 
 		<DataBaseName>SolidCP_build</DataBaseName>
-		<MSDeployConnectionString>server=(local)\SQLEXPRESS;database=$(DataBaseName);Integrated Security=true;</MSDeployConnectionString>
+		<MSDeployConnectionString>server=(local);database=$(DataBaseName);Integrated Security=true;</MSDeployConnectionString>
 
 		<PortalSrc>$(TrunkFolder)\Sources\SolidCP.WebPortal</PortalSrc>
 		<WebDavPortalSrc>$(TrunkFolder)\Sources\SolidCP.WebDavPortal</WebDavPortalSrc>
