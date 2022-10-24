@@ -29,6 +29,7 @@
             <asp:DropDownList runat="server" ID="UserNameFormatDropDown">
                 <asp:ListItem Value="1" meta:resourcekey="listItemStandard"/>
                 <asp:ListItem Value="2" meta:resourcekey="listItemAppendOrgId"/>
+                <asp:ListItem Value="3" meta:resourcekey="listItemAppendCounterIfNeeded"/>
             </asp:DropDownList>
         </td>
     </tr>
