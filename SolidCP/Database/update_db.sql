@@ -16003,6 +16003,39 @@ GO
 SET QUOTED_IDENTIFIER OFF
 GO
 
+--- ChangePackageUser ---
+-------------------------
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'ChangePackageUser')
+BEGIN
+DROP PROCEDURE ChangePackageUser
+END
+GO
+
+CREATE PROCEDURE [dbo].[ChangePackageUser]
+(
+	@PackageID int,
+	@ActorID int,
+	@UserID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE Packages
+SET UserID = @UserID
+WHERE PackageID = @PackageID
+
+COMMIT TRAN
+
+RETURN
+GO
+
+--- GetVirtualServices ---
+--------------------------
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualServices')
 BEGIN
 DROP PROCEDURE GetVirtualServices

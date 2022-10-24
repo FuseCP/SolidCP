@@ -6747,7 +6747,6 @@
   <data name="ResourceGroup.SpamExperts" xml:space="preserve">
     <value>SpamExperts Email Filter</value>
   </data>
-
   <data name="TaskActivity.VPS_CREATE_CREATE_VM_ATTEMPT" xml:space="preserve">
     <value>Creating Virtual Machine object attempt - {0}</value>
   </data>
@@ -6756,5 +6755,14 @@
   </data>
   <data name="Warning.VPS_CHANGE_HDD_SIZE" xml:space="preserve">
     <value>Sie können die Festplattengröße nicht reduzieren! Bitte wenden Sie sich mit Ihren Anliegen an den technischen Support.</value>
+  </data>
+  <data name="TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT" xml:space="preserve">
+    <value>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_JOB_FAILED_ERROR" xml:space="preserve">
+    <value>Job execution failed with the following code: {0}</value>
+  </data>
+  <data name="TaskActivity.VPS_JOB_START_ERROR" xml:space="preserve">
+    <value>Job failed to start with the following code: {0}</value>
   </data>
 </root>

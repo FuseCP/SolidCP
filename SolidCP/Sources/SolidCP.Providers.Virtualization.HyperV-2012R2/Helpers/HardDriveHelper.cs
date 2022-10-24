@@ -308,23 +308,7 @@ namespace SolidCP.Providers.Virtualization
                 foreach (VirtualHardDiskInfo diskItem in disks)
                 {
                     VirtualHardDiskInfo disk = diskItem;
-                    do
-                    {
-                        if (!string.IsNullOrEmpty(serverNameSettings))
-                        {
-                            string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
-                            powerShell.Execute(new Command(cmd, true), false);
-                        }
-                        else
-                        {
-                            Command cmd = new Command("Remove-item");
-                            cmd.Parameters.Add("path", disk.Path);
-                            powerShell.Execute(cmd, false);
-                        }
-                        // remove all parent disks
-                        disk.Path = disk.ParentPath;
-                        if (!String.IsNullOrEmpty(disk.Path)) GetVirtualHardDiskDetail(powerShell, disk.Path, ref disk);
-                    } while (!String.IsNullOrEmpty(disk.Path));
+                    Delete(powerShell, disk, serverNameSettings);
                 }
             }
         }
@@ -333,15 +317,17 @@ namespace SolidCP.Providers.Virtualization
         {
             do
             {
+                Command cmd = new Command("Remove-item");
+                cmd.Parameters.Add("path", disk.Path);
+
                 if (!string.IsNullOrEmpty(serverNameSettings))
                 {
-                    string cmd = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path " + disk.Path + " }";
-                    powerShell.Execute(new Command(cmd, true), false);
+                    //string cmdScript = "Invoke-Command -ComputerName " + serverNameSettings + " -ScriptBlock { Remove-item -path \"" + disk.Path + "\" }";
+                    string cmdScript = "Invoke-Command -ComputerName '" + serverNameSettings + "' -ScriptBlock { " + powerShell.ConvertCommandAsScript(cmd) + " }";
+                    powerShell.Execute(new Command(cmdScript, true), false, true); //throw an exception that should help set up the connection to the remote server.
                 }
                 else
-                {
-                    Command cmd = new Command("Remove-item");
-                    cmd.Parameters.Add("path", disk.Path);
+                {   
                     powerShell.Execute(cmd, false);
                 }
                 // remove all parent disks

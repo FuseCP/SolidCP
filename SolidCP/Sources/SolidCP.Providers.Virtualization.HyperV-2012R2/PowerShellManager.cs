@@ -263,8 +263,13 @@ namespace SolidCP.Providers.Virtualization
         {
             return "Start-Job -ScriptBlock {" + cmd + "}";
         }
+        #endregion
 
-        private string ConvertCommandsAsScript(Collection<Command> cmds)
+        #region ConvertAsScript
+        ///<summary>
+        ///IMPORTANT! Does not support all kinds of commands (basically which accept objects), before using check that it converts correctly.
+        ///</summary>
+        public string ConvertCommandsAsScript(Collection<Command> cmds)
         {
             StringBuilder sb = new StringBuilder();
             string formatString = " {0} |";
@@ -276,7 +281,10 @@ namespace SolidCP.Providers.Virtualization
             return sb.ToString();
         }
 
-        private string ConvertCommandAsScript(Command cmd)
+        ///<summary>
+        ///IMPORTANT! Does not support all kinds of commands (basically which accept objects), before using check that it converts correctly.
+        ///</summary>
+        public string ConvertCommandAsScript(Command cmd)
         {
             StringBuilder sb = new StringBuilder(cmd.CommandText);
             foreach (CommandParameter parameter in cmd.Parameters)

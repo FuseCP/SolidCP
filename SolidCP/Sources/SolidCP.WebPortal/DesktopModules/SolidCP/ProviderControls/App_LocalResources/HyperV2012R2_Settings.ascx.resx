@@ -340,7 +340,7 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
     <value>&lt;b&gt;Local&lt;/b&gt; - Hyper-V role is installed on this server</value>
   </data>
   <data name="radioServerRemote.Text" xml:space="preserve">
-    <value>&lt;b&gt;Remote&lt;/b&gt; - Remote Windows 2008 Server Core or Hyper-V Server 2008</value>
+    <value>&lt;b&gt;Remote&lt;/b&gt; - Remote Windows Server Core or Hyper-V Server</value>
   </data>
   <data name="ServerNameValidator.ErrorMessage" xml:space="preserve">
     <value>Enter server name</value>
@@ -620,5 +620,11 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   </data>
   <data name="liRunAtPrivNetwork.Text" xml:space="preserve">
     <value>Private network configuration</value>
+  </data>
+  <data name="locRemoteServerHelp.Text" xml:space="preserve">
+    <value>Note: Check out the documentation on how to set up a remote connection if your servers don't use a domain. &lt;br&gt;
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting
+&lt;br&gt;
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting?view=powershell-7.2#how-to-connect-remotely-from-a-workgroup-based-computer</value>
   </data>
 </root>

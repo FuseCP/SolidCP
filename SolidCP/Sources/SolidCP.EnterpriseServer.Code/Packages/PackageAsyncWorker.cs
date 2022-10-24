@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.Providers;
 using SolidCP.Providers.Virtualization;
 
@@ -256,7 +257,7 @@ namespace SolidCP.EnterpriseServer
                                     prov.ChangeServiceItemsState(objItems.ToArray(), enabled);
                                 else
                                 {
-                                    if (items[i] is VirtualMachine) VirtualizationServerController2012.CheckCustomPsScript(VirtualizationServerController2012.PsScriptPoint.before_deletion, (VirtualMachine)items[i]);
+                                    if (items[i] is VirtualMachine) PowerShellScript.CheckCustomPsScript(PsScriptPoint.before_deletion, (VirtualMachine)items[i]);
                                     prov.DeleteServiceItems(objItems.ToArray());
                                 }
 
