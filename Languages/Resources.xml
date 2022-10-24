@@ -13327,6 +13327,21 @@
     <DefaultValue>Creating Virtual Machine object attempt - {0}</DefaultValue>
   </Resource>
   <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT</Key>
+    <DefaultValue>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_JOB_FAILED_ERROR</Key>
+    <DefaultValue>Job execution failed with the following code: {0}</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_JOB_START_ERROR</Key>
+    <DefaultValue>Job failed to start with the following code: {0}</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
     <Key>btnUpdate.Text</Key>
     <DefaultValue>Apply</DefaultValue>
@@ -38124,7 +38139,7 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
     <Key>radioServerRemote.Text</Key>
-    <DefaultValue>&lt;b&gt;Remote&lt;/b&gt; - Remote Windows 2008 Server Core or Hyper-V Server 2008</DefaultValue>
+    <DefaultValue>&lt;b&gt;Remote&lt;/b&gt; - Remote Windows Server Core or Hyper-V Server</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
@@ -38590,6 +38605,14 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
     <Key>liRunAtPrivNetwork.Text</Key>
     <DefaultValue>Private network configuration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>locRemoteServerHelp.Text</Key>
+    <DefaultValue>Note: Check out the documentation on how to set up a remote connection if your servers don't use a domain. &lt;br&gt;
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting
+&lt;br&gt;
+https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_remote_troubleshooting?view=powershell-7.2#how-to-connect-remotely-from-a-workgroup-based-computer</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperVForPrivateCloud_Settings.ascx.resx</File>
@@ -42906,6 +42929,11 @@ for your installation of ADO.NET Driver for MySQL (also known as MySQL Connector
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Organizations_Settings.ascx.resx</File>
     <Key>listItemAppendOrgId.Text</Key>
     <DefaultValue>Append OrgID</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Organizations_Settings.ascx.resx</File>
+    <Key>listItemAppendCounterIfNeeded.Text</Key>
+    <DefaultValue>Append Counter if needed</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Organizations_Settings.ascx.resx</File>

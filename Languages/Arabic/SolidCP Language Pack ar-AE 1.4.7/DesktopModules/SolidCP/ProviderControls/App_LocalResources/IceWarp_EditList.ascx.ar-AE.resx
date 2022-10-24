@@ -1,0 +1,369 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AdditionalOptions.Text" xml:space="preserve">
+    <value>قائمة خيارات إضافية</value>
+  </data>
+  <data name="chkCommandInSubject.Text" xml:space="preserve">
+    <value>السماح بالاوامر في الموضوع</value>
+  </data>
+  <data name="chkDigestMailingList.Text" xml:space="preserve">
+    <value>ملخص القائمة البريدية</value>
+  </data>
+  <data name="chkEnableLists.Text" xml:space="preserve">
+    <value>تمكين أمر القائمة</value>
+  </data>
+  <data name="chkEnableReview.Text" xml:space="preserve">
+    <value>قم بتمكين أمر المراجعة</value>
+  </data>
+  <data name="chkEnableSubscribe.Text" xml:space="preserve">
+    <value>تفعيل أمر الانضمام (اشتراك)</value>
+  </data>
+  <data name="chkEnableUnsubscribe.Text" xml:space="preserve">
+    <value>تفعيل أمر الإجازة (إلغاء الاشتراك)</value>
+  </data>
+  <data name="chkEnableVacation.Text" xml:space="preserve">
+    <value>تفعيل أمر الإجازة / بلا إجازة</value>
+  </data>
+  <data name="chkEnableWhich.Text" xml:space="preserve">
+    <value>تمكين أي أمر</value>
+  </data>
+  <data name="chkModerated.Text" xml:space="preserve">
+    <value>قائمة خادم خاضع للإشراف</value>
+  </data>
+  <data name="chkPasswordEnabled.Text" xml:space="preserve">
+    <value>تمكين</value>
+  </data>
+  <data name="chkReplyToList.Text" xml:space="preserve">
+    <value>الرد على القائمة</value>
+  </data>
+  <data name="chkSendSubscribe.Text" xml:space="preserve">
+    <value>أبلغ المالك بالانضمام</value>
+  </data>
+  <data name="chkSendToSender.Text" xml:space="preserve">
+    <value>أرسل إلى المرسل</value>
+  </data>
+  <data name="chkSendUnSubscribe.Text" xml:space="preserve">
+    <value>أبلغ المالك بالمغادرة</value>
+  </data>
+  <data name="chkSetRecipientToToHeader.Text" xml:space="preserve">
+    <value>تعيين المستلم إلى رأس</value>
+  </data>
+  <data name="chkSubjectPrefixEnabled.Text" xml:space="preserve">
+    <value>تمكين</value>
+  </data>
+  <data name="chkSuppressCommandResponses.Text" xml:space="preserve">
+    <value>كبح استجابات الأمر</value>
+  </data>
+  <data name="ConfirmSubscriptionNone.Text" xml:space="preserve">
+    <value>لا يوجد تأكيد</value>
+  </data>
+  <data name="ConfirmSubscriptionOwner.Text" xml:space="preserve">
+    <value>أكد المالك</value>
+  </data>
+  <data name="ConfirmSubscriptionUser.Text" xml:space="preserve">
+    <value>تم تأكيد المستخدم</value>
+  </data>
+  <data name="ctxValDomain.Text" xml:space="preserve">
+    <value>يجب أن يكون المشرف داخل نطاق البريد حيث توجد قائمة البريد</value>
+  </data>
+  <data name="ddlPostingModeAnyone.Text" xml:space="preserve">
+    <value>أي أحد</value>
+  </data>
+  <data name="ddlPostingModeMembers.Text" xml:space="preserve">
+    <value>الأعضاء فقط</value>
+  </data>
+  <data name="ddlReplyToItem.List" xml:space="preserve">
+    <value>قائمة</value>
+  </data>
+  <data name="ddlReplyToItem.Moderator" xml:space="preserve">
+    <value>مشرف</value>
+  </data>
+  <data name="ddlReplyToItem.Sender" xml:space="preserve">
+    <value>المرسل</value>
+  </data>
+  <data name="DefaultRightsDigestReceive.Text" xml:space="preserve">
+    <value>استوعب واستقبل</value>
+  </data>
+  <data name="DefaultRightsDigestReceivePost.Text" xml:space="preserve">
+    <value>استوعب واستلم وأرسل</value>
+  </data>
+  <data name="DefaultRightsPost.Text" xml:space="preserve">
+    <value>نشر فقط</value>
+  </data>
+  <data name="DefaultRightsReceive.Text" xml:space="preserve">
+    <value>استلم فقط</value>
+  </data>
+  <data name="DefaultRightsReceivePost.Text" xml:space="preserve">
+    <value>الاستلام والنشر</value>
+  </data>
+  <data name="HeaderActionNoChange.Text" xml:space="preserve">
+    <value>لا يوجد تغيير</value>
+  </data>
+  <data name="HeaderActionSetToSender.Text" xml:space="preserve">
+    <value>اضبط على المرسل</value>
+  </data>
+  <data name="HeaderActionSetToValue.Text" xml:space="preserve">
+    <value>اضبط على القيمة</value>
+  </data>
+  <data name="lbAllowUnsubscribe.Text" xml:space="preserve">
+    <value>تمكين إلغاء الاشتراك من الموضوع:</value>
+  </data>
+  <data name="lbDigestMode.Text" xml:space="preserve">
+    <value>تمكين وضع الملخص:</value>
+  </data>
+  <data name="lbDisableListcommand.Text" xml:space="preserve">
+    <value>تمكين أمر القائمة:</value>
+  </data>
+  <data name="lbDisableSubscribecommand.Text" xml:space="preserve">
+    <value>تمكين أمر الاشتراك:</value>
+  </data>
+  <data name="lblCommandPassword.Text" xml:space="preserve">
+    <value>كلمة مرور الأمر:</value>
+  </data>
+  <data name="lblConfirmSubscription.Text" xml:space="preserve">
+    <value>الاشتراك:</value>
+  </data>
+  <data name="lblDefaultRights.Text" xml:space="preserve">
+    <value>الحقوق الافتراضية:</value>
+  </data>
+  <data name="lblDescription.Text" xml:space="preserve">
+    <value>وصف القائمة:</value>
+  </data>
+  <data name="lblFromHeader.Text" xml:space="preserve">
+    <value>من رأس:</value>
+  </data>
+  <data name="lblFromHeaderValue.Text" xml:space="preserve">
+    <value>من قيمة الرأس:</value>
+  </data>
+  <data name="lblListFromAddress.Text" xml:space="preserve">
+    <value>قائمة من العناوين:</value>
+  </data>
+  <data name="lblListOptions.Text" xml:space="preserve">
+    <value>قائمة خيارات:</value>
+  </data>
+  <data name="lblListReplyToAddress.Text" xml:space="preserve">
+    <value>قائمة الرد إلى العنوان:</value>
+  </data>
+  <data name="lblListToAddress.Text" xml:space="preserve">
+    <value>قائمة إلى عنوان:</value>
+  </data>
+  <data name="lblMaxMembers.Text" xml:space="preserve">
+    <value>عدد الأعضاء الأقصى:</value>
+  </data>
+  <data name="lblMaxMessageSize.Text" xml:space="preserve">
+    <value>أقصى حجم للرسالة ، كيلو بايت:</value>
+  </data>
+  <data name="lblMaxMessagesPerMinute.Text" xml:space="preserve">
+    <value>الحد الأقصى #  للرسائل المراد إرسالها في دقيقة واحدة:</value>
+  </data>
+  <data name="lblMaxRecipients.Text" xml:space="preserve">
+    <value>الحد الأقصى لعدد المستلمين لكل رسالة:</value>
+  </data>
+  <data name="lblMembers.Text" xml:space="preserve">
+    <value>أعضاء القائمة البريدية:</value>
+  </data>
+  <data name="lblMembersSource.Text" xml:space="preserve">
+    <value>مصدر الأعضاء:</value>
+  </data>
+  <data name="lblModeratorAddress.Text" xml:space="preserve">
+    <value>قائمة مشرف:</value>
+  </data>
+  <data name="lblOriginator.Text" xml:space="preserve">
+    <value>المنشئ:</value>
+  </data>
+  <data name="lblPasswordProtection.Text" xml:space="preserve">
+    <value>حماية كلمة المرور:</value>
+  </data>
+  <data name="lblPostingMode.Text" xml:space="preserve">
+    <value>وضع النشر:</value>
+  </data>
+  <data name="lblPostingPassword.Text" xml:space="preserve">
+    <value>إرسال كلمة المرور:</value>
+  </data>
+  <data name="lblReplyTo.Text" xml:space="preserve">
+    <value>رد المشتركون على:</value>
+  </data>
+  <data name="lblReplyToHeader.Text" xml:space="preserve">
+    <value>الرد على القائمة</value>
+  </data>
+  <data name="lblReplyToHeaderValue.Text" xml:space="preserve">
+    <value>الرد على القائمة</value>
+  </data>
+  <data name="lblSubjectPrefix.Text" xml:space="preserve">
+    <value>بادئة الموضوع:</value>
+  </data>
+  <data name="lbSendSubscribe.Text" xml:space="preserve">
+    <value>إرسال بريد إلكتروني للاشتراك:</value>
+  </data>
+  <data name="lbSendUnsubscribe.Text" xml:space="preserve">
+    <value>إرسال بريد إلكتروني لإلغاء الاشتراك:</value>
+  </data>
+  <data name="OriginatorBlank.Text" xml:space="preserve">
+    <value>فارغ</value>
+  </data>
+  <data name="OriginatorOwner.Text" xml:space="preserve">
+    <value>المالك</value>
+  </data>
+  <data name="OriginatorSender.Text" xml:space="preserve">
+    <value>المرسل</value>
+  </data>
+  <data name="PasswordProtectionClientModerated.Text" xml:space="preserve">
+    <value>خاضعة لإشراف العميل</value>
+  </data>
+  <data name="PasswordProtectionNoProtection.Text" xml:space="preserve">
+    <value>غير محمي بكلمة مرور</value>
+  </data>
+  <data name="PasswordProtectionServerModerated.Text" xml:space="preserve">
+    <value>خادم مدار</value>
+  </data>
+  <data name="Text.SelectModerator" xml:space="preserve">
+    <value>&lt;اختر وسيط&gt;</value>
+  </data>
+  <data name="ddlMembersSourceAllDomainAdmins.Text" xml:space="preserve">
+    <value>جميع مديري النطاق</value>
+  </data>
+  <data name="ddlMembersSourceAllDomainUsers.Text" xml:space="preserve">
+    <value>كافة مستخدمي النطاق</value>
+  </data>
+  <data name="ddlMembersSourceInFile.Text" xml:space="preserve">
+    <value>من قائمة الأعضاء في هذه الصفحة</value>
+  </data>
+  <data name="lblZeroIsUnlimited.Text" xml:space="preserve">
+    <value>0 يعني غير محدود</value>
+  </data>
+  <data name="Message.Text" xml:space="preserve">
+    <value>الرسالة</value>
+  </data>
+  <data name="Options.Text" xml:space="preserve">
+    <value>خيارات</value>
+  </data>
+  <data name="Security.Text" xml:space="preserve">
+    <value>حماية</value>
+  </data>
+  <data name="txtMaxMembersValidator.ErrorMessage" xml:space="preserve">
+    <value>يجب أن تكون القيمة صفرًا أو أكبر</value>
+  </data>
+  <data name="txtMaxMessageSizeValidator.ErrorMessage" xml:space="preserve">
+    <value>يجب أن تكون القيمة صفرًا أو أكبر</value>
+  </data>
+  <data name="txtMaxMessagesPerMinuteValidator.ErrorMessage" xml:space="preserve">
+    <value>يجب أن تكون القيمة صفرًا أو أكبر</value>
+  </data>
+</root>

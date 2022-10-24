@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnChangeHostname.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('تغيير اسم المضيف ...', 'ChangeHostnameModal');</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="Command.Pause" xml:space="preserve">
+    <value>إيقاف مؤقت</value>
+  </data>
+  <data name="Command.Reboot" xml:space="preserve">
+    <value>اعادة التشغيل</value>
+  </data>
+  <data name="Command.Reset" xml:space="preserve">
+    <value>إعادة تعيين</value>
+  </data>
+  <data name="Command.Resume" xml:space="preserve">
+    <value>استئناف</value>
+  </data>
+  <data name="Command.ShutDown" xml:space="preserve">
+    <value>ايقاف&amp;nbsp;تشغيل</value>
+  </data>
+  <data name="Command.Snapshot" xml:space="preserve">
+    <value>لقطات</value>
+  </data>
+  <data name="Command.Start" xml:space="preserve">
+    <value>ابدأ</value>
+  </data>
+  <data name="Command.TurnOff" xml:space="preserve">
+    <value>ايقاف&amp;nbsp;تشغيل</value>
+  </data>
+  <data name="CpuPercentage.Text" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="MemoryPercentage.Text" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="MemoryUsage.Text" xml:space="preserve">
+    <value>المستخدمة: {0} ميجابايت ، الإجمالي: {1} ميجابايت</value>
+  </data>
+  <data name="OnClientClick.Pause" xml:space="preserve">
+    <value>if(!confirm('إيقاف مؤقت VM؟')) return false; ShowProgressDialog('جاري الإيقاف مؤقتًا ...');</value>
+  </data>
+  <data name="OnClientClick.Reboot" xml:space="preserve">
+    <value>if(!confirm('هل تريد إعادة تشغيل جهاز VM؟')) return false; ShowProgressDialog('إعادة التشغيل ...');</value>
+  </data>
+  <data name="OnClientClick.Reset" xml:space="preserve">
+    <value>if(!confirm('إعادة تعيين VM؟')) return false; ShowProgressDialog('إعادة تعيين ...');</value>
+  </data>
+  <data name="OnClientClick.Resume" xml:space="preserve">
+    <value>ShowProgressDialog('جارٍ الاستئناف ...');</value>
+  </data>
+  <data name="OnClientClick.ShutDown" xml:space="preserve">
+    <value>if(!confirm('هل تريد إيقاف تشغيل VM؟')) return false; ShowProgressDialog('جارٍ الإغلاق ...');</value>
+  </data>
+  <data name="OnClientClick.Snapshot" xml:space="preserve">
+    <value>ShowProgressDialog('أخذ لقطة ...');</value>
+  </data>
+  <data name="OnClientClick.Start" xml:space="preserve">
+    <value>ShowProgressDialog('جارٍ البدء ...');</value>
+  </data>
+  <data name="OnClientClick.TurnOff" xml:space="preserve">
+    <value>if(!confirm('هل تريد إيقاف تشغيل VM؟')) return false; ShowProgressDialog('جارٍ الإيقاف ...');</value>
+  </data>
+  <data name="locHostname.Text" xml:space="preserve">
+    <value>المضيف&amp;nbsp;أسم:</value>
+  </data>
+  <data name="btnCancelHostname.Text" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="btnChangeHostname.Text" xml:space="preserve">
+    <value>تغيير</value>
+  </data>
+  <data name="btnChangeHostnamePopup.Text" xml:space="preserve">
+    <value>تحرير</value>
+  </data>
+  <data name="chkUpdateComputerName.Text" xml:space="preserve">
+    <value>تحديث اسم شبكة الكمبيوتر</value>
+  </data>
+  <data name="FormComments.Text" xml:space="preserve">
+    <value>تُظهر &lt;p&gt; &lt;b&gt; الحالة &lt;/ b&gt; الحالة الحالية لـ VM. تعتمد قائمة أزرار إجراءات VM المتوفرة على اليمين على الحالة الحالية. &lt;/ p&gt; &lt;p&gt; &lt;b&gt; وقت التشغيل &lt;/ b&gt; هو الوقت منذ آخر تشغيل VM. &lt;/p&gt; &lt;b&gt; Heartbeat &lt;/ ب&gt; هو مؤشر مفيد للغاية لأنه يوضح ما إذا كان نظام التشغيل VM نشطًا ويستجيب. إذا كان هناك "لا يوجد جهة اتصال" ، فهذا يعني أن النظام لم يبدأ بعد ، ولكن إذا كان هناك "خطأ" ، فهذا يعني أن نظام التشغيل لا يستجيب للجهاز المضيف. &lt;/ p&gt; &lt;p&gt; &lt;b&gt; وحدة المعالجة المركزية &lt;/ يعرض b&gt; meter استخدام معالج VM. &lt;/p&gt; &lt;p&gt; &lt;b&gt; RAM &lt;/b&gt; و &lt;b&gt; HDD &lt;/b&gt; تعرض مقاييس الوقت الفعلي التي يوفرها نظام التشغيل VM. &lt;/p&gt;</value>
+  </data>
+  <data name="Heartbeat.Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Heartbeat.LostCommunication" xml:space="preserve">
+    <value>فقد التواصل</value>
+  </data>
+  <data name="Heartbeat.NoContact" xml:space="preserve">
+    <value>لا يوجد اتصال</value>
+  </data>
+  <data name="Heartbeat.None" xml:space="preserve">
+    <value>لا شيء</value>
+  </data>
+  <data name="Heartbeat.OK" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="locChangeHostname.Text" xml:space="preserve">
+    <value>تغيير اسم مضيف VM</value>
+  </data>
+  <data name="locCpu.Text" xml:space="preserve">
+    <value>وحدة المعالجة المركزية:</value>
+  </data>
+  <data name="locCreated.Text" xml:space="preserve">
+    <value>تم إنشاؤه:</value>
+  </data>
+  <data name="locDomain.Text" xml:space="preserve">
+    <value>النطاقات</value>
+  </data>
+  <data name="locHostname1.Text" xml:space="preserve">
+    <value>اسم المضيف:</value>
+  </data>
+  <data name="locRam.Text" xml:space="preserve">
+    <value>ذاكرة الوصول العشوائي:</value>
+  </data>
+  <data name="locStatus.Text" xml:space="preserve">
+    <value>الحالة:</value>
+  </data>
+  <data name="locTitle.Text" xml:space="preserve">
+    <value>عام</value>
+  </data>
+  <data name="State.CheckpointFailed" xml:space="preserve">
+    <value>فشل نقطة التحقق</value>
+  </data>
+  <data name="State.CreationFailed" xml:space="preserve">
+    <value>فشل الإنشاء</value>
+  </data>
+  <data name="State.CreatingCheckpoint" xml:space="preserve">
+    <value>إنشاء نقطة فحص</value>
+  </data>
+  <data name="State.CustomizationFailed" xml:space="preserve">
+    <value>فشل التخصيص</value>
+  </data>
+  <data name="State.Deleting" xml:space="preserve">
+    <value>الحذف</value>
+  </data>
+  <data name="State.DeletingCheckpoint" xml:space="preserve">
+    <value>حذف نقطة الفحص</value>
+  </data>
+  <data name="State.DiscardingDrives" xml:space="preserve">
+    <value>تجاهل محركات الأقراص</value>
+  </data>
+  <data name="State.Snapshotting" xml:space="preserve">
+    <value>أخذ لقطة</value>
+  </data>
+  <data name="State.DiscardSavedState" xml:space="preserve">
+    <value>تجاهل الحالة المحفوظة</value>
+  </data>
+  <data name="State.FinishingCheckpointOperation" xml:space="preserve">
+    <value>إنهاء عملية نقطة الفحص</value>
+  </data>
+  <data name="State.HostNotResponding" xml:space="preserve">
+    <value>المضيف لا يستجيب</value>
+  </data>
+  <data name="valCorrectHostname.ErrorMessage" xml:space="preserve">
+    <value>أدخل اسم المضيف الصحيح ، على سبيل المثال "vm01"</value>
+  </data>
+  <data name="valNewDomainFormat.ErrorMessage" xml:space="preserve">
+    <value>أدخل اسم النطاق الصحيح ، على سبيل المثال "mydomain.com"</value>
+  </data>
+  <data name="HddPercentage.Text" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
+  <data name="HddUsage.Text" xml:space="preserve">
+    <value>متوفر: {0} جيجابايت ، الإجمالي: {1} جيجابايت على {2} محرك (محركات)</value>
+  </data>
+  <data name="locHdd.Text" xml:space="preserve">
+    <value>القرص الصلب:</value>
+  </data>
+  <data name="locDomainTop.Text" xml:space="preserve">
+    <value>النطاقات</value>
+  </data>
+  <data name="State.IncompleteVMConfig" xml:space="preserve">
+    <value>تكوين VM غير مكتمل</value>
+  </data>
+  <data name="State.InitializingCheckpointOperation" xml:space="preserve">
+    <value>جارٍ بدء تشغيل نقطة الفحص</value>
+  </data>
+  <data name="State.MergingDrives" xml:space="preserve">
+    <value>دمج محركات الأقراص</value>
+  </data>
+  <data name="State.MigrationFailed" xml:space="preserve">
+    <value>فشل الترحيل</value>
+  </data>
+  <data name="State.Missing" xml:space="preserve">
+    <value>مفقود</value>
+  </data>
+  <data name="State.P2VCreationFailed" xml:space="preserve">
+    <value>فشل إنشاء P2V</value>
+  </data>
+  <data name="State.Paused" xml:space="preserve">
+    <value>متوقف مؤقتًا</value>
+  </data>
+  <data name="State.Pausing" xml:space="preserve">
+    <value>متوقف مؤقتًا</value>
+  </data>
+  <data name="State.PoweringOff" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="State.PowerOff" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="State.RecoveringCheckpoint" xml:space="preserve">
+    <value>استعادة نقطة الفحص</value>
+  </data>
+  <data name="State.Restoring" xml:space="preserve">
+    <value>استعادة</value>
+  </data>
+  <data name="State.Running" xml:space="preserve">
+    <value>تشغيل</value>
+  </data>
+  <data name="State.Saved" xml:space="preserve">
+    <value>تم الحفظ</value>
+  </data>
+  <data name="State.Saving" xml:space="preserve">
+    <value>تم الحفظ</value>
+  </data>
+  <data name="State.Starting" xml:space="preserve">
+    <value>بدء</value>
+  </data>
+  <data name="State.Stored" xml:space="preserve">
+    <value>مخزن</value>
+  </data>
+  <data name="State.TemplateCreationFailed" xml:space="preserve">
+    <value>فشل إنشاء القالب</value>
+  </data>
+  <data name="State.UnderCreation" xml:space="preserve">
+    <value>تحت الإنشاء</value>
+  </data>
+  <data name="State.UnderMigration" xml:space="preserve">
+    <value>تحت الترحيل</value>
+  </data>
+  <data name="State.UnderTemplateCreation" xml:space="preserve">
+    <value>تحت إنشاء القالب</value>
+  </data>
+  <data name="State.UnderUpdate" xml:space="preserve">
+    <value>تحت التحديث</value>
+  </data>
+  <data name="State.Unsupported" xml:space="preserve">
+    <value>غير مدعوم</value>
+  </data>
+  <data name="State.UnsupportedCluster" xml:space="preserve">
+    <value>العنقودية غير مدعومة</value>
+  </data>
+  <data name="State.UnsupportedSharedFiles" xml:space="preserve">
+    <value>الملفات المشتركة غير مدعومة</value>
+  </data>
+  <data name="State.UpdateFailed" xml:space="preserve">
+    <value>فشل التحديث</value>
+  </data>
+  <data name="State.V2VCreationFailed" xml:space="preserve">
+    <value>فشل إنشاء V2V</value>
+  </data>
+</root>
