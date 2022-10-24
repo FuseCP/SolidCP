@@ -1337,7 +1337,7 @@ namespace SolidCP.EnterpriseServer
                 }
                 else
                 {
-                    throw TaskManager.WriteError(new Exception(string.Format("Unable to connect to {0} server. Please double check Server Full Name setting and retry.", rdsServer.FqdName)));
+                    throw TaskManager.WriteError(new Exception(string.Format("Unable to ping to {0} server. Please double check Server Full Name and the Enterprise-Server connection. Make sure Echo Request is enabled in the server firewall. Then retry.", rdsServer.FqdName)));
                 }
             }            
             finally
