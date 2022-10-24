@@ -23385,3 +23385,24 @@ BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1903, 7, N'SimpleDNS', N'SimpleDNS Plus 9.x', N'SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90', N'SimpleDNS', NULL)
 END
 GO
+
+-- SmarterMail 100.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SmarterMail 100.x +')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(67, 4, N'SmarterMail', N'SmarterMail 100.x +', N'SolidCP.Providers.Mail.SmarterMail100, SolidCP.Providers.Mail.SmarterMail100', N'SmarterMail100x', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [EditorControl] = 'SmarterMail100' WHERE [DisplayName] = 'SmarterMail 100.x +'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'AdminUsername')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'AdminPassword', N'')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'AdminUsername', N'admin')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'DomainsPath', N'%SYSTEMDRIVE%\SmarterMail\Domains')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServerIPAddress', N'127.0.0.1;127.0.0.1')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServiceUrl', N'http://localhost:9998/services/')
+END
+GO

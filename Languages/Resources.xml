@@ -13322,6 +13322,11 @@
     <DefaultValue>Disable user from shutting down RDS Server</DefaultValue>
   </Resource>
   <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS_CREATE_CREATE_VM_ATTEMPT</Key>
+    <DefaultValue>Creating Virtual Machine object attempt - {0}</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
     <Key>btnUpdate.Text</Key>
     <DefaultValue>Apply</DefaultValue>
@@ -44011,6 +44016,526 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SimpleDNS_Settings.ascx.resx</File>
     <Key>lblServiceConfig.Text</Key>
     <DefaultValue>Service Configuration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>cbChangePassword.Text</Key>
+    <DefaultValue>Change Password</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>cbDomainAdmin.Text</Key>
+    <DefaultValue>Domain Administrator</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>cbDomainAdministrator.Text</Key>
+    <DefaultValue>Domain Administrator</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>cbEnableAccount.Text</Key>
+    <DefaultValue>Account enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>cbEnabled</Key>
+    <DefaultValue>Check to Enable</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>chkDeleteOnForward.Text</Key>
+    <DefaultValue>Delete Message on Forward</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>chkResponderEnabled.Text</Key>
+    <DefaultValue>Yes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblFirstName.Text</Key>
+    <DefaultValue>First Name:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblForwardTo.Text</Key>
+    <DefaultValue>Forward Mail to Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblLastName.Text</Key>
+    <DefaultValue>Last Name:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblMessage.Text</Key>
+    <DefaultValue>Message:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblReplyTo.Text</Key>
+    <DefaultValue>Reply to Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblResponderEnabled.Text</Key>
+    <DefaultValue>Enable Autoresponder:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblSignature.Text</Key>
+    <DefaultValue>Signature:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>lblSubject.Text</Key>
+    <DefaultValue>Subject:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>secAutoresponder.Text</Key>
+    <DefaultValue>Autoresponder</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>
+    <Key>secForwarding.Text</Key>
+    <DefaultValue>Mail Forwarding</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblAbuse.Text</Key>
+    <DefaultValue>Abuse Account:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblCatchAll.Text</Key>
+    <DefaultValue>Catch-All Account:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblDomainAliases.Text</Key>
+    <DefaultValue>Domain Aliases :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblDomainDiskSpace.Text</Key>
+    <DefaultValue>Domain Disk Space, MB :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblMailingListsQuota.Text</Key>
+    <DefaultValue>Mailing Lists :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblMessageSizeQuota.Text</Key>
+    <DefaultValue>Max Message Size, KB :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblPopRetreivalAccounts.Text</Key>
+    <DefaultValue>POP Retrieval Accounts:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblPostmaster.Text</Key>
+    <DefaultValue>Postmaster Account:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblRecipientsPerMessageQuota.Text</Key>
+    <DefaultValue>Max Recipients per Message :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblUserAliasesQuota.Text</Key>
+    <DefaultValue>User Aliases :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>lblUserQuota.Text</Key>
+    <DefaultValue>Users :</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>secFeatures.Text</Key>
+    <DefaultValue>Features</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>secLimits.Text</Key>
+    <DefaultValue>Limits</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>secSharing.Text</Key>
+    <DefaultValue>Sharing</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>secTechnical.Text</Key>
+    <DefaultValue>Technical</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>secThrottling.Text</Key>
+    <DefaultValue>Throttling</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx</File>
+    <Key>Text.NotSelected</Key>
+    <DefaultValue>&lt;Not Selected&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbEnableCatchAlls.Text</Key>
+    <DefaultValue>Enable Catch-Alls</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbEnableIMAPRetreival.Text</Key>
+    <DefaultValue>Enable IMAP Retreival</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbEnableMailReports.Text</Key>
+    <DefaultValue>Enable Email Reports</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbEnableMailSigning.Text</Key>
+    <DefaultValue>Enable Mail Signing</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbEnablePopRetreival.Text</Key>
+    <DefaultValue>Enable POP Retrieval</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbEnableSyncML.Text</Key>
+    <DefaultValue>Enable SyncML</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbPopRetrieval.Text</Key>
+    <DefaultValue>Pop Retreival</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowCalendar.Text</Key>
+    <DefaultValue>Calendar</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowContacts.Text</Key>
+    <DefaultValue>Contacts</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowcontentfilteringmenu.Text</Key>
+    <DefaultValue>Domain Content Filtering</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowdomainaliasmenu.Text</Key>
+    <DefaultValue>Domain Aliases</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowDomainReports.Text</Key>
+    <DefaultValue>Domain Reports</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowlistmenu.Text</Key>
+    <DefaultValue>Mailing Lists</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowNotes.Text</Key>
+    <DefaultValue>Notes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowspammenu.Text</Key>
+    <DefaultValue>Domain Spam Options</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx</File>
+    <Key>lbShowTasks.Text</Key>
+    <DefaultValue>Tasks</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx</File>
+    <Key>cbGlobalAddressList.Text</Key>
+    <DefaultValue>Global Address List</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx</File>
+    <Key>cbSharedCalendars.Text</Key>
+    <DefaultValue>Shared Calendars</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx</File>
+    <Key>cbSharedContacts.Text</Key>
+    <DefaultValue>Shared Contacts</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx</File>
+    <Key>cbSharedFolders.Text</Key>
+    <DefaultValue>Shared Folders</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx</File>
+    <Key>cbSharedNotes.Text</Key>
+    <DefaultValue>Shared Notes</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx</File>
+    <Key>cbSharedTasks.Text</Key>
+    <DefaultValue>Shared Tasks</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Throttling.ascx.resx</File>
+    <Key>lbBandwidthPerHour.Text</Key>
+    <DefaultValue>Outgoing Bandwidth per Hour, MB:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Throttling.ascx.resx</File>
+    <Key>lbBouncesPerHour.Text</Key>
+    <DefaultValue>Bounces Received per Hour:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Throttling.ascx.resx</File>
+    <Key>lbEnabled.Text</Key>
+    <DefaultValue>Enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Throttling.ascx.resx</File>
+    <Key>lbMessagesPerHour.Text</Key>
+    <DefaultValue>Outgoing Messages per Hour:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditGroup.ascx.resx</File>
+    <Key>lblGroupMembers.Text</Key>
+    <DefaultValue>Group E-Mails:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>chkPasswordEnabled.Text</Key>
+    <DefaultValue>Enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>chkReplyToList.Text</Key>
+    <DefaultValue>Reply To List</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>chkSubjectPrefixEnabled.Text</Key>
+    <DefaultValue>Enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ctxValDomain.Text</Key>
+    <DefaultValue>Moderator should be within mail domain where Mail List is located</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlPostingModeItem.Anyone</Key>
+    <DefaultValue>Anyone</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlPostingModeItem.MembersOnly</Key>
+    <DefaultValue>Subscribers Only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlPostingModeItem.ModeratorOnly</Key>
+    <DefaultValue>Moderator Only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlPostingModeItem.Password</Key>
+    <DefaultValue>Password Protected Posting</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlReplyToItem.List</Key>
+    <DefaultValue>List</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlReplyToItem.Moderator</Key>
+    <DefaultValue>Moderator</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>ddlReplyToItem.Sender</Key>
+    <DefaultValue>Sender</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblDescription.Text</Key>
+    <DefaultValue>List Description:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblListOptions.Text</Key>
+    <DefaultValue>List Options:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblMaxMessageSize.Text</Key>
+    <DefaultValue>Max Message Size, KB:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblMaxRecipients.Text</Key>
+    <DefaultValue>Max Recipients per Message:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblMembers.Text</Key>
+    <DefaultValue>Mailing List Members:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblModerationEnabled.Text</Key>
+    <DefaultValue>Moderation is Enabled:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblModeratorAddress.Text</Key>
+    <DefaultValue>List Moderator:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblPostingMode.Text</Key>
+    <DefaultValue>Who Can Post:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblPostingPassword.Text</Key>
+    <DefaultValue>List Password:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblReplyTo.Text</Key>
+    <DefaultValue>Subscribers Reply To:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblSubjectPrefix.Text</Key>
+    <DefaultValue>Subject Prefix:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>Text.SelectModerator</Key>
+    <DefaultValue>&lt;Choose a moderator&gt;</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>AdditionalOptions.Text</Key>
+    <DefaultValue>List Additional Options</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lbAllowUnsubscribe.Text</Key>
+    <DefaultValue>Enable Unsubscribe from Subject:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lbDigestMode.Text</Key>
+    <DefaultValue>Enable Digest Mode:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lbDisableListcommand.Text</Key>
+    <DefaultValue>Enable LIST Command:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lbDisableSubscribecommand.Text</Key>
+    <DefaultValue>Enable SUBSCRIBE Command:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblListFromAddress.Text</Key>
+    <DefaultValue>List From Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblListReplyToAddress.Text</Key>
+    <DefaultValue>List Reply To Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lblListToAddress.Text</Key>
+    <DefaultValue>List To Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lbSendSubscribe.Text</Key>
+    <DefaultValue>Send Subscribe Email:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx</File>
+    <Key>lbSendUnsubscribe.Text</Key>
+    <DefaultValue>Send Unsubscribe Email:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>cbEnableDomainAdmin.Text</Key>
+    <DefaultValue>Enable Domain Administrators</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>cbImportDomainAdmin.Text</Key>
+    <DefaultValue>Import Domain Admin</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>cbImportSystemAdmin.Text</Key>
+    <DefaultValue>Import System Admin</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>cbInheritDefaultLimits.Text</Key>
+    <DefaultValue>Inherit Domain Default Limits &amp;nbsp; (Domain Default Limits will be applied for all new created domains)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>lblAdminLogin.Text</Key>
+    <DefaultValue>Admin Login:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>lblAdminPassword.Text</Key>
+    <DefaultValue>Admin Password:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>lblCurrPassword.Text</Key>
+    <DefaultValue>Current Admin Password:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>lblDomainsPath.Text</Key>
+    <DefaultValue>Domains Root Folder:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>lblPublicIP.Text</Key>
+    <DefaultValue>Public IP Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx</File>
+    <Key>lblServiceUrl.Text</Key>
+    <DefaultValue>SmarterMail Web Services URL:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100_EditAccount.ascx.resx</File>
