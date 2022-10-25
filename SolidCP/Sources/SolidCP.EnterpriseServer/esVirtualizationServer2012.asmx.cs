@@ -542,6 +542,14 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region Virtual Machine Configuration versions 
+        [WebMethod]
+        public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
+        {
+            return VirtualizationServerController2012.GetVMConfigurationVersionSupportedList(serviceId);
+        }
+        #endregion
+
         #region Virtual Switches
         [WebMethod]
         public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)

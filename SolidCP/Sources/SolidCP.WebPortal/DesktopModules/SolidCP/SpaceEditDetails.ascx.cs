@@ -45,6 +45,7 @@ namespace SolidCP.Portal
                 BindSpace();
                 BindSpaceAddons();
                 BindRoles(PanelSecurity.EffectiveUserId);
+                BindUsers();
             }
         }
 
@@ -90,6 +91,20 @@ namespace SolidCP.Portal
                 // toggle quotas editor
                 ToggleQuotasEditor();
             }
+        }
+
+        private void BindUsers()
+        {
+            System.Collections.Generic.List<UserInfo> userList = new System.Collections.Generic.List<UserInfo>(ES.Services.Users.GetUsers(PanelSecurity.EffectiveUserId, true));
+            ddlUser.DataSource = userList;
+            ddlUser.DataBind();
+            ddlUser.SelectedValue = PanelSecurity.SelectedUserId.ToString();
+            ddlUser.Enabled = false;
+        }
+
+        protected void chkMoveUser_CheckedChanged(object sender, EventArgs e)
+        {
+            ddlUser.Enabled = chkMoveUser.Checked;
         }
 
         private void BindHostingPlans()
@@ -153,6 +168,19 @@ namespace SolidCP.Portal
                     lblMessage.Text = PortalAntiXSS.Encode(GetExceedingQuotasMessage(result.ExceedingQuotas));
                     return;
                 }
+
+                bool notUserRoleAndNotSelectedTheSameUser = (PanelSecurity.SelectedUserId != Convert.ToInt32(ddlUser.SelectedValue)
+                    && PanelSecurity.LoggedUser.Role != UserRole.User);
+
+                if (chkMoveUser.Checked  && notUserRoleAndNotSelectedTheSameUser)
+                {
+                    int changeResult = ES.Services.Packages.ChangePackageUser(PanelSecurity.PackageId, Convert.ToInt32(ddlUser.SelectedValue));
+                    if (changeResult < 0)
+                    {
+                        ShowResultMessage(result.Result);
+                        return;
+                    }
+                }                
             }
             catch (Exception ex)
             {

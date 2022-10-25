@@ -16003,6 +16003,39 @@ GO
 SET QUOTED_IDENTIFIER OFF
 GO
 
+--- ChangePackageUser ---
+-------------------------
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'ChangePackageUser')
+BEGIN
+DROP PROCEDURE ChangePackageUser
+END
+GO
+
+CREATE PROCEDURE [dbo].[ChangePackageUser]
+(
+	@PackageID int,
+	@ActorID int,
+	@UserID int
+)
+AS
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+BEGIN TRAN
+
+UPDATE Packages
+SET UserID = @UserID
+WHERE PackageID = @PackageID
+
+COMMIT TRAN
+
+RETURN
+GO
+
+--- GetVirtualServices ---
+--------------------------
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetVirtualServices')
 BEGIN
 DROP PROCEDURE GetVirtualServices
@@ -23432,5 +23465,26 @@ GO
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1903' AND DisplayName = 'SimpleDNS Plus 9.x')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1903, 7, N'SimpleDNS', N'SimpleDNS Plus 9.x', N'SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90', N'SimpleDNS', NULL)
+END
+GO
+
+-- SmarterMail 100.x
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SmarterMail 100.x +')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(67, 4, N'SmarterMail', N'SmarterMail 100.x +', N'SolidCP.Providers.Mail.SmarterMail100, SolidCP.Providers.Mail.SmarterMail100', N'SmarterMail100x', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [EditorControl] = 'SmarterMail100' WHERE [DisplayName] = 'SmarterMail 100.x +'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '67' AND [PropertyName] = N'AdminUsername')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'AdminPassword', N'')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'AdminUsername', N'admin')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'DomainsPath', N'%SYSTEMDRIVE%\SmarterMail\Domains')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServerIPAddress', N'127.0.0.1;127.0.0.1')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServiceUrl', N'http://localhost:9998/services/')
 END
 GO

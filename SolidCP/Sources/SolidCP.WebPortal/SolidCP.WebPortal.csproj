@@ -1196,6 +1196,15 @@
     <Content Include="App_GlobalResources\SolidCP_SharedResources.ascx.de-DE.resx">
       <SubType>Designer</SubType>
     </Content>
+	<Content Include="App_GlobalResources\SolidCP_Modules.ascx.ar-AE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_GlobalResources\SolidCP_Pages.ascx.ar-AE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_GlobalResources\SolidCP_SharedResources.ascx.ar-AE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <EmbeddedResource Include="Code\Adapters\empty.gif" />
   </ItemGroup>
   <ItemGroup>

@@ -163,6 +163,8 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetSecureBootTemplatesOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetVMConfigurationVersionSupportedListOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetExternalSwitchesOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetExternalSwitchesWMIOperationCompleted;
@@ -399,6 +401,9 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         /// <remarks/>
         public event GetSecureBootTemplatesCompletedEventHandler GetSecureBootTemplatesCompleted;
+
+        /// <remarks/>
+        public event GetVMConfigurationVersionSupportedListCompletedEventHandler GetVMConfigurationVersionSupportedListCompleted;
 
         /// <remarks/>
         public event GetExternalSwitchesCompletedEventHandler GetExternalSwitchesCompleted;
@@ -4322,6 +4327,55 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetVMConfigurationVersionSupportedList", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
+        {
+            object[] results = this.Invoke("GetVMConfigurationVersionSupportedList", new object[] {
+                        serviceId});
+            return ((VMConfigurationVersion[])(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetVMConfigurationVersionSupportedList(int serviceId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetVMConfigurationVersionSupportedList", new object[] {
+                        serviceId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public VMConfigurationVersion[] EndGetVMConfigurationVersionSupportedList(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((VMConfigurationVersion[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetVMConfigurationVersionSupportedListAsync(int serviceId)
+        {
+            this.GetVMConfigurationVersionSupportedListAsync(serviceId, null);
+        }
+
+        /// <remarks/>
+        public void GetVMConfigurationVersionSupportedListAsync(int serviceId, object userState)
+        {
+            if ((this.GetVMConfigurationVersionSupportedListOperationCompleted == null))
+            {
+                this.GetVMConfigurationVersionSupportedListOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVMConfigurationVersionSupportedListOperationCompleted);
+            }
+            this.InvokeAsync("GetVMConfigurationVersionSupportedList", new object[] {
+                        serviceId}, this.GetVMConfigurationVersionSupportedListOperationCompleted, userState);
+        }
+
+        private void OnGetVMConfigurationVersionSupportedListOperationCompleted(object arg)
+        {
+            if ((this.GetVMConfigurationVersionSupportedListCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVMConfigurationVersionSupportedListCompleted(this, new GetVMConfigurationVersionSupportedListCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetExternalSwitches", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public VirtualSwitch[] GetExternalSwitches(int serviceId, string computerName)
         {
@@ -7228,6 +7282,36 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
             {
                 this.RaiseExceptionIfNecessary();
                 return ((SecureBootTemplate[])(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    public delegate void GetVMConfigurationVersionSupportedListCompletedEventHandler(object sender, GetVMConfigurationVersionSupportedListCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVMConfigurationVersionSupportedListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetVMConfigurationVersionSupportedListCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public VMConfigurationVersion[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((VMConfigurationVersion[])(this.results[0]));
             }
         }
     }

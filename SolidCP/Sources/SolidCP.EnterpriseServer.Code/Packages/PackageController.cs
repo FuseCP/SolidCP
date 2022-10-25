@@ -888,6 +888,23 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
+        public static int ChangePackageUser(int packageId, int UserId)
+        {
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
+                | DemandAccount.IsResellerCSR);
+            if (accountCheck < 0) {
+                return accountCheck;
+            }
+
+            int actorId = SecurityContext.User.UserId;
+
+            TaskManager.StartTask(null, "HOSTING_SPACE", "CHANGE_USER", packageId, UserId);
+            DataProvider.ChangePackageUser(actorId, packageId, UserId);
+            TaskManager.CompleteTask();
+
+            return 0;
+        }
+
         public static int UpdatePackageName(int packageId, string packageName,
             string packageComments)
         {
@@ -2263,16 +2280,29 @@ namespace SolidCP.EnterpriseServer
                 if (items != null)
                 {
                     foreach (string key in items.Keys)
-                        tmp[key] = items[key];
+                    {
+                        try
+                        {
+                            tmp[key] = items[key];
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception("Error while adding template with key [" + key + "].", e);
+                        }
+                    }
                 }
 
                 tmp.Evaluate(writer);
             }
             catch (ParserException ex)
             {
-                return String.Format("Error in template (Line {0}, Column {1}): {2}",
-                    ex.Line, ex.Column, ex.Message);
+                return String.Format("Error in template (Line {0}, Column {1}): {2}", ex.Line, ex.Column, ex.Message);
             }
+            catch (Exception e)
+            {
+                throw new Exception("Error while adding template.", e);
+            }
+
             return writer.ToString();
         }
         #endregion

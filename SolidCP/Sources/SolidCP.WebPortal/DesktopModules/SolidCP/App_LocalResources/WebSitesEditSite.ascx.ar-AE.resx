@@ -1,0 +1,562 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnAddFolder.Text" xml:space="preserve">
+    <value>أضف المجلد</value>
+  </data>
+  <data name="btnAddGroup.Text" xml:space="preserve">
+    <value>أضف مجموعة</value>
+  </data>
+  <data name="btnAddPointer.Text" xml:space="preserve">
+    <value>أضف مؤشر موقع ويب</value>
+  </data>
+  <data name="btnAddUser.Text" xml:space="preserve">
+    <value>إضافة مستخدم</value>
+  </data>
+  <data name="btnAddAppVirtualDirectory.Text" xml:space="preserve">
+    <value>إنشاء تطبيق افتراضي</value>
+  </data>
+  <data name="btnChangeFrontPagePassword.Text" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="btnDelete.OnClientClick" xml:space="preserve">
+    <value>تأكيد العودة الموقع ();</value>
+  </data>
+  <data name="btnDelete.Text" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="btnInstallFrontPage.Text" xml:space="preserve">
+    <value>تثبيت</value>
+  </data>
+  <data name="btnUninstallFrontPage.Text" xml:space="preserve">
+    <value>الغاء التثبيت</value>
+  </data>
+  <data name="buttonPanel.OnSaveClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('جارٍ تحديث موقع الويب ...');</value>
+  </data>
+  <data name="cmdContinue.AlternateText" xml:space="preserve">
+    <value>متابعة موقع الويب</value>
+  </data>
+  <data name="cmdDeleteFolder.AlternateText" xml:space="preserve">
+    <value>احذف المجلد</value>
+  </data>
+  <data name="cmdDeleteFolder.OnClientClick" xml:space="preserve">
+    <value>تأكيد الإرجاع ("هل أنت متأكد أنك تريد حذف المجلد؟") ؛</value>
+  </data>
+  <data name="cmdDeleteGroup.AlternateText" xml:space="preserve">
+    <value>حذف المجموعة</value>
+  </data>
+  <data name="cmdDeleteGroup.OnClientClick" xml:space="preserve">
+    <value>تأكيد الإرجاع ("هل أنت متأكد أنك تريد حذف المجموعة؟") ؛</value>
+  </data>
+  <data name="cmdDeletePointer.AlternateText" xml:space="preserve">
+    <value>إزالة المؤشر</value>
+  </data>
+  <data name="cmdDeletePointer.OnClientClick" xml:space="preserve">
+    <value>تأكيد الإرجاع ("هل أنت متأكد من أنك تريد إزالة المؤشر؟") ؛</value>
+  </data>
+  <data name="cmdDeleteUser.AlternateText" xml:space="preserve">
+    <value>مسح المستخدم</value>
+  </data>
+  <data name="cmdDeleteUser.OnClientClick" xml:space="preserve">
+    <value>تأكيد الإرجاع ("هل أنت متأكد أنك تريد حذف المستخدم؟") ؛</value>
+  </data>
+  <data name="cmdPause.AlternateText" xml:space="preserve">
+    <value>إيقاف موقع الويب مؤقتًا</value>
+  </data>
+  <data name="cmdStart.AlternateText" xml:space="preserve">
+    <value>بدء موقع ويب</value>
+  </data>
+  <data name="cmdStop.AlternateText" xml:space="preserve">
+    <value>إيقاف موقع ويب</value>
+  </data>
+  <data name="DisableFolders.Text" xml:space="preserve">
+    <value>تعطيل المجلدات الآمنة</value>
+  </data>
+  <data name="EnableFolders.Text" xml:space="preserve">
+    <value>تمكين المجلدات الآمنة</value>
+  </data>
+  <data name="gvErrorPages.Empty" xml:space="preserve">
+    <value>لم يتم تعريف معالجات الأخطاء المخصصة</value>
+  </data>
+  <data name="gvErrorPagesCode.Header" xml:space="preserve">
+    <value>كود</value>
+  </data>
+  <data name="gvErrorPagesErrorContent.Header" xml:space="preserve">
+    <value>محتوى الخطأ</value>
+  </data>
+  <data name="gvErrorPagesHandlerType.Header" xml:space="preserve">
+    <value>نوع المعالجة</value>
+  </data>
+  <data name="gvErrorPagesSubcode.Header" xml:space="preserve">
+    <value>كود فرعي</value>
+  </data>
+  <data name="gvFolders.Empty" xml:space="preserve">
+    <value>انقر فوق الزر "إضافة مجلد" لإضافة مجلد آمن</value>
+  </data>
+  <data name="gvFoldersName.Header" xml:space="preserve">
+    <value>مجلدات مؤمنة</value>
+  </data>
+  <data name="gvGroups.Empty" xml:space="preserve">
+    <value>انقر فوق الزر "إضافة مجموعة" لإضافة مجموعة جديدة</value>
+  </data>
+  <data name="gvGroupsName.Header" xml:space="preserve">
+    <value>مجموعات</value>
+  </data>
+  <data name="gvMimeTypes.Empty" xml:space="preserve">
+    <value>لم يتم تعريف أنواع MIME المخصصة</value>
+  </data>
+  <data name="gvMimeTypesExtension.Header" xml:space="preserve">
+    <value>امتداد</value>
+  </data>
+  <data name="gvMimeTypesMIMEtype.Header" xml:space="preserve">
+    <value>نوع MIME</value>
+  </data>
+  <data name="gvPointers.Empty" xml:space="preserve">
+    <value>لا توجد مؤشرات موقع ويب</value>
+  </data>
+  <data name="gvPointersName.Header" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="gvUsers.Empty" xml:space="preserve">
+    <value>انقر فوق الزر "إضافة مستخدم" لإضافة مستخدم جديد</value>
+  </data>
+  <data name="gvUsersName.Header" xml:space="preserve">
+    <value>المستخدمون</value>
+  </data>
+  <data name="gvAppVirtualDirectories.Empty" xml:space="preserve">
+    <value>لا توجد دلائل تطبيقات افتراضية للعرض.</value>
+  </data>
+  <data name="gvAppVirtualDirectoriesName.Header" xml:space="preserve">
+    <value>اسم التطبيق الافتراضي</value>
+  </data>
+  <data name="gvAppVirtualDirectoriesPath.Header" xml:space="preserve">
+    <value>مسار التطبيق الافتراضي</value>
+  </data>
+  <data name="lblFPAccount.Text" xml:space="preserve">
+    <value>حساب الصفحة الأمامية:</value>
+  </data>
+  <data name="lblFPPassword.Text" xml:space="preserve">
+    <value>كلمة مرور الصفحة الأمامية:</value>
+  </data>
+  <data name="lblFPStatus.Text" xml:space="preserve">
+    <value>حالة الصفحة الأمامية:</value>
+  </data>
+  <data name="lblSharePoint.Text" xml:space="preserve">
+    <value>يحتوي موقع الويب هذا على خدمات شيربوينت مثبتة ولا يمكن توسيعها باستخدام ملحقات الصفحة الأمامية.</value>
+  </data>
+  <data name="SiteState.Continuing" xml:space="preserve">
+    <value>استمرار</value>
+  </data>
+  <data name="SiteState.Paused" xml:space="preserve">
+    <value>متوقف مؤقتًا</value>
+  </data>
+  <data name="SiteState.Started" xml:space="preserve">
+    <value>بدأت</value>
+  </data>
+  <data name="SiteState.Stopped" xml:space="preserve">
+    <value>متوقف</value>
+  </data>
+  <data name="Tab.CustomErrors" xml:space="preserve">
+    <value>أخطاء مخصصة</value>
+  </data>
+  <data name="Tab.CustomHeaders" xml:space="preserve">
+    <value>الرؤوس</value>
+  </data>
+  <data name="Tab.Extensions" xml:space="preserve">
+    <value>امتدادات</value>
+  </data>
+  <data name="Tab.FrontPage" xml:space="preserve">
+    <value>الصفحة الأمامية</value>
+  </data>
+  <data name="Tab.HomeFolder" xml:space="preserve">
+    <value>المجلد الرئيسي</value>
+  </data>
+  <data name="Tab.MIMETypes" xml:space="preserve">
+    <value>أنواع MIME</value>
+  </data>
+  <data name="Tab.SecuredFolders" xml:space="preserve">
+    <value>مجلدات مؤمنة</value>
+  </data>
+  <data name="Tab.Htaccess" xml:space="preserve">
+    <value>.htaccess</value>
+  </data>
+  <data name="Tab.HeliconZoo" xml:space="preserve">
+    <value>محركات الويب</value>
+  </data>
+  <data name="Tab.VirtualDirs" xml:space="preserve">
+    <value>تطبيق الاستعراض المفصل الافتراضي- تطبيقات افتراضية</value>
+  </data>
+  <data name="Text.FPSE_INSTALLED" xml:space="preserve">
+    <value>تم تثبيته</value>
+  </data>
+  <data name="Text.FPSE_NOT_INSTALLED" xml:space="preserve">
+    <value>غير مثبت</value>
+  </data>
+  <data name="Text.FPSE_UNAVAILABLE" xml:space="preserve">
+    <value>لم يتم تثبيت ملحقات خادم الصفحة الأمامية على خادم الويب الخاص بك</value>
+  </data>
+  <data name="Text.SharePointInstalled" xml:space="preserve">
+    <value>تم تثبيت خدمات شيربوينت</value>
+  </data>
+  <data name="Tab.ColdFusion" xml:space="preserve">
+    <value>ColdFusion</value>
+  </data>
+  <data name="Text.CF_UNAVAILABLE" xml:space="preserve">
+    <value>لم يتم تثبيت ColdFusion على خادم الويب</value>
+  </data>
+  <data name="Text.CF_WARNING" xml:space="preserve">
+    <value>* يؤدي تمكين البرمجة النصية لـ ColdFusion إلى إعادة تشغيل IIS تلقائيًا</value>
+  </data>
+  <data name="Text.COLDFUSION_UNAVAILABLE" xml:space="preserve">
+    <value>لم يتم تثبيت Adobe ColdFusion على خادم الويب الخاص بك</value>
+  </data>
+  <data name="Tab.WebManagement" xml:space="preserve">
+    <value>الإدارة</value>
+  </data>
+  <data name="btnWmSvcChangePassw.Text" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="btnWmSvcSiteDisable.Text" xml:space="preserve">
+    <value>تعطيل</value>
+  </data>
+  <data name="btnWmSvcSiteEnable.Text" xml:space="preserve">
+    <value>تمكين</value>
+  </data>
+  <data name="cvPasswordComparer.ErrorMessage" xml:space="preserve">
+    <value>* تأكيد كلمة المرور لا يتطابق مع كلمة المرور المحددة</value>
+  </data>
+  <data name="lclEnablementHint.Text" xml:space="preserve">
+    <value>لتمكين الإدارة عن بعد لموقع الويب هذا ، حدد اسم مستخدم الحساب وكلمة المرور ، ثم انقر فوق الزر "تمكين".</value>
+  </data>
+  <data name="lclWmSvcAccountName.Text" xml:space="preserve">
+    <value>اسم المستخدم:</value>
+  </data>
+  <data name="lclWmSvcAccountPassword.Text" xml:space="preserve">
+    <value>كلمة المرور:</value>
+  </data>
+  <data name="lclWmSvcAccountPasswordC.Text" xml:space="preserve">
+    <value>تأكيد كلمة المرور:</value>
+  </data>
+  <data name="lclWmSvcConnectionHint.Text" xml:space="preserve">
+    <value>يمكن إدارة الموقع عن بعد من &lt;a href="http://www.iis.net/extensions/IISManager" target="_blank"&gt;إدارة IIS للإدارة عن بعد&lt;/a&gt;.
+&lt;p&gt;&lt;table cellpadding="4" border="0"&gt;
+&lt;tr&gt;
+	&lt;td class="NormalBold" colspan="2"&gt;تفاصيل الاتصال:&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td class="Normal"&gt;اسم الخادم: &lt;/td&gt;&lt;td&gt;{0}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+	&lt;td class="Normal"&gt;اسم الموقع: &lt;/td&gt;&lt;td&gt;{1}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;&lt;/p&gt;&lt;p&gt;
+للاتصال بخدمة إدارة موقع الويب ، يرجى استخدام اسم المستخدم وكلمة المرور الواردة أدناه.&lt;/p&gt;</value>
+  </data>
+  <data name="lclWmSvcNotInstalled.Text" xml:space="preserve">
+    <value>خدمة الإدارة غير مثبتة على خادم الويب. من فضلك تواصل مع مسؤول نظامك.</value>
+  </data>
+  <data name="lclWmSvcSiteDisabled.Text" xml:space="preserve">
+    <value>الإدارة عن بعد معطلة.</value>
+  </data>
+  <data name="lclWmSvcSiteEnabled.Text" xml:space="preserve">
+    <value>تم تمكين الإدارة عن بعد.</value>
+  </data>
+  <data name="btnWmSvcChangePassw.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('تغيير كلمة مرور الوصول ...')</value>
+  </data>
+  <data name="btnWmSvcSiteEnable.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('تمكين الإدارة عن بعد ...')</value>
+  </data>
+  <data name="Tab.WebDeployPublishing" xml:space="preserve">
+    <value>النشر على الويب</value>
+  </data>
+  <data name="WDeploySitePublishingDisabled.Text" xml:space="preserve">
+    <value>النشر على الويب معطل.</value>
+  </data>
+  <data name="WDeploySitePublishingEnabled.Text" xml:space="preserve">
+    <value>تم تمكين النشر على الويب.</value>
+  </data>
+  <data name="WDeploySitePublishingEnablementHint.Text" xml:space="preserve">
+    <value>لتمكين النشر على الويب لموقع الويب هذا ، حدد اسم مستخدم الحساب وكلمة المرور ثم انقر فوق الزر "تمكين".</value>
+  </data>
+  <data name="PubProfileMsSqlLocalize.Text" xml:space="preserve">
+    <value>الرجاء اختيار قاعدة بيانات Microsoft SQL:</value>
+  </data>
+  <data name="WDeployBuildPublishingProfileWizard.Text" xml:space="preserve">
+    <value>إنشاء معالج ملف تعريف النشر</value>
+  </data>
+  <data name="WDeployBuildSitePublishingProfileHint.Text" xml:space="preserve">
+    <value>الرجاء استخدام الرابط أدناه لإنشاء ملف تعريف للنشر يسهل تكوين إعدادات النشر لراحتك.</value>
+  </data>
+  <data name="WDeployChangePublishingPasswButton.Text" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="WDeployDisablePublishingButton.Text" xml:space="preserve">
+    <value>تعطيل</value>
+  </data>
+  <data name="WDeployEnabePublishingButton.Text" xml:space="preserve">
+    <value>تمكين</value>
+  </data>
+  <data name="WDeployPublishingAccountLocalize.Text" xml:space="preserve">
+    <value>اسم المستخدم:</value>
+  </data>
+  <data name="WDeployPublishingConfirmPasswordLocalize.Text" xml:space="preserve">
+    <value>تأكيد كلمة المرور:</value>
+  </data>
+  <data name="WDeployPublishingPasswordLocalize.Text" xml:space="preserve">
+    <value>كلمة المرور:</value>
+  </data>
+  <data name="WDeployPublishingProfileUsageNotes.Text" xml:space="preserve">
+    <value>يمكنك الآن نشر المحتوى على هذا الموقع بسهولة عبر إما Web Matrix أو Visual Studio .NET 2010. يرجى استخدام الرابط أدناه لتنزيل ملف تعريف النشر الذي يسهل نشر المحتوى عبر الإنترنت لراحتك. لديك أيضًا خيار لإعادة إنشاء ملف تعريف النشر إذا قررت تغيير أو تحديث إعدادات النشر الخاصة بك.</value>
+  </data>
+  <data name="WebPublishing.ChooseDatabasePrompt" xml:space="preserve">
+    <value>اختر قاعدة البيانات ...</value>
+  </data>
+  <data name="WebPublishing.ChooseDatabaseUserPrompt" xml:space="preserve">
+    <value>اختر مستخدم قاعدة البيانات ...</value>
+  </data>
+  <data name="WebPublishing.ChooseFtpAccountPrompt" xml:space="preserve">
+    <value>اختر حساب FTP ...</value>
+  </data>
+  <data name="cmdApplyDedicatedIP.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('جاري تطبيق التغييرات ...');</value>
+  </data>
+  <data name="cmdApplyDedicatedIP.Text" xml:space="preserve">
+    <value>تنفيذ</value>
+  </data>
+  <data name="cmdCancelDedicatedIP.Text" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="cmdSwitchToDedicatedIP.Text" xml:space="preserve">
+    <value>قم بالتبديل إلى IP المخصص</value>
+  </data>
+  <data name="cmdSwitchToSharedIP.OnClientClick" xml:space="preserve">
+    <value>if(!confirm('هل تريد حقًا تحويل موقع الويب هذا إلى IP مشترك؟')) return false;ShowProgressDialog('جاري تطبيق التغييرات ...');</value>
+  </data>
+  <data name="cmdSwitchToSharedIP.Text" xml:space="preserve">
+    <value>قم بالتبديل إلى IP المشترك</value>
+  </data>
+  <data name="locDedicatedIPAddress.Text" xml:space="preserve">
+    <value>عنوان IP:</value>
+  </data>
+  <data name="locSelectIPAddress.Text" xml:space="preserve">
+    <value>حدد عنوان IP:</value>
+  </data>
+  <data name="locSharedIPAddress.Text" xml:space="preserve">
+    <value>عنوان IP: مشترك</value>
+  </data>
+  <data name="chkDeleteWebsiteDirectory.Text" xml:space="preserve">
+    <value>فرض حذف دليل الموقع؟</value>
+  </data>
+  <data name="btnChangeFrontPagePasswordText.Text" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="btnDeleteText.Text" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="btnInstallFrontPageText.Text" xml:space="preserve">
+    <value>تثبيت</value>
+  </data>
+  <data name="btnUninstallFrontPageText.Text" xml:space="preserve">
+    <value>الغاء التثبيت</value>
+  </data>
+  <data name="btnWmSvcChangePasswText.Text" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="btnWmSvcSiteDisableText.Text" xml:space="preserve">
+    <value>تعطيل</value>
+  </data>
+  <data name="btnWmSvcSiteEnableText.Text" xml:space="preserve">
+    <value>تمكين</value>
+  </data>
+  <data name="PubProfileWizardCancelButtonText.Text" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="PubProfileWizardOkButtonText.Text" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="WDeployChangePublishingPasswButtonText.Text" xml:space="preserve">
+    <value>تغيير كلمة المرور</value>
+  </data>
+  <data name="WDeployDisablePublishingButtonText.Text" xml:space="preserve">
+    <value>تعطيل</value>
+  </data>
+  <data name="WDeployEnabePublishingButtonText.Text" xml:space="preserve">
+    <value>تمكين</value>
+  </data>
+  <data name="btnAddVirtualDirectory.Text" xml:space="preserve">
+    <value>إنشاء دليل افتراضي</value>
+  </data>
+  <data name="gvVirtualDirectories.Empty" xml:space="preserve">
+    <value>لا توجد دلائل افتراضية للعرض.</value>
+  </data>
+  <data name="gvVirtualDirectoriesName.Header" xml:space="preserve">
+    <value>اسم الدليل الافتراضي:</value>
+  </data>
+  <data name="gvVirtualDirectoriesPath.Header" xml:space="preserve">
+    <value>مسار الدليل الافتراضي</value>
+  </data>
+  <data name="HeaderVirtualApplications.Text" xml:space="preserve">
+    <value>التطبيقات الافتراضية</value>
+  </data>
+  <data name="HeaderVirtualDirectories.Text" xml:space="preserve">
+    <value>الدلائل الافتراضية</value>
+  </data>
+  <data name="VirtualAppInfo.Text" xml:space="preserve">
+    <value>تشبه التطبيقات الافتراضية موقع الويب الخاص بك تمامًا ، فهي عبارة عن مجموعة من الملفات التي تقدم خدمات عبر البروتوكولات ، وتستخدم البرمجة النصية الخاصة بها أو مجموعة التطبيقات ، ولديها جميع خيارات موقع الويب. ولكنه يعمل أيضًا كدليل افتراضي يتيح لك وضع مسار الدليل خارج جذر موقع الويب.</value>
+  </data>
+  <data name="VirtualCFAppInfo.Text" xml:space="preserve">
+    <value>تشبه التطبيقات الافتراضية (تعيينات الويب الافتراضية) موقع ويب CF الخاص بك تمامًا ، حيث يتيح لك تعيين الويب الافتراضي تعيين مسار نظام فعلي لمسار مورد منطقي قد يكون خارج جذر ويب ColdFusion MX. على سبيل المثال ، قد ترغب في تعيين الدليل المادي "\resources\images" إلى مسار /images.المنطقي. بعد إعداد التعيين ، يصل المستخدمون إلى الدليل باستخدام عنوان URL بالشكل التالي: http: // hostname / images /.
+  تتمثل إحدى ميزات استخدام تعيينات الويب الافتراضية في أنها تخفي التخطيط المادي لهيكل دليل التطبيق عن المستخدمين. يمكن أيضًا استخدام هذا لتشغيل تطبيقات منفصلة داخل تطبيق CF الخاص بك.</value>
+  </data>
+  <data name="VirtualDirectoriesCFInfo.Text" xml:space="preserve">
+    <value>ملاحظة: هذه التعيينات مستقلة عن أدلة ColdFusion الافتراضية. إذا كنت ترغب في إنشاء دليل افتراضي للوصول إلى دليل معين من خلال عنوان URL ، فيرجى الرجوع إلى وثائق ColdFusion.
+  الدلائل الافتراضية هي مجرد مؤشر لمسار الدليل لذلك لا يمكن الوصول إلى مسار الدليل من الويب باستخدام اسم الدليل الأصلي ، وهذا أمر جيد لأسباب عديدة ، 1. استخدم دليلًا خارج مسار موقع الويب. 2. أسماء الدليل ، لذلك إذا كان الدليل الخاص بك يسمى Files_reports_Store_Sales ، فيمكنك تسمية VD SalesReports الخاص بك وسوف يعرض المحتوى في الدليل الذي يشير إليه.</value>
+  </data>
+  <data name="VirtualDirectoriesFPInfo.Text" xml:space="preserve">
+    <value>ملاحظة: هذه التعيينات مستقلة عن الدلائل الافتراضية للصفحة الأمامية. إذا كنت ترغب في إنشاء دليل افتراضي للوصول إلى دليل معين من خلال عنوان URL ، فيرجى الرجوع إلى وثائق الصفحة الأولى.
+بعد إنشاء الدليل الافتراضي ، انتقل إلى مسؤول الصفحة الأمامية وأنشئ صفحة ويب فرعية بنفس الاسم مثل الدليل الافتراضي.
+مثال: IIS Root C:\IISROOT\WWW, Application File location \\SOMESYSTEM\SHARED_DISK,  ،
+بافتراض أننا نريد الوصول إلى التطبيق كـ
+ HTTP: // servername / MYAPP ،
+لذلك ، قم بإنشاء دليل افتراضي MYAPP يشير إلى
+\\ SOMESYSTEM \ SHARED_DISK ،
+تأكد من أن هذا التطبيق لا يحتوي على امتدادات الصفحة الأمامية الحالية (إذا كان الأمر كذلك ، فاحذف الدلائل _vti * هناك) ثم انتقل إلى مسؤول الصفحة الأمامية ، وأنشئ موقع ويب فرعيًا لاسم موقع الويب myapp. هذا هو..</value>
+  </data>
+  <data name="VirtualDirectoriesInfo.Text" xml:space="preserve">
+    <value>الدلائل الافتراضي هو مجرد مؤشر لمسار الدليل لذلك لا يمكن الوصول إلى مسار الدليل من الويب باستخدام اسم الدليل الأصلي ، وهذا أمر جيد لأسباب عديدة ، 1. استخدم دليلًا خارج مسار موقع الويب. 2. أسماء الدليل ، لذلك إذا كان الدليل الخاص بك يسمى Files_reports_Store_Sales ، فيمكنك تسمية VD SalesReports الخاص بك وسوف يعرض المحتوى في الدليل الذي يشير إليه.</value>
+  </data>
+  <data name="VirtualFPAppInfo.Text" xml:space="preserve">
+    <value>تشبه التطبيقات الافتراضية موقع الويب الخاص بـ FP (التطبيق) ، يتيح لك تعيين الويب الافتراضي تعيين مسار نظام مادي إلى مسار مورد منطقي قد يكون خارج جذر ويب FP. على سبيل المثال، قد ترغب في تعيين الدليل المادي"\resources\images" إلى منطقية مسار الموارد /images. بعد إعداد التعيين ، يصل المستخدمون إلى الدليل باستخدام عنوان URL بالشكل التالي: http: // hostname / images /.
+  تتمثل إحدى ميزات استخدام تعيينات الويب الافتراضية في أنها تخفي التخطيط المادي لهيكل دليل التطبيق عن المستخدمين. يمكن أيضًا استخدام هذا لتشغيل تطبيقات منفصلة داخل تطبيق FP الخاص بك إذا تم إعداده بشكل صحيح. ستظل بحاجة إلى العمل مع لوحة إدارة FP. نوصيك بالرجوع إلى وثائق الصفحة الأولى إذا كان لديك أي أسئلة.</value>
+  </data>
+  <data name="HeaderVirtualApplicationsCF.Text" xml:space="preserve">
+    <value>استخدام التطبيقات الافتراضية مع ColdFusion</value>
+  </data>
+  <data name="HeaderVirtualApplicationsFP.Text" xml:space="preserve">
+    <value>استخدام التطبيقات الافتراضية مع الصفحة الأولى</value>
+  </data>
+  <data name="HeaderVirtualDirectoriesCF.Text" xml:space="preserve">
+    <value>استخدام الدلائل الافتراضية مع ColdFusion</value>
+  </data>
+  <data name="HeaderVirtualDirectoriesFP.Text" xml:space="preserve">
+    <value>استخدام الدلائل الافتراضية مع الصفحة الأولى</value>
+  </data>
+</root>

@@ -261,6 +261,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public int ChangePackageUser(int packageId, int UserId)
+        {
+            return PackageController.ChangePackageUser(packageId, UserId);
+        }
+
+        [WebMethod]
         public int UpdatePackageName(int packageId, string packageName, string packageComments)
         {
             return PackageController.UpdatePackageName(packageId, packageName, packageComments);

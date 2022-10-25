@@ -33,6 +33,16 @@
 
 		</td>
 	</tr>
+    <tr>
+	    <td colspan="2"><hr /></td>
+	</tr>
+    <tr>
+		<td class="SubHead"><asp:Label ID="lblChangeUser" runat="server" meta:resourcekey="lblChangeUser" Text="Assigned to User:"></asp:Label></td>
+		<td class="Normal">
+            <asp:CheckBox ID="chkMoveUser" runat="server" meta:resourcekey="chkMoveUser" OnCheckedChanged="chkMoveUser_CheckedChanged" Text="Change User" AutoPostBack="true" />
+			<asp:DropDownList id="ddlUser" runat="server" CssClass="form-control" DataValueField="UserID" DataTextField="Username"></asp:DropDownList>
+		</td>
+	</tr>
 	<tr>
 	    <td colspan="2"><hr /></td>
 	</tr>

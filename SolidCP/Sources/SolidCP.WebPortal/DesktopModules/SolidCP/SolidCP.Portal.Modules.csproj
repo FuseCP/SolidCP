@@ -276,6 +276,69 @@
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.designer.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditAccount.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditAccount.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditAccount.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditAccount.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditDomain.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditDomain.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain_Features.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditDomain_Features.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain_Features.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditDomain_Features.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain_Sharing.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditDomain_Sharing.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain_Sharing.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditDomain_Sharing.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain_Throttling.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditDomain_Throttling.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditDomain_Throttling.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditDomain_Throttling.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditForwarding.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditForwarding.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditForwarding.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditForwarding.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditGroup.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditGroup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditGroup.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditGroup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditList.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditList.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditList.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditList.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_Settings.ascx.cs">
+      <DependentUpon>SmarterMail100x_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_Settings.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_Settings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ProviderControls\SpamExperts_Settings.ascx.cs">
       <DependentUpon>SpamExperts_Settings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5546,6 +5609,15 @@
     <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditAccount.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditDomain.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditDomain_Features.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditDomain_Sharing.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditDomain_Throttling.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditForwarding.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditGroup.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditList.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_Settings.ascx" />
     <Content Include="ProviderControls\SpamExperts_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
     <Content Include="ProviderControls\Proxmox_Settings.ascx" />
@@ -6508,6 +6580,23 @@
     </Content>
     <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.resx" />
     <Content Include="ExchangeServer\UserControls\App_LocalResources\MailboxPlanSelector.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Features.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Sharing.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Throttling.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditDomain_Throttling.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditForwarding.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditGroup.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditGroup.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.de-DE.resx" />
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />

@@ -30,12 +30,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Threading;
 
 using SolidCP.Providers.Virtualization;
+using SolidCP.EnterpriseServer.Code.Virtualization2012.Tasks;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -79,7 +80,7 @@ namespace SolidCP.EnterpriseServer
                 SecurityContext.SetThreadPrincipal(ThreadUserId);
 
             // perform backup
-            VirtualizationServerController2012.CreateVirtualMachineInternal(TaskId, Item, OsTemplate,
+            CreateVirtualMachineTask.CreateVirtualMachineNewTask(TaskId, Item, OsTemplate,
                 ExternalAddressesNumber, RandomExternalAddresses, ExternalAddresses,
                 PrivateAddressesNumber, RandomPrivateAddresses, PrivateAddresses,
                 SummaryLetterEmail);
