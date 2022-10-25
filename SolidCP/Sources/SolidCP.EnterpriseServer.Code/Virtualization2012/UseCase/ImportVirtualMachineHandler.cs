@@ -150,10 +150,14 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                     {
                         totalHddSize += item.HddSize[i];
                     }
-                    QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, totalHddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
                     if (item.HddSize.Length > 1)
                     {
+                        QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, totalHddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDDS);
                         QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_ADDITIONAL_VHD_COUNT, item.HddSize.Length - 1, VirtualizationErrorCodes.QUOTA_EXCEEDED_ADDITIONAL_HDD);
+                    }
+                    else
+                    {
+                        QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_HDD, totalHddSize, VirtualizationErrorCodes.QUOTA_EXCEEDED_HDD);
                     }
                     QuotaHelper.CheckNumericQuota(cntx, quotaResults, Quotas.VPS2012_SNAPSHOTS_NUMBER, item.SnapshotsNumber, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS);
 
