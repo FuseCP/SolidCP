@@ -54,7 +54,7 @@ Class solidcp_configurableoptions{
     public function getConfigurableOptions(){
         try{
             $this->configurableoptions = Capsule::select("select concat(g.name, ' -> ', o.optionname, ' -> ', os.optionname) as name, c.whmcs_id as whmcs_id, c.scp_id as scp_id, os.hidden as hidden from ".SOLIDCP_CONFIGURABLE_OPTIONS_TABLE." as c
-left join tblproductconfigoptionssub as os on c.whmcs_id=os.configid
+left join tblproductconfigoptionssub as os on c.whmcs_id=os.id
 left join tblproductconfigoptions as o on os.configid=o.id
 left join tblproductconfiggroups as g on o.gid=g.id
 order by g.name,  o.`order`, os.sortorder");
