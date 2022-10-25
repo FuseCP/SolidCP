@@ -9963,6 +9963,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>VPS.VPS_QUOTA_EXCEEDED_HDDS</Key>
+    <DefaultValue>The free HDD quota is: {1} GB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>VPS.VPS_QUOTA_EXCEEDED_ADDITIONAL_HDD</Key>
     <DefaultValue>The maximum additional HDD count that could be specified: {1}</DefaultValue>
   </Resource>
@@ -58029,11 +58034,6 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
     <Key>btnUpdate.OnClientClick</Key>
     <DefaultValue>if(!confirm('Before applying new configuration VPS will be stopped.\n\nAfter the configuration is changed it will be started again automatically.\n\nDo you want to proceed?')) return false; ShowProgressDialog('Updating configuration...');</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
-    <Key>btnUpdate.Text</Key>
-    <DefaultValue>Update</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
