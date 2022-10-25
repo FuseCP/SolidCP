@@ -6710,7 +6710,7 @@ WHERE
 		or (@ItemID is not Null AND S.ItemID = @ItemID))'
 
 IF @FilterColumn <> '' AND @FilterValue <> ''
-SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE @FilterValue '
+SET @sql = @sql + ' AND ' + @FilterColumn + ' LIKE ''%' + @FilterValue + '%'' '
 
 IF @SortColumn <> '' AND @SortColumn IS NOT NULL
 SET @sql = @sql + ' ORDER BY ' + @SortColumn + ' '
@@ -16740,7 +16740,7 @@ DECLARE @ItemsAll TABLE
   Username nvarchar(100),
   Fullname nvarchar(100)
  )
-DECLARE @sql nvarchar(4000)
+DECLARE @sql nvarchar(max)
 
 /*------------------------------------------------Users---------------------------------------------------------------*/
 DECLARE @columnUsername nvarchar(20)  
@@ -16837,18 +16837,21 @@ WHEN 8 THEN ''SecurityGroup''
 WHEN 9 THEN ''DefaultSecurityGroup''
 WHEN 10 THEN ''SharedMailbox''
 WHEN 11 THEN ''DeletedUser''
+WHEN 12 THEN ''JournalingMailbox''
 '
 
 SET @sql = '
  DECLARE @ItemsService TABLE
  (
   ItemID int,
+  ItemTypeID int,
   Username nvarchar(100),
   Fullname nvarchar(100)
  )
- INSERT INTO @ItemsService (ItemID, Username, Fullname)
+ INSERT INTO @ItemsService (ItemID, ItemTypeID, Username, Fullname)
  SELECT
   SI.ItemID,
+  SI.ItemTypeID,
   U.Username,
   U.FirstName + '' '' + U.LastName as Fullname
  FROM ServiceItems AS SI
@@ -16976,9 +16979,10 @@ SET @sql = @sql + '
   I3.Fullname
  FROM @ItemsService AS I3
  INNER JOIN ServiceItems AS SI3 ON I3.ItemID = SI3.ItemID
- INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON I3.ItemID = EAEA.AccountID'
+ INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON I3.ItemID = EAEA.AccountID
+ WHERE I3.ItemTypeID = 29'
 IF @FilterValue <> ''
- SET @sql = @sql + ' WHERE (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
+ SET @sql = @sql + ' AND (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
  SET @sql = @sql + ')'
 IF @OnlyFind = 1
 	SET @sql = @sql + ' ORDER BY TextSearch';
@@ -17276,6 +17280,51 @@ SET @sql = @sql + '
   AND (' + CAST((@IsAdmin) AS varchar(12)) + ' = 1 OR P.UserID = @UserID)'
 IF @FilterValue <> ''
 	SET @sql = @sql + ' AND EF.FolderName LIKE ''' + @FilterValue + ''''
+IF @OnlyFind = 1
+	SET @sql = @sql + ' ORDER BY TextSearch'
+SET @sql = @sql + ';open @curValue'
+
+CLOSE @curAll
+DEALLOCATE @curAll
+exec sp_executesql @sql, N'@UserID int, @curValue cursor output', @UserID, @curAll output
+
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+WHILE @@FETCH_STATUS = 0
+BEGIN
+INSERT INTO @ItemsAll(ItemID, TextSearch, ColumnType, FullType, PackageID, AccountID, Username, Fullname)
+VALUES(@ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname)
+FETCH NEXT FROM @curAll INTO @ItemID, @TextSearch, @ColumnType, @FullTypeAll, @PackageID, @AccountID, @Username, @Fullname
+END
+
+/*------------------------------------VPS-IP------------------------------------------------*/
+SET @sql = '
+SET @curValue = cursor local for
+ SELECT '
+
+IF @OnlyFind = 1
+SET @sql = @sql + 'TOP ' + CAST(@MaximumRows AS varchar(12)) + ' '
+
+SET @sql = @sql + '
+  SI.ItemID as ItemID,
+  SI.ItemName as TextSearch,
+  SIT.DisplayName as ColumnType,
+  SIT.DisplayName as FullType,
+  P.PackageID as PackageID,
+  0 as AccountID,
+  U.Username,
+  U.FirstName + '' '' + U.LastName as Fullname
+ FROM ServiceItems AS SI
+ INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+ INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+ INNER JOIN Users AS U ON U.UserID = P.UserID
+ LEFT JOIN PrivateIPAddresses AS PIP ON PIP.ItemID = SI.ItemID
+ LEFT JOIN PackageIPAddresses AS PACIP ON PACIP.ItemID = SI.ItemID
+ LEFT JOIN IPAddresses AS IPS ON IPS.AddressID = PACIP.AddressID
+ WHERE SIT.DisplayName = ''VirtualMachine''
+  AND ' + CAST((@HasUserRights) AS varchar(12)) + ' = 1
+  AND dbo.CheckUserParent(@UserID, P.UserID) = 1
+  AND (''' + @FilterValue + ''' LIKE ''%.%'' OR ''' + @FilterValue + ''' LIKE ''%:%'')
+  AND (PIP.IPAddress LIKE ''' + @FilterValue + ''' OR IPS.ExternalIP LIKE ''' + @FilterValue + ''')'
 IF @OnlyFind = 1
 	SET @sql = @sql + ' ORDER BY TextSearch'
 SET @sql = @sql + ';open @curValue'
@@ -23413,7 +23462,7 @@ END
 GO
 
 -- SimpleDNS 9.x
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1901' AND DisplayName = 'SimpleDNS Plus 9.x')
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1903' AND DisplayName = 'SimpleDNS Plus 9.x')
 BEGIN
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1903, 7, N'SimpleDNS', N'SimpleDNS Plus 9.x', N'SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90', N'SimpleDNS', NULL)
 END

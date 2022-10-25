@@ -4809,6 +4809,9 @@
   <data name="VPS.VPS_QUOTA_EXCEEDED_HDD" xml:space="preserve">
     <value>Die maximale Festplattengröße, die angegeben werden kann: {1} GB</value>
   </data>
+  <data name="VPS.VPS_QUOTA_EXCEEDED_HDDS" xml:space="preserve">
+    <value>Die freie HDD-Quote beträgt: {1} GB</value>
+  </data>
   <data name="VPS.VPS_QUOTA_EXCEEDED_ADDITIONAL_HDD" xml:space="preserve">
     <value>Die maximale zusätzliche Festplattenanzahl, die angegeben werden kann: {1}</value>
   </data>

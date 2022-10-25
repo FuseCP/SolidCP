@@ -58,10 +58,15 @@ namespace SolidCP.Portal.SkinControls
         const string TYPE_FOLDER = "WebDAVFolder";
         const string TYPE_SHAREPOINT = "SharePointFoundationSiteCollection";
         const string TYPE_SHAREPOINTENTERPRISE = "SharePointEnterpriseSiteCollection";
+        const string TYPE_VM = "VirtualMachine";
 
         const string PID_SPACE_WEBSITES = "SpaceWebSites";
         const string PID_SPACE_DIMAINS = "SpaceDomains";
         const string PID_SPACE_EXCHANGESERVER = "SpaceExchangeServer";
+        const string PID_SPACE_VPS = "SpaceVPS";
+        const string PID_SPACE_VPS2012 = "SpaceVPS2012";
+        const string PID_SPACE_VPSFORPC = "SpaceVPSForPC";
+        const string PID_SPACE_PROXMOS = "SpaceProxmox";
 
         class Tab
         {
@@ -179,6 +184,12 @@ namespace SolidCP.Portal.SkinControls
                                 PortalUtils.SPACE_ID_PARAM + "=" + spaceId, "ctl=edit_user",
                                 "AccountID=" + accountId, "Context=Mailbox", "moduleDefId=ExchangeServer");
                         }
+                        else if (fullType.Equals("JournalingMailbox"))
+                        {
+                            res = PortalUtils.NavigatePageURL(PID_SPACE_EXCHANGESERVER, "ItemID", itemId.ToString(),
+                                PortalUtils.SPACE_ID_PARAM + "=" + spaceId, "ctl=edit_user",
+                                "AccountID=" + accountId, "Context=JournalingMailbox", "moduleDefId=ExchangeServer");
+                        }
                         else if (fullType.Equals("Equipment"))
                         {
                             res = PortalUtils.NavigatePageURL(PID_SPACE_EXCHANGESERVER, "ItemID", itemId.ToString(),
@@ -253,6 +264,30 @@ namespace SolidCP.Portal.SkinControls
                         res = PortalUtils.NavigatePageURL(PID_SPACE_EXCHANGESERVER, "ItemID", itemId.ToString(),
                             PortalUtils.SPACE_ID_PARAM + "=" + spaceId, "ctl=" + (itemType == TYPE_SHAREPOINT ? "sharepoint_edit_sitecollection" : "sharepoint_enterprise_edit_sitecollection"),
                             "SiteCollectionID=" + accountId, "moduleDefId=ExchangeServer");
+                        break;
+                    case TYPE_VM:
+                        PackageContext cntx = PackagesHelper.GetCachedPackageContext(spaceId);
+                        if (cntx.Groups.ContainsKey(ResourceGroups.VPS))
+                        {
+                            res = PortalUtils.NavigatePageURL(PID_SPACE_VPS, "SpaceID", spaceId.ToString(),
+                                "ItemID=" + itemId.ToString(), "ctl=vps_general", "moduleDefId=VPS");
+                        }
+                        else if (cntx.Groups.ContainsKey(ResourceGroups.VPS2012))
+                        {
+                            res = PortalUtils.NavigatePageURL(PID_SPACE_VPS2012, "SpaceID", spaceId.ToString(),
+                                "ItemID=" + itemId.ToString(), "ctl=vps_general", "moduleDefId=VPS2012");
+                        }
+                        else if (cntx.Groups.ContainsKey(ResourceGroups.VPSForPC))
+                        {
+                            res = PortalUtils.NavigatePageURL(PID_SPACE_VPSFORPC, "SpaceID", spaceId.ToString(),
+                                "ItemID=" + itemId.ToString(), "ctl=vps_general", "moduleDefId=VPSForPC");
+                        }
+                        else if (cntx.Groups.ContainsKey(ResourceGroups.Proxmox))
+                        {
+                            res = PortalUtils.NavigatePageURL(PID_SPACE_PROXMOS, "SpaceID", spaceId.ToString(),
+                                "ItemID=" + itemId.ToString(), "ctl=vps_general", "moduleDefId=Proxmox");
+                        }
+                        else res = PortalUtils.GetSpaceHomePageUrl(spaceId);
                         break;
                     default:
                         res = PortalUtils.GetSpaceHomePageUrl(spaceId);

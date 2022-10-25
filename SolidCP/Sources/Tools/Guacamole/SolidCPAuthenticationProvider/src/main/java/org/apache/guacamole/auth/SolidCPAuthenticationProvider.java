@@ -129,6 +129,7 @@ public class SolidCPAuthenticationProvider extends SimpleAuthenticationProvider 
 		config.setParameter("domain", domain);
 		config.setParameter("security", security);
 		config.setParameter("ignore-cert", "true");
+		config.setParameter("disable-auth", "false");
 		config.setParameter("preconnection-id", "");
 		config.setParameter("preconnection-blob", vmId);
 		String layout = environment.getProperty(serverLayout);

@@ -2,13 +2,14 @@ Guacamole custom authentication provider for SolidCP (No need SolidCP php-script
 
 ***Configuration***
 
-1) Install Guacamole Server on Linux-VM (Ubuntu 18.04 in my case). Full manual: http://guacamole.apache.org/doc/gug/installing-guacamole.html
+1) Install Guacamole Server on Linux-VM (Ubuntu 20.04.03 in my case). Full manual: http://guacamole.apache.org/doc/gug/installing-guacamole.html
 	- apt-get update
 	- Install GCC-Compiler: apt-get install gcc
-	- Install required libraries: apt-get install libcairo2-dev libjpeg-turbo8-dev libpng-dev libossp-uuid-dev libfreerdp-dev
-	- Download guacamole-server-1.0.0.tar.gz from https://guacamole.apache.org/releases/1.0.0/
-	- Unpack sources: tar -xzf guacamole-server-1.0.0.tar.gz
-	- cd guacamole-server-1.0.0/
+	- Install required libraries: apt-get install libcairo2-dev libjpeg-turbo8-dev libpng-dev libossp-uuid-dev freerdp2-dev freerdp2-x11 libtool-bin libwebsockets-dev libavformat-dev
+	- Give a write permission for current user to "/usr/sbin" ( https://www.mail-archive.com/user@guacamole.apache.org/msg08613.html )
+	- Download guacamole-server-1.3.0.tar.gz from https://guacamole.apache.org/releases/1.3.0/
+	- Unpack sources: tar -xzf guacamole-server-1.3.0.tar.gz
+	- cd guacamole-server-1.3.0/
 	- Run build script: ./configure --with-init-dir=/etc/init.d
 	- Compile guacamole server: make
 	- Install guacamole server: make install
@@ -16,11 +17,11 @@ Guacamole custom authentication provider for SolidCP (No need SolidCP php-script
 	- systemctl enable guacd
 	- systemctl start guacd
 
-2) Install Apache and Tomcat (I used this manual: https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
+2) Install last version of Apache and Tomcat9
 
 3) Install Guacamole Client:
-	- Download Guacamole client - guacamole-1.0.0.war from https://guacamole.apache.org/releases/1.0.0/
-	- Copy Guacamole client to Your tomcat directory:  cp guacamole-1.0.0.war /{tomcat_path}/webapps/guacamole.war
+	- Download Guacamole client - guacamole-1.3.0.war from https://guacamole.apache.org/releases/1.3.0/
+	- Copy Guacamole client to Your tomcat directory:  cp guacamole-1.3.0.war /{tomcat_path}/webapps/guacamole.war
 	- Restart Tomcat: systemctl restart tomcat
 	- If Guacamole installed successfully You should see login site on: http://{your_server}:8080/guacamole
 	- For HTTPS bindings use Apache reverse proxy or configure Tomcat for SSL
@@ -31,10 +32,10 @@ Guacamole custom authentication provider for SolidCP (No need SolidCP php-script
 	- chown -R {tomcat_user} /etc/guacamole/
 
 5) Configure Guacamole to use SolidCP authentication provider
-	- Copy SolidCPAuthenticationProvider\target\guacamole-auth-solidcp-1.0.0.jar to /etc/guacamole/extensions
-	- SolidCP authentication provider need two external jars file: bcprov-jdk15on-164.jar and json-20140107.jar
-		Bouncy Castle library download site: https://www.bouncycastle.org/latest_releases.html
-		org.json library download site: https://mvnrepository.com/artifact/org.json/json/20140107
+	- Copy SolidCPAuthenticationProvider\target\guacamole-auth-solidcp-1.3.0.jar to /etc/guacamole/extensions
+	- SolidCP authentication provider need two external jar files:
+			bcprov-jdk15on-1.70.jar (https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on/1.70)
+			json-20211205.jar (https://mvnrepository.com/artifact/org.json/json/20211205)
 		Download libraries or copy it from SolidCPAuthenticationProvider\target\lib to /etc/guacamole/lib
 	- In SolidCP go to Configuration - Servers - HyperV - Guacamole and generate Guacamole Encryption Password
 	- Set "Guacamole Connect Script URL" to Your Guacamole login site

@@ -85,7 +85,7 @@
                                             <asp:Localize ID="lblAdditionalHdd" runat="server" meta:resourcekey="lblHdd" Text="HDD:" />
                                         </td>
                                         <td class="MediumBold">
-                                            <asp:Literal ID="litAdditionalHdd" runat="server" Text='<%# Eval("DiskSize") %>'></asp:Literal>
+                                            <asp:Literal ID="litAdditionalHdd" runat="server" Text='<%# Eval("DiskSizeTxt") %>'></asp:Literal>
                                         </td>
                                     </tr>
                                 </ItemTemplate>

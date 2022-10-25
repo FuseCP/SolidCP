@@ -36,19 +36,22 @@ namespace SolidCP.Providers.Virtualization
 {
     public class AdditionalHdd
     {
-        public AdditionalHdd(string diskSize, string diskPath)
+        public AdditionalHdd(int diskSize, string diskPath)
         {
             DiskSize = diskSize;
+            DiskSizeTxt = diskSize.ToString();
             DiskPath = diskPath;
         }
 
         public AdditionalHdd()
         {
-            DiskSize = "0";
+            DiskSize = 0;
+            DiskSizeTxt = "0";
             DiskPath = "";
         }
 
-        public string DiskSize { get; set; }
+        public int DiskSize { get; set; }
+        public string DiskSizeTxt { get; set; }
         public string DiskPath { get; set; }
     }
 }

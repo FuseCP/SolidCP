@@ -241,7 +241,7 @@ namespace SolidCP.Portal.VPS2012
                         for (int i = 0; i < vm.VirtualHardDrivePath.Length; i++)
                         {
                             if (String.IsNullOrEmpty(vm.VirtualHardDrivePath[i])) continue;
-                            if (Path.GetFileName(vm.VirtualHardDrivePath[i]).ToLower().Equals(Path.GetFileName(hdd.DiskPath).ToLower()) && Utils.ParseInt(hdd.DiskSize.Trim()) < vm.HddSize[i])
+                            if (Path.GetFileName(vm.VirtualHardDrivePath[i]).ToLower().Equals(Path.GetFileName(hdd.DiskPath).ToLower()) && hdd.DiskSize < vm.HddSize[i])
                             {
                                 messageBox.ShowWarningMessage("VPS_CHANGE_HDD_SIZE");
                                 return;
@@ -261,7 +261,7 @@ namespace SolidCP.Portal.VPS2012
                 List<AdditionalHdd> additionalHdd = GetAdditionalHdd();
                 foreach (AdditionalHdd hdd in additionalHdd)
                 {
-                    int size = Utils.ParseInt(hdd.DiskSize.Trim());
+                    int size = hdd.DiskSize;
                     if (size > 0)
                     {
                         hddSize.Add(size);
@@ -367,16 +367,31 @@ namespace SolidCP.Portal.VPS2012
 
         protected void btnAddHdd_Click(object sender, EventArgs e)
         {
-            var hdd = GetAdditionalHdd();
-            hdd.Add(new AdditionalHdd());
-            RebindAdditionalHdd(hdd);
+            var hdds = GetAdditionalHdd();
+            PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+            int freeHddGb = 0;
+            if (cntx.Quotas.ContainsKey(Quotas.VPS2012_HDD))
+            {
+                QuotaValueInfo hddQuota = cntx.Quotas[Quotas.VPS2012_HDD];
+                if (hddQuota.QuotaAllocatedValue != -1)
+                {
+                    int availSize = hddQuota.QuotaAllocatedValue - hddQuota.QuotaUsedValue;
+                    freeHddGb = availSize < 0 ? 0 : availSize;
+                }
+            }
+            foreach (AdditionalHdd hdd in hdds)
+            {
+                if (hdd.DiskSize > 0 && String.IsNullOrEmpty(hdd.DiskPath)) freeHddGb -= hdd.DiskSize;
+            }
+            hdds.Add(new AdditionalHdd(freeHddGb, ""));
+            RebindAdditionalHdd(hdds);
         }
 
         protected void btnRemoveHdd_OnCommand(object sender, CommandEventArgs e)
         {
-            var hdd = GetAdditionalHdd();
-            hdd.RemoveAt(Convert.ToInt32(e.CommandArgument));
-            RebindAdditionalHdd(hdd);
+            var hdds = GetAdditionalHdd();
+            hdds.RemoveAt(Convert.ToInt32(e.CommandArgument));
+            RebindAdditionalHdd(hdds);
         }
 
         private void BindAdditionalHdd(VirtualMachine vm)
@@ -388,7 +403,7 @@ namespace SolidCP.Portal.VPS2012
                 for (int i = 1; i < vm.HddSize.Length; i++)
                 {
                     if (vm.HddSize[i] == 0 || String.IsNullOrEmpty(vm.VirtualHardDrivePath[i])) continue;
-                    AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i].ToString(), vm.VirtualHardDrivePath[i]);
+                    AdditionalHdd hdd = new AdditionalHdd(vm.HddSize[i], vm.VirtualHardDrivePath[i]);
                     result.Add(hdd);
                 }
             }
@@ -435,7 +450,7 @@ namespace SolidCP.Portal.VPS2012
 
             foreach (RepeaterItem item in repHdd.Items)
             {
-                AdditionalHdd hdd = new AdditionalHdd(GetTextBoxText(item, "txtAdditionalHdd"), GetHiddenFieldValue(item, "txtAdditionalHddPath"));
+                AdditionalHdd hdd = new AdditionalHdd(Utils.ParseInt(GetTextBoxText(item, "txtAdditionalHdd")), GetHiddenFieldValue(item, "txtAdditionalHddPath"));
                 result.Add(hdd);
             }
 

@@ -72,7 +72,7 @@ namespace SolidCP.Portal
 
         public RdsServer[] GetOrganizationRdsServersPaged(int itemId, int maximumRows, int startRowIndex, string sortColumn, string filterValue)
         {
-            rdsServers = ES.Services.RDS.GetOrganizationRdsServersPaged(itemId, null, "", filterValue, sortColumn, startRowIndex, maximumRows);
+            rdsServers = ES.Services.RDS.GetOrganizationRdsServersPaged(itemId, null, "S.Name", filterValue, sortColumn, startRowIndex, maximumRows);
 
             return rdsServers.Servers;
         }
@@ -96,7 +96,7 @@ namespace SolidCP.Portal
 
         public RdsCollection[] GetRDSCollectonsPaged(int itemId, int maximumRows, int startRowIndex, string sortColumn, string filterValue)
         {
-            rdsCollections = ES.Services.RDS.GetRdsCollectionsPaged(itemId, "Name", filterValue, sortColumn, startRowIndex, maximumRows);
+            rdsCollections = ES.Services.RDS.GetRdsCollectionsPaged(itemId, "DisplayName", filterValue, sortColumn, startRowIndex, maximumRows);
 
             return rdsCollections.Collections;
 

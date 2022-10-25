@@ -116,7 +116,8 @@ namespace SolidCP.Portal.HostedSolution
                 if (EnableSecurityGroups)
                 {
                     //Security Groups
-                    ExchangeAccount[] securGroups = ES.Services.Organizations.GetUserGroups(PanelRequest.ItemID, PanelRequest.AccountID);
+                    //ExchangeAccount[] securGroups = ES.Services.Organizations.GetUserGroups(PanelRequest.ItemID, PanelRequest.AccountID);
+                    ExchangeAccount[] securGroups = ES.Services.Organizations.GetSecurityGroupsByMember(PanelRequest.ItemID, PanelRequest.AccountID);
 
                     foreach (ExchangeAccount secGroup in securGroups)
                     {
@@ -161,7 +162,7 @@ namespace SolidCP.Portal.HostedSolution
                         oldGroups.Add(secGroup);
                     }
                 }
-
+                
                 IDictionary<string, ExchangeAccountType> newGroups = groups.GetFullAccounts();
 
                 foreach (ExchangeAccount oldGroup in oldGroups)
