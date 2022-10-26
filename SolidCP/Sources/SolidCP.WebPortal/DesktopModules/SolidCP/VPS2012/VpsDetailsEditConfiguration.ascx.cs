@@ -377,11 +377,11 @@ namespace SolidCP.Portal.VPS2012
                 {
                     int availSize = hddQuota.QuotaAllocatedValue - hddQuota.QuotaUsedValue;
                     freeHddGb = availSize < 0 ? 0 : availSize;
+                    foreach (AdditionalHdd hdd in hdds)
+                    {
+                        if (hdd.DiskSize > 0 && String.IsNullOrEmpty(hdd.DiskPath)) freeHddGb -= hdd.DiskSize;
+                    }
                 }
-            }
-            foreach (AdditionalHdd hdd in hdds)
-            {
-                if (hdd.DiskSize > 0 && String.IsNullOrEmpty(hdd.DiskPath)) freeHddGb -= hdd.DiskSize;
             }
             hdds.Add(new AdditionalHdd(freeHddGb, ""));
             RebindAdditionalHdd(hdds);
