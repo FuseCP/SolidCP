@@ -195,4 +195,7 @@
   <data name="loginStatus.LockedOut" xml:space="preserve">
     <value>Locked out</value>
   </data>
+  <data name="lblMfaEnabled.Text" xml:space="preserve">
+    <value>A validation code is sent to the primary email address when logging in. Enabling an authentication app stops the validation code from being sent by email.</value>
+  </data>
 </root>

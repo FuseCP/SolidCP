@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal {
-    
-    
-    public partial class UserAccountMailTemplateSettings {
-        
+namespace SolidCP.Portal
+{
+
+
+    public partial class UserAccountMailTemplateSettings
+    {
+
         /// <summary>
         /// lnkAccountLetter control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkAccountLetter;
-        
+
         /// <summary>
         /// lnkPackageLetter control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkPackageLetter;
-        
+
         /// <summary>
         /// lnkPasswordReminder control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkPasswordReminder;
-        
+
         /// <summary>
         /// lnkExchangeMailboxSetup control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkExchangeMailboxSetup;
-        
+
         /// <summary>
         /// HyperLink1 control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink1;
-        
+
         /// <summary>
         /// HyperLink2 control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink2;
-        
+
         /// <summary>
         /// lnkVpsSummaryLetter control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkVpsSummaryLetter;
-        
+
         /// <summary>
         /// lnkDomainExpirationLetter control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkDomainExpirationLetter;
-        
+
         /// <summary>
         /// lnkDomainLookupLetter control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkDomainLookupLetter;
-        
+
         /// <summary>
         /// lnkRdsSetupLetter control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkRdsSetupLetter;
-        
+
         /// <summary>
         /// lnkUserPasswordExpirationLetter control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkUserPasswordExpirationLetter;
-        
+
         /// <summary>
         /// lnkOrganizationUserPasswordResetLetter control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkOrganizationUserPasswordResetLetter;
-        
+
         /// <summary>
         /// lnkOrganizationUserPasswordResetPincodeLetter control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkOrganizationUserPasswordResetPincodeLetter;
-        
+
         /// <summary>
         /// HyperLink3 control.
         /// </summary>
@@ -137,7 +139,16 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink HyperLink3;
-        
+
+        /// <summary>
+        /// lnkVerificationCode control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkVerificationCode;
+
         /// <summary>
         /// btnCancel control.
         /// </summary>

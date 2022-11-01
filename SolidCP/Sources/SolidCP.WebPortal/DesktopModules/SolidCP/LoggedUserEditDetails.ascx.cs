@@ -120,9 +120,11 @@ namespace SolidCP.Portal
                 txtSecondaryEmail.Text = user.SecondaryEmail;
                 lblUsername.Text = user.Username;
                 ddlMailFormat.SelectedIndex = user.HtmlMail ? 1 : 0;
+                cbxMfaEnabled.Checked = user.MfaMode > 0 ? true : false;
+                btnGetQRCodeData.Visible = cbxMfaEnabled.Checked;
 
                 // contact info
-				contact.CompanyName = user.CompanyName;
+                contact.CompanyName = user.CompanyName;
                 contact.Address = user.Address;
                 contact.City = user.City;
                 contact.Country = user.Country;
@@ -316,6 +318,14 @@ namespace SolidCP.Portal
             ChangeUserPassword();
         }
 
+        protected void cbxMfaEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.LoggedUserId);
+            PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
+            qrData.Visible = false;
+            btnGetQRCodeData.Visible = cbxMfaEnabled.Checked;
+        }
+
         private void SetCurrentLanguage()
         {
             PortalUtils.SetCurrentLanguage(ddlLanguage.SelectedValue);
@@ -412,6 +422,30 @@ namespace SolidCP.Portal
             HttpContext.Current.Response.Cookies.Add(UserThemeSidebarCrum);
         }
 
+        protected void btnGetQRCodeData_Click(object sender, EventArgs e)
+        {
+            UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.LoggedUserId);
+            var qrCodeData = PortalUtils.GetQrCodeData(user.Username);
+            if (cbxMfaEnabled.Checked && qrCodeData.Length == 2)
+            {
+                qrData.Visible = true;
+                lblManualAuth.Text = qrCodeData[0];
+                imgQrCode.ImageUrl = qrCodeData[1];
+            }
+        }
 
+        protected void btnActivateQRCode_Click(object sender, EventArgs e)
+        {
+            UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.LoggedUserId);
+            var success = PortalUtils.ActivateQrCode(user.Username, txtQrCodeActivationPin.Text.Trim());
+            if (!success)
+            {
+                ShowErrorMessage("QRCodeActivation");
+                return;
+            }
+
+            qrData.Visible = false;
+            ShowSuccessMessage("QRCodeActivation");
+        }
     }
 }

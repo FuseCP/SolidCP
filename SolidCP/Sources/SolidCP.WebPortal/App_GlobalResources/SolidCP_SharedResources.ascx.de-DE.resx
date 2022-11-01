@@ -6759,6 +6759,24 @@
   <data name="Warning.VPS_CHANGE_HDD_SIZE" xml:space="preserve">
     <value>Sie können die Festplattengröße nicht reduzieren! Bitte wenden Sie sich mit Ihren Anliegen an den technischen Support.</value>
   </data>
+  <data name="Error.PinSendError" xml:space="preserve">
+    <value>Fehler beim Senden des Pins</value>
+  </data>
+  <data name="Error.QRCodeActivation" xml:space="preserve">
+    <value>Aktivierung nicht erfolgreich</value>
+  </data>
+  <data name="Error.WrongPin" xml:space="preserve">
+    <value>Falscher PIN</value>
+  </data>
+  <data name="Success.PinSend" xml:space="preserve">
+    <value>PIN erfolgreich gesendet</value>
+  </data>
+  <data name="Success.QRCodeActivation" xml:space="preserve">
+    <value>Aktivierung erfolgreich</value>
+  </data>
+  <data name="SuccessDescription.PinSend" xml:space="preserve">
+    <value>PIN wurde erfolgreich zur primären E-Mail-Adresse gesendet.</value>
+  </data>
   <data name="TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT" xml:space="preserve">
     <value>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</value>
   </data>

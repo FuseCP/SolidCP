@@ -113,6 +113,7 @@ namespace SolidCP.EnterpriseServer
             companyName = src.companyName;
             ecommerceEnabled = src.ecommerceEnabled;
             subscriberNumber = src.subscriberNumber;
+            MfaMode = src.MfaMode;
         }
 
         /// <summary>
@@ -339,7 +340,13 @@ namespace SolidCP.EnterpriseServer
             set { this.subscriberNumber = value; }
         }
 
-        
+        /// <summary>
+        /// Multi-Factor Authentication Mode
+        /// 0 - Off
+        /// 1 - EMail
+        /// 2 - Token-App
+        /// </summary>
+        public int MfaMode { get; set; }
 
         public string AdditionalParams { get; set; }
 
@@ -403,5 +410,7 @@ namespace SolidCP.EnterpriseServer
             get { return oneTimePasswordState; }
             set { oneTimePasswordState = value; }
         }
+
+        public string PinSecret { get; set; }
     };
 }

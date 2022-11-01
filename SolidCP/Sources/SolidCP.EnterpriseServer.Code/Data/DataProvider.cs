@@ -451,6 +451,25 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@OneTimePasswordState", auths));
         }
 
+        public static void UpdateUserPinSecret(int actorId, int userId, string pinSecret)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "UpdateUserPinSecret",
+                new SqlParameter("@ActorId", actorId),
+                new SqlParameter("@UserID", userId),
+                new SqlParameter("@PinSecret", pinSecret)
+                );
+        }
+
+        public static void UpdateUserMfaMode(int actorId, int userId, int mfaMode)
+        {
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "UpdateUserMfaMode",
+                new SqlParameter("@ActorId", actorId),
+                new SqlParameter("@UserID", userId),
+                new SqlParameter("@MfaMode", mfaMode));
+        }
+
         #endregion
 
         #region User Settings

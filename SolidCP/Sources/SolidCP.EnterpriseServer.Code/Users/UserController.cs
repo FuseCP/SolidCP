@@ -39,6 +39,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Linq;
+using Google.Authenticator;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -145,8 +146,18 @@ namespace SolidCP.EnterpriseServer
                     return BusinessErrorCodes.ERROR_USER_ACCOUNT_PENDING;
                 }
 
-                return result;
-
+				// if onetimepassword no MFA
+				if (user.MfaMode > 0 && result != BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD)
+				{
+					if(user.MfaMode == 1)
+                    {
+						SendVerificationCode(username);
+					}
+					TaskManager.Write("MFA active");
+					return BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE;
+				}
+				
+				return result;
             }
             catch (Exception ex)
             {
@@ -157,6 +168,71 @@ namespace SolidCP.EnterpriseServer
                 TaskManager.CompleteTask();
             }
         }
+
+		public static bool ValidatePin(string username, string pin, TimeSpan timeTolerance)
+		{
+			UserInfoInternal user = GetUserInternally(username);
+			TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
+			var isValid = twoFactorAuthenticator.ValidateTwoFactorPIN(CryptoUtils.Decrypt(user.PinSecret), pin, timeTolerance);
+			return isValid;
+		}
+
+		private static string[] GetCurrentPins(UserInfoInternal user, TimeSpan timeTolerance)
+        {
+			TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
+			var pins = twoFactorAuthenticator.GetCurrentPINs(CryptoUtils.Decrypt(user.PinSecret), timeTolerance);
+			return pins;
+		}
+
+		private static string GetCurrentPin(UserInfoInternal user)
+		{
+			TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
+			var pin = twoFactorAuthenticator.GetCurrentPIN(CryptoUtils.Decrypt(user.PinSecret));
+			return pin;
+		}
+
+		private static string GetRandomString(int length)
+		{
+			Random random = new Random(Guid.NewGuid().GetHashCode());
+			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz!§$%&/()=?";
+			return new string(Enumerable.Repeat(chars, length)
+				.Select(s => s[random.Next(s.Length)]).ToArray());
+		}
+
+		public static bool UpdateUserMfaSecret(string username, bool activate)
+		{
+			UserInfoInternal user = GetUserInternally(username);
+			var pinSecret = activate ? CryptoUtils.Encrypt(GetRandomString(20)) : null;
+			DataProvider.UpdateUserPinSecret(SecurityContext.User.UserId, user.UserId, pinSecret);
+			DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, pinSecret != null ? 1 : 0);
+			return true;
+		}
+
+		public static string[] GetUserMfaQrCodeData(string username)
+		{
+			UserInfoInternal user = GetUserInternally(username);
+
+			if (user.MfaMode == 0)
+				return new string[0];
+
+			TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
+			var faSetupCode = twoFactorAuthenticator.GenerateSetupCode("SolidCP", $"{user.Username}_SolidCP", CryptoUtils.Decrypt(user.PinSecret), false);
+			return new string[] { faSetupCode.ManualEntryKey, faSetupCode.QrCodeSetupImageUrl };
+		}
+
+		public static bool ActivateUserMfaQrCode(string username, string pin)
+		{
+			UserInfoInternal user = GetUserInternally(username);
+			if(user.MfaMode == 0)
+				return false;
+
+			var valid = ValidatePin(username, pin, TimeSpan.FromSeconds(60));
+			if (!valid)
+				return false;
+
+			DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, 2);
+			return true;
+		}
 
 		public static UserInfo GetUserByUsernamePassword(string username, string password, string ip)
 		{
@@ -302,8 +378,60 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
+		public static int SendVerificationCode(string username)
+		{
+			// place log record
+			TaskManager.StartTask("USER", "SEND_VERIFICATION_CODE", username);
 
-        internal static UserInfoInternal GetUserInternally(int userId)
+			try
+			{
+				// try to get user from database
+				UserInfoInternal user = GetUserInternally(username);
+				if (user == null)
+				{
+					TaskManager.WriteWarning("Account not found");
+					return 0;
+				}
+
+				UserSettings settings = UserController.GetUserSettings(user.UserId, UserSettings.VERIFICATION_CODE_LETTER);
+				string from = settings["From"];
+				string cc = settings["CC"];
+				string subject = settings["Subject"];
+				string body = user.HtmlMail ? settings["HtmlBody"] : settings["TextBody"];
+				bool isHtml = user.HtmlMail;
+
+				MailPriority priority = MailPriority.Normal;
+				if (!String.IsNullOrEmpty(settings["Priority"]))
+					priority = (MailPriority)Enum.Parse(typeof(MailPriority), settings["Priority"], true);
+
+				if (string.IsNullOrWhiteSpace(body))
+					return BusinessErrorCodes.ERROR_SETTINGS_PASSWORD_LETTER_EMPTY_BODY;
+
+				// set template context items
+				Hashtable items = new Hashtable();
+				items["user"] = user;
+				items["verificationCode"] = GetCurrentPin(user);
+
+				subject = PackageController.EvaluateTemplate(subject, items);
+				body = PackageController.EvaluateTemplate(body, items);
+
+				// send message
+				MailHelper.SendMessage(from, user.Email, cc, subject, body, priority, isHtml);
+
+				return 0;
+			}
+			catch (Exception ex)
+			{
+				throw TaskManager.WriteError(ex);
+			}
+			finally
+			{
+				TaskManager.CompleteTask();
+			}
+		}
+
+
+		internal static UserInfoInternal GetUserInternally(int userId)
 		{
             return GetUser(DataProvider.GetUserByIdInternally(userId));
 		}

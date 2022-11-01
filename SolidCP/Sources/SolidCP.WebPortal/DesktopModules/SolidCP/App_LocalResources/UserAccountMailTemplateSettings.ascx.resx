@@ -162,4 +162,7 @@
   <data name="lnkOrganizationUserPasswordRequestLetter.Text" xml:space="preserve">
     <value>Organization User Password Request Letter</value>
   </data>
+	<data name="lnkVerificationCode.Text" xml:space="preserve">
+    <value>User Verification Code Letter</value>
+  </data>
 </root>

@@ -41,7 +41,8 @@ namespace SolidCP.EnterpriseServer
         #region Users
         
         public const int SUCCESS_USER_ONETIMEPASSWORD = 100;
+        public const int SUCCESS_USER_MFA_ACTIVE = 101;
 
         #endregion
-	}
+    }
 }

@@ -52,6 +52,7 @@ using System.Security.Cryptography;
 using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
 using SolidCP.WebPortal;
+using System.Collections;
 
 namespace SolidCP.Portal
 {
@@ -263,8 +264,6 @@ namespace SolidCP.Portal
             HttpCookie rSessionCookie = new HttpCookie("ASP.NET_SessionId", "");
             rSessionCookie.Expires = DateTime.Now.AddYears(-1);
             HttpContext.Current.Response.Cookies.Add(rSessionCookie);
-
-            
         }
 
         public static MenuItem GetSpaceMenuItem(string menuItemKey)
@@ -377,8 +376,68 @@ namespace SolidCP.Portal
             // Return the result.
             return Convert.ToBase64String(hashBytes);
         }
-        public static int AuthenticateUser(string username, string password, string ipAddress,
-            bool rememberLogin, string preferredLocale, string theme)
+
+        public static bool ValidatePin(string username, string pin)
+        {
+            esAuthentication authService = new esAuthentication();
+            ConfigureEnterpriseServerProxy(authService, false);
+            return authService.ValidatePin(username, pin);
+        }
+
+        public static int SendPin(string username)
+        {
+            esAuthentication authService = new esAuthentication();
+            ConfigureEnterpriseServerProxy(authService, false);
+            return authService.SendPin(username);
+        }
+
+
+        public static bool UpdateUserMfa(string username, bool activate)
+        {
+            esUsers usersService = new esUsers();
+            ConfigureEnterpriseServerProxy(usersService, true);
+            try
+            {
+                return usersService.UpdateUserMfa(username, activate);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static string[] GetQrCodeData(string username)
+        {
+            esUsers usersService = new esUsers();
+            ConfigureEnterpriseServerProxy(usersService, true);
+            return usersService.GetUserMfaQrCodeData(username);
+        }
+
+        public static bool ActivateQrCode(string username, string pin)
+        {
+            esUsers usersService = new esUsers();
+            ConfigureEnterpriseServerProxy(usersService, true);
+            return usersService.ActivateUserMfaQrCode(username, pin);
+        }
+
+        public static string CreateEncyptedAuthenticationTicket(string username, string password, string ipAddress, bool rememberLogin, string preferredLocale, string theme)
+        {
+            esAuthentication authService = new esAuthentication();
+            ConfigureEnterpriseServerProxy(authService, false);
+
+            UserInfo user = authService.GetUserByUsernamePassword(username, SHA1(password), ipAddress);
+            FormsAuthenticationTicket ticket = CreateAuthTicket(user.Username, password, user.Role, rememberLogin);
+            return FormsAuthentication.Encrypt(ticket);
+        }
+
+        public static void SetTicketAndCompleteLogin(string encryptedTicket, string username, bool rememberLogin, string preferredLocale, string theme)
+        {
+            var ticket = FormsAuthentication.Decrypt(encryptedTicket);
+            SetAuthTicket(ticket, rememberLogin);
+            CompleteUserLogin(username, rememberLogin, preferredLocale, theme);
+        }
+
+        public static int AuthenticateUser(string username, string password, string ipAddress)
         {
             esAuthentication authService = new esAuthentication();
             ConfigureEnterpriseServerProxy(authService, false);
@@ -393,24 +452,25 @@ namespace SolidCP.Portal
                 {
                     return authResult;
                 }
-                else
+                
+                UserInfo user = authService.GetUserByUsernamePassword(username, passwordSH, ipAddress);
+                if (user == null)
                 {
-                    UserInfo user = authService.GetUserByUsernamePassword(username, passwordSH, ipAddress);
-                    if (user != null)
-                    {
-                        if (IsRoleAllowedToLogin(user.Role))
-                        {
-                            // issue authentication ticket
-                            FormsAuthenticationTicket ticket = CreateAuthTicket(user.Username, password, user.Role, rememberLogin);
-                            SetAuthTicket(ticket, rememberLogin);
-
-                            CompleteUserLogin(username, rememberLogin, preferredLocale, theme);
-                        }
-                        else return BusinessErrorCodes.ERROR_USER_ACCOUNT_ROLE_NOT_ALLOWED;
-                    }
-
                     return authResult;
                 }
+
+                if (!IsRoleAllowedToLogin(user.Role))
+                {
+                    return BusinessErrorCodes.ERROR_USER_ACCOUNT_ROLE_NOT_ALLOWED;
+                }
+
+                if (authResult == BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE)
+                {
+                    return BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE;
+                }
+
+                return authResult;
+
             }
             catch (Exception ex)
             {

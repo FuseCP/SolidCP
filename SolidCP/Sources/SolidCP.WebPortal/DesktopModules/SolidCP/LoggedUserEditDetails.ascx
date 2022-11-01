@@ -86,6 +86,28 @@
 					</asp:DropDownList>
 				</td>
 			</tr>
+			<tr id="rowGoogleAuth" runat="server">
+				<td class="SubHead">
+					<asp:Label ID="lblUseMfa" runat="server" meta:resourcekey="lblUseMfa" Text="Use MFA:"  AssociatedControlID="cbxMfaEnabled"></asp:Label>
+				</td>
+				<td class="Normal">
+					<asp:CheckBox id="cbxMfaEnabled" runat="server" AutoPostBack="true" OnCheckedChanged="cbxMfaEnabled_CheckedChanged"></asp:CheckBox>
+					<asp:Label ID="lblMfaEnabled" runat="server" meta:resourcekey="lblMfaEnabled" Text="When you log in, a validation code is sent to the primary email address. Enabling an authentication app stops the validation code from being sent by email."></asp:Label>
+				</td>
+			</tr>
+			<tr>
+				<td class="SubHead">
+				</td>
+				<td colspan="2" class="Normal">
+					<asp:Button id="btnGetQRCodeData" Visible="false" runat="server" meta:resourcekey="btnGetQRCodeData" Text="Get QR-Code" CssClass="btn btn-primary" OnClick="btnGetQRCodeData_Click"></asp:Button>
+					<div id="qrData" visible="false" runat="server">
+						<asp:Image ID="imgQrCode" runat="server"/>
+						<asp:Label ID="lblManualAuth" runat="server" meta:resourcekey="lblManualAuth"></asp:Label>
+						<asp:TextBox id="txtQrCodeActivationPin" runat="server" CssClass="form-control"></asp:TextBox>
+						<asp:Button id="btnActivateQRCode" runat="server" meta:resourcekey="btnActivateQRCode" Text="Validate Activation Pin" CssClass="btn btn-primary" OnClick="btnActivateQRCode_Click"></asp:Button>
+					</div>
+				</td>
+			</tr>
 		</table>
 		<br/>
 		

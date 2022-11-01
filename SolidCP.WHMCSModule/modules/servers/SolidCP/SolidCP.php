@@ -245,7 +245,8 @@ function SolidCP_CreateAccount($params)
 				    		'HtmlMail' => $htmlMail,
 				    		'CompanyName' => $clientsDetails['companyname'],
 				    		'EcommerceEnabled' => ($roleId == 2),
-				    		'SubscriberNumber' => '');
+				    		'SubscriberNumber' => '',
+							'MfaMode' => $user['MfaMode']);
 	    
 	    // Execute the UpdateUserDetails method
 	    $scp->updateUserDetails($userParams);

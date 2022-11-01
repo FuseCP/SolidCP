@@ -6832,6 +6832,24 @@
   <data name="TaskActivity.VPS_CREATE_CREATE_VM_ATTEMPT" xml:space="preserve">
     <value>Creating Virtual Machine object attempt - {0}</value>
   </data>
+  <data name="Error.PinSendError" xml:space="preserve">
+    <value>Error sending pin code</value>
+  </data>
+  <data name="Error.QRCodeActivation" xml:space="preserve">
+    <value>Activation unsuccessful. Wrong pin code.</value>
+  </data>
+  <data name="Error.WrongPin" xml:space="preserve">
+    <value>Wrong Pin</value>
+  </data>
+  <data name="Success.PinSend" xml:space="preserve">
+    <value>Pin code sent successfully</value>
+  </data>
+  <data name="Success.QRCodeActivation" xml:space="preserve">
+    <value>Activation successful</value>
+  </data>
+  <data name="SuccessDescription.PinSend" xml:space="preserve">
+    <value>Pin code was successfully sent to the primary email address.</value>
+  </data>
   <data name="TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT" xml:space="preserve">
     <value>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</value>
   </data>

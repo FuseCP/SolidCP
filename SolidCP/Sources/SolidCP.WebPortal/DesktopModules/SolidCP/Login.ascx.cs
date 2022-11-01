@@ -190,20 +190,55 @@ namespace SolidCP.Portal
                 ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
         }
 
+        protected void btnVerifyPin_Click(object sender, EventArgs e)
+        {
+            // validate input
+            if (!Page.IsValid)
+                return;
+
+            var isValid = PortalUtils.ValidatePin(txtUsername.Text, txtPin.Text);
+
+            if (!isValid)
+            {
+                ShowErrorMessage("WrongPin");
+                return;
+            }
+
+            var encryptedTicket = tokenDiv.Attributes["value"];
+            PortalUtils.SetTicketAndCompleteLogin(encryptedTicket, txtUsername.Text.Trim(), chkRemember.Checked, ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
+            tokenDiv.Attributes["value"] = null;
+            CompleteLogin(0);
+        }
+
+
         private void LoginUser(string username, string password, bool rememberLogin,
             string preferredLocale, string theme)
         {
             // status
-            int loginStatus = PortalUtils.AuthenticateUser(username, password, ipAddress,
-                rememberLogin, preferredLocale, theme);
-
+            int loginStatus = PortalUtils.AuthenticateUser(username, password, ipAddress);
+            
             if (loginStatus < 0)
             {
-                 
                 ShowWarningMessage("WrongLogin");
                 return;
             }
 
+            string encryptedTicket = PortalUtils.CreateEncyptedAuthenticationTicket(username, password, ipAddress, rememberLogin, preferredLocale, theme);
+
+            if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE)
+            {
+                userPwdDiv.Visible = false;
+                tokenDiv.Visible = true;
+                tokenDiv.Attributes["value"] = encryptedTicket;
+                return;
+            }
+
+            PortalUtils.SetTicketAndCompleteLogin(encryptedTicket, txtUsername.Text.Trim(), chkRemember.Checked, ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
+            CompleteLogin(loginStatus);
+        }
+
+        private void CompleteLogin(int loginStatus)
+        {
             // Access IP Settings
             SCP.SystemSettings settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.ACCESS_IP_SETTINGS);
             String AccessIps = String.Empty;
@@ -238,8 +273,6 @@ namespace SolidCP.Portal
                 }
 
             }
-
-           
 
             if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD)
             {
@@ -421,6 +454,14 @@ namespace SolidCP.Portal
         {
             SetCurrentTheme();
             Response.Redirect(Request.Url.ToString());
+        }
+
+        protected void btnResendPin_Click(object sender, EventArgs e)
+        {
+            if (PortalUtils.SendPin(txtUsername.Text.Trim()) == 0)
+                ShowSuccessMessage("PinSend");
+            else
+                ShowErrorMessage("PinSendError");
         }
     }
 }

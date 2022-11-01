@@ -123,6 +123,7 @@ namespace SolidCP.Portal
                 txtUsername.Text = user.Username;
                 lblUsername.Text = user.Username;
                 chkDemo.Checked = user.IsDemo;
+                cbxMfaEnabled.Checked = user.MfaMode > 0 ? true : false;
 
                 if (user.RoleId == (int)UserRole.ResellerCSR) role.SelectedIndex = 0;
                 if (user.RoleId == (int)UserRole.PlatformCSR) role.SelectedIndex = 0;
@@ -355,6 +356,12 @@ namespace SolidCP.Portal
         private void RedirectBack()
         {
             Response.Redirect(NavigateURL(PortalUtils.USER_ID_PARAM, PanelSecurity.SelectedUserId.ToString()));
+        }
+
+        protected void cbxMfaEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.SelectedUserId);
+            PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
         }
     }
 }
