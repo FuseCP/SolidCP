@@ -23655,7 +23655,7 @@ AS
 		U.EcommerceEnabled,
 		U.[AdditionalParams],
 		U.MfaMode,
-		CASE WHEN dbo.CanGetUserPassword(@ActorID, @UserID) = 1 THEN U.PinSecret
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, UserID) = 1 THEN U.PinSecret
 		ELSE '' END AS PinSecret
 	FROM Users AS U
 	WHERE U.Username = @Username
