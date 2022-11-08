@@ -195,4 +195,7 @@
   <data name="loginStatus.LockedOut" xml:space="preserve">
     <value>Gesperrt</value>
   </data>
+  <data name="lblMfaEnabled.Text" xml:space="preserve">
+    <value>Bei der Anmeldung wird eine Validierungs-PIN an die primäre E-Mail-Adresse gesendet. Aktivieren einer Authentifizierungs-App unterbindet das Senden der Validierungs-PIN per E-Mail.</value>
+  </data>
 </root>

@@ -53,10 +53,11 @@ namespace SolidCP.EnterpriseServer
     using System.Xml.Serialization;
     using System.Diagnostics;
     using System.Data;
-    
-    
+    using System.Collections;
+
+
     /// <remarks/>
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
 	[System.Diagnostics.DebuggerStepThroughAttribute()]
 	[System.ComponentModel.DesignerCategoryAttribute("code")]
 	[System.Web.Services.WebServiceBindingAttribute(Name = "esUsersSoap", Namespace = "http://smbsaas/solidcp/enterpriseserver")]
@@ -207,6 +208,34 @@ namespace SolidCP.EnterpriseServer
         
         /// <remarks/>
         public event DeleteUserThemeSettingCompletedEventHandler DeleteUserThemeSettingCompleted;
+
+        /// <remarks/>
+		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateUserMfa", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool UpdateUserMfa(string username, bool activate)
+        {
+            object[] results = this.Invoke("UpdateUserMfa", new object[] {
+                        username,
+                        activate});
+            return ((bool)(results[0]));
+        }
+
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetUserMfaQrCodeData", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string[] GetUserMfaQrCodeData(string username)
+        {
+            object[] results = this.Invoke("GetUserMfaQrCodeData", new object[] {
+                        username});
+            return ((string[])(results[0]));
+            
+        }
+
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ActivateUserMfaQrCode", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool ActivateUserMfaQrCode(string username, string pin)
+        {
+            object[] results = this.Invoke("ActivateUserMfaQrCode", new object[] {
+                        username,
+                        pin});
+            return ((bool)(results[0]));
+        }
 
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UserExists", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]

@@ -104,6 +104,25 @@ namespace SolidCP.EnterpriseServer
 		public event GetLoginThemesCompletedEventHandler GetLoginThemesCompleted;
 
 		/// <remarks/>
+		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/ValidatePin", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+		public bool ValidatePin(string username, string pin)
+		{
+			object[] results = this.Invoke("ValidatePin", new object[] {
+                       username,
+                       pin});
+			return ((bool)(results[0]));
+		}
+
+		/// <remarks/>
+		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/SendPin", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+		public int SendPin(string username)
+		{
+			object[] results = this.Invoke("SendPin", new object[] {
+					   username});
+			return ((int)(results[0]));
+		}
+
+		/// <remarks/>
 		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/AuthenticateUser", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
 		public int AuthenticateUser(string username, string password, string ip)
 		{

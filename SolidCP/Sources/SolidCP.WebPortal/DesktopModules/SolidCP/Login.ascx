@@ -1,6 +1,6 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Login.ascx.cs" Inherits="SolidCP.Portal.Login" %>
 
-<div class="panel-body form-group">
+<div class="panel-body form-group" runat="server" id="userPwdDiv">
     <div class="row">
         <div class="col-sm-12">
             <div class="input-group">
@@ -36,6 +36,28 @@
                 <asp:LinkButton ID="cmdForgotPassword" runat="server" CssClass="color-green" CausesValidation="False" OnClick="cmdForgotPassword_Click"><asp:Localize runat="server" meta:resourcekey="cmdForgotPassword" /></asp:LinkButton>
                 <asp:Localize ID="toresetyourpassword" runat="server" meta:resourcekey="toresetyourpassword" />.</p>
         </div>
+    </div>
+</div>
+<div class="panel-body form-group" runat="server" id="tokenDiv" visible="false">
+    <div class="row">
+        <div class="col-sm-12"  style="padding-bottom: 15px;">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                <asp:TextBox ID="txtPin" runat="server" CssClass="form-control"></asp:TextBox>
+            </div>
+        </div>
+    </div>
+     <div class="row">
+         <div class="col-sm-6">
+            <CPCC:StyleButton runat="server" id="StyleButton1" CssClass="btn btn-succsess" OnClick="btnResendPin_Click">
+                <asp:Localize runat="server" meta:resourcekey="btResendPin" />
+            </CPCC:StyleButton>
+        </div>
+        <div class="col-sm-6">
+            <CPCC:StyleButton ID="StyleButton2" runat="server" CssClass="btn btn-success pull-right" OnClick="btnVerifyPin_Click">
+                <asp:Localize runat="server" meta:resourcekey="btnLogin" />&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i></CPCC:StyleButton>
+        </div>
+         
     </div>
 </div>
 <div class="panel-footer">

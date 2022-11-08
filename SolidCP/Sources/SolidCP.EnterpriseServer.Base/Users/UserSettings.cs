@@ -51,6 +51,7 @@ namespace SolidCP.EnterpriseServer
         public const string VPS_SUMMARY_LETTER = "VpsSummaryLetter";
         public const string DOMAIN_EXPIRATION_LETTER = "DomainExpirationLetter";
         public const string DOMAIN_LOOKUP_LETTER = "DomainLookupLetter";
+        public const string VERIFICATION_CODE_LETTER = "VerificationCodeLetter";
         public const string WEB_POLICY = "WebPolicy";
         public const string FTP_POLICY = "FtpPolicy";
         public const string MAIL_POLICY = "MailPolicy";

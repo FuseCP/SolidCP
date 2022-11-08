@@ -632,6 +632,13 @@
     <Compile Include="ServerVLANsControl.ascx.designer.cs">
       <DependentUpon>ServerVLANsControl.ascx</DependentUpon>
     </Compile>
+    <Compile Include="SettingsVerificationCodeLetter.ascx.cs">
+      <DependentUpon>SettingsVerificationCodeLetter.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SettingsVerificationCodeLetter.ascx.designer.cs">
+      <DependentUpon>SettingsVerificationCodeLetter.ascx</DependentUpon>
+    </Compile>
     <Compile Include="SettingsMariaDBPolicy.ascx.cs">
       <DependentUpon>SettingsMariaDBPolicy.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5661,6 +5668,7 @@
     <Content Include="ProviderControls\SfB_Settings.ascx" />
     <Content Include="ScheduleTaskControls\AuditLogReportView.ascx" />
     <Content Include="ServerVLANsControl.ascx" />
+    <Content Include="SettingsVerificationCodeLetter.ascx" />
     <Content Include="SkinControls\BootstrapDropDownList.ascx" />
     <Content Include="UserControls\AllocatePackageVLANs.ascx" />
     <Content Include="UserControls\EditVLANControl.ascx" />
@@ -6022,7 +6030,9 @@
     <Content Include="App_LocalResources\IPAddressesEditIPAddress.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\LoggedUser.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\LoggedUserEditDetails.ascx.de-DE.resx" />
-    <Content Include="App_LocalResources\Login.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\Login.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_LocalResources\LoginForgotPassword.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\LyncPhoneNumbers.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\MailAccounts.ascx.de-DE.resx" />
@@ -6597,6 +6607,8 @@
     <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditList.ascx.resx" />
     <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.de-DE.resx" />
     <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx" />
+    <Content Include="App_LocalResources\SettingsVerificationCodeLetter.ascx.de-DE.resx" />
+    <Content Include="App_LocalResources\SettingsVerificationCodeLetter.ascx.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />

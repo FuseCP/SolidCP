@@ -147,6 +147,12 @@
   <data name="lblMailFormat.Text" xml:space="preserve">
     <value>Mail Format:</value>
   </data>
+  <data name="lblMfa.Text" xml:space="preserve">
+    <value>Enable MFA:</value>
+  </data>
+  <data name="lblMfaEnabled.Text" xml:space="preserve">
+    <value>A validation code is sent to the primary email address when logging in. Enabling an authentication app stops the validation code from being sent by email.</value>
+  </data>
   <data name="lblPassword.Text" xml:space="preserve">
     <value>Password:</value>
   </data>

@@ -144,10 +144,13 @@
   <data name="forgotpass.Text" xml:space="preserve">
     <value>Forgot your Password?</value>
   </data>
-   <data name="noworries.Text" xml:space="preserve">
-	<value>No worries,</value>
+  <data name="noworries.Text" xml:space="preserve">
+    <value>No worries,</value>
   </data>
   <data name="toresetyourpassword.Text" xml:space="preserve">
     <value>to reset your password</value>
+  </data>
+  <data name="btResendPin.Text" xml:space="preserve">
+    <value>Resend Pin Code</value>
   </data>
 </root>

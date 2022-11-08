@@ -118,6 +118,15 @@
 				<asp:CheckBox id="chkDemo" runat="server" meta:resourcekey="chkDemo" Text="Yes"></asp:CheckBox>
 			</td>
 		</tr>
+		<tr id="rowGoogleAuth" runat="server">
+			<td class="SubHead">
+				<asp:Label ID="lblUseMfa" runat="server" meta:resourcekey="lblUseMfa" Text="Use MFA:"  AssociatedControlID="cbxMfaEnabled"></asp:Label>
+			</td>
+			<td class="Normal">
+				<asp:CheckBox id="cbxMfaEnabled" runat="server" AutoPostBack="true" OnCheckedChanged="cbxMfaEnabled_CheckedChanged"></asp:CheckBox>
+				<asp:Label ID="lblMfaEnabled" runat="server" meta:resourcekey="lblMfaEnabled" Text="When you log in, a validation code is sent to the primary email address. Enabling an authentication app stops the validation code from being sent by email."></asp:Label>
+			</td>
+		</tr>
 	</table>
 	
     <scp:CollapsiblePanel id="headContact" runat="server" IsCollapsed="true"

@@ -282,6 +282,24 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public bool UpdateUserMfa(string username, bool activate)
+        {
+            return UserController.UpdateUserMfaSecret(username, activate);
+        }
+
+        [WebMethod]
+        public string[] GetUserMfaQrCodeData(string username)
+        {
+            return UserController.GetUserMfaQrCodeData(username);
+        }
+
+        [WebMethod]
+        public bool ActivateUserMfaQrCode(string username, string pin)
+        {
+            return UserController.ActivateUserMfaQrCode(username, pin);
+        }
+
+        [WebMethod]
         public int ChangeUserStatus(int userId, UserStatus status)
         {
             return UserController.ChangeUserStatus(userId, status);

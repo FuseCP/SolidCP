@@ -23468,6 +23468,368 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
+-- User MFA
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Users' AND COLS.name='OneTimePasswordState')
+BEGIN
+ALTER TABLE [dbo].[Users] ADD
+	[MfaMode] int NOT NULL DEFAULT(0),
+	[PinSecret] NVARCHAR(255)
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateUserPinSecret')
+DROP PROCEDURE UpdateUserPinSecret
+GO
+CREATE PROCEDURE [dbo].[UpdateUserPinSecret]
+(
+	@ActorID int,
+	@UserID int,
+	@PinSecret NVARCHAR(255)
+)
+AS
+	-- check actor rights
+	IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+	BEGIN
+		RETURN
+	END
+	UPDATE Users SET
+		PinSecret = @PinSecret 
+	WHERE UserID = @UserID
+
+	RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateUserMfaMode')
+DROP PROCEDURE UpdateUserMfaMode
+GO
+CREATE PROCEDURE [dbo].[UpdateUserMfaMode]
+(
+	@ActorID int,
+	@UserID int,
+	@MfaMode int
+)
+AS
+	-- check actor rights
+	IF dbo.CanUpdateUserDetails(@ActorID, @UserID) = 0
+	BEGIN
+		RETURN
+	END
+	UPDATE Users SET
+		MfaMode = @MfaMode 
+	WHERE UserID = @UserID
+
+	RETURN
+GO
+
+ALTER PROCEDURE [dbo].[GetUserByUsernameInternally]
+(
+	@Username nvarchar(50)
+)
+AS
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		U.Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.OneTimePasswordState,
+		U.MfaMode,
+		U.PinSecret
+
+	FROM Users AS U
+	WHERE U.Username = @Username
+
+	RETURN
+GO
+
+ALTER PROCEDURE [dbo].[GetUserByIdInternally]
+(
+	@UserID int
+)
+AS
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		U.Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.OneTimePasswordState,
+		U.MfaMode,
+		U.PinSecret
+	FROM Users AS U
+	WHERE U.UserID = @UserID
+
+	RETURN
+GO
+
+ALTER PROCEDURE [dbo].[GetUserByUsername]
+(
+	@ActorID int,
+	@Username nvarchar(50)
+)
+AS
+
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, UserID) = 1 THEN U.Password
+		ELSE '' END AS Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.MfaMode,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, @UserID) = 1 THEN U.PinSecret
+		ELSE '' END AS PinSecret
+	FROM Users AS U
+	WHERE U.Username = @Username
+	AND dbo.CanGetUserDetails(@ActorID, UserID) = 1 -- actor user rights
+
+	RETURN
+GO
+
+ALTER PROCEDURE [dbo].[GetUserById]
+(
+	@ActorID int,
+	@UserID int
+)
+AS
+	-- user can retrieve his own account, his users accounts
+	-- and his reseller account (without pasword)
+	SELECT
+		U.UserID,
+		U.RoleID,
+		U.StatusID,
+		U.SubscriberNumber,
+		U.LoginStatusId,
+		U.FailedLogins,
+		U.OwnerID,
+		U.Created,
+		U.Changed,
+		U.IsDemo,
+		U.Comments,
+		U.IsPeer,
+		U.Username,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, @UserID) = 1 THEN U.Password
+		ELSE '' END AS Password,
+		U.FirstName,
+		U.LastName,
+		U.Email,
+		U.SecondaryEmail,
+		U.Address,
+		U.City,
+		U.State,
+		U.Country,
+		U.Zip,
+		U.PrimaryPhone,
+		U.SecondaryPhone,
+		U.Fax,
+		U.InstantMessenger,
+		U.HtmlMail,
+		U.CompanyName,
+		U.EcommerceEnabled,
+		U.[AdditionalParams],
+		U.MfaMode,
+		CASE WHEN dbo.CanGetUserPassword(@ActorID, @UserID) = 1 THEN U.PinSecret
+		ELSE '' END AS PinSecret
+	FROM Users AS U
+	WHERE U.UserID = @UserID
+	AND dbo.CanGetUserDetails(@ActorID, @UserID) = 1 -- actor user rights
+
+	RETURN
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'CC' )
+BEGIN
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'VerificationCodeLetter', N'CC', N'support@HostingCompany.com')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'From' )
+BEGIN
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'VerificationCodeLetter', N'From', N'support@HostingCompany.com')
+END
+GO
+
+DECLARE @VerificationCodeLetterHtmlBody nvarchar(2500)
+
+Set @VerificationCodeLetterHtmlBody = N'<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Verification code</title>
+    <style type="text/css">
+		.Summary { background-color: ##ffffff; padding: 5px; }
+		.Summary .Header { padding: 10px 0px 10px 10px; font-size: 16pt; background-color: ##E5F2FF; color: ##1F4978; border-bottom: solid 2px ##86B9F7; }
+        .Summary A { color: ##0153A4; }
+        .Summary { font-family: Tahoma; font-size: 9pt; }
+        .Summary H1 { font-size: 1.7em; color: ##1F4978; border-bottom: dotted 3px ##efefef; }
+        .Summary H2 { font-size: 1.3em; color: ##1F4978; }
+        .Summary TABLE { border: solid 1px ##e5e5e5; }
+        .Summary TH,
+        .Summary TD.Label { padding: 5px; font-size: 8pt; font-weight: bold; background-color: ##f5f5f5; }
+        .Summary TD { padding: 8px; font-size: 9pt; }
+        .Summary UL LI { font-size: 1.1em; font-weight: bold; }
+        .Summary UL UL LI { font-size: 0.9em; font-weight: normal; }
+    </style>
+</head>
+<body>
+<div class="Summary">
+
+<a name="top"></a>
+<div class="Header">
+	Verification code
+</div>
+
+<p>
+Hello #user.FirstName#,
+</p>
+
+<p>
+to complete the sign in, enter the verification code on the device. 
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Verification code</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>#verificationCode#</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+Best regards,<br />
+
+</p>
+
+</div>
+</body>
+</html>';
+
+IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'HtmlBody' )
+BEGIN
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'VerificationCodeLetter', N'HtmlBody', @VerificationCodeLetterHtmlBody)
+END
+ELSE
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = @VerificationCodeLetterHtmlBody WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'HtmlBody'
+GO
+
+
+IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'Priority' )
+BEGIN
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'VerificationCodeLetter', N'Priority', N'Normal')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'Subject' )
+BEGIN
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'VerificationCodeLetter', N'Subject', N'Verification code')
+END
+GO
+
+DECLARE @VerificationCodeLetterTextBody nvarchar(2500)
+
+Set @VerificationCodeLetterTextBody = N'=================================
+   Verification code
+=================================
+<ad:if test="#user#">
+Hello #user.FirstName#,
+</ad:if>
+
+to complete the sign in, enter the verification code on the device.
+
+Verification code
+#verificationCode#
+
+Best regards,
+'
+
+IF NOT EXISTS (SELECT * FROM [dbo].[UserSettings] WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'TextBody' )
+BEGIN
+INSERT [dbo].[UserSettings] ([UserID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'VerificationCodeLetter', N'TextBody', @VerificationCodeLetterTextBody)
+END
+ELSE
+UPDATE [dbo].[UserSettings] SET [PropertyValue] = @VerificationCodeLetterTextBody WHERE [UserID] = 1 AND [SettingsName]= N'VerificationCodeLetter' AND [PropertyName]= N'TextBody'
+GO
+GO
+
 -- SmarterMail 100.x
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SmarterMail 100.x +')
 BEGIN

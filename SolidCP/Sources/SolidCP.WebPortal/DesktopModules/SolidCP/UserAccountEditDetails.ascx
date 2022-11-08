@@ -79,7 +79,13 @@
                 </div>
             </div>
 		</div>
-
+        <div id="rowMfa" runat="server" class="form-group">
+          <asp:Label ID="lblMfa" runat="server" meta:resourcekey="lblMfa" Text="Enable MFA:"  AssociatedControlID="role" CssClass="col-sm-2"></asp:Label>
+            <div class="col-sm-10">
+                <asp:CheckBox id="cbxMfaEnabled" runat="server" AutoPostBack="true" OnCheckedChanged="cbxMfaEnabled_CheckedChanged"></asp:CheckBox>
+                <asp:Label ID="lblMfaEnabled" runat="server" meta:resourcekey="lblMfaEnabled" Text="When you log in, a validation code is sent to the primary email address. Enabling an authentication app stops the validation code from being sent by email."></asp:Label>
+            </div>
+		</div>
 
 		<div id="roleLoginStatus" runat="server" class="form-group">
 	

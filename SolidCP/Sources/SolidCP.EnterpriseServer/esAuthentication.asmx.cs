@@ -93,5 +93,17 @@ namespace SolidCP.EnterpriseServer
         {
             return SystemController.GetThemes();
         }
+
+        [WebMethod]
+        public bool ValidatePin(string username, string pin)
+        {
+            return UserController.ValidatePin(username, pin, TimeSpan.FromSeconds(120));
+        }
+
+        [WebMethod]
+        public int SendPin(string username)
+        {
+            return UserController.SendVerificationCode(username);
+        }
     }
 }

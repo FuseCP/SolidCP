@@ -58,6 +58,10 @@
             <asp:HyperLink ID="HyperLink3" runat="server" meta:resourcekey="lnkOrganizationUserPasswordRequestLetter"
                 Text="Organization User Password Request Letter" NavigateUrl='<%# GetSettingsLink("OrganizationUserPasswordRequestLetter", "SettingsUserPasswordRequestLetter") %>'></asp:HyperLink>
         </li>
+         <li>
+            <asp:HyperLink ID="lnkVerificationCode" runat="server" meta:resourcekey="lnkVerificationCode"
+                Text="Verification Code Letter" NavigateUrl='<%# GetSettingsLink("VerificationCodeLetter", "SettingsVerificationCodeLetter") %>'></asp:HyperLink>
+        </li>
     </ul>
 </div>
 <div class="panel-footer text-right">
