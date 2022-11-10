@@ -13333,6 +13333,36 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.PinSendError</Key>
+    <DefaultValue>Error sending pin code</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.QRCodeActivation</Key>
+    <DefaultValue>Activation unsuccessful. Wrong pin code.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Error.WrongPin</Key>
+    <DefaultValue>Wrong Pin</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Success.PinSend</Key>
+    <DefaultValue>Pin code sent successfully</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Success.QRCodeActivation</Key>
+    <DefaultValue>Activation successful</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>SuccessDescription.PinSend</Key>
+    <DefaultValue>Pin code was successfully sent to the primary email address.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT</Key>
     <DefaultValue>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</DefaultValue>
   </Resource>
@@ -15961,6 +15991,26 @@
     <DefaultValue>*</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\LoggedUserEditDetails.ascx.resx</File>
+    <Key>btnActivateQRCode.Text</Key>
+    <DefaultValue>Validate Activation Pin</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\LoggedUserEditDetails.ascx.resx</File>
+    <Key>btnGetQRCodeData.Text</Key>
+    <DefaultValue>Show QR-Code</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\LoggedUserEditDetails.ascx.resx</File>
+    <Key>lblMfaEnabled.Text</Key>
+    <DefaultValue>A validation code is sent to the primary email address when logging in. Enabling an authentication app stops the validation code from being sent by email.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\LoggedUserEditDetails.ascx.resx</File>
+    <Key>lblUseMfa.Text</Key>
+    <DefaultValue>Enable MFA:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\Login.ascx.resx</File>
     <Key>ErrorMessage.WrongLogin</Key>
     <DefaultValue>Sorry the username or password you entered is incorrect or your account is locked.</DefaultValue>
@@ -16014,6 +16064,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\Login.ascx.resx</File>
     <Key>toresetyourpassword.Text</Key>
     <DefaultValue>to reset your password</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\Login.ascx.resx</File>
+    <Key>btResendPin.Text</Key>
+    <DefaultValue>Resend Pin Code</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\LoginForgotPassword.ascx.resx</File>
@@ -17064,6 +17119,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\PeersEditPeer.ascx.resx</File>
     <Key>loginStatus.LockedOut</Key>
     <DefaultValue>Locked out</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\PeersEditPeer.ascx.resx</File>
+    <Key>lblMfaEnabled.Text</Key>
+    <DefaultValue>A validation code is sent to the primary email address when logging in. Enabling an authentication app stops the validation code from being sent by email.</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\PhoneNumbers.ascx.resx</File>
@@ -20581,6 +20641,51 @@
     <DefaultValue>Text Body:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>ddlPriorityItem.High</Key>
+    <DefaultValue>High</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>ddlPriorityItem.Low</Key>
+    <DefaultValue>Low</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>ddlPriorityItem.Normal</Key>
+    <DefaultValue>Normal</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>lblCC.Text</Key>
+    <DefaultValue>CC:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>lblFrom.Text</Key>
+    <DefaultValue>From:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>lblHtmlBody.Text</Key>
+    <DefaultValue>HTML Body:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>lblPriority.Text</Key>
+    <DefaultValue>Priority:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>lblSubject.Text</Key>
+    <DefaultValue>Subject:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SettingsVerificationCodeLetter.ascx.resx</File>
+    <Key>lblTextBody.Text</Key>
+    <DefaultValue>Text Body:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SettingsVpsPolicy.ascx.resx</File>
     <Key>lblPasswordPolicy.Text</Key>
     <DefaultValue>Password Policy:</DefaultValue>
@@ -23169,6 +23274,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\UserAccountEditDetails.ascx.resx</File>
+    <Key>lblMfa.Text</Key>
+    <DefaultValue>Enable MFA:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\UserAccountEditDetails.ascx.resx</File>
+    <Key>lblMfaEnabled.Text</Key>
+    <DefaultValue>A validation code is sent to the primary email address when logging in. Enabling an authentication app stops the validation code from being sent by email.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\UserAccountEditDetails.ascx.resx</File>
     <Key>lblPassword.Text</Key>
     <DefaultValue>Password:</DefaultValue>
   </Resource>
@@ -23296,6 +23411,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\App_LocalResources\UserAccountMailTemplateSettings.ascx.resx</File>
     <Key>lnkOrganizationUserPasswordRequestLetter.Text</Key>
     <DefaultValue>Organization User Password Request Letter</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\UserAccountMailTemplateSettings.ascx.resx</File>
+    <Key>lnkVerificationCode.Text</Key>
+    <DefaultValue>User Verification Code Letter</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\UserAccountMenu.ascx.resx</File>
