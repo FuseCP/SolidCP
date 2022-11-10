@@ -23469,7 +23469,7 @@ END
 GO
 
 -- User MFA
-IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Users' AND COLS.name='OneTimePasswordState')
+IF NOT EXISTS(select 1 from sys.columns COLS INNER JOIN sys.objects OBJS ON OBJS.object_id=COLS.object_id and OBJS.type='U' AND OBJS.name='Users' AND COLS.name='MfaMode')
 BEGIN
 ALTER TABLE [dbo].[Users] ADD
 	[MfaMode] int NOT NULL DEFAULT(0),
