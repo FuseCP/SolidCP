@@ -105,7 +105,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "ADD_PRIVATE_IP", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "ADD_PRIVATE_IP", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -317,7 +317,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "SET_PRIMARY_PRIVATE_IP", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "SET_PRIMARY_PRIVATE_IP", vm.Id, vm.Name, vm.PackageId);
 
             try
             {

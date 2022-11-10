@@ -13377,6 +13377,106 @@
     <DefaultValue>Job failed to start with the following code: {0}</DefaultValue>
   </Resource>
   <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_ADD_EXTERNAL_IP</Key>
+    <DefaultValue>Add external IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_ADD_PRIVATE_IP</Key>
+    <DefaultValue>Add private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_APPLY_SNAPSHOT</Key>
+    <DefaultValue>Apply VPS snapshot</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_CHANGE_ADMIN_PASSWORD</Key>
+    <DefaultValue>Change administrator password</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_CHANGE_STATE</Key>
+    <DefaultValue>Change VPS state</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_DELETE</Key>
+    <DefaultValue>Delete VPS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_DELETE_EXTERNAL_IP</Key>
+    <DefaultValue>Delete external IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_DELETE_PRIVATE_IP</Key>
+    <DefaultValue>Delete private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_DELETE_SNAPSHOT</Key>
+    <DefaultValue>Delete VPS snapshot</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_DELETE_SNAPSHOT_SUBTREE</Key>
+    <DefaultValue>Delete VPS snapshot subtree</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_EJECT_DVD_DISK</Key>
+    <DefaultValue>Eject DVD disk</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_INSERT_DVD_DISK</Key>
+    <DefaultValue>Insert DVD disk</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_RENAME_SNAPSHOT</Key>
+    <DefaultValue>Rename VPS snapshot</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_RESTORE_EXTERNAL_IP</Key>
+    <DefaultValue>Restore external IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_RESTORE_PRIVATE_IP</Key>
+    <DefaultValue>Restore private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP</Key>
+    <DefaultValue>Set primary external IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP</Key>
+    <DefaultValue>Set primary private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_TAKE_SNAPSHOT</Key>
+    <DefaultValue>Take VPS snapshot</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_UPDATE_CONFIGURATION</Key>
+    <DefaultValue>Update VPS configuration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.VPS2012_UPDATE_HOSTNAME</Key>
+    <DefaultValue>Update host name</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
     <Key>btnUpdate.Text</Key>
     <DefaultValue>Apply</DefaultValue>

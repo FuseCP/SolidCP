@@ -2835,12 +2835,6 @@
   <data name="AuditLogTask.REMOTE_DESKTOP_SERVICES_SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED" xml:space="preserve">
     <value>RDS - neue Verbindungen Einstellen</value>
   </data>
-  <data name="AuditLogTask.VPS2012_CREATE" xml:space="preserve">
-    <value>VM erstellen</value>
-  </data>
-  <data name="AuditLogTask.VPS2012_REINSTALL" xml:space="preserve">
-    <value>VM Reinstall</value>
-  </data>
   <data name="AuditLogTask.HOSTING_SPACE_ADD" xml:space="preserve">
     <value>Hinzufügen</value>
   </data>
@@ -6785,5 +6779,71 @@
   </data>
   <data name="TaskActivity.VPS_JOB_START_ERROR" xml:space="preserve">
     <value>Job failed to start with the following code: {0}</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>Externe IP hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>Private IP hinzufügen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_APPLY_SNAPSHOT" xml:space="preserve">
+    <value>VPS-Snapshot anwenden</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CHANGE_ADMIN_PASSWORD" xml:space="preserve">
+    <value>Administrator-Passwort ändern</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CHANGE_STATE" xml:space="preserve">
+    <value>VPS-Status ändern</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CREATE" xml:space="preserve">
+    <value>VPS erstellen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE" xml:space="preserve">
+    <value>VPS löschen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Externe IP löschen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Private IP löschen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT" xml:space="preserve">
+    <value>VPS Snapshot löschen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT_SUBTREE" xml:space="preserve">
+    <value>VPS Snapshot-Unterstruktur löschen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_EJECT_DVD_DISK" xml:space="preserve">
+    <value>DVD-Disk auswerfen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_INSERT_DVD_DISK" xml:space="preserve">
+    <value>DVD-Disk einlegen...</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_REINSTALL" xml:space="preserve">
+    <value>VPS neu installieren</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RENAME_SNAPSHOT" xml:space="preserve">
+    <value>VPS-Snapshot umbenennen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_EXTERNAL_IP" xml:space="preserve">
+    <value>Restore external IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_PRIVATE_IP" xml:space="preserve">
+    <value>Restore private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>Primäre externe IP festlegen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>Primäre private IP festlegen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_TAKE_SNAPSHOT" xml:space="preserve">
+    <value>VPS-Snapshot erstellen</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_UPDATE_CONFIGURATION" xml:space="preserve">
+    <value>VPS-Konfiguration aktualisieren</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_UPDATE_HOSTNAME" xml:space="preserve">
+    <value>Hostnamen aktualisieren</value>
   </data>
 </root>

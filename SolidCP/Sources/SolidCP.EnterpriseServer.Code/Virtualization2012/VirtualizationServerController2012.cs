@@ -607,7 +607,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "INSERT_DVD_DISK", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "INSERT_DVD_DISK", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -663,7 +663,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "EJECT_DVD_DISK", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "EJECT_DVD_DISK", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -738,7 +738,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "TAKE_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "TAKE_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -808,7 +808,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "APPLY_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "APPLY_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -874,7 +874,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "RENAME_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "RENAME_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -923,7 +923,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "DELETE_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "DELETE_SNAPSHOT", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
@@ -979,7 +979,7 @@ namespace SolidCP.EnterpriseServer
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "DELETE_SNAPSHOT_SUBTREE", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "DELETE_SNAPSHOT_SUBTREE", vm.Id, vm.Name, vm.PackageId);
 
             try
             {
