@@ -46,7 +46,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "CHANGE_ADMIN_PASSWORD", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "CHANGE_ADMIN_PASSWORD", vm.Id, vm.Name, vm.PackageId);
 
             try
             {

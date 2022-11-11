@@ -43,7 +43,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "UPDATE_HOSTNAME", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "UPDATE_HOSTNAME", vm.Id, vm.Name, vm.PackageId);
 
             try
             {

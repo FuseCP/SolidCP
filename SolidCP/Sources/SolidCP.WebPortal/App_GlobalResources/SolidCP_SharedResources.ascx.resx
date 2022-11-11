@@ -6859,4 +6859,82 @@
   <data name="TaskActivity.VPS_JOB_START_ERROR" xml:space="preserve">
     <value>Job failed to start with the following code: {0}</value>
   </data>
+  <data name="AuditLogTask.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>Add external IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>Add private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_APPLY_SNAPSHOT" xml:space="preserve">
+    <value>Apply VPS snapshot</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CHANGE_ADMIN_PASSWORD" xml:space="preserve">
+    <value>Change administrator password</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CHANGE_STATE" xml:space="preserve">
+    <value>Change VPS state</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE" xml:space="preserve">
+    <value>Delete VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Delete external IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Delete private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT" xml:space="preserve">
+    <value>Delete VPS snapshot</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT_SUBTREE" xml:space="preserve">
+    <value>Delete VPS snapshot subtree</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_EJECT_DVD_DISK" xml:space="preserve">
+    <value>Eject DVD disk</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_INSERT_DVD_DISK" xml:space="preserve">
+    <value>Insert DVD disk</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RENAME_SNAPSHOT" xml:space="preserve">
+    <value>Rename VPS snapshot</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_EXTERNAL_IP" xml:space="preserve">
+    <value>Restore external IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_PRIVATE_IP" xml:space="preserve">
+    <value>Restore private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>Set primary external IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>Set primary private IP</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_TAKE_SNAPSHOT" xml:space="preserve">
+    <value>Take VPS snapshot</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_UPDATE_CONFIGURATION" xml:space="preserve">
+    <value>Update VPS configuration</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_UPDATE_HOSTNAME" xml:space="preserve">
+    <value>Update host name</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>Assigning external IP addresses</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>Assigning private IP addresses</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Delete external IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Delete private IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>Setting external primary IP address</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>Setting private primary IP address</value>
+  </data>
 </root>

@@ -48,7 +48,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "DELETE", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "DELETE", vm.Id, vm.Name, vm.PackageId);
 
             try
             {

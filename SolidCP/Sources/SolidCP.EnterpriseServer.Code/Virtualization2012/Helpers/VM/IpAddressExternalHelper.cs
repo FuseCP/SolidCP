@@ -90,7 +90,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "ADD_EXTERNAL_IP", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "ADD_EXTERNAL_IP", vm.Id, vm.Name, vm.PackageId);
 
             // Get VLAN of 1st Network Interface
             if (vlan == -1)
@@ -181,7 +181,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             #endregion
 
             // start task
-            res = TaskManager.StartResultTask<ResultObject>("VPS", "SET_PRIMARY_EXTERNAL_IP", vm.Id, vm.Name, vm.PackageId);
+            res = TaskManager.StartResultTask<ResultObject>("VPS2012", "SET_PRIMARY_EXTERNAL_IP", vm.Id, vm.Name, vm.PackageId);
 
             try
             {

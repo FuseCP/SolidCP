@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
         public static ResultObject ChangeVirtualMachineState(int itemId, VirtualMachineRequestedState state)
         {
             // start task
-            ResultObject res = TaskManager.StartResultTask<ResultObject>("VPS", "CHANGE_STATE");
+            ResultObject res = TaskManager.StartResultTask<ResultObject>("VPS2012", "CHANGE_STATE");
 
             try
             {

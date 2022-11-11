@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="YesNo.False" xml:space="preserve">
     <value>لا</value>
@@ -2816,12 +2816,6 @@
   </data>
   <data name="AuditLogTask.REMOTE_DESKTOP_SERVICES_SET_RDS_SERVER_NEW_CONNECTIONS_ALLOWED" xml:space="preserve">
     <value>تعيين اتصال جديد RDS مسموح به</value>
-  </data>
-  <data name="AuditLogTask.VPS2012_CREATE" xml:space="preserve">
-    <value>إنشاء VM</value>
-  </data>
-  <data name="AuditLogTask.VPS2012_REINSTALL" xml:space="preserve">
-    <value>أعد تثبيت VM</value>
   </data>
   <data name="AuditLogTask.HOSTING_SPACE_ADD" xml:space="preserve">
     <value>أضف</value>
@@ -6767,5 +6761,89 @@
   </data>
   <data name="Quota.RDS.DisableUserShutdown" xml:space="preserve">
     <value>تعطيل المستخدم من إيقاف تشغيل خادم RDS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>أضف IP خارجي</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>إضافة IP الخاص</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_APPLY_SNAPSHOT" xml:space="preserve">
+    <value>تنفيذ لقطة VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CHANGE_ADMIN_PASSWORD" xml:space="preserve">
+    <value>تغيير كلمة مرور المسؤول</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CHANGE_STATE" xml:space="preserve">
+    <value>قم بتغيير حالة VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_CREATE" xml:space="preserve">
+    <value>قم بإنشاء VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE" xml:space="preserve">
+    <value>حذف VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>احذف IP الخارجي</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>حذف IP الخاص</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT" xml:space="preserve">
+    <value>حذف لقطة VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_DELETE_SNAPSHOT_SUBTREE" xml:space="preserve">
+    <value>حذف موقع الويب بعد الأيام:</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_EJECT_DVD_DISK" xml:space="preserve">
+    <value>إخراج قرص DVD</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_INSERT_DVD_DISK" xml:space="preserve">
+    <value>أدخل قرص DVD</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_REINSTALL" xml:space="preserve">
+    <value>أعد تثبيت VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RENAME_SNAPSHOT" xml:space="preserve">
+    <value>أعد تسمية لقطة VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_EXTERNAL_IP" xml:space="preserve">
+    <value>استعادة IP الخارجي</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_RESTORE_PRIVATE_IP" xml:space="preserve">
+    <value>استعادة IP الخاص</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>قم بتعيين عنوان IP الخارجي الأساسي</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>تعيين عنوان IP الأساسي الخاص</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_TAKE_SNAPSHOT" xml:space="preserve">
+    <value>خذ لقطة VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_UPDATE_CONFIGURATION" xml:space="preserve">
+    <value>تحديث تكوين VPS</value>
+  </data>
+  <data name="AuditLogTask.VPS2012_UPDATE_HOSTNAME" xml:space="preserve">
+    <value>تحديث اسم المضيف</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>تعيين عناوين IP الخارجية</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>تعيين عناوين IP الخاصة</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Delete external IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Delete private IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>تعيين عنوان IP الأساسي الخارجي</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>تعيين عنوان IP الأساسي الخاص</value>
   </data>
 </root>
