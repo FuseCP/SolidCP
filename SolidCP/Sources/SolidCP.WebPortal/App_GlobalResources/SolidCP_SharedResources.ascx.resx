@@ -6919,4 +6919,22 @@
   <data name="AuditLogTask.VPS2012_UPDATE_HOSTNAME" xml:space="preserve">
     <value>Update host name</value>
   </data>
+  <data name="TaskActivity.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>Assigning external IP addresses</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>Assigning private IP addresses</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Delete external IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Delete private IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>Setting external primary IP address</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>Setting private primary IP address</value>
+  </data>
 </root>

@@ -6828,4 +6828,22 @@
   <data name="AuditLogTask.VPS2012_UPDATE_HOSTNAME" xml:space="preserve">
     <value>تحديث اسم المضيف</value>
   </data>
+  <data name="TaskActivity.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>تعيين عناوين IP الخارجية</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>تعيين عناوين IP الخاصة</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Delete external IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Delete private IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>تعيين عنوان IP الأساسي الخارجي</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>تعيين عنوان IP الأساسي الخاص</value>
+  </data>
 </root>

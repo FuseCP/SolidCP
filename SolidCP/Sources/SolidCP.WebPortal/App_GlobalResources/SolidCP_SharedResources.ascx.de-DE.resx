@@ -6846,4 +6846,22 @@
   <data name="AuditLogTask.VPS2012_UPDATE_HOSTNAME" xml:space="preserve">
     <value>Hostnamen aktualisieren</value>
   </data>
+  <data name="TaskActivity.VPS2012_ADD_EXTERNAL_IP" xml:space="preserve">
+    <value>Externe IP-Adressen werden zugewiesen</value>
+  </data>
+  <data name="TaskActivity.VPS2012_ADD_PRIVATE_IP" xml:space="preserve">
+    <value>Private IP-Adressen werden zugewiesen</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_EXTERNAL_IP" xml:space="preserve">
+    <value>Delete external IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_DELETE_PRIVATE_IP" xml:space="preserve">
+    <value>Delete private IP</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP" xml:space="preserve">
+    <value>Primäre externe IP-Adresse wird gesetzt</value>
+  </data>
+  <data name="TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP" xml:space="preserve">
+    <value>Primäre private IP-Adresse wird gesetzt</value>
+  </data>
 </root>

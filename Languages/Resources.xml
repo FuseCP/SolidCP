@@ -13477,6 +13477,36 @@
     <DefaultValue>Update host name</DefaultValue>
   </Resource>
   <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_ADD_EXTERNAL_IP</Key>
+    <DefaultValue>Assigning external IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_ADD_PRIVATE_IP</Key>
+    <DefaultValue>Assigning private IP addresses</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_DELETE_EXTERNAL_IP</Key>
+    <DefaultValue>Delete external IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_DELETE_PRIVATE_IP</Key>
+    <DefaultValue>Delete private IP</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_SET_PRIMARY_EXTERNAL_IP</Key>
+    <DefaultValue>Setting external primary IP address</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>TaskActivity.VPS2012_SET_PRIMARY_PRIVATE_IP</Key>
+    <DefaultValue>Setting private primary IP address</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
     <Key>btnUpdate.Text</Key>
     <DefaultValue>Apply</DefaultValue>
