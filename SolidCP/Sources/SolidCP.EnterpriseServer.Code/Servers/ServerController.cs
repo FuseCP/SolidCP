@@ -1271,7 +1271,17 @@ namespace SolidCP.EnterpriseServer
                 DataProvider.GetUnallottedVLANs(packageId, serviceId));
         }
 
-        public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+		public static void AllocatePackageVLANs(int packageId, int[] vlanIds)
+		{
+			if (vlanIds == null || vlanIds.Length == 0) return;
+			// prepare XML document
+			string xml = PrepareXML(vlanIds);
+
+			// save to database
+			DataProvider.AllocatePackageVLANs(packageId, xml);
+		}
+
+		public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
         {
             #region Check account and space statuses
             // create result object
@@ -1342,7 +1352,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // prepare XML document
-                string xml = PrepareIPsXML(vlanId);
+                string xml = PrepareXML(vlanId);
 
                 // save to database
                 try
@@ -1576,7 +1586,7 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				string xmlIds = PrepareIPsXML(addresses);
+				string xmlIds = PrepareXML(addresses);
 				DataProvider.UpdateIPAddresses(xmlIds, (int)pool, serverId, subnetMask, defaultGateway, comments, VLAN);
 			}
 			catch (Exception ex)
@@ -1715,7 +1725,7 @@ namespace SolidCP.EnterpriseServer
 		public static void AllocatePackageIPAddresses(int packageId, int[] addressId)
 		{
 			// prepare XML document
-			string xml = PrepareIPsXML(addressId);
+			string xml = PrepareXML(addressId);
 
 			// save to database
 			DataProvider.AllocatePackageIPAddresses(packageId, 0, xml);
@@ -1801,7 +1811,7 @@ namespace SolidCP.EnterpriseServer
 				}
 
 				// prepare XML document
-				string xml = PrepareIPsXML(addressId);
+				string xml = PrepareXML(addressId);
 
 				// save to database
 				try
@@ -1959,7 +1969,7 @@ namespace SolidCP.EnterpriseServer
 
 		#endregion
 
-		public static string PrepareIPsXML(int[] items)
+		private static string PrepareXML(int[] items)
 		{
 			XmlDocument doc = new XmlDocument();
 			XmlNode root = doc.CreateElement("items");

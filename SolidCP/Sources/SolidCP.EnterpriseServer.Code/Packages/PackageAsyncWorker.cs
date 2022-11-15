@@ -32,9 +32,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.Providers;
+using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.EnterpriseServer
@@ -109,6 +111,21 @@ namespace SolidCP.EnterpriseServer
                 Dictionary<int, List<ServiceProviderItem>> orderedItems =
                 PackageController.OrderServiceItemsByServices(items);
 
+                int maxItems = 100000000;
+
+                //Get VPS Package IPs
+                PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(package.PackageId, 0,
+                                    IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;
+                List<int> ipsIdList = new List<int>();
+                foreach (PackageIPAddress ip in ips)
+                    ipsIdList.Add(ip.AddressID);
+
+                //Get VPS Package VLANs
+                PackageVLAN[] vlans = ServerController.GetPackagePrivateNetworkVLANs(package.PackageId, "", 0, maxItems).Items;
+                List<int> vlansIdList = new List<int>();
+                foreach (PackageVLAN vlan in vlans)
+                    vlansIdList.Add(vlan.VlanID);
+
                 // delete service items by service sets
                 foreach (int serviceId in orderedItems.Keys)
                 {
@@ -117,6 +134,18 @@ namespace SolidCP.EnterpriseServer
                     //Delete Exchange Organization 
                     if (service.ProviderId == 103 /*Organizations*/)
                     {
+                        int itemid = orderedItems[serviceId][0].Id;
+                        StringDictionary settings = ServerController.GetServiceSettings(serviceId);
+                        if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
+                        {
+                            OrganizationUsersPaged users = OrganizationController.GetOrganizationUsersPaged(itemid, null, null, null, 0, maxItems);
+                            foreach (OrganizationUser user in users.PageUsers)
+                                SpamExpertsController.DeleteEmailFilter(package.PackageId, user.PrimaryEmailAddress);
+                            List<DomainInfo> domains = ServerController.GetDomains(package.PackageId);
+                            foreach (DomainInfo domain in domains)
+                                SpamExpertsController.DeleteDomainFilter(domain);
+                        }
+
                         OrganizationController.DeleteOrganization(orderedItems[serviceId][0].Id);
                         //int exchangeId = PackageController.GetPackageServiceId(package.PackageId, ResourceGroups.Exchange2007);
                         //ExchangeServerController.DeleteOrganization(orderedItems[serviceId][0].Id);                                                                                                
@@ -160,6 +189,13 @@ namespace SolidCP.EnterpriseServer
                 //unhandled exceptions usually create stuck tasks in the serveradmin/users -> "Running Tasks"
                 if (!success)
                     System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw(); //rethrow InnerException without losing stack trace
+
+                //return IPs & VLANs back to ParentPackage
+                if (package.ParentPackageId != 1) // 1 is System (serveradmin), we don't want assign IP to the serveradmin.
+                {
+                    ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
+                    ServerController.AllocatePackageVLANs(package.ParentPackageId, vlansIdList.ToArray());
+                }
                 #endregion
             }
 
