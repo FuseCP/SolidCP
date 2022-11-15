@@ -16094,12 +16094,16 @@ CREATE TABLE [dbo].[PrivateNetworkVLANs]
 (
 	[VlanID] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[Vlan] INT NOT NULL,
-	[ServerID] INT NOT NULL,
+	[ServerID] INT,
 	[Comments] NTEXT,
 	CONSTRAINT [FK_ServerID]
 		FOREIGN KEY ([ServerID]) REFERENCES [dbo].[Servers] ([ServerID])
 		ON DELETE CASCADE
 )
+END
+ELSE
+BEGIN
+ALTER TABLE [dbo].[PrivateNetworkVLANs] ALTER COLUMN [ServerID] INT NULL;
 END
 GO
 
@@ -16483,9 +16487,9 @@ BEGIN
     V.ServerID
    FROM dbo.PrivateNetworkVLANs AS V
    WHERE
-    V.ServerID = @ServerID
+    (V.ServerID = @ServerID OR V.ServerID IS NULL)
     AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
-   ORDER BY V.Vlan
+   ORDER BY V.ServerID DESC, V.Vlan
   END
   ELSE
   BEGIN
@@ -16501,13 +16505,13 @@ BEGIN
     V.ServerID
    FROM dbo.PrivateNetworkVLANs AS V
    WHERE
-    V.ServerID IN (
+    (V.ServerID IN (
      SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
      INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
      WHERE [SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
-    )
+    ) OR V.ServerID IS NULL)
     AND V.VlanID NOT IN (SELECT PV.VlanID FROM dbo.PackageVLANs AS PV)
-   ORDER BY V.Vlan
+   ORDER BY V.ServerID DESC, V.Vlan
   END
  END
  ELSE -- 2rd level space and below
@@ -16523,8 +16527,8 @@ BEGIN
   INNER JOIN PrivateNetworkVLANs AS V ON PV.VlanID = V.VlanID
   WHERE
    PV.PackageID = @ParentPackageID
-   AND V.ServerID = @ServerID
-  ORDER BY V.Vlan
+   AND (V.ServerID = @ServerID OR V.ServerID IS NULL)
+  ORDER BY V.ServerID DESC, V.Vlan
  END
 END
 GO
@@ -18951,10 +18955,10 @@ BEGIN
     IP.VLAN
    FROM dbo.IPAddresses AS IP
    WHERE
-    IP.ServerID = @ServerID
+    (IP.ServerID = @ServerID OR IP.ServerID IS NULL)
     AND IP.AddressID NOT IN (SELECT PIP.AddressID FROM dbo.PackageIPAddresses AS PIP)
     AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
-   ORDER BY IP.DefaultGateway, IP.ExternalIP
+   ORDER BY IP.ServerID DESC, IP.DefaultGateway, IP.ExternalIP
   END
   ELSE
   BEGIN
@@ -18975,14 +18979,14 @@ BEGIN
     IP.VLAN
    FROM dbo.IPAddresses AS IP
    WHERE
-    IP.ServerID IN (
+    (IP.ServerID IN (
      SELECT SVC.ServerID FROM [dbo].[Services] AS SVC
      INNER JOIN [dbo].[Providers] AS P ON SVC.ProviderID = P.ProviderID
      WHERE [SVC].[ServiceID] = @ServiceId AND P.GroupID = @GroupID
-    )
+    ) OR IP.ServerID IS NULL)
     AND IP.AddressID NOT IN (SELECT PIP.AddressID FROM dbo.PackageIPAddresses AS PIP)
     AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
-   ORDER BY IP.DefaultGateway, IP.ExternalIP
+   ORDER BY IP.ServerID DESC, IP.DefaultGateway, IP.ExternalIP
   END
  END
  ELSE -- 2rd level space and below
@@ -19005,8 +19009,8 @@ BEGIN
    PIP.PackageID = @ParentPackageID
    AND PIP.ItemID IS NULL
    AND (@PoolID = 0 OR @PoolID <> 0 AND IP.PoolID = @PoolID)
-   AND IP.ServerID = @ServerID
-  ORDER BY IP.DefaultGateway, IP.ExternalIP
+   AND (IP.ServerID = @ServerID OR IP.ServerID IS NULL)
+  ORDER BY IP.ServerID DESC, IP.DefaultGateway, IP.ExternalIP
  END
 END
 GO
