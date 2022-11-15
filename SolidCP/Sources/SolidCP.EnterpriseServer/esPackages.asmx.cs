@@ -275,73 +275,7 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public int DeletePackage(int packageId)
         {
-            List<string> usersList = new List<string>();
-            List<string> domainsList = new List<string>();
-
-            PackageInfo package = PackageController.GetPackage(packageId);
-
-            // get package service items
-            List<ServiceProviderItem> items = PackageController.GetServiceItemsForStatistics(
-                0, package.PackageId, false, false, false, true); // disposable items
-
-            // order items by service
-            Dictionary<int, List<ServiceProviderItem>> orderedItems =
-                PackageController.OrderServiceItemsByServices(items);
-
-            int maxItems = 100000000;
-            bool mailFilterEnabled = false;
-            // delete service items by service sets
-            foreach (int serviceId in orderedItems.Keys)
-            {
-
-                ServiceInfo service = ServerController.GetServiceInfo(serviceId);
-                //Delete Exchange Organization 
-                if (service.ProviderId == 103 /*Organizations*/)
-                {
-                    int itemid = orderedItems[serviceId][0].Id;
-                    OrganizationUsersPaged users = OrganizationController.GetOrganizationUsersPaged(itemid, null, null, null, 0, maxItems);
-                    StringDictionary settings = ServerController.GetServiceSettings(serviceId);
-                    if (settings != null && Convert.ToBoolean(settings["EnableMailFilter"]))
-                    {
-                        mailFilterEnabled = true;
-                        foreach (OrganizationUser user in users.PageUsers)
-                            SpamExpertsController.DeleteEmailFilter(packageId, user.PrimaryEmailAddress);
-                    }
-                }
-            }
-            if (mailFilterEnabled)
-            {
-                List<DomainInfo> domains = ServerController.GetDomains(packageId);
-                foreach (DomainInfo domain in domains)
-                    SpamExpertsController.DeleteDomainFilter(domain);
-            }
-
-            //Get VPS Package IPs
-            PackageIPAddress[] ips = ServerController.GetPackageIPAddresses(packageId, 0,
-                                IPAddressPool.VpsExternalNetwork, "", "", "", 0, maxItems, true).Items;            
-            List<int> ipsIdList = new List<int>();
-            foreach (PackageIPAddress ip in ips)
-                ipsIdList.Add(ip.AddressID);
-
-            //Delete Package
-            int res = PackageController.DeletePackage(packageId);
-
-            if (res >= 0)
-            {
-                // users
-                //foreach (string user in usersList)
-                    //SEPlugin.SE.DeleteEmail(user);
-
-                //domain
-                //foreach (string domain in domainsList)
-                    //SEPlugin.SE.DeleteDomain(domain);
-
-                //return IPs back to ParentPackage
-                if(package.ParentPackageId != 1) // 1 is System (serveradmin), we don't want assign IP to the serveradmin.
-                    ServerController.AllocatePackageIPAddresses(package.ParentPackageId, ipsIdList.ToArray());
-            }
-
-            return res;
+            return PackageController.DeletePackage(packageId);
         }
 
         [WebMethod]
