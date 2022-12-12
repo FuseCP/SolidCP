@@ -1,3 +1,51 @@
+Version 1.4.9
+- Smartermail100 (Latest API) - Work sponsored by Enterprise Guardian Inc.
+- MFA Implementation -bluechip
+- Removing Server ASP.Net2
+- Theme setting changes & reset button for themes.
+- Added Powershell script version to loading screen
+- Remove validator from mailbox plan selector - bug with create / remove org. user if no maibox plans are available - bluechip
+- Bug with "Mailboxes" and "Journaling Maiboxes" menu items fixed - bluechip
+- [VirtualizationServerController2012] Attempt to fix a rare issue where a VM cannot be created for no reason -berkut1
+- fix issue where shortdomain is sometimes wrongly determined -berkut1
+- Templates - Give feedback to user when irregularities are detected -robsiera 
+- improve feedback on RDS, AD -robsiera
+- Add new Username pattern. Based on Standard, but add counter to duplicates instead of using AppendOrgId -robsiera
+- Fixed build issue with MSDNS 2016
+- Shared Folders - Trim folder name -bluechip
+- Use FileSystemObject for shared folders deleting (no 260 characters limit) -bluechip
+- Updated to RestSharp.106.12.0
+- Fix for MailCleaner - delete domain -bluechip
+- [HyperV2012R2+] Configuring external / private IPs after the adapter added -bluechip
+- [HyperV2012R2+] Save private and external network VLANs -bluechip
+- Fix for journaling mailboxes -bluechip
+- [HyperV2012R2+] Added - support for automatic detection of VM configuration versions -berkut1
+- [HyperV2012R2+] Shows a more convenient and correct progress bar status when installing virtual machines. (useful for for third party services) -berkut1
+- [Package] Added the ability to move a package to another user (User Hosting Space -> Edit Space Detail -> Change User) -berkut1
+- [Guacamole] Update SolidCPAuthenticationProvider to version 1.3.0 -bcischulz
+- Fix for #104 (user groups bug) -bluechip
+- [HyperV2012R2+] Fixed removing vhdx via HyperV Remote. -berkut1
+- [HyperV2012R2+] Possible fix - "Error while converting VHD: Thread was being aborted" - berkut1
+- [HyperV2012R2+] Refactored HardDriveHelper.Delete function and added detailed throwing error for a remote server configuration. -berkut1
+- [VirtualizationServerController2012] Fixed some logs problems, when remove a server. -berkut1
+- Added some notes for remote HyperV server settings. -berkut1
+- [VirtualizationServerController2012] Simple refactored - splitted into classes. Refactored ReinstallVPS, Fixed some bugs with logs -berkut1
+- [HyperV2012R2+] Additional HDDs - show full quota -bluechip
+- [DS-Heuristics] Fix ACLs order (solve issue #2)  -bluechip
+- Fix for RDS collections & drive maps search (#100)  -bluechip
+- Fix for global search  -bluechip
+- Edit VPS configuration - update button text fixed -bluechip
+- VS2022 Support. Also removal of SQLExpress for the build database
+- Adding support for Arabic as a default language -eg2-hack
+- [HyperV2012R2+] Fix for additional HDDs and unlimited quota -bluechip
+- [HyperV2012R2+] Fixed incorrect recording events in Audit log. -berkut1
+- Fix for DeletePackage -bluechip
+- [HyperV2012R2+] Allocate IPs & VLANs with not assigned server if no assigned to the server exist -bluechip
+- [Portal/HyperV2012R2+] Hidden Reboot/Reset/ShutDown/Etc buttons from clients for 15 minutes until OS deployment is complete. -berkut1
+
+
+
+
 Version 1.4.8
 - Move Mail Cleaner API to Enterprise Server - bluechip
 - Remove Mail Cleaner API from WHMCS module - bluechip
