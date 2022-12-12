@@ -72,6 +72,7 @@ namespace SolidCP.Portal.VPS2012
             }
 
             VirtualMachine vm = null;
+            string vmCreatedTime = null;
             try
             {
                 vm = ES.Services.VPS2012.GetVirtualMachineGeneralDetails(PanelRequest.ItemID);
@@ -136,7 +137,8 @@ namespace SolidCP.Portal.VPS2012
                 uptime = uptime.Subtract(TimeSpan.FromMilliseconds(uptime.Milliseconds));
                 litUptime.Text = uptime.ToString();
                 litStatus.Text = GetLocalizedString("State." + vm.State);
-                litCreated.Text = string.IsNullOrEmpty(vm.CreationTime) ? vm.CreatedDate.ToString() : vm.CreationTime;
+                vmCreatedTime = string.IsNullOrEmpty(vm.CreationTime) ? vm.CreatedDate.ToString() : vm.CreationTime;
+                litCreated.Text = vmCreatedTime;
                 litHeartbeat.Text = GetLocalizedString("Heartbeat." + vm.Heartbeat);
                 trHVHost.Visible = PanelSecurity.EffectiveUser.Role == UserRole.Administrator; //It is hardcoded that GetServiceInfo can get only the Adminstrator
                 if (trHVHost.Visible)
@@ -211,42 +213,60 @@ namespace SolidCP.Portal.VPS2012
                     PanelRequest.ItemID, DateTime.Now.Ticks);
 
                 // load virtual machine meta item
-                VirtualMachine vmi = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID);
+                VirtualMachine vmi = VirtualMachines2012Helper.GetCachedVirtualMachine(PanelRequest.ItemID); //TODO: There is probably a potential rare issue with the old cache. Need to add a try/catch?
 
                 // draw buttons
                 List<ActionButton> buttons = new List<ActionButton>();
 
-                if (vmi.StartTurnOffAllowed
+                bool showButtons = true;
+
+                if(!VirtualMachines2012Helper.IsVirtualMachineManagementAllowed(PanelSecurity.PackageId)) //who has permission knows what he is doing. :)
+                {
+                    //Hide the buttons (for typical clients) for 15 minutes until the OS template is fully deployed.
+                    //Anyway, there is no point in restarting the server through the website in the first hours.
+                    try
+                    {
+                        double totalMinutes = (DateTime.Now - DateTime.Parse(vmCreatedTime)).TotalMinutes; //we don't directly use vm.CreatedDate because it's an unpredictable value  (the problem exists for old servers or those who have migrated from WebsitePanel/MSPc)
+                        if (totalMinutes > 0) //just because HyperV Created time is an unpredictable value, check that it's not a far future.
+                            showButtons = (totalMinutes >= 15);
+                    }
+                    catch { /* this should be impossible, but if vmCreatedTime has the wrong value - do nothing  */ }                    
+                }                
+
+                if (showButtons) 
+                {
+                    if (vmi.StartTurnOffAllowed
                     && (vm.State == VirtualMachineState.Off
                     || vm.State == VirtualMachineState.Saved))
-                    buttons.Add(CreateActionButton("Start", "start.png"));
+                        buttons.Add(CreateActionButton("Start", "start.png"));
 
-                if (vm.State == VirtualMachineState.Running)
-                {
-                    if(vmi.RebootAllowed)
-                        buttons.Add(CreateActionButton("Reboot", "reboot.png"));
+                    if (vm.State == VirtualMachineState.Running)
+                    {
+                        if (vmi.RebootAllowed)
+                            buttons.Add(CreateActionButton("Reboot", "reboot.png"));
 
-                    if(vmi.StartTurnOffAllowed)
-                        buttons.Add(CreateActionButton("ShutDown", "shutdown.png"));
-                }
+                        if (vmi.StartTurnOffAllowed)
+                            buttons.Add(CreateActionButton("ShutDown", "shutdown.png"));
+                    }
 
-                if (vmi.StartTurnOffAllowed
-                    && (vm.State == VirtualMachineState.Running
-                    || vm.State == VirtualMachineState.Paused))
-                    buttons.Add(CreateActionButton("TurnOff", "turnoff.png"));
+                    if (vmi.StartTurnOffAllowed
+                        && (vm.State == VirtualMachineState.Running
+                        || vm.State == VirtualMachineState.Paused))
+                        buttons.Add(CreateActionButton("TurnOff", "turnoff.png"));
 
-                if (vmi.PauseResumeAllowed
-                    && vm.State == VirtualMachineState.Running)
-                    buttons.Add(CreateActionButton("Pause", "pause.png"));
+                    if (vmi.PauseResumeAllowed
+                        && vm.State == VirtualMachineState.Running)
+                        buttons.Add(CreateActionButton("Pause", "pause.png"));
 
-                if (vmi.PauseResumeAllowed
-                    && vm.State == VirtualMachineState.Paused)
-                    buttons.Add(CreateActionButton("Resume", "start2.png"));
+                    if (vmi.PauseResumeAllowed
+                        && vm.State == VirtualMachineState.Paused)
+                        buttons.Add(CreateActionButton("Resume", "start2.png"));
 
-                if (vmi.ResetAllowed
-                    && (vm.State == VirtualMachineState.Running
-                    || vm.State == VirtualMachineState.Paused))
-                    buttons.Add(CreateActionButton("Reset", "reset2.png"));
+                    if (vmi.ResetAllowed
+                        && (vm.State == VirtualMachineState.Running
+                        || vm.State == VirtualMachineState.Paused))
+                        buttons.Add(CreateActionButton("Reset", "reset2.png"));
+                }                
 
                 repButtons.DataSource = buttons;
                 repButtons.DataBind();
