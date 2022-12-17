@@ -23851,6 +23851,37 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'AdminUsername', N'admin')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'DomainsPath', N'%SYSTEMDRIVE%\SmarterMail\Domains')
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServerIPAddress', N'127.0.0.1;127.0.0.1')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServiceUrl', N'http://localhost:9998/services/')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (67, N'ServiceUrl', N'http://localhost:9998')
+END
+GO
+
+
+-- Server 2022
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Windows Server 2022')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(1802, 1, N'Windows2022', N'Windows Server 2022', N'SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022', N'Windows2012', null)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1800')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1802, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
+GO
+
+-- HyperV2022
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2022')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1803, 33, N'HyperV2022', N'Microsoft Hyper-V 2022', N'SolidCP.Providers.Virtualization.HyperV2022, SolidCP.Providers.Virtualization.HyperV2022', N'HyperV2012R2', 1)
+END
+GO
+
+-- RDS Provider 2022
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Remote Desktop Services Windows 2019')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) 
+VALUES(1504, 45, N'RemoteDesktopServices2022', N'Remote Desktop Services Windows 2022', N'SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesktopServices.Windows2019', N'RDS',	1)
 END
 GO
