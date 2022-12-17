@@ -45,8 +45,11 @@ using Microsoft.Win32;
 using FileUtils = SolidCP.Providers.Utils.FileUtils;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Threading;
+using Newtonsoft.Json.Linq;
 
 namespace SolidCP.Providers.Mail
 {
@@ -183,6 +186,9 @@ namespace SolidCP.Providers.Mail
 		{
 			//Log.WriteStart("GetAccessToken");
 
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
 			HttpClient client = new HttpClient();
 			var loginData = new { 
 				username = AdminUsername, 
@@ -190,7 +196,7 @@ namespace SolidCP.Providers.Mail
 			};
 			var loginDatajson = JsonConvert.SerializeObject(loginData);
 			var authinput_post = new StringContent(loginDatajson, Encoding.UTF8, "application/json");
-			var authurl = ServiceUrl + "api/v1/auth/authenticate-user";
+			var authurl = ServiceUrl + "/api/v1/auth/authenticate-user";
 
 			//Log.WriteInfo("authurl: {0}", authurl);
 
@@ -212,12 +218,15 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken authToken = await GetAccessToken();
 
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
 			HttpClient client = new HttpClient();
 			var domainData = new { };
 			var domainDatajson = JsonConvert.SerializeObject(domainData);
 			var authinput_post = new StringContent(domainDatajson, Encoding.UTF8, "application/json");
 			client.DefaultRequestHeaders.Add("Authorization", "Bearer " + authToken.accessToken);
-			var authurl = ServiceUrl + "api/v1//settings/sysadmin/manage-domain/" + domain;
+			var authurl = ServiceUrl + "/api/v1//settings/sysadmin/manage-domain/" + domain;
 			var authresponse = await client.PostAsync(authurl, authinput_post);
 			authresponse.EnsureSuccessStatusCode();
 			var authresult = await authresponse.Content.ReadAsStringAsync();
@@ -247,12 +256,15 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken authToken = await GetAccessToken();
 
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+
 			HttpClient client = new HttpClient();
 			var UserData = new { };
 			var UserDatajson = JsonConvert.SerializeObject(UserData);
 			var authinput_post = new StringContent(UserDatajson, Encoding.UTF8, "application/json");
 			client.DefaultRequestHeaders.Add("Authorization", "Bearer " + authToken.accessToken);
-			var authurl = ServiceUrl + "api/v1/settings/domain/impersonate-user/" + email;
+			var authurl = ServiceUrl + "/api/v1/settings/domain/impersonate-user/" + email;
 			var authresponse = await client.PostAsync(authurl, authinput_post);
 			authresponse.EnsureSuccessStatusCode();
 			var authresult = await authresponse.Content.ReadAsStringAsync();
@@ -282,9 +294,12 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken auth = await GetAccessToken();
 
-			var commandurl = ServiceUrl + "api/v1/" + command;
+			var commandurl = ServiceUrl + "/api/v1/" + command;
 
 			//Log.WriteInfo("commandurl: {0}", commandurl);
+
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 			HttpClient client = new HttpClient();
 			client.DefaultRequestHeaders.Add("Authorization", "Bearer " + auth.accessToken);
@@ -292,7 +307,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<dynamic>(commandresult);
 
-			Log.WriteInfo("ExecGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
+			//Log.WriteInfo("ExecGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
 
 			return commanddata;
 		}
@@ -303,7 +318,10 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken authToken = await GetAccessToken();
 
-			var commandurl = ServiceUrl + "api/v1/" + command;
+			var commandurl = ServiceUrl + "/api/v1/" + command;
+
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 			HttpClient client = new HttpClient();
 			var commandparamjson = JsonConvert.SerializeObject(param);
@@ -314,7 +332,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<object>(commandresult);
 
-			Log.WriteInfo("ExecPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n Result: {3}", command, commandurl, commandparamjson, commanddata);
+			//Log.WriteInfo("ExecPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n Result: {3}", command, commandurl, commandparamjson, commanddata);
 
 			return commanddata;
 		}
@@ -325,9 +343,12 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken auth = await GetDomainAccessToken(domain);
 
-			var commandurl = ServiceUrl + "api/v1/" + command;
+			var commandurl = ServiceUrl + "/api/v1/" + command;
 
 			//Log.WriteInfo("commandurl: {0}", commandurl);
+
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 			HttpClient client = new HttpClient();
 			client.DefaultRequestHeaders.Add("Authorization", "Bearer " + auth.accessToken);
@@ -335,7 +356,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<dynamic>(commandresult);
 
-			Log.WriteInfo("ExecDomainGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
+			//Log.WriteInfo("ExecDomainGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
 
 			return commanddata;
 		}
@@ -344,7 +365,10 @@ namespace SolidCP.Providers.Mail
 		{
 			AuthToken authToken = await GetDomainAccessToken(domain);
 
-			var commandurl = ServiceUrl + "api/v1/" + command;
+			var commandurl = ServiceUrl + "/api/v1/" + command;
+
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 			HttpClient client = new HttpClient();
 			var commandparamjson = JsonConvert.SerializeObject(param);
@@ -366,9 +390,12 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken auth = await GetUserAccessToken(email);
 
-			var commandurl = ServiceUrl + "api/v1/" + command;
+			var commandurl = ServiceUrl + "/api/v1/" + command;
 
 			//Log.WriteInfo("commandurl: {0}", commandurl);
+
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 			HttpClient client = new HttpClient();
 			client.DefaultRequestHeaders.Add("Authorization", "Bearer " + auth.accessToken);
@@ -376,7 +403,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<dynamic>(commandresult);
 
-			Log.WriteInfo("ExecUserGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
+			//Log.WriteInfo("ExecUserGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
 
 			return commanddata;
 		}
@@ -387,7 +414,10 @@ namespace SolidCP.Providers.Mail
 
 			AuthToken authToken = await GetUserAccessToken(email);
 
-			var commandurl = ServiceUrl + "api/v1/" + command;
+			var commandurl = ServiceUrl + "/api/v1/" + command;
+
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
 
 			HttpClient client = new HttpClient();
 			var commandparamjson = JsonConvert.SerializeObject(param);
@@ -398,7 +428,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<object>(commandresult);
 
-			Log.WriteInfo("ExecUserPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n Result: {3}", command, commandurl, commandparamjson, commanddata);
+			//Log.WriteInfo("ExecUserPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n Result: {3}", command, commandurl, commandparamjson, commanddata);
 
 			return commanddata;
 		}
@@ -481,7 +511,7 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result.Message);
 
-				//Log.WriteInfo("GetDomain: DomainSettings {0}", result.domainSettings);
+				Log.WriteInfo("GetDomain: DomainSettings {0}", result.domainSettings);
 
 				// fill domain properties
 				MailDomain domain = new MailDomain();
@@ -525,18 +555,18 @@ namespace SolidCP.Providers.Mail
 				//Limits
 				domain.MaxDomainSizeInMB = result.domainSettings.maxSize / 1048576;
 				domain.MaxDomainAliases = result.domainSettings.maxDomainAliases;
-				domain.MaxDomainUsers = Convert.ToInt32(result.domainSettings.MaxUsers);
+				domain.MaxDomainUsers = result.domainSettings.maxUsers;
 				domain.MaxAliases = result.domainSettings.maxAliases;
 				domain.MaxLists = result.domainSettings.maxLists;
 				//domain.MaxPopRetrievalAccounts
-				domain.MaxMessageSize = Convert.ToInt32(result.domainSettings.MaxMessageSize);
-				domain.MaxRecipients = Convert.ToInt32(result.domainSettings.MaxRecipients);
+				domain.MaxMessageSize = result.domainSettings.maxMessageSize;
+				domain.MaxRecipients = result.domainSettings.maxRecipients;
 
 
-				domain.MaxMailboxSizeInMB = Convert.ToInt32(result.domainSettings.maxMailboxSize) / 1048576;
-				domain.MaxRecipients = Convert.ToInt32(result.domainSettings.MaxRecipients);
-				domain.RequireSmtpAuthentication = Convert.ToBoolean(result.domainSettings.RequireSmtpAuthentication);
-				domain.ListCommandAddress = result.domainSettings.ListCommandAddress;
+				domain.MaxMailboxSizeInMB = result.domainSettings.maxMailboxSize / 1048576;
+				domain.MaxRecipients = result.domainSettings.maxRecipients;
+				domain.RequireSmtpAuthentication = Convert.ToBoolean(result.domainSettings.requireSmtpAuthentication);
+				domain.ListCommandAddress = result.domainSettings.listCommandAddress;
 				
 				// get additional domain settings
 				domain.CatchAllAccount = result.domainSettings.catchAll;
@@ -803,14 +833,25 @@ namespace SolidCP.Providers.Mail
 		{
 			dynamic result = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
 
-			bool success = result.success ?? false;
-
 			//Log.WriteInfo("AccountExists: Raw: {0}", result);
-			//Log.WriteInfo("AccountExists: success: {0}", success);
 
-			//bool success = Convert.ToBoolean(result.success);
-			//if (!success)
-				//throw new Exception(result.message);
+			//result.success
+
+			//string message = result["message"];
+
+			bool success;
+            if (result.message == "User does not exist.")
+            {
+                success = false;
+            }
+            else
+            {
+                success = true;
+            }
+
+            //bool success = result.success ?? false;
+
+            //Log.WriteInfo("AccountExists: success: {0}", success);
 
 			return success;
 		}
@@ -932,6 +973,7 @@ namespace SolidCP.Providers.Mail
 				dynamic result = ExecGetCommand("settings/domain/user-mail/" + mailboxName).Result;
 				dynamic userDataresult = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
 
+
 				MailAccount mailbox = new MailAccount();
                 mailbox.Name = userDataresult.userData.username;
                 mailbox.Password = userDataresult.userData.Password;
@@ -939,7 +981,8 @@ namespace SolidCP.Providers.Mail
                 mailbox.LastName = result.userMailSettings.userContactInfo.lastName;
 				mailbox.IsDomainAdmin = Convert.ToBoolean(userDataresult.userData.IsDomainAdmin);
 				mailbox.Enabled = Convert.ToBoolean(result.userMailSettings.isEnabled);
-				mailbox.MaxMailboxSize = Convert.ToInt32(userDataresult.userData.maxMailboxSize) / 1048576;
+				//int MailBoxboxSize = userDataresult.userData.maxMailboxSize / 1048576;
+				mailbox.MaxMailboxSize = userDataresult.userData.maxMailboxSize / 1048576;
 				mailbox.ReplyTo = result.userMailSettings.replyToAddress;
 				mailbox.PasswordLocked = Convert.ToBoolean(userDataresult.userData.lockPassword);
 
@@ -1009,13 +1052,8 @@ namespace SolidCP.Providers.Mail
 			try
 			{
 
-				//Log.WriteStart("UpdateAccount: Mailbox Password: {0}", mailbox.Password);
-
 				//get original account
 				MailAccount account = GetAccount(mailbox.Name);
-
-				//svcUserAdmin users = new svcUserAdmin();
-				//PrepareProxy(users);
 
 				string strPassword = mailbox.Password;
 
@@ -1025,76 +1063,67 @@ namespace SolidCP.Providers.Mail
 					strPassword = account.Password;
 				}
 
-				//GenericResult result = users.UpdateUser(
-				//AdminUsername, AdminPassword, mailbox.Name, strPassword, mailbox.FirstName, mailbox.LastName, mailbox.IsDomainAdmin);
-
-				//if (!result.Result)
-				//{
-				//	if (result.ResultCode == -21)
-				//		throw new Exception("Password doesn't meet complexity", new Exception(result.Message));
-
-				//	throw new Exception(result.Message);
-				//}
-
-				// set forwarding settings
-				//result = users.UpdateUserForwardingInfo(AdminUsername, AdminPassword,
-				//	mailbox.Name, mailbox.DeleteOnForward,
-				//	(mailbox.ForwardingAddresses != null ? String.Join(", ", mailbox.ForwardingAddresses) : ""));
-
-				//if (!result.Result)
-				//	throw new Exception(result.Message);
-
-				// set forwarding settings - Not tracking errors as this only applies to some versions due to API change (The above wont error)
-				//result = users.UpdateUserForwardingInfo2(AdminUsername, AdminPassword,
-				//	mailbox.Name, mailbox.DeleteOnForward,
-				//	(mailbox.ForwardingAddresses != null ? String.Join(", ", mailbox.ForwardingAddresses) : ""));
-
-				// Set additional settings
-				//result = users.SetRequestedUserSettings(AdminUsername, AdminPassword, mailbox.Name, mailbox.PrepareSetRequestedUserSettingsWebMethodParams());
-
-				//if (!result.Result)
-				//	throw new Exception(result.Message);
-
-				// set autoresponder settings
-				//result = users.UpdateUserAutoResponseInfo(AdminUsername, AdminPassword,
-				//	mailbox.Name,
-				//	mailbox.ResponderEnabled,
-				//	(mailbox.ResponderSubject != null ? mailbox.ResponderSubject : ""),
-				//	(mailbox.ResponderMessage != null ? mailbox.ResponderMessage : ""));
-
-				//if (!result.Result)
-				//	throw new Exception(result.Message);
 
 				var userContactInfoArray = new
 				{
 					firstName = mailbox.FirstName,
 					lastName = mailbox.LastName
 				};
-
 				var userMailSettingsArray = new
 				{
 					userContactInfo = userContactInfoArray,
-					//signature = mailbox.Signature,
 					isEnabled = mailbox.Enabled,
-					//enableMailForwarding = mailbox.ForwardingEnabled
-					maxSize = mailbox.MaxMailboxSize * 1048576,  //MB to B
+					enableMailForwarding = mailbox.ForwardingEnabled,
+					maxSize = mailbox.MaxMailboxSize * 1048576,
 					replyToAddress = mailbox.ReplyTo,
+					signature = mailbox.Signature,
+
+				};
+
+				var userDataArray = new
+				{
+					userMailSettings = userMailSettingsArray,
+					password = strPassword
+				};
+
+				var forwardListArray = new
+				{
+					forwardList = mailbox.ForwardingAddresses,
+					deleteOnForward = mailbox.DeleteOnForward
 				};
 
 				var userputPram = new
 				{
-					userMailSettings = userMailSettingsArray,
+					userData = userDataArray,
+					forwardList = forwardListArray
 				};
 
-				dynamic result = ExecDomainPostCommand("settings/domain/user-put", GetDomainName(mailbox.Name), userputPram).Result;
+				dynamic result = ExecDomainPostCommand("settings/domain/user" + mailbox.Name, GetDomainName(mailbox.Name), userputPram).Result;
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
 					throw new Exception(result.Message);
 
-				//TODO: Signature
 
-				//TODO: Mail Forwarding
+				var autoResponderSettingsArray = new
+				{
+					enabled = mailbox.ResponderEnabled,
+					subject = mailbox.ResponderSubject,
+					body = mailbox.ResponderMessage,
+					externalReply = mailbox.ResponderMessage
+				};
+
+				var autoResponderPram = new
+				{
+					autoResponderSettings = autoResponderSettingsArray
+				};
+
+				dynamic autoResponderresult = ExecUserPostCommand("settings/auto-responder", mailbox.Name, autoResponderPram);
+
+				bool autoRespondersuccess = Convert.ToBoolean(autoResponderresult.success);
+				if (!autoRespondersuccess)
+					throw new Exception(autoResponderresult.Message);
+
 
 			}
 			catch (Exception ex)
@@ -1548,7 +1577,7 @@ namespace SolidCP.Providers.Mail
 
 				if (list.Members.Length > 0)
                 {
-					dynamic memberaddresult = ExecDomainPostCommand("api/v1/settings/domain/mailing-lists/" + result.item.id + "/subscriber-add", GetDomainName(list.Name), list.Members).Result;
+					dynamic memberaddresult = ExecDomainPostCommand("settings/domain/mailing-lists/" + result.item.id + "/subscriber-add", GetDomainName(list.Name), list.Members).Result;
 
 					bool memberaddsuccess = Convert.ToBoolean(memberaddresult.success);
 					if (!memberaddsuccess)
@@ -1807,10 +1836,10 @@ namespace SolidCP.Providers.Mail
 						list.EnableSubjectPrefix = Convert.ToBoolean(bunch[1]);
 						break;
 					case "maxmessagesize":
-						list.MaxMessageSize = Convert.ToInt32(bunch[1]);
+						list.MaxMessageSize = (int)Convert.ToInt64(bunch[1]);
 						break;
 					case "maxrecipients":
-						list.MaxRecipientsPerMessage = Convert.ToInt32(bunch[1]);
+						list.MaxRecipientsPerMessage = (int)Convert.ToInt64(bunch[1]);
 						break;
 					case "replytolist":
 						list.ReplyToMode = string.Compare(bunch[1], "true", true) == 0 ? ReplyTo.RepliesToList : ReplyTo.RepliesToSender;
