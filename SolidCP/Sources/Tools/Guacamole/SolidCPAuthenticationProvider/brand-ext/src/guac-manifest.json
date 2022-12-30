@@ -1,0 +1,23 @@
+{
+    "guacamoleVersion" : "*",
+    "name"             : "Virtual Console",
+    "namespace"        : "guacamole-brand-solidcp",
+    
+    "css" : [
+        "css/login.css"
+    ],
+
+    "html": [
+      "html/no-version.html",
+      "html/no-buttons.html",
+      "html/no-fields.html"
+    ],
+    
+    "resources" : {
+        "resources/images/solidcp/logo.png" : "image/png"
+    },
+    
+    "translations" : [
+        "translations/en.json"
+    ]
+}

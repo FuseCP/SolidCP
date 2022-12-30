@@ -1,0 +1,15 @@
+
+.login-ui .login-dialog .logo {
+    width: 299px;
+    height: 60px;
+    background-size: 100%;
+    -moz-background-size: 100%;
+    -webkit-background-size: 100%;
+    -khtml-background-size: 100%;
+    background-image: url('app/ext/guacamole-brand-solidcp/resources/images/solidcp/logo.png');
+}
+
+.notification {
+    border: none;
+    box-shadow: none;
+}
