@@ -106,17 +106,6 @@
                     Display="Dynamic" />
             </td>
         </tr>
-<%--        <tr>
-            <td class="SubHead" width="200" nowrap align="right">
-                <asp:Label ID="lblPopRetreivalAccounts" runat="server" meta:resourcekey="lblPopRetreivalAccounts"></asp:Label></td>
-            <td width="100%" align="left">
-                <asp:TextBox runat="server" Width="80px" ID="txtPopRetreivalAccounts" CssClass="form-control"/>
-            <asp:RangeValidator Type="Integer" runat="server" ID="valPopRetreivalAccounts" ControlToValidate="txtPopRetreivalAccounts"
-                    MinimumValue="0" Display="None"/>
-            <asp:RequiredFieldValidator ID="reqPopRetreivalAccounts" runat="server" ControlToValidate="txtPopRetreivalAccounts"
-                    Display="None"/>
-            </td>
-        </tr>--%>
         <tr>
             <td class="SubHead" width="200" nowrap  align="right">
                 <asp:Label ID="lblMessageSizeQuota" runat="server" meta:resourcekey="lblMessageSizeQuota"></asp:Label></td>

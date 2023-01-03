@@ -54,6 +54,7 @@ namespace SolidCP.Portal.ProviderControls
             txtReplyTo.Text = item.ReplyTo;
             txtSubject.Text = item.ResponderSubject;
             txtMessage.Text = item.ResponderMessage;
+            chkForwardingEnabled.Checked = item.ForwardingEnabled;
             txtForward.Text = item.ForwardingAddresses != null ? String.Join("; ", item.ForwardingAddresses) : "";
             chkDeleteOnForward.Checked = item.DeleteOnForward;
 			if (item.IsDomainAdminEnabled)
@@ -78,6 +79,7 @@ namespace SolidCP.Portal.ProviderControls
             item.ReplyTo = txtReplyTo.Text;
             item.ResponderSubject = txtSubject.Text;
             item.ResponderMessage = txtMessage.Text;
+            item.ForwardingEnabled = chkForwardingEnabled.Checked;
             item.ForwardingAddresses = Utils.ParseDelimitedString(txtForward.Text, ';', ' ', ',');
             item.DeleteOnForward = chkDeleteOnForward.Checked;
             item.ChangePassword = cbChangePassword.Checked;

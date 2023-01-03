@@ -103,7 +103,6 @@ namespace SolidCP.Portal.ProviderControls
             item.MaxDomainUsers = Utils.ParseInt(txtUser.Text);
             item.MaxAliases = Utils.ParseInt(txtUserAliases.Text);
             item.MaxLists = Utils.ParseInt(txtMailingLists.Text);
-            //item[MailDomain.SMARTERMAIL5_POP_RETREIVAL_ACCOUNTS] = txtPopRetreivalAccounts.Text;
             item.MaxRecipients = Utils.ParseInt(txtRecipientsPerMessage.Text);
             item.MaxMessageSize = Utils.ParseInt(txtMessageSize.Text);
         }
@@ -115,7 +114,6 @@ namespace SolidCP.Portal.ProviderControls
             txtUser.Text = item.MaxDomainUsers.ToString();
             txtUserAliases.Text = item.MaxAliases.ToString();
             txtMailingLists.Text = item.MaxLists.ToString();
-            //txtPopRetreivalAccounts.Text = item[MailDomain.SMARTERMAIL5_POP_RETREIVAL_ACCOUNTS];
             txtRecipientsPerMessage.Text = item.MaxRecipients.ToString();
             txtMessageSize.Text = item.MaxMessageSize.ToString();
         }
@@ -161,10 +159,6 @@ namespace SolidCP.Portal.ProviderControls
             reqValMailingLists.ErrorMessage = message;
             valMailingLists.ErrorMessage = message;
             valMailingLists.MaximumValue = int.MaxValue.ToString();
-
-            //reqPopRetreivalAccounts.ErrorMessage = message;
-            //valPopRetreivalAccounts.ErrorMessage = message;
-            //valPopRetreivalAccounts.MaximumValue = int.MaxValue.ToString();
 
             reqValUser.ErrorMessage = message;
             valUser.ErrorMessage = message;

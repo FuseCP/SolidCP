@@ -23841,7 +23841,7 @@ INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName]
 END
 ELSE
 BEGIN
-UPDATE [dbo].[Providers] SET [EditorControl] = 'SmarterMail100' WHERE [DisplayName] = 'SmarterMail 100.x +'
+UPDATE [dbo].[Providers] SET [EditorControl] = 'SmarterMail100x' WHERE [DisplayName] = 'SmarterMail 100.x +'
 END
 GO
 

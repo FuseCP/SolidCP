@@ -253,10 +253,19 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Mail.SmarterMail100", "SolidCP.Providers.Mail.SmarterMail100\SolidCP.Providers.Mail.SmarterMail100.csproj", "{6A1CB0E4-F717-4BD5-A78A-132BBCB81CE7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Virtualization.HyperV2022", "SolidCP.Providers.Virtualization.HyperV-2022\SolidCP.Providers.Virtualization.HyperV2022.csproj", "{117C74E2-E821-463E-B73D-E660114EB391}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2B46D398-96AA-4E5E-A09E-9FB3EF38A47C} = {2B46D398-96AA-4E5E-A09E-9FB3EF38A47C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.RemoteDesktopServices.Windows2022", "SolidCP.Providers.TerminalServices.Windows2022\SolidCP.Providers.RemoteDesktopServices.Windows2022.csproj", "{2A5247C2-0CBE-426B-8A78-4C25366E7659}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6654341F-B39E-4BF4-BB09-D932EF5BFE9B} = {6654341F-B39E-4BF4-BB09-D932EF5BFE9B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2022", "SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj", "{05B23C2B-15CE-48EF-995C-C5E517A04011}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5} = {C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -30,30 +30,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
-using System.Web.Services.Protocols;
 using System.Net;
-using SolidCP.Providers;
 using SolidCP.Providers.Common;
-using SolidCP.Providers.Mail;
 using SolidCP.Server.Utils;
 using Microsoft.Win32;
 using FileUtils = SolidCP.Providers.Utils.FileUtils;
 using Newtonsoft.Json;
 using System.Net.Http;
-using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using System.Threading;
-using Newtonsoft.Json.Linq;
 
 namespace SolidCP.Providers.Mail
 {
-	class SmarterMail100 : HostingServiceProviderBase, IMailServer
+    class SmarterMail100 : HostingServiceProviderBase, IMailServer
 	{
 
 		#region Public Properties
@@ -307,7 +298,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<dynamic>(commandresult);
 
-			//Log.WriteInfo("ExecGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
+			Log.WriteInfo("ExecGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
 
 			return commanddata;
 		}
@@ -356,7 +347,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<dynamic>(commandresult);
 
-			//Log.WriteInfo("ExecDomainGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
+			Log.WriteInfo("ExecDomainGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
 
 			return commanddata;
 		}
@@ -375,6 +366,7 @@ namespace SolidCP.Providers.Mail
 			var commandinput_post = new StringContent(commandparamjson, Encoding.UTF8, "application/json");
 			client.DefaultRequestHeaders.Add("Authorization", "Bearer " + authToken.accessToken);
 			var commandresponse = await client.PostAsync(commandurl, commandinput_post);
+			Log.WriteInfo("ExecDomainPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n commandresponse: {3}", command, commandurl, commandparamjson, commandresponse);
 			//commandresponse.EnsureSuccessStatusCode();
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<object>(commandresult);
@@ -403,7 +395,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<dynamic>(commandresult);
 
-			//Log.WriteInfo("ExecUserGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
+			Log.WriteInfo("ExecUserGetCommand: URL: {0} \n\n returned: {1}", commandurl, commanddata);
 
 			return commanddata;
 		}
@@ -428,7 +420,7 @@ namespace SolidCP.Providers.Mail
 			var commandresult = await commandresponse.Content.ReadAsStringAsync();
 			Object commanddata = JsonConvert.DeserializeObject<object>(commandresult);
 
-			//Log.WriteInfo("ExecUserPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n Result: {3}", command, commandurl, commandparamjson, commanddata);
+			Log.WriteInfo("ExecUserPostCommand: Command: {0} \n\n URL: {1} \n\n Params: {2} \n\n Result: {3}", command, commandurl, commandparamjson, commanddata);
 
 			return commanddata;
 		}
@@ -509,7 +501,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				Log.WriteInfo("GetDomain: DomainSettings {0}", result.domainSettings);
 
@@ -654,7 +646,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -676,7 +668,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -710,25 +702,17 @@ namespace SolidCP.Providers.Mail
 
 				dynamic result = ExecDomainGetCommand("settings/domain/domain-aliases", domainName).Result;
 
-				//Log.WriteInfo("GetDomains: Raw: {0}", result);
-				//Log.WriteInfo("GetDomains: success: {0}", result.success);
-
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
 					throw new Exception(result.message);
 
-				foreach (dynamic domain in result.data)
+				foreach (dynamic domain in result.domainAliasData)
 				{
 					string domainAliasName = domain.name;
-					//Log.WriteInfo("GetDomains - Domain: {0}", domainName);
 					domainAliasNames.Add(domainAliasName);
 				}
 
-				String[] domainNameAliasString = domainAliasNames.ToArray();
-
-				//Log.WriteInfo("GetDomains - domainNameString: {0}", domainNameString);
-
-				return domainNameAliasString;
+				return domainAliasNames.ToArray();
 			}
 			catch (Exception ex)
 			{
@@ -748,7 +732,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -769,7 +753,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -816,7 +800,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 			}
 			catch (Exception ex)
@@ -863,19 +847,20 @@ namespace SolidCP.Providers.Mail
 
 				dynamic result = ExecGetCommand("settings/sysadmin/list-users/" + domainName).Result;
 
-				if (!result.Result)
-					throw new Exception(result.Message);
+				bool success = Convert.ToBoolean(result.success);
+				if (!success)
+					throw new Exception(result.message);
 
 				List<MailAccount> accounts = new List<MailAccount>();
 
 
 				foreach (dynamic user in result.userData)
 				{
-					if (user.securityFlags.IsDomainAdmin && !ImportDomainAdmin)
+					if (Convert.ToBoolean(user.securityFlags.IsDomainAdmin) && !ImportDomainAdmin)
 						continue;
 
 					MailAccount account = new MailAccount();
-					account.Name = user.userName;
+					account.Name = user.emailAddress;
 					//account.Password = user.password;
 					accounts.Add(account);
 				}
@@ -903,7 +888,8 @@ namespace SolidCP.Providers.Mail
 				var userContactInfoArray = new
 				{
 					firstName = mailbox.FirstName,
-					lastName = mailbox.LastName
+					lastName = mailbox.LastName,
+					displayAs = mailbox.FirstName + " " + mailbox.LastName
 				};
 
 				var userMailSettingsArray = new
@@ -917,14 +903,14 @@ namespace SolidCP.Providers.Mail
 
 				var forwardListArray = new
 				{
-					forwardList = mailbox.ForwardingAddresses
+					forwardList = mailbox.ForwardingAddresses,
+					deleteOnForward = mailbox.DeleteOnForward
 				};
 
 				var userputPram = new
 				{
 					userData = userDataArray,
 					userMailSettings = userMailSettingsArray,
-					deleteOnForward = mailbox.DeleteOnForward,
 					forwardList = forwardListArray
 				};
 
@@ -932,13 +918,14 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				var autoResponderSettingsArray = new
 				{
 					enabled = mailbox.ResponderEnabled,
 					subject = mailbox.ResponderSubject,
-					body = mailbox.ResponderMessage
+					body = mailbox.ResponderMessage,
+					externalReply = mailbox.ResponderMessage
 				};
 
 				var autoresponderPramArray = new
@@ -950,9 +937,50 @@ namespace SolidCP.Providers.Mail
 
 				success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				//TODO: Signature
+
+				if (mailbox.Signature != null)
+				{
+					var signatureConfigArray = new
+					{
+						name = GetAccountName(mailbox.Name) + "Sig001",
+						text = mailbox.Signature,
+						isDefault = true
+					};
+
+					var signaturePram = new
+					{
+						signatureConfig = signatureConfigArray
+					};
+
+					dynamic signatureresult = ExecUserPostCommand("settings/user-signature-put", mailbox.Name, signaturePram).Result;
+
+					bool signaturesuccess = Convert.ToBoolean(signatureresult.success);
+					if (!signaturesuccess)
+						throw new Exception(signatureresult.message);
+
+					var signatureMapsArray = new
+					{
+						allowUsersToOverride = true,
+						key = mailbox.Name,
+						mapOption = "2",
+						signatureGuid = signatureresult.signatureGuid,
+						type = "4"
+					};
+
+					var signatureMapsPram = new
+					{
+						toAdd = signatureMapsArray
+					};
+
+					dynamic signatureMapsresult = ExecUserPostCommand("settings/signature-mappings", mailbox.Name, signatureMapsPram).Result;
+
+					bool signatureMapssuccess = Convert.ToBoolean(signatureMapsresult.success);
+					if (!signatureMapssuccess)
+						throw new Exception(signatureMapsresult.message);
+				}
 
 			}
 			catch (Exception ex)
@@ -971,53 +999,79 @@ namespace SolidCP.Providers.Mail
             try
             {
 				dynamic result = ExecGetCommand("settings/domain/user-mail/" + mailboxName).Result;
+
+				Log.WriteInfo("GetAccount - result:\n\n{0}", result);
+
+				bool success = Convert.ToBoolean(result.success);
+				if (!success)
+					throw new Exception(result.message);
+
 				dynamic userDataresult = ExecGetCommand("settings/sysadmin/user/" + mailboxName).Result;
+
+				Log.WriteInfo("GetAccount - userDataresult: {0}", userDataresult);
+
+				bool userDatasuccess = Convert.ToBoolean(userDataresult.success);
+				if (!userDatasuccess)
+					throw new Exception(userDataresult.message);
 
 
 				MailAccount mailbox = new MailAccount();
-                mailbox.Name = userDataresult.userData.username;
-                mailbox.Password = userDataresult.userData.Password;
+                mailbox.Name = mailboxName;
                 mailbox.FirstName = result.userMailSettings.userContactInfo.firstName;
                 mailbox.LastName = result.userMailSettings.userContactInfo.lastName;
 				mailbox.IsDomainAdmin = Convert.ToBoolean(userDataresult.userData.IsDomainAdmin);
 				mailbox.Enabled = Convert.ToBoolean(result.userMailSettings.isEnabled);
-				//int MailBoxboxSize = userDataresult.userData.maxMailboxSize / 1048576;
 				mailbox.MaxMailboxSize = userDataresult.userData.maxMailboxSize / 1048576;
 				mailbox.ReplyTo = result.userMailSettings.replyToAddress;
 				mailbox.PasswordLocked = Convert.ToBoolean(userDataresult.userData.lockPassword);
+				mailbox.ForwardingEnabled = result.userMailSettings.enableMailForwarding;
 
 
 				dynamic userSignaturesresult = ExecUserGetCommand("settings/emails-signatures", mailboxName).Result;
+
+				bool userSignaturessuccess = Convert.ToBoolean(userSignaturesresult.success);
+				if (!userSignaturessuccess)
+					throw new Exception(userSignaturesresult.message);
+
 				foreach (dynamic userSignature in userSignaturesresult.userSignatures)
                 {
 					if (Convert.ToBoolean(userSignature.isDefault))
 					{
 						mailbox.Signature = userSignature.text;
+						mailbox.SignatureGuid = userSignature.guid;
+						mailbox.SignatureName = userSignature.name;
 					}
                 }
 
-				if (Convert.ToBoolean(result.userMailSettings.enableMailForwarding))
-                {
-					dynamic mailboxForwardListresult = ExecGetCommand("settings/domain/mailbox-forward-list/" + mailboxName).Result;
+				dynamic mailboxForwardListresult = ExecGetCommand("settings/domain/mailbox-forward-list/" + mailboxName).Result;
 
-					List<string> ForwardingAddress = new List<string>();
+				bool mailboxForwardListsuccess = Convert.ToBoolean(mailboxForwardListresult.success);
+				if (!mailboxForwardListsuccess)
+					throw new Exception(mailboxForwardListresult.message);
 
-					Array forwardListArray = mailboxForwardListresult.mailboxForwardList.forwardList.ToObject<string[]>();
+				List<string> ForwardingAddress = new List<string>();
 
-					foreach (dynamic address in forwardListArray)
-					{
-						ForwardingAddress.Add(address);
-					}
+				Array forwardListArray = mailboxForwardListresult.mailboxForwardList.forwardList.ToObject<string[]>();
 
-					string[] ForwardingAddressString = ForwardingAddress.ToArray();
-					mailbox.ForwardingAddresses = ForwardingAddressString;
-					mailbox.DeleteOnForward = Convert.ToBoolean(mailboxForwardListresult.mailboxForwardList.deleteOnForward);
+				foreach (dynamic address in forwardListArray)
+				{
+					ForwardingAddress.Add(address);
 				}
+
+				string[] ForwardingAddressString = ForwardingAddress.ToArray();
+				mailbox.ForwardingAddresses = ForwardingAddressString;
+				mailbox.DeleteOnForward = Convert.ToBoolean(mailboxForwardListresult.mailboxForwardList.deleteOnForward);
 
 
 				dynamic autoResponderSettingsresult = ExecUserGetCommand("settings/auto-responder", mailboxName).Result;
 
-                mailbox.ResponderEnabled = Convert.ToBoolean(autoResponderSettingsresult.autoResponderSettings.enabled);
+				Log.WriteInfo("GetAccount - autoResponderSettingsresult: {0}", autoResponderSettingsresult);
+
+				bool autoResponderSettingssuccess = Convert.ToBoolean(autoResponderSettingsresult.success);
+				if (!autoResponderSettingssuccess)
+					throw new Exception(autoResponderSettingsresult.message);
+
+				mailbox.ResponderEnabled = Convert.ToBoolean(autoResponderSettingsresult.autoResponderSettings.enabled);
                 mailbox.ResponderSubject = autoResponderSettingsresult.autoResponderSettings.subject;
                 mailbox.ResponderMessage = autoResponderSettingsresult.autoResponderSettings.body;
 
@@ -1034,11 +1088,11 @@ namespace SolidCP.Providers.Mail
 			try
 			{
 				var input_post = new { };
-				dynamic result = ExecPostCommand("settings/domain/user-delete/" + mailboxName, input_post).Result;
+				dynamic result = ExecDomainPostCommand("settings/domain/user-delete/" + GetAccountName(mailboxName), GetDomainName(mailboxName), input_post).Result;
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -1055,36 +1109,68 @@ namespace SolidCP.Providers.Mail
 				//get original account
 				MailAccount account = GetAccount(mailbox.Name);
 
-				string strPassword = mailbox.Password;
-
-				//Don't change password. Get it from mail server.
-				if (!mailbox.ChangePassword)
+				if (mailbox.ChangePassword)
 				{
-					strPassword = account.Password;
+					var passworduserDataArray = new
+					{
+						password = mailbox.Password
+					};
+
+					var passwordPram = new
+					{
+						userData = passworduserDataArray
+					};
+
+					dynamic passwordresult = ExecDomainPostCommand("settings/domain/user/" + mailbox.Name, GetDomainName(mailbox.Name), passwordPram).Result;
+
+					bool passwordsuccess = Convert.ToBoolean(passwordresult.success);
+					if (!passwordsuccess)
+						throw new Exception(passwordresult.message);
 				}
 
 
 				var userContactInfoArray = new
 				{
 					firstName = mailbox.FirstName,
-					lastName = mailbox.LastName
+					lastName = mailbox.LastName,
+					displayAs = mailbox.FirstName + " " + mailbox.LastName
 				};
 				var userMailSettingsArray = new
 				{
 					userContactInfo = userContactInfoArray,
 					isEnabled = mailbox.Enabled,
 					enableMailForwarding = mailbox.ForwardingEnabled,
-					maxSize = mailbox.MaxMailboxSize * 1048576,
-					replyToAddress = mailbox.ReplyTo,
-					signature = mailbox.Signature,
-
+					replyToAddress = mailbox.ReplyTo
+					//signature = mailbox.Signature,
 				};
 
-				var userDataArray = new
+				var userputPram = new
 				{
-					userMailSettings = userMailSettingsArray,
-					password = strPassword
+					userMailSettings = userMailSettingsArray
 				};
+
+				dynamic result = ExecDomainPostCommand("settings/domain/user-mail/" + mailbox.Name, GetDomainName(mailbox.Name), userputPram).Result;
+
+				bool success = Convert.ToBoolean(result.success);
+				if (!success)
+					throw new Exception(result.message);
+
+				var updateUseruserDataArray = new
+				{
+					fullName = mailbox.FirstName + " " + mailbox.LastName,
+					maxMailboxSize = mailbox.MaxMailboxSize * 1048576
+				};
+
+				var updateUserPram = new
+				{
+					userData = updateUseruserDataArray,
+				};
+
+				dynamic updateUserresult = ExecDomainPostCommand("settings/domain/user/" + mailbox.Name, GetDomainName(mailbox.Name), updateUserPram).Result;
+
+				bool updateUsersuccess = Convert.ToBoolean(updateUserresult.success);
+				if (!updateUsersuccess)
+					throw new Exception(updateUserresult.message);
 
 				var forwardListArray = new
 				{
@@ -1092,40 +1178,66 @@ namespace SolidCP.Providers.Mail
 					deleteOnForward = mailbox.DeleteOnForward
 				};
 
-				var userputPram = new
+				var forwardPut = new
 				{
-					userData = userDataArray,
-					forwardList = forwardListArray
+					mailboxForwardList = forwardListArray
 				};
 
-				dynamic result = ExecDomainPostCommand("settings/domain/user" + mailbox.Name, GetDomainName(mailbox.Name), userputPram).Result;
+				dynamic forwardresult = ExecUserPostCommand("settings/mailbox-forward-list", mailbox.Name, forwardPut).Result;
 
-				bool success = Convert.ToBoolean(result.success);
-				if (!success)
-					throw new Exception(result.Message);
-
-
-				var autoResponderSettingsArray = new
-				{
-					enabled = mailbox.ResponderEnabled,
-					subject = mailbox.ResponderSubject,
-					body = mailbox.ResponderMessage,
-					externalReply = mailbox.ResponderMessage
-				};
-
-				var autoResponderPram = new
-				{
-					autoResponderSettings = autoResponderSettingsArray
-				};
-
-				dynamic autoResponderresult = ExecUserPostCommand("settings/auto-responder", mailbox.Name, autoResponderPram);
-
-				bool autoRespondersuccess = Convert.ToBoolean(autoResponderresult.success);
-				if (!autoRespondersuccess)
-					throw new Exception(autoResponderresult.Message);
+                bool forwardsuccess = Convert.ToBoolean(forwardresult.success);
+                if (!forwardsuccess)
+                    throw new Exception(forwardresult.message);
 
 
-			}
+                var autoResponderSettingsArray = new
+                {
+                    enabled = mailbox.ResponderEnabled,
+                    subject = mailbox.ResponderSubject,
+                    body = mailbox.ResponderMessage,
+                    externalReply = mailbox.ResponderMessage
+                };
+
+                var autoResponderPram = new
+                {
+                    autoResponderSettings = autoResponderSettingsArray
+                };
+
+                dynamic autoResponderresult = ExecUserPostCommand("settings/auto-responder", mailbox.Name, autoResponderPram).Result;
+
+                bool autoRespondersuccess = Convert.ToBoolean(autoResponderresult.success);
+                if (!autoRespondersuccess)
+                    throw new Exception(autoResponderresult.message);
+
+				// TODO: Signature
+
+				Log.WriteInfo("Sig: {0}", mailbox.Signature);
+
+				if(mailbox.Signature != null)
+                {
+					string signatureName = account.SignatureName ?? GetAccountName(mailbox.Name) + "Sig001";
+					var signatureConfigArray = new
+					{
+						name = signatureName,
+						text = mailbox.Signature,
+						isDefault = true,
+						guid = account.SignatureGuid
+					};
+
+					var signaturePram = new
+					{
+						signatureConfig = signatureConfigArray
+					};
+
+					dynamic signatureresult = ExecUserPostCommand("settings/user-signature-put", mailbox.Name, signaturePram).Result;
+
+					bool signaturesuccess = Convert.ToBoolean(signatureresult.success);
+					if (!signaturesuccess)
+						throw new Exception(signatureresult.message);
+                }
+
+
+            }
 			catch (Exception ex)
 			{
 				throw new Exception("Could not update mailbox", ex);
@@ -1141,16 +1253,11 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				//AliasInfoResult result = aliases.GetAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName), mailAliasName);
-
-				//if ((!result.Result || (result.AliasInfo.Name.Equals("Empty")) && (result.AliasInfo.Addresses.Length == 0)))
-				//	return false;
-
 				dynamic result = ExecDomainGetCommand("settings/domain/aliases/" + GetAccountName(mailAliasName), GetDomainName(mailAliasName)).Result;
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
                 if (result.gridInfo == null)
                     return false;
@@ -1171,21 +1278,32 @@ namespace SolidCP.Providers.Mail
 			{
 				dynamic result = ExecDomainGetCommand("settings/domain/aliases/", domainName).Result;
 
-				if (!result.Result)
-					throw new Exception(result.Message);
+				bool success = Convert.ToBoolean(result.success);
+				if (!success)
+					throw new Exception(result.message);
 
 				List<MailAlias> aliasesList = new List<MailAlias>();
 
 
 				foreach (dynamic alias in result.gridInfo)
 				{
-					if (alias.aliasTargetList.Length == 1)
-					{
 						MailAlias mailAlias = new MailAlias();
-						mailAlias.Name = alias.Name + "@" + domainName;
-						mailAlias.ForwardTo = alias.aliasTargetList[0];
+						mailAlias.Name = alias.name + "@" + domainName;
+
+					List<string> members = new List<string>();
+					foreach (string member in alias.targets)
+					{
+						members.Add(member);
+					}
+
+
+					if(members.ToArray().Length == 1)
+					{
+
+						mailAlias.ForwardTo = alias.targets[0];
 						aliasesList.Add(mailAlias);
 					}
+
 				}
 				return aliasesList.ToArray();
 			}
@@ -1216,7 +1334,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 			}
 
@@ -1241,7 +1359,7 @@ namespace SolidCP.Providers.Mail
 
 			bool success = Convert.ToBoolean(result.success);
 			if (!success)
-				throw new Exception(result.Message);
+				throw new Exception(result.message);
 
 			alias.Name = result.gridInfo[0].Name;
 			if (result.gridInfo[0].targets != null)
@@ -1259,14 +1377,6 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				//svcAliasAdmin aliases = new svcAliasAdmin();
-				//PrepareProxy(aliases);
-
-				//GenericResult result = aliases.DeleteAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName),
-				//	mailAliasName);
-
-				//if (!result.Result)
-				//	throw new Exception(result.Message);
 
 				var mailAliasPram = new
 				{
@@ -1276,7 +1386,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 			}
 			catch (Exception ex)
@@ -1304,7 +1414,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 			}
 			catch (Exception ex)
@@ -1326,7 +1436,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				if (result.gridInfo == null)
 					return false;
@@ -1345,19 +1455,26 @@ namespace SolidCP.Providers.Mail
 			{
 				dynamic result = ExecDomainGetCommand("settings/domain/aliases/", domainName).Result;
 
-				if (!result.Result)
-					throw new Exception(result.Message);
+				bool success = Convert.ToBoolean(result.success);
+				if (!success)
+					throw new Exception(result.message);
 
 				List<MailGroup> groups = new List<MailGroup>();
 
 				foreach (dynamic alias in result.gridInfo)
 				{
-					//group - alias with more than one forwarding address
-					if (alias.aliasTargetList.Length > 1)
+					MailGroup mailGroup = new MailGroup();
+					mailGroup.Name = alias.name + "@" + domainName;
+
+					List<string> members = new List<string>();
+					foreach (string member in alias.targets)
+                    {
+						members.Add(member);
+                    }
+
+					if (members.ToArray().Length > 1)
 					{
-						MailGroup mailGroup = new MailGroup();
-						mailGroup.Name = alias.Name + "@" + domainName;
-						mailGroup.Members = alias.aliasTargetList;
+						mailGroup.Members = members.ToArray();
 						groups.Add(mailGroup);
 					}
 				}
@@ -1378,7 +1495,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 
 				List<string> targets = new List<string>();
@@ -1407,15 +1524,6 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				//svcAliasAdmin svcGroups = new svcAliasAdmin();
-				//PrepareProxy(svcGroups);
-
-				//GenericResult result = svcGroups.AddAlias(AdminUsername, AdminPassword,
-				//	GetDomainName(group.Name), group.Name, group.Members);
-
-				//if (!result.Result)
-				//	throw new Exception(result.Message);
-
 				var aliasArray = new
 				{
 					name = GetAccountName(group.Name),
@@ -1431,7 +1539,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -1443,14 +1551,6 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				//svcAliasAdmin svcGroups = new svcAliasAdmin();
-				//PrepareProxy(svcGroups);
-
-				//GenericResult result = svcGroups.DeleteAlias(AdminUsername, AdminPassword,
-				//	GetDomainName(groupName), groupName);
-
-				//if (!result.Result)
-				//	throw new Exception(result.Message);
 
 				var mailAliasPram = new
 				{
@@ -1460,7 +1560,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -1487,7 +1587,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 			}
 			catch (Exception ex)
 			{
@@ -1509,7 +1609,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 
 				foreach (dynamic member in result.items)
@@ -1571,7 +1671,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				//Add members
 
@@ -1581,7 +1681,7 @@ namespace SolidCP.Providers.Mail
 
 					bool memberaddsuccess = Convert.ToBoolean(memberaddresult.success);
 					if (!memberaddsuccess)
-						throw new Exception(memberaddresult.Message);
+						throw new Exception(memberaddresult.message);
 				}
 			}
 			catch (Exception ex)
@@ -1608,7 +1708,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				//Log.WriteInfo("GetList - ListName: {0}", listName);
 
@@ -1653,7 +1753,7 @@ namespace SolidCP.Providers.Mail
 
                             bool listSubscribersuccess = Convert.ToBoolean(listSubscriberresult.success);
                             if (!listSubscribersuccess)
-                                throw new Exception(listSubscriberresult.Message);
+                                throw new Exception(listSubscriberresult.message);
 
                             foreach (dynamic item in listSubscriberresult.items)
                             {
@@ -1694,13 +1794,14 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				List<MailList> mailLists = new List<MailList>();
 				foreach (dynamic member in result.items)
 				{
 					List<string> members = new List<string>();
 					MailList list = new MailList();
+					list.Name = member.listAddress + "@" + domainName;
 					//Log.WriteInfo("Found result: {0}", member);
 					list.Id = member.id;
 					list.CreatedDate = member.createdOn;
@@ -1736,7 +1837,7 @@ namespace SolidCP.Providers.Mail
 
 						bool listSubscribersuccess = Convert.ToBoolean(listSubscriberresult.success);
 						if (!listSubscribersuccess)
-							throw new Exception(listSubscriberresult.Message);
+							throw new Exception(listSubscriberresult.message);
 
 						foreach (dynamic item in listSubscriberresult.items)
 						{
@@ -1775,7 +1876,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 				foreach (dynamic member in result.items)
 				{
@@ -1790,7 +1891,7 @@ namespace SolidCP.Providers.Mail
 
 						bool deletesuccess = Convert.ToBoolean(deleteresult.success);
 						if (!success)
-							throw new Exception(deleteresult.Message);
+							throw new Exception(deleteresult.message);
 					}
 				}
 			}
@@ -1911,7 +2012,7 @@ namespace SolidCP.Providers.Mail
 
 				bool Listssuccess = Convert.ToBoolean(Listsresult.success);
 				if (!Listssuccess)
-					throw new Exception(Listsresult.Message);
+					throw new Exception(Listsresult.message);
 
 				string listID = "";
 				foreach (dynamic member in Listsresult.items)
@@ -1976,7 +2077,7 @@ namespace SolidCP.Providers.Mail
 
 				bool success = Convert.ToBoolean(result.success);
 				if (!success)
-					throw new Exception(result.Message);
+					throw new Exception(result.message);
 
 
 				var listSubscriberArray = new
@@ -1992,7 +2093,7 @@ namespace SolidCP.Providers.Mail
 
 				bool listSubscribersuccess = Convert.ToBoolean(listSubscriberresult.success);
 				if (!listSubscribersuccess)
-					throw new Exception(listSubscriberresult.Message);
+					throw new Exception(listSubscriberresult.message);
 
 				foreach (dynamic item in listSubscriberresult.items)
 				{
@@ -2005,7 +2106,7 @@ namespace SolidCP.Providers.Mail
 
 					bool mailRemoveMembersuccess = Convert.ToBoolean(mailRemoveMemberresult.success);
 					if (!success)
-						throw new Exception(mailRemoveMemberresult.Message);
+						throw new Exception(mailRemoveMemberresult.message);
 				}
 
 				if (list.Members.Length > 0)

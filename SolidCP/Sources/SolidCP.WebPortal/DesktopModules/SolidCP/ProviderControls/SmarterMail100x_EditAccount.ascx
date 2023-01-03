@@ -96,6 +96,13 @@
     <table width="100%">
         <tr>
             <td class="SubHead" width="200" nowrap>
+                <asp:Label ID="lblForwardingEnabled" runat="server" meta:resourcekey="lblForwardingEnabled" Text="Enable Forwarding:"></asp:Label></td>
+            <td class="normal" width="100%">
+                <asp:CheckBox ID="chkForwardingEnabled" runat="server" meta:resourcekey="chkForwardingEnabled" Text="Yes"></asp:CheckBox>
+            </td>
+        </tr>
+        <tr>
+            <td class="SubHead" width="200" nowrap>
                 <asp:Label ID="lblForwardTo" runat="server" meta:resourcekey="lblForwardTo" Text="Forward mail to address:"></asp:Label></td>
             <td class="normal" width="100%" valign="top">
                 <asp:TextBox ID="txtForward" runat="server" Width="200px" CssClass="form-control"></asp:TextBox>

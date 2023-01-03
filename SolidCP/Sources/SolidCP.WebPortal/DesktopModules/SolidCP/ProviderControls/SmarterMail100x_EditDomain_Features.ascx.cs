@@ -44,32 +44,18 @@ namespace SolidCP.Portal.ProviderControls
 
         public void SaveItem(MailDomain item)
         {
-            //item.ShowContentFilteringMenu = cbShowcontentfilteringmenu.Checked;
             item.ShowDomainAliasMenu = cbShowdomainaliasmenu.Checked;
             item.ShowListMenu = cbShowlistmenu.Checked;
             item.ShowSpamMenu = cbShowspammenu.Checked;
-            //item[MailDomain.SMARTERMAIL5_SHOW_DOMAIN_REPORTS] = cbShowDomainReports.Checked.ToString();
-            //item[MailDomain.SMARTERMAIL5_POP_RETREIVAL_ENABLED] = cbEnablePopRetreival.Checked.ToString();
-            //item[MailDomain.SMARTERMAIL5_CATCHALLS_ENABLED] = cbEnableCatchAlls.Checked.ToString();
-            //item[MailDomain.SMARTERMAIL6_IMAP_RETREIVAL_ENABLED] = cbEnableIMAPRetreival.ToString();
-            //item[MailDomain.SMARTERMAIL6_MAIL_SIGNING_ENABLED] = cbEnableEmailSigning.ToString();
-            //item[MailDomain.SMARTERMAIL6_EMAIL_REPORTS_ENABLED] = cbEnableEmailReports.ToString();
-            //item[MailDomain.SMARTERMAIL6_SYNCML_ENABLED] = cbEnableSyncML.ToString();
+            item[MailDomain.SMARTERMAIL5_CATCHALLS_ENABLED] = cbEnableCatchAlls.Checked.ToString();
         }
 
         public void BindItem(MailDomain item)
         {
-            //cbShowcontentfilteringmenu.Checked = item.ShowContentFilteringMenu;
             cbShowdomainaliasmenu.Checked = item.ShowDomainAliasMenu;
             cbShowlistmenu.Checked = item.ShowListMenu;
             cbShowspammenu.Checked = item.ShowSpamMenu;
-            //cbShowDomainReports.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_SHOW_DOMAIN_REPORTS]);
-            //cbEnablePopRetreival.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_POP_RETREIVAL_ENABLED]);
-            //cbEnableCatchAlls.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_CATCHALLS_ENABLED]);
-            //cbEnableIMAPRetreival.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL6_IMAP_RETREIVAL_ENABLED]);
-            //cbEnableEmailSigning.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL6_MAIL_SIGNING_ENABLED]);
-            //cbEnableEmailReports.Checked = Convert.ToBoolean((item[MailDomain.SMARTERMAIL6_EMAIL_REPORTS_ENABLED]));
-            //cbEnableSyncML.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL6_SYNCML_ENABLED]);
+            cbEnableCatchAlls.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_CATCHALLS_ENABLED]);
         }
     }
 }

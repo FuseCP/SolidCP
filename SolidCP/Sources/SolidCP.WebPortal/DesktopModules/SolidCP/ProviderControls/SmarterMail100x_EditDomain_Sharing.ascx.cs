@@ -45,22 +45,11 @@ namespace SolidCP.Portal.ProviderControls
         public void SaveItem(MailDomain item)
         {
             item.IsGlobalAddressList = cbGlobalAddressList.Checked;
-            item.SharedCalendars = cbSharedCalendars.Checked;
-            //item.SharedContacts = cbSharedContacts.Checked;
-            //item.SharedFolders = cbSharedFolders.Checked;
-            //item.SharedNotes = cbSharedNotes.Checked;
-            //item.SharedTasks = cbSharedTasks.Checked;
-
         }
 
         public void BindItem(MailDomain item)
         {
             cbGlobalAddressList.Checked = item.IsGlobalAddressList;
-            cbSharedCalendars.Checked = item.SharedCalendars;
-            //cbSharedContacts.Checked = item.SharedContacts;
-            //cbSharedFolders.Checked = item.SharedFolders;
-            //cbSharedNotes.Checked = item.SharedNotes;
-            //cbSharedTasks.Checked = item.SharedTasks;
         }
 
     }

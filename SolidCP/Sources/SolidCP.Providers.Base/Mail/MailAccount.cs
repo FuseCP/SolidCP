@@ -54,9 +54,10 @@ namespace SolidCP.Providers.Mail
 		private bool isDomainAdmin;
 		private bool isDomainAdminEnabled;
 		private bool retainLocalCopy;
+        private string signatureName;
+        private string signatureGuid;
 
-
-		public bool UnlimitedSize
+        public bool UnlimitedSize
 		{
 			get
 			{
@@ -146,6 +147,18 @@ namespace SolidCP.Providers.Mail
 			set { signature = value; }
 		}
 
+		public string SignatureGuid
+		{
+			get { return signatureGuid; }
+			set { signatureGuid = value; }
+		}
+
+		public string SignatureName
+		{
+			get { return signatureName; }
+			set { signatureName = value; }
+		}
+
 		public bool IsDomainAdminEnabled
 		{
 			get { return isDomainAdminEnabled; }
@@ -175,9 +188,6 @@ namespace SolidCP.Providers.Mail
 			get { return changePassword; }
 			set { changePassword = value; }
 		}
-
-
-
 
 		#endregion
 
@@ -227,7 +237,6 @@ namespace SolidCP.Providers.Mail
         public int NumberSendLimit { get; set; }
 
         public string FullName { get; set; }
-
         #endregion
     }
 }
