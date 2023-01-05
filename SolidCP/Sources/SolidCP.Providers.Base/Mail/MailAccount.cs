@@ -56,6 +56,7 @@ namespace SolidCP.Providers.Mail
 		private bool retainLocalCopy;
         private string signatureName;
         private string signatureGuid;
+		private int signatureiD;
 
         public bool UnlimitedSize
 		{
@@ -157,6 +158,12 @@ namespace SolidCP.Providers.Mail
 		{
 			get { return signatureName; }
 			set { signatureName = value; }
+		}
+
+		public int SignatureiD
+		{
+			get { return signatureiD; }
+			set { signatureiD = value; }
 		}
 
 		public bool IsDomainAdminEnabled

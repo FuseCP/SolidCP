@@ -35,12 +35,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using SolidCP.Providers.Common;
+using SolidCP.Providers.Mail;
 using SolidCP.Server.Utils;
 using Microsoft.Win32;
 using FileUtils = SolidCP.Providers.Utils.FileUtils;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Threading;
+using Newtonsoft.Json.Linq;
 
 namespace SolidCP.Providers.Mail
 {
@@ -961,18 +964,20 @@ namespace SolidCP.Providers.Mail
 					if (!signaturesuccess)
 						throw new Exception(signatureresult.message);
 
-					var signatureMapsArray = new
+					var signatureMapsArray = new[]
 					{
-						allowUsersToOverride = true,
-						key = mailbox.Name,
-						mapOption = "2",
-						signatureGuid = signatureresult.signatureGuid,
-						type = "4"
+						new {
+							allowUsersToOverride = true,
+							key = mailbox.Name,
+							mapOption = "2",
+							signatureGuid = signatureresult.signatureGuid,
+							type = "4"
+						}
 					};
 
 					var signatureMapsPram = new
 					{
-						toAdd = signatureMapsArray
+						signatureMaps = signatureMapsArray
 					};
 
 					dynamic signatureMapsresult = ExecUserPostCommand("settings/signature-mappings", mailbox.Name, signatureMapsPram).Result;
@@ -1040,6 +1045,7 @@ namespace SolidCP.Providers.Mail
 						mailbox.Signature = userSignature.text;
 						mailbox.SignatureGuid = userSignature.guid;
 						mailbox.SignatureName = userSignature.name;
+						mailbox.SignatureiD = userSignature.id;
 					}
                 }
 
@@ -1215,26 +1221,74 @@ namespace SolidCP.Providers.Mail
 
 				if(mailbox.Signature != null)
                 {
-					string signatureName = account.SignatureName ?? GetAccountName(mailbox.Name) + "Sig001";
-					var signatureConfigArray = new
+					//Check if creating a new Signature or updating one
+					if (account.SignatureGuid == null)
 					{
-						name = signatureName,
-						text = mailbox.Signature,
-						isDefault = true,
-						guid = account.SignatureGuid
-					};
+						string signatureName = account.SignatureName ?? GetAccountName(mailbox.Name) + "Sig001";
+						var signatureConfigArray = new
+						{
+							name = signatureName,
+							text = mailbox.Signature,
+							isDefault = true,
+						};
 
-					var signaturePram = new
-					{
-						signatureConfig = signatureConfigArray
-					};
+						var signaturePram = new
+						{
+							signatureConfig = signatureConfigArray
+						};
 
-					dynamic signatureresult = ExecUserPostCommand("settings/user-signature-put", mailbox.Name, signaturePram).Result;
+						dynamic signatureresult = ExecUserPostCommand("settings/user-signature-put", mailbox.Name, signaturePram).Result;
 
-					bool signaturesuccess = Convert.ToBoolean(signatureresult.success);
-					if (!signaturesuccess)
-						throw new Exception(signatureresult.message);
-                }
+						bool signaturesuccess = Convert.ToBoolean(signatureresult.success);
+						if (!signaturesuccess)
+							throw new Exception(signatureresult.message);
+
+						var signatureMapsArray = new[]
+							{
+							new {
+								allowUsersToOverride = true,
+								key = mailbox.Name,
+								mapOption = "2",
+								signatureGuid = signatureresult.signatureGuid,
+								type = "4"
+							}
+						};
+
+						var signatureMapsPram = new
+						{
+							signatureMaps = signatureMapsArray
+						};
+
+						dynamic signatureMapsresult = ExecUserPostCommand("settings/signature-mappings", mailbox.Name, signatureMapsPram).Result;
+
+						bool signatureMapssuccess = Convert.ToBoolean(signatureMapsresult.success);
+						if (!signatureMapssuccess)
+							throw new Exception(signatureMapsresult.message);
+					}
+					else
+                    {
+						//Updating signature
+						var signatureConfigArray = new
+						{
+							id = account.SignatureiD,
+							uid = account.SignatureGuid,
+							name = account.SignatureName,
+							text = mailbox.Signature,
+							isDefault = true
+						};
+
+						var signaturePram = new
+						{
+							signatureConfig = signatureConfigArray
+						};
+
+						dynamic signatureresult = ExecUserPostCommand("settings/user-signature", mailbox.Name, signaturePram).Result;
+
+						bool signaturesuccess = Convert.ToBoolean(signatureresult.success);
+						if (!signaturesuccess)
+							throw new Exception(signatureresult.message);
+					}
+				}
 
 
             }
