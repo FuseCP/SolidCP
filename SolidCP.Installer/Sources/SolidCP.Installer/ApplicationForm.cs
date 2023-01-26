@@ -224,7 +224,7 @@ namespace SolidCP.Installer
 				control.Dock = DockStyle.Fill;
 				try
 				{
-					AppContext context = new AppContext();
+					SCPAppContext context = new SCPAppContext();
 					context.AppForm = this;
 					context.ScopeNode = parentNode;
 					control.ShowControl(context);

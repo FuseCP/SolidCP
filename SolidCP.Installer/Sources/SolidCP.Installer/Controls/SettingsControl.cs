@@ -65,7 +65,7 @@ namespace SolidCP.Installer.Controls
 		/// Shows control
 		/// </summary>
 		/// <param name="context"></param>
-		public override void ShowControl(AppContext context)
+		public override void ShowControl(SCPAppContext context)
 		{
 			base.ShowControl(context);
 			if (!IsInitialized)
