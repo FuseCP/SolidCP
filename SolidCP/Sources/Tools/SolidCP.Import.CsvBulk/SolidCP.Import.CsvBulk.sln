@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Import.CsvBulk", "SolidCP.Import.CsvBulk.csproj", "{CAD845DC-B209-4A07-94DA-B12FD14121F3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CAD845DC-B209-4A07-94DA-B12FD14121F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAD845DC-B209-4A07-94DA-B12FD14121F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAD845DC-B209-4A07-94DA-B12FD14121F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAD845DC-B209-4A07-94DA-B12FD14121F3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6FC0A219-5E3F-4C98-8A3F-AFD0CE3ED239}
+	EndGlobalSection
+EndGlobal
