@@ -223,8 +223,6 @@ namespace SolidCP.Providers.Mail
 			authdata.emailAddress = data["email"].ToString();
 			authdata.success = Convert.ToBoolean(data["success"]);
 
-			Log.WriteEnd("GetAccessToken");
-
 			return authdata;
 		}
 
@@ -258,8 +256,6 @@ namespace SolidCP.Providers.Mail
 			authdata.username = data["username"].ToString();
 			authdata.emailAddress = data["email"].ToString();
 			authdata.success = Convert.ToBoolean(data["success"]);
-
-			Log.WriteEnd("GetUserAccessToken");
 
 			return authdata;
 		}
@@ -429,23 +425,17 @@ namespace SolidCP.Providers.Mail
 
 				dynamic result = ExecGetCommand("settings/sysadmin/domains").Result;
 
-				//Log.WriteInfo("GetDomains: Raw: {0}", result);
-				//Log.WriteInfo("GetDomains: success: {0}", result["success"]);
-
 				bool success = Convert.ToBoolean(result["success"]);
 				if (!success)
 					throw new Exception(result["message"]);
 
 				foreach (dynamic domain in result["data"])
                 {
-					string domainName = domain.name; 
-					//Log.WriteInfo("GetDomains - Domain: {0}", domainName);
+					string domainName = domain["name"].ToString(); 
 					domainNames.Add(domainName);
 				}
 
 				String[] domainNameString = domainNames.ToArray();
-
-				//Log.WriteInfo("GetDomains - domainNameString: {0}", domainNameString);
 
 				return domainNameString;
 			}
@@ -459,8 +449,6 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
-				//Log.WriteInfo("GetDomain: {0}", domainName);
-
 				dynamic result = ExecGetCommand("settings/sysadmin/domain-settings/" + domainName).Result;
 
 				bool success = Convert.ToBoolean(result["success"]);
@@ -509,7 +497,7 @@ namespace SolidCP.Providers.Mail
 				domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED] = GetBoolean(SM_BOUNCES_PER_HOUR_ENABLED);
 
 				//Limits
-				domain.MaxDomainSizeInMB = (int)Convert.ToInt64(result["domainSettings"]["maxSize"].ToString()) / 1048576;
+				domain.MaxDomainSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxSize"].ToString()) / 1048576);
 				domain.MaxDomainAliases = (int)Convert.ToInt64(result["domainSettings"]["maxDomainAliases"].ToString());
 				domain.MaxDomainUsers = (int)Convert.ToInt64(result["domainSettings"]["maxUsers"].ToString());
 				domain.MaxAliases = (int)Convert.ToInt64(result["domainSettings"]["maxAliases"].ToString());
@@ -518,7 +506,7 @@ namespace SolidCP.Providers.Mail
 				domain.MaxRecipients = (int)Convert.ToInt64(result["domainSettings"]["maxRecipients"].ToString());
 
 
-				domain.MaxMailboxSizeInMB = (int)Convert.ToInt64(result["domainSettings"]["maxMailboxSize"].ToString()) / 1048576;
+				domain.MaxMailboxSizeInMB = (int)Convert.ToInt64(Convert.ToInt64(result["domainSettings"]["maxMailboxSize"].ToString()) / 1048576);
 				domain.MaxRecipients = (int)Convert.ToInt64(result["domainSettings"]["maxRecipients"].ToString());
 				domain.RequireSmtpAuthentication = Convert.ToBoolean(result["domainSettings"]["requireSmtpAuthentication"]);
 				domain.ListCommandAddress = result["domainSettings"]["listCommandAddress"].ToString();
@@ -586,7 +574,7 @@ namespace SolidCP.Providers.Mail
 			{
 				var domainDataArray = new
 				{
-                    name = domain.Name,
+					name = domain.Name,
 					path = DomainsPath + "\\" + domain.Name,
 					hostname = domain.Name,
 					isEnabled = domain.Enabled.ToString(),
@@ -601,7 +589,7 @@ namespace SolidCP.Providers.Mail
 				var domainparam = new
 				{
                     domainData = domainDataArray,
-					adminUsername = domain.Name + "Admin",
+					adminUsername = "system.domain.admin",
 					adminPassword = Guid.NewGuid().ToString("P")
 				};
 
@@ -671,7 +659,7 @@ namespace SolidCP.Providers.Mail
 
 				foreach (dynamic domain in result["domainAliasData"])
 				{
-					string domainAliasName = domain.name;
+					string domainAliasName = domain["name"].ToString();
 					domainAliasNames.Add(domainAliasName);
 				}
 
@@ -802,11 +790,13 @@ namespace SolidCP.Providers.Mail
 
 				foreach (dynamic user in result["userData"])
 				{
-					if (Convert.ToBoolean(user.securityFlags.IsDomainAdmin) && !ImportDomainAdmin)
+					if (Convert.ToBoolean(user["securityFlags"]["isDomainAdmin"]) && !ImportDomainAdmin)
 						continue;
 
+					Log.WriteInfo("GetAccounts - Account: {0} \n\n DomainAdmin: {1} \n\n ImportDomainAdmin: {2}", user["emailAddress"].ToString(), Convert.ToBoolean(user["securityFlags"]["isDomainAdmin"]), ImportDomainAdmin);
+
 					MailAccount account = new MailAccount();
-					account.Name = user.emailAddress;
+					account.Name = user["emailAddress"].ToString();
 					//account.Password = user.password;
 					accounts.Add(account);
 				}
@@ -967,8 +957,8 @@ namespace SolidCP.Providers.Mail
 				mailbox.LastName = result["userMailSettings"]["userContactInfo"]["lastName"].ToString();
 				mailbox.IsDomainAdmin = Convert.ToBoolean(userDataresult["userData"]["IsDomainAdmin"]);
 				mailbox.Enabled = Convert.ToBoolean(result["userMailSettings"]["isEnabled"].ToString());
-				string maxMailboxSizeint = userDataresult["userData"]["maxMailboxSize"].ToString();
-				mailbox.MaxMailboxSize = (int)Convert.ToInt64(maxMailboxSizeint) / 1048576;
+				//string maxMailboxSizeint = userDataresult["userData"]["maxMailboxSize"].ToString();
+				mailbox.MaxMailboxSize = (int)Convert.ToInt64(Convert.ToInt64(userDataresult["userData"]["maxMailboxSize"]) / 1048576);
 				mailbox.ReplyTo = result["userMailSettings"]["replyToAddress"].ToString();
 				mailbox.PasswordLocked = Convert.ToBoolean(userDataresult["userData"]["lockPassword"]);
 				mailbox.ForwardingEnabled = Convert.ToBoolean(result["userMailSettings"]["enableMailForwarding"]);
@@ -1105,7 +1095,7 @@ namespace SolidCP.Providers.Mail
 				var updateUseruserDataArray = new
 				{
 					fullName = mailbox.FirstName + " " + mailbox.LastName,
-					maxMailboxSize = mailbox.MaxMailboxSize * 1048576
+					maxMailboxSize = Convert.ToInt64(mailbox.MaxMailboxSize) * 1048576
 				};
 
 				var updateUserPram = new
@@ -1254,10 +1244,21 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-                if (result["gridInfo"].ToString() != null)
-                    return true;
+				Log.WriteInfo("MailAliasExists - A gridInfo: {0}", result);
+				if (result["gridInfo"].ToString() != "")
+				{
+					foreach(dynamic aliases in result["gridInfo"])
+					{
+						Log.WriteInfo("MailAliasExists - B aliases:\n {0}", aliases["name"].ToString());
+						if (aliases["name"].ToString() == mailAliasName)
+						{
+							Log.WriteInfo("MailAliasExists - Found alias: {0}", mailAliasName);
+							return true;
+						}
+					}
+				}
 
-                return false;
+				return false;
 			}
 			catch (Exception ex)
 			{
@@ -1281,10 +1282,10 @@ namespace SolidCP.Providers.Mail
 				foreach (dynamic alias in result["gridInfo"])
 				{
 						MailAlias mailAlias = new MailAlias();
-						mailAlias.Name = alias.name + "@" + domainName;
+						mailAlias.Name = alias["name"].ToString() + "@" + domainName;
 
 					List<string> members = new List<string>();
-					foreach (string member in alias.targets)
+					foreach (string member in alias["targets"])
 					{
 						members.Add(member);
 					}
@@ -1292,8 +1293,8 @@ namespace SolidCP.Providers.Mail
 
 					if(members.ToArray().Length == 1)
 					{
-
-						mailAlias.ForwardTo = alias.targets[0];
+						Log.WriteInfo("GetMailAliases - Found {0}", alias["name"].ToString());
+						mailAlias.ForwardTo = alias["targets"][0].ToString();
 						aliasesList.Add(mailAlias);
 					}
 
@@ -1467,11 +1468,12 @@ namespace SolidCP.Providers.Mail
 				foreach (dynamic alias in result["gridInfo"])
 				{
 					MailGroup mailGroup = new MailGroup();
-					mailGroup.Name = alias.name + "@" + domainName;
+					mailGroup.Name = alias["name"] + "@" + domainName;
 
 					List<string> members = new List<string>();
-					foreach (string member in alias.targets)
-                    {
+					foreach (string member in alias["targets"])
+
+					{
 						members.Add(member);
                     }
 
@@ -1712,15 +1714,11 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				//Log.WriteInfo("GetList - ListName: {0}", listName);
-
-
 				foreach (dynamic member in result["items"])
 				{
 					string MemberlistAddress = member["listAddress"].ToString();
 					if ((MemberlistAddress.ToLower()) == (GetAccountName(listName).ToLower()))
 					{
-						//Log.WriteInfo("Found result: {0}", member);
 						list.Id = (int)Convert.ToInt64(member["id"]);
 						list.CreatedDate = Convert.ToDateTime(member["createdOn"]);
 						list.Description = member["description"].ToString();
@@ -1778,8 +1776,6 @@ namespace SolidCP.Providers.Mail
 					}
 				}
 
-				//Log.WriteInfo("SubList {0}, SendUnsubscribe: {1}", list, list.SendUnsubscribe);
-
 				return list;
 			}
 			catch (Exception ex)
@@ -1803,25 +1799,24 @@ namespace SolidCP.Providers.Mail
 				{
 					List<string> members = new List<string>();
 					MailList list = new MailList();
-					list.Name = member.listAddress + "@" + domainName;
-					//Log.WriteInfo("Found result: {0}", member);
-					list.Id = member.id;
-					list.CreatedDate = member.createdOn;
-					list.Description = member.description;
+					list.Name = member["listAddress"].ToString() + "@" + domainName;
+					list.Id = (int)Convert.ToInt64(member["id"]);
+					list.CreatedDate = Convert.ToDateTime(member["createdOn"]);
+					list.Description = member["description"].ToString();
 					//list.Enabled
-					list.ModeratorAddress = member.moderatorAddress;
+					list.ModeratorAddress = member["moderatorAddress"].ToString();
 					//list.Moderated
-					list.Password = member.password;
+					list.Password = member["password"].ToString();
 					list.RequirePassword = Convert.ToBoolean(member.requirePassword);
-					list.PostingMode = member.postingPermissions;
-					list.SubjectPrefix = member.subject;
-					list.EnableSubjectPrefix = Convert.ToBoolean(member.prependSubject);
+					list.PostingMode = member["postingPermissions"].ToString();
+					list.SubjectPrefix = member["subject"].ToString();
+					list.EnableSubjectPrefix = Convert.ToBoolean(member["prependSubject"]);
 					//list.MaxMessageSize
 					//list.MaxRecipientsPerMessage
 					//list.ReplyToMode
-					list.ListToAddress = member.listAddress;
-					list.ListFromAddress = member.listFromAddress;
-					list.ListReplyToAddress = member.listReplyToAddress;
+					list.ListToAddress = member["listAddress"].ToString();
+					list.ListFromAddress = member["listFromAddress"].ToString();
+					list.ListReplyToAddress = member["listReplyToAddress"].ToString();
 
 					// list members
 					if (member.listSubscriberCount > 0)
@@ -1843,7 +1838,7 @@ namespace SolidCP.Providers.Mail
 
 						foreach (dynamic item in listSubscriberresult["items"])
 						{
-							string itememail = item.emailAddress;
+							string itememail = item["emailAddress"].ToString();
 							members.Add(itememail);
 
 						}
@@ -1852,11 +1847,11 @@ namespace SolidCP.Providers.Mail
 					}
 
 					list.Members = members.ToArray();
-					list.DigestMode = Convert.ToBoolean(member.enableDigest);
-					list.SendSubscribe = Convert.ToBoolean(member.sendSubscribeEmail);
-					list.SendUnsubscribe = Convert.ToBoolean(member.sendUnsubscribeEmail);
+					list.DigestMode = Convert.ToBoolean(member["enableDigest"]);
+					list.SendSubscribe = Convert.ToBoolean(member["sendSubscribeEmail"]);
+					list.SendUnsubscribe = Convert.ToBoolean(member["sendUnsubscribeEmail"]);
 					// list.AllowUnsubscribe = Enable Unsubscribe from Subject
-					list.DisableListcommand = Convert.ToBoolean(member.disableListcommand);
+					list.DisableListcommand = Convert.ToBoolean(member["disableListcommand"]);
 					//list.DisableSubscribecommand = member.disableSubscribecommand;
 					mailLists.Add(list);
 				}
@@ -2229,7 +2224,6 @@ namespace SolidCP.Providers.Mail
 
 		protected string GetBoolean(string Boolean)
 		{
-			//Log.WriteInfo("GetBoolean: {0}", Boolean);
 			if (Boolean == "1" | Boolean == "true")
             {
 				return "true";
