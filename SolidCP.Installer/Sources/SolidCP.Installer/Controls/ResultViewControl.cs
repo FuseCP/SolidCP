@@ -38,10 +38,10 @@ namespace SolidCP.Installer.Controls
 {
 	internal class ResultViewControl : UserControl
 	{
-		private AppContext appContext;
+		private SCPAppContext appContext;
 		private bool isInitialized;
 
-		public AppContext AppContext
+		public SCPAppContext AppContext
 		{
 			get { return appContext; }
 			set { appContext = value; }
@@ -53,7 +53,7 @@ namespace SolidCP.Installer.Controls
 			set { isInitialized = value; }
 		}
 
-		public virtual void ShowControl(AppContext context)
+		public virtual void ShowControl(SCPAppContext context)
 		{
 			this.AppContext = context;
 		}

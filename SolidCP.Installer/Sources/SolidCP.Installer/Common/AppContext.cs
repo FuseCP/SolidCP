@@ -36,7 +36,7 @@ using System.Text;
 
 namespace SolidCP.Installer.Common
 {
-	internal class AppContext
+	internal class SCPAppContext
 	{
 		private ApplicationForm appForm;
 		private ScopeNode scopeNode;
