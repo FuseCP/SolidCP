@@ -99,8 +99,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SolidCP.Providers.Mail.hMai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Mail.SmarterMail7", "SolidCP.Providers.Mail.SmarterMail7\SolidCP.Providers.Mail.SmarterMail7.csproj", "{FB773A2C-1CD3-4D76-9C4F-B6B7EB9E479C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.VirtualizationForPC.HyperVForPC", "SolidCP.Providers.Virtualization.HyperVForPC\SolidCP.Providers.VirtualizationForPC.HyperVForPC.csproj", "{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Mail.SmarterMail9", "SolidCP.Providers.Mail.SmarterMail9\SolidCP.Providers.Mail.SmarterMail9.csproj", "{FB97E984-2463-44EB-B8BE-14AA41D0365E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Server.WPIService", "SolidCP.Server.WPIService\SolidCP.Server.WPIService.csproj", "{DD9E57D5-797F-4420-AF1A-23CEA2F310E0}"
@@ -667,16 +665,6 @@ Global
 		{FB773A2C-1CD3-4D76-9C4F-B6B7EB9E479C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FB773A2C-1CD3-4D76-9C4F-B6B7EB9E479C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FB773A2C-1CD3-4D76-9C4F-B6B7EB9E479C}.Release|x86.ActiveCfg = Release|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{64BEEB10-7F9F-4860-B2FF-84CDA02766B3}.Release|x86.ActiveCfg = Release|Any CPU
 		{FB97E984-2463-44EB-B8BE-14AA41D0365E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB97E984-2463-44EB-B8BE-14AA41D0365E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB97E984-2463-44EB-B8BE-14AA41D0365E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

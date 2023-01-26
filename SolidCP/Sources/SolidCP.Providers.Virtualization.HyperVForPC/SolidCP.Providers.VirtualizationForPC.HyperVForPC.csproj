@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SolidCP.Providers.VirtualizationForPC</RootNamespace>
     <AssemblyName>SolidCP.Providers.VirtualizationForPC.HyperVForPC</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -114,51 +114,6 @@
     <None Include="Service References\MonitoringWebService\MonitoringService9.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.Alert.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.Device.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.ManagementPackRule.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.ManagementPackUnitMonitor.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.MonitoredObject.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.MonitorHealthState.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.MonitorInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.MonitoringObject.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.Pack.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.PerformanceCounterCategoryInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.PerformanceData.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.PerformanceDataValue.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.TaskResult.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.Template.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\MonitoringWebService\SolidCP.Providers.VirtualizationForPC.MonitoringWebService.WindowsService.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\SVMMService\VirtualMachineManagementService.wsdl" />
     <None Include="Service References\SVMMService\VirtualMachineManagementService.xsd">
       <SubType>Designer</SubType>
@@ -180,78 +135,6 @@
     </None>
     <None Include="Service References\SVMMService\VirtualMachineManagementService6.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.GuestOSProfileInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.HardwareProfileInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.HostClusterInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.HostDiskInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.HostInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.HostVolumeInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.ISOInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.LibraryServerInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.MemorySettingInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.OperatingSystemInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.ProcessorTypeInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.ScriptInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.TaskInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.TemplateInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualCOMPortInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualDiskDriveInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualDVDDriveInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualHardDiskInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualMachineInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualNetworkAdapterInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualNetworkInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VirtualSCSIAdapterInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VMCheckpointInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\SVMMService\SolidCP.Providers.VirtualizationForPC.SVMMService.VMHostRatingInfo.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
