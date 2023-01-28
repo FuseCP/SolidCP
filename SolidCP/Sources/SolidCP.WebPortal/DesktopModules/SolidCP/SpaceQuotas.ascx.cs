@@ -96,6 +96,7 @@ namespace SolidCP.Portal
             { "quotamssql2016databases", "pnlMsSQL2016Databases" },
             { "quotamssql2017databases", "pnlMsSQL2017Databases" },
             { "quotamssql2019databases", "pnlMsSQL2019Databases" },
+            { "quotamssql2022databases", "pnlMsSQL2022Databases" },
             { "quotamysql5databases", "pnlMySQL5Databases" },
             { "quotamysql8databases", "pnlMySQL8Databases" },
             { "quotamariadbdatabases", "pnlMariaDBDatabases" }

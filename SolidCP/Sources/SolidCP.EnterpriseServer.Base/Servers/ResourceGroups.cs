@@ -47,6 +47,7 @@ namespace SolidCP.EnterpriseServer
         public const string MsSql2016 = "MsSQL2016";
         public const string MsSql2017 = "MsSQL2017";
         public const string MsSql2019 = "MsSQL2019";
+        public const string MsSql2022 = "MsSQL2022";
         public const string MySql5 = "MySQL5";
         public const string MySql8 = "MySQL8";
         public const string MariaDB = "MariaDB";

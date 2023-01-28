@@ -78,12 +78,12 @@
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
-		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2020 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(RootFolder)\SolidCP.Installer\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFiles" DependsOnTargets="GenerateBuildVersionFilesInstaller">
-		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2020 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
-		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2020 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="CS" OutputFile="$(TrunkFolder)\Sources\VersionInfo.cs" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
+		<AssemblyInfo CodeLanguage="VB" OutputFile="$(TrunkFolder)\Sources\VersionInfo.vb" AssemblyCompany="SolidCP" AssemblyCopyright="Copyright © 2023 SolidCP." AssemblyVersion="$(VersionLabel)" AssemblyFileVersion="$(FileVersion)" AssemblyInformationalVersion="$(Version)" />
 	</Target>
 
 	<Target Name="CompileSources" DependsOnTargets="GenerateBuildVersionFiles">

@@ -312,6 +312,12 @@
   <data name="PageTitle.SpaceMsSql2019" xml:space="preserve">
     <value>{user} - {space} - SQL Server 2019</value>
   </data>
+	<data name="PageName.SpaceMsSql2022" xml:space="preserve">
+    <value>SQL Server 2022</value>
+  </data>
+	<data name="PageTitle.SpaceMsSql2022" xml:space="preserve">
+    <value>{user} - {space} - SQL Server 2022</value>
+  </data>
   <data name="PageName.SpaceMsSql2017" xml:space="preserve">
     <value>SQL Server 2017</value>
   </data>

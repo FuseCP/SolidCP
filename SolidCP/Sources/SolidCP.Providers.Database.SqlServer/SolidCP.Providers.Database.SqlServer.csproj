@@ -74,6 +74,7 @@
     <Compile Include="MsSqlServer2016.cs" />
     <Compile Include="MsSqlServer2014.cs" />
     <Compile Include="MsSqlServer2019.cs" />
+    <Compile Include="MsSqlServer2022.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MsSqlServer.cs" />
   </ItemGroup>

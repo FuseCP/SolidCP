@@ -17,7 +17,7 @@ Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
 <Assembly: AssemblyInformationalVersion("1.4.5"),  _
  Assembly: AssemblyCompany("SolidCP"),  _
- Assembly: AssemblyCopyright("Copyright © 2020 SolidCP."),  _
+ Assembly: AssemblyCopyright("Copyright © 2023 SolidCP."),  _
  Assembly: AssemblyFileVersion("1.4.9"),  _
  Assembly: AssemblyVersion("1.4.9")> 
 

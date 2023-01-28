@@ -311,6 +311,7 @@ namespace SolidCP.Portal
             AddDatabaseVersion(cntx, ResourceGroups.MsSql2016, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MsSql2017, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MsSql2019, items, versions);
+            AddDatabaseVersion(cntx, ResourceGroups.MsSql2022, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MySql4, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MySql5, items, versions);
             AddDatabaseVersion(cntx, ResourceGroups.MySql8, items, versions);

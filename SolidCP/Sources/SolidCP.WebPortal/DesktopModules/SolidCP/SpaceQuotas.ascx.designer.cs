@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal {
-    
-    
-    public partial class SpaceQuotas {
-        
+namespace SolidCP.Portal
+{
+
+
+    public partial class SpaceQuotas
+    {
+
         /// <summary>
         /// tblQuotas control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTable tblQuotas;
-        
+
         /// <summary>
         /// pnlDiskspace control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlDiskspace;
-        
+
         /// <summary>
         /// quotaDiskspace control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaDiskspace;
-        
+
         /// <summary>
         /// lnkViewDiskspaceDetails control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkViewDiskspaceDetails;
-        
+
         /// <summary>
         /// pnlBandwidth control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlBandwidth;
-        
+
         /// <summary>
         /// quotaBandwidth control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaBandwidth;
-        
+
         /// <summary>
         /// lnkViewBandwidthDetails control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkViewBandwidthDetails;
-        
+
         /// <summary>
         /// pnlDomains control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlDomains;
-        
+
         /// <summary>
         /// lblDomains control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDomains;
-        
+
         /// <summary>
         /// quotaDomains control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaDomains;
-        
+
         /// <summary>
         /// pnlSubDomains control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlSubDomains;
-        
+
         /// <summary>
         /// lblSubDomains control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSubDomains;
-        
+
         /// <summary>
         /// quotaSubDomains control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaSubDomains;
-        
+
         /// <summary>
         /// pnlOrganizations control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlOrganizations;
-        
+
         /// <summary>
         /// lblOrganizations control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblOrganizations;
-        
+
         /// <summary>
         /// quotaOrganizations control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaOrganizations;
-        
+
         /// <summary>
         /// pnlUserAccounts control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlUserAccounts;
-        
+
         /// <summary>
         /// lblUserAccounts control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblUserAccounts;
-        
+
         /// <summary>
         /// quotaUserAccounts control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaUserAccounts;
-        
+
         /// <summary>
         /// pnlDeletedUsers control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlDeletedUsers;
-        
+
         /// <summary>
         /// lblDeletedUsers control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDeletedUsers;
-        
+
         /// <summary>
         /// quotaDeletedUsers control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaDeletedUsers;
-        
+
         /// <summary>
         /// pnlExchangeAccounts control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlExchangeAccounts;
-        
+
         /// <summary>
         /// lblExchangeAccounts control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblExchangeAccounts;
-        
+
         /// <summary>
         /// quotaExchangeAccounts control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaExchangeAccounts;
-        
+
         /// <summary>
         /// pnlExchangeStorage control.
         /// </summary>
@@ -245,7 +247,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlExchangeStorage;
-        
+
         /// <summary>
         /// lblExchangeStorage control.
         /// </summary>
@@ -254,7 +256,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblExchangeStorage;
-        
+
         /// <summary>
         /// quotaExchangeStorage control.
         /// </summary>
@@ -263,7 +265,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaExchangeStorage;
-        
+
         /// <summary>
         /// pnlMailAccounts control.
         /// </summary>
@@ -272,7 +274,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMailAccounts;
-        
+
         /// <summary>
         /// lblMailAccounts control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMailAccounts;
-        
+
         /// <summary>
         /// quotaMailAccounts control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaMailAccounts;
-        
+
         /// <summary>
         /// pnlOCSUsers control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlOCSUsers;
-        
+
         /// <summary>
         /// lblOCSUsers control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblOCSUsers;
-        
+
         /// <summary>
         /// quotaOCSUsers control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaOCSUsers;
-        
+
         /// <summary>
         /// pnlLyncUsers control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlLyncUsers;
-        
+
         /// <summary>
         /// lblLyncUsers control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblLyncUsers;
-        
+
         /// <summary>
         /// quotaLyncUsers control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaLyncUsers;
-        
+
         /// <summary>
         /// pnlLyncPhone control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlLyncPhone;
-        
+
         /// <summary>
         /// lblLyncPhone control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblLyncPhone;
-        
+
         /// <summary>
         /// quotaLyncPhone control.
         /// </summary>
@@ -371,7 +373,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaLyncPhone;
-        
+
         /// <summary>
         /// pnlSfBUsers control.
         /// </summary>
@@ -380,7 +382,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlSfBUsers;
-        
+
         /// <summary>
         /// lblSfBUsers control.
         /// </summary>
@@ -389,7 +391,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSfBUsers;
-        
+
         /// <summary>
         /// quotaSfBUsers control.
         /// </summary>
@@ -398,7 +400,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaSfBUsers;
-        
+
         /// <summary>
         /// pnlSfBPhone control.
         /// </summary>
@@ -407,7 +409,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlSfBPhone;
-        
+
         /// <summary>
         /// lblSfBPhone control.
         /// </summary>
@@ -416,7 +418,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSfBPhone;
-        
+
         /// <summary>
         /// quotaSfBPhone control.
         /// </summary>
@@ -425,7 +427,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaSfBPhone;
-        
+
         /// <summary>
         /// pnlBlackBerryUsers control.
         /// </summary>
@@ -434,7 +436,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlBlackBerryUsers;
-        
+
         /// <summary>
         /// lblBlackBerryUsers control.
         /// </summary>
@@ -443,7 +445,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblBlackBerryUsers;
-        
+
         /// <summary>
         /// quotaBlackBerryUsers control.
         /// </summary>
@@ -452,7 +454,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaBlackBerryUsers;
-        
+
         /// <summary>
         /// pnlSharepointSites control.
         /// </summary>
@@ -461,7 +463,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlSharepointSites;
-        
+
         /// <summary>
         /// lblSharepointSites control.
         /// </summary>
@@ -470,7 +472,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblSharepointSites;
-        
+
         /// <summary>
         /// quotaSharepointSites control.
         /// </summary>
@@ -479,7 +481,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaSharepointSites;
-        
+
         /// <summary>
         /// pnlEnterpriseSharepointSites control.
         /// </summary>
@@ -488,7 +490,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlEnterpriseSharepointSites;
-        
+
         /// <summary>
         /// lblEnterpriseSharepointSites control.
         /// </summary>
@@ -497,7 +499,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEnterpriseSharepointSites;
-        
+
         /// <summary>
         /// quotaEnterpriseSharepointSites control.
         /// </summary>
@@ -506,7 +508,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaEnterpriseSharepointSites;
-        
+
         /// <summary>
         /// pnlWebSites control.
         /// </summary>
@@ -515,7 +517,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlWebSites;
-        
+
         /// <summary>
         /// lblWebSites control.
         /// </summary>
@@ -524,7 +526,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblWebSites;
-        
+
         /// <summary>
         /// quotaWebSites control.
         /// </summary>
@@ -533,7 +535,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaWebSites;
-        
+
         /// <summary>
         /// pnlFtpAccounts control.
         /// </summary>
@@ -542,7 +544,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlFtpAccounts;
-        
+
         /// <summary>
         /// lblFtpAccounts control.
         /// </summary>
@@ -551,7 +553,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblFtpAccounts;
-        
+
         /// <summary>
         /// quotaFtpAccounts control.
         /// </summary>
@@ -560,7 +562,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaFtpAccounts;
-        
+
         /// <summary>
         /// pnlMsSQL2008Databases control.
         /// </summary>
@@ -569,7 +571,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2008Databases;
-        
+
         /// <summary>
         /// lblMsSQL2008Databases control.
         /// </summary>
@@ -578,7 +580,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsSQL2008Databases;
-        
+
         /// <summary>
         /// quotamssql2008databases control.
         /// </summary>
@@ -587,7 +589,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2008databases;
-        
+
         /// <summary>
         /// pnlMsSQL2012Databases control.
         /// </summary>
@@ -596,7 +598,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2012Databases;
-        
+
         /// <summary>
         /// lblMsSQL2012Databases control.
         /// </summary>
@@ -605,7 +607,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsSQL2012Databases;
-        
+
         /// <summary>
         /// quotamssql2012databases control.
         /// </summary>
@@ -614,7 +616,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2012databases;
-        
+
         /// <summary>
         /// pnlMsSQL2014Databases control.
         /// </summary>
@@ -623,7 +625,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2014Databases;
-        
+
         /// <summary>
         /// lblMsSQL2014Databases control.
         /// </summary>
@@ -632,7 +634,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsSQL2014Databases;
-        
+
         /// <summary>
         /// quotamssql2014databases control.
         /// </summary>
@@ -641,7 +643,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2014databases;
-        
+
         /// <summary>
         /// pnlMsSQL2016Databases control.
         /// </summary>
@@ -650,7 +652,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2016Databases;
-        
+
         /// <summary>
         /// lblMsSQL2016Databases control.
         /// </summary>
@@ -659,7 +661,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsSQL2016Databases;
-        
+
         /// <summary>
         /// quotamssql2016databases control.
         /// </summary>
@@ -668,7 +670,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2016databases;
-        
+
         /// <summary>
         /// pnlMsSQL2017Databases control.
         /// </summary>
@@ -677,7 +679,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2017Databases;
-        
+
         /// <summary>
         /// lblMsSQL2017Databases control.
         /// </summary>
@@ -686,7 +688,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsSQL2017Databases;
-        
+
         /// <summary>
         /// quotamssql2017databases control.
         /// </summary>
@@ -695,7 +697,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2017databases;
-        
+
         /// <summary>
         /// pnlMsSQL2019Databases control.
         /// </summary>
@@ -704,7 +706,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2019Databases;
-        
+
         /// <summary>
         /// lblMsSQL2019Databases control.
         /// </summary>
@@ -713,7 +715,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsSQL2019Databases;
-        
+
         /// <summary>
         /// quotamssql2019databases control.
         /// </summary>
@@ -722,7 +724,34 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamssql2019databases;
-        
+
+        /// <summary>
+        /// pnlMsSQL2022Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMsSQL2022Databases;
+
+        /// <summary>
+        /// lblMsSQL2022Databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMsSQL2022Databases;
+
+        /// <summary>
+        /// quotamssql2022databases control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Quota quotamssql2022databases;
+
         /// <summary>
         /// pnlMySQL5Databases control.
         /// </summary>
@@ -731,7 +760,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMySQL5Databases;
-        
+
         /// <summary>
         /// lblMySQL5Databases control.
         /// </summary>
@@ -740,7 +769,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMySQL5Databases;
-        
+
         /// <summary>
         /// quotamysql5databases control.
         /// </summary>
@@ -749,7 +778,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamysql5databases;
-        
+
         /// <summary>
         /// pnlMySQL8Databases control.
         /// </summary>
@@ -758,7 +787,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMySQL8Databases;
-        
+
         /// <summary>
         /// lblMySQL8Databases control.
         /// </summary>
@@ -767,7 +796,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMySQL8Databases;
-        
+
         /// <summary>
         /// quotamysql8databases control.
         /// </summary>
@@ -776,7 +805,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamysql8databases;
-        
+
         /// <summary>
         /// pnlMariaDBDatabases control.
         /// </summary>
@@ -785,7 +814,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlMariaDBDatabases;
-        
+
         /// <summary>
         /// lblMariaDBDatabases control.
         /// </summary>
@@ -794,7 +823,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMariaDBDatabases;
-        
+
         /// <summary>
         /// quotamariadbdatabases control.
         /// </summary>
@@ -803,7 +832,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotamariadbdatabases;
-        
+
         /// <summary>
         /// pnlHyperVForPC control.
         /// </summary>
@@ -812,7 +841,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlHyperVForPC;
-        
+
         /// <summary>
         /// lblHyperVForPC control.
         /// </summary>
@@ -821,7 +850,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblHyperVForPC;
-        
+
         /// <summary>
         /// quotaNumberOfVm control.
         /// </summary>
@@ -830,7 +859,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaNumberOfVm;
-        
+
         /// <summary>
         /// pnlFolders control.
         /// </summary>
@@ -839,7 +868,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlFolders;
-        
+
         /// <summary>
         /// lblFolders control.
         /// </summary>
@@ -848,7 +877,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblFolders;
-        
+
         /// <summary>
         /// quotaNumberOfFolders control.
         /// </summary>
@@ -857,7 +886,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaNumberOfFolders;
-        
+
         /// <summary>
         /// pnlEnterpriseStorage control.
         /// </summary>
@@ -866,7 +895,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlEnterpriseStorage;
-        
+
         /// <summary>
         /// lblEnterpriseStorage control.
         /// </summary>
@@ -875,7 +904,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblEnterpriseStorage;
-        
+
         /// <summary>
         /// quotaEnterpriseStorage control.
         /// </summary>
@@ -884,7 +913,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaEnterpriseStorage;
-        
+
         /// <summary>
         /// pnlRdsCollections control.
         /// </summary>
@@ -893,7 +922,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlRdsCollections;
-        
+
         /// <summary>
         /// lblRdsCollections control.
         /// </summary>
@@ -902,7 +931,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRdsCollections;
-        
+
         /// <summary>
         /// quotaRdsCollections control.
         /// </summary>
@@ -911,7 +940,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaRdsCollections;
-        
+
         /// <summary>
         /// pnlRdsServers control.
         /// </summary>
@@ -920,7 +949,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlRdsServers;
-        
+
         /// <summary>
         /// lblRdsServers control.
         /// </summary>
@@ -929,7 +958,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRdsServers;
-        
+
         /// <summary>
         /// quotaRdsServers control.
         /// </summary>
@@ -938,7 +967,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaRdsServers;
-        
+
         /// <summary>
         /// pnlRdsUsers control.
         /// </summary>
@@ -947,7 +976,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlRdsUsers;
-        
+
         /// <summary>
         /// lblRdsUsers control.
         /// </summary>
@@ -956,7 +985,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblRdsUsers;
-        
+
         /// <summary>
         /// quotaRdsUsers control.
         /// </summary>
@@ -965,7 +994,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotaRdsUsers;
-        
+
         /// <summary>
         /// pnlVPS2012Servers control.
         /// </summary>
@@ -974,7 +1003,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlVPS2012Servers;
-        
+
         /// <summary>
         /// lblVPS2012Servers control.
         /// </summary>
@@ -983,7 +1012,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblVPS2012Servers;
-        
+
         /// <summary>
         /// quotavps2012servers control.
         /// </summary>
@@ -992,7 +1021,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotavps2012servers;
-        
+
         /// <summary>
         /// pnlVPS2012CpuQuota control.
         /// </summary>
@@ -1001,7 +1030,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlVPS2012CpuQuota;
-        
+
         /// <summary>
         /// lblVPS2012CpuQuota control.
         /// </summary>
@@ -1010,7 +1039,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblVPS2012CpuQuota;
-        
+
         /// <summary>
         /// quotavps2012cpuquota control.
         /// </summary>
@@ -1019,7 +1048,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotavps2012cpuquota;
-        
+
         /// <summary>
         /// pnlVPS2012RamQuota control.
         /// </summary>
@@ -1028,7 +1057,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlVPS2012RamQuota;
-        
+
         /// <summary>
         /// lblVPS2012RamQuota control.
         /// </summary>
@@ -1037,7 +1066,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblVPS2012RamQuota;
-        
+
         /// <summary>
         /// quotavps2012ramquota control.
         /// </summary>
@@ -1046,7 +1075,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotavps2012ramquota;
-        
+
         /// <summary>
         /// pnlVPS2012HddQuota control.
         /// </summary>
@@ -1055,7 +1084,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow pnlVPS2012HddQuota;
-        
+
         /// <summary>
         /// lblVPS2012HddQuota control.
         /// </summary>
@@ -1064,7 +1093,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblVPS2012HddQuota;
-        
+
         /// <summary>
         /// quotavps2012hddquota control.
         /// </summary>
@@ -1073,7 +1102,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota quotavps2012hddquota;
-        
+
         /// <summary>
         /// btnViewQuotas control.
         /// </summary>
