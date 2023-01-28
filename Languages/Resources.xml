@@ -1732,6 +1732,16 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
+    <Key>PageName.SpaceMsSql2022</Key>
+    <DefaultValue>SQL Server 2022</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
+    <Key>PageTitle.SpaceMsSql2022</Key>
+    <DefaultValue>{user} - {space} - SQL Server 2022</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
     <Key>PageName.SpaceMsSql2017</Key>
     <DefaultValue>SQL Server 2017</DefaultValue>
   </Resource>
@@ -5242,6 +5252,36 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.Backup</Key>
+    <DefaultValue>Database Backups</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.Databases</Key>
+    <DefaultValue>Databases</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.MaxDatabaseSize</Key>
+    <DefaultValue>Max Database Size, MB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.Restore</Key>
+    <DefaultValue>Database Restores</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.Truncate</Key>
+    <DefaultValue>Database Truncate</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.Users</Key>
+    <DefaultValue>Users</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.MySQL5.Backup</Key>
     <DefaultValue>Database Backups</DefaultValue>
   </Resource>
@@ -5414,6 +5454,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ResourceGroup.MsSQL2019</Key>
     <DefaultValue>SQL Server 2019</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ResourceGroup.MsSQL2022</Key>
+    <DefaultValue>SQL Server 2022</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -5794,6 +5839,16 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ServiceItemType.MsSQL2019User</Key>
     <DefaultValue>MS SQL 2019 User</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ServiceItemType.MsSQL2022Database</Key>
+    <DefaultValue>MS SQL 2022 Database</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ServiceItemType.MsSQL2022User</Key>
+    <DefaultValue>MS SQL 2022 User</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -8329,6 +8384,11 @@
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>Quota.MsSQL2019.MaxLogSize</Key>
+    <DefaultValue>Max Log Size, MB</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.MsSQL2022.MaxLogSize</Key>
     <DefaultValue>Max Log Size, MB</DefaultValue>
   </Resource>
   <Resource>
@@ -11160,6 +11220,11 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>ReportResourceGroup.MsSQL2019</Key>
     <DefaultValue>SQL Server 2019</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ReportResourceGroup.MsSQL2022</Key>
+    <DefaultValue>SQL Server 2022</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
