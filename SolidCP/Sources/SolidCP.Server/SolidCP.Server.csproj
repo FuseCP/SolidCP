@@ -328,6 +328,7 @@
     <Content Include="bin\SolidCP.Server.dll.config" />
     <Content Include="bin\SolidCP.Server.WPIService.exe.config" />
     <Content Include="bin\LetsEncrypt\letsencrypt.exe.config" />
+    <Content Include="libman.json" />
     <None Include="packages.config" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
