@@ -16,6 +16,7 @@ v2.1	10th August 2020	 Fix for the Security settings needed for newer ASP update
 v2.1.1	10th August 2020	 Fix for v1.4.7 web.config version
 v2.2	18th August 2020	 Fix for the Database not backed up, better support for the changes in v2.1 to prevent duplicates and version added to the window title.
 v2.2.1	23rd May 2021		 Fix for v1.4.8 web.config version
+v2.2.2  29th January 2022	 Changes for v1.4.9 web.config changes
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
 Updated By Trevor Robinson.
@@ -24,7 +25,7 @@ The script needs to be run from the server that holds your Enterprise Server
 as the script will query the database to get the servers that form part of your
 SolidCP setup and upgrade each one in turn.
 
-Copyright (c) 2016, SolidCP
+Copyright (c) 2023, SolidCP
 SolidCP is distributed under the Creative Commons Share-alike license
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -55,7 +56,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 All Code provided as is and used at your own risk.
 ####################################################################################################>
 #Requires -RunAsAdministrator
-$scriptversion = "v2.2.1"
+$scriptversion = "v2.2.2"
 # Set the window size as Server 2016 comes up small
 #$host.UI.RawUI.BufferSize  = New-Object -TypeName System.Management.Automation.Host.Size -ArgumentList (120, 50)
 $host.UI.RawUI.WindowSize  = New-Object -TypeName System.Management.Automation.Host.Size -ArgumentList (120, 50)
@@ -630,8 +631,8 @@ function UpgradeSCPPortal() # Function to upgrade the SolidCP Portal Component
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/configSections/sectionGroup[@name='system.data.dataset.serialization']" "section" @( ("name","allowedTypes"), ("type","System.Data.AllowedTypesSectionHandler, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") )
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration" "system.data.dataset.serialization"
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization" "allowedTypes"
-				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.8.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
-				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.8.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.9.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.4.9.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
 				
 				# Add the edditional "<dependentAssembly>" tags in the Runtime section and remove any additional charichter returns from the end of the file
 				((Get-Content "$SCP_Portal_Dir\web.config" -Raw) -replace '        <bindingRedirect oldVersion="0\.0\.0\.0-9\.0\.0\.0" newVersion="9\.0\.0\.0" \/>[\r\n]+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" \/>', "        <bindingRedirect oldVersion=`"0.0.0.0-9.0.0.0`" newVersion=`"9.0.0.0`" />`r`n      </dependentAssembly>`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=`"WebGrease`" publicKeyToken=`"31bf3856ad364e35`" culture=`"neutral`" />" -replace '</configuration>[\r\n]+', "</configuration>") | Set-Content "$SCP_Portal_Dir\web.config"
