@@ -3,7 +3,7 @@
 		<Version>$(Version)</Version>
 		<FileVersion>$(BUILD_NUMBER)</FileVersion>
 		<VersionLabel>$(BUILD_NUMBER)</VersionLabel>
-		<ReleaseDate>2023-01-26</ReleaseDate>
+		<ReleaseDate>2023-01-31</ReleaseDate>
 		<BuildConfiguration></BuildConfiguration>
 		<RootFolder>..</RootFolder>
 		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>
@@ -69,7 +69,7 @@
 
 	<PropertyGroup Label="WebPlatformFeed">
 		<!-- URI where to locate the installer's distributive online -->
-		<InstallerRemoteUri>http://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
+		<InstallerRemoteUri>https://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
 	</PropertyGroup>
 
 	<Target Name="RestorePackages">
