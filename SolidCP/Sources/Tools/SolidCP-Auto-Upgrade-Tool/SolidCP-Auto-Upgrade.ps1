@@ -114,7 +114,7 @@ $SCP_Portal_Svr_IP = "" # IP Address of the Portal component if not running on t
 ####################################################################################################
 ####################################################################################################
 # General settings - do not modify them or anyting else below this line                            #
-$SCP_Installer_Site = "http://installer.solidcp.com" # SolidCP Installer Site
+$SCP_Installer_Site = "https://installer.solidcp.com" # SolidCP Installer Site
 Add-Type -assembly "system.io.compression.filesystem"
 Import-Module WebAdministration
 if ([bool](Get-ChildItem IIS:\Sites -ErrorAction SilentlyContinue | Where-Object {(($_.Name -match "SolidCP|WebsitePanel|DotNetPanel") -and ($_.Name -match "Portal|Enterprise Server| Server"))})) {
