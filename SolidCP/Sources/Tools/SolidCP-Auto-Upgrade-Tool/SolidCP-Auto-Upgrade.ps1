@@ -477,7 +477,7 @@ function UpgradeSCPentSvr() # Function to upgrade the SolidCP Enterprise Server 
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Update" "//configuration/appSettings/add[@key='WebsitePanel.EnterpriseServer.ServerRequestTimeout']/@key" "SolidCP.EnterpriseServer.ServerRequestTimeout"
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/appSettings" "add" @( ("key","SolidCP.AltConnectionString"), ("value","ConnectionString") )
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Add" "//configuration/appSettings" "add" @( ("key","SolidCP.AltCryptoKey"), ("value","CryptoKey") )
-				ModifyXML "$SCP_Server_Dir\web.config" "Update" "//configuration/system.web/compilation[@targetFramework='4.0']/@targetFramework" "4.8"
+				ModifyXML "$SCP_EntSvr_Dir\web.config" "Update" "//configuration/system.web/compilation/@targetFramework" "4.8"
 				ModifyXML "$SCP_EntSvr_Dir\web.config" "Update" "//configuration/microsoft.web.services3/security/securityTokenManager/add[@type='WebsitePanel.EnterpriseServer.ServiceUsernameTokenManager, WebsitePanel.EnterpriseServer']/@type" "SolidCP.EnterpriseServer.ServiceUsernameTokenManager, SolidCP.EnterpriseServer.Code"
 				#ModifyXML "$SCP_EntSvr_Dir\bin\SolidCP.EnterpriseServer.dll.config" "Update" "//configuration/connectionStrings/add[@name='EnterpriseServer']/@connectionString" "$SCP_EntSvr_ConStr"
 				#ModifyXML "$SCP_EntSvr_Dir\bin\SolidCP.EnterpriseServer.dll.config" "Update" "//configuration/appSettings/add[@key='SolidCP.CryptoKey']/@value" "$SCP_EntSvr_CryptoK"
@@ -759,7 +759,7 @@ function UpgradeSCPserver() # Function to upgrade the SolidCP Server Component
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration/appSettings" "add" @( ("key", "SCVMMServerName"), ("value", "") )
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration/appSettings" "add" @( ("key", "SCVMMServerPort"), ("value", "") )
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration/system.web" "compilation" @( ("debug", "true"), ("targetFramework", "4.8") )
-							ModifyXML "$SCP_Server_Dir\web.config" "Update" "//configuration/system.web/compilation[@targetFramework='4.0']/@targetFramework" "4.8"
+							ModifyXML "$SCP_Server_Dir\web.config" "Update" "//configuration/system.web/compilation/@targetFramework" "4.8"
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration/system.web" "pages" @( ("controlRenderingCompatibilityVersion", "3.5"), ("clientIDMode", "AutoID") )
 							ModifyXML "$SCP_Server_Dir\web.config" "Add" "//configuration" "runtime"
 							if ( !(CheckXMLnode "$SCP_Server_Dir\web.config" "//configuration/runtime" "assemblyBinding") ) {
