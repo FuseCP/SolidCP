@@ -23436,7 +23436,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Themes] WHERE [ThemeID] = '1')
 BEGIN
-INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (1, N'FuseCP v1', N'Default', N'Default', 1, 1)
+INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (1, N'SolidCP', N'Default', N'Default', 1, 1)
 INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Light', N'light-theme')
 INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Dark', N'dark-theme')
 INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Semi Dark', N'semi-dark')
@@ -23460,11 +23460,6 @@ INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [Proper
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Themes] WHERE [ThemeID] = '2')
-BEGIN
-INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (2, N'SolidCP', N'SolidCP', N'SolidCP', 1, 9)
-END
-GO
 
 -- SimpleDNS 9.x
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1903' AND DisplayName = 'SimpleDNS Plus 9.x')
