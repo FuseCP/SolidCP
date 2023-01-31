@@ -1,3 +1,6 @@
+
+
+
 Version 1.4.9
 - Smartermail100 (Latest API) - Work sponsored by Enterprise Guardian Inc.
 - MFA Implementation -bluechip
@@ -43,6 +46,10 @@ Version 1.4.9
 - [HyperV2012R2+] Allocate IPs & VLANs with not assigned server if no assigned to the server exist -bluechip
 - [Portal/HyperV2012R2+] Hidden Reboot/Reset/ShutDown/Etc buttons from clients for 15 minutes until OS deployment is complete. -berkut1
 - [Guacamole] Guac v1.4.0, guac logger, solidcp branding extension, new manual for production deploy -  spardoko 
+- Powershell SolidCP-Auto-Upgrade.ps1 changes for v1.4.9
+- Added SQL 2022 support
+- Updated most Reference packages
+- Increased requirements to .net v4.8
 
 
 
