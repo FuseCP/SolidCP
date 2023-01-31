@@ -26,7 +26,7 @@ namespace SolidCP.Installer.Core.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://installer.solidcp.com/Services/InstallerService-1.0.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://installer.solidcp.com/Services/InstallerService-1.0.asmx")]
         public string SolidCP_Installer_Core_InstallerService_InstallerService {
             get {
                 return ((string)(this["SolidCP_Installer_Core_InstallerService_InstallerService"]));

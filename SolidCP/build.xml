@@ -69,7 +69,7 @@
 
 	<PropertyGroup Label="WebPlatformFeed">
 		<!-- URI where to locate the installer's distributive online -->
-		<InstallerRemoteUri>https://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
+		<InstallerRemoteUri>http://installer.solidcp.com/files/$(Version)/SolidCP-$(Version)-webpi.msi</InstallerRemoteUri>
 	</PropertyGroup>
 
 	<Target Name="RestorePackages">

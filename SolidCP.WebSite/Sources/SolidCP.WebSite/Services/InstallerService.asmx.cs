@@ -42,7 +42,7 @@ namespace SolidCP.WebSite.Services
     /// <summary>
     /// Summary description for InstallerService
     /// </summary>
-    [WebService(Namespace = "https://installer.solidcp.com/services")]
+    [WebService(Namespace = "http://installer.solidcp.com/services")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
     // To allow this Web Service to be called from script, using ASP.NET AJAX, uncomment the following line. 

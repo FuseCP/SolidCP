@@ -67,7 +67,7 @@ namespace SolidCP.Installer.Core
         {
             Debug.Assert(!String.IsNullOrEmpty(remoteFile), "Remote file is empty");
 
-            if (remoteFile.StartsWith("https://installer.solidcp.com/"))
+            if (remoteFile.StartsWith("http://installer.solidcp.com/"))
             {
                 return new CodeplexLoader(remoteFile);
             }

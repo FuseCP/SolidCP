@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="https://installer.solidcp.com/services" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="https://installer.solidcp.com/services" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://installer.solidcp.com/services" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" targetNamespace="http://installer.solidcp.com/services" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
-    <s:schema elementFormDefault="qualified" targetNamespace="https://installer.solidcp.com/services">
+    <s:schema elementFormDefault="qualified" targetNamespace="http://installer.solidcp.com/services">
       <s:element name="GetAvailableComponents">
         <s:complexType />
       </s:element>
@@ -86,7 +86,7 @@
   <wsdl:binding name="InstallerServiceSoap" type="tns:InstallerServiceSoap">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetAvailableComponents">
-      <soap:operation soapAction="https://installer.solidcp.com/services/GetAvailableComponents" style="document" />
+      <soap:operation soapAction="http://installer.solidcp.com/services/GetAvailableComponents" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -95,7 +95,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetFileChunk">
-      <soap:operation soapAction="https://installer.solidcp.com/services/GetFileChunk" style="document" />
+      <soap:operation soapAction="http://installer.solidcp.com/services/GetFileChunk" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -104,7 +104,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetFileSize">
-      <soap:operation soapAction="https://installer.solidcp.com/services/GetFileSize" style="document" />
+      <soap:operation soapAction="http://installer.solidcp.com/services/GetFileSize" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -116,7 +116,7 @@
   <wsdl:binding name="InstallerServiceSoap12" type="tns:InstallerServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
     <wsdl:operation name="GetAvailableComponents">
-      <soap12:operation soapAction="https://installer.solidcp.com/services/GetAvailableComponents" style="document" />
+      <soap12:operation soapAction="http://installer.solidcp.com/services/GetAvailableComponents" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -125,7 +125,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetFileChunk">
-      <soap12:operation soapAction="https://installer.solidcp.com/services/GetFileChunk" style="document" />
+      <soap12:operation soapAction="http://installer.solidcp.com/services/GetFileChunk" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
@@ -134,7 +134,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="GetFileSize">
-      <soap12:operation soapAction="https://installer.solidcp.com/services/GetFileSize" style="document" />
+      <soap12:operation soapAction="http://installer.solidcp.com/services/GetFileSize" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

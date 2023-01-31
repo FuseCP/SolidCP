@@ -23436,7 +23436,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Themes] WHERE [ThemeID] = '1')
 BEGIN
-INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (1, N'SolidCP', N'Default', N'Default', 1, 1)
+INSERT [dbo].[Themes] ([ThemeID], [DisplayName], [LTRName], [RTLName], [Enabled], [DisplayOrder]) VALUES (1, N'SolidCP v1', N'Default', N'Default', 1, 1)
 INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Light', N'light-theme')
 INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Dark', N'dark-theme')
 INSERT [dbo].[ThemeSettings] ([ThemeID], [SettingsName], [PropertyName], [PropertyValue]) VALUES (1, N'Style', N'Semi Dark', N'semi-dark')

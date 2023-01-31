@@ -52,7 +52,7 @@ namespace SolidCP.Installer.Core
 			}
 			else
 			{
-				webService.Url = "https://installer.solidcp.com/Services/InstallerService-1.0.asmx";
+				webService.Url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
 			}
 
 			// check if we need to add a proxy to access Internet

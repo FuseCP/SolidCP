@@ -27,7 +27,7 @@ namespace SolidCP.Updater.Services {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Web.Services.WebServiceBindingAttribute(Name="InstallerServiceSoap", Namespace="https://installer.solidcp.com/services")]
+    [System.Web.Services.WebServiceBindingAttribute(Name="InstallerServiceSoap", Namespace="http://installer.solidcp.com/services")]
     public partial class InstallerService : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback GetAvailableComponentsOperationCompleted;
@@ -84,7 +84,7 @@ namespace SolidCP.Updater.Services {
         public event GetFileSizeCompletedEventHandler GetFileSizeCompleted;
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("https://installer.solidcp.com/services/GetAvailableComponents", RequestNamespace="https://installer.solidcp.com/services", ResponseNamespace="https://installer.solidcp.com/services", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://installer.solidcp.com/services/GetAvailableComponents", RequestNamespace="http://installer.solidcp.com/services", ResponseNamespace="http://installer.solidcp.com/services", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public System.Data.DataSet GetAvailableComponents() {
             object[] results = this.Invoke("GetAvailableComponents", new object[0]);
             return ((System.Data.DataSet)(results[0]));
@@ -111,7 +111,7 @@ namespace SolidCP.Updater.Services {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("https://installer.solidcp.com/services/GetFileChunk", RequestNamespace="https://installer.solidcp.com/services", ResponseNamespace="https://installer.solidcp.com/services", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://installer.solidcp.com/services/GetFileChunk", RequestNamespace="http://installer.solidcp.com/services", ResponseNamespace="http://installer.solidcp.com/services", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
         public byte[] GetFileChunk(string fileName, int offset, int size) {
             object[] results = this.Invoke("GetFileChunk", new object[] {
@@ -145,7 +145,7 @@ namespace SolidCP.Updater.Services {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("https://installer.solidcp.com/services/GetFileSize", RequestNamespace="https://installer.solidcp.com/services", ResponseNamespace="https://installer.solidcp.com/services", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://installer.solidcp.com/services/GetFileSize", RequestNamespace="http://installer.solidcp.com/services", ResponseNamespace="http://installer.solidcp.com/services", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public long GetFileSize(string fileName) {
             object[] results = this.Invoke("GetFileSize", new object[] {
                         fileName});
