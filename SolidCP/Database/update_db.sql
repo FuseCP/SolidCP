@@ -16983,7 +16983,8 @@ SET @sql = @sql + '
   I3.Fullname
  FROM @ItemsService AS I3
  INNER JOIN ServiceItems AS SI3 ON I3.ItemID = SI3.ItemID
- INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON I3.ItemID = EAEA.AccountID
+ INNER JOIN ExchangeAccounts AS EA ON I3.ItemID = EA.ItemID
+ INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON EA.AccountID = EAEA.AccountID
  WHERE I3.ItemTypeID = 29'
 IF @FilterValue <> ''
  SET @sql = @sql + ' AND (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
