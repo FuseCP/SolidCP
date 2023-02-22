@@ -26,6 +26,8 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <Use64BitIISExpress />
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -342,7 +344,6 @@
     </Compile>
     <Compile Include="AutoDiscovery.asmx.cs">
       <DependentUpon>AutoDiscovery.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="BlackBerry.asmx.cs">
       <DependentUpon>BlackBerry.asmx</DependentUpon>

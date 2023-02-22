@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net2</TargetFramework>
+    <EnforceExtendedAnalyzerRules Condition="'$(TargetFramework)' != 'net40'">true</EnforceExtendedAnalyzerRules>
+  </PropertyGroup>
+
+</Project>
