@@ -42,7 +42,7 @@ using Microsoft.Web.Services3;
 using SolidCP.Providers;
 using SolidCP.Providers.Mail;
 using SolidCP.Server.Utils;
-using Microsoft.Web.Services3.Messaging;
+//using Microsoft.Web.Services3.Messaging;
 
 namespace SolidCP.Server
 {

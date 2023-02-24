@@ -79,17 +79,11 @@
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.PlatformInstaller.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Remoting" />
@@ -99,13 +93,10 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AutoDiscovery.asmx" />
@@ -347,52 +338,41 @@
     </Compile>
     <Compile Include="BlackBerry.asmx.cs">
       <DependentUpon>BlackBerry.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Code\AutoDiscoveryHelper.cs" />
     <Compile Include="Code\ServerConfiguration.cs" />
-    <Compile Include="Code\ServerUsernameTokenManager.cs" />
-    <Compile Include="Code\UsernameAssertion.cs" />
+    <None Include="Code\ServerUsernameTokenManager.cs" />
+    <None Include="Code\UsernameAssertion.cs" />
     <Compile Include="EnterpriseStorage.asmx.cs">
       <DependentUpon>EnterpriseStorage.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="HostedSharePointServerEnt.asmx.cs">
       <DependentUpon>HostedSharePointServerEnt.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SfBServer.asmx.cs">
       <DependentUpon>SfBServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="RemoteDesktopServices.asmx.cs">
       <DependentUpon>RemoteDesktopServices.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="HeliconZoo.asmx.cs">
       <DependentUpon>HeliconZoo.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="LyncServer.asmx.cs">
       <DependentUpon>LyncServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Code\WPIHelper.cs" />
     <Compile Include="OCSEdgeServer.asmx.cs">
       <DependentUpon>OCSEdgeServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OCSServer.asmx.cs">
       <DependentUpon>OCSServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CRM.asmx.cs">
       <DependentUpon>CRM.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="DatabaseServer.asmx.cs">
       <DependentUpon>DatabaseServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -403,82 +383,72 @@
     </Compile>
     <Compile Include="DNSServer.asmx.cs">
       <DependentUpon>DNSServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ExchangeServer.asmx.cs">
       <DependentUpon>ExchangeServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="FTPServer.asmx.cs">
       <DependentUpon>FTPServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="HostedSharePointServer.asmx.cs">
       <DependentUpon>HostedSharePointServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Organizations.asmx.cs">
       <DependentUpon>Organizations.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MailServer.asmx.cs">
       <DependentUpon>MailServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OperatingSystem.asmx.cs">
       <DependentUpon>OperatingSystem.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceProvider.asmx.cs">
       <DependentUpon>ServiceProvider.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SharePointServer.asmx.cs">
       <DependentUpon>SharePointServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SpamExperts.asmx.cs">
       <DependentUpon>SpamExperts.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="StatisticsServer.asmx.cs">
       <DependentUpon>StatisticsServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="StorageSpaceServices.asmx.cs">
       <DependentUpon>StorageSpaceServices.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="VirtualizationServerProxmox.asmx.cs">
       <DependentUpon>VirtualizationServerProxmox.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="VirtualizationServer2012.asmx.cs">
       <DependentUpon>VirtualizationServer2012.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="VirtualizationServer.asmx.cs">
       <DependentUpon>VirtualizationServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="VirtualizationServerForPrivateCloud.asmx.cs">
       <DependentUpon>VirtualizationServerForPrivateCloud.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="WebServer.asmx.cs">
       <DependentUpon>WebServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="WindowsServer.asmx.cs">
       <DependentUpon>WindowsServer.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Core.Build\SolidCP.Core.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false">
+      <Project>{dce2926e-fba0-42b8-b91f-614c8d303951}</Project>
+      <Name>SolidCP.Core.Build</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Core.WebServices\SolidCP.Core.WebServices.csproj">
+      <Project>{5ed4f787-3e21-4db1-9ffd-9ece246a641b}</Project>
+      <Name>SolidCP.Core.WebServices</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684C932A-6C75-46AC-A327-F3689D89EB42}</Project>
       <Name>SolidCP.Providers.Base</Name>
@@ -495,7 +465,9 @@
   <ItemGroup>
     <None Include="Properties\PublishProfiles\SolidCP Server.pubxml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="WebServices\SolidCP.Core.Build\SolidCP.Core.Build.GenerateWebServices\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

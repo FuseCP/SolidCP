@@ -147,7 +147,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public bool SetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting, Providers.Web.WebDavFolderRule[] rules)
+        public bool SetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting, WebDavFolderRule[] rules)
         {
             try
             {
@@ -164,7 +164,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public Providers.Web.WebDavFolderRule[] GetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting)
+        public WebDavFolderRule[] GetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting)
         {
             try
             {
