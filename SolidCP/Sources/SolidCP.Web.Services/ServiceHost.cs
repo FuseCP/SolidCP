@@ -21,7 +21,7 @@ namespace SolidCP.Web.Services
 			AddEndpoints(serviceType, baseAdresses);
 		}
 
-		public ServiceHost(object singletonInstance, params Uri[] baseAdresses) : base(object singletonInstance, params Uri[] baseAdresses)
+		public ServiceHost(object singletonInstance, params Uri[] baseAdresses) : base(singletonInstance, baseAdresses)
 		{
 			AddEndpoints(singletonInstance.GetType(), baseAdresses);
 		}
@@ -34,7 +34,7 @@ namespace SolidCP.Web.Services
 
 			if (contract == null) throw new NotSupportedException();
 
-			foreach (var adr in baseAdresses.Select(uri => uri.AbsoluteUri) {
+			foreach (var adr in baseAdresses.Select(uri => uri.AbsoluteUri)) {
 				if (adr.StartsWith("http://"))
 				{
 					AddServiceEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None), $"{adr}/basic");

@@ -1,14 +1,38 @@
 ﻿#if NETFRAMEWORK
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SolidCP.Web.Services
 {
-    class SvcVirtualPathProvider
-    {
-    }
+
+	public class SvcFile : VirtualFile
+	{
+		public Type Service { get; set; }
+
+		public SvcFile(Type service, string name) : base(name, DictionaryVirtualPathProvider.Current)
+		{
+			Service = service;
+		}
+		public override Stream Open()
+		{
+			var text = $"<% @ServiceHost Service = \"{Service.FullName}\" Factory = \"SolidCP.Web.Services.ServiceHostFactory, SolidCP.Web.Services\" %>";
+			return new MemoryStream(Encoding.UTF8.GetBytes(text));
+		}
+	}
+	public class SvcVirtualPathProvider
+	{
+		public static void SetupSvcServices(IEnumerable<Type> services)
+		{
+			foreach (var service in services)
+			{
+				var file = new SvcFile(service, $"{service.Name}.svc");
+				DictionaryVirtualPathProvider.Current.Add(file);
+			}
+		}
+	}
 }
 #endif

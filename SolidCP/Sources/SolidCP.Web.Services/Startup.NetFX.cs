@@ -11,10 +11,10 @@ using System.Web;
 using System.Web.Services;
 using Microsoft.Web.Infrastructure;
 
-[assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.Startup), "Start")]
+[assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.StartupFX), "Start")]
 namespace SolidCP.Web.Services
 {
-	public class Startup
+	public class StartupFX
 	{
 		public void Start()
 		{
@@ -29,15 +29,11 @@ namespace SolidCP.Web.Services
 			var attributeType = Assembly.Load("SolidCP.Web.Services").GetType("System.Web.Services.WebServiceAttribute");
 			var webServices = assemblys
 				.SelectMany(a => a.DefinedTypes
-					.Where(t => t.GetCustomAttribute(attributeType) != null)
-					.Select(ws => new
-					{
-						Service = ws,
-						Contract = ws.GetInterfaces().FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-					})
-					.Where(ws => ws.Contract != null));
+					.Where(t => t.GetCustomAttribute(attributeType) != null &&
+						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null))));
 
-					
+			SvcVirtualPathProvider.SetupSvcServices(webServices);
+			DictionaryVirtualPathProvider.Current.Register();
 		}
 	}
 }
