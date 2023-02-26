@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-#if NET6_0
+#if NET
 using CoreWCF;
 using CoreWCF.Configuration;
 using Microsoft.AspNetCore;
@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 #endif
-using SolidCP.Web.Services;
 
 namespace SolidCP.Web.Services
 {
@@ -23,7 +22,7 @@ namespace SolidCP.Web.Services
 		public static void Init(string[] args, Assembly server)
 		{
 			Server = server;
-#if NET6_0
+#if NET
 			var app = WebHost.CreateDefaultBuilder(args)
 				.UseStartup<CoreWebServicesApp>()
 				.Build();
@@ -31,7 +30,7 @@ namespace SolidCP.Web.Services
 #endif
 		}
 
-#if NET6_0
+#if NET
 		public void ConfigureServices(IServiceCollection services)
 		{
 			//Enable CoreWCF Services, with metadata (WSDL) support
@@ -60,7 +59,7 @@ namespace SolidCP.Web.Services
 					builder.AddService(ws.Service, serviceOptions => { })
 						// Add BasicHttpBinding
 						.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, new Uri($"/{ws.Service.Name}/http"), new Uri($"/{ws.Service.Name}/http"));
-				}		
+				}
 
 				// Configure WSDL to be available
 				var serviceMetadataBehavior = app.ApplicationServices.GetRequiredService<CoreWCF.Description.ServiceMetadataBehavior>();
@@ -70,4 +69,3 @@ namespace SolidCP.Web.Services
 #endif
 	}
 }
-

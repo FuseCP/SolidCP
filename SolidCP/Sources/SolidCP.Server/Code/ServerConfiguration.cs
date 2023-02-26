@@ -67,7 +67,7 @@ namespace SolidCP.Server
 
         private static void LoadConfiguration()
         {
-            ConfigurationManager.GetSection("SolidCP.server");
+            System.Configuration.ConfigurationManager.GetSection("SolidCP.server");
         }
 
         public object Create(object parent, object configContext, System.Xml.XmlNode section)

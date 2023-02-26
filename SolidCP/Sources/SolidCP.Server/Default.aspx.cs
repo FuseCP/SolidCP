@@ -1,3 +1,4 @@
+#if !NET
 // Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
@@ -35,12 +36,7 @@ using System.Reflection;
 using System.Data;
 using System.Configuration;
 using System.Collections;
-using System.Web;
-using System.Web.Security;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
 
 namespace SolidCP.Server
 {
@@ -65,3 +61,4 @@ namespace SolidCP.Server
         }
     }
 }
+#endif

@@ -15,6 +15,8 @@ using Grpc.Net.Client;
 namespace SolidCP.Web.Client
 {
 
+	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+
 	static class StringExtensions
 	{
 		public static string Strip(this string url, string api) => url.EndsWith(api) ? url.Substring(0, url.Length - api.Length) : url;
@@ -28,7 +30,6 @@ namespace SolidCP.Web.Client
 		where U : T, new()
 	{
 
-		public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
@@ -39,20 +40,21 @@ namespace SolidCP.Web.Client
 				if (value != protocol)
 				{
 					url = url
-						.Strip("/basic")
-						.Strip("/net")
-						.Strip("/ws")
+						.Strip(".svc/basic")
+						.Strip(".svc/net")
+						.Strip(".svc/ws")
 						.Strip("/gprc")
 						.Strip("/gprc/web")
-						.Strip("/ssl");
-					if (value == Protocols.BasicHttp) url = url.SetScheme("http").Append("/basic");
-					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").Append("/basic");
-					else if (value == Protocols.NetHttp) url = url.SetScheme("http").Append("/net");
-					else if (value == Protocols.NetHttps) url = url.SetScheme("https").Append("/net");
-					else if (value == Protocols.WSHttp) url = url.SetScheme("http").Append("/ws");
-					else if (value == Protocols.WSHttps) url = url.SetScheme("https").Append("/ws");
-					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp");
-					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").Append("/ssl");
+						.Strip(".svc/ssl")
+						.Strip(".svc");
+					if (value == Protocols.BasicHttp) url = url.SetScheme("http").Append(".svc/basic");
+					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").Append(".svc/basic");
+					else if (value == Protocols.NetHttp) url = url.SetScheme("http").Append(".svc/net");
+					else if (value == Protocols.NetHttps) url = url.SetScheme("https").Append(".svc/net");
+					else if (value == Protocols.WSHttp) url = url.SetScheme("http").Append(".svc/ws");
+					else if (value == Protocols.WSHttps) url = url.SetScheme("https").Append(".svc/ws");
+					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").Append(".svc");
+					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").Append(".svc/ssl");
 					else if (value == Protocols.gRPC) url = url.SetScheme("http").Append("/gprc");
 					else if (value == Protocols.gRPCSsl) url = url.SetScheme("https").Append("/gprc");
 					else if (value == Protocols.gRPCWeb) url = url.SetScheme("http").Append("/gprc/web");

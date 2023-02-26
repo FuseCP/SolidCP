@@ -6,7 +6,7 @@
 //     the code is regenerated. 
 // </auto-generated>
 //------------------------------------------------------------------------------
-
+#if !NET
 namespace SolidCP.Server {
     
     
@@ -67,3 +67,4 @@ namespace SolidCP.Server {
         protected global::System.Web.UI.WebControls.Literal litAspNetMode;
     }
 }
+#endif

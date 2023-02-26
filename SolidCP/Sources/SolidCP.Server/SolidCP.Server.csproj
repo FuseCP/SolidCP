@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net48</TargetFrameworks>
+    <TargetFrameworks>net48</TargetFrameworks>
     <Nullable>disable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
@@ -26,21 +27,95 @@
     <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Compile Include="Default.aspx.cs" />
+    <Compile Include="Default.aspx.designer.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Remove="WebServices\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Core.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <Compile Remove="Code\ServerUsernameTokenManager.cs" />
+    <Compile Remove="Code\UsernameAssertion.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="AutoDiscovery.asmx.cs" />
+    <Compile Include="BlackBerry.asmx.cs" />
+    <Compile Include="Code\AutoDiscoveryHelper.cs" />
+    <Compile Include="Code\ServerConfiguration.cs" />
+    <Compile Include="CRM.asmx.cs" />
+    <Compile Include="DatabaseServer.asmx.cs" />
+    <Compile Include="DNSServer.asmx.cs" />
+    <Compile Include="EnterpriseStorage.asmx.cs" />
+    <Compile Include="ExchangeServer.asmx.cs" />
+    <Compile Include="FTPServer.asmx.cs" />
+    <Compile Include="Global.asax.cs" />
+    <Compile Include="HeliconZoo.asmx.cs" />
+    <Compile Include="HostedSharePointServer.asmx.cs" />
+    <Compile Include="HostedSharePointServerEnt.asmx.cs" />
+    <Compile Include="LyncServer.asmx.cs" />
+    <Compile Include="MailServer.asmx.cs" />
+    <Compile Include="OCSEdgeServer.asmx.cs" />
+    <Compile Include="OCSServer.asmx.cs" />
+    <Compile Include="OperatingSystem.asmx.cs" />
+    <Compile Include="Organizations.asmx.cs" />
+    <Compile Include="RemoteDesktopServices.asmx.cs" />
+    <Compile Include="ServiceProvider.asmx.cs" />
+    <Compile Include="SfBServer.asmx.cs" />
+    <Compile Include="SharePointServer.asmx.cs" />
+    <Compile Include="SpamExperts.asmx.cs" />
+    <Compile Include="StatisticsServer.asmx.cs" />
+    <Compile Include="StorageSpaceServices.asmx.cs" />
+    <Compile Include="VirtualizationServer.asmx.cs" />
+    <Compile Include="VirtualizationServer2012.asmx.cs" />
+    <Compile Include="VirtualizationServerForPrivateCloud.asmx.cs" />
+    <Compile Include="VirtualizationServerProxmox.asmx.cs" />
+    <Compile Include="WebServer.asmx.cs" />
+    <Compile Include="WindowsServer.asmx.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Code\ServerUsernameTokenManager.cs" />
+    <None Include="Code\UsernameAssertion.cs" />
+    <Compile Include="Code\WPIHelper.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
     <ProjectReference Include="..\SolidCP.Server.WPIServiceContract\SolidCP.Server.WPIServiceContract.csproj" />
   </ItemGroup>
 
-
   <ItemGroup>
-    <Folder Include="WebServices\SolidCP.Core.Build\SolidCP.Core.Build.GenerateWebServices\" />
+    <PackageReference Include="Microsoft.SharePoint" />
+    <PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.PlatformInstaller, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.PlatformInstaller.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Deployment, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.0.0" />
   </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+      <Reference Include="System.Management" />
+      <Reference Include="System.Web" />
+      <Reference Include="System.Runtime.Remoting" />
+    </ItemGroup>
 </Project>

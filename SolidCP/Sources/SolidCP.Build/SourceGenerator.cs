@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using RazorEngine;
 
-namespace SolidCP.Core.Build
+namespace SolidCP.Build
 {
 	public static class INamedTypeSymbolExtensions
 	{
@@ -120,16 +120,18 @@ namespace SolidCP.Core.Build
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(ParseName("CoreWCF")))
+							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
+							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
 						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
 
 					clientTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
-						.AddUsings(UsingDirective(ParseName("CoreWCF"))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET6_0"), true, true, true)))
-							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))))
-						.AddUsings(UsingDirective(ParseName("System.ServiceModel"))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET48"), true, true, true)))
-							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))));
+						//.AddUsings(UsingDirective(ParseName("CoreWCF"))
+						//	.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
+						//	.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))))
+						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
+							//.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET48"), true, true, true)))
+							//.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))); ;
 
 				}
 				else
@@ -149,16 +151,15 @@ namespace SolidCP.Core.Build
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
 						.AddUsings(UsingDirective(ParseName("CoreWCF")))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET6_0"), true, true, true)))
+							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
 							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
-						.AddUsings(UsingDirective(ParseName("System.ServiceModel"))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET48"), true, true, true)))
-							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))));
+						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
+							//.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET48"), true, true, true)))
+							//.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))));
 
 					clientTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
-						.AddUsings(UsingDirective(ParseName("CoreWCF")))
 						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
 
 				}

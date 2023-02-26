@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net48</TargetFrameworks>
+    <TargetFrameworks>net48</TargetFrameworks>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!--<DefineConstants>$(DefineConstants);NET6_0</DefineConstants>-->
@@ -17,12 +17,13 @@
 
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServcieModel.NetTcp" />
     <Reference Include="System.ServiceModel.Channels" />
     <Reference Include="System.ServiceModel.Web" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Core\SolidCP.Core.Start.csproj" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.Web" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.9" />
   </ItemGroup>
 
   <ItemGroup>
