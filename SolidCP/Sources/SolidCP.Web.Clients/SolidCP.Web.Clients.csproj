@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net6.0;net48</TargetFrameworks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+     <PackageReference Include="Grpc.Net.Client" Version="2.51.0" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.51.0" />
+    <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.0" />
+</ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Channels" />
+    <Reference Include="System.Net" />
+  </ItemGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+</Project>

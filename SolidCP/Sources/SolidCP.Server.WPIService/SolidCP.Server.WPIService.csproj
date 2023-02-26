@@ -39,12 +39,15 @@
   <ItemGroup>
     <Reference Include="Microsoft.Web.Delegation, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Deployment.4.0.5\lib\net45\Microsoft.Web.Delegation.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Deployment, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Deployment.4.0.5\lib\net45\Microsoft.Web.Deployment.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Deployment.Tracing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Deployment.4.0.5\lib\net45\Microsoft.Web.Deployment.Tracing.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.PlatformInstaller">
       <SpecificVersion>False</SpecificVersion>

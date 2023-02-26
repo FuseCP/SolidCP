@@ -55,6 +55,7 @@ bin
 *.vs10x
 *.user
 
+/SolidCP/Sources/packages
 /SolidCP/msbuild.log
 /SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
 /SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi

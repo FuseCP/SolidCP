@@ -466,12 +466,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Core.WebServices\SolidCP.Core.WebServices.csproj">
-      <Project>{5ed4f787-3e21-4db1-9ffd-9ece246a641b}</Project>
-      <Name>SolidCP.Core.WebServices</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
