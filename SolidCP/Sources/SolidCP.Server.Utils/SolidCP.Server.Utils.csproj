@@ -86,6 +86,7 @@
     <Compile Include="LogParser\LogState.cs" />
     <Compile Include="LogParser\MonthlyStatistics.cs" />
     <Compile Include="LogParser\StatsLine.cs" />
+    <Compile Include="Net.cs" />
     <Compile Include="OS.cs" />
     <Compile Include="PInvoke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

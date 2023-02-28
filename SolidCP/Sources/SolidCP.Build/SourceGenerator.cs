@@ -9,8 +9,8 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using RazorEngine;
 
 namespace SolidCP.Build
 {
@@ -57,6 +57,14 @@ namespace SolidCP.Build
 
 		public void Execute(GeneratorExecutionContext context)
 		{
+
+#if DEBUG
+			if (!Debugger.IsAttached)
+			{
+				//Debugger.Launch();
+			}
+#endif
+
 			// get WebServices
 			var classesWithAttributes = context.Compilation.SyntaxTrees
 				.Select(tree => new
@@ -119,9 +127,6 @@ namespace SolidCP.Build
 
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
-						.AddUsings(UsingDirective(ParseName("CoreWCF")))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
-							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
 						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
 
 					clientTree = CompilationUnit()
@@ -150,12 +155,7 @@ namespace SolidCP.Build
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
-						.AddUsings(UsingDirective(ParseName("CoreWCF")))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
-							.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
 						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
-							//.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET48"), true, true, true)))
-							//.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))));
 
 					clientTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
@@ -164,57 +164,26 @@ namespace SolidCP.Build
 
 				}
 
-				// wcf contract interface
+				// wcf service contract interface
 				var intf = ParseMemberDeclaration(
-					Razor.Parse(@"
-						public interface @Model.Name {
-							
-							@for (var method in Model.Methods) {
-								@method
-							}
-						}", new {
-							Name = $"I{ws.Class.Identifier.Text}",
-							Methods = methods
-								// select method signature
-								.Select(m => (MemberDeclarationSyntax)MethodDeclaration(m.ReturnType, m.Identifier)
-									.WithAttributeLists(m.AttributeLists
-										.Add(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract"))))))
-									.WithParameterList(m.ParameterList)
-									.WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
-							}));
+					new ServiceInterface()
+					{
+						Class = ws.Class,
+						WebMethods = methods
+					}
+					.Render())
+					.NormalizeWhitespace();
 
-
+				//wcf service class
 				var service = ParseMemberDeclaration(
-					Razor.Parse(@"
-						// wcf service
-						public class @Model.Name: @Model.BaseType, @Model.ContractInterface {
-
-							@for (var method in Model.Methods) {
-								 @:public @method.ReturnType @method.Name @method.ParameterList {
-									@m.ReturnToken base.@method.Name (@method.Arguments);
-								}
-							}
-						}
-					",
-						new
-						{
-							Name = $"{ws.Class.Identifier.Text}Service",
-							BaseType = "",
-							ContractInterface = "",
-							Methods = methods
-								.Select(m => new
-								{
-									Name = m.Identifier.Text,
-									ReturnType = m.ReturnType,
-									ParameterList = m.ParameterList,
-									Arguments = ArgumentList(
-														SeparatedList<ArgumentSyntax>(m.ParameterList.Parameters
-															.Select(par => Argument(IdentifierName(par.Identifier))))),
-									ReturnToken = ((m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))  ?
-										"return" : "")
-								})
-						}));
-
+					new ServiceClass()
+					{
+						Class = ws.Class,
+						WebMethods = methods
+					}
+					.Render())
+					.NormalizeWhitespace();
+				
 				serverNS = serverNS
 					.WithMembers(List(new MemberDeclarationSyntax[]
 						{
@@ -222,19 +191,13 @@ namespace SolidCP.Build
 						}));
 
 
-				var client = ParseMemberDeclaration(
-					Razor.Parse(@"
-
-						// web service client
-						public class Model.Name {
-							
-						}
-"));
+				var client = ParseMemberDeclaration("");
 
 				clientNS = clientNS
 					.WithMembers(List(new MemberDeclarationSyntax[] {
-						intf, client
+						intf //, client
 					}));
+
 
 				serverTree = serverTree
 					.AddMembers(serverNS)
@@ -258,12 +221,6 @@ namespace SolidCP.Build
 		}
 
 		public void Initialize(GeneratorInitializationContext context) {
-#if DEBUG
-			if (!Debugger.IsAttached)
-			{
-				//Debugger.Launch();
-			}
-#endif
 		}
 	}
 }

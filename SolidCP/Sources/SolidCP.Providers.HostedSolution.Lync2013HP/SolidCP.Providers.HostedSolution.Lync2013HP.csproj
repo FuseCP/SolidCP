@@ -53,8 +53,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="SolidCP.Providers.HostedSolution">
-      <HintPath>..\SolidCP.Server\bin\SolidCP.Providers.HostedSolution.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\SolidCP.Server\bin\Providers\SolidCP.Providers.HostedSolution.dll</HintPath>
+      <Name>SolidCP.Providers.HostedSolution</Name>
     </Reference>
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684C932A-6C75-46AC-A327-F3689D89EB42}</Project>

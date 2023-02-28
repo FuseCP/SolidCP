@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 namespace SolidCP.Web.Services
 {
@@ -13,7 +14,7 @@ namespace SolidCP.Web.Services
 	{
 		public Type Service { get; set; }
 
-		public SvcFile(Type service, string name) : base(name, DictionaryVirtualPathProvider.Current)
+		public SvcFile(Type service, string name) : base(Paths.Absolute($"~/{name}"), DictionaryVirtualPathProvider.Current)
 		{
 			Service = service;
 		}
@@ -29,9 +30,12 @@ namespace SolidCP.Web.Services
 		{
 			foreach (var service in services)
 			{
-				var file = new SvcFile(service, $"{service.Name}.svc");
+				var name = service.Name;
+				if (name.EndsWith("Service")) name = name.Substring(0, name.Length - "Service".Length); 
+				var file = new SvcFile(service, $"{name}.svc");
 				DictionaryVirtualPathProvider.Current.Add(file);
 			}
+			DynamicModuleUtility.RegisterModule(typeof(SvcHttpModule));
 		}
 	}
 }

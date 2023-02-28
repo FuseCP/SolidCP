@@ -4,6 +4,8 @@
     <TargetFrameworks>net48</TargetFrameworks>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
     <!--<DefineConstants>$(DefineConstants);NET6_0</DefineConstants>-->
   </PropertyGroup>
 
@@ -22,8 +24,7 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.Web" />
-    <PackageReference Include="Microsoft.Web.Infrastructure" />
-    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.9" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>

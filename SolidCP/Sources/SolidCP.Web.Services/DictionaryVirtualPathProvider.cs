@@ -257,10 +257,12 @@ namespace SolidCP.Web.Services
 			// TODO configuration switch to use RegisterWithReflection. 
 			HostingEnvironment.RegisterVirtualPathProvider(this);
 		}
+
+		static DictionaryVirtualPathProvider current = new DictionaryVirtualPathProvider();
 		/// <summary>
 		/// Gets the Current DictionaryVirtualPathPrrovider.
 		/// </summary>
-		public static DictionaryVirtualPathProvider Current { get; private set; }
+		public static DictionaryVirtualPathProvider Current { get => current; }
 		/// <summary>
 		/// Disposes the VirtualPathProvider.
 		/// </summary>
@@ -268,10 +270,10 @@ namespace SolidCP.Web.Services
 		/// <summary>
 		/// IAutostart Init. Registers the VirtualPathProvider.
 		/// </summary>
-		public void Startup()
+		public static void Startup()
 		{
-			Current = this;
-			Register();
+			var p = Current;
+			p.Register();
 		}
 	}
 	/// <summary>
@@ -604,7 +606,7 @@ namespace SolidCP.Web.Services
 					w.Flush();
 					stream.CopyTo(buf);
 					buf.Seek(0, SeekOrigin.Begin);
-					//stream = buf;
+					//stream = buf;REgister
 					return buf;
 				}*/
 

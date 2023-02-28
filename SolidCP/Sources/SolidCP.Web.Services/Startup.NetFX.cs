@@ -10,30 +10,68 @@ using System.ServiceModel.Activation;
 using System.Web;
 using System.Web.Services;
 using Microsoft.Web.Infrastructure;
+using System.ComponentModel;
 
 [assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.StartupFX), "Start")]
 namespace SolidCP.Web.Services
 {
-	public class StartupFX
+	public static class StartupFX
 	{
-		public void Start()
+
+		public static Assembly[] ServiceAssemblies { get; set; }
+
+		public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
 		{
-			var assemblys = new Assembly[]
+			if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+			try
 			{
-				Assembly.Load("SolidCP.EnterpriseServer"),
-				Assembly.Load("SolidCP.Server")
+				return assembly.GetTypes();
+			}
+			catch (ReflectionTypeLoadException e)
+			{
+				return e.Types.Where(t => t != null);
+			}
+		}
+
+		static object startLock = new object();
+		static bool wasCalled = false;
+		public static void Start()
+		{
+
+			lock (startLock)
+			{
+				if (wasCalled) return;
+				wasCalled = true;
+			}
+
+			Assembly eserver = null, server = null;
+
+			try
+			{
+				eserver = Assembly.Load("SolidCP.EnterpriseServer");
+			} catch { }
+			try
+			{
+				server = Assembly.Load("SolidCP.Server");
+			} catch { }
+			ServiceAssemblies = new Assembly[]
+			{
+				eserver, server
 			}
 			.Where(a => a != null)
 			.ToArray();
 
 			var attributeType = Assembly.Load("SolidCP.Web.Services").GetType("System.Web.Services.WebServiceAttribute");
-			var webServices = assemblys
-				.SelectMany(a => a.DefinedTypes
+
+			var types = ServiceAssemblies
+				.SelectMany(a => a.GetLoadableTypes())
+				.ToArray();
+			var webServices = types
 					.Where(t => t.GetCustomAttribute(attributeType) != null &&
-						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null))));
+						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)));
 
 			SvcVirtualPathProvider.SetupSvcServices(webServices);
-			DictionaryVirtualPathProvider.Current.Register();
+			DictionaryVirtualPathProvider.Startup();
 		}
 	}
 }

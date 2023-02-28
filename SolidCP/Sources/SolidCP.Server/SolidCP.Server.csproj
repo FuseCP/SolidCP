@@ -6,6 +6,10 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
+    <RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9900</RunArguments>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
@@ -34,11 +38,16 @@
 
   <ItemGroup>
     <Compile Remove="WebServices\**\*.*" />
+    <None Include="WebServices\**\*.*" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Code\ServerUsernameTokenManager.cs" />
     <Compile Remove="Code\UsernameAssertion.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -84,6 +93,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Images\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
@@ -92,10 +105,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SharePoint" />
     <PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
     <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <Reference Include="Microsoft.SharePoint">
+      <HintPath>..\..\Lib\References\Microsoft\Microsoft.SharePoint.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
@@ -110,12 +125,18 @@
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Deployment.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.0.0" />
+    <Reference Include="System.ServiceModel" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-      <Reference Include="System.Management" />
-      <Reference Include="System.Web" />
-      <Reference Include="System.Runtime.Remoting" />
-    </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Runtime.Remoting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\RazorBlade.dll" />
+    <!--<Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\System.Web.Razor.dll" />-->
+  </ItemGroup>
 </Project>
