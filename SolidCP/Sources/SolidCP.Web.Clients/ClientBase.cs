@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.ServiceModel;
-using System.Net;
 using System.ServiceModel.Channels;
+using System.Net;
 using System.Security.Policy;
 using System.Threading.Tasks;
+using System.Linq;
 #if NETCOREAPP
 using ProtoBuf.Grpc.Client;
 using Grpc.Net.Client;
@@ -17,21 +18,8 @@ namespace SolidCP.Web.Client
 
 	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
-	static class StringExtensions
+	public class ClientBase
 	{
-		public static string Strip(this string url, string api) => url.Replace($"/{api}/", "/");
-		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "[a-zA-Z.]://", $"{scheme}://");
-		public static string SetApi(this string url, string api) => Regex.Replace(url, "/(?:net/|ws/|basic/|ssl/|grpc/|grpc/web/)(?=[a-zA-Z0-9_]+\\?|$)", $"/{api}/");
-
-		public static bool HasApi(this string url, string api) => url.Contains($"/{api}/");
-	}
-	// web service client
-	public class ClientBase<T, U>
-		where T: class
-		where U : T, new()
-	{
-
-
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
 		{
@@ -67,7 +55,7 @@ namespace SolidCP.Web.Client
 		public ICredentials Credentials { get; set; }
 		public object SoapHeader { get; set; }
 
-		string url;
+		protected string url;
 		public string Url
 		{
 			get { return url; }
@@ -109,16 +97,34 @@ namespace SolidCP.Web.Client
 			}
 		}
 
-		bool IsWCF => Protocol < Protocols.gRPC;
-		bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
-		bool IsAssembly => Protocol == Protocols.Assembly;
-		bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
+		public bool IsWCF => Protocol < Protocols.gRPC;
+		public bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
+		public bool IsAssembly => Protocol == Protocols.Assembly;
+		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
+
+
+	}
+	static class StringExtensions
+	{
+		public static string Strip(this string url, string api) => url.Replace($"/{api}/", "/");
+		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "[a-zA-Z.]://", $"{scheme}://");
+		public static string SetApi(this string url, string api) => Regex.Replace(url, "/(?:net/|ws/|basic/|ssl/|grpc/|grpc/web/)(?=[a-zA-Z0-9_]+\\?|$)", $"/{api}/");
+
+		public static bool HasApi(this string url, string api) => url.Contains($"/{api}/");
+	}
+	// web service client
+	public class ClientBase<T, U> : ClientBase
+		where T : class
+		where U : T, new()
+	{
+
 
 #if NETCOREAPP
 		static Dictionary<string, GrpcChannel> GrpcPool = new Dictionary<string, GrpcChannel>();
 #endif
 		static Dictionary<string, ChannelFactory<T>> FactoryPool = new Dictionary<string, ChannelFactory<T>>();
+		ChannelFactory<T> factory;
 
 		protected T Client
 		{
@@ -144,11 +150,26 @@ namespace SolidCP.Web.Client
 #endif
 					}
 					var endpoint = new EndpointAddress(url);
-					ChannelFactory<T> factory;
 
-					if (!FactoryPool.TryGetValue(url, out factory))
+
+					lock (FactoryPool)
 					{
-						FactoryPool[url] = factory = new ChannelFactory<T>(binding, endpoint);
+						if (!FactoryPool.TryGetValue(url, out factory))
+						{
+							factory = new ChannelFactory<T>(binding, endpoint);
+						}
+						else
+						{
+							FactoryPool[url] = null;
+						}
+					}
+					if (SoapHeader != null)
+					{
+						foreach (var b in factory.Endpoint.EndpointBehaviors.ToArray())
+						{
+							if (b is SoapHeaderClientBehavior) factory.Endpoint.EndpointBehaviors.Remove(b);
+						}
+						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
 					}
 					client = factory.CreateChannel();
 				}
@@ -156,7 +177,8 @@ namespace SolidCP.Web.Client
 				else if (IsGRPC)
 				{
 					GrpcChannel channel;
-					if (!GrpcPool.TryGetValue(url, out channel)) {
+					if (!GrpcPool.TryGetValue(url, out channel))
+					{
 						GrpcPool[url] = channel = GrpcChannel.ForAddress(url);
 					}
 					client = channel.CreateGrpcService<T>();
@@ -174,9 +196,13 @@ namespace SolidCP.Web.Client
 
 		protected void Close(T client)
 		{
+			lock (FactoryPool)
+			{
+				FactoryPool[url] = factory;
+			}
 			if (client is IClientChannel) ((IClientChannel)client).Close();
 		}
-		
+
 
 		public ClientBase() { }
 		public ClientBase(string url) : this()

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
+using System.ServiceModel.Channels;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -26,6 +28,12 @@ namespace SolidCP.Web.Services
 		{
 			AddEndpoints(singletonInstance.GetType(), baseAdresses);
 		}
+
+		void AddEndpoint(Type contract, Binding binding, string address)
+		{
+			var endpoint = AddServiceEndpoint(contract, binding, address);
+			endpoint.EndpointBehaviors.Add(new SoapHeaderMessageInspector());
+		}
 		void AddEndpoints(Type serviceType, Uri[] baseAdresses)
 		{
 			var contract = serviceType
@@ -43,36 +51,37 @@ namespace SolidCP.Web.Services
 				{
 				
 					if (Regex.IsMatch(adr, "/basic/[a-zA-Z0-9_]+(?:\\?|$)"))
-						AddServiceEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None), adr);
+						AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None), adr);
 					else if (Regex.IsMatch(adr, "/ws/[a-zA-Z0-9_]+(?:\\?|$)"))
-						AddServiceEndpoint(contract, new WSHttpBinding(SecurityMode.None), adr);
+						AddEndpoint(contract, new WSHttpBinding(SecurityMode.None), adr);
 					else
-						AddServiceEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None), adr);
+						AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None), adr);
 				}
 				else if (adr.StartsWith("https://"))
 				{
 					if (Regex.IsMatch(adr, "/basic/[a-zA-Z0-9_]+(?:\\?|$)"))
-						AddServiceEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential), adr);
+						AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential), adr);
 					else if (Regex.IsMatch(adr, "/ws/[a-zA-Z0-9_]+(?:\\?|$)"))
-						AddServiceEndpoint(contract, new WSHttpBinding(SecurityMode.TransportWithMessageCredential), adr);
+						AddEndpoint(contract, new WSHttpBinding(SecurityMode.TransportWithMessageCredential), adr);
 					else
-						AddServiceEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential), adr);
+						AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential), adr);
 				}
 				else if (adr.StartsWith("net.tcp://"))
 				{
 					if (Regex.IsMatch(adr, "/ssl/[a-zA-Z0-9_]+(?:\\?|$)"))
-						AddServiceEndpoint(contract, new NetTcpBinding(SecurityMode.TransportWithMessageCredential), adr);						
-					else AddServiceEndpoint(contract, new NetTcpBinding(SecurityMode.None), adr);
+						AddEndpoint(contract, new NetTcpBinding(SecurityMode.TransportWithMessageCredential), adr);						
+					else AddEndpoint(contract, new NetTcpBinding(SecurityMode.None), adr);
 				}
 
 #if NETFRAMEWORK
 				else if (adr.StartsWith("net.pipe://"))
 				{
 					if (Regex.IsMatch(adr, "/ssl/[a-zA-Z0-9_]+(?:\\?|$)"))
-						AddServiceEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport), adr);
-					else AddServiceEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.None), adr);
+						AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport), adr);
+					else AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.None), adr);
 				}
 #endif
+				
 				Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true });
 			}
 		}

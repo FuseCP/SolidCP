@@ -32,22 +32,27 @@
 
 using System;
 using System.Collections.Specialized;
-using System.Web.Services.Protocols;
+//using System.Web.Services.Protocols;
 using System.Xml.Serialization;
+using System.ServiceModel;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Providers
 {
-	/// <summary>
-	/// Summary description for ServiceProviderSettings.
-	/// </summary>
-    public class ServiceProviderSettingsSoapHeader : SoapHeader
+    /// <summary>
+    /// Summary description for ServiceProviderSettings.
+    /// </summary>
+    [DataContract]
+    public class ServiceProviderSettingsSoapHeader
 	{
+        [DataMember]
         public string[] Settings;
 
         /// <summary>
         /// This property is just a flag telling us that this SOAP header should be encrypted.
         /// </summary>
         [XmlAttribute("SecureHeader", Namespace = "http://smbsaas/solidcp/server/")]
+        [DataMember]
         public bool SecureHeader;
 	}
 }

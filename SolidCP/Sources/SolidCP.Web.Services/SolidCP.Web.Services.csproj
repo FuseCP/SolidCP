@@ -28,6 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.Net" />
   </ItemGroup>
