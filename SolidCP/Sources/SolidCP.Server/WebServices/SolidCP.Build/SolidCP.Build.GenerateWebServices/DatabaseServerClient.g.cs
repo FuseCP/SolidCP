@@ -1,16 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Server.Utils;
-using SolidCP.Providers;
-using SolidCP.Providers.Database;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -25,17 +13,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/CheckConnectivity", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/CheckConnectivityResponse")]
         System.Threading.Tasks.Task<bool> CheckConnectivityAsync(string databaseName, string username, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQuery", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQueryResponse")]
-        DataSet ExecuteSqlQuery(string databaseName, string commandText);
+        System.Data.DataSet ExecuteSqlQuery(string databaseName, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQuery", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQueryResponse")]
-        System.Threading.Tasks.Task<DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText);
+        System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQuery", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQueryResponse")]
         void ExecuteSqlNonQuery(string databaseName, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQuery", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQueryResponse")]
         System.Threading.Tasks.Task ExecuteSqlNonQueryAsync(string databaseName, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQuerySafe", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQuerySafeResponse")]
-        DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText);
+        System.Data.DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQuerySafe", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlQuerySafeResponse")]
-        System.Threading.Tasks.Task<DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText);
+        System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQuerySafe", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQuerySafeResponse")]
         void ExecuteSqlNonQuerySafe(string databaseName, string username, string password, string commandText);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQuerySafe", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/ExecuteSqlNonQuerySafeResponse")]
@@ -49,17 +37,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/GetDatabases", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/GetDatabasesResponse")]
         System.Threading.Tasks.Task<string[]> GetDatabasesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/GetDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/GetDatabaseResponse")]
-        SqlDatabase GetDatabase(string databaseName);
+        SolidCP.Providers.Database.SqlDatabase GetDatabase(string databaseName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/GetDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/GetDatabaseResponse")]
-        System.Threading.Tasks.Task<SqlDatabase> GetDatabaseAsync(string databaseName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlDatabase> GetDatabaseAsync(string databaseName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/CreateDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/CreateDatabaseResponse")]
-        void CreateDatabase(SqlDatabase database);
+        void CreateDatabase(SolidCP.Providers.Database.SqlDatabase database);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/CreateDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/CreateDatabaseResponse")]
-        System.Threading.Tasks.Task CreateDatabaseAsync(SqlDatabase database);
+        System.Threading.Tasks.Task CreateDatabaseAsync(SolidCP.Providers.Database.SqlDatabase database);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateDatabaseResponse")]
-        void UpdateDatabase(SqlDatabase database);
+        void UpdateDatabase(SolidCP.Providers.Database.SqlDatabase database);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateDatabaseResponse")]
-        System.Threading.Tasks.Task UpdateDatabaseAsync(SqlDatabase database);
+        System.Threading.Tasks.Task UpdateDatabaseAsync(SolidCP.Providers.Database.SqlDatabase database);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteDatabaseResponse")]
         void DeleteDatabase(string databaseName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteDatabase", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteDatabaseResponse")]
@@ -93,17 +81,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/GetUsers", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/GetUsersResponse")]
         System.Threading.Tasks.Task<string[]> GetUsersAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/GetUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/GetUserResponse")]
-        SqlUser GetUser(string username, string[] databases);
+        SolidCP.Providers.Database.SqlUser GetUser(string username, string[] databases);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/GetUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/GetUserResponse")]
-        System.Threading.Tasks.Task<SqlUser> GetUserAsync(string username, string[] databases);
+        System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlUser> GetUserAsync(string username, string[] databases);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/CreateUserResponse")]
-        void CreateUser(SqlUser user, string password);
+        void CreateUser(SolidCP.Providers.Database.SqlUser user, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/CreateUserResponse")]
-        System.Threading.Tasks.Task CreateUserAsync(SqlUser user, string password);
+        System.Threading.Tasks.Task CreateUserAsync(SolidCP.Providers.Database.SqlUser user, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateUserResponse")]
-        void UpdateUser(SqlUser user, string[] databases);
+        void UpdateUser(SolidCP.Providers.Database.SqlUser user, string[] databases);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/UpdateUserResponse")]
-        System.Threading.Tasks.Task UpdateUserAsync(SqlUser user, string[] databases);
+        System.Threading.Tasks.Task UpdateUserAsync(SolidCP.Providers.Database.SqlUser user, string[] databases);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteUserResponse")]
         void DeleteUser(string username, string[] databases);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteUser", ReplyAction = "http://smbsaas/solidcp/server/IDatabaseServer/DeleteUserResponse")]
@@ -128,14 +116,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.DatabaseServer", "CheckConnectivity", databaseName, username, password);
         }
 
-        public DataSet ExecuteSqlQuery(string databaseName, string commandText)
+        public System.Data.DataSet ExecuteSqlQuery(string databaseName, string commandText)
         {
-            return (DataSet)Invoke("SolidCP.Server.DatabaseServer", "ExecuteSqlQuery", databaseName, commandText);
+            return (System.Data.DataSet)Invoke("SolidCP.Server.DatabaseServer", "ExecuteSqlQuery", databaseName, commandText);
         }
 
-        public async System.Threading.Tasks.Task<DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText)
+        public async System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText)
         {
-            return await InvokeAsync<DataSet>("SolidCP.Server.DatabaseServer", "ExecuteSqlQuery", databaseName, commandText);
+            return await InvokeAsync<System.Data.DataSet>("SolidCP.Server.DatabaseServer", "ExecuteSqlQuery", databaseName, commandText);
         }
 
         public void ExecuteSqlNonQuery(string databaseName, string commandText)
@@ -148,14 +136,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.DatabaseServer", "ExecuteSqlNonQuery", databaseName, commandText);
         }
 
-        public DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
+        public System.Data.DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
         {
-            return (DataSet)Invoke("SolidCP.Server.DatabaseServer", "ExecuteSqlQuerySafe", databaseName, username, password, commandText);
+            return (System.Data.DataSet)Invoke("SolidCP.Server.DatabaseServer", "ExecuteSqlQuerySafe", databaseName, username, password, commandText);
         }
 
-        public async System.Threading.Tasks.Task<DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText)
+        public async System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText)
         {
-            return await InvokeAsync<DataSet>("SolidCP.Server.DatabaseServer", "ExecuteSqlQuerySafe", databaseName, username, password, commandText);
+            return await InvokeAsync<System.Data.DataSet>("SolidCP.Server.DatabaseServer", "ExecuteSqlQuerySafe", databaseName, username, password, commandText);
         }
 
         public void ExecuteSqlNonQuerySafe(string databaseName, string username, string password, string commandText)
@@ -188,32 +176,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.DatabaseServer", "GetDatabases");
         }
 
-        public SqlDatabase GetDatabase(string databaseName)
+        public SolidCP.Providers.Database.SqlDatabase GetDatabase(string databaseName)
         {
-            return (SqlDatabase)Invoke("SolidCP.Server.DatabaseServer", "GetDatabase", databaseName);
+            return (SolidCP.Providers.Database.SqlDatabase)Invoke("SolidCP.Server.DatabaseServer", "GetDatabase", databaseName);
         }
 
-        public async System.Threading.Tasks.Task<SqlDatabase> GetDatabaseAsync(string databaseName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlDatabase> GetDatabaseAsync(string databaseName)
         {
-            return await InvokeAsync<SqlDatabase>("SolidCP.Server.DatabaseServer", "GetDatabase", databaseName);
+            return await InvokeAsync<SolidCP.Providers.Database.SqlDatabase>("SolidCP.Server.DatabaseServer", "GetDatabase", databaseName);
         }
 
-        public void CreateDatabase(SqlDatabase database)
+        public void CreateDatabase(SolidCP.Providers.Database.SqlDatabase database)
         {
             Invoke("SolidCP.Server.DatabaseServer", "CreateDatabase", database);
         }
 
-        public async System.Threading.Tasks.Task CreateDatabaseAsync(SqlDatabase database)
+        public async System.Threading.Tasks.Task CreateDatabaseAsync(SolidCP.Providers.Database.SqlDatabase database)
         {
             await InvokeAsync("SolidCP.Server.DatabaseServer", "CreateDatabase", database);
         }
 
-        public void UpdateDatabase(SqlDatabase database)
+        public void UpdateDatabase(SolidCP.Providers.Database.SqlDatabase database)
         {
             Invoke("SolidCP.Server.DatabaseServer", "UpdateDatabase", database);
         }
 
-        public async System.Threading.Tasks.Task UpdateDatabaseAsync(SqlDatabase database)
+        public async System.Threading.Tasks.Task UpdateDatabaseAsync(SolidCP.Providers.Database.SqlDatabase database)
         {
             await InvokeAsync("SolidCP.Server.DatabaseServer", "UpdateDatabase", database);
         }
@@ -298,32 +286,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.DatabaseServer", "GetUsers");
         }
 
-        public SqlUser GetUser(string username, string[] databases)
+        public SolidCP.Providers.Database.SqlUser GetUser(string username, string[] databases)
         {
-            return (SqlUser)Invoke("SolidCP.Server.DatabaseServer", "GetUser", username, databases);
+            return (SolidCP.Providers.Database.SqlUser)Invoke("SolidCP.Server.DatabaseServer", "GetUser", username, databases);
         }
 
-        public async System.Threading.Tasks.Task<SqlUser> GetUserAsync(string username, string[] databases)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlUser> GetUserAsync(string username, string[] databases)
         {
-            return await InvokeAsync<SqlUser>("SolidCP.Server.DatabaseServer", "GetUser", username, databases);
+            return await InvokeAsync<SolidCP.Providers.Database.SqlUser>("SolidCP.Server.DatabaseServer", "GetUser", username, databases);
         }
 
-        public void CreateUser(SqlUser user, string password)
+        public void CreateUser(SolidCP.Providers.Database.SqlUser user, string password)
         {
             Invoke("SolidCP.Server.DatabaseServer", "CreateUser", user, password);
         }
 
-        public async System.Threading.Tasks.Task CreateUserAsync(SqlUser user, string password)
+        public async System.Threading.Tasks.Task CreateUserAsync(SolidCP.Providers.Database.SqlUser user, string password)
         {
             await InvokeAsync("SolidCP.Server.DatabaseServer", "CreateUser", user, password);
         }
 
-        public void UpdateUser(SqlUser user, string[] databases)
+        public void UpdateUser(SolidCP.Providers.Database.SqlUser user, string[] databases)
         {
             Invoke("SolidCP.Server.DatabaseServer", "UpdateUser", user, databases);
         }
 
-        public async System.Threading.Tasks.Task UpdateUserAsync(SqlUser user, string[] databases)
+        public async System.Threading.Tasks.Task UpdateUserAsync(SolidCP.Providers.Database.SqlUser user, string[] databases)
         {
             await InvokeAsync("SolidCP.Server.DatabaseServer", "UpdateUser", user, databases);
         }
@@ -363,12 +351,12 @@ namespace SolidCP.Server.Client
             return await base.Client.CheckConnectivityAsync(databaseName, username, password);
         }
 
-        public DataSet ExecuteSqlQuery(string databaseName, string commandText)
+        public System.Data.DataSet ExecuteSqlQuery(string databaseName, string commandText)
         {
             return base.Client.ExecuteSqlQuery(databaseName, commandText);
         }
 
-        public async System.Threading.Tasks.Task<DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText)
+        public async System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText)
         {
             return await base.Client.ExecuteSqlQueryAsync(databaseName, commandText);
         }
@@ -383,12 +371,12 @@ namespace SolidCP.Server.Client
             await base.Client.ExecuteSqlNonQueryAsync(databaseName, commandText);
         }
 
-        public DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
+        public System.Data.DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
         {
             return base.Client.ExecuteSqlQuerySafe(databaseName, username, password, commandText);
         }
 
-        public async System.Threading.Tasks.Task<DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText)
+        public async System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText)
         {
             return await base.Client.ExecuteSqlQuerySafeAsync(databaseName, username, password, commandText);
         }
@@ -423,32 +411,32 @@ namespace SolidCP.Server.Client
             return await base.Client.GetDatabasesAsync();
         }
 
-        public SqlDatabase GetDatabase(string databaseName)
+        public SolidCP.Providers.Database.SqlDatabase GetDatabase(string databaseName)
         {
             return base.Client.GetDatabase(databaseName);
         }
 
-        public async System.Threading.Tasks.Task<SqlDatabase> GetDatabaseAsync(string databaseName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlDatabase> GetDatabaseAsync(string databaseName)
         {
             return await base.Client.GetDatabaseAsync(databaseName);
         }
 
-        public void CreateDatabase(SqlDatabase database)
+        public void CreateDatabase(SolidCP.Providers.Database.SqlDatabase database)
         {
             base.Client.CreateDatabase(database);
         }
 
-        public async System.Threading.Tasks.Task CreateDatabaseAsync(SqlDatabase database)
+        public async System.Threading.Tasks.Task CreateDatabaseAsync(SolidCP.Providers.Database.SqlDatabase database)
         {
             await base.Client.CreateDatabaseAsync(database);
         }
 
-        public void UpdateDatabase(SqlDatabase database)
+        public void UpdateDatabase(SolidCP.Providers.Database.SqlDatabase database)
         {
             base.Client.UpdateDatabase(database);
         }
 
-        public async System.Threading.Tasks.Task UpdateDatabaseAsync(SqlDatabase database)
+        public async System.Threading.Tasks.Task UpdateDatabaseAsync(SolidCP.Providers.Database.SqlDatabase database)
         {
             await base.Client.UpdateDatabaseAsync(database);
         }
@@ -533,32 +521,32 @@ namespace SolidCP.Server.Client
             return await base.Client.GetUsersAsync();
         }
 
-        public SqlUser GetUser(string username, string[] databases)
+        public SolidCP.Providers.Database.SqlUser GetUser(string username, string[] databases)
         {
             return base.Client.GetUser(username, databases);
         }
 
-        public async System.Threading.Tasks.Task<SqlUser> GetUserAsync(string username, string[] databases)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlUser> GetUserAsync(string username, string[] databases)
         {
             return await base.Client.GetUserAsync(username, databases);
         }
 
-        public void CreateUser(SqlUser user, string password)
+        public void CreateUser(SolidCP.Providers.Database.SqlUser user, string password)
         {
             base.Client.CreateUser(user, password);
         }
 
-        public async System.Threading.Tasks.Task CreateUserAsync(SqlUser user, string password)
+        public async System.Threading.Tasks.Task CreateUserAsync(SolidCP.Providers.Database.SqlUser user, string password)
         {
             await base.Client.CreateUserAsync(user, password);
         }
 
-        public void UpdateUser(SqlUser user, string[] databases)
+        public void UpdateUser(SolidCP.Providers.Database.SqlUser user, string[] databases)
         {
             base.Client.UpdateUser(user, databases);
         }
 
-        public async System.Threading.Tasks.Task UpdateUserAsync(SqlUser user, string[] databases)
+        public async System.Threading.Tasks.Task UpdateUserAsync(SolidCP.Providers.Database.SqlUser user, string[] databases)
         {
             await base.Client.UpdateUserAsync(user, databases);
         }

@@ -1,13 +1,4 @@
 ﻿#if Client
-using System;
-using System.ComponentModel;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using SolidCP.Providers;
-using SolidCP.Providers.HostedSolution;
-using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -22,9 +13,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOCSServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/IOCSServer/CreateUserResponse")]
         System.Threading.Tasks.Task<string> CreateUserAsync(string userUpn, string userDistinguishedName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOCSServer/GetUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IOCSServer/GetUserGeneralSettingsResponse")]
-        OCSUser GetUserGeneralSettings(string instanceId);
+        SolidCP.Providers.HostedSolution.OCSUser GetUserGeneralSettings(string instanceId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOCSServer/GetUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IOCSServer/GetUserGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<OCSUser> GetUserGeneralSettingsAsync(string instanceId);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OCSUser> GetUserGeneralSettingsAsync(string instanceId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOCSServer/SetUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IOCSServer/SetUserGeneralSettingsResponse")]
         void SetUserGeneralSettings(string instanceId, bool enabledForFederation, bool enabledForPublicIMConectivity, bool archiveInternalCommunications, bool archiveFederatedCommunications, bool enabledForEnhancedPresence);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOCSServer/SetUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IOCSServer/SetUserGeneralSettingsResponse")]
@@ -53,14 +44,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string>("SolidCP.Server.OCSServer", "CreateUser", userUpn, userDistinguishedName);
         }
 
-        public OCSUser GetUserGeneralSettings(string instanceId)
+        public SolidCP.Providers.HostedSolution.OCSUser GetUserGeneralSettings(string instanceId)
         {
-            return (OCSUser)Invoke("SolidCP.Server.OCSServer", "GetUserGeneralSettings", instanceId);
+            return (SolidCP.Providers.HostedSolution.OCSUser)Invoke("SolidCP.Server.OCSServer", "GetUserGeneralSettings", instanceId);
         }
 
-        public async System.Threading.Tasks.Task<OCSUser> GetUserGeneralSettingsAsync(string instanceId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OCSUser> GetUserGeneralSettingsAsync(string instanceId)
         {
-            return await InvokeAsync<OCSUser>("SolidCP.Server.OCSServer", "GetUserGeneralSettings", instanceId);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.OCSUser>("SolidCP.Server.OCSServer", "GetUserGeneralSettings", instanceId);
         }
 
         public void SetUserGeneralSettings(string instanceId, bool enabledForFederation, bool enabledForPublicIMConectivity, bool archiveInternalCommunications, bool archiveFederatedCommunications, bool enabledForEnhancedPresence)
@@ -108,12 +99,12 @@ namespace SolidCP.Server.Client
             return await base.Client.CreateUserAsync(userUpn, userDistinguishedName);
         }
 
-        public OCSUser GetUserGeneralSettings(string instanceId)
+        public SolidCP.Providers.HostedSolution.OCSUser GetUserGeneralSettings(string instanceId)
         {
             return base.Client.GetUserGeneralSettings(instanceId);
         }
 
-        public async System.Threading.Tasks.Task<OCSUser> GetUserGeneralSettingsAsync(string instanceId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OCSUser> GetUserGeneralSettingsAsync(string instanceId)
         {
             return await base.Client.GetUserGeneralSettingsAsync(instanceId);
         }

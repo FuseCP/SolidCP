@@ -1,16 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.Mail;
-using SolidCP.Server.Utils;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -25,21 +13,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DomainExists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DomainExistsResponse")]
         System.Threading.Tasks.Task<bool> DomainExistsAsync(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetDomainResponse")]
-        MailDomain GetDomain(string domainName);
+        SolidCP.Providers.Mail.MailDomain GetDomain(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetDomainResponse")]
-        System.Threading.Tasks.Task<MailDomain> GetDomainAsync(string domainName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailDomain> GetDomainAsync(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetDomains", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetDomainsResponse")]
         string[] GetDomains();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetDomains", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetDomainsResponse")]
         System.Threading.Tasks.Task<string[]> GetDomainsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateDomainResponse")]
-        void CreateDomain(MailDomain domain);
+        void CreateDomain(SolidCP.Providers.Mail.MailDomain domain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateDomainResponse")]
-        System.Threading.Tasks.Task CreateDomainAsync(MailDomain domain);
+        System.Threading.Tasks.Task CreateDomainAsync(SolidCP.Providers.Mail.MailDomain domain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateDomainResponse")]
-        void UpdateDomain(MailDomain domain);
+        void UpdateDomain(SolidCP.Providers.Mail.MailDomain domain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateDomainResponse")]
-        System.Threading.Tasks.Task UpdateDomainAsync(MailDomain domain);
+        System.Threading.Tasks.Task UpdateDomainAsync(SolidCP.Providers.Mail.MailDomain domain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteDomainResponse")]
         void DeleteDomain(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteDomain", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteDomainResponse")]
@@ -65,21 +53,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/AccountExists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/AccountExistsResponse")]
         System.Threading.Tasks.Task<bool> AccountExistsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetAccounts", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetAccountsResponse")]
-        MailAccount[] GetAccounts(string domainName);
+        SolidCP.Providers.Mail.MailAccount[] GetAccounts(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetAccounts", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetAccountsResponse")]
-        System.Threading.Tasks.Task<MailAccount[]> GetAccountsAsync(string domainName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount[]> GetAccountsAsync(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetAccountResponse")]
-        MailAccount GetAccount(string accountName);
+        SolidCP.Providers.Mail.MailAccount GetAccount(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetAccountResponse")]
-        System.Threading.Tasks.Task<MailAccount> GetAccountAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount> GetAccountAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateAccountResponse")]
-        void CreateAccount(MailAccount account);
+        void CreateAccount(SolidCP.Providers.Mail.MailAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateAccountResponse")]
-        System.Threading.Tasks.Task CreateAccountAsync(MailAccount account);
+        System.Threading.Tasks.Task CreateAccountAsync(SolidCP.Providers.Mail.MailAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateAccountResponse")]
-        void UpdateAccount(MailAccount account);
+        void UpdateAccount(SolidCP.Providers.Mail.MailAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateAccountResponse")]
-        System.Threading.Tasks.Task UpdateAccountAsync(MailAccount account);
+        System.Threading.Tasks.Task UpdateAccountAsync(SolidCP.Providers.Mail.MailAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteAccountResponse")]
         void DeleteAccount(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteAccount", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteAccountResponse")]
@@ -89,21 +77,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/MailAliasExists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/MailAliasExistsResponse")]
         System.Threading.Tasks.Task<bool> MailAliasExistsAsync(string mailAliasName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetMailAliases", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetMailAliasesResponse")]
-        MailAlias[] GetMailAliases(string domainName);
+        SolidCP.Providers.Mail.MailAlias[] GetMailAliases(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetMailAliases", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetMailAliasesResponse")]
-        System.Threading.Tasks.Task<MailAlias[]> GetMailAliasesAsync(string domainName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias[]> GetMailAliasesAsync(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetMailAliasResponse")]
-        MailAlias GetMailAlias(string mailAliasName);
+        SolidCP.Providers.Mail.MailAlias GetMailAlias(string mailAliasName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetMailAliasResponse")]
-        System.Threading.Tasks.Task<MailAlias> GetMailAliasAsync(string mailAliasName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias> GetMailAliasAsync(string mailAliasName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateMailAliasResponse")]
-        void CreateMailAlias(MailAlias mailAlias);
+        void CreateMailAlias(SolidCP.Providers.Mail.MailAlias mailAlias);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateMailAliasResponse")]
-        System.Threading.Tasks.Task CreateMailAliasAsync(MailAlias mailAlias);
+        System.Threading.Tasks.Task CreateMailAliasAsync(SolidCP.Providers.Mail.MailAlias mailAlias);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateMailAliasResponse")]
-        void UpdateMailAlias(MailAlias mailAlias);
+        void UpdateMailAlias(SolidCP.Providers.Mail.MailAlias mailAlias);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateMailAliasResponse")]
-        System.Threading.Tasks.Task UpdateMailAliasAsync(MailAlias mailAlias);
+        System.Threading.Tasks.Task UpdateMailAliasAsync(SolidCP.Providers.Mail.MailAlias mailAlias);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteMailAliasResponse")]
         void DeleteMailAlias(string mailAliasName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteMailAlias", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteMailAliasResponse")]
@@ -113,21 +101,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GroupExists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GroupExistsResponse")]
         System.Threading.Tasks.Task<bool> GroupExistsAsync(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetGroups", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetGroupsResponse")]
-        MailGroup[] GetGroups(string domainName);
+        SolidCP.Providers.Mail.MailGroup[] GetGroups(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetGroups", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetGroupsResponse")]
-        System.Threading.Tasks.Task<MailGroup[]> GetGroupsAsync(string domainName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup[]> GetGroupsAsync(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetGroupResponse")]
-        MailGroup GetGroup(string groupName);
+        SolidCP.Providers.Mail.MailGroup GetGroup(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetGroupResponse")]
-        System.Threading.Tasks.Task<MailGroup> GetGroupAsync(string groupName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup> GetGroupAsync(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateGroupResponse")]
-        void CreateGroup(MailGroup group);
+        void CreateGroup(SolidCP.Providers.Mail.MailGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateGroupResponse")]
-        System.Threading.Tasks.Task CreateGroupAsync(MailGroup group);
+        System.Threading.Tasks.Task CreateGroupAsync(SolidCP.Providers.Mail.MailGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateGroupResponse")]
-        void UpdateGroup(MailGroup group);
+        void UpdateGroup(SolidCP.Providers.Mail.MailGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateGroupResponse")]
-        System.Threading.Tasks.Task UpdateGroupAsync(MailGroup group);
+        System.Threading.Tasks.Task UpdateGroupAsync(SolidCP.Providers.Mail.MailGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteGroupResponse")]
         void DeleteGroup(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteGroup", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteGroupResponse")]
@@ -137,21 +125,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/ListExists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/ListExistsResponse")]
         System.Threading.Tasks.Task<bool> ListExistsAsync(string listName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetLists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetListsResponse")]
-        MailList[] GetLists(string domainName);
+        SolidCP.Providers.Mail.MailList[] GetLists(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetLists", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetListsResponse")]
-        System.Threading.Tasks.Task<MailList[]> GetListsAsync(string domainName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList[]> GetListsAsync(string domainName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetListResponse")]
-        MailList GetList(string listName);
+        SolidCP.Providers.Mail.MailList GetList(string listName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/GetList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/GetListResponse")]
-        System.Threading.Tasks.Task<MailList> GetListAsync(string listName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList> GetListAsync(string listName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateListResponse")]
-        void CreateList(MailList list);
+        void CreateList(SolidCP.Providers.Mail.MailList list);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/CreateList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/CreateListResponse")]
-        System.Threading.Tasks.Task CreateListAsync(MailList list);
+        System.Threading.Tasks.Task CreateListAsync(SolidCP.Providers.Mail.MailList list);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateListResponse")]
-        void UpdateList(MailList list);
+        void UpdateList(SolidCP.Providers.Mail.MailList list);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/UpdateList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/UpdateListResponse")]
-        System.Threading.Tasks.Task UpdateListAsync(MailList list);
+        System.Threading.Tasks.Task UpdateListAsync(SolidCP.Providers.Mail.MailList list);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteListResponse")]
         void DeleteList(string listName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IMailServer/DeleteList", ReplyAction = "http://smbsaas/solidcp/server/IMailServer/DeleteListResponse")]
@@ -172,14 +160,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.MailServer", "DomainExists", domainName);
         }
 
-        public MailDomain GetDomain(string domainName)
+        public SolidCP.Providers.Mail.MailDomain GetDomain(string domainName)
         {
-            return (MailDomain)Invoke("SolidCP.Server.MailServer", "GetDomain", domainName);
+            return (SolidCP.Providers.Mail.MailDomain)Invoke("SolidCP.Server.MailServer", "GetDomain", domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailDomain> GetDomainAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailDomain> GetDomainAsync(string domainName)
         {
-            return await InvokeAsync<MailDomain>("SolidCP.Server.MailServer", "GetDomain", domainName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailDomain>("SolidCP.Server.MailServer", "GetDomain", domainName);
         }
 
         public string[] GetDomains()
@@ -192,22 +180,22 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.MailServer", "GetDomains");
         }
 
-        public void CreateDomain(MailDomain domain)
+        public void CreateDomain(SolidCP.Providers.Mail.MailDomain domain)
         {
             Invoke("SolidCP.Server.MailServer", "CreateDomain", domain);
         }
 
-        public async System.Threading.Tasks.Task CreateDomainAsync(MailDomain domain)
+        public async System.Threading.Tasks.Task CreateDomainAsync(SolidCP.Providers.Mail.MailDomain domain)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "CreateDomain", domain);
         }
 
-        public void UpdateDomain(MailDomain domain)
+        public void UpdateDomain(SolidCP.Providers.Mail.MailDomain domain)
         {
             Invoke("SolidCP.Server.MailServer", "UpdateDomain", domain);
         }
 
-        public async System.Threading.Tasks.Task UpdateDomainAsync(MailDomain domain)
+        public async System.Threading.Tasks.Task UpdateDomainAsync(SolidCP.Providers.Mail.MailDomain domain)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "UpdateDomain", domain);
         }
@@ -272,42 +260,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.MailServer", "AccountExists", accountName);
         }
 
-        public MailAccount[] GetAccounts(string domainName)
+        public SolidCP.Providers.Mail.MailAccount[] GetAccounts(string domainName)
         {
-            return (MailAccount[])Invoke("SolidCP.Server.MailServer", "GetAccounts", domainName);
+            return (SolidCP.Providers.Mail.MailAccount[])Invoke("SolidCP.Server.MailServer", "GetAccounts", domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailAccount[]> GetAccountsAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount[]> GetAccountsAsync(string domainName)
         {
-            return await InvokeAsync<MailAccount[]>("SolidCP.Server.MailServer", "GetAccounts", domainName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailAccount[]>("SolidCP.Server.MailServer", "GetAccounts", domainName);
         }
 
-        public MailAccount GetAccount(string accountName)
+        public SolidCP.Providers.Mail.MailAccount GetAccount(string accountName)
         {
-            return (MailAccount)Invoke("SolidCP.Server.MailServer", "GetAccount", accountName);
+            return (SolidCP.Providers.Mail.MailAccount)Invoke("SolidCP.Server.MailServer", "GetAccount", accountName);
         }
 
-        public async System.Threading.Tasks.Task<MailAccount> GetAccountAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount> GetAccountAsync(string accountName)
         {
-            return await InvokeAsync<MailAccount>("SolidCP.Server.MailServer", "GetAccount", accountName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailAccount>("SolidCP.Server.MailServer", "GetAccount", accountName);
         }
 
-        public void CreateAccount(MailAccount account)
+        public void CreateAccount(SolidCP.Providers.Mail.MailAccount account)
         {
             Invoke("SolidCP.Server.MailServer", "CreateAccount", account);
         }
 
-        public async System.Threading.Tasks.Task CreateAccountAsync(MailAccount account)
+        public async System.Threading.Tasks.Task CreateAccountAsync(SolidCP.Providers.Mail.MailAccount account)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "CreateAccount", account);
         }
 
-        public void UpdateAccount(MailAccount account)
+        public void UpdateAccount(SolidCP.Providers.Mail.MailAccount account)
         {
             Invoke("SolidCP.Server.MailServer", "UpdateAccount", account);
         }
 
-        public async System.Threading.Tasks.Task UpdateAccountAsync(MailAccount account)
+        public async System.Threading.Tasks.Task UpdateAccountAsync(SolidCP.Providers.Mail.MailAccount account)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "UpdateAccount", account);
         }
@@ -332,42 +320,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.MailServer", "MailAliasExists", mailAliasName);
         }
 
-        public MailAlias[] GetMailAliases(string domainName)
+        public SolidCP.Providers.Mail.MailAlias[] GetMailAliases(string domainName)
         {
-            return (MailAlias[])Invoke("SolidCP.Server.MailServer", "GetMailAliases", domainName);
+            return (SolidCP.Providers.Mail.MailAlias[])Invoke("SolidCP.Server.MailServer", "GetMailAliases", domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailAlias[]> GetMailAliasesAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias[]> GetMailAliasesAsync(string domainName)
         {
-            return await InvokeAsync<MailAlias[]>("SolidCP.Server.MailServer", "GetMailAliases", domainName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailAlias[]>("SolidCP.Server.MailServer", "GetMailAliases", domainName);
         }
 
-        public MailAlias GetMailAlias(string mailAliasName)
+        public SolidCP.Providers.Mail.MailAlias GetMailAlias(string mailAliasName)
         {
-            return (MailAlias)Invoke("SolidCP.Server.MailServer", "GetMailAlias", mailAliasName);
+            return (SolidCP.Providers.Mail.MailAlias)Invoke("SolidCP.Server.MailServer", "GetMailAlias", mailAliasName);
         }
 
-        public async System.Threading.Tasks.Task<MailAlias> GetMailAliasAsync(string mailAliasName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias> GetMailAliasAsync(string mailAliasName)
         {
-            return await InvokeAsync<MailAlias>("SolidCP.Server.MailServer", "GetMailAlias", mailAliasName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailAlias>("SolidCP.Server.MailServer", "GetMailAlias", mailAliasName);
         }
 
-        public void CreateMailAlias(MailAlias mailAlias)
+        public void CreateMailAlias(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             Invoke("SolidCP.Server.MailServer", "CreateMailAlias", mailAlias);
         }
 
-        public async System.Threading.Tasks.Task CreateMailAliasAsync(MailAlias mailAlias)
+        public async System.Threading.Tasks.Task CreateMailAliasAsync(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "CreateMailAlias", mailAlias);
         }
 
-        public void UpdateMailAlias(MailAlias mailAlias)
+        public void UpdateMailAlias(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             Invoke("SolidCP.Server.MailServer", "UpdateMailAlias", mailAlias);
         }
 
-        public async System.Threading.Tasks.Task UpdateMailAliasAsync(MailAlias mailAlias)
+        public async System.Threading.Tasks.Task UpdateMailAliasAsync(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "UpdateMailAlias", mailAlias);
         }
@@ -392,42 +380,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.MailServer", "GroupExists", groupName);
         }
 
-        public MailGroup[] GetGroups(string domainName)
+        public SolidCP.Providers.Mail.MailGroup[] GetGroups(string domainName)
         {
-            return (MailGroup[])Invoke("SolidCP.Server.MailServer", "GetGroups", domainName);
+            return (SolidCP.Providers.Mail.MailGroup[])Invoke("SolidCP.Server.MailServer", "GetGroups", domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailGroup[]> GetGroupsAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup[]> GetGroupsAsync(string domainName)
         {
-            return await InvokeAsync<MailGroup[]>("SolidCP.Server.MailServer", "GetGroups", domainName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailGroup[]>("SolidCP.Server.MailServer", "GetGroups", domainName);
         }
 
-        public MailGroup GetGroup(string groupName)
+        public SolidCP.Providers.Mail.MailGroup GetGroup(string groupName)
         {
-            return (MailGroup)Invoke("SolidCP.Server.MailServer", "GetGroup", groupName);
+            return (SolidCP.Providers.Mail.MailGroup)Invoke("SolidCP.Server.MailServer", "GetGroup", groupName);
         }
 
-        public async System.Threading.Tasks.Task<MailGroup> GetGroupAsync(string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup> GetGroupAsync(string groupName)
         {
-            return await InvokeAsync<MailGroup>("SolidCP.Server.MailServer", "GetGroup", groupName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailGroup>("SolidCP.Server.MailServer", "GetGroup", groupName);
         }
 
-        public void CreateGroup(MailGroup group)
+        public void CreateGroup(SolidCP.Providers.Mail.MailGroup group)
         {
             Invoke("SolidCP.Server.MailServer", "CreateGroup", group);
         }
 
-        public async System.Threading.Tasks.Task CreateGroupAsync(MailGroup group)
+        public async System.Threading.Tasks.Task CreateGroupAsync(SolidCP.Providers.Mail.MailGroup group)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "CreateGroup", group);
         }
 
-        public void UpdateGroup(MailGroup group)
+        public void UpdateGroup(SolidCP.Providers.Mail.MailGroup group)
         {
             Invoke("SolidCP.Server.MailServer", "UpdateGroup", group);
         }
 
-        public async System.Threading.Tasks.Task UpdateGroupAsync(MailGroup group)
+        public async System.Threading.Tasks.Task UpdateGroupAsync(SolidCP.Providers.Mail.MailGroup group)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "UpdateGroup", group);
         }
@@ -452,42 +440,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.MailServer", "ListExists", listName);
         }
 
-        public MailList[] GetLists(string domainName)
+        public SolidCP.Providers.Mail.MailList[] GetLists(string domainName)
         {
-            return (MailList[])Invoke("SolidCP.Server.MailServer", "GetLists", domainName);
+            return (SolidCP.Providers.Mail.MailList[])Invoke("SolidCP.Server.MailServer", "GetLists", domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailList[]> GetListsAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList[]> GetListsAsync(string domainName)
         {
-            return await InvokeAsync<MailList[]>("SolidCP.Server.MailServer", "GetLists", domainName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailList[]>("SolidCP.Server.MailServer", "GetLists", domainName);
         }
 
-        public MailList GetList(string listName)
+        public SolidCP.Providers.Mail.MailList GetList(string listName)
         {
-            return (MailList)Invoke("SolidCP.Server.MailServer", "GetList", listName);
+            return (SolidCP.Providers.Mail.MailList)Invoke("SolidCP.Server.MailServer", "GetList", listName);
         }
 
-        public async System.Threading.Tasks.Task<MailList> GetListAsync(string listName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList> GetListAsync(string listName)
         {
-            return await InvokeAsync<MailList>("SolidCP.Server.MailServer", "GetList", listName);
+            return await InvokeAsync<SolidCP.Providers.Mail.MailList>("SolidCP.Server.MailServer", "GetList", listName);
         }
 
-        public void CreateList(MailList list)
+        public void CreateList(SolidCP.Providers.Mail.MailList list)
         {
             Invoke("SolidCP.Server.MailServer", "CreateList", list);
         }
 
-        public async System.Threading.Tasks.Task CreateListAsync(MailList list)
+        public async System.Threading.Tasks.Task CreateListAsync(SolidCP.Providers.Mail.MailList list)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "CreateList", list);
         }
 
-        public void UpdateList(MailList list)
+        public void UpdateList(SolidCP.Providers.Mail.MailList list)
         {
             Invoke("SolidCP.Server.MailServer", "UpdateList", list);
         }
 
-        public async System.Threading.Tasks.Task UpdateListAsync(MailList list)
+        public async System.Threading.Tasks.Task UpdateListAsync(SolidCP.Providers.Mail.MailList list)
         {
             await InvokeAsync("SolidCP.Server.MailServer", "UpdateList", list);
         }
@@ -517,12 +505,12 @@ namespace SolidCP.Server.Client
             return await base.Client.DomainExistsAsync(domainName);
         }
 
-        public MailDomain GetDomain(string domainName)
+        public SolidCP.Providers.Mail.MailDomain GetDomain(string domainName)
         {
             return base.Client.GetDomain(domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailDomain> GetDomainAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailDomain> GetDomainAsync(string domainName)
         {
             return await base.Client.GetDomainAsync(domainName);
         }
@@ -537,22 +525,22 @@ namespace SolidCP.Server.Client
             return await base.Client.GetDomainsAsync();
         }
 
-        public void CreateDomain(MailDomain domain)
+        public void CreateDomain(SolidCP.Providers.Mail.MailDomain domain)
         {
             base.Client.CreateDomain(domain);
         }
 
-        public async System.Threading.Tasks.Task CreateDomainAsync(MailDomain domain)
+        public async System.Threading.Tasks.Task CreateDomainAsync(SolidCP.Providers.Mail.MailDomain domain)
         {
             await base.Client.CreateDomainAsync(domain);
         }
 
-        public void UpdateDomain(MailDomain domain)
+        public void UpdateDomain(SolidCP.Providers.Mail.MailDomain domain)
         {
             base.Client.UpdateDomain(domain);
         }
 
-        public async System.Threading.Tasks.Task UpdateDomainAsync(MailDomain domain)
+        public async System.Threading.Tasks.Task UpdateDomainAsync(SolidCP.Providers.Mail.MailDomain domain)
         {
             await base.Client.UpdateDomainAsync(domain);
         }
@@ -617,42 +605,42 @@ namespace SolidCP.Server.Client
             return await base.Client.AccountExistsAsync(accountName);
         }
 
-        public MailAccount[] GetAccounts(string domainName)
+        public SolidCP.Providers.Mail.MailAccount[] GetAccounts(string domainName)
         {
             return base.Client.GetAccounts(domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailAccount[]> GetAccountsAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount[]> GetAccountsAsync(string domainName)
         {
             return await base.Client.GetAccountsAsync(domainName);
         }
 
-        public MailAccount GetAccount(string accountName)
+        public SolidCP.Providers.Mail.MailAccount GetAccount(string accountName)
         {
             return base.Client.GetAccount(accountName);
         }
 
-        public async System.Threading.Tasks.Task<MailAccount> GetAccountAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount> GetAccountAsync(string accountName)
         {
             return await base.Client.GetAccountAsync(accountName);
         }
 
-        public void CreateAccount(MailAccount account)
+        public void CreateAccount(SolidCP.Providers.Mail.MailAccount account)
         {
             base.Client.CreateAccount(account);
         }
 
-        public async System.Threading.Tasks.Task CreateAccountAsync(MailAccount account)
+        public async System.Threading.Tasks.Task CreateAccountAsync(SolidCP.Providers.Mail.MailAccount account)
         {
             await base.Client.CreateAccountAsync(account);
         }
 
-        public void UpdateAccount(MailAccount account)
+        public void UpdateAccount(SolidCP.Providers.Mail.MailAccount account)
         {
             base.Client.UpdateAccount(account);
         }
 
-        public async System.Threading.Tasks.Task UpdateAccountAsync(MailAccount account)
+        public async System.Threading.Tasks.Task UpdateAccountAsync(SolidCP.Providers.Mail.MailAccount account)
         {
             await base.Client.UpdateAccountAsync(account);
         }
@@ -677,42 +665,42 @@ namespace SolidCP.Server.Client
             return await base.Client.MailAliasExistsAsync(mailAliasName);
         }
 
-        public MailAlias[] GetMailAliases(string domainName)
+        public SolidCP.Providers.Mail.MailAlias[] GetMailAliases(string domainName)
         {
             return base.Client.GetMailAliases(domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailAlias[]> GetMailAliasesAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias[]> GetMailAliasesAsync(string domainName)
         {
             return await base.Client.GetMailAliasesAsync(domainName);
         }
 
-        public MailAlias GetMailAlias(string mailAliasName)
+        public SolidCP.Providers.Mail.MailAlias GetMailAlias(string mailAliasName)
         {
             return base.Client.GetMailAlias(mailAliasName);
         }
 
-        public async System.Threading.Tasks.Task<MailAlias> GetMailAliasAsync(string mailAliasName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias> GetMailAliasAsync(string mailAliasName)
         {
             return await base.Client.GetMailAliasAsync(mailAliasName);
         }
 
-        public void CreateMailAlias(MailAlias mailAlias)
+        public void CreateMailAlias(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             base.Client.CreateMailAlias(mailAlias);
         }
 
-        public async System.Threading.Tasks.Task CreateMailAliasAsync(MailAlias mailAlias)
+        public async System.Threading.Tasks.Task CreateMailAliasAsync(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             await base.Client.CreateMailAliasAsync(mailAlias);
         }
 
-        public void UpdateMailAlias(MailAlias mailAlias)
+        public void UpdateMailAlias(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             base.Client.UpdateMailAlias(mailAlias);
         }
 
-        public async System.Threading.Tasks.Task UpdateMailAliasAsync(MailAlias mailAlias)
+        public async System.Threading.Tasks.Task UpdateMailAliasAsync(SolidCP.Providers.Mail.MailAlias mailAlias)
         {
             await base.Client.UpdateMailAliasAsync(mailAlias);
         }
@@ -737,42 +725,42 @@ namespace SolidCP.Server.Client
             return await base.Client.GroupExistsAsync(groupName);
         }
 
-        public MailGroup[] GetGroups(string domainName)
+        public SolidCP.Providers.Mail.MailGroup[] GetGroups(string domainName)
         {
             return base.Client.GetGroups(domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailGroup[]> GetGroupsAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup[]> GetGroupsAsync(string domainName)
         {
             return await base.Client.GetGroupsAsync(domainName);
         }
 
-        public MailGroup GetGroup(string groupName)
+        public SolidCP.Providers.Mail.MailGroup GetGroup(string groupName)
         {
             return base.Client.GetGroup(groupName);
         }
 
-        public async System.Threading.Tasks.Task<MailGroup> GetGroupAsync(string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup> GetGroupAsync(string groupName)
         {
             return await base.Client.GetGroupAsync(groupName);
         }
 
-        public void CreateGroup(MailGroup group)
+        public void CreateGroup(SolidCP.Providers.Mail.MailGroup group)
         {
             base.Client.CreateGroup(group);
         }
 
-        public async System.Threading.Tasks.Task CreateGroupAsync(MailGroup group)
+        public async System.Threading.Tasks.Task CreateGroupAsync(SolidCP.Providers.Mail.MailGroup group)
         {
             await base.Client.CreateGroupAsync(group);
         }
 
-        public void UpdateGroup(MailGroup group)
+        public void UpdateGroup(SolidCP.Providers.Mail.MailGroup group)
         {
             base.Client.UpdateGroup(group);
         }
 
-        public async System.Threading.Tasks.Task UpdateGroupAsync(MailGroup group)
+        public async System.Threading.Tasks.Task UpdateGroupAsync(SolidCP.Providers.Mail.MailGroup group)
         {
             await base.Client.UpdateGroupAsync(group);
         }
@@ -797,42 +785,42 @@ namespace SolidCP.Server.Client
             return await base.Client.ListExistsAsync(listName);
         }
 
-        public MailList[] GetLists(string domainName)
+        public SolidCP.Providers.Mail.MailList[] GetLists(string domainName)
         {
             return base.Client.GetLists(domainName);
         }
 
-        public async System.Threading.Tasks.Task<MailList[]> GetListsAsync(string domainName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList[]> GetListsAsync(string domainName)
         {
             return await base.Client.GetListsAsync(domainName);
         }
 
-        public MailList GetList(string listName)
+        public SolidCP.Providers.Mail.MailList GetList(string listName)
         {
             return base.Client.GetList(listName);
         }
 
-        public async System.Threading.Tasks.Task<MailList> GetListAsync(string listName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList> GetListAsync(string listName)
         {
             return await base.Client.GetListAsync(listName);
         }
 
-        public void CreateList(MailList list)
+        public void CreateList(SolidCP.Providers.Mail.MailList list)
         {
             base.Client.CreateList(list);
         }
 
-        public async System.Threading.Tasks.Task CreateListAsync(MailList list)
+        public async System.Threading.Tasks.Task CreateListAsync(SolidCP.Providers.Mail.MailList list)
         {
             await base.Client.CreateListAsync(list);
         }
 
-        public void UpdateList(MailList list)
+        public void UpdateList(SolidCP.Providers.Mail.MailList list)
         {
             base.Client.UpdateList(list);
         }
 
-        public async System.Threading.Tasks.Task UpdateListAsync(MailList list)
+        public async System.Threading.Tasks.Task UpdateListAsync(SolidCP.Providers.Mail.MailList list)
         {
             await base.Client.UpdateListAsync(list);
         }

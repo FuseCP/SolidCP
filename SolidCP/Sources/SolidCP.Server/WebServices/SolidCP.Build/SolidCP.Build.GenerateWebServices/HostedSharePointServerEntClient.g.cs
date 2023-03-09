@@ -1,14 +1,4 @@
 ﻿#if Client
-using System;
-using System.ComponentModel;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using SolidCP.Providers;
-using SolidCP.Providers.HostedSolution;
-using SolidCP.Providers.SharePoint;
-using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -23,37 +13,37 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSupportedLanguages", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSupportedLanguagesResponse")]
         System.Threading.Tasks.Task<int[]> Enterprise_GetSupportedLanguagesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollections", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollectionsResponse")]
-        SharePointEnterpriseSiteCollection[] Enterprise_GetSiteCollections();
+        SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[] Enterprise_GetSiteCollections();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollections", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollectionsResponse")]
-        System.Threading.Tasks.Task<SharePointEnterpriseSiteCollection[]> Enterprise_GetSiteCollectionsAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[]> Enterprise_GetSiteCollectionsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollectionResponse")]
-        SharePointEnterpriseSiteCollection Enterprise_GetSiteCollection(string url);
+        SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection Enterprise_GetSiteCollection(string url);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetSiteCollectionResponse")]
-        System.Threading.Tasks.Task<SharePointEnterpriseSiteCollection> Enterprise_GetSiteCollectionAsync(string url);
+        System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection> Enterprise_GetSiteCollectionAsync(string url);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CreateSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CreateSiteCollectionResponse")]
-        void Enterprise_CreateSiteCollection(SharePointEnterpriseSiteCollection siteCollection);
+        void Enterprise_CreateSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CreateSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CreateSiteCollectionResponse")]
-        System.Threading.Tasks.Task Enterprise_CreateSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection);
+        System.Threading.Tasks.Task Enterprise_CreateSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_UpdateQuotas", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_UpdateQuotasResponse")]
         void Enterprise_UpdateQuotas(string url, long maxSize, long warningSize);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_UpdateQuotas", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_UpdateQuotasResponse")]
         System.Threading.Tasks.Task Enterprise_UpdateQuotasAsync(string url, long maxSize, long warningSize);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CalculateSiteCollectionsDiskSpace", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CalculateSiteCollectionsDiskSpaceResponse")]
-        SharePointSiteDiskSpace[] Enterprise_CalculateSiteCollectionsDiskSpace(string[] urls);
+        SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[] Enterprise_CalculateSiteCollectionsDiskSpace(string[] urls);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CalculateSiteCollectionsDiskSpace", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_CalculateSiteCollectionsDiskSpaceResponse")]
-        System.Threading.Tasks.Task<SharePointSiteDiskSpace[]> Enterprise_CalculateSiteCollectionsDiskSpaceAsync(string[] urls);
+        System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[]> Enterprise_CalculateSiteCollectionsDiskSpaceAsync(string[] urls);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_DeleteSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_DeleteSiteCollectionResponse")]
-        void Enterprise_DeleteSiteCollection(SharePointEnterpriseSiteCollection siteCollection);
+        void Enterprise_DeleteSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_DeleteSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_DeleteSiteCollectionResponse")]
-        System.Threading.Tasks.Task Enterprise_DeleteSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection);
+        System.Threading.Tasks.Task Enterprise_DeleteSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_BackupSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_BackupSiteCollectionResponse")]
         string Enterprise_BackupSiteCollection(string url, string filename, bool zip);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_BackupSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_BackupSiteCollectionResponse")]
         System.Threading.Tasks.Task<string> Enterprise_BackupSiteCollectionAsync(string url, string filename, bool zip);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_RestoreSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_RestoreSiteCollectionResponse")]
-        void Enterprise_RestoreSiteCollection(SharePointEnterpriseSiteCollection siteCollection, string filename);
+        void Enterprise_RestoreSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection, string filename);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_RestoreSiteCollection", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_RestoreSiteCollectionResponse")]
-        System.Threading.Tasks.Task Enterprise_RestoreSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection, string filename);
+        System.Threading.Tasks.Task Enterprise_RestoreSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection, string filename);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetTempFileBinaryChunk", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetTempFileBinaryChunkResponse")]
         byte[] Enterprise_GetTempFileBinaryChunk(string path, int offset, int length);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetTempFileBinaryChunk", ReplyAction = "http://smbsaas/solidcp/server/IHostedSharePointServerEnt/Enterprise_GetTempFileBinaryChunkResponse")]
@@ -86,32 +76,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<int[]>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSupportedLanguages");
         }
 
-        public SharePointEnterpriseSiteCollection[] Enterprise_GetSiteCollections()
+        public SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[] Enterprise_GetSiteCollections()
         {
-            return (SharePointEnterpriseSiteCollection[])Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollections");
+            return (SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[])Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollections");
         }
 
-        public async System.Threading.Tasks.Task<SharePointEnterpriseSiteCollection[]> Enterprise_GetSiteCollectionsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[]> Enterprise_GetSiteCollectionsAsync()
         {
-            return await InvokeAsync<SharePointEnterpriseSiteCollection[]>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollections");
+            return await InvokeAsync<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[]>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollections");
         }
 
-        public SharePointEnterpriseSiteCollection Enterprise_GetSiteCollection(string url)
+        public SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection Enterprise_GetSiteCollection(string url)
         {
-            return (SharePointEnterpriseSiteCollection)Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollection", url);
+            return (SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection)Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollection", url);
         }
 
-        public async System.Threading.Tasks.Task<SharePointEnterpriseSiteCollection> Enterprise_GetSiteCollectionAsync(string url)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection> Enterprise_GetSiteCollectionAsync(string url)
         {
-            return await InvokeAsync<SharePointEnterpriseSiteCollection>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollection", url);
+            return await InvokeAsync<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_GetSiteCollection", url);
         }
 
-        public void Enterprise_CreateSiteCollection(SharePointEnterpriseSiteCollection siteCollection)
+        public void Enterprise_CreateSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_CreateSiteCollection", siteCollection);
         }
 
-        public async System.Threading.Tasks.Task Enterprise_CreateSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection)
+        public async System.Threading.Tasks.Task Enterprise_CreateSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             await InvokeAsync("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_CreateSiteCollection", siteCollection);
         }
@@ -126,22 +116,22 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_UpdateQuotas", url, maxSize, warningSize);
         }
 
-        public SharePointSiteDiskSpace[] Enterprise_CalculateSiteCollectionsDiskSpace(string[] urls)
+        public SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[] Enterprise_CalculateSiteCollectionsDiskSpace(string[] urls)
         {
-            return (SharePointSiteDiskSpace[])Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_CalculateSiteCollectionsDiskSpace", urls);
+            return (SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[])Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_CalculateSiteCollectionsDiskSpace", urls);
         }
 
-        public async System.Threading.Tasks.Task<SharePointSiteDiskSpace[]> Enterprise_CalculateSiteCollectionsDiskSpaceAsync(string[] urls)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[]> Enterprise_CalculateSiteCollectionsDiskSpaceAsync(string[] urls)
         {
-            return await InvokeAsync<SharePointSiteDiskSpace[]>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_CalculateSiteCollectionsDiskSpace", urls);
+            return await InvokeAsync<SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[]>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_CalculateSiteCollectionsDiskSpace", urls);
         }
 
-        public void Enterprise_DeleteSiteCollection(SharePointEnterpriseSiteCollection siteCollection)
+        public void Enterprise_DeleteSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_DeleteSiteCollection", siteCollection);
         }
 
-        public async System.Threading.Tasks.Task Enterprise_DeleteSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection)
+        public async System.Threading.Tasks.Task Enterprise_DeleteSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             await InvokeAsync("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_DeleteSiteCollection", siteCollection);
         }
@@ -156,12 +146,12 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string>("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_BackupSiteCollection", url, filename, zip);
         }
 
-        public void Enterprise_RestoreSiteCollection(SharePointEnterpriseSiteCollection siteCollection, string filename)
+        public void Enterprise_RestoreSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection, string filename)
         {
             Invoke("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_RestoreSiteCollection", siteCollection, filename);
         }
 
-        public async System.Threading.Tasks.Task Enterprise_RestoreSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection, string filename)
+        public async System.Threading.Tasks.Task Enterprise_RestoreSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection, string filename)
         {
             await InvokeAsync("SolidCP.Server.HostedSharePointServerEnt", "Enterprise_RestoreSiteCollection", siteCollection, filename);
         }
@@ -221,32 +211,32 @@ namespace SolidCP.Server.Client
             return await base.Client.Enterprise_GetSupportedLanguagesAsync();
         }
 
-        public SharePointEnterpriseSiteCollection[] Enterprise_GetSiteCollections()
+        public SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[] Enterprise_GetSiteCollections()
         {
             return base.Client.Enterprise_GetSiteCollections();
         }
 
-        public async System.Threading.Tasks.Task<SharePointEnterpriseSiteCollection[]> Enterprise_GetSiteCollectionsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection[]> Enterprise_GetSiteCollectionsAsync()
         {
             return await base.Client.Enterprise_GetSiteCollectionsAsync();
         }
 
-        public SharePointEnterpriseSiteCollection Enterprise_GetSiteCollection(string url)
+        public SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection Enterprise_GetSiteCollection(string url)
         {
             return base.Client.Enterprise_GetSiteCollection(url);
         }
 
-        public async System.Threading.Tasks.Task<SharePointEnterpriseSiteCollection> Enterprise_GetSiteCollectionAsync(string url)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection> Enterprise_GetSiteCollectionAsync(string url)
         {
             return await base.Client.Enterprise_GetSiteCollectionAsync(url);
         }
 
-        public void Enterprise_CreateSiteCollection(SharePointEnterpriseSiteCollection siteCollection)
+        public void Enterprise_CreateSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             base.Client.Enterprise_CreateSiteCollection(siteCollection);
         }
 
-        public async System.Threading.Tasks.Task Enterprise_CreateSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection)
+        public async System.Threading.Tasks.Task Enterprise_CreateSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             await base.Client.Enterprise_CreateSiteCollectionAsync(siteCollection);
         }
@@ -261,22 +251,22 @@ namespace SolidCP.Server.Client
             await base.Client.Enterprise_UpdateQuotasAsync(url, maxSize, warningSize);
         }
 
-        public SharePointSiteDiskSpace[] Enterprise_CalculateSiteCollectionsDiskSpace(string[] urls)
+        public SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[] Enterprise_CalculateSiteCollectionsDiskSpace(string[] urls)
         {
             return base.Client.Enterprise_CalculateSiteCollectionsDiskSpace(urls);
         }
 
-        public async System.Threading.Tasks.Task<SharePointSiteDiskSpace[]> Enterprise_CalculateSiteCollectionsDiskSpaceAsync(string[] urls)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[]> Enterprise_CalculateSiteCollectionsDiskSpaceAsync(string[] urls)
         {
             return await base.Client.Enterprise_CalculateSiteCollectionsDiskSpaceAsync(urls);
         }
 
-        public void Enterprise_DeleteSiteCollection(SharePointEnterpriseSiteCollection siteCollection)
+        public void Enterprise_DeleteSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             base.Client.Enterprise_DeleteSiteCollection(siteCollection);
         }
 
-        public async System.Threading.Tasks.Task Enterprise_DeleteSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection)
+        public async System.Threading.Tasks.Task Enterprise_DeleteSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection)
         {
             await base.Client.Enterprise_DeleteSiteCollectionAsync(siteCollection);
         }
@@ -291,12 +281,12 @@ namespace SolidCP.Server.Client
             return await base.Client.Enterprise_BackupSiteCollectionAsync(url, filename, zip);
         }
 
-        public void Enterprise_RestoreSiteCollection(SharePointEnterpriseSiteCollection siteCollection, string filename)
+        public void Enterprise_RestoreSiteCollection(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection, string filename)
         {
             base.Client.Enterprise_RestoreSiteCollection(siteCollection, filename);
         }
 
-        public async System.Threading.Tasks.Task Enterprise_RestoreSiteCollectionAsync(SharePointEnterpriseSiteCollection siteCollection, string filename)
+        public async System.Threading.Tasks.Task Enterprise_RestoreSiteCollectionAsync(SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection siteCollection, string filename)
         {
             await base.Client.Enterprise_RestoreSiteCollectionAsync(siteCollection, filename);
         }

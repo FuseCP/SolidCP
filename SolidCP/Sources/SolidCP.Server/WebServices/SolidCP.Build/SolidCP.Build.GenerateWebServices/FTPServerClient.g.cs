@@ -1,16 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.FTP;
-using SolidCP.Server.Utils;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -21,33 +9,33 @@ namespace SolidCP.Server.Client
     public interface IFTPServer
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/ChangeSiteState", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/ChangeSiteStateResponse")]
-        void ChangeSiteState(string siteId, ServerState state);
+        void ChangeSiteState(string siteId, SolidCP.Providers.ServerState state);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/ChangeSiteState", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/ChangeSiteStateResponse")]
-        System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, ServerState state);
+        System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, SolidCP.Providers.ServerState state);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetSiteState", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetSiteStateResponse")]
-        ServerState GetSiteState(string siteId);
+        SolidCP.Providers.ServerState GetSiteState(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetSiteState", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetSiteStateResponse")]
-        System.Threading.Tasks.Task<ServerState> GetSiteStateAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/SiteExists", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/SiteExistsResponse")]
         bool SiteExists(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/SiteExists", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/SiteExistsResponse")]
         System.Threading.Tasks.Task<bool> SiteExistsAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetSites", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetSitesResponse")]
-        FtpSite[] GetSites();
+        SolidCP.Providers.FTP.FtpSite[] GetSites();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetSites", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetSitesResponse")]
-        System.Threading.Tasks.Task<FtpSite[]> GetSitesAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite[]> GetSitesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetSiteResponse")]
-        FtpSite GetSite(string siteId);
+        SolidCP.Providers.FTP.FtpSite GetSite(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetSiteResponse")]
-        System.Threading.Tasks.Task<FtpSite> GetSiteAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite> GetSiteAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/CreateSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/CreateSiteResponse")]
-        string CreateSite(FtpSite site);
+        string CreateSite(SolidCP.Providers.FTP.FtpSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/CreateSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/CreateSiteResponse")]
-        System.Threading.Tasks.Task<string> CreateSiteAsync(FtpSite site);
+        System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.FTP.FtpSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/UpdateSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/UpdateSiteResponse")]
-        void UpdateSite(FtpSite site);
+        void UpdateSite(SolidCP.Providers.FTP.FtpSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/UpdateSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/UpdateSiteResponse")]
-        System.Threading.Tasks.Task UpdateSiteAsync(FtpSite site);
+        System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.FTP.FtpSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/DeleteSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/DeleteSiteResponse")]
         void DeleteSite(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/DeleteSite", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/DeleteSiteResponse")]
@@ -57,21 +45,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/AccountExists", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/AccountExistsResponse")]
         System.Threading.Tasks.Task<bool> AccountExistsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetAccounts", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetAccountsResponse")]
-        FtpAccount[] GetAccounts();
+        SolidCP.Providers.FTP.FtpAccount[] GetAccounts();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetAccounts", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetAccountsResponse")]
-        System.Threading.Tasks.Task<FtpAccount[]> GetAccountsAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount[]> GetAccountsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetAccountResponse")]
-        FtpAccount GetAccount(string accountName);
+        SolidCP.Providers.FTP.FtpAccount GetAccount(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/GetAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/GetAccountResponse")]
-        System.Threading.Tasks.Task<FtpAccount> GetAccountAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount> GetAccountAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/CreateAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/CreateAccountResponse")]
-        void CreateAccount(FtpAccount account);
+        void CreateAccount(SolidCP.Providers.FTP.FtpAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/CreateAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/CreateAccountResponse")]
-        System.Threading.Tasks.Task CreateAccountAsync(FtpAccount account);
+        System.Threading.Tasks.Task CreateAccountAsync(SolidCP.Providers.FTP.FtpAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/UpdateAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/UpdateAccountResponse")]
-        void UpdateAccount(FtpAccount account);
+        void UpdateAccount(SolidCP.Providers.FTP.FtpAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/UpdateAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/UpdateAccountResponse")]
-        System.Threading.Tasks.Task UpdateAccountAsync(FtpAccount account);
+        System.Threading.Tasks.Task UpdateAccountAsync(SolidCP.Providers.FTP.FtpAccount account);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/DeleteAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/DeleteAccountResponse")]
         void DeleteAccount(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IFTPServer/DeleteAccount", ReplyAction = "http://smbsaas/solidcp/server/IFTPServer/DeleteAccountResponse")]
@@ -82,24 +70,24 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class FTPServerAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, IFTPServer
     {
-        public void ChangeSiteState(string siteId, ServerState state)
+        public void ChangeSiteState(string siteId, SolidCP.Providers.ServerState state)
         {
             Invoke("SolidCP.Server.FTPServer", "ChangeSiteState", siteId, state);
         }
 
-        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, ServerState state)
+        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, SolidCP.Providers.ServerState state)
         {
             await InvokeAsync("SolidCP.Server.FTPServer", "ChangeSiteState", siteId, state);
         }
 
-        public ServerState GetSiteState(string siteId)
+        public SolidCP.Providers.ServerState GetSiteState(string siteId)
         {
-            return (ServerState)Invoke("SolidCP.Server.FTPServer", "GetSiteState", siteId);
+            return (SolidCP.Providers.ServerState)Invoke("SolidCP.Server.FTPServer", "GetSiteState", siteId);
         }
 
-        public async System.Threading.Tasks.Task<ServerState> GetSiteStateAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId)
         {
-            return await InvokeAsync<ServerState>("SolidCP.Server.FTPServer", "GetSiteState", siteId);
+            return await InvokeAsync<SolidCP.Providers.ServerState>("SolidCP.Server.FTPServer", "GetSiteState", siteId);
         }
 
         public bool SiteExists(string siteId)
@@ -112,42 +100,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.FTPServer", "SiteExists", siteId);
         }
 
-        public FtpSite[] GetSites()
+        public SolidCP.Providers.FTP.FtpSite[] GetSites()
         {
-            return (FtpSite[])Invoke("SolidCP.Server.FTPServer", "GetSites");
+            return (SolidCP.Providers.FTP.FtpSite[])Invoke("SolidCP.Server.FTPServer", "GetSites");
         }
 
-        public async System.Threading.Tasks.Task<FtpSite[]> GetSitesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite[]> GetSitesAsync()
         {
-            return await InvokeAsync<FtpSite[]>("SolidCP.Server.FTPServer", "GetSites");
+            return await InvokeAsync<SolidCP.Providers.FTP.FtpSite[]>("SolidCP.Server.FTPServer", "GetSites");
         }
 
-        public FtpSite GetSite(string siteId)
+        public SolidCP.Providers.FTP.FtpSite GetSite(string siteId)
         {
-            return (FtpSite)Invoke("SolidCP.Server.FTPServer", "GetSite", siteId);
+            return (SolidCP.Providers.FTP.FtpSite)Invoke("SolidCP.Server.FTPServer", "GetSite", siteId);
         }
 
-        public async System.Threading.Tasks.Task<FtpSite> GetSiteAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite> GetSiteAsync(string siteId)
         {
-            return await InvokeAsync<FtpSite>("SolidCP.Server.FTPServer", "GetSite", siteId);
+            return await InvokeAsync<SolidCP.Providers.FTP.FtpSite>("SolidCP.Server.FTPServer", "GetSite", siteId);
         }
 
-        public string CreateSite(FtpSite site)
+        public string CreateSite(SolidCP.Providers.FTP.FtpSite site)
         {
             return (string)Invoke("SolidCP.Server.FTPServer", "CreateSite", site);
         }
 
-        public async System.Threading.Tasks.Task<string> CreateSiteAsync(FtpSite site)
+        public async System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.FTP.FtpSite site)
         {
             return await InvokeAsync<string>("SolidCP.Server.FTPServer", "CreateSite", site);
         }
 
-        public void UpdateSite(FtpSite site)
+        public void UpdateSite(SolidCP.Providers.FTP.FtpSite site)
         {
             Invoke("SolidCP.Server.FTPServer", "UpdateSite", site);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteAsync(FtpSite site)
+        public async System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.FTP.FtpSite site)
         {
             await InvokeAsync("SolidCP.Server.FTPServer", "UpdateSite", site);
         }
@@ -172,42 +160,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.FTPServer", "AccountExists", accountName);
         }
 
-        public FtpAccount[] GetAccounts()
+        public SolidCP.Providers.FTP.FtpAccount[] GetAccounts()
         {
-            return (FtpAccount[])Invoke("SolidCP.Server.FTPServer", "GetAccounts");
+            return (SolidCP.Providers.FTP.FtpAccount[])Invoke("SolidCP.Server.FTPServer", "GetAccounts");
         }
 
-        public async System.Threading.Tasks.Task<FtpAccount[]> GetAccountsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount[]> GetAccountsAsync()
         {
-            return await InvokeAsync<FtpAccount[]>("SolidCP.Server.FTPServer", "GetAccounts");
+            return await InvokeAsync<SolidCP.Providers.FTP.FtpAccount[]>("SolidCP.Server.FTPServer", "GetAccounts");
         }
 
-        public FtpAccount GetAccount(string accountName)
+        public SolidCP.Providers.FTP.FtpAccount GetAccount(string accountName)
         {
-            return (FtpAccount)Invoke("SolidCP.Server.FTPServer", "GetAccount", accountName);
+            return (SolidCP.Providers.FTP.FtpAccount)Invoke("SolidCP.Server.FTPServer", "GetAccount", accountName);
         }
 
-        public async System.Threading.Tasks.Task<FtpAccount> GetAccountAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount> GetAccountAsync(string accountName)
         {
-            return await InvokeAsync<FtpAccount>("SolidCP.Server.FTPServer", "GetAccount", accountName);
+            return await InvokeAsync<SolidCP.Providers.FTP.FtpAccount>("SolidCP.Server.FTPServer", "GetAccount", accountName);
         }
 
-        public void CreateAccount(FtpAccount account)
+        public void CreateAccount(SolidCP.Providers.FTP.FtpAccount account)
         {
             Invoke("SolidCP.Server.FTPServer", "CreateAccount", account);
         }
 
-        public async System.Threading.Tasks.Task CreateAccountAsync(FtpAccount account)
+        public async System.Threading.Tasks.Task CreateAccountAsync(SolidCP.Providers.FTP.FtpAccount account)
         {
             await InvokeAsync("SolidCP.Server.FTPServer", "CreateAccount", account);
         }
 
-        public void UpdateAccount(FtpAccount account)
+        public void UpdateAccount(SolidCP.Providers.FTP.FtpAccount account)
         {
             Invoke("SolidCP.Server.FTPServer", "UpdateAccount", account);
         }
 
-        public async System.Threading.Tasks.Task UpdateAccountAsync(FtpAccount account)
+        public async System.Threading.Tasks.Task UpdateAccountAsync(SolidCP.Providers.FTP.FtpAccount account)
         {
             await InvokeAsync("SolidCP.Server.FTPServer", "UpdateAccount", account);
         }
@@ -227,22 +215,22 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class FTPServer : SolidCP.Web.Client.ClientBase<IFTPServer, FTPServerAssemblyClient>, IFTPServer
     {
-        public void ChangeSiteState(string siteId, ServerState state)
+        public void ChangeSiteState(string siteId, SolidCP.Providers.ServerState state)
         {
             base.Client.ChangeSiteState(siteId, state);
         }
 
-        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, ServerState state)
+        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, SolidCP.Providers.ServerState state)
         {
             await base.Client.ChangeSiteStateAsync(siteId, state);
         }
 
-        public ServerState GetSiteState(string siteId)
+        public SolidCP.Providers.ServerState GetSiteState(string siteId)
         {
             return base.Client.GetSiteState(siteId);
         }
 
-        public async System.Threading.Tasks.Task<ServerState> GetSiteStateAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId)
         {
             return await base.Client.GetSiteStateAsync(siteId);
         }
@@ -257,42 +245,42 @@ namespace SolidCP.Server.Client
             return await base.Client.SiteExistsAsync(siteId);
         }
 
-        public FtpSite[] GetSites()
+        public SolidCP.Providers.FTP.FtpSite[] GetSites()
         {
             return base.Client.GetSites();
         }
 
-        public async System.Threading.Tasks.Task<FtpSite[]> GetSitesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite[]> GetSitesAsync()
         {
             return await base.Client.GetSitesAsync();
         }
 
-        public FtpSite GetSite(string siteId)
+        public SolidCP.Providers.FTP.FtpSite GetSite(string siteId)
         {
             return base.Client.GetSite(siteId);
         }
 
-        public async System.Threading.Tasks.Task<FtpSite> GetSiteAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite> GetSiteAsync(string siteId)
         {
             return await base.Client.GetSiteAsync(siteId);
         }
 
-        public string CreateSite(FtpSite site)
+        public string CreateSite(SolidCP.Providers.FTP.FtpSite site)
         {
             return base.Client.CreateSite(site);
         }
 
-        public async System.Threading.Tasks.Task<string> CreateSiteAsync(FtpSite site)
+        public async System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.FTP.FtpSite site)
         {
             return await base.Client.CreateSiteAsync(site);
         }
 
-        public void UpdateSite(FtpSite site)
+        public void UpdateSite(SolidCP.Providers.FTP.FtpSite site)
         {
             base.Client.UpdateSite(site);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteAsync(FtpSite site)
+        public async System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.FTP.FtpSite site)
         {
             await base.Client.UpdateSiteAsync(site);
         }
@@ -317,42 +305,42 @@ namespace SolidCP.Server.Client
             return await base.Client.AccountExistsAsync(accountName);
         }
 
-        public FtpAccount[] GetAccounts()
+        public SolidCP.Providers.FTP.FtpAccount[] GetAccounts()
         {
             return base.Client.GetAccounts();
         }
 
-        public async System.Threading.Tasks.Task<FtpAccount[]> GetAccountsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount[]> GetAccountsAsync()
         {
             return await base.Client.GetAccountsAsync();
         }
 
-        public FtpAccount GetAccount(string accountName)
+        public SolidCP.Providers.FTP.FtpAccount GetAccount(string accountName)
         {
             return base.Client.GetAccount(accountName);
         }
 
-        public async System.Threading.Tasks.Task<FtpAccount> GetAccountAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount> GetAccountAsync(string accountName)
         {
             return await base.Client.GetAccountAsync(accountName);
         }
 
-        public void CreateAccount(FtpAccount account)
+        public void CreateAccount(SolidCP.Providers.FTP.FtpAccount account)
         {
             base.Client.CreateAccount(account);
         }
 
-        public async System.Threading.Tasks.Task CreateAccountAsync(FtpAccount account)
+        public async System.Threading.Tasks.Task CreateAccountAsync(SolidCP.Providers.FTP.FtpAccount account)
         {
             await base.Client.CreateAccountAsync(account);
         }
 
-        public void UpdateAccount(FtpAccount account)
+        public void UpdateAccount(SolidCP.Providers.FTP.FtpAccount account)
         {
             base.Client.UpdateAccount(account);
         }
 
-        public async System.Threading.Tasks.Task UpdateAccountAsync(FtpAccount account)
+        public async System.Threading.Tasks.Task UpdateAccountAsync(SolidCP.Providers.FTP.FtpAccount account)
         {
             await base.Client.UpdateAccountAsync(account);
         }

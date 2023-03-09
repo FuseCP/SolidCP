@@ -1,13 +1,4 @@
 ﻿#if Client
-using System;
-using System.ComponentModel;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using SolidCP.Providers;
-using SolidCP.Providers.HostedSolution;
-using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -30,29 +21,29 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/DeleteOrganization", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/DeleteOrganizationResponse")]
         System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string sipDomain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/CreateUserResponse")]
-        bool CreateUser(string organizationId, string userUpn, SfBUserPlan plan);
+        bool CreateUser(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/CreateUserResponse")]
-        System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SfBUserPlan plan);
+        System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/GetSfBUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/GetSfBUserGeneralSettingsResponse")]
-        SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn);
+        SolidCP.Providers.HostedSolution.SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/GetSfBUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/GetSfBUserGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserGeneralSettingsResponse")]
-        bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SfBUser sfbUser);
+        bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SfBUser sfbUser);
+        System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserPlan", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserPlanResponse")]
-        bool SetSfBUserPlan(string organizationId, string userUpn, SfBUserPlan plan);
+        bool SetSfBUserPlan(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserPlan", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/SetSfBUserPlanResponse")]
-        System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SfBUserPlan plan);
+        System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/DeleteUser", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/DeleteUserResponse")]
         bool DeleteUser(string userUpn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/DeleteUser", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/DeleteUserResponse")]
         System.Threading.Tasks.Task<bool> DeleteUserAsync(string userUpn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/GetFederationDomains", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/GetFederationDomainsResponse")]
-        SfBFederationDomain[] GetFederationDomains(string organizationId);
+        SolidCP.Providers.HostedSolution.SfBFederationDomain[] GetFederationDomains(string organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/GetFederationDomains", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/GetFederationDomainsResponse")]
-        System.Threading.Tasks.Task<SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/AddFederationDomain", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/AddFederationDomainResponse")]
         bool AddFederationDomain(string organizationId, string domainName, string proxyFqdn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/AddFederationDomain", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/AddFederationDomainResponse")]
@@ -66,9 +57,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/ReloadConfiguration", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/ReloadConfigurationResponse")]
         System.Threading.Tasks.Task ReloadConfigurationAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/GetPolicyList", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/GetPolicyListResponse")]
-        string[] GetPolicyList(SfBPolicyType type, string name);
+        string[] GetPolicyList(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISfBServer/GetPolicyList", ReplyAction = "http://smbsaas/solidcp/server/ISfBServer/GetPolicyListResponse")]
-        System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SfBPolicyType type, string name);
+        System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name);
     }
 
     // wcf client assembly proxy class
@@ -105,42 +96,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.SfBServer", "DeleteOrganization", organizationId, sipDomain);
         }
 
-        public bool CreateUser(string organizationId, string userUpn, SfBUserPlan plan)
+        public bool CreateUser(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return (bool)Invoke("SolidCP.Server.SfBServer", "CreateUser", organizationId, userUpn, plan);
         }
 
-        public async System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SfBUserPlan plan)
+        public async System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return await InvokeAsync<bool>("SolidCP.Server.SfBServer", "CreateUser", organizationId, userUpn, plan);
         }
 
-        public SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn)
+        public SolidCP.Providers.HostedSolution.SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn)
         {
-            return (SfBUser)Invoke("SolidCP.Server.SfBServer", "GetSfBUserGeneralSettings", organizationId, userUpn);
+            return (SolidCP.Providers.HostedSolution.SfBUser)Invoke("SolidCP.Server.SfBServer", "GetSfBUserGeneralSettings", organizationId, userUpn);
         }
 
-        public async System.Threading.Tasks.Task<SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn)
         {
-            return await InvokeAsync<SfBUser>("SolidCP.Server.SfBServer", "GetSfBUserGeneralSettings", organizationId, userUpn);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.SfBUser>("SolidCP.Server.SfBServer", "GetSfBUserGeneralSettings", organizationId, userUpn);
         }
 
-        public bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SfBUser sfbUser)
+        public bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser)
         {
             return (bool)Invoke("SolidCP.Server.SfBServer", "SetSfBUserGeneralSettings", organizationId, userUpn, sfbUser);
         }
 
-        public async System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SfBUser sfbUser)
+        public async System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser)
         {
             return await InvokeAsync<bool>("SolidCP.Server.SfBServer", "SetSfBUserGeneralSettings", organizationId, userUpn, sfbUser);
         }
 
-        public bool SetSfBUserPlan(string organizationId, string userUpn, SfBUserPlan plan)
+        public bool SetSfBUserPlan(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return (bool)Invoke("SolidCP.Server.SfBServer", "SetSfBUserPlan", organizationId, userUpn, plan);
         }
 
-        public async System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SfBUserPlan plan)
+        public async System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return await InvokeAsync<bool>("SolidCP.Server.SfBServer", "SetSfBUserPlan", organizationId, userUpn, plan);
         }
@@ -155,14 +146,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.SfBServer", "DeleteUser", userUpn);
         }
 
-        public SfBFederationDomain[] GetFederationDomains(string organizationId)
+        public SolidCP.Providers.HostedSolution.SfBFederationDomain[] GetFederationDomains(string organizationId)
         {
-            return (SfBFederationDomain[])Invoke("SolidCP.Server.SfBServer", "GetFederationDomains", organizationId);
+            return (SolidCP.Providers.HostedSolution.SfBFederationDomain[])Invoke("SolidCP.Server.SfBServer", "GetFederationDomains", organizationId);
         }
 
-        public async System.Threading.Tasks.Task<SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId)
         {
-            return await InvokeAsync<SfBFederationDomain[]>("SolidCP.Server.SfBServer", "GetFederationDomains", organizationId);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.SfBFederationDomain[]>("SolidCP.Server.SfBServer", "GetFederationDomains", organizationId);
         }
 
         public bool AddFederationDomain(string organizationId, string domainName, string proxyFqdn)
@@ -195,12 +186,12 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.SfBServer", "ReloadConfiguration");
         }
 
-        public string[] GetPolicyList(SfBPolicyType type, string name)
+        public string[] GetPolicyList(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name)
         {
             return (string[])Invoke("SolidCP.Server.SfBServer", "GetPolicyList", type, name);
         }
 
-        public async System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SfBPolicyType type, string name)
+        public async System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name)
         {
             return await InvokeAsync<string[]>("SolidCP.Server.SfBServer", "GetPolicyList", type, name);
         }
@@ -240,42 +231,42 @@ namespace SolidCP.Server.Client
             return await base.Client.DeleteOrganizationAsync(organizationId, sipDomain);
         }
 
-        public bool CreateUser(string organizationId, string userUpn, SfBUserPlan plan)
+        public bool CreateUser(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return base.Client.CreateUser(organizationId, userUpn, plan);
         }
 
-        public async System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SfBUserPlan plan)
+        public async System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return await base.Client.CreateUserAsync(organizationId, userUpn, plan);
         }
 
-        public SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn)
+        public SolidCP.Providers.HostedSolution.SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn)
         {
             return base.Client.GetSfBUserGeneralSettings(organizationId, userUpn);
         }
 
-        public async System.Threading.Tasks.Task<SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn)
         {
             return await base.Client.GetSfBUserGeneralSettingsAsync(organizationId, userUpn);
         }
 
-        public bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SfBUser sfbUser)
+        public bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser)
         {
             return base.Client.SetSfBUserGeneralSettings(organizationId, userUpn, sfbUser);
         }
 
-        public async System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SfBUser sfbUser)
+        public async System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser)
         {
             return await base.Client.SetSfBUserGeneralSettingsAsync(organizationId, userUpn, sfbUser);
         }
 
-        public bool SetSfBUserPlan(string organizationId, string userUpn, SfBUserPlan plan)
+        public bool SetSfBUserPlan(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return base.Client.SetSfBUserPlan(organizationId, userUpn, plan);
         }
 
-        public async System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SfBUserPlan plan)
+        public async System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
             return await base.Client.SetSfBUserPlanAsync(organizationId, userUpn, plan);
         }
@@ -290,12 +281,12 @@ namespace SolidCP.Server.Client
             return await base.Client.DeleteUserAsync(userUpn);
         }
 
-        public SfBFederationDomain[] GetFederationDomains(string organizationId)
+        public SolidCP.Providers.HostedSolution.SfBFederationDomain[] GetFederationDomains(string organizationId)
         {
             return base.Client.GetFederationDomains(organizationId);
         }
 
-        public async System.Threading.Tasks.Task<SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId)
         {
             return await base.Client.GetFederationDomainsAsync(organizationId);
         }
@@ -330,12 +321,12 @@ namespace SolidCP.Server.Client
             await base.Client.ReloadConfigurationAsync();
         }
 
-        public string[] GetPolicyList(SfBPolicyType type, string name)
+        public string[] GetPolicyList(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name)
         {
             return base.Client.GetPolicyList(type, name);
         }
 
-        public async System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SfBPolicyType type, string name)
+        public async System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name)
         {
             return await base.Client.GetPolicyListAsync(type, name);
         }

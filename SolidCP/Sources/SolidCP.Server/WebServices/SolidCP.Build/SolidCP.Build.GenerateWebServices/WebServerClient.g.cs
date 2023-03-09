@@ -1,22 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Collections.Generic;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.Web;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers.WebAppGallery;
-using SolidCP.Providers.Common;
-using Microsoft.Web.Administration;
-using Microsoft.Web.Management.Server;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -27,13 +9,13 @@ namespace SolidCP.Server.Client
     public interface IWebServer
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ChangeSiteState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ChangeSiteStateResponse")]
-        void ChangeSiteState(string siteId, ServerState state);
+        void ChangeSiteState(string siteId, SolidCP.Providers.ServerState state);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ChangeSiteState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ChangeSiteStateResponse")]
-        System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, ServerState state);
+        System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, SolidCP.Providers.ServerState state);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSiteState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteStateResponse")]
-        ServerState GetSiteState(string siteId);
+        SolidCP.Providers.ServerState GetSiteState(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSiteState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteStateResponse")]
-        System.Threading.Tasks.Task<ServerState> GetSiteStateAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSiteId", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteIdResponse")]
         string GetSiteId(string siteName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSiteId", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteIdResponse")]
@@ -51,57 +33,57 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSites", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSitesResponse")]
         System.Threading.Tasks.Task<string[]> GetSitesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteResponse")]
-        WebSite GetSite(string siteId);
+        SolidCP.Providers.Web.WebSite GetSite(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteResponse")]
-        System.Threading.Tasks.Task<WebSite> GetSiteAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebSite> GetSiteAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSiteBindings", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteBindingsResponse")]
-        ServerBinding[] GetSiteBindings(string siteId);
+        SolidCP.Providers.ServerBinding[] GetSiteBindings(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetSiteBindings", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetSiteBindingsResponse")]
-        System.Threading.Tasks.Task<ServerBinding[]> GetSiteBindingsAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ServerBinding[]> GetSiteBindingsAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateSiteResponse")]
-        string CreateSite(WebSite site);
+        string CreateSite(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateSiteResponse")]
-        System.Threading.Tasks.Task<string> CreateSiteAsync(WebSite site);
+        System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateSiteResponse")]
-        void UpdateSite(WebSite site);
+        void UpdateSite(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateSiteResponse")]
-        System.Threading.Tasks.Task UpdateSiteAsync(WebSite site);
+        System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateSiteBindings", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateSiteBindingsResponse")]
-        void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed);
+        void UpdateSiteBindings(string siteId, SolidCP.Providers.ServerBinding[] bindings, bool emptyBindingsAllowed);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateSiteBindings", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateSiteBindingsResponse")]
-        System.Threading.Tasks.Task UpdateSiteBindingsAsync(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed);
+        System.Threading.Tasks.Task UpdateSiteBindingsAsync(string siteId, SolidCP.Providers.ServerBinding[] bindings, bool emptyBindingsAllowed);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteSiteResponse")]
         void DeleteSite(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteSite", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteSiteResponse")]
         System.Threading.Tasks.Task DeleteSiteAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ChangeAppPoolState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ChangeAppPoolStateResponse")]
-        void ChangeAppPoolState(string siteId, AppPoolState state);
+        void ChangeAppPoolState(string siteId, SolidCP.Providers.AppPoolState state);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ChangeAppPoolState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ChangeAppPoolStateResponse")]
-        System.Threading.Tasks.Task ChangeAppPoolStateAsync(string siteId, AppPoolState state);
+        System.Threading.Tasks.Task ChangeAppPoolStateAsync(string siteId, SolidCP.Providers.AppPoolState state);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetAppPoolState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetAppPoolStateResponse")]
-        AppPoolState GetAppPoolState(string siteId);
+        SolidCP.Providers.AppPoolState GetAppPoolState(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetAppPoolState", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetAppPoolStateResponse")]
-        System.Threading.Tasks.Task<AppPoolState> GetAppPoolStateAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.AppPoolState> GetAppPoolStateAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/VirtualDirectoryExists", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/VirtualDirectoryExistsResponse")]
         bool VirtualDirectoryExists(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/VirtualDirectoryExists", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/VirtualDirectoryExistsResponse")]
         System.Threading.Tasks.Task<bool> VirtualDirectoryExistsAsync(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectories", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectoriesResponse")]
-        WebVirtualDirectory[] GetVirtualDirectories(string siteId);
+        SolidCP.Providers.Web.WebVirtualDirectory[] GetVirtualDirectories(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectories", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectoriesResponse")]
-        System.Threading.Tasks.Task<WebVirtualDirectory[]> GetVirtualDirectoriesAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebVirtualDirectory[]> GetVirtualDirectoriesAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectoryResponse")]
-        WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName);
+        SolidCP.Providers.Web.WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task<WebVirtualDirectory> GetVirtualDirectoryAsync(string siteId, string directoryName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebVirtualDirectory> GetVirtualDirectoryAsync(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateVirtualDirectoryResponse")]
-        void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory);
+        void CreateVirtualDirectory(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task CreateVirtualDirectoryAsync(string siteId, WebVirtualDirectory directory);
+        System.Threading.Tasks.Task CreateVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateVirtualDirectoryResponse")]
-        void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory);
+        void UpdateVirtualDirectory(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task UpdateVirtualDirectoryAsync(string siteId, WebVirtualDirectory directory);
+        System.Threading.Tasks.Task UpdateVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteVirtualDirectoryResponse")]
         void DeleteVirtualDirectory(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteVirtualDirectoryResponse")]
@@ -111,25 +93,25 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/AppVirtualDirectoryExists", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/AppVirtualDirectoryExistsResponse")]
         System.Threading.Tasks.Task<bool> AppVirtualDirectoryExistsAsync(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectories", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectoriesResponse")]
-        WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId);
+        SolidCP.Providers.Web.WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectories", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectoriesResponse")]
-        System.Threading.Tasks.Task<WebAppVirtualDirectory[]> GetAppVirtualDirectoriesAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory[]> GetAppVirtualDirectoriesAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectoryResponse")]
-        WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName);
+        SolidCP.Providers.Web.WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetAppVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task<WebAppVirtualDirectory> GetAppVirtualDirectoryAsync(string siteId, string directoryName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory> GetAppVirtualDirectoryAsync(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateAppVirtualDirectoryResponse")]
-        void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory);
+        void CreateAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateAppVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task CreateAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory);
+        System.Threading.Tasks.Task CreateAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateEnterpriseStorageAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateEnterpriseStorageAppVirtualDirectoryResponse")]
-        void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory);
+        void CreateEnterpriseStorageAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CreateEnterpriseStorageAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CreateEnterpriseStorageAppVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task CreateEnterpriseStorageAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory);
+        System.Threading.Tasks.Task CreateEnterpriseStorageAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateAppVirtualDirectoryResponse")]
-        void UpdateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory);
+        void UpdateAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateAppVirtualDirectoryResponse")]
-        System.Threading.Tasks.Task UpdateAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory);
+        System.Threading.Tasks.Task UpdateAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteAppVirtualDirectoryResponse")]
         void DeleteAppVirtualDirectory(string siteId, string directoryName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteAppVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteAppVirtualDirectoryResponse")]
@@ -159,9 +141,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/IsColdFusionSystemInstalled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/IsColdFusionSystemInstalledResponse")]
         System.Threading.Tasks.Task<bool> IsColdFusionSystemInstalledAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GrantWebSiteAccess", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GrantWebSiteAccessResponse")]
-        void GrantWebSiteAccess(string path, string siteId, NTFSPermission permission);
+        void GrantWebSiteAccess(string path, string siteId, SolidCP.Providers.NTFSPermission permission);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GrantWebSiteAccess", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GrantWebSiteAccessResponse")]
-        System.Threading.Tasks.Task GrantWebSiteAccessAsync(string path, string siteId, NTFSPermission permission);
+        System.Threading.Tasks.Task GrantWebSiteAccessAsync(string path, string siteId, SolidCP.Providers.NTFSPermission permission);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallSecuredFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallSecuredFoldersResponse")]
         void InstallSecuredFolders(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallSecuredFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallSecuredFoldersResponse")]
@@ -171,57 +153,57 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UninstallSecuredFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UninstallSecuredFoldersResponse")]
         System.Threading.Tasks.Task UninstallSecuredFoldersAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetFoldersResponse")]
-        List<WebFolder> GetFolders(string siteId);
+        System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder> GetFolders(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetFoldersResponse")]
-        System.Threading.Tasks.Task<List<WebFolder>> GetFoldersAsync(string siteId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder>> GetFoldersAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetFolderResponse")]
-        WebFolder GetFolder(string siteId, string folderPath);
+        SolidCP.Providers.Web.WebFolder GetFolder(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetFolderResponse")]
-        System.Threading.Tasks.Task<WebFolder> GetFolderAsync(string siteId, string folderPath);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebFolder> GetFolderAsync(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateFolderResponse")]
-        void UpdateFolder(string siteId, WebFolder folder);
+        void UpdateFolder(string siteId, SolidCP.Providers.Web.WebFolder folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateFolderResponse")]
-        System.Threading.Tasks.Task UpdateFolderAsync(string siteId, WebFolder folder);
+        System.Threading.Tasks.Task UpdateFolderAsync(string siteId, SolidCP.Providers.Web.WebFolder folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteFolderResponse")]
         void DeleteFolder(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteFolderResponse")]
         System.Threading.Tasks.Task DeleteFolderAsync(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetUsers", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetUsersResponse")]
-        List<WebUser> GetUsers(string siteId);
+        System.Collections.Generic.List<SolidCP.Providers.Web.WebUser> GetUsers(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetUsers", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetUsersResponse")]
-        System.Threading.Tasks.Task<List<WebUser>> GetUsersAsync(string siteId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebUser>> GetUsersAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetUserResponse")]
-        WebUser GetUser(string siteId, string userName);
+        SolidCP.Providers.Web.WebUser GetUser(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetUserResponse")]
-        System.Threading.Tasks.Task<WebUser> GetUserAsync(string siteId, string userName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebUser> GetUserAsync(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateUserResponse")]
-        void UpdateUser(string siteId, WebUser user);
+        void UpdateUser(string siteId, SolidCP.Providers.Web.WebUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateUserResponse")]
-        System.Threading.Tasks.Task UpdateUserAsync(string siteId, WebUser user);
+        System.Threading.Tasks.Task UpdateUserAsync(string siteId, SolidCP.Providers.Web.WebUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteUserResponse")]
         void DeleteUser(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteUserResponse")]
         System.Threading.Tasks.Task DeleteUserAsync(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGroups", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGroupsResponse")]
-        List<WebGroup> GetGroups(string siteId);
+        System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup> GetGroups(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGroups", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGroupsResponse")]
-        System.Threading.Tasks.Task<List<WebGroup>> GetGroupsAsync(string siteId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>> GetGroupsAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGroupResponse")]
-        WebGroup GetGroup(string siteId, string groupName);
+        SolidCP.Providers.Web.WebGroup GetGroup(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGroupResponse")]
-        System.Threading.Tasks.Task<WebGroup> GetGroupAsync(string siteId, string groupName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebGroup> GetGroupAsync(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateGroupResponse")]
-        void UpdateGroup(string siteId, WebGroup group);
+        void UpdateGroup(string siteId, SolidCP.Providers.Web.WebGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateGroupResponse")]
-        System.Threading.Tasks.Task UpdateGroupAsync(string siteId, WebGroup group);
+        System.Threading.Tasks.Task UpdateGroupAsync(string siteId, SolidCP.Providers.Web.WebGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteGroupResponse")]
         void DeleteGroup(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteGroupResponse")]
         System.Threading.Tasks.Task DeleteGroupAsync(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeStatus", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeStatusResponse")]
-        HeliconApeStatus GetHeliconApeStatus(string siteId);
+        SolidCP.Providers.ResultObjects.HeliconApeStatus GetHeliconApeStatus(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeStatus", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeStatusResponse")]
-        System.Threading.Tasks.Task<HeliconApeStatus> GetHeliconApeStatusAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.HeliconApeStatus> GetHeliconApeStatusAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallHeliconApe", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallHeliconApeResponse")]
         void InstallHeliconApe(string ServiceId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallHeliconApe", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallHeliconApeResponse")]
@@ -235,57 +217,57 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DisableHeliconApe", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DisableHeliconApeResponse")]
         System.Threading.Tasks.Task DisableHeliconApeAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFoldersResponse")]
-        List<HtaccessFolder> GetHeliconApeFolders(string siteId);
+        System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeFolders(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFolders", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFoldersResponse")]
-        System.Threading.Tasks.Task<List<HtaccessFolder>> GetHeliconApeFoldersAsync(string siteId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder>> GetHeliconApeFoldersAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeHttpdFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeHttpdFolderResponse")]
-        HtaccessFolder GetHeliconApeHttpdFolder();
+        SolidCP.Providers.Web.HtaccessFolder GetHeliconApeHttpdFolder();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeHttpdFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeHttpdFolderResponse")]
-        System.Threading.Tasks.Task<HtaccessFolder> GetHeliconApeHttpdFolderAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeHttpdFolderAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFolderResponse")]
-        HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath);
+        SolidCP.Providers.Web.HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeFolderResponse")]
-        System.Threading.Tasks.Task<HtaccessFolder> GetHeliconApeFolderAsync(string siteId, string folderPath);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeFolderAsync(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeFolderResponse")]
-        void UpdateHeliconApeFolder(string siteId, HtaccessFolder folder);
+        void UpdateHeliconApeFolder(string siteId, SolidCP.Providers.Web.HtaccessFolder folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeFolderResponse")]
-        System.Threading.Tasks.Task UpdateHeliconApeFolderAsync(string siteId, HtaccessFolder folder);
+        System.Threading.Tasks.Task UpdateHeliconApeFolderAsync(string siteId, SolidCP.Providers.Web.HtaccessFolder folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeHttpdFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeHttpdFolderResponse")]
-        void UpdateHeliconApeHttpdFolder(HtaccessFolder folder);
+        void UpdateHeliconApeHttpdFolder(SolidCP.Providers.Web.HtaccessFolder folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeHttpdFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeHttpdFolderResponse")]
-        System.Threading.Tasks.Task UpdateHeliconApeHttpdFolderAsync(HtaccessFolder folder);
+        System.Threading.Tasks.Task UpdateHeliconApeHttpdFolderAsync(SolidCP.Providers.Web.HtaccessFolder folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeFolderResponse")]
         void DeleteHeliconApeFolder(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeFolder", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeFolderResponse")]
         System.Threading.Tasks.Task DeleteHeliconApeFolderAsync(string siteId, string folderPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUsers", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUsersResponse")]
-        List<HtaccessUser> GetHeliconApeUsers(string siteId);
+        System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser> GetHeliconApeUsers(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUsers", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUsersResponse")]
-        System.Threading.Tasks.Task<List<HtaccessUser>> GetHeliconApeUsersAsync(string siteId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser>> GetHeliconApeUsersAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUserResponse")]
-        HtaccessUser GetHeliconApeUser(string siteId, string userName);
+        SolidCP.Providers.Web.HtaccessUser GetHeliconApeUser(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeUserResponse")]
-        System.Threading.Tasks.Task<HtaccessUser> GetHeliconApeUserAsync(string siteId, string userName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessUser> GetHeliconApeUserAsync(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeUserResponse")]
-        void UpdateHeliconApeUser(string siteId, HtaccessUser user);
+        void UpdateHeliconApeUser(string siteId, SolidCP.Providers.Web.HtaccessUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeUserResponse")]
-        System.Threading.Tasks.Task UpdateHeliconApeUserAsync(string siteId, HtaccessUser user);
+        System.Threading.Tasks.Task UpdateHeliconApeUserAsync(string siteId, SolidCP.Providers.Web.HtaccessUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeUserResponse")]
         void DeleteHeliconApeUser(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeUser", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeUserResponse")]
         System.Threading.Tasks.Task DeleteHeliconApeUserAsync(string siteId, string userName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroups", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroupsResponse")]
-        List<WebGroup> GetHeliconApeGroups(string siteId);
+        System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup> GetHeliconApeGroups(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroups", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroupsResponse")]
-        System.Threading.Tasks.Task<List<WebGroup>> GetHeliconApeGroupsAsync(string siteId);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>> GetHeliconApeGroupsAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroupResponse")]
-        WebGroup GetHeliconApeGroup(string siteId, string groupName);
+        SolidCP.Providers.Web.WebGroup GetHeliconApeGroup(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetHeliconApeGroupResponse")]
-        System.Threading.Tasks.Task<WebGroup> GetHeliconApeGroupAsync(string siteId, string groupName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebGroup> GetHeliconApeGroupAsync(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeGroupResponse")]
-        void UpdateHeliconApeGroup(string siteId, WebGroup group);
+        void UpdateHeliconApeGroup(string siteId, SolidCP.Providers.Web.WebGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/UpdateHeliconApeGroupResponse")]
-        System.Threading.Tasks.Task UpdateHeliconApeGroupAsync(string siteId, WebGroup group);
+        System.Threading.Tasks.Task UpdateHeliconApeGroupAsync(string siteId, SolidCP.Providers.Web.WebGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GrantWebDeployPublishingAccess", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GrantWebDeployPublishingAccessResponse")]
         void GrantWebDeployPublishingAccess(string siteId, string accountName, string accountPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GrantWebDeployPublishingAccess", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GrantWebDeployPublishingAccessResponse")]
@@ -299,21 +281,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeGroup", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteHeliconApeGroupResponse")]
         System.Threading.Tasks.Task DeleteHeliconApeGroupAsync(string siteId, string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetZooApplications", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetZooApplicationsResponse")]
-        WebAppVirtualDirectory[] GetZooApplications(string siteId);
+        SolidCP.Providers.Web.WebAppVirtualDirectory[] GetZooApplications(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetZooApplications", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetZooApplicationsResponse")]
-        System.Threading.Tasks.Task<WebAppVirtualDirectory[]> GetZooApplicationsAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory[]> GetZooApplicationsAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetZooEnvironmentVariable", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetZooEnvironmentVariableResponse")]
-        StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue);
+        SolidCP.Providers.ResultObjects.StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetZooEnvironmentVariable", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetZooEnvironmentVariableResponse")]
-        System.Threading.Tasks.Task<StringResultObject> SetZooEnvironmentVariableAsync(string siteId, string appName, string envName, string envValue);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooEnvironmentVariableAsync(string siteId, string appName, string envName, string envValue);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleEnabled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleEnabledResponse")]
-        StringResultObject SetZooConsoleEnabled(string siteId, string appName);
+        SolidCP.Providers.ResultObjects.StringResultObject SetZooConsoleEnabled(string siteId, string appName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleEnabled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleEnabledResponse")]
-        System.Threading.Tasks.Task<StringResultObject> SetZooConsoleEnabledAsync(string siteId, string appName);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooConsoleEnabledAsync(string siteId, string appName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleDisabled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleDisabledResponse")]
-        StringResultObject SetZooConsoleDisabled(string siteId, string appName);
+        SolidCP.Providers.ResultObjects.StringResultObject SetZooConsoleDisabled(string siteId, string appName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleDisabled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetZooConsoleDisabledResponse")]
-        System.Threading.Tasks.Task<StringResultObject> SetZooConsoleDisabledAsync(string siteId, string appName);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooConsoleDisabledAsync(string siteId, string appName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckLoadUserProfile", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckLoadUserProfileResponse")]
         bool CheckLoadUserProfile();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckLoadUserProfile", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckLoadUserProfileResponse")]
@@ -331,53 +313,53 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/SetResourceLanguage", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/SetResourceLanguageResponse")]
         System.Threading.Tasks.Task SetResourceLanguageAsync(int UserId, string resourceLanguage);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryLanguages", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryLanguagesResponse")]
-        GalleryLanguagesResult GetGalleryLanguages(int UserId);
+        SolidCP.Providers.ResultObjects.GalleryLanguagesResult GetGalleryLanguages(int UserId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryLanguages", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryLanguagesResponse")]
-        System.Threading.Tasks.Task<GalleryLanguagesResult> GetGalleryLanguagesAsync(int UserId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryLanguagesResult> GetGalleryLanguagesAsync(int UserId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryCategories", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryCategoriesResponse")]
-        GalleryCategoriesResult GetGalleryCategories(int UserId);
+        SolidCP.Providers.ResultObjects.GalleryCategoriesResult GetGalleryCategories(int UserId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryCategories", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryCategoriesResponse")]
-        System.Threading.Tasks.Task<GalleryCategoriesResult> GetGalleryCategoriesAsync(int UserId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryCategoriesResult> GetGalleryCategoriesAsync(int UserId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplications", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationsResponse")]
-        GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId);
+        SolidCP.Providers.ResultObjects.GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplications", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationsResponse")]
-        System.Threading.Tasks.Task<GalleryApplicationsResult> GetGalleryApplicationsAsync(int UserId, string categoryId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationsResult> GetGalleryApplicationsAsync(int UserId, string categoryId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationsFiltered", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationsFilteredResponse")]
-        GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern);
+        SolidCP.Providers.ResultObjects.GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationsFiltered", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationsFilteredResponse")]
-        System.Threading.Tasks.Task<GalleryApplicationsResult> GetGalleryApplicationsFilteredAsync(int UserId, string pattern);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationsResult> GetGalleryApplicationsFilteredAsync(int UserId, string pattern);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/IsMsDeployInstalled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/IsMsDeployInstalledResponse")]
         bool IsMsDeployInstalled();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/IsMsDeployInstalled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/IsMsDeployInstalledResponse")]
         System.Threading.Tasks.Task<bool> IsMsDeployInstalledAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplication", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationResponse")]
-        GalleryApplicationResult GetGalleryApplication(int UserId, string id);
+        SolidCP.Providers.ResultObjects.GalleryApplicationResult GetGalleryApplication(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplication", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationResponse")]
-        System.Threading.Tasks.Task<GalleryApplicationResult> GetGalleryApplicationAsync(int UserId, string id);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationResult> GetGalleryApplicationAsync(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationStatus", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationStatusResponse")]
-        GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id);
+        SolidCP.Providers.WebAppGallery.GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationStatus", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationStatusResponse")]
-        System.Threading.Tasks.Task<GalleryWebAppStatus> GetGalleryApplicationStatusAsync(int UserId, string id);
+        System.Threading.Tasks.Task<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus> GetGalleryApplicationStatusAsync(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DownloadGalleryApplication", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DownloadGalleryApplicationResponse")]
-        GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id);
+        SolidCP.Providers.WebAppGallery.GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DownloadGalleryApplication", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DownloadGalleryApplicationResponse")]
-        System.Threading.Tasks.Task<GalleryWebAppStatus> DownloadGalleryApplicationAsync(int UserId, string id);
+        System.Threading.Tasks.Task<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus> DownloadGalleryApplicationAsync(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationParameters", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationParametersResponse")]
-        DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id);
+        SolidCP.Providers.ResultObjects.DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationParameters", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetGalleryApplicationParametersResponse")]
-        System.Threading.Tasks.Task<DeploymentParametersResult> GetGalleryApplicationParametersAsync(int UserId, string id);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.DeploymentParametersResult> GetGalleryApplicationParametersAsync(int UserId, string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallGalleryApplication", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallGalleryApplicationResponse")]
-        StringResultObject InstallGalleryApplication(int UserId, string id, List<DeploymentParameter> updatedValues, string languageId);
+        SolidCP.Providers.ResultObjects.StringResultObject InstallGalleryApplication(int UserId, string id, System.Collections.Generic.List<SolidCP.Providers.WebAppGallery.DeploymentParameter> updatedValues, string languageId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallGalleryApplication", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallGalleryApplicationResponse")]
-        System.Threading.Tasks.Task<StringResultObject> InstallGalleryApplicationAsync(int UserId, string id, List<DeploymentParameter> updatedValues, string languageId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> InstallGalleryApplicationAsync(int UserId, string id, System.Collections.Generic.List<SolidCP.Providers.WebAppGallery.DeploymentParameter> updatedValues, string languageId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementAccountExists", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementAccountExistsResponse")]
         bool CheckWebManagementAccountExists(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementAccountExists", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementAccountExistsResponse")]
         System.Threading.Tasks.Task<bool> CheckWebManagementAccountExistsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementPasswordComplexity", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementPasswordComplexityResponse")]
-        ResultObject CheckWebManagementPasswordComplexity(string accountPassword);
+        SolidCP.Providers.Common.ResultObject CheckWebManagementPasswordComplexity(string accountPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementPasswordComplexity", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckWebManagementPasswordComplexityResponse")]
-        System.Threading.Tasks.Task<ResultObject> CheckWebManagementPasswordComplexityAsync(string accountPassword);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> CheckWebManagementPasswordComplexityAsync(string accountPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GrantWebManagementAccess", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GrantWebManagementAccessResponse")]
         void GrantWebManagementAccess(string siteId, string accountName, string accountPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GrantWebManagementAccess", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GrantWebManagementAccessResponse")]
@@ -391,49 +373,49 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ChangeWebManagementAccessPassword", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ChangeWebManagementAccessPasswordResponse")]
         System.Threading.Tasks.Task ChangeWebManagementAccessPasswordAsync(string accountName, string accountPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateCSRResponse")]
-        SSLCertificate generateCSR(SSLCertificate certificate);
+        SolidCP.Providers.Web.SSLCertificate generateCSR(SolidCP.Providers.Web.SSLCertificate certificate);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateCSRResponse")]
-        System.Threading.Tasks.Task<SSLCertificate> generateCSRAsync(SSLCertificate certificate);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSRResponse")]
-        SSLCertificate generateRenewalCSR(SSLCertificate certificate);
+        SolidCP.Providers.Web.SSLCertificate generateRenewalCSR(SolidCP.Providers.Web.SSLCertificate certificate);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSRResponse")]
-        System.Threading.Tasks.Task<SSLCertificate> generateRenewalCSRAsync(SSLCertificate certificate);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateRenewalCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getCertificateResponse")]
-        SSLCertificate getCertificate(WebSite site);
+        SolidCP.Providers.Web.SSLCertificate getCertificate(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getCertificateResponse")]
-        System.Threading.Tasks.Task<SSLCertificate> getCertificateAsync(WebSite site);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> getCertificateAsync(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installCertificateResponse")]
-        SSLCertificate installCertificate(SSLCertificate certificate, WebSite website);
+        SolidCP.Providers.Web.SSLCertificate installCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installCertificateResponse")]
-        System.Threading.Tasks.Task<SSLCertificate> installCertificateAsync(SSLCertificate certificate, WebSite website);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificateResponse")]
-        String LEinstallCertificate(WebSite website, string email);
+        System.String LEinstallCertificate(SolidCP.Providers.Web.WebSite website, string email);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificateResponse")]
-        System.Threading.Tasks.Task<String> LEinstallCertificateAsync(WebSite website, string email);
+        System.Threading.Tasks.Task<System.String> LEinstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installPFX", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installPFXResponse")]
-        SSLCertificate installPFX(byte[] certificate, string password, WebSite website);
+        SolidCP.Providers.Web.SSLCertificate installPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installPFX", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installPFXResponse")]
-        System.Threading.Tasks.Task<SSLCertificate> installPFXAsync(byte[] certificate, string password, WebSite website);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/exportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/exportCertificateResponse")]
         byte[] exportCertificate(string serialNumber, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/exportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/exportCertificateResponse")]
         System.Threading.Tasks.Task<byte[]> exportCertificateAsync(string serialNumber, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getServerCertificates", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getServerCertificatesResponse")]
-        List<SSLCertificate> getServerCertificates();
+        System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate> getServerCertificates();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getServerCertificates", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getServerCertificatesResponse")]
-        System.Threading.Tasks.Task<List<SSLCertificate>> getServerCertificatesAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate>> getServerCertificatesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificateResponse")]
-        ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website);
+        SolidCP.Providers.Common.ResultObject DeleteCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificateResponse")]
-        System.Threading.Tasks.Task<ResultObject> DeleteCertificateAsync(SSLCertificate certificate, WebSite website);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ImportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ImportCertificateResponse")]
-        SSLCertificate ImportCertificate(WebSite website);
+        SolidCP.Providers.Web.SSLCertificate ImportCertificate(SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ImportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ImportCertificateResponse")]
-        System.Threading.Tasks.Task<SSLCertificate> ImportCertificateAsync(WebSite website);
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> ImportCertificateAsync(SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckCertificateResponse")]
-        bool CheckCertificate(WebSite webSite);
+        bool CheckCertificate(SolidCP.Providers.Web.WebSite webSite);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/CheckCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/CheckCertificateResponse")]
-        System.Threading.Tasks.Task<bool> CheckCertificateAsync(WebSite webSite);
+        System.Threading.Tasks.Task<bool> CheckCertificateAsync(SolidCP.Providers.Web.WebSite webSite);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetDirectoryBrowseEnabled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetDirectoryBrowseEnabledResponse")]
         bool GetDirectoryBrowseEnabled(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetDirectoryBrowseEnabled", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetDirectoryBrowseEnabledResponse")]
@@ -448,24 +430,24 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class WebServerAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, IWebServer
     {
-        public void ChangeSiteState(string siteId, ServerState state)
+        public void ChangeSiteState(string siteId, SolidCP.Providers.ServerState state)
         {
             Invoke("SolidCP.Server.WebServer", "ChangeSiteState", siteId, state);
         }
 
-        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, ServerState state)
+        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, SolidCP.Providers.ServerState state)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "ChangeSiteState", siteId, state);
         }
 
-        public ServerState GetSiteState(string siteId)
+        public SolidCP.Providers.ServerState GetSiteState(string siteId)
         {
-            return (ServerState)Invoke("SolidCP.Server.WebServer", "GetSiteState", siteId);
+            return (SolidCP.Providers.ServerState)Invoke("SolidCP.Server.WebServer", "GetSiteState", siteId);
         }
 
-        public async System.Threading.Tasks.Task<ServerState> GetSiteStateAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId)
         {
-            return await InvokeAsync<ServerState>("SolidCP.Server.WebServer", "GetSiteState", siteId);
+            return await InvokeAsync<SolidCP.Providers.ServerState>("SolidCP.Server.WebServer", "GetSiteState", siteId);
         }
 
         public string GetSiteId(string siteName)
@@ -508,52 +490,52 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.WebServer", "GetSites");
         }
 
-        public WebSite GetSite(string siteId)
+        public SolidCP.Providers.Web.WebSite GetSite(string siteId)
         {
-            return (WebSite)Invoke("SolidCP.Server.WebServer", "GetSite", siteId);
+            return (SolidCP.Providers.Web.WebSite)Invoke("SolidCP.Server.WebServer", "GetSite", siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebSite> GetSiteAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebSite> GetSiteAsync(string siteId)
         {
-            return await InvokeAsync<WebSite>("SolidCP.Server.WebServer", "GetSite", siteId);
+            return await InvokeAsync<SolidCP.Providers.Web.WebSite>("SolidCP.Server.WebServer", "GetSite", siteId);
         }
 
-        public ServerBinding[] GetSiteBindings(string siteId)
+        public SolidCP.Providers.ServerBinding[] GetSiteBindings(string siteId)
         {
-            return (ServerBinding[])Invoke("SolidCP.Server.WebServer", "GetSiteBindings", siteId);
+            return (SolidCP.Providers.ServerBinding[])Invoke("SolidCP.Server.WebServer", "GetSiteBindings", siteId);
         }
 
-        public async System.Threading.Tasks.Task<ServerBinding[]> GetSiteBindingsAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServerBinding[]> GetSiteBindingsAsync(string siteId)
         {
-            return await InvokeAsync<ServerBinding[]>("SolidCP.Server.WebServer", "GetSiteBindings", siteId);
+            return await InvokeAsync<SolidCP.Providers.ServerBinding[]>("SolidCP.Server.WebServer", "GetSiteBindings", siteId);
         }
 
-        public string CreateSite(WebSite site)
+        public string CreateSite(SolidCP.Providers.Web.WebSite site)
         {
             return (string)Invoke("SolidCP.Server.WebServer", "CreateSite", site);
         }
 
-        public async System.Threading.Tasks.Task<string> CreateSiteAsync(WebSite site)
+        public async System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.Web.WebSite site)
         {
             return await InvokeAsync<string>("SolidCP.Server.WebServer", "CreateSite", site);
         }
 
-        public void UpdateSite(WebSite site)
+        public void UpdateSite(SolidCP.Providers.Web.WebSite site)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateSite", site);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteAsync(WebSite site)
+        public async System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.Web.WebSite site)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateSite", site);
         }
 
-        public void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
+        public void UpdateSiteBindings(string siteId, SolidCP.Providers.ServerBinding[] bindings, bool emptyBindingsAllowed)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateSiteBindings", siteId, bindings, emptyBindingsAllowed);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteBindingsAsync(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
+        public async System.Threading.Tasks.Task UpdateSiteBindingsAsync(string siteId, SolidCP.Providers.ServerBinding[] bindings, bool emptyBindingsAllowed)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateSiteBindings", siteId, bindings, emptyBindingsAllowed);
         }
@@ -568,24 +550,24 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteSite", siteId);
         }
 
-        public void ChangeAppPoolState(string siteId, AppPoolState state)
+        public void ChangeAppPoolState(string siteId, SolidCP.Providers.AppPoolState state)
         {
             Invoke("SolidCP.Server.WebServer", "ChangeAppPoolState", siteId, state);
         }
 
-        public async System.Threading.Tasks.Task ChangeAppPoolStateAsync(string siteId, AppPoolState state)
+        public async System.Threading.Tasks.Task ChangeAppPoolStateAsync(string siteId, SolidCP.Providers.AppPoolState state)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "ChangeAppPoolState", siteId, state);
         }
 
-        public AppPoolState GetAppPoolState(string siteId)
+        public SolidCP.Providers.AppPoolState GetAppPoolState(string siteId)
         {
-            return (AppPoolState)Invoke("SolidCP.Server.WebServer", "GetAppPoolState", siteId);
+            return (SolidCP.Providers.AppPoolState)Invoke("SolidCP.Server.WebServer", "GetAppPoolState", siteId);
         }
 
-        public async System.Threading.Tasks.Task<AppPoolState> GetAppPoolStateAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.AppPoolState> GetAppPoolStateAsync(string siteId)
         {
-            return await InvokeAsync<AppPoolState>("SolidCP.Server.WebServer", "GetAppPoolState", siteId);
+            return await InvokeAsync<SolidCP.Providers.AppPoolState>("SolidCP.Server.WebServer", "GetAppPoolState", siteId);
         }
 
         public bool VirtualDirectoryExists(string siteId, string directoryName)
@@ -598,42 +580,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.WebServer", "VirtualDirectoryExists", siteId, directoryName);
         }
 
-        public WebVirtualDirectory[] GetVirtualDirectories(string siteId)
+        public SolidCP.Providers.Web.WebVirtualDirectory[] GetVirtualDirectories(string siteId)
         {
-            return (WebVirtualDirectory[])Invoke("SolidCP.Server.WebServer", "GetVirtualDirectories", siteId);
+            return (SolidCP.Providers.Web.WebVirtualDirectory[])Invoke("SolidCP.Server.WebServer", "GetVirtualDirectories", siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebVirtualDirectory[]> GetVirtualDirectoriesAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebVirtualDirectory[]> GetVirtualDirectoriesAsync(string siteId)
         {
-            return await InvokeAsync<WebVirtualDirectory[]>("SolidCP.Server.WebServer", "GetVirtualDirectories", siteId);
+            return await InvokeAsync<SolidCP.Providers.Web.WebVirtualDirectory[]>("SolidCP.Server.WebServer", "GetVirtualDirectories", siteId);
         }
 
-        public WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
+        public SolidCP.Providers.Web.WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
         {
-            return (WebVirtualDirectory)Invoke("SolidCP.Server.WebServer", "GetVirtualDirectory", siteId, directoryName);
+            return (SolidCP.Providers.Web.WebVirtualDirectory)Invoke("SolidCP.Server.WebServer", "GetVirtualDirectory", siteId, directoryName);
         }
 
-        public async System.Threading.Tasks.Task<WebVirtualDirectory> GetVirtualDirectoryAsync(string siteId, string directoryName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebVirtualDirectory> GetVirtualDirectoryAsync(string siteId, string directoryName)
         {
-            return await InvokeAsync<WebVirtualDirectory>("SolidCP.Server.WebServer", "GetVirtualDirectory", siteId, directoryName);
+            return await InvokeAsync<SolidCP.Providers.Web.WebVirtualDirectory>("SolidCP.Server.WebServer", "GetVirtualDirectory", siteId, directoryName);
         }
 
-        public void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+        public void CreateVirtualDirectory(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             Invoke("SolidCP.Server.WebServer", "CreateVirtualDirectory", siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task CreateVirtualDirectoryAsync(string siteId, WebVirtualDirectory directory)
+        public async System.Threading.Tasks.Task CreateVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "CreateVirtualDirectory", siteId, directory);
         }
 
-        public void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+        public void UpdateVirtualDirectory(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateVirtualDirectory", siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task UpdateVirtualDirectoryAsync(string siteId, WebVirtualDirectory directory)
+        public async System.Threading.Tasks.Task UpdateVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateVirtualDirectory", siteId, directory);
         }
@@ -658,52 +640,52 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.WebServer", "AppVirtualDirectoryExists", siteId, directoryName);
         }
 
-        public WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
+        public SolidCP.Providers.Web.WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
         {
-            return (WebAppVirtualDirectory[])Invoke("SolidCP.Server.WebServer", "GetAppVirtualDirectories", siteId);
+            return (SolidCP.Providers.Web.WebAppVirtualDirectory[])Invoke("SolidCP.Server.WebServer", "GetAppVirtualDirectories", siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebAppVirtualDirectory[]> GetAppVirtualDirectoriesAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory[]> GetAppVirtualDirectoriesAsync(string siteId)
         {
-            return await InvokeAsync<WebAppVirtualDirectory[]>("SolidCP.Server.WebServer", "GetAppVirtualDirectories", siteId);
+            return await InvokeAsync<SolidCP.Providers.Web.WebAppVirtualDirectory[]>("SolidCP.Server.WebServer", "GetAppVirtualDirectories", siteId);
         }
 
-        public WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
+        public SolidCP.Providers.Web.WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
         {
-            return (WebAppVirtualDirectory)Invoke("SolidCP.Server.WebServer", "GetAppVirtualDirectory", siteId, directoryName);
+            return (SolidCP.Providers.Web.WebAppVirtualDirectory)Invoke("SolidCP.Server.WebServer", "GetAppVirtualDirectory", siteId, directoryName);
         }
 
-        public async System.Threading.Tasks.Task<WebAppVirtualDirectory> GetAppVirtualDirectoryAsync(string siteId, string directoryName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory> GetAppVirtualDirectoryAsync(string siteId, string directoryName)
         {
-            return await InvokeAsync<WebAppVirtualDirectory>("SolidCP.Server.WebServer", "GetAppVirtualDirectory", siteId, directoryName);
+            return await InvokeAsync<SolidCP.Providers.Web.WebAppVirtualDirectory>("SolidCP.Server.WebServer", "GetAppVirtualDirectory", siteId, directoryName);
         }
 
-        public void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+        public void CreateAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             Invoke("SolidCP.Server.WebServer", "CreateAppVirtualDirectory", siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task CreateAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory)
+        public async System.Threading.Tasks.Task CreateAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "CreateAppVirtualDirectory", siteId, directory);
         }
 
-        public void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+        public void CreateEnterpriseStorageAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             Invoke("SolidCP.Server.WebServer", "CreateEnterpriseStorageAppVirtualDirectory", siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task CreateEnterpriseStorageAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory)
+        public async System.Threading.Tasks.Task CreateEnterpriseStorageAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "CreateEnterpriseStorageAppVirtualDirectory", siteId, directory);
         }
 
-        public void UpdateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+        public void UpdateAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateAppVirtualDirectory", siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task UpdateAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory)
+        public async System.Threading.Tasks.Task UpdateAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateAppVirtualDirectory", siteId, directory);
         }
@@ -778,12 +760,12 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.WebServer", "IsColdFusionSystemInstalled");
         }
 
-        public void GrantWebSiteAccess(string path, string siteId, NTFSPermission permission)
+        public void GrantWebSiteAccess(string path, string siteId, SolidCP.Providers.NTFSPermission permission)
         {
             Invoke("SolidCP.Server.WebServer", "GrantWebSiteAccess", path, siteId, permission);
         }
 
-        public async System.Threading.Tasks.Task GrantWebSiteAccessAsync(string path, string siteId, NTFSPermission permission)
+        public async System.Threading.Tasks.Task GrantWebSiteAccessAsync(string path, string siteId, SolidCP.Providers.NTFSPermission permission)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "GrantWebSiteAccess", path, siteId, permission);
         }
@@ -808,32 +790,32 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "UninstallSecuredFolders", siteId);
         }
 
-        public List<WebFolder> GetFolders(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder> GetFolders(string siteId)
         {
-            return (List<WebFolder>)Invoke("SolidCP.Server.WebServer", "GetFolders", siteId);
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder>)Invoke("SolidCP.Server.WebServer", "GetFolders", siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebFolder>> GetFoldersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder>> GetFoldersAsync(string siteId)
         {
-            return await InvokeAsync<List<WebFolder>>("SolidCP.Server.WebServer", "GetFolders", siteId);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder>>("SolidCP.Server.WebServer", "GetFolders", siteId);
         }
 
-        public WebFolder GetFolder(string siteId, string folderPath)
+        public SolidCP.Providers.Web.WebFolder GetFolder(string siteId, string folderPath)
         {
-            return (WebFolder)Invoke("SolidCP.Server.WebServer", "GetFolder", siteId, folderPath);
+            return (SolidCP.Providers.Web.WebFolder)Invoke("SolidCP.Server.WebServer", "GetFolder", siteId, folderPath);
         }
 
-        public async System.Threading.Tasks.Task<WebFolder> GetFolderAsync(string siteId, string folderPath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebFolder> GetFolderAsync(string siteId, string folderPath)
         {
-            return await InvokeAsync<WebFolder>("SolidCP.Server.WebServer", "GetFolder", siteId, folderPath);
+            return await InvokeAsync<SolidCP.Providers.Web.WebFolder>("SolidCP.Server.WebServer", "GetFolder", siteId, folderPath);
         }
 
-        public void UpdateFolder(string siteId, WebFolder folder)
+        public void UpdateFolder(string siteId, SolidCP.Providers.Web.WebFolder folder)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateFolder", siteId, folder);
         }
 
-        public async System.Threading.Tasks.Task UpdateFolderAsync(string siteId, WebFolder folder)
+        public async System.Threading.Tasks.Task UpdateFolderAsync(string siteId, SolidCP.Providers.Web.WebFolder folder)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateFolder", siteId, folder);
         }
@@ -848,32 +830,32 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteFolder", siteId, folderPath);
         }
 
-        public List<WebUser> GetUsers(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebUser> GetUsers(string siteId)
         {
-            return (List<WebUser>)Invoke("SolidCP.Server.WebServer", "GetUsers", siteId);
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.WebUser>)Invoke("SolidCP.Server.WebServer", "GetUsers", siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebUser>> GetUsersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebUser>> GetUsersAsync(string siteId)
         {
-            return await InvokeAsync<List<WebUser>>("SolidCP.Server.WebServer", "GetUsers", siteId);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.WebUser>>("SolidCP.Server.WebServer", "GetUsers", siteId);
         }
 
-        public WebUser GetUser(string siteId, string userName)
+        public SolidCP.Providers.Web.WebUser GetUser(string siteId, string userName)
         {
-            return (WebUser)Invoke("SolidCP.Server.WebServer", "GetUser", siteId, userName);
+            return (SolidCP.Providers.Web.WebUser)Invoke("SolidCP.Server.WebServer", "GetUser", siteId, userName);
         }
 
-        public async System.Threading.Tasks.Task<WebUser> GetUserAsync(string siteId, string userName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebUser> GetUserAsync(string siteId, string userName)
         {
-            return await InvokeAsync<WebUser>("SolidCP.Server.WebServer", "GetUser", siteId, userName);
+            return await InvokeAsync<SolidCP.Providers.Web.WebUser>("SolidCP.Server.WebServer", "GetUser", siteId, userName);
         }
 
-        public void UpdateUser(string siteId, WebUser user)
+        public void UpdateUser(string siteId, SolidCP.Providers.Web.WebUser user)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateUser", siteId, user);
         }
 
-        public async System.Threading.Tasks.Task UpdateUserAsync(string siteId, WebUser user)
+        public async System.Threading.Tasks.Task UpdateUserAsync(string siteId, SolidCP.Providers.Web.WebUser user)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateUser", siteId, user);
         }
@@ -888,32 +870,32 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteUser", siteId, userName);
         }
 
-        public List<WebGroup> GetGroups(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup> GetGroups(string siteId)
         {
-            return (List<WebGroup>)Invoke("SolidCP.Server.WebServer", "GetGroups", siteId);
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>)Invoke("SolidCP.Server.WebServer", "GetGroups", siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebGroup>> GetGroupsAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>> GetGroupsAsync(string siteId)
         {
-            return await InvokeAsync<List<WebGroup>>("SolidCP.Server.WebServer", "GetGroups", siteId);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>>("SolidCP.Server.WebServer", "GetGroups", siteId);
         }
 
-        public WebGroup GetGroup(string siteId, string groupName)
+        public SolidCP.Providers.Web.WebGroup GetGroup(string siteId, string groupName)
         {
-            return (WebGroup)Invoke("SolidCP.Server.WebServer", "GetGroup", siteId, groupName);
+            return (SolidCP.Providers.Web.WebGroup)Invoke("SolidCP.Server.WebServer", "GetGroup", siteId, groupName);
         }
 
-        public async System.Threading.Tasks.Task<WebGroup> GetGroupAsync(string siteId, string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebGroup> GetGroupAsync(string siteId, string groupName)
         {
-            return await InvokeAsync<WebGroup>("SolidCP.Server.WebServer", "GetGroup", siteId, groupName);
+            return await InvokeAsync<SolidCP.Providers.Web.WebGroup>("SolidCP.Server.WebServer", "GetGroup", siteId, groupName);
         }
 
-        public void UpdateGroup(string siteId, WebGroup group)
+        public void UpdateGroup(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateGroup", siteId, group);
         }
 
-        public async System.Threading.Tasks.Task UpdateGroupAsync(string siteId, WebGroup group)
+        public async System.Threading.Tasks.Task UpdateGroupAsync(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateGroup", siteId, group);
         }
@@ -928,14 +910,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteGroup", siteId, groupName);
         }
 
-        public HeliconApeStatus GetHeliconApeStatus(string siteId)
+        public SolidCP.Providers.ResultObjects.HeliconApeStatus GetHeliconApeStatus(string siteId)
         {
-            return (HeliconApeStatus)Invoke("SolidCP.Server.WebServer", "GetHeliconApeStatus", siteId);
+            return (SolidCP.Providers.ResultObjects.HeliconApeStatus)Invoke("SolidCP.Server.WebServer", "GetHeliconApeStatus", siteId);
         }
 
-        public async System.Threading.Tasks.Task<HeliconApeStatus> GetHeliconApeStatusAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.HeliconApeStatus> GetHeliconApeStatusAsync(string siteId)
         {
-            return await InvokeAsync<HeliconApeStatus>("SolidCP.Server.WebServer", "GetHeliconApeStatus", siteId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.HeliconApeStatus>("SolidCP.Server.WebServer", "GetHeliconApeStatus", siteId);
         }
 
         public void InstallHeliconApe(string ServiceId)
@@ -968,52 +950,52 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DisableHeliconApe", siteId);
         }
 
-        public List<HtaccessFolder> GetHeliconApeFolders(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeFolders(string siteId)
         {
-            return (List<HtaccessFolder>)Invoke("SolidCP.Server.WebServer", "GetHeliconApeFolders", siteId);
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder>)Invoke("SolidCP.Server.WebServer", "GetHeliconApeFolders", siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<HtaccessFolder>> GetHeliconApeFoldersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder>> GetHeliconApeFoldersAsync(string siteId)
         {
-            return await InvokeAsync<List<HtaccessFolder>>("SolidCP.Server.WebServer", "GetHeliconApeFolders", siteId);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder>>("SolidCP.Server.WebServer", "GetHeliconApeFolders", siteId);
         }
 
-        public HtaccessFolder GetHeliconApeHttpdFolder()
+        public SolidCP.Providers.Web.HtaccessFolder GetHeliconApeHttpdFolder()
         {
-            return (HtaccessFolder)Invoke("SolidCP.Server.WebServer", "GetHeliconApeHttpdFolder");
+            return (SolidCP.Providers.Web.HtaccessFolder)Invoke("SolidCP.Server.WebServer", "GetHeliconApeHttpdFolder");
         }
 
-        public async System.Threading.Tasks.Task<HtaccessFolder> GetHeliconApeHttpdFolderAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeHttpdFolderAsync()
         {
-            return await InvokeAsync<HtaccessFolder>("SolidCP.Server.WebServer", "GetHeliconApeHttpdFolder");
+            return await InvokeAsync<SolidCP.Providers.Web.HtaccessFolder>("SolidCP.Server.WebServer", "GetHeliconApeHttpdFolder");
         }
 
-        public HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
+        public SolidCP.Providers.Web.HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
         {
-            return (HtaccessFolder)Invoke("SolidCP.Server.WebServer", "GetHeliconApeFolder", siteId, folderPath);
+            return (SolidCP.Providers.Web.HtaccessFolder)Invoke("SolidCP.Server.WebServer", "GetHeliconApeFolder", siteId, folderPath);
         }
 
-        public async System.Threading.Tasks.Task<HtaccessFolder> GetHeliconApeFolderAsync(string siteId, string folderPath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeFolderAsync(string siteId, string folderPath)
         {
-            return await InvokeAsync<HtaccessFolder>("SolidCP.Server.WebServer", "GetHeliconApeFolder", siteId, folderPath);
+            return await InvokeAsync<SolidCP.Providers.Web.HtaccessFolder>("SolidCP.Server.WebServer", "GetHeliconApeFolder", siteId, folderPath);
         }
 
-        public void UpdateHeliconApeFolder(string siteId, HtaccessFolder folder)
+        public void UpdateHeliconApeFolder(string siteId, SolidCP.Providers.Web.HtaccessFolder folder)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateHeliconApeFolder", siteId, folder);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeFolderAsync(string siteId, HtaccessFolder folder)
+        public async System.Threading.Tasks.Task UpdateHeliconApeFolderAsync(string siteId, SolidCP.Providers.Web.HtaccessFolder folder)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateHeliconApeFolder", siteId, folder);
         }
 
-        public void UpdateHeliconApeHttpdFolder(HtaccessFolder folder)
+        public void UpdateHeliconApeHttpdFolder(SolidCP.Providers.Web.HtaccessFolder folder)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateHeliconApeHttpdFolder", folder);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeHttpdFolderAsync(HtaccessFolder folder)
+        public async System.Threading.Tasks.Task UpdateHeliconApeHttpdFolderAsync(SolidCP.Providers.Web.HtaccessFolder folder)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateHeliconApeHttpdFolder", folder);
         }
@@ -1028,32 +1010,32 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteHeliconApeFolder", siteId, folderPath);
         }
 
-        public List<HtaccessUser> GetHeliconApeUsers(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser> GetHeliconApeUsers(string siteId)
         {
-            return (List<HtaccessUser>)Invoke("SolidCP.Server.WebServer", "GetHeliconApeUsers", siteId);
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser>)Invoke("SolidCP.Server.WebServer", "GetHeliconApeUsers", siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<HtaccessUser>> GetHeliconApeUsersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser>> GetHeliconApeUsersAsync(string siteId)
         {
-            return await InvokeAsync<List<HtaccessUser>>("SolidCP.Server.WebServer", "GetHeliconApeUsers", siteId);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser>>("SolidCP.Server.WebServer", "GetHeliconApeUsers", siteId);
         }
 
-        public HtaccessUser GetHeliconApeUser(string siteId, string userName)
+        public SolidCP.Providers.Web.HtaccessUser GetHeliconApeUser(string siteId, string userName)
         {
-            return (HtaccessUser)Invoke("SolidCP.Server.WebServer", "GetHeliconApeUser", siteId, userName);
+            return (SolidCP.Providers.Web.HtaccessUser)Invoke("SolidCP.Server.WebServer", "GetHeliconApeUser", siteId, userName);
         }
 
-        public async System.Threading.Tasks.Task<HtaccessUser> GetHeliconApeUserAsync(string siteId, string userName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessUser> GetHeliconApeUserAsync(string siteId, string userName)
         {
-            return await InvokeAsync<HtaccessUser>("SolidCP.Server.WebServer", "GetHeliconApeUser", siteId, userName);
+            return await InvokeAsync<SolidCP.Providers.Web.HtaccessUser>("SolidCP.Server.WebServer", "GetHeliconApeUser", siteId, userName);
         }
 
-        public void UpdateHeliconApeUser(string siteId, HtaccessUser user)
+        public void UpdateHeliconApeUser(string siteId, SolidCP.Providers.Web.HtaccessUser user)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateHeliconApeUser", siteId, user);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeUserAsync(string siteId, HtaccessUser user)
+        public async System.Threading.Tasks.Task UpdateHeliconApeUserAsync(string siteId, SolidCP.Providers.Web.HtaccessUser user)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateHeliconApeUser", siteId, user);
         }
@@ -1068,32 +1050,32 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteHeliconApeUser", siteId, userName);
         }
 
-        public List<WebGroup> GetHeliconApeGroups(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup> GetHeliconApeGroups(string siteId)
         {
-            return (List<WebGroup>)Invoke("SolidCP.Server.WebServer", "GetHeliconApeGroups", siteId);
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>)Invoke("SolidCP.Server.WebServer", "GetHeliconApeGroups", siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebGroup>> GetHeliconApeGroupsAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>> GetHeliconApeGroupsAsync(string siteId)
         {
-            return await InvokeAsync<List<WebGroup>>("SolidCP.Server.WebServer", "GetHeliconApeGroups", siteId);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>>("SolidCP.Server.WebServer", "GetHeliconApeGroups", siteId);
         }
 
-        public WebGroup GetHeliconApeGroup(string siteId, string groupName)
+        public SolidCP.Providers.Web.WebGroup GetHeliconApeGroup(string siteId, string groupName)
         {
-            return (WebGroup)Invoke("SolidCP.Server.WebServer", "GetHeliconApeGroup", siteId, groupName);
+            return (SolidCP.Providers.Web.WebGroup)Invoke("SolidCP.Server.WebServer", "GetHeliconApeGroup", siteId, groupName);
         }
 
-        public async System.Threading.Tasks.Task<WebGroup> GetHeliconApeGroupAsync(string siteId, string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebGroup> GetHeliconApeGroupAsync(string siteId, string groupName)
         {
-            return await InvokeAsync<WebGroup>("SolidCP.Server.WebServer", "GetHeliconApeGroup", siteId, groupName);
+            return await InvokeAsync<SolidCP.Providers.Web.WebGroup>("SolidCP.Server.WebServer", "GetHeliconApeGroup", siteId, groupName);
         }
 
-        public void UpdateHeliconApeGroup(string siteId, WebGroup group)
+        public void UpdateHeliconApeGroup(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             Invoke("SolidCP.Server.WebServer", "UpdateHeliconApeGroup", siteId, group);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeGroupAsync(string siteId, WebGroup group)
+        public async System.Threading.Tasks.Task UpdateHeliconApeGroupAsync(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             await InvokeAsync("SolidCP.Server.WebServer", "UpdateHeliconApeGroup", siteId, group);
         }
@@ -1128,44 +1110,44 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "DeleteHeliconApeGroup", siteId, groupName);
         }
 
-        public WebAppVirtualDirectory[] GetZooApplications(string siteId)
+        public SolidCP.Providers.Web.WebAppVirtualDirectory[] GetZooApplications(string siteId)
         {
-            return (WebAppVirtualDirectory[])Invoke("SolidCP.Server.WebServer", "GetZooApplications", siteId);
+            return (SolidCP.Providers.Web.WebAppVirtualDirectory[])Invoke("SolidCP.Server.WebServer", "GetZooApplications", siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebAppVirtualDirectory[]> GetZooApplicationsAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory[]> GetZooApplicationsAsync(string siteId)
         {
-            return await InvokeAsync<WebAppVirtualDirectory[]>("SolidCP.Server.WebServer", "GetZooApplications", siteId);
+            return await InvokeAsync<SolidCP.Providers.Web.WebAppVirtualDirectory[]>("SolidCP.Server.WebServer", "GetZooApplications", siteId);
         }
 
-        public StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
+        public SolidCP.Providers.ResultObjects.StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
         {
-            return (StringResultObject)Invoke("SolidCP.Server.WebServer", "SetZooEnvironmentVariable", siteId, appName, envName, envValue);
+            return (SolidCP.Providers.ResultObjects.StringResultObject)Invoke("SolidCP.Server.WebServer", "SetZooEnvironmentVariable", siteId, appName, envName, envValue);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> SetZooEnvironmentVariableAsync(string siteId, string appName, string envName, string envValue)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooEnvironmentVariableAsync(string siteId, string appName, string envName, string envValue)
         {
-            return await InvokeAsync<StringResultObject>("SolidCP.Server.WebServer", "SetZooEnvironmentVariable", siteId, appName, envName, envValue);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.StringResultObject>("SolidCP.Server.WebServer", "SetZooEnvironmentVariable", siteId, appName, envName, envValue);
         }
 
-        public StringResultObject SetZooConsoleEnabled(string siteId, string appName)
+        public SolidCP.Providers.ResultObjects.StringResultObject SetZooConsoleEnabled(string siteId, string appName)
         {
-            return (StringResultObject)Invoke("SolidCP.Server.WebServer", "SetZooConsoleEnabled", siteId, appName);
+            return (SolidCP.Providers.ResultObjects.StringResultObject)Invoke("SolidCP.Server.WebServer", "SetZooConsoleEnabled", siteId, appName);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> SetZooConsoleEnabledAsync(string siteId, string appName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooConsoleEnabledAsync(string siteId, string appName)
         {
-            return await InvokeAsync<StringResultObject>("SolidCP.Server.WebServer", "SetZooConsoleEnabled", siteId, appName);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.StringResultObject>("SolidCP.Server.WebServer", "SetZooConsoleEnabled", siteId, appName);
         }
 
-        public StringResultObject SetZooConsoleDisabled(string siteId, string appName)
+        public SolidCP.Providers.ResultObjects.StringResultObject SetZooConsoleDisabled(string siteId, string appName)
         {
-            return (StringResultObject)Invoke("SolidCP.Server.WebServer", "SetZooConsoleDisabled", siteId, appName);
+            return (SolidCP.Providers.ResultObjects.StringResultObject)Invoke("SolidCP.Server.WebServer", "SetZooConsoleDisabled", siteId, appName);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> SetZooConsoleDisabledAsync(string siteId, string appName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooConsoleDisabledAsync(string siteId, string appName)
         {
-            return await InvokeAsync<StringResultObject>("SolidCP.Server.WebServer", "SetZooConsoleDisabled", siteId, appName);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.StringResultObject>("SolidCP.Server.WebServer", "SetZooConsoleDisabled", siteId, appName);
         }
 
         public bool CheckLoadUserProfile()
@@ -1208,44 +1190,44 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "SetResourceLanguage", UserId, resourceLanguage);
         }
 
-        public GalleryLanguagesResult GetGalleryLanguages(int UserId)
+        public SolidCP.Providers.ResultObjects.GalleryLanguagesResult GetGalleryLanguages(int UserId)
         {
-            return (GalleryLanguagesResult)Invoke("SolidCP.Server.WebServer", "GetGalleryLanguages", UserId);
+            return (SolidCP.Providers.ResultObjects.GalleryLanguagesResult)Invoke("SolidCP.Server.WebServer", "GetGalleryLanguages", UserId);
         }
 
-        public async System.Threading.Tasks.Task<GalleryLanguagesResult> GetGalleryLanguagesAsync(int UserId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryLanguagesResult> GetGalleryLanguagesAsync(int UserId)
         {
-            return await InvokeAsync<GalleryLanguagesResult>("SolidCP.Server.WebServer", "GetGalleryLanguages", UserId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.GalleryLanguagesResult>("SolidCP.Server.WebServer", "GetGalleryLanguages", UserId);
         }
 
-        public GalleryCategoriesResult GetGalleryCategories(int UserId)
+        public SolidCP.Providers.ResultObjects.GalleryCategoriesResult GetGalleryCategories(int UserId)
         {
-            return (GalleryCategoriesResult)Invoke("SolidCP.Server.WebServer", "GetGalleryCategories", UserId);
+            return (SolidCP.Providers.ResultObjects.GalleryCategoriesResult)Invoke("SolidCP.Server.WebServer", "GetGalleryCategories", UserId);
         }
 
-        public async System.Threading.Tasks.Task<GalleryCategoriesResult> GetGalleryCategoriesAsync(int UserId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryCategoriesResult> GetGalleryCategoriesAsync(int UserId)
         {
-            return await InvokeAsync<GalleryCategoriesResult>("SolidCP.Server.WebServer", "GetGalleryCategories", UserId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.GalleryCategoriesResult>("SolidCP.Server.WebServer", "GetGalleryCategories", UserId);
         }
 
-        public GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId)
+        public SolidCP.Providers.ResultObjects.GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId)
         {
-            return (GalleryApplicationsResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplications", UserId, categoryId);
+            return (SolidCP.Providers.ResultObjects.GalleryApplicationsResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplications", UserId, categoryId);
         }
 
-        public async System.Threading.Tasks.Task<GalleryApplicationsResult> GetGalleryApplicationsAsync(int UserId, string categoryId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationsResult> GetGalleryApplicationsAsync(int UserId, string categoryId)
         {
-            return await InvokeAsync<GalleryApplicationsResult>("SolidCP.Server.WebServer", "GetGalleryApplications", UserId, categoryId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.GalleryApplicationsResult>("SolidCP.Server.WebServer", "GetGalleryApplications", UserId, categoryId);
         }
 
-        public GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern)
+        public SolidCP.Providers.ResultObjects.GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern)
         {
-            return (GalleryApplicationsResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplicationsFiltered", UserId, pattern);
+            return (SolidCP.Providers.ResultObjects.GalleryApplicationsResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplicationsFiltered", UserId, pattern);
         }
 
-        public async System.Threading.Tasks.Task<GalleryApplicationsResult> GetGalleryApplicationsFilteredAsync(int UserId, string pattern)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationsResult> GetGalleryApplicationsFilteredAsync(int UserId, string pattern)
         {
-            return await InvokeAsync<GalleryApplicationsResult>("SolidCP.Server.WebServer", "GetGalleryApplicationsFiltered", UserId, pattern);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.GalleryApplicationsResult>("SolidCP.Server.WebServer", "GetGalleryApplicationsFiltered", UserId, pattern);
         }
 
         public bool IsMsDeployInstalled()
@@ -1258,54 +1240,54 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.WebServer", "IsMsDeployInstalled");
         }
 
-        public GalleryApplicationResult GetGalleryApplication(int UserId, string id)
+        public SolidCP.Providers.ResultObjects.GalleryApplicationResult GetGalleryApplication(int UserId, string id)
         {
-            return (GalleryApplicationResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplication", UserId, id);
+            return (SolidCP.Providers.ResultObjects.GalleryApplicationResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplication", UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<GalleryApplicationResult> GetGalleryApplicationAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationResult> GetGalleryApplicationAsync(int UserId, string id)
         {
-            return await InvokeAsync<GalleryApplicationResult>("SolidCP.Server.WebServer", "GetGalleryApplication", UserId, id);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.GalleryApplicationResult>("SolidCP.Server.WebServer", "GetGalleryApplication", UserId, id);
         }
 
-        public GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id)
+        public SolidCP.Providers.WebAppGallery.GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id)
         {
-            return (GalleryWebAppStatus)Invoke("SolidCP.Server.WebServer", "GetGalleryApplicationStatus", UserId, id);
+            return (SolidCP.Providers.WebAppGallery.GalleryWebAppStatus)Invoke("SolidCP.Server.WebServer", "GetGalleryApplicationStatus", UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<GalleryWebAppStatus> GetGalleryApplicationStatusAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus> GetGalleryApplicationStatusAsync(int UserId, string id)
         {
-            return await InvokeAsync<GalleryWebAppStatus>("SolidCP.Server.WebServer", "GetGalleryApplicationStatus", UserId, id);
+            return await InvokeAsync<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus>("SolidCP.Server.WebServer", "GetGalleryApplicationStatus", UserId, id);
         }
 
-        public GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id)
+        public SolidCP.Providers.WebAppGallery.GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id)
         {
-            return (GalleryWebAppStatus)Invoke("SolidCP.Server.WebServer", "DownloadGalleryApplication", UserId, id);
+            return (SolidCP.Providers.WebAppGallery.GalleryWebAppStatus)Invoke("SolidCP.Server.WebServer", "DownloadGalleryApplication", UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<GalleryWebAppStatus> DownloadGalleryApplicationAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus> DownloadGalleryApplicationAsync(int UserId, string id)
         {
-            return await InvokeAsync<GalleryWebAppStatus>("SolidCP.Server.WebServer", "DownloadGalleryApplication", UserId, id);
+            return await InvokeAsync<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus>("SolidCP.Server.WebServer", "DownloadGalleryApplication", UserId, id);
         }
 
-        public DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id)
+        public SolidCP.Providers.ResultObjects.DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id)
         {
-            return (DeploymentParametersResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplicationParameters", UserId, id);
+            return (SolidCP.Providers.ResultObjects.DeploymentParametersResult)Invoke("SolidCP.Server.WebServer", "GetGalleryApplicationParameters", UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<DeploymentParametersResult> GetGalleryApplicationParametersAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.DeploymentParametersResult> GetGalleryApplicationParametersAsync(int UserId, string id)
         {
-            return await InvokeAsync<DeploymentParametersResult>("SolidCP.Server.WebServer", "GetGalleryApplicationParameters", UserId, id);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.DeploymentParametersResult>("SolidCP.Server.WebServer", "GetGalleryApplicationParameters", UserId, id);
         }
 
-        public StringResultObject InstallGalleryApplication(int UserId, string id, List<DeploymentParameter> updatedValues, string languageId)
+        public SolidCP.Providers.ResultObjects.StringResultObject InstallGalleryApplication(int UserId, string id, System.Collections.Generic.List<SolidCP.Providers.WebAppGallery.DeploymentParameter> updatedValues, string languageId)
         {
-            return (StringResultObject)Invoke("SolidCP.Server.WebServer", "InstallGalleryApplication", UserId, id, updatedValues, languageId);
+            return (SolidCP.Providers.ResultObjects.StringResultObject)Invoke("SolidCP.Server.WebServer", "InstallGalleryApplication", UserId, id, updatedValues, languageId);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> InstallGalleryApplicationAsync(int UserId, string id, List<DeploymentParameter> updatedValues, string languageId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> InstallGalleryApplicationAsync(int UserId, string id, System.Collections.Generic.List<SolidCP.Providers.WebAppGallery.DeploymentParameter> updatedValues, string languageId)
         {
-            return await InvokeAsync<StringResultObject>("SolidCP.Server.WebServer", "InstallGalleryApplication", UserId, id, updatedValues, languageId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.StringResultObject>("SolidCP.Server.WebServer", "InstallGalleryApplication", UserId, id, updatedValues, languageId);
         }
 
         public bool CheckWebManagementAccountExists(string accountName)
@@ -1318,14 +1300,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.WebServer", "CheckWebManagementAccountExists", accountName);
         }
 
-        public ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
+        public SolidCP.Providers.Common.ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
         {
-            return (ResultObject)Invoke("SolidCP.Server.WebServer", "CheckWebManagementPasswordComplexity", accountPassword);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.WebServer", "CheckWebManagementPasswordComplexity", accountPassword);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> CheckWebManagementPasswordComplexityAsync(string accountPassword)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> CheckWebManagementPasswordComplexityAsync(string accountPassword)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.WebServer", "CheckWebManagementPasswordComplexity", accountPassword);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.WebServer", "CheckWebManagementPasswordComplexity", accountPassword);
         }
 
         public void GrantWebManagementAccess(string siteId, string accountName, string accountPassword)
@@ -1358,64 +1340,64 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "ChangeWebManagementAccessPassword", accountName, accountPassword);
         }
 
-        public SSLCertificate generateCSR(SSLCertificate certificate)
+        public SolidCP.Providers.Web.SSLCertificate generateCSR(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return (SSLCertificate)Invoke("SolidCP.Server.WebServer", "generateCSR", certificate);
+            return (SolidCP.Providers.Web.SSLCertificate)Invoke("SolidCP.Server.WebServer", "generateCSR", certificate);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> generateCSRAsync(SSLCertificate certificate)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return await InvokeAsync<SSLCertificate>("SolidCP.Server.WebServer", "generateCSR", certificate);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "generateCSR", certificate);
         }
 
-        public SSLCertificate generateRenewalCSR(SSLCertificate certificate)
+        public SolidCP.Providers.Web.SSLCertificate generateRenewalCSR(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return (SSLCertificate)Invoke("SolidCP.Server.WebServer", "generateRenewalCSR", certificate);
+            return (SolidCP.Providers.Web.SSLCertificate)Invoke("SolidCP.Server.WebServer", "generateRenewalCSR", certificate);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> generateRenewalCSRAsync(SSLCertificate certificate)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateRenewalCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return await InvokeAsync<SSLCertificate>("SolidCP.Server.WebServer", "generateRenewalCSR", certificate);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "generateRenewalCSR", certificate);
         }
 
-        public SSLCertificate getCertificate(WebSite site)
+        public SolidCP.Providers.Web.SSLCertificate getCertificate(SolidCP.Providers.Web.WebSite site)
         {
-            return (SSLCertificate)Invoke("SolidCP.Server.WebServer", "getCertificate", site);
+            return (SolidCP.Providers.Web.SSLCertificate)Invoke("SolidCP.Server.WebServer", "getCertificate", site);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> getCertificateAsync(WebSite site)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> getCertificateAsync(SolidCP.Providers.Web.WebSite site)
         {
-            return await InvokeAsync<SSLCertificate>("SolidCP.Server.WebServer", "getCertificate", site);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "getCertificate", site);
         }
 
-        public SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate installCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return (SSLCertificate)Invoke("SolidCP.Server.WebServer", "installCertificate", certificate, website);
+            return (SolidCP.Providers.Web.SSLCertificate)Invoke("SolidCP.Server.WebServer", "installCertificate", certificate, website);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> installCertificateAsync(SSLCertificate certificate, WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return await InvokeAsync<SSLCertificate>("SolidCP.Server.WebServer", "installCertificate", certificate, website);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "installCertificate", certificate, website);
         }
 
-        public String LEinstallCertificate(WebSite website, string email)
+        public System.String LEinstallCertificate(SolidCP.Providers.Web.WebSite website, string email)
         {
-            return (String)Invoke("SolidCP.Server.WebServer", "LEinstallCertificate", website, email);
+            return (System.String)Invoke("SolidCP.Server.WebServer", "LEinstallCertificate", website, email);
         }
 
-        public async System.Threading.Tasks.Task<String> LEinstallCertificateAsync(WebSite website, string email)
+        public async System.Threading.Tasks.Task<System.String> LEinstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email)
         {
-            return await InvokeAsync<String>("SolidCP.Server.WebServer", "LEinstallCertificate", website, email);
+            return await InvokeAsync<System.String>("SolidCP.Server.WebServer", "LEinstallCertificate", website, email);
         }
 
-        public SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate installPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
-            return (SSLCertificate)Invoke("SolidCP.Server.WebServer", "installPFX", certificate, password, website);
+            return (SolidCP.Providers.Web.SSLCertificate)Invoke("SolidCP.Server.WebServer", "installPFX", certificate, password, website);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> installPFXAsync(byte[] certificate, string password, WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
-            return await InvokeAsync<SSLCertificate>("SolidCP.Server.WebServer", "installPFX", certificate, password, website);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "installPFX", certificate, password, website);
         }
 
         public byte[] exportCertificate(string serialNumber, string password)
@@ -1428,42 +1410,42 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<byte[]>("SolidCP.Server.WebServer", "exportCertificate", serialNumber, password);
         }
 
-        public List<SSLCertificate> getServerCertificates()
+        public System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate> getServerCertificates()
         {
-            return (List<SSLCertificate>)Invoke("SolidCP.Server.WebServer", "getServerCertificates");
+            return (System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate>)Invoke("SolidCP.Server.WebServer", "getServerCertificates");
         }
 
-        public async System.Threading.Tasks.Task<List<SSLCertificate>> getServerCertificatesAsync()
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate>> getServerCertificatesAsync()
         {
-            return await InvokeAsync<List<SSLCertificate>>("SolidCP.Server.WebServer", "getServerCertificates");
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate>>("SolidCP.Server.WebServer", "getServerCertificates");
         }
 
-        public ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)
+        public SolidCP.Providers.Common.ResultObject DeleteCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return (ResultObject)Invoke("SolidCP.Server.WebServer", "DeleteCertificate", certificate, website);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.WebServer", "DeleteCertificate", certificate, website);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> DeleteCertificateAsync(SSLCertificate certificate, WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.WebServer", "DeleteCertificate", certificate, website);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.WebServer", "DeleteCertificate", certificate, website);
         }
 
-        public SSLCertificate ImportCertificate(WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate ImportCertificate(SolidCP.Providers.Web.WebSite website)
         {
-            return (SSLCertificate)Invoke("SolidCP.Server.WebServer", "ImportCertificate", website);
+            return (SolidCP.Providers.Web.SSLCertificate)Invoke("SolidCP.Server.WebServer", "ImportCertificate", website);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> ImportCertificateAsync(WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> ImportCertificateAsync(SolidCP.Providers.Web.WebSite website)
         {
-            return await InvokeAsync<SSLCertificate>("SolidCP.Server.WebServer", "ImportCertificate", website);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "ImportCertificate", website);
         }
 
-        public bool CheckCertificate(WebSite webSite)
+        public bool CheckCertificate(SolidCP.Providers.Web.WebSite webSite)
         {
             return (bool)Invoke("SolidCP.Server.WebServer", "CheckCertificate", webSite);
         }
 
-        public async System.Threading.Tasks.Task<bool> CheckCertificateAsync(WebSite webSite)
+        public async System.Threading.Tasks.Task<bool> CheckCertificateAsync(SolidCP.Providers.Web.WebSite webSite)
         {
             return await InvokeAsync<bool>("SolidCP.Server.WebServer", "CheckCertificate", webSite);
         }
@@ -1493,22 +1475,22 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class WebServer : SolidCP.Web.Client.ClientBase<IWebServer, WebServerAssemblyClient>, IWebServer
     {
-        public void ChangeSiteState(string siteId, ServerState state)
+        public void ChangeSiteState(string siteId, SolidCP.Providers.ServerState state)
         {
             base.Client.ChangeSiteState(siteId, state);
         }
 
-        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, ServerState state)
+        public async System.Threading.Tasks.Task ChangeSiteStateAsync(string siteId, SolidCP.Providers.ServerState state)
         {
             await base.Client.ChangeSiteStateAsync(siteId, state);
         }
 
-        public ServerState GetSiteState(string siteId)
+        public SolidCP.Providers.ServerState GetSiteState(string siteId)
         {
             return base.Client.GetSiteState(siteId);
         }
 
-        public async System.Threading.Tasks.Task<ServerState> GetSiteStateAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId)
         {
             return await base.Client.GetSiteStateAsync(siteId);
         }
@@ -1553,52 +1535,52 @@ namespace SolidCP.Server.Client
             return await base.Client.GetSitesAsync();
         }
 
-        public WebSite GetSite(string siteId)
+        public SolidCP.Providers.Web.WebSite GetSite(string siteId)
         {
             return base.Client.GetSite(siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebSite> GetSiteAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebSite> GetSiteAsync(string siteId)
         {
             return await base.Client.GetSiteAsync(siteId);
         }
 
-        public ServerBinding[] GetSiteBindings(string siteId)
+        public SolidCP.Providers.ServerBinding[] GetSiteBindings(string siteId)
         {
             return base.Client.GetSiteBindings(siteId);
         }
 
-        public async System.Threading.Tasks.Task<ServerBinding[]> GetSiteBindingsAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServerBinding[]> GetSiteBindingsAsync(string siteId)
         {
             return await base.Client.GetSiteBindingsAsync(siteId);
         }
 
-        public string CreateSite(WebSite site)
+        public string CreateSite(SolidCP.Providers.Web.WebSite site)
         {
             return base.Client.CreateSite(site);
         }
 
-        public async System.Threading.Tasks.Task<string> CreateSiteAsync(WebSite site)
+        public async System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.Web.WebSite site)
         {
             return await base.Client.CreateSiteAsync(site);
         }
 
-        public void UpdateSite(WebSite site)
+        public void UpdateSite(SolidCP.Providers.Web.WebSite site)
         {
             base.Client.UpdateSite(site);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteAsync(WebSite site)
+        public async System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.Web.WebSite site)
         {
             await base.Client.UpdateSiteAsync(site);
         }
 
-        public void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
+        public void UpdateSiteBindings(string siteId, SolidCP.Providers.ServerBinding[] bindings, bool emptyBindingsAllowed)
         {
             base.Client.UpdateSiteBindings(siteId, bindings, emptyBindingsAllowed);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteBindingsAsync(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
+        public async System.Threading.Tasks.Task UpdateSiteBindingsAsync(string siteId, SolidCP.Providers.ServerBinding[] bindings, bool emptyBindingsAllowed)
         {
             await base.Client.UpdateSiteBindingsAsync(siteId, bindings, emptyBindingsAllowed);
         }
@@ -1613,22 +1595,22 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteSiteAsync(siteId);
         }
 
-        public void ChangeAppPoolState(string siteId, AppPoolState state)
+        public void ChangeAppPoolState(string siteId, SolidCP.Providers.AppPoolState state)
         {
             base.Client.ChangeAppPoolState(siteId, state);
         }
 
-        public async System.Threading.Tasks.Task ChangeAppPoolStateAsync(string siteId, AppPoolState state)
+        public async System.Threading.Tasks.Task ChangeAppPoolStateAsync(string siteId, SolidCP.Providers.AppPoolState state)
         {
             await base.Client.ChangeAppPoolStateAsync(siteId, state);
         }
 
-        public AppPoolState GetAppPoolState(string siteId)
+        public SolidCP.Providers.AppPoolState GetAppPoolState(string siteId)
         {
             return base.Client.GetAppPoolState(siteId);
         }
 
-        public async System.Threading.Tasks.Task<AppPoolState> GetAppPoolStateAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.AppPoolState> GetAppPoolStateAsync(string siteId)
         {
             return await base.Client.GetAppPoolStateAsync(siteId);
         }
@@ -1643,42 +1625,42 @@ namespace SolidCP.Server.Client
             return await base.Client.VirtualDirectoryExistsAsync(siteId, directoryName);
         }
 
-        public WebVirtualDirectory[] GetVirtualDirectories(string siteId)
+        public SolidCP.Providers.Web.WebVirtualDirectory[] GetVirtualDirectories(string siteId)
         {
             return base.Client.GetVirtualDirectories(siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebVirtualDirectory[]> GetVirtualDirectoriesAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebVirtualDirectory[]> GetVirtualDirectoriesAsync(string siteId)
         {
             return await base.Client.GetVirtualDirectoriesAsync(siteId);
         }
 
-        public WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
+        public SolidCP.Providers.Web.WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
         {
             return base.Client.GetVirtualDirectory(siteId, directoryName);
         }
 
-        public async System.Threading.Tasks.Task<WebVirtualDirectory> GetVirtualDirectoryAsync(string siteId, string directoryName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebVirtualDirectory> GetVirtualDirectoryAsync(string siteId, string directoryName)
         {
             return await base.Client.GetVirtualDirectoryAsync(siteId, directoryName);
         }
 
-        public void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+        public void CreateVirtualDirectory(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             base.Client.CreateVirtualDirectory(siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task CreateVirtualDirectoryAsync(string siteId, WebVirtualDirectory directory)
+        public async System.Threading.Tasks.Task CreateVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             await base.Client.CreateVirtualDirectoryAsync(siteId, directory);
         }
 
-        public void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+        public void UpdateVirtualDirectory(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             base.Client.UpdateVirtualDirectory(siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task UpdateVirtualDirectoryAsync(string siteId, WebVirtualDirectory directory)
+        public async System.Threading.Tasks.Task UpdateVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebVirtualDirectory directory)
         {
             await base.Client.UpdateVirtualDirectoryAsync(siteId, directory);
         }
@@ -1703,52 +1685,52 @@ namespace SolidCP.Server.Client
             return await base.Client.AppVirtualDirectoryExistsAsync(siteId, directoryName);
         }
 
-        public WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
+        public SolidCP.Providers.Web.WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
         {
             return base.Client.GetAppVirtualDirectories(siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebAppVirtualDirectory[]> GetAppVirtualDirectoriesAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory[]> GetAppVirtualDirectoriesAsync(string siteId)
         {
             return await base.Client.GetAppVirtualDirectoriesAsync(siteId);
         }
 
-        public WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
+        public SolidCP.Providers.Web.WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
         {
             return base.Client.GetAppVirtualDirectory(siteId, directoryName);
         }
 
-        public async System.Threading.Tasks.Task<WebAppVirtualDirectory> GetAppVirtualDirectoryAsync(string siteId, string directoryName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory> GetAppVirtualDirectoryAsync(string siteId, string directoryName)
         {
             return await base.Client.GetAppVirtualDirectoryAsync(siteId, directoryName);
         }
 
-        public void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+        public void CreateAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             base.Client.CreateAppVirtualDirectory(siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task CreateAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory)
+        public async System.Threading.Tasks.Task CreateAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             await base.Client.CreateAppVirtualDirectoryAsync(siteId, directory);
         }
 
-        public void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+        public void CreateEnterpriseStorageAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             base.Client.CreateEnterpriseStorageAppVirtualDirectory(siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task CreateEnterpriseStorageAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory)
+        public async System.Threading.Tasks.Task CreateEnterpriseStorageAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             await base.Client.CreateEnterpriseStorageAppVirtualDirectoryAsync(siteId, directory);
         }
 
-        public void UpdateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+        public void UpdateAppVirtualDirectory(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             base.Client.UpdateAppVirtualDirectory(siteId, directory);
         }
 
-        public async System.Threading.Tasks.Task UpdateAppVirtualDirectoryAsync(string siteId, WebAppVirtualDirectory directory)
+        public async System.Threading.Tasks.Task UpdateAppVirtualDirectoryAsync(string siteId, SolidCP.Providers.Web.WebAppVirtualDirectory directory)
         {
             await base.Client.UpdateAppVirtualDirectoryAsync(siteId, directory);
         }
@@ -1823,12 +1805,12 @@ namespace SolidCP.Server.Client
             return await base.Client.IsColdFusionSystemInstalledAsync();
         }
 
-        public void GrantWebSiteAccess(string path, string siteId, NTFSPermission permission)
+        public void GrantWebSiteAccess(string path, string siteId, SolidCP.Providers.NTFSPermission permission)
         {
             base.Client.GrantWebSiteAccess(path, siteId, permission);
         }
 
-        public async System.Threading.Tasks.Task GrantWebSiteAccessAsync(string path, string siteId, NTFSPermission permission)
+        public async System.Threading.Tasks.Task GrantWebSiteAccessAsync(string path, string siteId, SolidCP.Providers.NTFSPermission permission)
         {
             await base.Client.GrantWebSiteAccessAsync(path, siteId, permission);
         }
@@ -1853,32 +1835,32 @@ namespace SolidCP.Server.Client
             await base.Client.UninstallSecuredFoldersAsync(siteId);
         }
 
-        public List<WebFolder> GetFolders(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder> GetFolders(string siteId)
         {
             return base.Client.GetFolders(siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebFolder>> GetFoldersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebFolder>> GetFoldersAsync(string siteId)
         {
             return await base.Client.GetFoldersAsync(siteId);
         }
 
-        public WebFolder GetFolder(string siteId, string folderPath)
+        public SolidCP.Providers.Web.WebFolder GetFolder(string siteId, string folderPath)
         {
             return base.Client.GetFolder(siteId, folderPath);
         }
 
-        public async System.Threading.Tasks.Task<WebFolder> GetFolderAsync(string siteId, string folderPath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebFolder> GetFolderAsync(string siteId, string folderPath)
         {
             return await base.Client.GetFolderAsync(siteId, folderPath);
         }
 
-        public void UpdateFolder(string siteId, WebFolder folder)
+        public void UpdateFolder(string siteId, SolidCP.Providers.Web.WebFolder folder)
         {
             base.Client.UpdateFolder(siteId, folder);
         }
 
-        public async System.Threading.Tasks.Task UpdateFolderAsync(string siteId, WebFolder folder)
+        public async System.Threading.Tasks.Task UpdateFolderAsync(string siteId, SolidCP.Providers.Web.WebFolder folder)
         {
             await base.Client.UpdateFolderAsync(siteId, folder);
         }
@@ -1893,32 +1875,32 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteFolderAsync(siteId, folderPath);
         }
 
-        public List<WebUser> GetUsers(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebUser> GetUsers(string siteId)
         {
             return base.Client.GetUsers(siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebUser>> GetUsersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebUser>> GetUsersAsync(string siteId)
         {
             return await base.Client.GetUsersAsync(siteId);
         }
 
-        public WebUser GetUser(string siteId, string userName)
+        public SolidCP.Providers.Web.WebUser GetUser(string siteId, string userName)
         {
             return base.Client.GetUser(siteId, userName);
         }
 
-        public async System.Threading.Tasks.Task<WebUser> GetUserAsync(string siteId, string userName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebUser> GetUserAsync(string siteId, string userName)
         {
             return await base.Client.GetUserAsync(siteId, userName);
         }
 
-        public void UpdateUser(string siteId, WebUser user)
+        public void UpdateUser(string siteId, SolidCP.Providers.Web.WebUser user)
         {
             base.Client.UpdateUser(siteId, user);
         }
 
-        public async System.Threading.Tasks.Task UpdateUserAsync(string siteId, WebUser user)
+        public async System.Threading.Tasks.Task UpdateUserAsync(string siteId, SolidCP.Providers.Web.WebUser user)
         {
             await base.Client.UpdateUserAsync(siteId, user);
         }
@@ -1933,32 +1915,32 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteUserAsync(siteId, userName);
         }
 
-        public List<WebGroup> GetGroups(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup> GetGroups(string siteId)
         {
             return base.Client.GetGroups(siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebGroup>> GetGroupsAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>> GetGroupsAsync(string siteId)
         {
             return await base.Client.GetGroupsAsync(siteId);
         }
 
-        public WebGroup GetGroup(string siteId, string groupName)
+        public SolidCP.Providers.Web.WebGroup GetGroup(string siteId, string groupName)
         {
             return base.Client.GetGroup(siteId, groupName);
         }
 
-        public async System.Threading.Tasks.Task<WebGroup> GetGroupAsync(string siteId, string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebGroup> GetGroupAsync(string siteId, string groupName)
         {
             return await base.Client.GetGroupAsync(siteId, groupName);
         }
 
-        public void UpdateGroup(string siteId, WebGroup group)
+        public void UpdateGroup(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             base.Client.UpdateGroup(siteId, group);
         }
 
-        public async System.Threading.Tasks.Task UpdateGroupAsync(string siteId, WebGroup group)
+        public async System.Threading.Tasks.Task UpdateGroupAsync(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             await base.Client.UpdateGroupAsync(siteId, group);
         }
@@ -1973,12 +1955,12 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteGroupAsync(siteId, groupName);
         }
 
-        public HeliconApeStatus GetHeliconApeStatus(string siteId)
+        public SolidCP.Providers.ResultObjects.HeliconApeStatus GetHeliconApeStatus(string siteId)
         {
             return base.Client.GetHeliconApeStatus(siteId);
         }
 
-        public async System.Threading.Tasks.Task<HeliconApeStatus> GetHeliconApeStatusAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.HeliconApeStatus> GetHeliconApeStatusAsync(string siteId)
         {
             return await base.Client.GetHeliconApeStatusAsync(siteId);
         }
@@ -2013,52 +1995,52 @@ namespace SolidCP.Server.Client
             await base.Client.DisableHeliconApeAsync(siteId);
         }
 
-        public List<HtaccessFolder> GetHeliconApeFolders(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeFolders(string siteId)
         {
             return base.Client.GetHeliconApeFolders(siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<HtaccessFolder>> GetHeliconApeFoldersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessFolder>> GetHeliconApeFoldersAsync(string siteId)
         {
             return await base.Client.GetHeliconApeFoldersAsync(siteId);
         }
 
-        public HtaccessFolder GetHeliconApeHttpdFolder()
+        public SolidCP.Providers.Web.HtaccessFolder GetHeliconApeHttpdFolder()
         {
             return base.Client.GetHeliconApeHttpdFolder();
         }
 
-        public async System.Threading.Tasks.Task<HtaccessFolder> GetHeliconApeHttpdFolderAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeHttpdFolderAsync()
         {
             return await base.Client.GetHeliconApeHttpdFolderAsync();
         }
 
-        public HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
+        public SolidCP.Providers.Web.HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
         {
             return base.Client.GetHeliconApeFolder(siteId, folderPath);
         }
 
-        public async System.Threading.Tasks.Task<HtaccessFolder> GetHeliconApeFolderAsync(string siteId, string folderPath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessFolder> GetHeliconApeFolderAsync(string siteId, string folderPath)
         {
             return await base.Client.GetHeliconApeFolderAsync(siteId, folderPath);
         }
 
-        public void UpdateHeliconApeFolder(string siteId, HtaccessFolder folder)
+        public void UpdateHeliconApeFolder(string siteId, SolidCP.Providers.Web.HtaccessFolder folder)
         {
             base.Client.UpdateHeliconApeFolder(siteId, folder);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeFolderAsync(string siteId, HtaccessFolder folder)
+        public async System.Threading.Tasks.Task UpdateHeliconApeFolderAsync(string siteId, SolidCP.Providers.Web.HtaccessFolder folder)
         {
             await base.Client.UpdateHeliconApeFolderAsync(siteId, folder);
         }
 
-        public void UpdateHeliconApeHttpdFolder(HtaccessFolder folder)
+        public void UpdateHeliconApeHttpdFolder(SolidCP.Providers.Web.HtaccessFolder folder)
         {
             base.Client.UpdateHeliconApeHttpdFolder(folder);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeHttpdFolderAsync(HtaccessFolder folder)
+        public async System.Threading.Tasks.Task UpdateHeliconApeHttpdFolderAsync(SolidCP.Providers.Web.HtaccessFolder folder)
         {
             await base.Client.UpdateHeliconApeHttpdFolderAsync(folder);
         }
@@ -2073,32 +2055,32 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteHeliconApeFolderAsync(siteId, folderPath);
         }
 
-        public List<HtaccessUser> GetHeliconApeUsers(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser> GetHeliconApeUsers(string siteId)
         {
             return base.Client.GetHeliconApeUsers(siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<HtaccessUser>> GetHeliconApeUsersAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.HtaccessUser>> GetHeliconApeUsersAsync(string siteId)
         {
             return await base.Client.GetHeliconApeUsersAsync(siteId);
         }
 
-        public HtaccessUser GetHeliconApeUser(string siteId, string userName)
+        public SolidCP.Providers.Web.HtaccessUser GetHeliconApeUser(string siteId, string userName)
         {
             return base.Client.GetHeliconApeUser(siteId, userName);
         }
 
-        public async System.Threading.Tasks.Task<HtaccessUser> GetHeliconApeUserAsync(string siteId, string userName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.HtaccessUser> GetHeliconApeUserAsync(string siteId, string userName)
         {
             return await base.Client.GetHeliconApeUserAsync(siteId, userName);
         }
 
-        public void UpdateHeliconApeUser(string siteId, HtaccessUser user)
+        public void UpdateHeliconApeUser(string siteId, SolidCP.Providers.Web.HtaccessUser user)
         {
             base.Client.UpdateHeliconApeUser(siteId, user);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeUserAsync(string siteId, HtaccessUser user)
+        public async System.Threading.Tasks.Task UpdateHeliconApeUserAsync(string siteId, SolidCP.Providers.Web.HtaccessUser user)
         {
             await base.Client.UpdateHeliconApeUserAsync(siteId, user);
         }
@@ -2113,32 +2095,32 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteHeliconApeUserAsync(siteId, userName);
         }
 
-        public List<WebGroup> GetHeliconApeGroups(string siteId)
+        public System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup> GetHeliconApeGroups(string siteId)
         {
             return base.Client.GetHeliconApeGroups(siteId);
         }
 
-        public async System.Threading.Tasks.Task<List<WebGroup>> GetHeliconApeGroupsAsync(string siteId)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.WebGroup>> GetHeliconApeGroupsAsync(string siteId)
         {
             return await base.Client.GetHeliconApeGroupsAsync(siteId);
         }
 
-        public WebGroup GetHeliconApeGroup(string siteId, string groupName)
+        public SolidCP.Providers.Web.WebGroup GetHeliconApeGroup(string siteId, string groupName)
         {
             return base.Client.GetHeliconApeGroup(siteId, groupName);
         }
 
-        public async System.Threading.Tasks.Task<WebGroup> GetHeliconApeGroupAsync(string siteId, string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebGroup> GetHeliconApeGroupAsync(string siteId, string groupName)
         {
             return await base.Client.GetHeliconApeGroupAsync(siteId, groupName);
         }
 
-        public void UpdateHeliconApeGroup(string siteId, WebGroup group)
+        public void UpdateHeliconApeGroup(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             base.Client.UpdateHeliconApeGroup(siteId, group);
         }
 
-        public async System.Threading.Tasks.Task UpdateHeliconApeGroupAsync(string siteId, WebGroup group)
+        public async System.Threading.Tasks.Task UpdateHeliconApeGroupAsync(string siteId, SolidCP.Providers.Web.WebGroup group)
         {
             await base.Client.UpdateHeliconApeGroupAsync(siteId, group);
         }
@@ -2173,42 +2155,42 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteHeliconApeGroupAsync(siteId, groupName);
         }
 
-        public WebAppVirtualDirectory[] GetZooApplications(string siteId)
+        public SolidCP.Providers.Web.WebAppVirtualDirectory[] GetZooApplications(string siteId)
         {
             return base.Client.GetZooApplications(siteId);
         }
 
-        public async System.Threading.Tasks.Task<WebAppVirtualDirectory[]> GetZooApplicationsAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebAppVirtualDirectory[]> GetZooApplicationsAsync(string siteId)
         {
             return await base.Client.GetZooApplicationsAsync(siteId);
         }
 
-        public StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
+        public SolidCP.Providers.ResultObjects.StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
         {
             return base.Client.SetZooEnvironmentVariable(siteId, appName, envName, envValue);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> SetZooEnvironmentVariableAsync(string siteId, string appName, string envName, string envValue)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooEnvironmentVariableAsync(string siteId, string appName, string envName, string envValue)
         {
             return await base.Client.SetZooEnvironmentVariableAsync(siteId, appName, envName, envValue);
         }
 
-        public StringResultObject SetZooConsoleEnabled(string siteId, string appName)
+        public SolidCP.Providers.ResultObjects.StringResultObject SetZooConsoleEnabled(string siteId, string appName)
         {
             return base.Client.SetZooConsoleEnabled(siteId, appName);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> SetZooConsoleEnabledAsync(string siteId, string appName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooConsoleEnabledAsync(string siteId, string appName)
         {
             return await base.Client.SetZooConsoleEnabledAsync(siteId, appName);
         }
 
-        public StringResultObject SetZooConsoleDisabled(string siteId, string appName)
+        public SolidCP.Providers.ResultObjects.StringResultObject SetZooConsoleDisabled(string siteId, string appName)
         {
             return base.Client.SetZooConsoleDisabled(siteId, appName);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> SetZooConsoleDisabledAsync(string siteId, string appName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> SetZooConsoleDisabledAsync(string siteId, string appName)
         {
             return await base.Client.SetZooConsoleDisabledAsync(siteId, appName);
         }
@@ -2253,42 +2235,42 @@ namespace SolidCP.Server.Client
             await base.Client.SetResourceLanguageAsync(UserId, resourceLanguage);
         }
 
-        public GalleryLanguagesResult GetGalleryLanguages(int UserId)
+        public SolidCP.Providers.ResultObjects.GalleryLanguagesResult GetGalleryLanguages(int UserId)
         {
             return base.Client.GetGalleryLanguages(UserId);
         }
 
-        public async System.Threading.Tasks.Task<GalleryLanguagesResult> GetGalleryLanguagesAsync(int UserId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryLanguagesResult> GetGalleryLanguagesAsync(int UserId)
         {
             return await base.Client.GetGalleryLanguagesAsync(UserId);
         }
 
-        public GalleryCategoriesResult GetGalleryCategories(int UserId)
+        public SolidCP.Providers.ResultObjects.GalleryCategoriesResult GetGalleryCategories(int UserId)
         {
             return base.Client.GetGalleryCategories(UserId);
         }
 
-        public async System.Threading.Tasks.Task<GalleryCategoriesResult> GetGalleryCategoriesAsync(int UserId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryCategoriesResult> GetGalleryCategoriesAsync(int UserId)
         {
             return await base.Client.GetGalleryCategoriesAsync(UserId);
         }
 
-        public GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId)
+        public SolidCP.Providers.ResultObjects.GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId)
         {
             return base.Client.GetGalleryApplications(UserId, categoryId);
         }
 
-        public async System.Threading.Tasks.Task<GalleryApplicationsResult> GetGalleryApplicationsAsync(int UserId, string categoryId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationsResult> GetGalleryApplicationsAsync(int UserId, string categoryId)
         {
             return await base.Client.GetGalleryApplicationsAsync(UserId, categoryId);
         }
 
-        public GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern)
+        public SolidCP.Providers.ResultObjects.GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern)
         {
             return base.Client.GetGalleryApplicationsFiltered(UserId, pattern);
         }
 
-        public async System.Threading.Tasks.Task<GalleryApplicationsResult> GetGalleryApplicationsFilteredAsync(int UserId, string pattern)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationsResult> GetGalleryApplicationsFilteredAsync(int UserId, string pattern)
         {
             return await base.Client.GetGalleryApplicationsFilteredAsync(UserId, pattern);
         }
@@ -2303,52 +2285,52 @@ namespace SolidCP.Server.Client
             return await base.Client.IsMsDeployInstalledAsync();
         }
 
-        public GalleryApplicationResult GetGalleryApplication(int UserId, string id)
+        public SolidCP.Providers.ResultObjects.GalleryApplicationResult GetGalleryApplication(int UserId, string id)
         {
             return base.Client.GetGalleryApplication(UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<GalleryApplicationResult> GetGalleryApplicationAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.GalleryApplicationResult> GetGalleryApplicationAsync(int UserId, string id)
         {
             return await base.Client.GetGalleryApplicationAsync(UserId, id);
         }
 
-        public GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id)
+        public SolidCP.Providers.WebAppGallery.GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id)
         {
             return base.Client.GetGalleryApplicationStatus(UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<GalleryWebAppStatus> GetGalleryApplicationStatusAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus> GetGalleryApplicationStatusAsync(int UserId, string id)
         {
             return await base.Client.GetGalleryApplicationStatusAsync(UserId, id);
         }
 
-        public GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id)
+        public SolidCP.Providers.WebAppGallery.GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id)
         {
             return base.Client.DownloadGalleryApplication(UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<GalleryWebAppStatus> DownloadGalleryApplicationAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.WebAppGallery.GalleryWebAppStatus> DownloadGalleryApplicationAsync(int UserId, string id)
         {
             return await base.Client.DownloadGalleryApplicationAsync(UserId, id);
         }
 
-        public DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id)
+        public SolidCP.Providers.ResultObjects.DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id)
         {
             return base.Client.GetGalleryApplicationParameters(UserId, id);
         }
 
-        public async System.Threading.Tasks.Task<DeploymentParametersResult> GetGalleryApplicationParametersAsync(int UserId, string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.DeploymentParametersResult> GetGalleryApplicationParametersAsync(int UserId, string id)
         {
             return await base.Client.GetGalleryApplicationParametersAsync(UserId, id);
         }
 
-        public StringResultObject InstallGalleryApplication(int UserId, string id, List<DeploymentParameter> updatedValues, string languageId)
+        public SolidCP.Providers.ResultObjects.StringResultObject InstallGalleryApplication(int UserId, string id, System.Collections.Generic.List<SolidCP.Providers.WebAppGallery.DeploymentParameter> updatedValues, string languageId)
         {
             return base.Client.InstallGalleryApplication(UserId, id, updatedValues, languageId);
         }
 
-        public async System.Threading.Tasks.Task<StringResultObject> InstallGalleryApplicationAsync(int UserId, string id, List<DeploymentParameter> updatedValues, string languageId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.StringResultObject> InstallGalleryApplicationAsync(int UserId, string id, System.Collections.Generic.List<SolidCP.Providers.WebAppGallery.DeploymentParameter> updatedValues, string languageId)
         {
             return await base.Client.InstallGalleryApplicationAsync(UserId, id, updatedValues, languageId);
         }
@@ -2363,12 +2345,12 @@ namespace SolidCP.Server.Client
             return await base.Client.CheckWebManagementAccountExistsAsync(accountName);
         }
 
-        public ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
+        public SolidCP.Providers.Common.ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
         {
             return base.Client.CheckWebManagementPasswordComplexity(accountPassword);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> CheckWebManagementPasswordComplexityAsync(string accountPassword)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> CheckWebManagementPasswordComplexityAsync(string accountPassword)
         {
             return await base.Client.CheckWebManagementPasswordComplexityAsync(accountPassword);
         }
@@ -2403,62 +2385,62 @@ namespace SolidCP.Server.Client
             await base.Client.ChangeWebManagementAccessPasswordAsync(accountName, accountPassword);
         }
 
-        public SSLCertificate generateCSR(SSLCertificate certificate)
+        public SolidCP.Providers.Web.SSLCertificate generateCSR(SolidCP.Providers.Web.SSLCertificate certificate)
         {
             return base.Client.generateCSR(certificate);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> generateCSRAsync(SSLCertificate certificate)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
         {
             return await base.Client.generateCSRAsync(certificate);
         }
 
-        public SSLCertificate generateRenewalCSR(SSLCertificate certificate)
+        public SolidCP.Providers.Web.SSLCertificate generateRenewalCSR(SolidCP.Providers.Web.SSLCertificate certificate)
         {
             return base.Client.generateRenewalCSR(certificate);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> generateRenewalCSRAsync(SSLCertificate certificate)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateRenewalCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
         {
             return await base.Client.generateRenewalCSRAsync(certificate);
         }
 
-        public SSLCertificate getCertificate(WebSite site)
+        public SolidCP.Providers.Web.SSLCertificate getCertificate(SolidCP.Providers.Web.WebSite site)
         {
             return base.Client.getCertificate(site);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> getCertificateAsync(WebSite site)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> getCertificateAsync(SolidCP.Providers.Web.WebSite site)
         {
             return await base.Client.getCertificateAsync(site);
         }
 
-        public SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate installCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
             return base.Client.installCertificate(certificate, website);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> installCertificateAsync(SSLCertificate certificate, WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
             return await base.Client.installCertificateAsync(certificate, website);
         }
 
-        public String LEinstallCertificate(WebSite website, string email)
+        public System.String LEinstallCertificate(SolidCP.Providers.Web.WebSite website, string email)
         {
             return base.Client.LEinstallCertificate(website, email);
         }
 
-        public async System.Threading.Tasks.Task<String> LEinstallCertificateAsync(WebSite website, string email)
+        public async System.Threading.Tasks.Task<System.String> LEinstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email)
         {
             return await base.Client.LEinstallCertificateAsync(website, email);
         }
 
-        public SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate installPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
             return base.Client.installPFX(certificate, password, website);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> installPFXAsync(byte[] certificate, string password, WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
             return await base.Client.installPFXAsync(certificate, password, website);
         }
@@ -2473,42 +2455,42 @@ namespace SolidCP.Server.Client
             return await base.Client.exportCertificateAsync(serialNumber, password);
         }
 
-        public List<SSLCertificate> getServerCertificates()
+        public System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate> getServerCertificates()
         {
             return base.Client.getServerCertificates();
         }
 
-        public async System.Threading.Tasks.Task<List<SSLCertificate>> getServerCertificatesAsync()
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Web.SSLCertificate>> getServerCertificatesAsync()
         {
             return await base.Client.getServerCertificatesAsync();
         }
 
-        public ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)
+        public SolidCP.Providers.Common.ResultObject DeleteCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
             return base.Client.DeleteCertificate(certificate, website);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> DeleteCertificateAsync(SSLCertificate certificate, WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
             return await base.Client.DeleteCertificateAsync(certificate, website);
         }
 
-        public SSLCertificate ImportCertificate(WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate ImportCertificate(SolidCP.Providers.Web.WebSite website)
         {
             return base.Client.ImportCertificate(website);
         }
 
-        public async System.Threading.Tasks.Task<SSLCertificate> ImportCertificateAsync(WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> ImportCertificateAsync(SolidCP.Providers.Web.WebSite website)
         {
             return await base.Client.ImportCertificateAsync(website);
         }
 
-        public bool CheckCertificate(WebSite webSite)
+        public bool CheckCertificate(SolidCP.Providers.Web.WebSite webSite)
         {
             return base.Client.CheckCertificate(webSite);
         }
 
-        public async System.Threading.Tasks.Task<bool> CheckCertificateAsync(WebSite webSite)
+        public async System.Threading.Tasks.Task<bool> CheckCertificateAsync(SolidCP.Providers.Web.WebSite webSite)
         {
             return await base.Client.CheckCertificateAsync(webSite);
         }

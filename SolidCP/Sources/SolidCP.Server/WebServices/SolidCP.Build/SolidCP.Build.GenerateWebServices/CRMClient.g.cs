@@ -1,14 +1,4 @@
 ﻿#if Client
-using System;
-using System.ComponentModel;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using SolidCP.Providers;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.HostedSolution;
-using SolidCP.Providers.ResultObjects;
-using Microsoft.Web.Services3;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -19,87 +9,87 @@ namespace SolidCP.Server.Client
     public interface ICRM
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/CreateOrganization", ReplyAction = "http://smbsaas/solidcp/server/ICRM/CreateOrganizationResponse")]
-        OrganizationResult CreateOrganization(Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize);
+        SolidCP.Providers.Common.OrganizationResult CreateOrganization(System.Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/CreateOrganization", ReplyAction = "http://smbsaas/solidcp/server/ICRM/CreateOrganizationResponse")]
-        System.Threading.Tasks.Task<OrganizationResult> CreateOrganizationAsync(Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.OrganizationResult> CreateOrganizationAsync(System.Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetSupportedCollationNames", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetSupportedCollationNamesResponse")]
         string[] GetSupportedCollationNames();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetSupportedCollationNames", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetSupportedCollationNamesResponse")]
         System.Threading.Tasks.Task<string[]> GetSupportedCollationNamesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCurrencyList", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCurrencyListResponse")]
-        Currency[] GetCurrencyList();
+        SolidCP.Providers.HostedSolution.Currency[] GetCurrencyList();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCurrencyList", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCurrencyListResponse")]
-        System.Threading.Tasks.Task<Currency[]> GetCurrencyListAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Currency[]> GetCurrencyListAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetInstalledLanguagePacks", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetInstalledLanguagePacksResponse")]
         int[] GetInstalledLanguagePacks();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetInstalledLanguagePacks", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetInstalledLanguagePacksResponse")]
         System.Threading.Tasks.Task<int[]> GetInstalledLanguagePacksAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/DeleteOrganization", ReplyAction = "http://smbsaas/solidcp/server/ICRM/DeleteOrganizationResponse")]
-        ResultObject DeleteOrganization(Guid orgId);
+        SolidCP.Providers.Common.ResultObject DeleteOrganization(System.Guid orgId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/DeleteOrganization", ReplyAction = "http://smbsaas/solidcp/server/ICRM/DeleteOrganizationResponse")]
-        System.Threading.Tasks.Task<ResultObject> DeleteOrganizationAsync(Guid orgId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteOrganizationAsync(System.Guid orgId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/CreateCRMUser", ReplyAction = "http://smbsaas/solidcp/server/ICRM/CreateCRMUserResponse")]
-        UserResult CreateCRMUser(OrganizationUser user, string orgName, Guid organizationId, Guid baseUnitId, int CALType);
+        SolidCP.Providers.ResultObjects.UserResult CreateCRMUser(SolidCP.Providers.HostedSolution.OrganizationUser user, string orgName, System.Guid organizationId, System.Guid baseUnitId, int CALType);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/CreateCRMUser", ReplyAction = "http://smbsaas/solidcp/server/ICRM/CreateCRMUserResponse")]
-        System.Threading.Tasks.Task<UserResult> CreateCRMUserAsync(OrganizationUser user, string orgName, Guid organizationId, Guid baseUnitId, int CALType);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.UserResult> CreateCRMUserAsync(SolidCP.Providers.HostedSolution.OrganizationUser user, string orgName, System.Guid organizationId, System.Guid baseUnitId, int CALType);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetOrganizationBusinessUnits", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetOrganizationBusinessUnitsResponse")]
-        CRMBusinessUnitsResult GetOrganizationBusinessUnits(Guid organizationId, string orgName);
+        SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult GetOrganizationBusinessUnits(System.Guid organizationId, string orgName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetOrganizationBusinessUnits", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetOrganizationBusinessUnitsResponse")]
-        System.Threading.Tasks.Task<CRMBusinessUnitsResult> GetOrganizationBusinessUnitsAsync(Guid organizationId, string orgName);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult> GetOrganizationBusinessUnitsAsync(System.Guid organizationId, string orgName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetAllCrmRoles", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetAllCrmRolesResponse")]
-        CrmRolesResult GetAllCrmRoles(string orgName, Guid businessUnitId);
+        SolidCP.Providers.ResultObjects.CrmRolesResult GetAllCrmRoles(string orgName, System.Guid businessUnitId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetAllCrmRoles", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetAllCrmRolesResponse")]
-        System.Threading.Tasks.Task<CrmRolesResult> GetAllCrmRolesAsync(string orgName, Guid businessUnitId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmRolesResult> GetAllCrmRolesAsync(string orgName, System.Guid businessUnitId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCrmUserRoles", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCrmUserRolesResponse")]
-        CrmRolesResult GetCrmUserRoles(string orgName, Guid userId);
+        SolidCP.Providers.ResultObjects.CrmRolesResult GetCrmUserRoles(string orgName, System.Guid userId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCrmUserRoles", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCrmUserRolesResponse")]
-        System.Threading.Tasks.Task<CrmRolesResult> GetCrmUserRolesAsync(string orgName, Guid userId);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmRolesResult> GetCrmUserRolesAsync(string orgName, System.Guid userId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/SetUserRoles", ReplyAction = "http://smbsaas/solidcp/server/ICRM/SetUserRolesResponse")]
-        ResultObject SetUserRoles(string orgName, Guid userId, Guid[] roles);
+        SolidCP.Providers.Common.ResultObject SetUserRoles(string orgName, System.Guid userId, System.Guid[] roles);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/SetUserRoles", ReplyAction = "http://smbsaas/solidcp/server/ICRM/SetUserRolesResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetUserRolesAsync(string orgName, Guid userId, Guid[] roles);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetUserRolesAsync(string orgName, System.Guid userId, System.Guid[] roles);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/SetUserCALType", ReplyAction = "http://smbsaas/solidcp/server/ICRM/SetUserCALTypeResponse")]
-        ResultObject SetUserCALType(string orgName, Guid userId, int CALType);
+        SolidCP.Providers.Common.ResultObject SetUserCALType(string orgName, System.Guid userId, int CALType);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/SetUserCALType", ReplyAction = "http://smbsaas/solidcp/server/ICRM/SetUserCALTypeResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetUserCALTypeAsync(string orgName, Guid userId, int CALType);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetUserCALTypeAsync(string orgName, System.Guid userId, int CALType);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCrmUserByDomainName", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCrmUserByDomainNameResponse")]
-        CrmUserResult GetCrmUserByDomainName(string domainName, string orgName);
+        SolidCP.Providers.ResultObjects.CrmUserResult GetCrmUserByDomainName(string domainName, string orgName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCrmUserByDomainName", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCrmUserByDomainNameResponse")]
-        System.Threading.Tasks.Task<CrmUserResult> GetCrmUserByDomainNameAsync(string domainName, string orgName);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmUserResult> GetCrmUserByDomainNameAsync(string domainName, string orgName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCrmUserById", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCrmUserByIdResponse")]
-        CrmUserResult GetCrmUserById(Guid crmUserId, string orgName);
+        SolidCP.Providers.ResultObjects.CrmUserResult GetCrmUserById(System.Guid crmUserId, string orgName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetCrmUserById", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetCrmUserByIdResponse")]
-        System.Threading.Tasks.Task<CrmUserResult> GetCrmUserByIdAsync(Guid crmUserId, string orgName);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmUserResult> GetCrmUserByIdAsync(System.Guid crmUserId, string orgName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/ChangeUserState", ReplyAction = "http://smbsaas/solidcp/server/ICRM/ChangeUserStateResponse")]
-        ResultObject ChangeUserState(bool disable, string orgName, Guid crmUserId);
+        SolidCP.Providers.Common.ResultObject ChangeUserState(bool disable, string orgName, System.Guid crmUserId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/ChangeUserState", ReplyAction = "http://smbsaas/solidcp/server/ICRM/ChangeUserStateResponse")]
-        System.Threading.Tasks.Task<ResultObject> ChangeUserStateAsync(bool disable, string orgName, Guid crmUserId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> ChangeUserStateAsync(bool disable, string orgName, System.Guid crmUserId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetDBSize", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetDBSizeResponse")]
-        long GetDBSize(Guid organizationId);
+        long GetDBSize(System.Guid organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetDBSize", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetDBSizeResponse")]
-        System.Threading.Tasks.Task<long> GetDBSizeAsync(Guid organizationId);
+        System.Threading.Tasks.Task<long> GetDBSizeAsync(System.Guid organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetMaxDBSize", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetMaxDBSizeResponse")]
-        long GetMaxDBSize(Guid organizationId);
+        long GetMaxDBSize(System.Guid organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/GetMaxDBSize", ReplyAction = "http://smbsaas/solidcp/server/ICRM/GetMaxDBSizeResponse")]
-        System.Threading.Tasks.Task<long> GetMaxDBSizeAsync(Guid organizationId);
+        System.Threading.Tasks.Task<long> GetMaxDBSizeAsync(System.Guid organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/SetMaxDBSize", ReplyAction = "http://smbsaas/solidcp/server/ICRM/SetMaxDBSizeResponse")]
-        ResultObject SetMaxDBSize(Guid organizationId, long maxSize);
+        SolidCP.Providers.Common.ResultObject SetMaxDBSize(System.Guid organizationId, long maxSize);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ICRM/SetMaxDBSize", ReplyAction = "http://smbsaas/solidcp/server/ICRM/SetMaxDBSizeResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetMaxDBSizeAsync(Guid organizationId, long maxSize);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetMaxDBSizeAsync(System.Guid organizationId, long maxSize);
     }
 
     // wcf client assembly proxy class
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class CRMAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, ICRM
     {
-        public OrganizationResult CreateOrganization(Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
+        public SolidCP.Providers.Common.OrganizationResult CreateOrganization(System.Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
         {
-            return (OrganizationResult)Invoke("SolidCP.Server.CRM", "CreateOrganization", organizationId, organizationUniqueName, organizationFriendlyName, baseLanguageCode, ou, baseCurrencyCode, baseCurrencyName, baseCurrencySymbol, initialUserDomainName, initialUserFirstName, initialUserLastName, initialUserPrimaryEmail, organizationCollation, maxSize);
+            return (SolidCP.Providers.Common.OrganizationResult)Invoke("SolidCP.Server.CRM", "CreateOrganization", organizationId, organizationUniqueName, organizationFriendlyName, baseLanguageCode, ou, baseCurrencyCode, baseCurrencyName, baseCurrencySymbol, initialUserDomainName, initialUserFirstName, initialUserLastName, initialUserPrimaryEmail, organizationCollation, maxSize);
         }
 
-        public async System.Threading.Tasks.Task<OrganizationResult> CreateOrganizationAsync(Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.OrganizationResult> CreateOrganizationAsync(System.Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
         {
-            return await InvokeAsync<OrganizationResult>("SolidCP.Server.CRM", "CreateOrganization", organizationId, organizationUniqueName, organizationFriendlyName, baseLanguageCode, ou, baseCurrencyCode, baseCurrencyName, baseCurrencySymbol, initialUserDomainName, initialUserFirstName, initialUserLastName, initialUserPrimaryEmail, organizationCollation, maxSize);
+            return await InvokeAsync<SolidCP.Providers.Common.OrganizationResult>("SolidCP.Server.CRM", "CreateOrganization", organizationId, organizationUniqueName, organizationFriendlyName, baseLanguageCode, ou, baseCurrencyCode, baseCurrencyName, baseCurrencySymbol, initialUserDomainName, initialUserFirstName, initialUserLastName, initialUserPrimaryEmail, organizationCollation, maxSize);
         }
 
         public string[] GetSupportedCollationNames()
@@ -112,14 +102,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.CRM", "GetSupportedCollationNames");
         }
 
-        public Currency[] GetCurrencyList()
+        public SolidCP.Providers.HostedSolution.Currency[] GetCurrencyList()
         {
-            return (Currency[])Invoke("SolidCP.Server.CRM", "GetCurrencyList");
+            return (SolidCP.Providers.HostedSolution.Currency[])Invoke("SolidCP.Server.CRM", "GetCurrencyList");
         }
 
-        public async System.Threading.Tasks.Task<Currency[]> GetCurrencyListAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Currency[]> GetCurrencyListAsync()
         {
-            return await InvokeAsync<Currency[]>("SolidCP.Server.CRM", "GetCurrencyList");
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.Currency[]>("SolidCP.Server.CRM", "GetCurrencyList");
         }
 
         public int[] GetInstalledLanguagePacks()
@@ -132,134 +122,134 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<int[]>("SolidCP.Server.CRM", "GetInstalledLanguagePacks");
         }
 
-        public ResultObject DeleteOrganization(Guid orgId)
+        public SolidCP.Providers.Common.ResultObject DeleteOrganization(System.Guid orgId)
         {
-            return (ResultObject)Invoke("SolidCP.Server.CRM", "DeleteOrganization", orgId);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.CRM", "DeleteOrganization", orgId);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> DeleteOrganizationAsync(Guid orgId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteOrganizationAsync(System.Guid orgId)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.CRM", "DeleteOrganization", orgId);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.CRM", "DeleteOrganization", orgId);
         }
 
-        public UserResult CreateCRMUser(OrganizationUser user, string orgName, Guid organizationId, Guid baseUnitId, int CALType)
+        public SolidCP.Providers.ResultObjects.UserResult CreateCRMUser(SolidCP.Providers.HostedSolution.OrganizationUser user, string orgName, System.Guid organizationId, System.Guid baseUnitId, int CALType)
         {
-            return (UserResult)Invoke("SolidCP.Server.CRM", "CreateCRMUser", user, orgName, organizationId, baseUnitId, CALType);
+            return (SolidCP.Providers.ResultObjects.UserResult)Invoke("SolidCP.Server.CRM", "CreateCRMUser", user, orgName, organizationId, baseUnitId, CALType);
         }
 
-        public async System.Threading.Tasks.Task<UserResult> CreateCRMUserAsync(OrganizationUser user, string orgName, Guid organizationId, Guid baseUnitId, int CALType)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.UserResult> CreateCRMUserAsync(SolidCP.Providers.HostedSolution.OrganizationUser user, string orgName, System.Guid organizationId, System.Guid baseUnitId, int CALType)
         {
-            return await InvokeAsync<UserResult>("SolidCP.Server.CRM", "CreateCRMUser", user, orgName, organizationId, baseUnitId, CALType);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.UserResult>("SolidCP.Server.CRM", "CreateCRMUser", user, orgName, organizationId, baseUnitId, CALType);
         }
 
-        public CRMBusinessUnitsResult GetOrganizationBusinessUnits(Guid organizationId, string orgName)
+        public SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult GetOrganizationBusinessUnits(System.Guid organizationId, string orgName)
         {
-            return (CRMBusinessUnitsResult)Invoke("SolidCP.Server.CRM", "GetOrganizationBusinessUnits", organizationId, orgName);
+            return (SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult)Invoke("SolidCP.Server.CRM", "GetOrganizationBusinessUnits", organizationId, orgName);
         }
 
-        public async System.Threading.Tasks.Task<CRMBusinessUnitsResult> GetOrganizationBusinessUnitsAsync(Guid organizationId, string orgName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult> GetOrganizationBusinessUnitsAsync(System.Guid organizationId, string orgName)
         {
-            return await InvokeAsync<CRMBusinessUnitsResult>("SolidCP.Server.CRM", "GetOrganizationBusinessUnits", organizationId, orgName);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult>("SolidCP.Server.CRM", "GetOrganizationBusinessUnits", organizationId, orgName);
         }
 
-        public CrmRolesResult GetAllCrmRoles(string orgName, Guid businessUnitId)
+        public SolidCP.Providers.ResultObjects.CrmRolesResult GetAllCrmRoles(string orgName, System.Guid businessUnitId)
         {
-            return (CrmRolesResult)Invoke("SolidCP.Server.CRM", "GetAllCrmRoles", orgName, businessUnitId);
+            return (SolidCP.Providers.ResultObjects.CrmRolesResult)Invoke("SolidCP.Server.CRM", "GetAllCrmRoles", orgName, businessUnitId);
         }
 
-        public async System.Threading.Tasks.Task<CrmRolesResult> GetAllCrmRolesAsync(string orgName, Guid businessUnitId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmRolesResult> GetAllCrmRolesAsync(string orgName, System.Guid businessUnitId)
         {
-            return await InvokeAsync<CrmRolesResult>("SolidCP.Server.CRM", "GetAllCrmRoles", orgName, businessUnitId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.CrmRolesResult>("SolidCP.Server.CRM", "GetAllCrmRoles", orgName, businessUnitId);
         }
 
-        public CrmRolesResult GetCrmUserRoles(string orgName, Guid userId)
+        public SolidCP.Providers.ResultObjects.CrmRolesResult GetCrmUserRoles(string orgName, System.Guid userId)
         {
-            return (CrmRolesResult)Invoke("SolidCP.Server.CRM", "GetCrmUserRoles", orgName, userId);
+            return (SolidCP.Providers.ResultObjects.CrmRolesResult)Invoke("SolidCP.Server.CRM", "GetCrmUserRoles", orgName, userId);
         }
 
-        public async System.Threading.Tasks.Task<CrmRolesResult> GetCrmUserRolesAsync(string orgName, Guid userId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmRolesResult> GetCrmUserRolesAsync(string orgName, System.Guid userId)
         {
-            return await InvokeAsync<CrmRolesResult>("SolidCP.Server.CRM", "GetCrmUserRoles", orgName, userId);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.CrmRolesResult>("SolidCP.Server.CRM", "GetCrmUserRoles", orgName, userId);
         }
 
-        public ResultObject SetUserRoles(string orgName, Guid userId, Guid[] roles)
+        public SolidCP.Providers.Common.ResultObject SetUserRoles(string orgName, System.Guid userId, System.Guid[] roles)
         {
-            return (ResultObject)Invoke("SolidCP.Server.CRM", "SetUserRoles", orgName, userId, roles);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.CRM", "SetUserRoles", orgName, userId, roles);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetUserRolesAsync(string orgName, Guid userId, Guid[] roles)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetUserRolesAsync(string orgName, System.Guid userId, System.Guid[] roles)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.CRM", "SetUserRoles", orgName, userId, roles);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.CRM", "SetUserRoles", orgName, userId, roles);
         }
 
-        public ResultObject SetUserCALType(string orgName, Guid userId, int CALType)
+        public SolidCP.Providers.Common.ResultObject SetUserCALType(string orgName, System.Guid userId, int CALType)
         {
-            return (ResultObject)Invoke("SolidCP.Server.CRM", "SetUserCALType", orgName, userId, CALType);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.CRM", "SetUserCALType", orgName, userId, CALType);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetUserCALTypeAsync(string orgName, Guid userId, int CALType)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetUserCALTypeAsync(string orgName, System.Guid userId, int CALType)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.CRM", "SetUserCALType", orgName, userId, CALType);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.CRM", "SetUserCALType", orgName, userId, CALType);
         }
 
-        public CrmUserResult GetCrmUserByDomainName(string domainName, string orgName)
+        public SolidCP.Providers.ResultObjects.CrmUserResult GetCrmUserByDomainName(string domainName, string orgName)
         {
-            return (CrmUserResult)Invoke("SolidCP.Server.CRM", "GetCrmUserByDomainName", domainName, orgName);
+            return (SolidCP.Providers.ResultObjects.CrmUserResult)Invoke("SolidCP.Server.CRM", "GetCrmUserByDomainName", domainName, orgName);
         }
 
-        public async System.Threading.Tasks.Task<CrmUserResult> GetCrmUserByDomainNameAsync(string domainName, string orgName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmUserResult> GetCrmUserByDomainNameAsync(string domainName, string orgName)
         {
-            return await InvokeAsync<CrmUserResult>("SolidCP.Server.CRM", "GetCrmUserByDomainName", domainName, orgName);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.CrmUserResult>("SolidCP.Server.CRM", "GetCrmUserByDomainName", domainName, orgName);
         }
 
-        public CrmUserResult GetCrmUserById(Guid crmUserId, string orgName)
+        public SolidCP.Providers.ResultObjects.CrmUserResult GetCrmUserById(System.Guid crmUserId, string orgName)
         {
-            return (CrmUserResult)Invoke("SolidCP.Server.CRM", "GetCrmUserById", crmUserId, orgName);
+            return (SolidCP.Providers.ResultObjects.CrmUserResult)Invoke("SolidCP.Server.CRM", "GetCrmUserById", crmUserId, orgName);
         }
 
-        public async System.Threading.Tasks.Task<CrmUserResult> GetCrmUserByIdAsync(Guid crmUserId, string orgName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmUserResult> GetCrmUserByIdAsync(System.Guid crmUserId, string orgName)
         {
-            return await InvokeAsync<CrmUserResult>("SolidCP.Server.CRM", "GetCrmUserById", crmUserId, orgName);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.CrmUserResult>("SolidCP.Server.CRM", "GetCrmUserById", crmUserId, orgName);
         }
 
-        public ResultObject ChangeUserState(bool disable, string orgName, Guid crmUserId)
+        public SolidCP.Providers.Common.ResultObject ChangeUserState(bool disable, string orgName, System.Guid crmUserId)
         {
-            return (ResultObject)Invoke("SolidCP.Server.CRM", "ChangeUserState", disable, orgName, crmUserId);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.CRM", "ChangeUserState", disable, orgName, crmUserId);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> ChangeUserStateAsync(bool disable, string orgName, Guid crmUserId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> ChangeUserStateAsync(bool disable, string orgName, System.Guid crmUserId)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.CRM", "ChangeUserState", disable, orgName, crmUserId);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.CRM", "ChangeUserState", disable, orgName, crmUserId);
         }
 
-        public long GetDBSize(Guid organizationId)
+        public long GetDBSize(System.Guid organizationId)
         {
             return (long)Invoke("SolidCP.Server.CRM", "GetDBSize", organizationId);
         }
 
-        public async System.Threading.Tasks.Task<long> GetDBSizeAsync(Guid organizationId)
+        public async System.Threading.Tasks.Task<long> GetDBSizeAsync(System.Guid organizationId)
         {
             return await InvokeAsync<long>("SolidCP.Server.CRM", "GetDBSize", organizationId);
         }
 
-        public long GetMaxDBSize(Guid organizationId)
+        public long GetMaxDBSize(System.Guid organizationId)
         {
             return (long)Invoke("SolidCP.Server.CRM", "GetMaxDBSize", organizationId);
         }
 
-        public async System.Threading.Tasks.Task<long> GetMaxDBSizeAsync(Guid organizationId)
+        public async System.Threading.Tasks.Task<long> GetMaxDBSizeAsync(System.Guid organizationId)
         {
             return await InvokeAsync<long>("SolidCP.Server.CRM", "GetMaxDBSize", organizationId);
         }
 
-        public ResultObject SetMaxDBSize(Guid organizationId, long maxSize)
+        public SolidCP.Providers.Common.ResultObject SetMaxDBSize(System.Guid organizationId, long maxSize)
         {
-            return (ResultObject)Invoke("SolidCP.Server.CRM", "SetMaxDBSize", organizationId, maxSize);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.CRM", "SetMaxDBSize", organizationId, maxSize);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetMaxDBSizeAsync(Guid organizationId, long maxSize)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetMaxDBSizeAsync(System.Guid organizationId, long maxSize)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.CRM", "SetMaxDBSize", organizationId, maxSize);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.CRM", "SetMaxDBSize", organizationId, maxSize);
         }
     }
 
@@ -267,12 +257,12 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class CRM : SolidCP.Web.Client.ClientBase<ICRM, CRMAssemblyClient>, ICRM
     {
-        public OrganizationResult CreateOrganization(Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
+        public SolidCP.Providers.Common.OrganizationResult CreateOrganization(System.Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
         {
             return base.Client.CreateOrganization(organizationId, organizationUniqueName, organizationFriendlyName, baseLanguageCode, ou, baseCurrencyCode, baseCurrencyName, baseCurrencySymbol, initialUserDomainName, initialUserFirstName, initialUserLastName, initialUserPrimaryEmail, organizationCollation, maxSize);
         }
 
-        public async System.Threading.Tasks.Task<OrganizationResult> CreateOrganizationAsync(Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.OrganizationResult> CreateOrganizationAsync(System.Guid organizationId, string organizationUniqueName, string organizationFriendlyName, int baseLanguageCode, string ou, string baseCurrencyCode, string baseCurrencyName, string baseCurrencySymbol, string initialUserDomainName, string initialUserFirstName, string initialUserLastName, string initialUserPrimaryEmail, string organizationCollation, long maxSize)
         {
             return await base.Client.CreateOrganizationAsync(organizationId, organizationUniqueName, organizationFriendlyName, baseLanguageCode, ou, baseCurrencyCode, baseCurrencyName, baseCurrencySymbol, initialUserDomainName, initialUserFirstName, initialUserLastName, initialUserPrimaryEmail, organizationCollation, maxSize);
         }
@@ -287,12 +277,12 @@ namespace SolidCP.Server.Client
             return await base.Client.GetSupportedCollationNamesAsync();
         }
 
-        public Currency[] GetCurrencyList()
+        public SolidCP.Providers.HostedSolution.Currency[] GetCurrencyList()
         {
             return base.Client.GetCurrencyList();
         }
 
-        public async System.Threading.Tasks.Task<Currency[]> GetCurrencyListAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Currency[]> GetCurrencyListAsync()
         {
             return await base.Client.GetCurrencyListAsync();
         }
@@ -307,132 +297,132 @@ namespace SolidCP.Server.Client
             return await base.Client.GetInstalledLanguagePacksAsync();
         }
 
-        public ResultObject DeleteOrganization(Guid orgId)
+        public SolidCP.Providers.Common.ResultObject DeleteOrganization(System.Guid orgId)
         {
             return base.Client.DeleteOrganization(orgId);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> DeleteOrganizationAsync(Guid orgId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteOrganizationAsync(System.Guid orgId)
         {
             return await base.Client.DeleteOrganizationAsync(orgId);
         }
 
-        public UserResult CreateCRMUser(OrganizationUser user, string orgName, Guid organizationId, Guid baseUnitId, int CALType)
+        public SolidCP.Providers.ResultObjects.UserResult CreateCRMUser(SolidCP.Providers.HostedSolution.OrganizationUser user, string orgName, System.Guid organizationId, System.Guid baseUnitId, int CALType)
         {
             return base.Client.CreateCRMUser(user, orgName, organizationId, baseUnitId, CALType);
         }
 
-        public async System.Threading.Tasks.Task<UserResult> CreateCRMUserAsync(OrganizationUser user, string orgName, Guid organizationId, Guid baseUnitId, int CALType)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.UserResult> CreateCRMUserAsync(SolidCP.Providers.HostedSolution.OrganizationUser user, string orgName, System.Guid organizationId, System.Guid baseUnitId, int CALType)
         {
             return await base.Client.CreateCRMUserAsync(user, orgName, organizationId, baseUnitId, CALType);
         }
 
-        public CRMBusinessUnitsResult GetOrganizationBusinessUnits(Guid organizationId, string orgName)
+        public SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult GetOrganizationBusinessUnits(System.Guid organizationId, string orgName)
         {
             return base.Client.GetOrganizationBusinessUnits(organizationId, orgName);
         }
 
-        public async System.Threading.Tasks.Task<CRMBusinessUnitsResult> GetOrganizationBusinessUnitsAsync(Guid organizationId, string orgName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CRMBusinessUnitsResult> GetOrganizationBusinessUnitsAsync(System.Guid organizationId, string orgName)
         {
             return await base.Client.GetOrganizationBusinessUnitsAsync(organizationId, orgName);
         }
 
-        public CrmRolesResult GetAllCrmRoles(string orgName, Guid businessUnitId)
+        public SolidCP.Providers.ResultObjects.CrmRolesResult GetAllCrmRoles(string orgName, System.Guid businessUnitId)
         {
             return base.Client.GetAllCrmRoles(orgName, businessUnitId);
         }
 
-        public async System.Threading.Tasks.Task<CrmRolesResult> GetAllCrmRolesAsync(string orgName, Guid businessUnitId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmRolesResult> GetAllCrmRolesAsync(string orgName, System.Guid businessUnitId)
         {
             return await base.Client.GetAllCrmRolesAsync(orgName, businessUnitId);
         }
 
-        public CrmRolesResult GetCrmUserRoles(string orgName, Guid userId)
+        public SolidCP.Providers.ResultObjects.CrmRolesResult GetCrmUserRoles(string orgName, System.Guid userId)
         {
             return base.Client.GetCrmUserRoles(orgName, userId);
         }
 
-        public async System.Threading.Tasks.Task<CrmRolesResult> GetCrmUserRolesAsync(string orgName, Guid userId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmRolesResult> GetCrmUserRolesAsync(string orgName, System.Guid userId)
         {
             return await base.Client.GetCrmUserRolesAsync(orgName, userId);
         }
 
-        public ResultObject SetUserRoles(string orgName, Guid userId, Guid[] roles)
+        public SolidCP.Providers.Common.ResultObject SetUserRoles(string orgName, System.Guid userId, System.Guid[] roles)
         {
             return base.Client.SetUserRoles(orgName, userId, roles);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetUserRolesAsync(string orgName, Guid userId, Guid[] roles)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetUserRolesAsync(string orgName, System.Guid userId, System.Guid[] roles)
         {
             return await base.Client.SetUserRolesAsync(orgName, userId, roles);
         }
 
-        public ResultObject SetUserCALType(string orgName, Guid userId, int CALType)
+        public SolidCP.Providers.Common.ResultObject SetUserCALType(string orgName, System.Guid userId, int CALType)
         {
             return base.Client.SetUserCALType(orgName, userId, CALType);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetUserCALTypeAsync(string orgName, Guid userId, int CALType)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetUserCALTypeAsync(string orgName, System.Guid userId, int CALType)
         {
             return await base.Client.SetUserCALTypeAsync(orgName, userId, CALType);
         }
 
-        public CrmUserResult GetCrmUserByDomainName(string domainName, string orgName)
+        public SolidCP.Providers.ResultObjects.CrmUserResult GetCrmUserByDomainName(string domainName, string orgName)
         {
             return base.Client.GetCrmUserByDomainName(domainName, orgName);
         }
 
-        public async System.Threading.Tasks.Task<CrmUserResult> GetCrmUserByDomainNameAsync(string domainName, string orgName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmUserResult> GetCrmUserByDomainNameAsync(string domainName, string orgName)
         {
             return await base.Client.GetCrmUserByDomainNameAsync(domainName, orgName);
         }
 
-        public CrmUserResult GetCrmUserById(Guid crmUserId, string orgName)
+        public SolidCP.Providers.ResultObjects.CrmUserResult GetCrmUserById(System.Guid crmUserId, string orgName)
         {
             return base.Client.GetCrmUserById(crmUserId, orgName);
         }
 
-        public async System.Threading.Tasks.Task<CrmUserResult> GetCrmUserByIdAsync(Guid crmUserId, string orgName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.CrmUserResult> GetCrmUserByIdAsync(System.Guid crmUserId, string orgName)
         {
             return await base.Client.GetCrmUserByIdAsync(crmUserId, orgName);
         }
 
-        public ResultObject ChangeUserState(bool disable, string orgName, Guid crmUserId)
+        public SolidCP.Providers.Common.ResultObject ChangeUserState(bool disable, string orgName, System.Guid crmUserId)
         {
             return base.Client.ChangeUserState(disable, orgName, crmUserId);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> ChangeUserStateAsync(bool disable, string orgName, Guid crmUserId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> ChangeUserStateAsync(bool disable, string orgName, System.Guid crmUserId)
         {
             return await base.Client.ChangeUserStateAsync(disable, orgName, crmUserId);
         }
 
-        public long GetDBSize(Guid organizationId)
+        public long GetDBSize(System.Guid organizationId)
         {
             return base.Client.GetDBSize(organizationId);
         }
 
-        public async System.Threading.Tasks.Task<long> GetDBSizeAsync(Guid organizationId)
+        public async System.Threading.Tasks.Task<long> GetDBSizeAsync(System.Guid organizationId)
         {
             return await base.Client.GetDBSizeAsync(organizationId);
         }
 
-        public long GetMaxDBSize(Guid organizationId)
+        public long GetMaxDBSize(System.Guid organizationId)
         {
             return base.Client.GetMaxDBSize(organizationId);
         }
 
-        public async System.Threading.Tasks.Task<long> GetMaxDBSizeAsync(Guid organizationId)
+        public async System.Threading.Tasks.Task<long> GetMaxDBSizeAsync(System.Guid organizationId)
         {
             return await base.Client.GetMaxDBSizeAsync(organizationId);
         }
 
-        public ResultObject SetMaxDBSize(Guid organizationId, long maxSize)
+        public SolidCP.Providers.Common.ResultObject SetMaxDBSize(System.Guid organizationId, long maxSize)
         {
             return base.Client.SetMaxDBSize(organizationId, maxSize);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetMaxDBSizeAsync(Guid organizationId, long maxSize)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetMaxDBSizeAsync(System.Guid organizationId, long maxSize)
         {
             return await base.Client.SetMaxDBSizeAsync(organizationId, maxSize);
         }

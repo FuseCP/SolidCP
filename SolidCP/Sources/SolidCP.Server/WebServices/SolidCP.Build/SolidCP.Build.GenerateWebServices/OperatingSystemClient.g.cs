@@ -1,19 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.OS;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.DNS;
-using SolidCP.Providers.DomainLookup;
-using System.Collections.Generic;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -36,25 +21,25 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DirectoryExists", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DirectoryExistsResponse")]
         System.Threading.Tasks.Task<bool> DirectoryExistsAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFileResponse")]
-        SystemFile GetFile(string path);
+        SolidCP.Providers.OS.SystemFile GetFile(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFileResponse")]
-        System.Threading.Tasks.Task<SystemFile> GetFileAsync(string path);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFileAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesResponse")]
-        SystemFile[] GetFiles(string path);
+        SolidCP.Providers.OS.SystemFile[] GetFiles(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesResponse")]
-        System.Threading.Tasks.Task<SystemFile[]> GetFilesAsync(string path);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetDirectoriesRecursive", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetDirectoriesRecursiveResponse")]
-        SystemFile[] GetDirectoriesRecursive(string rootFolder, string path);
+        SolidCP.Providers.OS.SystemFile[] GetDirectoriesRecursive(string rootFolder, string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetDirectoriesRecursive", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetDirectoriesRecursiveResponse")]
-        System.Threading.Tasks.Task<SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursive", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveResponse")]
-        SystemFile[] GetFilesRecursive(string rootFolder, string path);
+        SolidCP.Providers.OS.SystemFile[] GetFilesRecursive(string rootFolder, string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursive", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveResponse")]
-        System.Threading.Tasks.Task<SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveByPattern", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveByPatternResponse")]
-        SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern);
+        SolidCP.Providers.OS.SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveByPattern", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveByPatternResponse")]
-        System.Threading.Tasks.Task<SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContent", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContentResponse")]
         byte[] GetFileBinaryContent(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContent", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContentResponse")]
@@ -80,9 +65,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CreateDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CreateDirectoryResponse")]
         System.Threading.Tasks.Task CreateDirectoryAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeFileAttributes", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeFileAttributesResponse")]
-        void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime);
+        void ChangeFileAttributes(string path, System.DateTime createdTime, System.DateTime changedTime);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeFileAttributes", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeFileAttributesResponse")]
-        System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, DateTime createdTime, DateTime changedTime);
+        System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, System.DateTime createdTime, System.DateTime changedTime);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteFileResponse")]
         void DeleteFile(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteFileResponse")]
@@ -136,21 +121,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CreateAccessDatabase", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CreateAccessDatabaseResponse")]
         System.Threading.Tasks.Task CreateAccessDatabaseAsync(string databasePath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetGroupNtfsPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetGroupNtfsPermissionsResponse")]
-        UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU);
+        SolidCP.Providers.OS.UserPermission[] GetGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetGroupNtfsPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetGroupNtfsPermissionsResponse")]
-        System.Threading.Tasks.Task<UserPermission[]> GetGroupNtfsPermissionsAsync(string path, UserPermission[] users, string usersOU);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.UserPermission[]> GetGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GrantGroupNtfsPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GrantGroupNtfsPermissionsResponse")]
-        void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions);
+        void GrantGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GrantGroupNtfsPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GrantGroupNtfsPermissionsResponse")]
-        System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, UserPermission[] users, string usersOU, bool resetChildPermissions);
+        System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/SetQuotaLimitOnFolder", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/SetQuotaLimitOnFolderResponse")]
-        void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
+        void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/SetQuotaLimitOnFolder", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/SetQuotaLimitOnFolderResponse")]
-        System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
+        System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetQuotaOnFolder", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetQuotaOnFolderResponse")]
-        Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword);
+        SolidCP.Providers.OS.Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetQuotaOnFolder", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetQuotaOnFolderResponse")]
-        System.Threading.Tasks.Task<Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDirectoryRecursive", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDirectoryRecursiveResponse")]
         void DeleteDirectoryRecursive(string rootPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDirectoryRecursive", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDirectoryRecursiveResponse")]
@@ -164,13 +149,13 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InstallFsrmService", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InstallFsrmServiceResponse")]
         System.Threading.Tasks.Task<bool> InstallFsrmServiceAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFolderGraph", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFolderGraphResponse")]
-        FolderGraph GetFolderGraph(string path);
+        SolidCP.Providers.OS.FolderGraph GetFolderGraph(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetFolderGraph", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetFolderGraphResponse")]
-        System.Threading.Tasks.Task<FolderGraph> GetFolderGraphAsync(string path);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.FolderGraph> GetFolderGraphAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSyncActions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSyncActionsResponse")]
-        void ExecuteSyncActions(FileSyncAction[] actions);
+        void ExecuteSyncActions(SolidCP.Providers.OS.FileSyncAction[] actions);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSyncActions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSyncActionsResponse")]
-        System.Threading.Tasks.Task ExecuteSyncActionsAsync(FileSyncAction[] actions);
+        System.Threading.Tasks.Task ExecuteSyncActionsAsync(SolidCP.Providers.OS.FileSyncAction[] actions);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetInstalledOdbcDrivers", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetInstalledOdbcDriversResponse")]
         string[] GetInstalledOdbcDrivers();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetInstalledOdbcDrivers", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetInstalledOdbcDriversResponse")]
@@ -180,17 +165,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetDSNNames", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetDSNNamesResponse")]
         System.Threading.Tasks.Task<string[]> GetDSNNamesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetDSNResponse")]
-        SystemDSN GetDSN(string dsnName);
+        SolidCP.Providers.OS.SystemDSN GetDSN(string dsnName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetDSNResponse")]
-        System.Threading.Tasks.Task<SystemDSN> GetDSNAsync(string dsnName);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemDSN> GetDSNAsync(string dsnName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CreateDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CreateDSNResponse")]
-        void CreateDSN(SystemDSN dsn);
+        void CreateDSN(SolidCP.Providers.OS.SystemDSN dsn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CreateDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CreateDSNResponse")]
-        System.Threading.Tasks.Task CreateDSNAsync(SystemDSN dsn);
+        System.Threading.Tasks.Task CreateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/UpdateDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/UpdateDSNResponse")]
-        void UpdateDSN(SystemDSN dsn);
+        void UpdateDSN(SolidCP.Providers.OS.SystemDSN dsn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/UpdateDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/UpdateDSNResponse")]
-        System.Threading.Tasks.Task UpdateDSNAsync(SystemDSN dsn);
+        System.Threading.Tasks.Task UpdateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSNResponse")]
         void DeleteDSN(string dsnName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSNResponse")]
@@ -231,54 +216,54 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.OperatingSystem", "DirectoryExists", path);
         }
 
-        public SystemFile GetFile(string path)
+        public SolidCP.Providers.OS.SystemFile GetFile(string path)
         {
-            return (SystemFile)Invoke("SolidCP.Server.OperatingSystem", "GetFile", path);
+            return (SolidCP.Providers.OS.SystemFile)Invoke("SolidCP.Server.OperatingSystem", "GetFile", path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile> GetFileAsync(string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFileAsync(string path)
         {
-            return await InvokeAsync<SystemFile>("SolidCP.Server.OperatingSystem", "GetFile", path);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemFile>("SolidCP.Server.OperatingSystem", "GetFile", path);
         }
 
-        public SystemFile[] GetFiles(string path)
+        public SolidCP.Providers.OS.SystemFile[] GetFiles(string path)
         {
-            return (SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFiles", path);
+            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFiles", path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetFilesAsync(string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesAsync(string path)
         {
-            return await InvokeAsync<SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFiles", path);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFiles", path);
         }
 
-        public SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
+        public SolidCP.Providers.OS.SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
         {
-            return (SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetDirectoriesRecursive", rootFolder, path);
+            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetDirectoriesRecursive", rootFolder, path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path)
         {
-            return await InvokeAsync<SystemFile[]>("SolidCP.Server.OperatingSystem", "GetDirectoriesRecursive", rootFolder, path);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetDirectoriesRecursive", rootFolder, path);
         }
 
-        public SystemFile[] GetFilesRecursive(string rootFolder, string path)
+        public SolidCP.Providers.OS.SystemFile[] GetFilesRecursive(string rootFolder, string path)
         {
-            return (SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFilesRecursive", rootFolder, path);
+            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFilesRecursive", rootFolder, path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path)
         {
-            return await InvokeAsync<SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFilesRecursive", rootFolder, path);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFilesRecursive", rootFolder, path);
         }
 
-        public SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
+        public SolidCP.Providers.OS.SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
         {
-            return (SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFilesRecursiveByPattern", rootFolder, path, pattern);
+            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFilesRecursiveByPattern", rootFolder, path, pattern);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern)
         {
-            return await InvokeAsync<SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFilesRecursiveByPattern", rootFolder, path, pattern);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFilesRecursiveByPattern", rootFolder, path, pattern);
         }
 
         public byte[] GetFileBinaryContent(string path)
@@ -341,12 +326,12 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.OperatingSystem", "CreateDirectory", path);
         }
 
-        public void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime)
+        public void ChangeFileAttributes(string path, System.DateTime createdTime, System.DateTime changedTime)
         {
             Invoke("SolidCP.Server.OperatingSystem", "ChangeFileAttributes", path, createdTime, changedTime);
         }
 
-        public async System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, DateTime createdTime, DateTime changedTime)
+        public async System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, System.DateTime createdTime, System.DateTime changedTime)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "ChangeFileAttributes", path, createdTime, changedTime);
         }
@@ -481,44 +466,44 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.OperatingSystem", "CreateAccessDatabase", databasePath);
         }
 
-        public UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU)
+        public SolidCP.Providers.OS.UserPermission[] GetGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
         {
-            return (UserPermission[])Invoke("SolidCP.Server.OperatingSystem", "GetGroupNtfsPermissions", path, users, usersOU);
+            return (SolidCP.Providers.OS.UserPermission[])Invoke("SolidCP.Server.OperatingSystem", "GetGroupNtfsPermissions", path, users, usersOU);
         }
 
-        public async System.Threading.Tasks.Task<UserPermission[]> GetGroupNtfsPermissionsAsync(string path, UserPermission[] users, string usersOU)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.UserPermission[]> GetGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
         {
-            return await InvokeAsync<UserPermission[]>("SolidCP.Server.OperatingSystem", "GetGroupNtfsPermissions", path, users, usersOU);
+            return await InvokeAsync<SolidCP.Providers.OS.UserPermission[]>("SolidCP.Server.OperatingSystem", "GetGroupNtfsPermissions", path, users, usersOU);
         }
 
-        public void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions)
+        public void GrantGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions)
         {
             Invoke("SolidCP.Server.OperatingSystem", "GrantGroupNtfsPermissions", path, users, usersOU, resetChildPermissions);
         }
 
-        public async System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, UserPermission[] users, string usersOU, bool resetChildPermissions)
+        public async System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "GrantGroupNtfsPermissions", path, users, usersOU, resetChildPermissions);
         }
 
-        public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+        public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
         {
             Invoke("SolidCP.Server.OperatingSystem", "SetQuotaLimitOnFolder", folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
         }
 
-        public async System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+        public async System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "SetQuotaLimitOnFolder", folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
         }
 
-        public Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
+        public SolidCP.Providers.OS.Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
         {
-            return (Quota)Invoke("SolidCP.Server.OperatingSystem", "GetQuotaOnFolder", folderPath, wmiUserName, wmiPassword);
+            return (SolidCP.Providers.OS.Quota)Invoke("SolidCP.Server.OperatingSystem", "GetQuotaOnFolder", folderPath, wmiUserName, wmiPassword);
         }
 
-        public async System.Threading.Tasks.Task<Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword)
         {
-            return await InvokeAsync<Quota>("SolidCP.Server.OperatingSystem", "GetQuotaOnFolder", folderPath, wmiUserName, wmiPassword);
+            return await InvokeAsync<SolidCP.Providers.OS.Quota>("SolidCP.Server.OperatingSystem", "GetQuotaOnFolder", folderPath, wmiUserName, wmiPassword);
         }
 
         public void DeleteDirectoryRecursive(string rootPath)
@@ -551,22 +536,22 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.OperatingSystem", "InstallFsrmService");
         }
 
-        public FolderGraph GetFolderGraph(string path)
+        public SolidCP.Providers.OS.FolderGraph GetFolderGraph(string path)
         {
-            return (FolderGraph)Invoke("SolidCP.Server.OperatingSystem", "GetFolderGraph", path);
+            return (SolidCP.Providers.OS.FolderGraph)Invoke("SolidCP.Server.OperatingSystem", "GetFolderGraph", path);
         }
 
-        public async System.Threading.Tasks.Task<FolderGraph> GetFolderGraphAsync(string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.FolderGraph> GetFolderGraphAsync(string path)
         {
-            return await InvokeAsync<FolderGraph>("SolidCP.Server.OperatingSystem", "GetFolderGraph", path);
+            return await InvokeAsync<SolidCP.Providers.OS.FolderGraph>("SolidCP.Server.OperatingSystem", "GetFolderGraph", path);
         }
 
-        public void ExecuteSyncActions(FileSyncAction[] actions)
+        public void ExecuteSyncActions(SolidCP.Providers.OS.FileSyncAction[] actions)
         {
             Invoke("SolidCP.Server.OperatingSystem", "ExecuteSyncActions", actions);
         }
 
-        public async System.Threading.Tasks.Task ExecuteSyncActionsAsync(FileSyncAction[] actions)
+        public async System.Threading.Tasks.Task ExecuteSyncActionsAsync(SolidCP.Providers.OS.FileSyncAction[] actions)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "ExecuteSyncActions", actions);
         }
@@ -591,32 +576,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.OperatingSystem", "GetDSNNames");
         }
 
-        public SystemDSN GetDSN(string dsnName)
+        public SolidCP.Providers.OS.SystemDSN GetDSN(string dsnName)
         {
-            return (SystemDSN)Invoke("SolidCP.Server.OperatingSystem", "GetDSN", dsnName);
+            return (SolidCP.Providers.OS.SystemDSN)Invoke("SolidCP.Server.OperatingSystem", "GetDSN", dsnName);
         }
 
-        public async System.Threading.Tasks.Task<SystemDSN> GetDSNAsync(string dsnName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemDSN> GetDSNAsync(string dsnName)
         {
-            return await InvokeAsync<SystemDSN>("SolidCP.Server.OperatingSystem", "GetDSN", dsnName);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemDSN>("SolidCP.Server.OperatingSystem", "GetDSN", dsnName);
         }
 
-        public void CreateDSN(SystemDSN dsn)
+        public void CreateDSN(SolidCP.Providers.OS.SystemDSN dsn)
         {
             Invoke("SolidCP.Server.OperatingSystem", "CreateDSN", dsn);
         }
 
-        public async System.Threading.Tasks.Task CreateDSNAsync(SystemDSN dsn)
+        public async System.Threading.Tasks.Task CreateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "CreateDSN", dsn);
         }
 
-        public void UpdateDSN(SystemDSN dsn)
+        public void UpdateDSN(SolidCP.Providers.OS.SystemDSN dsn)
         {
             Invoke("SolidCP.Server.OperatingSystem", "UpdateDSN", dsn);
         }
 
-        public async System.Threading.Tasks.Task UpdateDSNAsync(SystemDSN dsn)
+        public async System.Threading.Tasks.Task UpdateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "UpdateDSN", dsn);
         }
@@ -666,52 +651,52 @@ namespace SolidCP.Server.Client
             return await base.Client.DirectoryExistsAsync(path);
         }
 
-        public SystemFile GetFile(string path)
+        public SolidCP.Providers.OS.SystemFile GetFile(string path)
         {
             return base.Client.GetFile(path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile> GetFileAsync(string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFileAsync(string path)
         {
             return await base.Client.GetFileAsync(path);
         }
 
-        public SystemFile[] GetFiles(string path)
+        public SolidCP.Providers.OS.SystemFile[] GetFiles(string path)
         {
             return base.Client.GetFiles(path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetFilesAsync(string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesAsync(string path)
         {
             return await base.Client.GetFilesAsync(path);
         }
 
-        public SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
+        public SolidCP.Providers.OS.SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
         {
             return base.Client.GetDirectoriesRecursive(rootFolder, path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path)
         {
             return await base.Client.GetDirectoriesRecursiveAsync(rootFolder, path);
         }
 
-        public SystemFile[] GetFilesRecursive(string rootFolder, string path)
+        public SolidCP.Providers.OS.SystemFile[] GetFilesRecursive(string rootFolder, string path)
         {
             return base.Client.GetFilesRecursive(rootFolder, path);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path)
         {
             return await base.Client.GetFilesRecursiveAsync(rootFolder, path);
         }
 
-        public SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
+        public SolidCP.Providers.OS.SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
         {
             return base.Client.GetFilesRecursiveByPattern(rootFolder, path, pattern);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern)
         {
             return await base.Client.GetFilesRecursiveByPatternAsync(rootFolder, path, pattern);
         }
@@ -776,12 +761,12 @@ namespace SolidCP.Server.Client
             await base.Client.CreateDirectoryAsync(path);
         }
 
-        public void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime)
+        public void ChangeFileAttributes(string path, System.DateTime createdTime, System.DateTime changedTime)
         {
             base.Client.ChangeFileAttributes(path, createdTime, changedTime);
         }
 
-        public async System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, DateTime createdTime, DateTime changedTime)
+        public async System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, System.DateTime createdTime, System.DateTime changedTime)
         {
             await base.Client.ChangeFileAttributesAsync(path, createdTime, changedTime);
         }
@@ -916,42 +901,42 @@ namespace SolidCP.Server.Client
             await base.Client.CreateAccessDatabaseAsync(databasePath);
         }
 
-        public UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU)
+        public SolidCP.Providers.OS.UserPermission[] GetGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
         {
             return base.Client.GetGroupNtfsPermissions(path, users, usersOU);
         }
 
-        public async System.Threading.Tasks.Task<UserPermission[]> GetGroupNtfsPermissionsAsync(string path, UserPermission[] users, string usersOU)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.UserPermission[]> GetGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
         {
             return await base.Client.GetGroupNtfsPermissionsAsync(path, users, usersOU);
         }
 
-        public void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions)
+        public void GrantGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions)
         {
             base.Client.GrantGroupNtfsPermissions(path, users, usersOU, resetChildPermissions);
         }
 
-        public async System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, UserPermission[] users, string usersOU, bool resetChildPermissions)
+        public async System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions)
         {
             await base.Client.GrantGroupNtfsPermissionsAsync(path, users, usersOU, resetChildPermissions);
         }
 
-        public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+        public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
         {
             base.Client.SetQuotaLimitOnFolder(folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
         }
 
-        public async System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+        public async System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
         {
             await base.Client.SetQuotaLimitOnFolderAsync(folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
         }
 
-        public Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
+        public SolidCP.Providers.OS.Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
         {
             return base.Client.GetQuotaOnFolder(folderPath, wmiUserName, wmiPassword);
         }
 
-        public async System.Threading.Tasks.Task<Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword)
         {
             return await base.Client.GetQuotaOnFolderAsync(folderPath, wmiUserName, wmiPassword);
         }
@@ -986,22 +971,22 @@ namespace SolidCP.Server.Client
             return await base.Client.InstallFsrmServiceAsync();
         }
 
-        public FolderGraph GetFolderGraph(string path)
+        public SolidCP.Providers.OS.FolderGraph GetFolderGraph(string path)
         {
             return base.Client.GetFolderGraph(path);
         }
 
-        public async System.Threading.Tasks.Task<FolderGraph> GetFolderGraphAsync(string path)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.FolderGraph> GetFolderGraphAsync(string path)
         {
             return await base.Client.GetFolderGraphAsync(path);
         }
 
-        public void ExecuteSyncActions(FileSyncAction[] actions)
+        public void ExecuteSyncActions(SolidCP.Providers.OS.FileSyncAction[] actions)
         {
             base.Client.ExecuteSyncActions(actions);
         }
 
-        public async System.Threading.Tasks.Task ExecuteSyncActionsAsync(FileSyncAction[] actions)
+        public async System.Threading.Tasks.Task ExecuteSyncActionsAsync(SolidCP.Providers.OS.FileSyncAction[] actions)
         {
             await base.Client.ExecuteSyncActionsAsync(actions);
         }
@@ -1026,32 +1011,32 @@ namespace SolidCP.Server.Client
             return await base.Client.GetDSNNamesAsync();
         }
 
-        public SystemDSN GetDSN(string dsnName)
+        public SolidCP.Providers.OS.SystemDSN GetDSN(string dsnName)
         {
             return base.Client.GetDSN(dsnName);
         }
 
-        public async System.Threading.Tasks.Task<SystemDSN> GetDSNAsync(string dsnName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemDSN> GetDSNAsync(string dsnName)
         {
             return await base.Client.GetDSNAsync(dsnName);
         }
 
-        public void CreateDSN(SystemDSN dsn)
+        public void CreateDSN(SolidCP.Providers.OS.SystemDSN dsn)
         {
             base.Client.CreateDSN(dsn);
         }
 
-        public async System.Threading.Tasks.Task CreateDSNAsync(SystemDSN dsn)
+        public async System.Threading.Tasks.Task CreateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn)
         {
             await base.Client.CreateDSNAsync(dsn);
         }
 
-        public void UpdateDSN(SystemDSN dsn)
+        public void UpdateDSN(SolidCP.Providers.OS.SystemDSN dsn)
         {
             base.Client.UpdateDSN(dsn);
         }
 
-        public async System.Threading.Tasks.Task UpdateDSNAsync(SystemDSN dsn)
+        public async System.Threading.Tasks.Task UpdateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn)
         {
             await base.Client.UpdateDSNAsync(dsn);
         }

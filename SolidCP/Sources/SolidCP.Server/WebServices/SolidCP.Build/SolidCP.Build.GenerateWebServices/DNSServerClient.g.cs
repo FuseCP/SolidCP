@@ -1,14 +1,4 @@
 ﻿#if Client
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using SolidCP.Providers;
-using SolidCP.Providers.DNS;
-using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -43,25 +33,25 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/UpdateSoaRecord", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/UpdateSoaRecordResponse")]
         System.Threading.Tasks.Task UpdateSoaRecordAsync(string zoneName, string host, string primaryNsServer, string primaryPerson);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/GetZoneRecords", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/GetZoneRecordsResponse")]
-        DnsRecord[] GetZoneRecords(string zoneName);
+        SolidCP.Providers.DNS.DnsRecord[] GetZoneRecords(string zoneName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/GetZoneRecords", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/GetZoneRecordsResponse")]
-        System.Threading.Tasks.Task<DnsRecord[]> GetZoneRecordsAsync(string zoneName);
+        System.Threading.Tasks.Task<SolidCP.Providers.DNS.DnsRecord[]> GetZoneRecordsAsync(string zoneName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecord", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecordResponse")]
-        void AddZoneRecord(string zoneName, DnsRecord record);
+        void AddZoneRecord(string zoneName, SolidCP.Providers.DNS.DnsRecord record);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecord", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecordResponse")]
-        System.Threading.Tasks.Task AddZoneRecordAsync(string zoneName, DnsRecord record);
+        System.Threading.Tasks.Task AddZoneRecordAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord record);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecord", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecordResponse")]
-        void DeleteZoneRecord(string zoneName, DnsRecord record);
+        void DeleteZoneRecord(string zoneName, SolidCP.Providers.DNS.DnsRecord record);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecord", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecordResponse")]
-        System.Threading.Tasks.Task DeleteZoneRecordAsync(string zoneName, DnsRecord record);
+        System.Threading.Tasks.Task DeleteZoneRecordAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord record);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecords", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecordsResponse")]
-        void AddZoneRecords(string zoneName, DnsRecord[] records);
+        void AddZoneRecords(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecords", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/AddZoneRecordsResponse")]
-        System.Threading.Tasks.Task AddZoneRecordsAsync(string zoneName, DnsRecord[] records);
+        System.Threading.Tasks.Task AddZoneRecordsAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecords", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecordsResponse")]
-        void DeleteZoneRecords(string zoneName, DnsRecord[] records);
+        void DeleteZoneRecords(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecords", ReplyAction = "http://smbsaas/solidcp/server/IDNSServer/DeleteZoneRecordsResponse")]
-        System.Threading.Tasks.Task DeleteZoneRecordsAsync(string zoneName, DnsRecord[] records);
+        System.Threading.Tasks.Task DeleteZoneRecordsAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records);
     }
 
     // wcf client assembly proxy class
@@ -128,52 +118,52 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.DNSServer", "UpdateSoaRecord", zoneName, host, primaryNsServer, primaryPerson);
         }
 
-        public DnsRecord[] GetZoneRecords(string zoneName)
+        public SolidCP.Providers.DNS.DnsRecord[] GetZoneRecords(string zoneName)
         {
-            return (DnsRecord[])Invoke("SolidCP.Server.DNSServer", "GetZoneRecords", zoneName);
+            return (SolidCP.Providers.DNS.DnsRecord[])Invoke("SolidCP.Server.DNSServer", "GetZoneRecords", zoneName);
         }
 
-        public async System.Threading.Tasks.Task<DnsRecord[]> GetZoneRecordsAsync(string zoneName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.DNS.DnsRecord[]> GetZoneRecordsAsync(string zoneName)
         {
-            return await InvokeAsync<DnsRecord[]>("SolidCP.Server.DNSServer", "GetZoneRecords", zoneName);
+            return await InvokeAsync<SolidCP.Providers.DNS.DnsRecord[]>("SolidCP.Server.DNSServer", "GetZoneRecords", zoneName);
         }
 
-        public void AddZoneRecord(string zoneName, DnsRecord record)
+        public void AddZoneRecord(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             Invoke("SolidCP.Server.DNSServer", "AddZoneRecord", zoneName, record);
         }
 
-        public async System.Threading.Tasks.Task AddZoneRecordAsync(string zoneName, DnsRecord record)
+        public async System.Threading.Tasks.Task AddZoneRecordAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             await InvokeAsync("SolidCP.Server.DNSServer", "AddZoneRecord", zoneName, record);
         }
 
-        public void DeleteZoneRecord(string zoneName, DnsRecord record)
+        public void DeleteZoneRecord(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             Invoke("SolidCP.Server.DNSServer", "DeleteZoneRecord", zoneName, record);
         }
 
-        public async System.Threading.Tasks.Task DeleteZoneRecordAsync(string zoneName, DnsRecord record)
+        public async System.Threading.Tasks.Task DeleteZoneRecordAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             await InvokeAsync("SolidCP.Server.DNSServer", "DeleteZoneRecord", zoneName, record);
         }
 
-        public void AddZoneRecords(string zoneName, DnsRecord[] records)
+        public void AddZoneRecords(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             Invoke("SolidCP.Server.DNSServer", "AddZoneRecords", zoneName, records);
         }
 
-        public async System.Threading.Tasks.Task AddZoneRecordsAsync(string zoneName, DnsRecord[] records)
+        public async System.Threading.Tasks.Task AddZoneRecordsAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             await InvokeAsync("SolidCP.Server.DNSServer", "AddZoneRecords", zoneName, records);
         }
 
-        public void DeleteZoneRecords(string zoneName, DnsRecord[] records)
+        public void DeleteZoneRecords(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             Invoke("SolidCP.Server.DNSServer", "DeleteZoneRecords", zoneName, records);
         }
 
-        public async System.Threading.Tasks.Task DeleteZoneRecordsAsync(string zoneName, DnsRecord[] records)
+        public async System.Threading.Tasks.Task DeleteZoneRecordsAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             await InvokeAsync("SolidCP.Server.DNSServer", "DeleteZoneRecords", zoneName, records);
         }
@@ -243,52 +233,52 @@ namespace SolidCP.Server.Client
             await base.Client.UpdateSoaRecordAsync(zoneName, host, primaryNsServer, primaryPerson);
         }
 
-        public DnsRecord[] GetZoneRecords(string zoneName)
+        public SolidCP.Providers.DNS.DnsRecord[] GetZoneRecords(string zoneName)
         {
             return base.Client.GetZoneRecords(zoneName);
         }
 
-        public async System.Threading.Tasks.Task<DnsRecord[]> GetZoneRecordsAsync(string zoneName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.DNS.DnsRecord[]> GetZoneRecordsAsync(string zoneName)
         {
             return await base.Client.GetZoneRecordsAsync(zoneName);
         }
 
-        public void AddZoneRecord(string zoneName, DnsRecord record)
+        public void AddZoneRecord(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             base.Client.AddZoneRecord(zoneName, record);
         }
 
-        public async System.Threading.Tasks.Task AddZoneRecordAsync(string zoneName, DnsRecord record)
+        public async System.Threading.Tasks.Task AddZoneRecordAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             await base.Client.AddZoneRecordAsync(zoneName, record);
         }
 
-        public void DeleteZoneRecord(string zoneName, DnsRecord record)
+        public void DeleteZoneRecord(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             base.Client.DeleteZoneRecord(zoneName, record);
         }
 
-        public async System.Threading.Tasks.Task DeleteZoneRecordAsync(string zoneName, DnsRecord record)
+        public async System.Threading.Tasks.Task DeleteZoneRecordAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord record)
         {
             await base.Client.DeleteZoneRecordAsync(zoneName, record);
         }
 
-        public void AddZoneRecords(string zoneName, DnsRecord[] records)
+        public void AddZoneRecords(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             base.Client.AddZoneRecords(zoneName, records);
         }
 
-        public async System.Threading.Tasks.Task AddZoneRecordsAsync(string zoneName, DnsRecord[] records)
+        public async System.Threading.Tasks.Task AddZoneRecordsAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             await base.Client.AddZoneRecordsAsync(zoneName, records);
         }
 
-        public void DeleteZoneRecords(string zoneName, DnsRecord[] records)
+        public void DeleteZoneRecords(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             base.Client.DeleteZoneRecords(zoneName, records);
         }
 
-        public async System.Threading.Tasks.Task DeleteZoneRecordsAsync(string zoneName, DnsRecord[] records)
+        public async System.Threading.Tasks.Task DeleteZoneRecordsAsync(string zoneName, SolidCP.Providers.DNS.DnsRecord[] records)
         {
             await base.Client.DeleteZoneRecordsAsync(zoneName, records);
         }

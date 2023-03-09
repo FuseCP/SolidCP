@@ -6,10 +6,15 @@
     <Nullable>enable</Nullable>
     <LangVersion>11</LangVersion>
     <DefineConstants>$(DefineConstants);Client</DefineConstants>
+    <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
 </Project>

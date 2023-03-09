@@ -1,21 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Collections.Generic;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.Web;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers.WebAppGallery;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.HeliconZoo;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -26,13 +9,13 @@ namespace SolidCP.Server.Client
     public interface IHeliconZoo
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHeliconZoo/GetEngines", ReplyAction = "http://smbsaas/solidcp/server/IHeliconZoo/GetEnginesResponse")]
-        HeliconZooEngine[] GetEngines();
+        SolidCP.Providers.HeliconZoo.HeliconZooEngine[] GetEngines();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHeliconZoo/GetEngines", ReplyAction = "http://smbsaas/solidcp/server/IHeliconZoo/GetEnginesResponse")]
-        System.Threading.Tasks.Task<HeliconZooEngine[]> GetEnginesAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.HeliconZoo.HeliconZooEngine[]> GetEnginesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHeliconZoo/SetEngines", ReplyAction = "http://smbsaas/solidcp/server/IHeliconZoo/SetEnginesResponse")]
-        void SetEngines(HeliconZooEngine[] userEngines);
+        void SetEngines(SolidCP.Providers.HeliconZoo.HeliconZooEngine[] userEngines);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHeliconZoo/SetEngines", ReplyAction = "http://smbsaas/solidcp/server/IHeliconZoo/SetEnginesResponse")]
-        System.Threading.Tasks.Task SetEnginesAsync(HeliconZooEngine[] userEngines);
+        System.Threading.Tasks.Task SetEnginesAsync(SolidCP.Providers.HeliconZoo.HeliconZooEngine[] userEngines);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHeliconZoo/IsEnginesEnabled", ReplyAction = "http://smbsaas/solidcp/server/IHeliconZoo/IsEnginesEnabledResponse")]
         bool IsEnginesEnabled();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IHeliconZoo/IsEnginesEnabled", ReplyAction = "http://smbsaas/solidcp/server/IHeliconZoo/IsEnginesEnabledResponse")]
@@ -63,22 +46,22 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class HeliconZooAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, IHeliconZoo
     {
-        public HeliconZooEngine[] GetEngines()
+        public SolidCP.Providers.HeliconZoo.HeliconZooEngine[] GetEngines()
         {
-            return (HeliconZooEngine[])Invoke("SolidCP.Server.HeliconZoo", "GetEngines");
+            return (SolidCP.Providers.HeliconZoo.HeliconZooEngine[])Invoke("SolidCP.Server.HeliconZoo", "GetEngines");
         }
 
-        public async System.Threading.Tasks.Task<HeliconZooEngine[]> GetEnginesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HeliconZoo.HeliconZooEngine[]> GetEnginesAsync()
         {
-            return await InvokeAsync<HeliconZooEngine[]>("SolidCP.Server.HeliconZoo", "GetEngines");
+            return await InvokeAsync<SolidCP.Providers.HeliconZoo.HeliconZooEngine[]>("SolidCP.Server.HeliconZoo", "GetEngines");
         }
 
-        public void SetEngines(HeliconZooEngine[] userEngines)
+        public void SetEngines(SolidCP.Providers.HeliconZoo.HeliconZooEngine[] userEngines)
         {
             Invoke("SolidCP.Server.HeliconZoo", "SetEngines", userEngines);
         }
 
-        public async System.Threading.Tasks.Task SetEnginesAsync(HeliconZooEngine[] userEngines)
+        public async System.Threading.Tasks.Task SetEnginesAsync(SolidCP.Providers.HeliconZoo.HeliconZooEngine[] userEngines)
         {
             await InvokeAsync("SolidCP.Server.HeliconZoo", "SetEngines", userEngines);
         }
@@ -148,22 +131,22 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class HeliconZoo : SolidCP.Web.Client.ClientBase<IHeliconZoo, HeliconZooAssemblyClient>, IHeliconZoo
     {
-        public HeliconZooEngine[] GetEngines()
+        public SolidCP.Providers.HeliconZoo.HeliconZooEngine[] GetEngines()
         {
             return base.Client.GetEngines();
         }
 
-        public async System.Threading.Tasks.Task<HeliconZooEngine[]> GetEnginesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HeliconZoo.HeliconZooEngine[]> GetEnginesAsync()
         {
             return await base.Client.GetEnginesAsync();
         }
 
-        public void SetEngines(HeliconZooEngine[] userEngines)
+        public void SetEngines(SolidCP.Providers.HeliconZoo.HeliconZooEngine[] userEngines)
         {
             base.Client.SetEngines(userEngines);
         }
 
-        public async System.Threading.Tasks.Task SetEnginesAsync(HeliconZooEngine[] userEngines)
+        public async System.Threading.Tasks.Task SetEnginesAsync(SolidCP.Providers.HeliconZoo.HeliconZooEngine[] userEngines)
         {
             await base.Client.SetEnginesAsync(userEngines);
         }

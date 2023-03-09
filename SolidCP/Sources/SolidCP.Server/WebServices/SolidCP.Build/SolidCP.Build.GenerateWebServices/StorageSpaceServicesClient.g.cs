@@ -1,19 +1,4 @@
 ﻿#if Client
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.EnterpriseStorage;
-using SolidCP.Providers.OS;
-using SolidCP.Providers.StorageSpaces;
-using SolidCP.Server.Utils;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -24,37 +9,37 @@ namespace SolidCP.Server.Client
     public interface IStorageSpaceServices
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetAllDriveLetters", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetAllDriveLettersResponse")]
-        List<SystemFile> GetAllDriveLetters();
+        System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile> GetAllDriveLetters();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetAllDriveLetters", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetAllDriveLettersResponse")]
-        System.Threading.Tasks.Task<List<SystemFile>> GetAllDriveLettersAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>> GetAllDriveLettersAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetSystemSubFolders", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetSystemSubFoldersResponse")]
-        List<SystemFile> GetSystemSubFolders(string path);
+        System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile> GetSystemSubFolders(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetSystemSubFolders", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetSystemSubFoldersResponse")]
-        System.Threading.Tasks.Task<List<SystemFile>> GetSystemSubFoldersAsync(string path);
+        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>> GetSystemSubFoldersAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateStorageSettings", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateStorageSettingsResponse")]
-        void UpdateStorageSettings(string fullPath, long qouteSizeBytes, QuotaType type);
+        void UpdateStorageSettings(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateStorageSettings", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateStorageSettingsResponse")]
-        System.Threading.Tasks.Task UpdateStorageSettingsAsync(string fullPath, long qouteSizeBytes, QuotaType type);
+        System.Threading.Tasks.Task UpdateStorageSettingsAsync(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/ClearStorageSettings", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/ClearStorageSettingsResponse")]
         void ClearStorageSettings(string fullPath, string uncPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/ClearStorageSettings", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/ClearStorageSettingsResponse")]
         System.Threading.Tasks.Task ClearStorageSettingsAsync(string fullPath, string uncPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateFolderQuota", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateFolderQuotaResponse")]
-        void UpdateFolderQuota(string fullPath, long qouteSizeBytes, QuotaType type);
+        void UpdateFolderQuota(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateFolderQuota", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/UpdateFolderQuotaResponse")]
-        System.Threading.Tasks.Task UpdateFolderQuotaAsync(string fullPath, long qouteSizeBytes, QuotaType type);
+        System.Threading.Tasks.Task UpdateFolderQuotaAsync(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/CreateFolder", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/CreateFolderResponse")]
         void CreateFolder(string fullPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/CreateFolder", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/CreateFolderResponse")]
         System.Threading.Tasks.Task CreateFolderAsync(string fullPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/ShareFolder", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/ShareFolderResponse")]
-        StorageSpaceFolderShare ShareFolder(string fullPath, string shareName);
+        SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare ShareFolder(string fullPath, string shareName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/ShareFolder", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/ShareFolderResponse")]
-        System.Threading.Tasks.Task<StorageSpaceFolderShare> ShareFolderAsync(string fullPath, string shareName);
+        System.Threading.Tasks.Task<SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare> ShareFolderAsync(string fullPath, string shareName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFolderQuota", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFolderQuotaResponse")]
-        Quota GetFolderQuota(string fullPath);
+        SolidCP.Providers.OS.Quota GetFolderQuota(string fullPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFolderQuota", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFolderQuotaResponse")]
-        System.Threading.Tasks.Task<Quota> GetFolderQuotaAsync(string fullPath);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetFolderQuotaAsync(string fullPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/DeleteFolder", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/DeleteFolderResponse")]
         void DeleteFolder(string fullPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/DeleteFolder", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/DeleteFolderResponse")]
@@ -68,13 +53,13 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/FileOrDirectoryExist", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/FileOrDirectoryExistResponse")]
         System.Threading.Tasks.Task<bool> FileOrDirectoryExistAsync(string fullPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/SetFolderNtfsPermissions", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/SetFolderNtfsPermissionsResponse")]
-        void SetFolderNtfsPermissions(string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance);
+        void SetFolderNtfsPermissions(string fullPath, SolidCP.Providers.OS.UserPermission[] permissions, bool isProtected, bool preserveInheritance);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/SetFolderNtfsPermissions", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/SetFolderNtfsPermissionsResponse")]
-        System.Threading.Tasks.Task SetFolderNtfsPermissionsAsync(string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance);
+        System.Threading.Tasks.Task SetFolderNtfsPermissionsAsync(string fullPath, SolidCP.Providers.OS.UserPermission[] permissions, bool isProtected, bool preserveInheritance);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/Search", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/SearchResponse")]
-        SystemFile[] Search(string[] searchPaths, string searchText, bool recursive);
+        SolidCP.Providers.OS.SystemFile[] Search(string[] searchPaths, string searchText, bool recursive);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/Search", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/SearchResponse")]
-        System.Threading.Tasks.Task<SystemFile[]> SearchAsync(string[] searchPaths, string searchText, bool recursive);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> SearchAsync(string[] searchPaths, string searchText, bool recursive);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFileBinaryChunk", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFileBinaryChunkResponse")]
         byte[] GetFileBinaryChunk(string path, int offset, int length);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFileBinaryChunk", ReplyAction = "http://smbsaas/solidcp/server/IStorageSpaceServices/GetFileBinaryChunkResponse")]
@@ -105,32 +90,32 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class StorageSpaceServicesAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, IStorageSpaceServices
     {
-        public List<SystemFile> GetAllDriveLetters()
+        public System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile> GetAllDriveLetters()
         {
-            return (List<SystemFile>)Invoke("SolidCP.Server.StorageSpaceServices", "GetAllDriveLetters");
+            return (System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>)Invoke("SolidCP.Server.StorageSpaceServices", "GetAllDriveLetters");
         }
 
-        public async System.Threading.Tasks.Task<List<SystemFile>> GetAllDriveLettersAsync()
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>> GetAllDriveLettersAsync()
         {
-            return await InvokeAsync<List<SystemFile>>("SolidCP.Server.StorageSpaceServices", "GetAllDriveLetters");
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>>("SolidCP.Server.StorageSpaceServices", "GetAllDriveLetters");
         }
 
-        public List<SystemFile> GetSystemSubFolders(string path)
+        public System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile> GetSystemSubFolders(string path)
         {
-            return (List<SystemFile>)Invoke("SolidCP.Server.StorageSpaceServices", "GetSystemSubFolders", path);
+            return (System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>)Invoke("SolidCP.Server.StorageSpaceServices", "GetSystemSubFolders", path);
         }
 
-        public async System.Threading.Tasks.Task<List<SystemFile>> GetSystemSubFoldersAsync(string path)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>> GetSystemSubFoldersAsync(string path)
         {
-            return await InvokeAsync<List<SystemFile>>("SolidCP.Server.StorageSpaceServices", "GetSystemSubFolders", path);
+            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>>("SolidCP.Server.StorageSpaceServices", "GetSystemSubFolders", path);
         }
 
-        public void UpdateStorageSettings(string fullPath, long qouteSizeBytes, QuotaType type)
+        public void UpdateStorageSettings(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             Invoke("SolidCP.Server.StorageSpaceServices", "UpdateStorageSettings", fullPath, qouteSizeBytes, type);
         }
 
-        public async System.Threading.Tasks.Task UpdateStorageSettingsAsync(string fullPath, long qouteSizeBytes, QuotaType type)
+        public async System.Threading.Tasks.Task UpdateStorageSettingsAsync(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             await InvokeAsync("SolidCP.Server.StorageSpaceServices", "UpdateStorageSettings", fullPath, qouteSizeBytes, type);
         }
@@ -145,12 +130,12 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.StorageSpaceServices", "ClearStorageSettings", fullPath, uncPath);
         }
 
-        public void UpdateFolderQuota(string fullPath, long qouteSizeBytes, QuotaType type)
+        public void UpdateFolderQuota(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             Invoke("SolidCP.Server.StorageSpaceServices", "UpdateFolderQuota", fullPath, qouteSizeBytes, type);
         }
 
-        public async System.Threading.Tasks.Task UpdateFolderQuotaAsync(string fullPath, long qouteSizeBytes, QuotaType type)
+        public async System.Threading.Tasks.Task UpdateFolderQuotaAsync(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             await InvokeAsync("SolidCP.Server.StorageSpaceServices", "UpdateFolderQuota", fullPath, qouteSizeBytes, type);
         }
@@ -165,24 +150,24 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.StorageSpaceServices", "CreateFolder", fullPath);
         }
 
-        public StorageSpaceFolderShare ShareFolder(string fullPath, string shareName)
+        public SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare ShareFolder(string fullPath, string shareName)
         {
-            return (StorageSpaceFolderShare)Invoke("SolidCP.Server.StorageSpaceServices", "ShareFolder", fullPath, shareName);
+            return (SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare)Invoke("SolidCP.Server.StorageSpaceServices", "ShareFolder", fullPath, shareName);
         }
 
-        public async System.Threading.Tasks.Task<StorageSpaceFolderShare> ShareFolderAsync(string fullPath, string shareName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare> ShareFolderAsync(string fullPath, string shareName)
         {
-            return await InvokeAsync<StorageSpaceFolderShare>("SolidCP.Server.StorageSpaceServices", "ShareFolder", fullPath, shareName);
+            return await InvokeAsync<SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare>("SolidCP.Server.StorageSpaceServices", "ShareFolder", fullPath, shareName);
         }
 
-        public Quota GetFolderQuota(string fullPath)
+        public SolidCP.Providers.OS.Quota GetFolderQuota(string fullPath)
         {
-            return (Quota)Invoke("SolidCP.Server.StorageSpaceServices", "GetFolderQuota", fullPath);
+            return (SolidCP.Providers.OS.Quota)Invoke("SolidCP.Server.StorageSpaceServices", "GetFolderQuota", fullPath);
         }
 
-        public async System.Threading.Tasks.Task<Quota> GetFolderQuotaAsync(string fullPath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetFolderQuotaAsync(string fullPath)
         {
-            return await InvokeAsync<Quota>("SolidCP.Server.StorageSpaceServices", "GetFolderQuota", fullPath);
+            return await InvokeAsync<SolidCP.Providers.OS.Quota>("SolidCP.Server.StorageSpaceServices", "GetFolderQuota", fullPath);
         }
 
         public void DeleteFolder(string fullPath)
@@ -215,24 +200,24 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.StorageSpaceServices", "FileOrDirectoryExist", fullPath);
         }
 
-        public void SetFolderNtfsPermissions(string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
+        public void SetFolderNtfsPermissions(string fullPath, SolidCP.Providers.OS.UserPermission[] permissions, bool isProtected, bool preserveInheritance)
         {
             Invoke("SolidCP.Server.StorageSpaceServices", "SetFolderNtfsPermissions", fullPath, permissions, isProtected, preserveInheritance);
         }
 
-        public async System.Threading.Tasks.Task SetFolderNtfsPermissionsAsync(string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
+        public async System.Threading.Tasks.Task SetFolderNtfsPermissionsAsync(string fullPath, SolidCP.Providers.OS.UserPermission[] permissions, bool isProtected, bool preserveInheritance)
         {
             await InvokeAsync("SolidCP.Server.StorageSpaceServices", "SetFolderNtfsPermissions", fullPath, permissions, isProtected, preserveInheritance);
         }
 
-        public SystemFile[] Search(string[] searchPaths, string searchText, bool recursive)
+        public SolidCP.Providers.OS.SystemFile[] Search(string[] searchPaths, string searchText, bool recursive)
         {
-            return (SystemFile[])Invoke("SolidCP.Server.StorageSpaceServices", "Search", searchPaths, searchText, recursive);
+            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.StorageSpaceServices", "Search", searchPaths, searchText, recursive);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> SearchAsync(string[] searchPaths, string searchText, bool recursive)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> SearchAsync(string[] searchPaths, string searchText, bool recursive)
         {
-            return await InvokeAsync<SystemFile[]>("SolidCP.Server.StorageSpaceServices", "Search", searchPaths, searchText, recursive);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.StorageSpaceServices", "Search", searchPaths, searchText, recursive);
         }
 
         public byte[] GetFileBinaryChunk(string path, int offset, int length)
@@ -300,32 +285,32 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class StorageSpaceServices : SolidCP.Web.Client.ClientBase<IStorageSpaceServices, StorageSpaceServicesAssemblyClient>, IStorageSpaceServices
     {
-        public List<SystemFile> GetAllDriveLetters()
+        public System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile> GetAllDriveLetters()
         {
             return base.Client.GetAllDriveLetters();
         }
 
-        public async System.Threading.Tasks.Task<List<SystemFile>> GetAllDriveLettersAsync()
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>> GetAllDriveLettersAsync()
         {
             return await base.Client.GetAllDriveLettersAsync();
         }
 
-        public List<SystemFile> GetSystemSubFolders(string path)
+        public System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile> GetSystemSubFolders(string path)
         {
             return base.Client.GetSystemSubFolders(path);
         }
 
-        public async System.Threading.Tasks.Task<List<SystemFile>> GetSystemSubFoldersAsync(string path)
+        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.OS.SystemFile>> GetSystemSubFoldersAsync(string path)
         {
             return await base.Client.GetSystemSubFoldersAsync(path);
         }
 
-        public void UpdateStorageSettings(string fullPath, long qouteSizeBytes, QuotaType type)
+        public void UpdateStorageSettings(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             base.Client.UpdateStorageSettings(fullPath, qouteSizeBytes, type);
         }
 
-        public async System.Threading.Tasks.Task UpdateStorageSettingsAsync(string fullPath, long qouteSizeBytes, QuotaType type)
+        public async System.Threading.Tasks.Task UpdateStorageSettingsAsync(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             await base.Client.UpdateStorageSettingsAsync(fullPath, qouteSizeBytes, type);
         }
@@ -340,12 +325,12 @@ namespace SolidCP.Server.Client
             await base.Client.ClearStorageSettingsAsync(fullPath, uncPath);
         }
 
-        public void UpdateFolderQuota(string fullPath, long qouteSizeBytes, QuotaType type)
+        public void UpdateFolderQuota(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             base.Client.UpdateFolderQuota(fullPath, qouteSizeBytes, type);
         }
 
-        public async System.Threading.Tasks.Task UpdateFolderQuotaAsync(string fullPath, long qouteSizeBytes, QuotaType type)
+        public async System.Threading.Tasks.Task UpdateFolderQuotaAsync(string fullPath, long qouteSizeBytes, SolidCP.Providers.OS.QuotaType type)
         {
             await base.Client.UpdateFolderQuotaAsync(fullPath, qouteSizeBytes, type);
         }
@@ -360,22 +345,22 @@ namespace SolidCP.Server.Client
             await base.Client.CreateFolderAsync(fullPath);
         }
 
-        public StorageSpaceFolderShare ShareFolder(string fullPath, string shareName)
+        public SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare ShareFolder(string fullPath, string shareName)
         {
             return base.Client.ShareFolder(fullPath, shareName);
         }
 
-        public async System.Threading.Tasks.Task<StorageSpaceFolderShare> ShareFolderAsync(string fullPath, string shareName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.StorageSpaces.StorageSpaceFolderShare> ShareFolderAsync(string fullPath, string shareName)
         {
             return await base.Client.ShareFolderAsync(fullPath, shareName);
         }
 
-        public Quota GetFolderQuota(string fullPath)
+        public SolidCP.Providers.OS.Quota GetFolderQuota(string fullPath)
         {
             return base.Client.GetFolderQuota(fullPath);
         }
 
-        public async System.Threading.Tasks.Task<Quota> GetFolderQuotaAsync(string fullPath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetFolderQuotaAsync(string fullPath)
         {
             return await base.Client.GetFolderQuotaAsync(fullPath);
         }
@@ -410,22 +395,22 @@ namespace SolidCP.Server.Client
             return await base.Client.FileOrDirectoryExistAsync(fullPath);
         }
 
-        public void SetFolderNtfsPermissions(string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
+        public void SetFolderNtfsPermissions(string fullPath, SolidCP.Providers.OS.UserPermission[] permissions, bool isProtected, bool preserveInheritance)
         {
             base.Client.SetFolderNtfsPermissions(fullPath, permissions, isProtected, preserveInheritance);
         }
 
-        public async System.Threading.Tasks.Task SetFolderNtfsPermissionsAsync(string fullPath, UserPermission[] permissions, bool isProtected, bool preserveInheritance)
+        public async System.Threading.Tasks.Task SetFolderNtfsPermissionsAsync(string fullPath, SolidCP.Providers.OS.UserPermission[] permissions, bool isProtected, bool preserveInheritance)
         {
             await base.Client.SetFolderNtfsPermissionsAsync(fullPath, permissions, isProtected, preserveInheritance);
         }
 
-        public SystemFile[] Search(string[] searchPaths, string searchText, bool recursive)
+        public SolidCP.Providers.OS.SystemFile[] Search(string[] searchPaths, string searchText, bool recursive)
         {
             return base.Client.Search(searchPaths, searchText, recursive);
         }
 
-        public async System.Threading.Tasks.Task<SystemFile[]> SearchAsync(string[] searchPaths, string searchText, bool recursive)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> SearchAsync(string[] searchPaths, string searchText, bool recursive)
         {
             return await base.Client.SearchAsync(searchPaths, searchText, recursive);
         }

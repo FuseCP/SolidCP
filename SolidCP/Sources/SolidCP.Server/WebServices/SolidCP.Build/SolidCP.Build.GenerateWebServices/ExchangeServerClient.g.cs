@@ -1,16 +1,4 @@
 ﻿#if Client
-using System;
-using System.ComponentModel;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.Collections.Generic;
-using SolidCP.Providers;
-using SolidCP.Providers.HostedSolution;
-using SolidCP.Providers.ResultObjects;
-using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
-using SolidCP.Providers.Common;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -25,17 +13,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CheckAccountCredentials", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CheckAccountCredentialsResponse")]
         System.Threading.Tasks.Task<bool> CheckAccountCredentialsAsync(string username, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/ExtendToExchangeOrganization", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/ExtendToExchangeOrganizationResponse")]
-        Organization ExtendToExchangeOrganization(string organizationId, string securityGroup, bool IsConsumer);
+        SolidCP.Providers.HostedSolution.Organization ExtendToExchangeOrganization(string organizationId, string securityGroup, bool IsConsumer);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/ExtendToExchangeOrganization", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/ExtendToExchangeOrganizationResponse")]
-        System.Threading.Tasks.Task<Organization> ExtendToExchangeOrganizationAsync(string organizationId, string securityGroup, bool IsConsumer);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> ExtendToExchangeOrganizationAsync(string organizationId, string securityGroup, bool IsConsumer);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateMailEnableUser", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateMailEnableUserResponse")]
-        string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning);
+        string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, SolidCP.Providers.HostedSolution.ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateMailEnableUser", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateMailEnableUserResponse")]
-        System.Threading.Tasks.Task<string> CreateMailEnableUserAsync(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning);
+        System.Threading.Tasks.Task<string> CreateMailEnableUserAsync(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, SolidCP.Providers.HostedSolution.ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationOfflineAddressBook", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationOfflineAddressBookResponse")]
-        Organization CreateOrganizationOfflineAddressBook(string organizationId, string securityGroup, string oabVirtualDir);
+        SolidCP.Providers.HostedSolution.Organization CreateOrganizationOfflineAddressBook(string organizationId, string securityGroup, string oabVirtualDir);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationOfflineAddressBook", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationOfflineAddressBookResponse")]
-        System.Threading.Tasks.Task<Organization> CreateOrganizationOfflineAddressBookAsync(string organizationId, string securityGroup, string oabVirtualDir);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationOfflineAddressBookAsync(string organizationId, string securityGroup, string oabVirtualDir);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/UpdateOrganizationOfflineAddressBook", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/UpdateOrganizationOfflineAddressBookResponse")]
         void UpdateOrganizationOfflineAddressBook(string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/UpdateOrganizationOfflineAddressBook", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/UpdateOrganizationOfflineAddressBookResponse")]
@@ -45,29 +33,29 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetOABVirtualDirectory", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetOABVirtualDirectoryResponse")]
         System.Threading.Tasks.Task<string> GetOABVirtualDirectoryAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationAddressBookPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationAddressBookPolicyResponse")]
-        Organization CreateOrganizationAddressBookPolicy(string organizationId, string gal, string addressBook, string roomList, string oab);
+        SolidCP.Providers.HostedSolution.Organization CreateOrganizationAddressBookPolicy(string organizationId, string gal, string addressBook, string roomList, string oab);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationAddressBookPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationAddressBookPolicyResponse")]
-        System.Threading.Tasks.Task<Organization> CreateOrganizationAddressBookPolicyAsync(string organizationId, string gal, string addressBook, string roomList, string oab);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationAddressBookPolicyAsync(string organizationId, string gal, string addressBook, string roomList, string oab);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/DeleteOrganization", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/DeleteOrganizationResponse")]
-        bool DeleteOrganization(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, List<ExchangeDomainName> acceptedDomains);
+        bool DeleteOrganization(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, System.Collections.Generic.List<SolidCP.Providers.HostedSolution.ExchangeDomainName> acceptedDomains);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/DeleteOrganization", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/DeleteOrganizationResponse")]
-        System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, List<ExchangeDomainName> acceptedDomains);
+        System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, System.Collections.Generic.List<SolidCP.Providers.HostedSolution.ExchangeDomainName> acceptedDomains);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetOrganizationStorageLimits", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetOrganizationStorageLimitsResponse")]
         void SetOrganizationStorageLimits(string organizationDistinguishedName, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetOrganizationStorageLimits", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetOrganizationStorageLimitsResponse")]
         System.Threading.Tasks.Task SetOrganizationStorageLimitsAsync(string organizationDistinguishedName, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxesStatistics", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxesStatisticsResponse")]
-        ExchangeItemStatistics[] GetMailboxesStatistics(string organizationDistinguishedName);
+        SolidCP.Providers.HostedSolution.ExchangeItemStatistics[] GetMailboxesStatistics(string organizationDistinguishedName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxesStatistics", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxesStatisticsResponse")]
-        System.Threading.Tasks.Task<ExchangeItemStatistics[]> GetMailboxesStatisticsAsync(string organizationDistinguishedName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]> GetMailboxesStatisticsAsync(string organizationDistinguishedName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/AddAuthoritativeDomain", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/AddAuthoritativeDomainResponse")]
         void AddAuthoritativeDomain(string domain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/AddAuthoritativeDomain", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/AddAuthoritativeDomainResponse")]
         System.Threading.Tasks.Task AddAuthoritativeDomainAsync(string domain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/ChangeAcceptedDomainType", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/ChangeAcceptedDomainTypeResponse")]
-        void ChangeAcceptedDomainType(string domain, ExchangeAcceptedDomainType domainType);
+        void ChangeAcceptedDomainType(string domain, SolidCP.Providers.HostedSolution.ExchangeAcceptedDomainType domainType);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/ChangeAcceptedDomainType", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/ChangeAcceptedDomainTypeResponse")]
-        System.Threading.Tasks.Task ChangeAcceptedDomainTypeAsync(string domain, ExchangeAcceptedDomainType domainType);
+        System.Threading.Tasks.Task ChangeAcceptedDomainTypeAsync(string domain, SolidCP.Providers.HostedSolution.ExchangeAcceptedDomainType domainType);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetAuthoritativeDomains", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetAuthoritativeDomainsResponse")]
         string[] GetAuthoritativeDomains();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetAuthoritativeDomains", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetAuthoritativeDomainsResponse")]
@@ -85,41 +73,41 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/DisableMailbox", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/DisableMailboxResponse")]
         System.Threading.Tasks.Task DisableMailboxAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAutoReplySettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAutoReplySettingsResponse")]
-        ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAutoReplySettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAutoReplySettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeMailboxAutoReplySettings> GetMailboxAutoReplySettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings> GetMailboxAutoReplySettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAutoReplySettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAutoReplySettingsResponse")]
-        void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings);
+        void SetMailboxAutoReplySettings(string accountName, SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings settings);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAutoReplySettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAutoReplySettingsResponse")]
-        System.Threading.Tasks.Task SetMailboxAutoReplySettingsAsync(string accountName, ExchangeMailboxAutoReplySettings settings);
+        System.Threading.Tasks.Task SetMailboxAutoReplySettingsAsync(string accountName, SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings settings);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxGeneralSettingsResponse")]
-        ExchangeMailbox GetMailboxGeneralSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxGeneralSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxGeneralSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxGeneralSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxGeneralSettingsResponse")]
         void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxGeneralSettingsResponse")]
         System.Threading.Tasks.Task SetMailboxGeneralSettingsAsync(string accountName, bool hideFromAddressBook, bool disabled);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettingsResponse")]
-        ExchangeMailbox GetMailboxMailFlowSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxMailFlowSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxMailFlowSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxMailFlowSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxMailFlowSettingsResponse")]
         void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxMailFlowSettingsResponse")]
         System.Threading.Tasks.Task SetMailboxMailFlowSettingsAsync(string accountName, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAdvancedSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAdvancedSettingsResponse")]
-        ExchangeMailbox GetMailboxAdvancedSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxAdvancedSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAdvancedSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxAdvancedSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxAdvancedSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxAdvancedSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAdvancedSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAdvancedSettingsResponse")]
         void SetMailboxAdvancedSettings(string organizationId, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAdvancedSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxAdvancedSettingsResponse")]
         System.Threading.Tasks.Task SetMailboxAdvancedSettingsAsync(string organizationId, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxEmailAddressesResponse")]
-        ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxEmailAddressesResponse")]
-        System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetMailboxEmailAddressesAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetMailboxEmailAddressesAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxEmailAddressesResponse")]
         void SetMailboxEmailAddresses(string accountName, string[] emailAddresses);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxEmailAddressesResponse")]
@@ -129,17 +117,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxPrimaryEmailAddress", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxPrimaryEmailAddressResponse")]
         System.Threading.Tasks.Task SetMailboxPrimaryEmailAddressAsync(string accountName, string emailAddress);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxPermissionsResponse")]
-        void SetMailboxPermissions(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts);
+        void SetMailboxPermissions(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] calendarAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] contactAccounts);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxPermissionsResponse")]
-        System.Threading.Tasks.Task SetMailboxPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts);
+        System.Threading.Tasks.Task SetMailboxPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] calendarAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] contactAccounts);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxPermissionsResponse")]
-        ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxPermissionsResponse")]
-        System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxPermissionsAsync(string organizationId, string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxPermissionsAsync(string organizationId, string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxStatistics", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxStatisticsResponse")]
-        ExchangeMailboxStatistics GetMailboxStatistics(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics GetMailboxStatistics(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxStatistics", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxStatisticsResponse")]
-        System.Threading.Tasks.Task<ExchangeMailboxStatistics> GetMailboxStatisticsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics> GetMailboxStatisticsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDefaultPublicFolderMailbox", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDefaultPublicFolderMailboxResponse")]
         string[] SetDefaultPublicFolderMailbox(string id, string organizationId, string organizationDistinguishedName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDefaultPublicFolderMailbox", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDefaultPublicFolderMailboxResponse")]
@@ -149,13 +137,13 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateJournalRuleResponse")]
         System.Threading.Tasks.Task<string> CreateJournalRuleAsync(string journalEmail, string scope, string recipientEmail, bool enabled);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetJournalRuleResponse")]
-        ExchangeJournalRule GetJournalRule(string journalEmail);
+        SolidCP.Providers.HostedSolution.ExchangeJournalRule GetJournalRule(string journalEmail);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetJournalRuleResponse")]
-        System.Threading.Tasks.Task<ExchangeJournalRule> GetJournalRuleAsync(string journalEmail);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeJournalRule> GetJournalRuleAsync(string journalEmail);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetJournalRuleResponse")]
-        void SetJournalRule(ExchangeJournalRule rule);
+        void SetJournalRule(SolidCP.Providers.HostedSolution.ExchangeJournalRule rule);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetJournalRuleResponse")]
-        System.Threading.Tasks.Task SetJournalRuleAsync(ExchangeJournalRule rule);
+        System.Threading.Tasks.Task SetJournalRuleAsync(SolidCP.Providers.HostedSolution.ExchangeJournalRule rule);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveJournalRuleResponse")]
         void RemoveJournalRule(string journalEmail);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveJournalRule", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveJournalRuleResponse")]
@@ -169,17 +157,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/DeleteContact", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/DeleteContactResponse")]
         System.Threading.Tasks.Task DeleteContactAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetContactGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetContactGeneralSettingsResponse")]
-        ExchangeContact GetContactGeneralSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeContact GetContactGeneralSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetContactGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetContactGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeContact> GetContactGeneralSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeContact> GetContactGeneralSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetContactGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetContactGeneralSettingsResponse")]
         void SetContactGeneralSettings(string accountName, string displayName, string email, bool hideFromAddressBook, string firstName, string initials, string lastName, string address, string city, string state, string zip, string country, string jobTitle, string company, string department, string office, string managerAccountName, string businessPhone, string fax, string homePhone, string mobilePhone, string pager, string webPage, string notes, int useMapiRichTextFormat, string defaultDomain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetContactGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetContactGeneralSettingsResponse")]
         System.Threading.Tasks.Task SetContactGeneralSettingsAsync(string accountName, string displayName, string email, bool hideFromAddressBook, string firstName, string initials, string lastName, string address, string city, string state, string zip, string country, string jobTitle, string company, string department, string office, string managerAccountName, string businessPhone, string fax, string homePhone, string mobilePhone, string pager, string webPage, string notes, int useMapiRichTextFormat, string defaultDomain);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetContactMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetContactMailFlowSettingsResponse")]
-        ExchangeContact GetContactMailFlowSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeContact GetContactMailFlowSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetContactMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetContactMailFlowSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeContact> GetContactMailFlowSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeContact> GetContactMailFlowSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetContactMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetContactMailFlowSettingsResponse")]
         void SetContactMailFlowSettings(string accountName, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetContactMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetContactMailFlowSettingsResponse")]
@@ -193,25 +181,25 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/DeleteDistributionList", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/DeleteDistributionListResponse")]
         System.Threading.Tasks.Task DeleteDistributionListAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListGeneralSettingsResponse")]
-        ExchangeDistributionList GetDistributionListGeneralSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListGeneralSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListGeneralSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListGeneralSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListGeneralSettingsResponse")]
         void SetDistributionListGeneralSettings(string accountName, string displayName, bool hideFromAddressBook, string managedBy, string[] members, string notes, string[] addressLists);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListGeneralSettingsResponse")]
         System.Threading.Tasks.Task SetDistributionListGeneralSettingsAsync(string accountName, string displayName, bool hideFromAddressBook, string managedBy, string[] members, string notes, string[] addressLists);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListMailFlowSettingsResponse")]
-        ExchangeDistributionList GetDistributionListMailFlowSettings(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListMailFlowSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListMailFlowSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListMailFlowSettingsAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListMailFlowSettingsAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListMailFlowSettingsResponse")]
         void SetDistributionListMailFlowSettings(string accountName, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, string[] addressLists);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListMailFlowSettingsResponse")]
         System.Threading.Tasks.Task SetDistributionListMailFlowSettingsAsync(string accountName, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, string[] addressLists);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListEmailAddressesResponse")]
-        ExchangeEmailAddress[] GetDistributionListEmailAddresses(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetDistributionListEmailAddresses(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListEmailAddressesResponse")]
-        System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetDistributionListEmailAddressesAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetDistributionListEmailAddressesAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListEmailAddressesResponse")]
         void SetDistributionListEmailAddresses(string accountName, string[] emailAddresses, string[] addressLists);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListEmailAddressesResponse")]
@@ -225,9 +213,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDistributionListPermissionsResponse")]
         System.Threading.Tasks.Task SetDistributionListPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] sendOnBehalfAccounts, string[] addressLists);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListPermissionsResponse")]
-        ExchangeDistributionList GetDistributionListPermissions(string organizationId, string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListPermissions(string organizationId, string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListPermissions", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetDistributionListPermissionsResponse")]
-        System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListPermissionsAsync(string organizationId, string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListPermissionsAsync(string organizationId, string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDisclaimer", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDisclaimerResponse")]
         int SetDisclaimer(string name, string text);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetDisclaimer", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetDisclaimerResponse")]
@@ -261,25 +249,25 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/DisableMailPublicFolder", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/DisableMailPublicFolderResponse")]
         System.Threading.Tasks.Task DisableMailPublicFolderAsync(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderGeneralSettingsResponse")]
-        ExchangePublicFolder GetPublicFolderGeneralSettings(string organizationId, string folder);
+        SolidCP.Providers.HostedSolution.ExchangePublicFolder GetPublicFolderGeneralSettings(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderGeneralSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangePublicFolder> GetPublicFolderGeneralSettingsAsync(string organizationId, string folder);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangePublicFolder> GetPublicFolderGeneralSettingsAsync(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderGeneralSettingsResponse")]
-        void SetPublicFolderGeneralSettings(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, ExchangeAccount[] accounts);
+        void SetPublicFolderGeneralSettings(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, SolidCP.Providers.HostedSolution.ExchangeAccount[] accounts);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderGeneralSettingsResponse")]
-        System.Threading.Tasks.Task SetPublicFolderGeneralSettingsAsync(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, ExchangeAccount[] accounts);
+        System.Threading.Tasks.Task SetPublicFolderGeneralSettingsAsync(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, SolidCP.Providers.HostedSolution.ExchangeAccount[] accounts);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderMailFlowSettingsResponse")]
-        ExchangePublicFolder GetPublicFolderMailFlowSettings(string organizationId, string folder);
+        SolidCP.Providers.HostedSolution.ExchangePublicFolder GetPublicFolderMailFlowSettings(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderMailFlowSettingsResponse")]
-        System.Threading.Tasks.Task<ExchangePublicFolder> GetPublicFolderMailFlowSettingsAsync(string organizationId, string folder);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangePublicFolder> GetPublicFolderMailFlowSettingsAsync(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderMailFlowSettingsResponse")]
         void SetPublicFolderMailFlowSettings(string organizationId, string folder, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderMailFlowSettingsResponse")]
         System.Threading.Tasks.Task SetPublicFolderMailFlowSettingsAsync(string organizationId, string folder, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderEmailAddressesResponse")]
-        ExchangeEmailAddress[] GetPublicFolderEmailAddresses(string organizationId, string folder);
+        SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetPublicFolderEmailAddresses(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFolderEmailAddressesResponse")]
-        System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetPublicFolderEmailAddressesAsync(string organizationId, string folder);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetPublicFolderEmailAddressesAsync(string organizationId, string folder);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderEmailAddressesResponse")]
         void SetPublicFolderEmailAddresses(string organizationId, string folder, string[] emailAddresses);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderEmailAddresses", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderEmailAddressesResponse")]
@@ -289,9 +277,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderPrimaryEmailAddress", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPublicFolderPrimaryEmailAddressResponse")]
         System.Threading.Tasks.Task SetPublicFolderPrimaryEmailAddressAsync(string organizationId, string folder, string emailAddress);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersStatistics", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersStatisticsResponse")]
-        ExchangeItemStatistics[] GetPublicFoldersStatistics(string organizationId, string[] folders);
+        SolidCP.Providers.HostedSolution.ExchangeItemStatistics[] GetPublicFoldersStatistics(string organizationId, string[] folders);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersStatistics", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersStatisticsResponse")]
-        System.Threading.Tasks.Task<ExchangeItemStatistics[]> GetPublicFoldersStatisticsAsync(string organizationId, string[] folders);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]> GetPublicFoldersStatisticsAsync(string organizationId, string[] folders);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersRecursive", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersRecursiveResponse")]
         string[] GetPublicFoldersRecursive(string organizationId, string parent);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersRecursive", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPublicFoldersRecursiveResponse")]
@@ -309,21 +297,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationActiveSyncPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/CreateOrganizationActiveSyncPolicyResponse")]
         System.Threading.Tasks.Task CreateOrganizationActiveSyncPolicyAsync(string organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetActiveSyncPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetActiveSyncPolicyResponse")]
-        ExchangeActiveSyncPolicy GetActiveSyncPolicy(string organizationId);
+        SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy GetActiveSyncPolicy(string organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetActiveSyncPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetActiveSyncPolicyResponse")]
-        System.Threading.Tasks.Task<ExchangeActiveSyncPolicy> GetActiveSyncPolicyAsync(string organizationId);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy> GetActiveSyncPolicyAsync(string organizationId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetActiveSyncPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetActiveSyncPolicyResponse")]
         void SetActiveSyncPolicy(string id, bool allowNonProvisionableDevices, bool attachmentsEnabled, int maxAttachmentSizeKB, bool uncAccessEnabled, bool wssAccessEnabled, bool devicePasswordEnabled, bool alphanumericPasswordRequired, bool passwordRecoveryEnabled, bool deviceEncryptionEnabled, bool allowSimplePassword, int maxPasswordFailedAttempts, int minPasswordLength, int inactivityLockMin, int passwordExpirationDays, int passwordHistory, int refreshInterval);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetActiveSyncPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetActiveSyncPolicyResponse")]
         System.Threading.Tasks.Task SetActiveSyncPolicyAsync(string id, bool allowNonProvisionableDevices, bool attachmentsEnabled, int maxAttachmentSizeKB, bool uncAccessEnabled, bool wssAccessEnabled, bool devicePasswordEnabled, bool alphanumericPasswordRequired, bool passwordRecoveryEnabled, bool deviceEncryptionEnabled, bool allowSimplePassword, int maxPasswordFailedAttempts, int minPasswordLength, int inactivityLockMin, int passwordExpirationDays, int passwordHistory, int refreshInterval);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDevices", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDevicesResponse")]
-        ExchangeMobileDevice[] GetMobileDevices(string accountName);
+        SolidCP.Providers.HostedSolution.ExchangeMobileDevice[] GetMobileDevices(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDevices", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDevicesResponse")]
-        System.Threading.Tasks.Task<ExchangeMobileDevice[]> GetMobileDevicesAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMobileDevice[]> GetMobileDevicesAsync(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDevice", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDeviceResponse")]
-        ExchangeMobileDevice GetMobileDevice(string id);
+        SolidCP.Providers.HostedSolution.ExchangeMobileDevice GetMobileDevice(string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDevice", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMobileDeviceResponse")]
-        System.Threading.Tasks.Task<ExchangeMobileDevice> GetMobileDeviceAsync(string id);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMobileDevice> GetMobileDeviceAsync(string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/WipeDataFromDevice", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/WipeDataFromDeviceResponse")]
         void WipeDataFromDevice(string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/WipeDataFromDevice", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/WipeDataFromDeviceResponse")]
@@ -337,37 +325,37 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveDevice", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveDeviceResponse")]
         System.Threading.Tasks.Task RemoveDeviceAsync(string id);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/ExportMailBox", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/ExportMailBoxResponse")]
-        ResultObject ExportMailBox(string organizationId, string accountName, string storagePath);
+        SolidCP.Providers.Common.ResultObject ExportMailBox(string organizationId, string accountName, string storagePath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/ExportMailBox", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/ExportMailBoxResponse")]
-        System.Threading.Tasks.Task<ResultObject> ExportMailBoxAsync(string organizationId, string accountName, string storagePath);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> ExportMailBoxAsync(string organizationId, string accountName, string storagePath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailBoxArchiving", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailBoxArchivingResponse")]
-        ResultObject SetMailBoxArchiving(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy);
+        SolidCP.Providers.Common.ResultObject SetMailBoxArchiving(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailBoxArchiving", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailBoxArchivingResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetMailBoxArchivingAsync(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetMailBoxArchivingAsync(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicyTag", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicyTagResponse")]
-        ResultObject SetRetentionPolicyTag(string Identity, ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, ExchangeRetentionPolicyTagAction RetentionAction);
+        SolidCP.Providers.Common.ResultObject SetRetentionPolicyTag(string Identity, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagAction RetentionAction);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicyTag", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicyTagResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetRetentionPolicyTagAsync(string Identity, ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, ExchangeRetentionPolicyTagAction RetentionAction);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetRetentionPolicyTagAsync(string Identity, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagAction RetentionAction);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicyTag", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicyTagResponse")]
-        ResultObject RemoveRetentionPolicyTag(string Identity);
+        SolidCP.Providers.Common.ResultObject RemoveRetentionPolicyTag(string Identity);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicyTag", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicyTagResponse")]
-        System.Threading.Tasks.Task<ResultObject> RemoveRetentionPolicyTagAsync(string Identity);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> RemoveRetentionPolicyTagAsync(string Identity);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicyResponse")]
-        ResultObject SetRetentionPolicy(string Identity, string[] RetentionPolicyTagLinks);
+        SolidCP.Providers.Common.ResultObject SetRetentionPolicy(string Identity, string[] RetentionPolicyTagLinks);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetRetentionPolicyResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetRetentionPolicyAsync(string Identity, string[] RetentionPolicyTagLinks);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetRetentionPolicyAsync(string Identity, string[] RetentionPolicyTagLinks);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicyResponse")]
-        ResultObject RemoveRetentionPolicy(string Identity);
+        SolidCP.Providers.Common.ResultObject RemoveRetentionPolicy(string Identity);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicy", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/RemoveRetentionPolicyResponse")]
-        System.Threading.Tasks.Task<ResultObject> RemoveRetentionPolicyAsync(string Identity);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> RemoveRetentionPolicyAsync(string Identity);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPicture", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPictureResponse")]
-        ResultObject SetPicture(string accountName, byte[] picture);
+        SolidCP.Providers.Common.ResultObject SetPicture(string accountName, byte[] picture);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetPicture", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetPictureResponse")]
-        System.Threading.Tasks.Task<ResultObject> SetPictureAsync(string accountName, byte[] picture);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetPictureAsync(string accountName, byte[] picture);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPicture", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPictureResponse")]
-        BytesResult GetPicture(string accountName);
+        SolidCP.Providers.ResultObjects.BytesResult GetPicture(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetPicture", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetPictureResponse")]
-        System.Threading.Tasks.Task<BytesResult> GetPictureAsync(string accountName);
+        System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.BytesResult> GetPictureAsync(string accountName);
     }
 
     // wcf client assembly proxy class
@@ -384,34 +372,34 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.ExchangeServer", "CheckAccountCredentials", username, password);
         }
 
-        public Organization ExtendToExchangeOrganization(string organizationId, string securityGroup, bool IsConsumer)
+        public SolidCP.Providers.HostedSolution.Organization ExtendToExchangeOrganization(string organizationId, string securityGroup, bool IsConsumer)
         {
-            return (Organization)Invoke("SolidCP.Server.ExchangeServer", "ExtendToExchangeOrganization", organizationId, securityGroup, IsConsumer);
+            return (SolidCP.Providers.HostedSolution.Organization)Invoke("SolidCP.Server.ExchangeServer", "ExtendToExchangeOrganization", organizationId, securityGroup, IsConsumer);
         }
 
-        public async System.Threading.Tasks.Task<Organization> ExtendToExchangeOrganizationAsync(string organizationId, string securityGroup, bool IsConsumer)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> ExtendToExchangeOrganizationAsync(string organizationId, string securityGroup, bool IsConsumer)
         {
-            return await InvokeAsync<Organization>("SolidCP.Server.ExchangeServer", "ExtendToExchangeOrganization", organizationId, securityGroup, IsConsumer);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.Organization>("SolidCP.Server.ExchangeServer", "ExtendToExchangeOrganization", organizationId, securityGroup, IsConsumer);
         }
 
-        public string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
+        public string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, SolidCP.Providers.HostedSolution.ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
         {
             return (string)Invoke("SolidCP.Server.ExchangeServer", "CreateMailEnableUser", upn, organizationId, organizationDistinguishedName, securityGroup, organizationDomain, accountType, mailboxDatabase, offlineAddressBook, addressBookPolicy, accountName, enablePOP, enableIMAP, enableOWA, enableMAPI, enableActiveSync, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays, maxRecipients, maxSendMessageSizeKB, maxReceiveMessageSizeKB, hideFromAddressBook, isConsumer, enabledLitigationHold, recoverabelItemsSpace, recoverabelItemsWarning);
         }
 
-        public async System.Threading.Tasks.Task<string> CreateMailEnableUserAsync(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
+        public async System.Threading.Tasks.Task<string> CreateMailEnableUserAsync(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, SolidCP.Providers.HostedSolution.ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
         {
             return await InvokeAsync<string>("SolidCP.Server.ExchangeServer", "CreateMailEnableUser", upn, organizationId, organizationDistinguishedName, securityGroup, organizationDomain, accountType, mailboxDatabase, offlineAddressBook, addressBookPolicy, accountName, enablePOP, enableIMAP, enableOWA, enableMAPI, enableActiveSync, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays, maxRecipients, maxSendMessageSizeKB, maxReceiveMessageSizeKB, hideFromAddressBook, isConsumer, enabledLitigationHold, recoverabelItemsSpace, recoverabelItemsWarning);
         }
 
-        public Organization CreateOrganizationOfflineAddressBook(string organizationId, string securityGroup, string oabVirtualDir)
+        public SolidCP.Providers.HostedSolution.Organization CreateOrganizationOfflineAddressBook(string organizationId, string securityGroup, string oabVirtualDir)
         {
-            return (Organization)Invoke("SolidCP.Server.ExchangeServer", "CreateOrganizationOfflineAddressBook", organizationId, securityGroup, oabVirtualDir);
+            return (SolidCP.Providers.HostedSolution.Organization)Invoke("SolidCP.Server.ExchangeServer", "CreateOrganizationOfflineAddressBook", organizationId, securityGroup, oabVirtualDir);
         }
 
-        public async System.Threading.Tasks.Task<Organization> CreateOrganizationOfflineAddressBookAsync(string organizationId, string securityGroup, string oabVirtualDir)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationOfflineAddressBookAsync(string organizationId, string securityGroup, string oabVirtualDir)
         {
-            return await InvokeAsync<Organization>("SolidCP.Server.ExchangeServer", "CreateOrganizationOfflineAddressBook", organizationId, securityGroup, oabVirtualDir);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.Organization>("SolidCP.Server.ExchangeServer", "CreateOrganizationOfflineAddressBook", organizationId, securityGroup, oabVirtualDir);
         }
 
         public void UpdateOrganizationOfflineAddressBook(string id)
@@ -434,22 +422,22 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string>("SolidCP.Server.ExchangeServer", "GetOABVirtualDirectory");
         }
 
-        public Organization CreateOrganizationAddressBookPolicy(string organizationId, string gal, string addressBook, string roomList, string oab)
+        public SolidCP.Providers.HostedSolution.Organization CreateOrganizationAddressBookPolicy(string organizationId, string gal, string addressBook, string roomList, string oab)
         {
-            return (Organization)Invoke("SolidCP.Server.ExchangeServer", "CreateOrganizationAddressBookPolicy", organizationId, gal, addressBook, roomList, oab);
+            return (SolidCP.Providers.HostedSolution.Organization)Invoke("SolidCP.Server.ExchangeServer", "CreateOrganizationAddressBookPolicy", organizationId, gal, addressBook, roomList, oab);
         }
 
-        public async System.Threading.Tasks.Task<Organization> CreateOrganizationAddressBookPolicyAsync(string organizationId, string gal, string addressBook, string roomList, string oab)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationAddressBookPolicyAsync(string organizationId, string gal, string addressBook, string roomList, string oab)
         {
-            return await InvokeAsync<Organization>("SolidCP.Server.ExchangeServer", "CreateOrganizationAddressBookPolicy", organizationId, gal, addressBook, roomList, oab);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.Organization>("SolidCP.Server.ExchangeServer", "CreateOrganizationAddressBookPolicy", organizationId, gal, addressBook, roomList, oab);
         }
 
-        public bool DeleteOrganization(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, List<ExchangeDomainName> acceptedDomains)
+        public bool DeleteOrganization(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, System.Collections.Generic.List<SolidCP.Providers.HostedSolution.ExchangeDomainName> acceptedDomains)
         {
             return (bool)Invoke("SolidCP.Server.ExchangeServer", "DeleteOrganization", organizationId, distinguishedName, globalAddressList, addressList, roomList, offlineAddressBook, securityGroup, addressBookPolicy, acceptedDomains);
         }
 
-        public async System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, List<ExchangeDomainName> acceptedDomains)
+        public async System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, System.Collections.Generic.List<SolidCP.Providers.HostedSolution.ExchangeDomainName> acceptedDomains)
         {
             return await InvokeAsync<bool>("SolidCP.Server.ExchangeServer", "DeleteOrganization", organizationId, distinguishedName, globalAddressList, addressList, roomList, offlineAddressBook, securityGroup, addressBookPolicy, acceptedDomains);
         }
@@ -464,14 +452,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetOrganizationStorageLimits", organizationDistinguishedName, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays);
         }
 
-        public ExchangeItemStatistics[] GetMailboxesStatistics(string organizationDistinguishedName)
+        public SolidCP.Providers.HostedSolution.ExchangeItemStatistics[] GetMailboxesStatistics(string organizationDistinguishedName)
         {
-            return (ExchangeItemStatistics[])Invoke("SolidCP.Server.ExchangeServer", "GetMailboxesStatistics", organizationDistinguishedName);
+            return (SolidCP.Providers.HostedSolution.ExchangeItemStatistics[])Invoke("SolidCP.Server.ExchangeServer", "GetMailboxesStatistics", organizationDistinguishedName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeItemStatistics[]> GetMailboxesStatisticsAsync(string organizationDistinguishedName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]> GetMailboxesStatisticsAsync(string organizationDistinguishedName)
         {
-            return await InvokeAsync<ExchangeItemStatistics[]>("SolidCP.Server.ExchangeServer", "GetMailboxesStatistics", organizationDistinguishedName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]>("SolidCP.Server.ExchangeServer", "GetMailboxesStatistics", organizationDistinguishedName);
         }
 
         public void AddAuthoritativeDomain(string domain)
@@ -484,12 +472,12 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "AddAuthoritativeDomain", domain);
         }
 
-        public void ChangeAcceptedDomainType(string domain, ExchangeAcceptedDomainType domainType)
+        public void ChangeAcceptedDomainType(string domain, SolidCP.Providers.HostedSolution.ExchangeAcceptedDomainType domainType)
         {
             Invoke("SolidCP.Server.ExchangeServer", "ChangeAcceptedDomainType", domain, domainType);
         }
 
-        public async System.Threading.Tasks.Task ChangeAcceptedDomainTypeAsync(string domain, ExchangeAcceptedDomainType domainType)
+        public async System.Threading.Tasks.Task ChangeAcceptedDomainTypeAsync(string domain, SolidCP.Providers.HostedSolution.ExchangeAcceptedDomainType domainType)
         {
             await InvokeAsync("SolidCP.Server.ExchangeServer", "ChangeAcceptedDomainType", domain, domainType);
         }
@@ -534,34 +522,34 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "DisableMailbox", accountName);
         }
 
-        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName)
         {
-            return (ExchangeMailboxAutoReplySettings)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxAutoReplySettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxAutoReplySettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailboxAutoReplySettings> GetMailboxAutoReplySettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings> GetMailboxAutoReplySettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeMailboxAutoReplySettings>("SolidCP.Server.ExchangeServer", "GetMailboxAutoReplySettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings>("SolidCP.Server.ExchangeServer", "GetMailboxAutoReplySettings", accountName);
         }
 
-        public void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings)
+        public void SetMailboxAutoReplySettings(string accountName, SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings settings)
         {
             Invoke("SolidCP.Server.ExchangeServer", "SetMailboxAutoReplySettings", accountName, settings);
         }
 
-        public async System.Threading.Tasks.Task SetMailboxAutoReplySettingsAsync(string accountName, ExchangeMailboxAutoReplySettings settings)
+        public async System.Threading.Tasks.Task SetMailboxAutoReplySettingsAsync(string accountName, SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings settings)
         {
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxAutoReplySettings", accountName, settings);
         }
 
-        public ExchangeMailbox GetMailboxGeneralSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxGeneralSettings(string accountName)
         {
-            return (ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxGeneralSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxGeneralSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxGeneralSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxGeneralSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxGeneralSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxGeneralSettings", accountName);
         }
 
         public void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled)
@@ -574,14 +562,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxGeneralSettings", accountName, hideFromAddressBook, disabled);
         }
 
-        public ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
         {
-            return (ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxMailFlowSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxMailFlowSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxMailFlowSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxMailFlowSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxMailFlowSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxMailFlowSettings", accountName);
         }
 
         public void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
@@ -594,14 +582,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxMailFlowSettings", accountName, enableForwarding, saveSentItems, forwardingAccountName, forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication);
         }
 
-        public ExchangeMailbox GetMailboxAdvancedSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxAdvancedSettings(string accountName)
         {
-            return (ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxAdvancedSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxAdvancedSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxAdvancedSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxAdvancedSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxAdvancedSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxAdvancedSettings", accountName);
         }
 
         public void SetMailboxAdvancedSettings(string organizationId, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning, string litigationHoldUrl, string litigationHoldMsg)
@@ -614,14 +602,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxAdvancedSettings", organizationId, accountName, enablePOP, enableIMAP, enableOWA, enableMAPI, enableActiveSync, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays, maxRecipients, maxSendMessageSizeKB, maxReceiveMessageSizeKB, enabledLitigationHold, recoverabelItemsSpace, recoverabelItemsWarning, litigationHoldUrl, litigationHoldMsg);
         }
 
-        public ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName)
         {
-            return (ExchangeEmailAddress[])Invoke("SolidCP.Server.ExchangeServer", "GetMailboxEmailAddresses", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeEmailAddress[])Invoke("SolidCP.Server.ExchangeServer", "GetMailboxEmailAddresses", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetMailboxEmailAddressesAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetMailboxEmailAddressesAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeEmailAddress[]>("SolidCP.Server.ExchangeServer", "GetMailboxEmailAddresses", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]>("SolidCP.Server.ExchangeServer", "GetMailboxEmailAddresses", accountName);
         }
 
         public void SetMailboxEmailAddresses(string accountName, string[] emailAddresses)
@@ -644,34 +632,34 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxPrimaryEmailAddress", accountName, emailAddress);
         }
 
-        public void SetMailboxPermissions(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts)
+        public void SetMailboxPermissions(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] calendarAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] contactAccounts)
         {
             Invoke("SolidCP.Server.ExchangeServer", "SetMailboxPermissions", organizationId, accountName, sendAsAccounts, fullAccessAccounts, onBehalfOfAccounts, calendarAccounts, contactAccounts);
         }
 
-        public async System.Threading.Tasks.Task SetMailboxPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts)
+        public async System.Threading.Tasks.Task SetMailboxPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] calendarAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] contactAccounts)
         {
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxPermissions", organizationId, accountName, sendAsAccounts, fullAccessAccounts, onBehalfOfAccounts, calendarAccounts, contactAccounts);
         }
 
-        public ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName)
         {
-            return (ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxPermissions", organizationId, accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMailbox)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxPermissions", organizationId, accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxPermissionsAsync(string organizationId, string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxPermissionsAsync(string organizationId, string accountName)
         {
-            return await InvokeAsync<ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxPermissions", organizationId, accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMailbox>("SolidCP.Server.ExchangeServer", "GetMailboxPermissions", organizationId, accountName);
         }
 
-        public ExchangeMailboxStatistics GetMailboxStatistics(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics GetMailboxStatistics(string accountName)
         {
-            return (ExchangeMailboxStatistics)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxStatistics", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics)Invoke("SolidCP.Server.ExchangeServer", "GetMailboxStatistics", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailboxStatistics> GetMailboxStatisticsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics> GetMailboxStatisticsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeMailboxStatistics>("SolidCP.Server.ExchangeServer", "GetMailboxStatistics", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics>("SolidCP.Server.ExchangeServer", "GetMailboxStatistics", accountName);
         }
 
         public string[] SetDefaultPublicFolderMailbox(string id, string organizationId, string organizationDistinguishedName)
@@ -694,22 +682,22 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string>("SolidCP.Server.ExchangeServer", "CreateJournalRule", journalEmail, scope, recipientEmail, enabled);
         }
 
-        public ExchangeJournalRule GetJournalRule(string journalEmail)
+        public SolidCP.Providers.HostedSolution.ExchangeJournalRule GetJournalRule(string journalEmail)
         {
-            return (ExchangeJournalRule)Invoke("SolidCP.Server.ExchangeServer", "GetJournalRule", journalEmail);
+            return (SolidCP.Providers.HostedSolution.ExchangeJournalRule)Invoke("SolidCP.Server.ExchangeServer", "GetJournalRule", journalEmail);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeJournalRule> GetJournalRuleAsync(string journalEmail)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeJournalRule> GetJournalRuleAsync(string journalEmail)
         {
-            return await InvokeAsync<ExchangeJournalRule>("SolidCP.Server.ExchangeServer", "GetJournalRule", journalEmail);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeJournalRule>("SolidCP.Server.ExchangeServer", "GetJournalRule", journalEmail);
         }
 
-        public void SetJournalRule(ExchangeJournalRule rule)
+        public void SetJournalRule(SolidCP.Providers.HostedSolution.ExchangeJournalRule rule)
         {
             Invoke("SolidCP.Server.ExchangeServer", "SetJournalRule", rule);
         }
 
-        public async System.Threading.Tasks.Task SetJournalRuleAsync(ExchangeJournalRule rule)
+        public async System.Threading.Tasks.Task SetJournalRuleAsync(SolidCP.Providers.HostedSolution.ExchangeJournalRule rule)
         {
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetJournalRule", rule);
         }
@@ -744,14 +732,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "DeleteContact", accountName);
         }
 
-        public ExchangeContact GetContactGeneralSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeContact GetContactGeneralSettings(string accountName)
         {
-            return (ExchangeContact)Invoke("SolidCP.Server.ExchangeServer", "GetContactGeneralSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeContact)Invoke("SolidCP.Server.ExchangeServer", "GetContactGeneralSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeContact> GetContactGeneralSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeContact> GetContactGeneralSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeContact>("SolidCP.Server.ExchangeServer", "GetContactGeneralSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeContact>("SolidCP.Server.ExchangeServer", "GetContactGeneralSettings", accountName);
         }
 
         public void SetContactGeneralSettings(string accountName, string displayName, string email, bool hideFromAddressBook, string firstName, string initials, string lastName, string address, string city, string state, string zip, string country, string jobTitle, string company, string department, string office, string managerAccountName, string businessPhone, string fax, string homePhone, string mobilePhone, string pager, string webPage, string notes, int useMapiRichTextFormat, string defaultDomain)
@@ -764,14 +752,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetContactGeneralSettings", accountName, displayName, email, hideFromAddressBook, firstName, initials, lastName, address, city, state, zip, country, jobTitle, company, department, office, managerAccountName, businessPhone, fax, homePhone, mobilePhone, pager, webPage, notes, useMapiRichTextFormat, defaultDomain);
         }
 
-        public ExchangeContact GetContactMailFlowSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeContact GetContactMailFlowSettings(string accountName)
         {
-            return (ExchangeContact)Invoke("SolidCP.Server.ExchangeServer", "GetContactMailFlowSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeContact)Invoke("SolidCP.Server.ExchangeServer", "GetContactMailFlowSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeContact> GetContactMailFlowSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeContact> GetContactMailFlowSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeContact>("SolidCP.Server.ExchangeServer", "GetContactMailFlowSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeContact>("SolidCP.Server.ExchangeServer", "GetContactMailFlowSettings", accountName);
         }
 
         public void SetContactMailFlowSettings(string accountName, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
@@ -804,14 +792,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "DeleteDistributionList", accountName);
         }
 
-        public ExchangeDistributionList GetDistributionListGeneralSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListGeneralSettings(string accountName)
         {
-            return (ExchangeDistributionList)Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListGeneralSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeDistributionList)Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListGeneralSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListGeneralSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListGeneralSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeDistributionList>("SolidCP.Server.ExchangeServer", "GetDistributionListGeneralSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeDistributionList>("SolidCP.Server.ExchangeServer", "GetDistributionListGeneralSettings", accountName);
         }
 
         public void SetDistributionListGeneralSettings(string accountName, string displayName, bool hideFromAddressBook, string managedBy, string[] members, string notes, string[] addressLists)
@@ -824,14 +812,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetDistributionListGeneralSettings", accountName, displayName, hideFromAddressBook, managedBy, members, notes, addressLists);
         }
 
-        public ExchangeDistributionList GetDistributionListMailFlowSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListMailFlowSettings(string accountName)
         {
-            return (ExchangeDistributionList)Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListMailFlowSettings", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeDistributionList)Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListMailFlowSettings", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListMailFlowSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListMailFlowSettingsAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeDistributionList>("SolidCP.Server.ExchangeServer", "GetDistributionListMailFlowSettings", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeDistributionList>("SolidCP.Server.ExchangeServer", "GetDistributionListMailFlowSettings", accountName);
         }
 
         public void SetDistributionListMailFlowSettings(string accountName, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication, string[] addressLists)
@@ -844,14 +832,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetDistributionListMailFlowSettings", accountName, acceptAccounts, rejectAccounts, requireSenderAuthentication, addressLists);
         }
 
-        public ExchangeEmailAddress[] GetDistributionListEmailAddresses(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetDistributionListEmailAddresses(string accountName)
         {
-            return (ExchangeEmailAddress[])Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListEmailAddresses", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeEmailAddress[])Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListEmailAddresses", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetDistributionListEmailAddressesAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetDistributionListEmailAddressesAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeEmailAddress[]>("SolidCP.Server.ExchangeServer", "GetDistributionListEmailAddresses", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]>("SolidCP.Server.ExchangeServer", "GetDistributionListEmailAddresses", accountName);
         }
 
         public void SetDistributionListEmailAddresses(string accountName, string[] emailAddresses, string[] addressLists)
@@ -884,14 +872,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetDistributionListPermissions", organizationId, accountName, sendAsAccounts, sendOnBehalfAccounts, addressLists);
         }
 
-        public ExchangeDistributionList GetDistributionListPermissions(string organizationId, string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListPermissions(string organizationId, string accountName)
         {
-            return (ExchangeDistributionList)Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListPermissions", organizationId, accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeDistributionList)Invoke("SolidCP.Server.ExchangeServer", "GetDistributionListPermissions", organizationId, accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListPermissionsAsync(string organizationId, string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListPermissionsAsync(string organizationId, string accountName)
         {
-            return await InvokeAsync<ExchangeDistributionList>("SolidCP.Server.ExchangeServer", "GetDistributionListPermissions", organizationId, accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeDistributionList>("SolidCP.Server.ExchangeServer", "GetDistributionListPermissions", organizationId, accountName);
         }
 
         public int SetDisclaimer(string name, string text)
@@ -974,34 +962,34 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "DisableMailPublicFolder", organizationId, folder);
         }
 
-        public ExchangePublicFolder GetPublicFolderGeneralSettings(string organizationId, string folder)
+        public SolidCP.Providers.HostedSolution.ExchangePublicFolder GetPublicFolderGeneralSettings(string organizationId, string folder)
         {
-            return (ExchangePublicFolder)Invoke("SolidCP.Server.ExchangeServer", "GetPublicFolderGeneralSettings", organizationId, folder);
+            return (SolidCP.Providers.HostedSolution.ExchangePublicFolder)Invoke("SolidCP.Server.ExchangeServer", "GetPublicFolderGeneralSettings", organizationId, folder);
         }
 
-        public async System.Threading.Tasks.Task<ExchangePublicFolder> GetPublicFolderGeneralSettingsAsync(string organizationId, string folder)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangePublicFolder> GetPublicFolderGeneralSettingsAsync(string organizationId, string folder)
         {
-            return await InvokeAsync<ExchangePublicFolder>("SolidCP.Server.ExchangeServer", "GetPublicFolderGeneralSettings", organizationId, folder);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangePublicFolder>("SolidCP.Server.ExchangeServer", "GetPublicFolderGeneralSettings", organizationId, folder);
         }
 
-        public void SetPublicFolderGeneralSettings(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, ExchangeAccount[] accounts)
+        public void SetPublicFolderGeneralSettings(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, SolidCP.Providers.HostedSolution.ExchangeAccount[] accounts)
         {
             Invoke("SolidCP.Server.ExchangeServer", "SetPublicFolderGeneralSettings", organizationId, folder, newFolderName, hideFromAddressBook, accounts);
         }
 
-        public async System.Threading.Tasks.Task SetPublicFolderGeneralSettingsAsync(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, ExchangeAccount[] accounts)
+        public async System.Threading.Tasks.Task SetPublicFolderGeneralSettingsAsync(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, SolidCP.Providers.HostedSolution.ExchangeAccount[] accounts)
         {
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetPublicFolderGeneralSettings", organizationId, folder, newFolderName, hideFromAddressBook, accounts);
         }
 
-        public ExchangePublicFolder GetPublicFolderMailFlowSettings(string organizationId, string folder)
+        public SolidCP.Providers.HostedSolution.ExchangePublicFolder GetPublicFolderMailFlowSettings(string organizationId, string folder)
         {
-            return (ExchangePublicFolder)Invoke("SolidCP.Server.ExchangeServer", "GetPublicFolderMailFlowSettings", organizationId, folder);
+            return (SolidCP.Providers.HostedSolution.ExchangePublicFolder)Invoke("SolidCP.Server.ExchangeServer", "GetPublicFolderMailFlowSettings", organizationId, folder);
         }
 
-        public async System.Threading.Tasks.Task<ExchangePublicFolder> GetPublicFolderMailFlowSettingsAsync(string organizationId, string folder)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangePublicFolder> GetPublicFolderMailFlowSettingsAsync(string organizationId, string folder)
         {
-            return await InvokeAsync<ExchangePublicFolder>("SolidCP.Server.ExchangeServer", "GetPublicFolderMailFlowSettings", organizationId, folder);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangePublicFolder>("SolidCP.Server.ExchangeServer", "GetPublicFolderMailFlowSettings", organizationId, folder);
         }
 
         public void SetPublicFolderMailFlowSettings(string organizationId, string folder, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication)
@@ -1014,14 +1002,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetPublicFolderMailFlowSettings", organizationId, folder, acceptAccounts, rejectAccounts, requireSenderAuthentication);
         }
 
-        public ExchangeEmailAddress[] GetPublicFolderEmailAddresses(string organizationId, string folder)
+        public SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetPublicFolderEmailAddresses(string organizationId, string folder)
         {
-            return (ExchangeEmailAddress[])Invoke("SolidCP.Server.ExchangeServer", "GetPublicFolderEmailAddresses", organizationId, folder);
+            return (SolidCP.Providers.HostedSolution.ExchangeEmailAddress[])Invoke("SolidCP.Server.ExchangeServer", "GetPublicFolderEmailAddresses", organizationId, folder);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetPublicFolderEmailAddressesAsync(string organizationId, string folder)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetPublicFolderEmailAddressesAsync(string organizationId, string folder)
         {
-            return await InvokeAsync<ExchangeEmailAddress[]>("SolidCP.Server.ExchangeServer", "GetPublicFolderEmailAddresses", organizationId, folder);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]>("SolidCP.Server.ExchangeServer", "GetPublicFolderEmailAddresses", organizationId, folder);
         }
 
         public void SetPublicFolderEmailAddresses(string organizationId, string folder, string[] emailAddresses)
@@ -1044,14 +1032,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetPublicFolderPrimaryEmailAddress", organizationId, folder, emailAddress);
         }
 
-        public ExchangeItemStatistics[] GetPublicFoldersStatistics(string organizationId, string[] folders)
+        public SolidCP.Providers.HostedSolution.ExchangeItemStatistics[] GetPublicFoldersStatistics(string organizationId, string[] folders)
         {
-            return (ExchangeItemStatistics[])Invoke("SolidCP.Server.ExchangeServer", "GetPublicFoldersStatistics", organizationId, folders);
+            return (SolidCP.Providers.HostedSolution.ExchangeItemStatistics[])Invoke("SolidCP.Server.ExchangeServer", "GetPublicFoldersStatistics", organizationId, folders);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeItemStatistics[]> GetPublicFoldersStatisticsAsync(string organizationId, string[] folders)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]> GetPublicFoldersStatisticsAsync(string organizationId, string[] folders)
         {
-            return await InvokeAsync<ExchangeItemStatistics[]>("SolidCP.Server.ExchangeServer", "GetPublicFoldersStatistics", organizationId, folders);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]>("SolidCP.Server.ExchangeServer", "GetPublicFoldersStatistics", organizationId, folders);
         }
 
         public string[] GetPublicFoldersRecursive(string organizationId, string parent)
@@ -1094,14 +1082,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "CreateOrganizationActiveSyncPolicy", organizationId);
         }
 
-        public ExchangeActiveSyncPolicy GetActiveSyncPolicy(string organizationId)
+        public SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy GetActiveSyncPolicy(string organizationId)
         {
-            return (ExchangeActiveSyncPolicy)Invoke("SolidCP.Server.ExchangeServer", "GetActiveSyncPolicy", organizationId);
+            return (SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy)Invoke("SolidCP.Server.ExchangeServer", "GetActiveSyncPolicy", organizationId);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeActiveSyncPolicy> GetActiveSyncPolicyAsync(string organizationId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy> GetActiveSyncPolicyAsync(string organizationId)
         {
-            return await InvokeAsync<ExchangeActiveSyncPolicy>("SolidCP.Server.ExchangeServer", "GetActiveSyncPolicy", organizationId);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy>("SolidCP.Server.ExchangeServer", "GetActiveSyncPolicy", organizationId);
         }
 
         public void SetActiveSyncPolicy(string id, bool allowNonProvisionableDevices, bool attachmentsEnabled, int maxAttachmentSizeKB, bool uncAccessEnabled, bool wssAccessEnabled, bool devicePasswordEnabled, bool alphanumericPasswordRequired, bool passwordRecoveryEnabled, bool deviceEncryptionEnabled, bool allowSimplePassword, int maxPasswordFailedAttempts, int minPasswordLength, int inactivityLockMin, int passwordExpirationDays, int passwordHistory, int refreshInterval)
@@ -1114,24 +1102,24 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetActiveSyncPolicy", id, allowNonProvisionableDevices, attachmentsEnabled, maxAttachmentSizeKB, uncAccessEnabled, wssAccessEnabled, devicePasswordEnabled, alphanumericPasswordRequired, passwordRecoveryEnabled, deviceEncryptionEnabled, allowSimplePassword, maxPasswordFailedAttempts, minPasswordLength, inactivityLockMin, passwordExpirationDays, passwordHistory, refreshInterval);
         }
 
-        public ExchangeMobileDevice[] GetMobileDevices(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMobileDevice[] GetMobileDevices(string accountName)
         {
-            return (ExchangeMobileDevice[])Invoke("SolidCP.Server.ExchangeServer", "GetMobileDevices", accountName);
+            return (SolidCP.Providers.HostedSolution.ExchangeMobileDevice[])Invoke("SolidCP.Server.ExchangeServer", "GetMobileDevices", accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMobileDevice[]> GetMobileDevicesAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMobileDevice[]> GetMobileDevicesAsync(string accountName)
         {
-            return await InvokeAsync<ExchangeMobileDevice[]>("SolidCP.Server.ExchangeServer", "GetMobileDevices", accountName);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMobileDevice[]>("SolidCP.Server.ExchangeServer", "GetMobileDevices", accountName);
         }
 
-        public ExchangeMobileDevice GetMobileDevice(string id)
+        public SolidCP.Providers.HostedSolution.ExchangeMobileDevice GetMobileDevice(string id)
         {
-            return (ExchangeMobileDevice)Invoke("SolidCP.Server.ExchangeServer", "GetMobileDevice", id);
+            return (SolidCP.Providers.HostedSolution.ExchangeMobileDevice)Invoke("SolidCP.Server.ExchangeServer", "GetMobileDevice", id);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMobileDevice> GetMobileDeviceAsync(string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMobileDevice> GetMobileDeviceAsync(string id)
         {
-            return await InvokeAsync<ExchangeMobileDevice>("SolidCP.Server.ExchangeServer", "GetMobileDevice", id);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeMobileDevice>("SolidCP.Server.ExchangeServer", "GetMobileDevice", id);
         }
 
         public void WipeDataFromDevice(string id)
@@ -1164,84 +1152,84 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.ExchangeServer", "RemoveDevice", id);
         }
 
-        public ResultObject ExportMailBox(string organizationId, string accountName, string storagePath)
+        public SolidCP.Providers.Common.ResultObject ExportMailBox(string organizationId, string accountName, string storagePath)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "ExportMailBox", organizationId, accountName, storagePath);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "ExportMailBox", organizationId, accountName, storagePath);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> ExportMailBoxAsync(string organizationId, string accountName, string storagePath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> ExportMailBoxAsync(string organizationId, string accountName, string storagePath)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "ExportMailBox", organizationId, accountName, storagePath);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "ExportMailBox", organizationId, accountName, storagePath);
         }
 
-        public ResultObject SetMailBoxArchiving(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
+        public SolidCP.Providers.Common.ResultObject SetMailBoxArchiving(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetMailBoxArchiving", organizationId, accountName, archive, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetMailBoxArchiving", organizationId, accountName, archive, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetMailBoxArchivingAsync(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetMailBoxArchivingAsync(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "SetMailBoxArchiving", organizationId, accountName, archive, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "SetMailBoxArchiving", organizationId, accountName, archive, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
         }
 
-        public ResultObject SetRetentionPolicyTag(string Identity, ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, ExchangeRetentionPolicyTagAction RetentionAction)
+        public SolidCP.Providers.Common.ResultObject SetRetentionPolicyTag(string Identity, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagAction RetentionAction)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetRetentionPolicyTag", Identity, Type, AgeLimitForRetention, RetentionAction);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetRetentionPolicyTag", Identity, Type, AgeLimitForRetention, RetentionAction);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetRetentionPolicyTagAsync(string Identity, ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, ExchangeRetentionPolicyTagAction RetentionAction)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetRetentionPolicyTagAsync(string Identity, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagAction RetentionAction)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "SetRetentionPolicyTag", Identity, Type, AgeLimitForRetention, RetentionAction);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "SetRetentionPolicyTag", Identity, Type, AgeLimitForRetention, RetentionAction);
         }
 
-        public ResultObject RemoveRetentionPolicyTag(string Identity)
+        public SolidCP.Providers.Common.ResultObject RemoveRetentionPolicyTag(string Identity)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicyTag", Identity);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicyTag", Identity);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> RemoveRetentionPolicyTagAsync(string Identity)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> RemoveRetentionPolicyTagAsync(string Identity)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicyTag", Identity);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicyTag", Identity);
         }
 
-        public ResultObject SetRetentionPolicy(string Identity, string[] RetentionPolicyTagLinks)
+        public SolidCP.Providers.Common.ResultObject SetRetentionPolicy(string Identity, string[] RetentionPolicyTagLinks)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetRetentionPolicy", Identity, RetentionPolicyTagLinks);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetRetentionPolicy", Identity, RetentionPolicyTagLinks);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetRetentionPolicyAsync(string Identity, string[] RetentionPolicyTagLinks)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetRetentionPolicyAsync(string Identity, string[] RetentionPolicyTagLinks)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "SetRetentionPolicy", Identity, RetentionPolicyTagLinks);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "SetRetentionPolicy", Identity, RetentionPolicyTagLinks);
         }
 
-        public ResultObject RemoveRetentionPolicy(string Identity)
+        public SolidCP.Providers.Common.ResultObject RemoveRetentionPolicy(string Identity)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicy", Identity);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicy", Identity);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> RemoveRetentionPolicyAsync(string Identity)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> RemoveRetentionPolicyAsync(string Identity)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicy", Identity);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "RemoveRetentionPolicy", Identity);
         }
 
-        public ResultObject SetPicture(string accountName, byte[] picture)
+        public SolidCP.Providers.Common.ResultObject SetPicture(string accountName, byte[] picture)
         {
-            return (ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetPicture", accountName, picture);
+            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.ExchangeServer", "SetPicture", accountName, picture);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetPictureAsync(string accountName, byte[] picture)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetPictureAsync(string accountName, byte[] picture)
         {
-            return await InvokeAsync<ResultObject>("SolidCP.Server.ExchangeServer", "SetPicture", accountName, picture);
+            return await InvokeAsync<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.ExchangeServer", "SetPicture", accountName, picture);
         }
 
-        public BytesResult GetPicture(string accountName)
+        public SolidCP.Providers.ResultObjects.BytesResult GetPicture(string accountName)
         {
-            return (BytesResult)Invoke("SolidCP.Server.ExchangeServer", "GetPicture", accountName);
+            return (SolidCP.Providers.ResultObjects.BytesResult)Invoke("SolidCP.Server.ExchangeServer", "GetPicture", accountName);
         }
 
-        public async System.Threading.Tasks.Task<BytesResult> GetPictureAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.BytesResult> GetPictureAsync(string accountName)
         {
-            return await InvokeAsync<BytesResult>("SolidCP.Server.ExchangeServer", "GetPicture", accountName);
+            return await InvokeAsync<SolidCP.Providers.ResultObjects.BytesResult>("SolidCP.Server.ExchangeServer", "GetPicture", accountName);
         }
     }
 
@@ -1259,32 +1247,32 @@ namespace SolidCP.Server.Client
             return await base.Client.CheckAccountCredentialsAsync(username, password);
         }
 
-        public Organization ExtendToExchangeOrganization(string organizationId, string securityGroup, bool IsConsumer)
+        public SolidCP.Providers.HostedSolution.Organization ExtendToExchangeOrganization(string organizationId, string securityGroup, bool IsConsumer)
         {
             return base.Client.ExtendToExchangeOrganization(organizationId, securityGroup, IsConsumer);
         }
 
-        public async System.Threading.Tasks.Task<Organization> ExtendToExchangeOrganizationAsync(string organizationId, string securityGroup, bool IsConsumer)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> ExtendToExchangeOrganizationAsync(string organizationId, string securityGroup, bool IsConsumer)
         {
             return await base.Client.ExtendToExchangeOrganizationAsync(organizationId, securityGroup, IsConsumer);
         }
 
-        public string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
+        public string CreateMailEnableUser(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, SolidCP.Providers.HostedSolution.ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
         {
             return base.Client.CreateMailEnableUser(upn, organizationId, organizationDistinguishedName, securityGroup, organizationDomain, accountType, mailboxDatabase, offlineAddressBook, addressBookPolicy, accountName, enablePOP, enableIMAP, enableOWA, enableMAPI, enableActiveSync, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays, maxRecipients, maxSendMessageSizeKB, maxReceiveMessageSizeKB, hideFromAddressBook, isConsumer, enabledLitigationHold, recoverabelItemsSpace, recoverabelItemsWarning);
         }
 
-        public async System.Threading.Tasks.Task<string> CreateMailEnableUserAsync(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
+        public async System.Threading.Tasks.Task<string> CreateMailEnableUserAsync(string upn, string organizationId, string organizationDistinguishedName, string securityGroup, string organizationDomain, SolidCP.Providers.HostedSolution.ExchangeAccountType accountType, string mailboxDatabase, string offlineAddressBook, string addressBookPolicy, string accountName, bool enablePOP, bool enableIMAP, bool enableOWA, bool enableMAPI, bool enableActiveSync, long issueWarningKB, long prohibitSendKB, long prohibitSendReceiveKB, int keepDeletedItemsDays, int maxRecipients, int maxSendMessageSizeKB, int maxReceiveMessageSizeKB, bool hideFromAddressBook, bool isConsumer, bool enabledLitigationHold, long recoverabelItemsSpace, long recoverabelItemsWarning)
         {
             return await base.Client.CreateMailEnableUserAsync(upn, organizationId, organizationDistinguishedName, securityGroup, organizationDomain, accountType, mailboxDatabase, offlineAddressBook, addressBookPolicy, accountName, enablePOP, enableIMAP, enableOWA, enableMAPI, enableActiveSync, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays, maxRecipients, maxSendMessageSizeKB, maxReceiveMessageSizeKB, hideFromAddressBook, isConsumer, enabledLitigationHold, recoverabelItemsSpace, recoverabelItemsWarning);
         }
 
-        public Organization CreateOrganizationOfflineAddressBook(string organizationId, string securityGroup, string oabVirtualDir)
+        public SolidCP.Providers.HostedSolution.Organization CreateOrganizationOfflineAddressBook(string organizationId, string securityGroup, string oabVirtualDir)
         {
             return base.Client.CreateOrganizationOfflineAddressBook(organizationId, securityGroup, oabVirtualDir);
         }
 
-        public async System.Threading.Tasks.Task<Organization> CreateOrganizationOfflineAddressBookAsync(string organizationId, string securityGroup, string oabVirtualDir)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationOfflineAddressBookAsync(string organizationId, string securityGroup, string oabVirtualDir)
         {
             return await base.Client.CreateOrganizationOfflineAddressBookAsync(organizationId, securityGroup, oabVirtualDir);
         }
@@ -1309,22 +1297,22 @@ namespace SolidCP.Server.Client
             return await base.Client.GetOABVirtualDirectoryAsync();
         }
 
-        public Organization CreateOrganizationAddressBookPolicy(string organizationId, string gal, string addressBook, string roomList, string oab)
+        public SolidCP.Providers.HostedSolution.Organization CreateOrganizationAddressBookPolicy(string organizationId, string gal, string addressBook, string roomList, string oab)
         {
             return base.Client.CreateOrganizationAddressBookPolicy(organizationId, gal, addressBook, roomList, oab);
         }
 
-        public async System.Threading.Tasks.Task<Organization> CreateOrganizationAddressBookPolicyAsync(string organizationId, string gal, string addressBook, string roomList, string oab)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationAddressBookPolicyAsync(string organizationId, string gal, string addressBook, string roomList, string oab)
         {
             return await base.Client.CreateOrganizationAddressBookPolicyAsync(organizationId, gal, addressBook, roomList, oab);
         }
 
-        public bool DeleteOrganization(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, List<ExchangeDomainName> acceptedDomains)
+        public bool DeleteOrganization(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, System.Collections.Generic.List<SolidCP.Providers.HostedSolution.ExchangeDomainName> acceptedDomains)
         {
             return base.Client.DeleteOrganization(organizationId, distinguishedName, globalAddressList, addressList, roomList, offlineAddressBook, securityGroup, addressBookPolicy, acceptedDomains);
         }
 
-        public async System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, List<ExchangeDomainName> acceptedDomains)
+        public async System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string distinguishedName, string globalAddressList, string addressList, string roomList, string offlineAddressBook, string securityGroup, string addressBookPolicy, System.Collections.Generic.List<SolidCP.Providers.HostedSolution.ExchangeDomainName> acceptedDomains)
         {
             return await base.Client.DeleteOrganizationAsync(organizationId, distinguishedName, globalAddressList, addressList, roomList, offlineAddressBook, securityGroup, addressBookPolicy, acceptedDomains);
         }
@@ -1339,12 +1327,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetOrganizationStorageLimitsAsync(organizationDistinguishedName, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays);
         }
 
-        public ExchangeItemStatistics[] GetMailboxesStatistics(string organizationDistinguishedName)
+        public SolidCP.Providers.HostedSolution.ExchangeItemStatistics[] GetMailboxesStatistics(string organizationDistinguishedName)
         {
             return base.Client.GetMailboxesStatistics(organizationDistinguishedName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeItemStatistics[]> GetMailboxesStatisticsAsync(string organizationDistinguishedName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]> GetMailboxesStatisticsAsync(string organizationDistinguishedName)
         {
             return await base.Client.GetMailboxesStatisticsAsync(organizationDistinguishedName);
         }
@@ -1359,12 +1347,12 @@ namespace SolidCP.Server.Client
             await base.Client.AddAuthoritativeDomainAsync(domain);
         }
 
-        public void ChangeAcceptedDomainType(string domain, ExchangeAcceptedDomainType domainType)
+        public void ChangeAcceptedDomainType(string domain, SolidCP.Providers.HostedSolution.ExchangeAcceptedDomainType domainType)
         {
             base.Client.ChangeAcceptedDomainType(domain, domainType);
         }
 
-        public async System.Threading.Tasks.Task ChangeAcceptedDomainTypeAsync(string domain, ExchangeAcceptedDomainType domainType)
+        public async System.Threading.Tasks.Task ChangeAcceptedDomainTypeAsync(string domain, SolidCP.Providers.HostedSolution.ExchangeAcceptedDomainType domainType)
         {
             await base.Client.ChangeAcceptedDomainTypeAsync(domain, domainType);
         }
@@ -1409,32 +1397,32 @@ namespace SolidCP.Server.Client
             await base.Client.DisableMailboxAsync(accountName);
         }
 
-        public ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(string accountName)
         {
             return base.Client.GetMailboxAutoReplySettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailboxAutoReplySettings> GetMailboxAutoReplySettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings> GetMailboxAutoReplySettingsAsync(string accountName)
         {
             return await base.Client.GetMailboxAutoReplySettingsAsync(accountName);
         }
 
-        public void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings)
+        public void SetMailboxAutoReplySettings(string accountName, SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings settings)
         {
             base.Client.SetMailboxAutoReplySettings(accountName, settings);
         }
 
-        public async System.Threading.Tasks.Task SetMailboxAutoReplySettingsAsync(string accountName, ExchangeMailboxAutoReplySettings settings)
+        public async System.Threading.Tasks.Task SetMailboxAutoReplySettingsAsync(string accountName, SolidCP.Providers.HostedSolution.ExchangeMailboxAutoReplySettings settings)
         {
             await base.Client.SetMailboxAutoReplySettingsAsync(accountName, settings);
         }
 
-        public ExchangeMailbox GetMailboxGeneralSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxGeneralSettings(string accountName)
         {
             return base.Client.GetMailboxGeneralSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxGeneralSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxGeneralSettingsAsync(string accountName)
         {
             return await base.Client.GetMailboxGeneralSettingsAsync(accountName);
         }
@@ -1449,12 +1437,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetMailboxGeneralSettingsAsync(accountName, hideFromAddressBook, disabled);
         }
 
-        public ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
         {
             return base.Client.GetMailboxMailFlowSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxMailFlowSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxMailFlowSettingsAsync(string accountName)
         {
             return await base.Client.GetMailboxMailFlowSettingsAsync(accountName);
         }
@@ -1469,12 +1457,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetMailboxMailFlowSettingsAsync(accountName, enableForwarding, saveSentItems, forwardingAccountName, forwardToBoth, sendOnBehalfAccounts, acceptAccounts, rejectAccounts, requireSenderAuthentication);
         }
 
-        public ExchangeMailbox GetMailboxAdvancedSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxAdvancedSettings(string accountName)
         {
             return base.Client.GetMailboxAdvancedSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxAdvancedSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxAdvancedSettingsAsync(string accountName)
         {
             return await base.Client.GetMailboxAdvancedSettingsAsync(accountName);
         }
@@ -1489,12 +1477,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetMailboxAdvancedSettingsAsync(organizationId, accountName, enablePOP, enableIMAP, enableOWA, enableMAPI, enableActiveSync, issueWarningKB, prohibitSendKB, prohibitSendReceiveKB, keepDeletedItemsDays, maxRecipients, maxSendMessageSizeKB, maxReceiveMessageSizeKB, enabledLitigationHold, recoverabelItemsSpace, recoverabelItemsWarning, litigationHoldUrl, litigationHoldMsg);
         }
 
-        public ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetMailboxEmailAddresses(string accountName)
         {
             return base.Client.GetMailboxEmailAddresses(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetMailboxEmailAddressesAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetMailboxEmailAddressesAsync(string accountName)
         {
             return await base.Client.GetMailboxEmailAddressesAsync(accountName);
         }
@@ -1519,32 +1507,32 @@ namespace SolidCP.Server.Client
             await base.Client.SetMailboxPrimaryEmailAddressAsync(accountName, emailAddress);
         }
 
-        public void SetMailboxPermissions(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts)
+        public void SetMailboxPermissions(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] calendarAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] contactAccounts)
         {
             base.Client.SetMailboxPermissions(organizationId, accountName, sendAsAccounts, fullAccessAccounts, onBehalfOfAccounts, calendarAccounts, contactAccounts);
         }
 
-        public async System.Threading.Tasks.Task SetMailboxPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, ExchangeAccount[] calendarAccounts, ExchangeAccount[] contactAccounts)
+        public async System.Threading.Tasks.Task SetMailboxPermissionsAsync(string organizationId, string accountName, string[] sendAsAccounts, string[] fullAccessAccounts, string[] onBehalfOfAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] calendarAccounts, SolidCP.Providers.HostedSolution.ExchangeAccount[] contactAccounts)
         {
             await base.Client.SetMailboxPermissionsAsync(organizationId, accountName, sendAsAccounts, fullAccessAccounts, onBehalfOfAccounts, calendarAccounts, contactAccounts);
         }
 
-        public ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxPermissions(string organizationId, string accountName)
         {
             return base.Client.GetMailboxPermissions(organizationId, accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailbox> GetMailboxPermissionsAsync(string organizationId, string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailbox> GetMailboxPermissionsAsync(string organizationId, string accountName)
         {
             return await base.Client.GetMailboxPermissionsAsync(organizationId, accountName);
         }
 
-        public ExchangeMailboxStatistics GetMailboxStatistics(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics GetMailboxStatistics(string accountName)
         {
             return base.Client.GetMailboxStatistics(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMailboxStatistics> GetMailboxStatisticsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMailboxStatistics> GetMailboxStatisticsAsync(string accountName)
         {
             return await base.Client.GetMailboxStatisticsAsync(accountName);
         }
@@ -1569,22 +1557,22 @@ namespace SolidCP.Server.Client
             return await base.Client.CreateJournalRuleAsync(journalEmail, scope, recipientEmail, enabled);
         }
 
-        public ExchangeJournalRule GetJournalRule(string journalEmail)
+        public SolidCP.Providers.HostedSolution.ExchangeJournalRule GetJournalRule(string journalEmail)
         {
             return base.Client.GetJournalRule(journalEmail);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeJournalRule> GetJournalRuleAsync(string journalEmail)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeJournalRule> GetJournalRuleAsync(string journalEmail)
         {
             return await base.Client.GetJournalRuleAsync(journalEmail);
         }
 
-        public void SetJournalRule(ExchangeJournalRule rule)
+        public void SetJournalRule(SolidCP.Providers.HostedSolution.ExchangeJournalRule rule)
         {
             base.Client.SetJournalRule(rule);
         }
 
-        public async System.Threading.Tasks.Task SetJournalRuleAsync(ExchangeJournalRule rule)
+        public async System.Threading.Tasks.Task SetJournalRuleAsync(SolidCP.Providers.HostedSolution.ExchangeJournalRule rule)
         {
             await base.Client.SetJournalRuleAsync(rule);
         }
@@ -1619,12 +1607,12 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteContactAsync(accountName);
         }
 
-        public ExchangeContact GetContactGeneralSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeContact GetContactGeneralSettings(string accountName)
         {
             return base.Client.GetContactGeneralSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeContact> GetContactGeneralSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeContact> GetContactGeneralSettingsAsync(string accountName)
         {
             return await base.Client.GetContactGeneralSettingsAsync(accountName);
         }
@@ -1639,12 +1627,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetContactGeneralSettingsAsync(accountName, displayName, email, hideFromAddressBook, firstName, initials, lastName, address, city, state, zip, country, jobTitle, company, department, office, managerAccountName, businessPhone, fax, homePhone, mobilePhone, pager, webPage, notes, useMapiRichTextFormat, defaultDomain);
         }
 
-        public ExchangeContact GetContactMailFlowSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeContact GetContactMailFlowSettings(string accountName)
         {
             return base.Client.GetContactMailFlowSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeContact> GetContactMailFlowSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeContact> GetContactMailFlowSettingsAsync(string accountName)
         {
             return await base.Client.GetContactMailFlowSettingsAsync(accountName);
         }
@@ -1679,12 +1667,12 @@ namespace SolidCP.Server.Client
             await base.Client.DeleteDistributionListAsync(accountName);
         }
 
-        public ExchangeDistributionList GetDistributionListGeneralSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListGeneralSettings(string accountName)
         {
             return base.Client.GetDistributionListGeneralSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListGeneralSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListGeneralSettingsAsync(string accountName)
         {
             return await base.Client.GetDistributionListGeneralSettingsAsync(accountName);
         }
@@ -1699,12 +1687,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetDistributionListGeneralSettingsAsync(accountName, displayName, hideFromAddressBook, managedBy, members, notes, addressLists);
         }
 
-        public ExchangeDistributionList GetDistributionListMailFlowSettings(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListMailFlowSettings(string accountName)
         {
             return base.Client.GetDistributionListMailFlowSettings(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListMailFlowSettingsAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListMailFlowSettingsAsync(string accountName)
         {
             return await base.Client.GetDistributionListMailFlowSettingsAsync(accountName);
         }
@@ -1719,12 +1707,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetDistributionListMailFlowSettingsAsync(accountName, acceptAccounts, rejectAccounts, requireSenderAuthentication, addressLists);
         }
 
-        public ExchangeEmailAddress[] GetDistributionListEmailAddresses(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetDistributionListEmailAddresses(string accountName)
         {
             return base.Client.GetDistributionListEmailAddresses(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetDistributionListEmailAddressesAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetDistributionListEmailAddressesAsync(string accountName)
         {
             return await base.Client.GetDistributionListEmailAddressesAsync(accountName);
         }
@@ -1759,12 +1747,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetDistributionListPermissionsAsync(organizationId, accountName, sendAsAccounts, sendOnBehalfAccounts, addressLists);
         }
 
-        public ExchangeDistributionList GetDistributionListPermissions(string organizationId, string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeDistributionList GetDistributionListPermissions(string organizationId, string accountName)
         {
             return base.Client.GetDistributionListPermissions(organizationId, accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeDistributionList> GetDistributionListPermissionsAsync(string organizationId, string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeDistributionList> GetDistributionListPermissionsAsync(string organizationId, string accountName)
         {
             return await base.Client.GetDistributionListPermissionsAsync(organizationId, accountName);
         }
@@ -1849,32 +1837,32 @@ namespace SolidCP.Server.Client
             await base.Client.DisableMailPublicFolderAsync(organizationId, folder);
         }
 
-        public ExchangePublicFolder GetPublicFolderGeneralSettings(string organizationId, string folder)
+        public SolidCP.Providers.HostedSolution.ExchangePublicFolder GetPublicFolderGeneralSettings(string organizationId, string folder)
         {
             return base.Client.GetPublicFolderGeneralSettings(organizationId, folder);
         }
 
-        public async System.Threading.Tasks.Task<ExchangePublicFolder> GetPublicFolderGeneralSettingsAsync(string organizationId, string folder)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangePublicFolder> GetPublicFolderGeneralSettingsAsync(string organizationId, string folder)
         {
             return await base.Client.GetPublicFolderGeneralSettingsAsync(organizationId, folder);
         }
 
-        public void SetPublicFolderGeneralSettings(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, ExchangeAccount[] accounts)
+        public void SetPublicFolderGeneralSettings(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, SolidCP.Providers.HostedSolution.ExchangeAccount[] accounts)
         {
             base.Client.SetPublicFolderGeneralSettings(organizationId, folder, newFolderName, hideFromAddressBook, accounts);
         }
 
-        public async System.Threading.Tasks.Task SetPublicFolderGeneralSettingsAsync(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, ExchangeAccount[] accounts)
+        public async System.Threading.Tasks.Task SetPublicFolderGeneralSettingsAsync(string organizationId, string folder, string newFolderName, bool hideFromAddressBook, SolidCP.Providers.HostedSolution.ExchangeAccount[] accounts)
         {
             await base.Client.SetPublicFolderGeneralSettingsAsync(organizationId, folder, newFolderName, hideFromAddressBook, accounts);
         }
 
-        public ExchangePublicFolder GetPublicFolderMailFlowSettings(string organizationId, string folder)
+        public SolidCP.Providers.HostedSolution.ExchangePublicFolder GetPublicFolderMailFlowSettings(string organizationId, string folder)
         {
             return base.Client.GetPublicFolderMailFlowSettings(organizationId, folder);
         }
 
-        public async System.Threading.Tasks.Task<ExchangePublicFolder> GetPublicFolderMailFlowSettingsAsync(string organizationId, string folder)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangePublicFolder> GetPublicFolderMailFlowSettingsAsync(string organizationId, string folder)
         {
             return await base.Client.GetPublicFolderMailFlowSettingsAsync(organizationId, folder);
         }
@@ -1889,12 +1877,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetPublicFolderMailFlowSettingsAsync(organizationId, folder, acceptAccounts, rejectAccounts, requireSenderAuthentication);
         }
 
-        public ExchangeEmailAddress[] GetPublicFolderEmailAddresses(string organizationId, string folder)
+        public SolidCP.Providers.HostedSolution.ExchangeEmailAddress[] GetPublicFolderEmailAddresses(string organizationId, string folder)
         {
             return base.Client.GetPublicFolderEmailAddresses(organizationId, folder);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeEmailAddress[]> GetPublicFolderEmailAddressesAsync(string organizationId, string folder)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeEmailAddress[]> GetPublicFolderEmailAddressesAsync(string organizationId, string folder)
         {
             return await base.Client.GetPublicFolderEmailAddressesAsync(organizationId, folder);
         }
@@ -1919,12 +1907,12 @@ namespace SolidCP.Server.Client
             await base.Client.SetPublicFolderPrimaryEmailAddressAsync(organizationId, folder, emailAddress);
         }
 
-        public ExchangeItemStatistics[] GetPublicFoldersStatistics(string organizationId, string[] folders)
+        public SolidCP.Providers.HostedSolution.ExchangeItemStatistics[] GetPublicFoldersStatistics(string organizationId, string[] folders)
         {
             return base.Client.GetPublicFoldersStatistics(organizationId, folders);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeItemStatistics[]> GetPublicFoldersStatisticsAsync(string organizationId, string[] folders)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeItemStatistics[]> GetPublicFoldersStatisticsAsync(string organizationId, string[] folders)
         {
             return await base.Client.GetPublicFoldersStatisticsAsync(organizationId, folders);
         }
@@ -1969,12 +1957,12 @@ namespace SolidCP.Server.Client
             await base.Client.CreateOrganizationActiveSyncPolicyAsync(organizationId);
         }
 
-        public ExchangeActiveSyncPolicy GetActiveSyncPolicy(string organizationId)
+        public SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy GetActiveSyncPolicy(string organizationId)
         {
             return base.Client.GetActiveSyncPolicy(organizationId);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeActiveSyncPolicy> GetActiveSyncPolicyAsync(string organizationId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeActiveSyncPolicy> GetActiveSyncPolicyAsync(string organizationId)
         {
             return await base.Client.GetActiveSyncPolicyAsync(organizationId);
         }
@@ -1989,22 +1977,22 @@ namespace SolidCP.Server.Client
             await base.Client.SetActiveSyncPolicyAsync(id, allowNonProvisionableDevices, attachmentsEnabled, maxAttachmentSizeKB, uncAccessEnabled, wssAccessEnabled, devicePasswordEnabled, alphanumericPasswordRequired, passwordRecoveryEnabled, deviceEncryptionEnabled, allowSimplePassword, maxPasswordFailedAttempts, minPasswordLength, inactivityLockMin, passwordExpirationDays, passwordHistory, refreshInterval);
         }
 
-        public ExchangeMobileDevice[] GetMobileDevices(string accountName)
+        public SolidCP.Providers.HostedSolution.ExchangeMobileDevice[] GetMobileDevices(string accountName)
         {
             return base.Client.GetMobileDevices(accountName);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMobileDevice[]> GetMobileDevicesAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMobileDevice[]> GetMobileDevicesAsync(string accountName)
         {
             return await base.Client.GetMobileDevicesAsync(accountName);
         }
 
-        public ExchangeMobileDevice GetMobileDevice(string id)
+        public SolidCP.Providers.HostedSolution.ExchangeMobileDevice GetMobileDevice(string id)
         {
             return base.Client.GetMobileDevice(id);
         }
 
-        public async System.Threading.Tasks.Task<ExchangeMobileDevice> GetMobileDeviceAsync(string id)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeMobileDevice> GetMobileDeviceAsync(string id)
         {
             return await base.Client.GetMobileDeviceAsync(id);
         }
@@ -2039,82 +2027,82 @@ namespace SolidCP.Server.Client
             await base.Client.RemoveDeviceAsync(id);
         }
 
-        public ResultObject ExportMailBox(string organizationId, string accountName, string storagePath)
+        public SolidCP.Providers.Common.ResultObject ExportMailBox(string organizationId, string accountName, string storagePath)
         {
             return base.Client.ExportMailBox(organizationId, accountName, storagePath);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> ExportMailBoxAsync(string organizationId, string accountName, string storagePath)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> ExportMailBoxAsync(string organizationId, string accountName, string storagePath)
         {
             return await base.Client.ExportMailBoxAsync(organizationId, accountName, storagePath);
         }
 
-        public ResultObject SetMailBoxArchiving(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
+        public SolidCP.Providers.Common.ResultObject SetMailBoxArchiving(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
         {
             return base.Client.SetMailBoxArchiving(organizationId, accountName, archive, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetMailBoxArchivingAsync(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetMailBoxArchivingAsync(string organizationId, string accountName, bool archive, long archiveQuotaKB, long archiveWarningQuotaKB, string RetentionPolicy)
         {
             return await base.Client.SetMailBoxArchivingAsync(organizationId, accountName, archive, archiveQuotaKB, archiveWarningQuotaKB, RetentionPolicy);
         }
 
-        public ResultObject SetRetentionPolicyTag(string Identity, ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, ExchangeRetentionPolicyTagAction RetentionAction)
+        public SolidCP.Providers.Common.ResultObject SetRetentionPolicyTag(string Identity, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagAction RetentionAction)
         {
             return base.Client.SetRetentionPolicyTag(Identity, Type, AgeLimitForRetention, RetentionAction);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetRetentionPolicyTagAsync(string Identity, ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, ExchangeRetentionPolicyTagAction RetentionAction)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetRetentionPolicyTagAsync(string Identity, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagType Type, int AgeLimitForRetention, SolidCP.Providers.HostedSolution.ExchangeRetentionPolicyTagAction RetentionAction)
         {
             return await base.Client.SetRetentionPolicyTagAsync(Identity, Type, AgeLimitForRetention, RetentionAction);
         }
 
-        public ResultObject RemoveRetentionPolicyTag(string Identity)
+        public SolidCP.Providers.Common.ResultObject RemoveRetentionPolicyTag(string Identity)
         {
             return base.Client.RemoveRetentionPolicyTag(Identity);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> RemoveRetentionPolicyTagAsync(string Identity)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> RemoveRetentionPolicyTagAsync(string Identity)
         {
             return await base.Client.RemoveRetentionPolicyTagAsync(Identity);
         }
 
-        public ResultObject SetRetentionPolicy(string Identity, string[] RetentionPolicyTagLinks)
+        public SolidCP.Providers.Common.ResultObject SetRetentionPolicy(string Identity, string[] RetentionPolicyTagLinks)
         {
             return base.Client.SetRetentionPolicy(Identity, RetentionPolicyTagLinks);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetRetentionPolicyAsync(string Identity, string[] RetentionPolicyTagLinks)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetRetentionPolicyAsync(string Identity, string[] RetentionPolicyTagLinks)
         {
             return await base.Client.SetRetentionPolicyAsync(Identity, RetentionPolicyTagLinks);
         }
 
-        public ResultObject RemoveRetentionPolicy(string Identity)
+        public SolidCP.Providers.Common.ResultObject RemoveRetentionPolicy(string Identity)
         {
             return base.Client.RemoveRetentionPolicy(Identity);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> RemoveRetentionPolicyAsync(string Identity)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> RemoveRetentionPolicyAsync(string Identity)
         {
             return await base.Client.RemoveRetentionPolicyAsync(Identity);
         }
 
-        public ResultObject SetPicture(string accountName, byte[] picture)
+        public SolidCP.Providers.Common.ResultObject SetPicture(string accountName, byte[] picture)
         {
             return base.Client.SetPicture(accountName, picture);
         }
 
-        public async System.Threading.Tasks.Task<ResultObject> SetPictureAsync(string accountName, byte[] picture)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetPictureAsync(string accountName, byte[] picture)
         {
             return await base.Client.SetPictureAsync(accountName, picture);
         }
 
-        public BytesResult GetPicture(string accountName)
+        public SolidCP.Providers.ResultObjects.BytesResult GetPicture(string accountName)
         {
             return base.Client.GetPicture(accountName);
         }
 
-        public async System.Threading.Tasks.Task<BytesResult> GetPictureAsync(string accountName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.BytesResult> GetPictureAsync(string accountName)
         {
             return await base.Client.GetPictureAsync(accountName);
         }

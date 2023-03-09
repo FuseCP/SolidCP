@@ -1,15 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Server.Utils;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -24,9 +13,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/Install", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/InstallResponse")]
         System.Threading.Tasks.Task<string[]> InstallAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/GetProviderDefaultSettings", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/GetProviderDefaultSettingsResponse")]
-        SettingPair[] GetProviderDefaultSettings();
+        SolidCP.Providers.SettingPair[] GetProviderDefaultSettings();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/GetProviderDefaultSettings", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/GetProviderDefaultSettingsResponse")]
-        System.Threading.Tasks.Task<SettingPair[]> GetProviderDefaultSettingsAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> GetProviderDefaultSettingsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/Uninstall", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/UninstallResponse")]
         void Uninstall();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/Uninstall", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/UninstallResponse")]
@@ -36,21 +25,21 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/IsInstalled", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/IsInstalledResponse")]
         System.Threading.Tasks.Task<bool> IsInstalledAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/ChangeServiceItemsState", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/ChangeServiceItemsStateResponse")]
-        void ChangeServiceItemsState(SoapServiceProviderItem[] items, bool enabled);
+        void ChangeServiceItemsState(SolidCP.Providers.SoapServiceProviderItem[] items, bool enabled);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/ChangeServiceItemsState", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/ChangeServiceItemsStateResponse")]
-        System.Threading.Tasks.Task ChangeServiceItemsStateAsync(SoapServiceProviderItem[] items, bool enabled);
+        System.Threading.Tasks.Task ChangeServiceItemsStateAsync(SolidCP.Providers.SoapServiceProviderItem[] items, bool enabled);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/DeleteServiceItems", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/DeleteServiceItemsResponse")]
-        void DeleteServiceItems(SoapServiceProviderItem[] items);
+        void DeleteServiceItems(SolidCP.Providers.SoapServiceProviderItem[] items);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/DeleteServiceItems", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/DeleteServiceItemsResponse")]
-        System.Threading.Tasks.Task DeleteServiceItemsAsync(SoapServiceProviderItem[] items);
+        System.Threading.Tasks.Task DeleteServiceItemsAsync(SolidCP.Providers.SoapServiceProviderItem[] items);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsDiskSpace", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsDiskSpaceResponse")]
-        ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SoapServiceProviderItem[] items);
+        SolidCP.Providers.ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SolidCP.Providers.SoapServiceProviderItem[] items);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsDiskSpace", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsDiskSpaceResponse")]
-        System.Threading.Tasks.Task<ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SoapServiceProviderItem[] items);
+        System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SolidCP.Providers.SoapServiceProviderItem[] items);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsBandwidth", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsBandwidthResponse")]
-        ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SoapServiceProviderItem[] items, DateTime since);
+        SolidCP.Providers.ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsBandwidth", ReplyAction = "http://smbsaas/solidcp/server/IServiceProvider/GetServiceItemsBandwidthResponse")]
-        System.Threading.Tasks.Task<ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SoapServiceProviderItem[] items, DateTime since);
+        System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since);
     }
 
     // wcf client assembly proxy class
@@ -67,14 +56,14 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.ServiceProvider", "Install");
         }
 
-        public SettingPair[] GetProviderDefaultSettings()
+        public SolidCP.Providers.SettingPair[] GetProviderDefaultSettings()
         {
-            return (SettingPair[])Invoke("SolidCP.Server.ServiceProvider", "GetProviderDefaultSettings");
+            return (SolidCP.Providers.SettingPair[])Invoke("SolidCP.Server.ServiceProvider", "GetProviderDefaultSettings");
         }
 
-        public async System.Threading.Tasks.Task<SettingPair[]> GetProviderDefaultSettingsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> GetProviderDefaultSettingsAsync()
         {
-            return await InvokeAsync<SettingPair[]>("SolidCP.Server.ServiceProvider", "GetProviderDefaultSettings");
+            return await InvokeAsync<SolidCP.Providers.SettingPair[]>("SolidCP.Server.ServiceProvider", "GetProviderDefaultSettings");
         }
 
         public void Uninstall()
@@ -97,44 +86,44 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<bool>("SolidCP.Server.ServiceProvider", "IsInstalled");
         }
 
-        public void ChangeServiceItemsState(SoapServiceProviderItem[] items, bool enabled)
+        public void ChangeServiceItemsState(SolidCP.Providers.SoapServiceProviderItem[] items, bool enabled)
         {
             Invoke("SolidCP.Server.ServiceProvider", "ChangeServiceItemsState", items, enabled);
         }
 
-        public async System.Threading.Tasks.Task ChangeServiceItemsStateAsync(SoapServiceProviderItem[] items, bool enabled)
+        public async System.Threading.Tasks.Task ChangeServiceItemsStateAsync(SolidCP.Providers.SoapServiceProviderItem[] items, bool enabled)
         {
             await InvokeAsync("SolidCP.Server.ServiceProvider", "ChangeServiceItemsState", items, enabled);
         }
 
-        public void DeleteServiceItems(SoapServiceProviderItem[] items)
+        public void DeleteServiceItems(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
             Invoke("SolidCP.Server.ServiceProvider", "DeleteServiceItems", items);
         }
 
-        public async System.Threading.Tasks.Task DeleteServiceItemsAsync(SoapServiceProviderItem[] items)
+        public async System.Threading.Tasks.Task DeleteServiceItemsAsync(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
             await InvokeAsync("SolidCP.Server.ServiceProvider", "DeleteServiceItems", items);
         }
 
-        public ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SoapServiceProviderItem[] items)
+        public SolidCP.Providers.ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
-            return (ServiceProviderItemDiskSpace[])Invoke("SolidCP.Server.ServiceProvider", "GetServiceItemsDiskSpace", items);
+            return (SolidCP.Providers.ServiceProviderItemDiskSpace[])Invoke("SolidCP.Server.ServiceProvider", "GetServiceItemsDiskSpace", items);
         }
 
-        public async System.Threading.Tasks.Task<ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SoapServiceProviderItem[] items)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
-            return await InvokeAsync<ServiceProviderItemDiskSpace[]>("SolidCP.Server.ServiceProvider", "GetServiceItemsDiskSpace", items);
+            return await InvokeAsync<SolidCP.Providers.ServiceProviderItemDiskSpace[]>("SolidCP.Server.ServiceProvider", "GetServiceItemsDiskSpace", items);
         }
 
-        public ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SoapServiceProviderItem[] items, DateTime since)
+        public SolidCP.Providers.ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since)
         {
-            return (ServiceProviderItemBandwidth[])Invoke("SolidCP.Server.ServiceProvider", "GetServiceItemsBandwidth", items, since);
+            return (SolidCP.Providers.ServiceProviderItemBandwidth[])Invoke("SolidCP.Server.ServiceProvider", "GetServiceItemsBandwidth", items, since);
         }
 
-        public async System.Threading.Tasks.Task<ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SoapServiceProviderItem[] items, DateTime since)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since)
         {
-            return await InvokeAsync<ServiceProviderItemBandwidth[]>("SolidCP.Server.ServiceProvider", "GetServiceItemsBandwidth", items, since);
+            return await InvokeAsync<SolidCP.Providers.ServiceProviderItemBandwidth[]>("SolidCP.Server.ServiceProvider", "GetServiceItemsBandwidth", items, since);
         }
     }
 
@@ -152,12 +141,12 @@ namespace SolidCP.Server.Client
             return await base.Client.InstallAsync();
         }
 
-        public SettingPair[] GetProviderDefaultSettings()
+        public SolidCP.Providers.SettingPair[] GetProviderDefaultSettings()
         {
             return base.Client.GetProviderDefaultSettings();
         }
 
-        public async System.Threading.Tasks.Task<SettingPair[]> GetProviderDefaultSettingsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> GetProviderDefaultSettingsAsync()
         {
             return await base.Client.GetProviderDefaultSettingsAsync();
         }
@@ -182,42 +171,42 @@ namespace SolidCP.Server.Client
             return await base.Client.IsInstalledAsync();
         }
 
-        public void ChangeServiceItemsState(SoapServiceProviderItem[] items, bool enabled)
+        public void ChangeServiceItemsState(SolidCP.Providers.SoapServiceProviderItem[] items, bool enabled)
         {
             base.Client.ChangeServiceItemsState(items, enabled);
         }
 
-        public async System.Threading.Tasks.Task ChangeServiceItemsStateAsync(SoapServiceProviderItem[] items, bool enabled)
+        public async System.Threading.Tasks.Task ChangeServiceItemsStateAsync(SolidCP.Providers.SoapServiceProviderItem[] items, bool enabled)
         {
             await base.Client.ChangeServiceItemsStateAsync(items, enabled);
         }
 
-        public void DeleteServiceItems(SoapServiceProviderItem[] items)
+        public void DeleteServiceItems(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
             base.Client.DeleteServiceItems(items);
         }
 
-        public async System.Threading.Tasks.Task DeleteServiceItemsAsync(SoapServiceProviderItem[] items)
+        public async System.Threading.Tasks.Task DeleteServiceItemsAsync(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
             await base.Client.DeleteServiceItemsAsync(items);
         }
 
-        public ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SoapServiceProviderItem[] items)
+        public SolidCP.Providers.ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
             return base.Client.GetServiceItemsDiskSpace(items);
         }
 
-        public async System.Threading.Tasks.Task<ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SoapServiceProviderItem[] items)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
             return await base.Client.GetServiceItemsDiskSpaceAsync(items);
         }
 
-        public ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SoapServiceProviderItem[] items, DateTime since)
+        public SolidCP.Providers.ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since)
         {
             return base.Client.GetServiceItemsBandwidth(items, since);
         }
 
-        public async System.Threading.Tasks.Task<ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SoapServiceProviderItem[] items, DateTime since)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since)
         {
             return await base.Client.GetServiceItemsBandwidthAsync(items, since);
         }

@@ -47,6 +47,36 @@ namespace SolidCP.Build
 						.ToArray();
 
 		}
+
+		public static TypeSyntax Globalized(this TypeSyntax type, SemanticModel model)
+		{
+			if (type is PredefinedTypeSyntax) return type;
+			if (type is ArrayTypeSyntax)
+			{
+				var array = (ArrayTypeSyntax)type;
+				return ArrayType(array.ElementType.Globalized(model), array.RankSpecifiers);
+			} else if (type is GenericNameSyntax)
+			{
+				var generic = (GenericNameSyntax)type;
+				return GenericName(Identifier(((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName()),
+					TypeArgumentList(SeparatedList(generic.TypeArgumentList.Arguments
+						.Select(arg => arg.Globalized(model)))));
+			}
+			return ParseTypeName(((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName());
+		}
+
+		public static MethodDeclarationSyntax[] GlobalizedWebMethods(this ClassDeclarationSyntax classDeclaration, IEnumerable<MethodDeclarationSyntax> methods, SemanticModel model)
+		{
+			var globalizedMethods = methods
+				.Select(m => MethodDeclaration(m.ReturnType.Globalized(model), m.Identifier)
+					.WithAttributeLists(m.AttributeLists)
+					.WithModifiers(m.Modifiers)
+					.WithParameterList(ParameterList(SeparatedList<ParameterSyntax>(
+						m.ParameterList.Parameters
+							.Select(p => Parameter(p.AttributeLists, p.Modifiers, p.Type.Globalized(model), p.Identifier, p.Default))))))
+				.ToArray();
+			return globalizedMethods;
+		}
 	}
 
 	[Generator(LanguageNames.CSharp)]
@@ -108,7 +138,7 @@ namespace SolidCP.Build
 				CompilationUnitSyntax serverTree;
 				CompilationUnitSyntax clientTree;
 				var methods = ws.Class.WebMethods(ws.Model);
-
+				var globalizedMethods = ws.Class.GlobalizedWebMethods(methods, ws.Model);
 
 				var attr = ws.Class.AttributeLists
 					.SelectMany(l => l.Attributes)
@@ -132,7 +162,7 @@ namespace SolidCP.Build
 							UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
-						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
+						//.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						//.AddUsings(UsingDirective(ParseName("CoreWCF"))
 						//	.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
 						//	.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))))
@@ -162,8 +192,8 @@ namespace SolidCP.Build
 							UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
-						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
-						.AddUsings(UsingDirective(oldNS.Name))
+						//.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
+						//.AddUsings(UsingDirective(oldNS.Name))
 						.AddUsings(
 							UsingDirective(ParseName("System.ServiceModel")));
 
@@ -208,7 +238,7 @@ namespace SolidCP.Build
 					new ClientClass()
 					{
 						Class = ws.Class,
-						WebMethods = methods
+						WebMethods = globalizedMethods
 					}
 					.Render())
 					.NormalizeWhitespace();
@@ -219,7 +249,7 @@ namespace SolidCP.Build
 					{
 						WebServiceNamespace = webServiceNamespace,
 						Class = ws.Class,
-						WebMethods = methods
+						WebMethods = globalizedMethods
 					}
 					.Render())
 					.NormalizeWhitespace();
@@ -229,7 +259,7 @@ namespace SolidCP.Build
 					{
 						OldNamespace = oldNS.Name.ToString(),
 						Class = ws.Class,
-						WebMethods = methods
+						WebMethods = globalizedMethods
 					}
 					.Render())
 					.NormalizeWhitespace();

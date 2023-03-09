@@ -1,9 +1,4 @@
 ﻿#if Client
-using System.ComponentModel;
-using System.Web.Services;
-using SolidCP.Providers.Common;
-using SolidCP.Server.Code;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -14,9 +9,9 @@ namespace SolidCP.Server.Client
     public interface IAutoDiscovery
     {
         [OperationContract(Action = "http://tempuri.org/IAutoDiscovery/IsInstalled", ReplyAction = "http://tempuri.org/IAutoDiscovery/IsInstalledResponse")]
-        BoolResult IsInstalled(string providerName);
+        SolidCP.Providers.Common.BoolResult IsInstalled(string providerName);
         [OperationContract(Action = "http://tempuri.org/IAutoDiscovery/IsInstalled", ReplyAction = "http://tempuri.org/IAutoDiscovery/IsInstalledResponse")]
-        System.Threading.Tasks.Task<BoolResult> IsInstalledAsync(string providerName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Common.BoolResult> IsInstalledAsync(string providerName);
         [OperationContract(Action = "http://tempuri.org/IAutoDiscovery/GetServerFilePath", ReplyAction = "http://tempuri.org/IAutoDiscovery/GetServerFilePathResponse")]
         string GetServerFilePath();
         [OperationContract(Action = "http://tempuri.org/IAutoDiscovery/GetServerFilePath", ReplyAction = "http://tempuri.org/IAutoDiscovery/GetServerFilePathResponse")]
@@ -31,14 +26,14 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class AutoDiscoveryAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, IAutoDiscovery
     {
-        public BoolResult IsInstalled(string providerName)
+        public SolidCP.Providers.Common.BoolResult IsInstalled(string providerName)
         {
-            return (BoolResult)Invoke("SolidCP.Server.AutoDiscovery", "IsInstalled", providerName);
+            return (SolidCP.Providers.Common.BoolResult)Invoke("SolidCP.Server.AutoDiscovery", "IsInstalled", providerName);
         }
 
-        public async System.Threading.Tasks.Task<BoolResult> IsInstalledAsync(string providerName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.BoolResult> IsInstalledAsync(string providerName)
         {
-            return await InvokeAsync<BoolResult>("SolidCP.Server.AutoDiscovery", "IsInstalled", providerName);
+            return await InvokeAsync<SolidCP.Providers.Common.BoolResult>("SolidCP.Server.AutoDiscovery", "IsInstalled", providerName);
         }
 
         public string GetServerFilePath()
@@ -66,12 +61,12 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class AutoDiscovery : SolidCP.Web.Client.ClientBase<IAutoDiscovery, AutoDiscoveryAssemblyClient>, IAutoDiscovery
     {
-        public BoolResult IsInstalled(string providerName)
+        public SolidCP.Providers.Common.BoolResult IsInstalled(string providerName)
         {
             return base.Client.IsInstalled(providerName);
         }
 
-        public async System.Threading.Tasks.Task<BoolResult> IsInstalledAsync(string providerName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Common.BoolResult> IsInstalledAsync(string providerName)
         {
             return await base.Client.IsInstalledAsync(providerName);
         }

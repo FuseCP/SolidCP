@@ -1,16 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.Statistics;
-using SolidCP.Server.Utils;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -21,9 +9,9 @@ namespace SolidCP.Server.Client
     public interface IStatisticsServer
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetServers", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetServersResponse")]
-        StatsServer[] GetServers();
+        SolidCP.Providers.Statistics.StatsServer[] GetServers();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetServers", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetServersResponse")]
-        System.Threading.Tasks.Task<StatsServer[]> GetServersAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsServer[]> GetServersAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetSiteId", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetSiteIdResponse")]
         string GetSiteId(string siteName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetSiteId", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetSiteIdResponse")]
@@ -33,17 +21,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetSites", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetSitesResponse")]
         System.Threading.Tasks.Task<string[]> GetSitesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetSiteResponse")]
-        StatsSite GetSite(string siteId);
+        SolidCP.Providers.Statistics.StatsSite GetSite(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/GetSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/GetSiteResponse")]
-        System.Threading.Tasks.Task<StatsSite> GetSiteAsync(string siteId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsSite> GetSiteAsync(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/AddSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/AddSiteResponse")]
-        string AddSite(StatsSite site);
+        string AddSite(SolidCP.Providers.Statistics.StatsSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/AddSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/AddSiteResponse")]
-        System.Threading.Tasks.Task<string> AddSiteAsync(StatsSite site);
+        System.Threading.Tasks.Task<string> AddSiteAsync(SolidCP.Providers.Statistics.StatsSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/UpdateSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/UpdateSiteResponse")]
-        void UpdateSite(StatsSite site);
+        void UpdateSite(SolidCP.Providers.Statistics.StatsSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/UpdateSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/UpdateSiteResponse")]
-        System.Threading.Tasks.Task UpdateSiteAsync(StatsSite site);
+        System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.Statistics.StatsSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/DeleteSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/DeleteSiteResponse")]
         void DeleteSite(string siteId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IStatisticsServer/DeleteSite", ReplyAction = "http://smbsaas/solidcp/server/IStatisticsServer/DeleteSiteResponse")]
@@ -54,14 +42,14 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class StatisticsServerAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, IStatisticsServer
     {
-        public StatsServer[] GetServers()
+        public SolidCP.Providers.Statistics.StatsServer[] GetServers()
         {
-            return (StatsServer[])Invoke("SolidCP.Server.StatisticsServer", "GetServers");
+            return (SolidCP.Providers.Statistics.StatsServer[])Invoke("SolidCP.Server.StatisticsServer", "GetServers");
         }
 
-        public async System.Threading.Tasks.Task<StatsServer[]> GetServersAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsServer[]> GetServersAsync()
         {
-            return await InvokeAsync<StatsServer[]>("SolidCP.Server.StatisticsServer", "GetServers");
+            return await InvokeAsync<SolidCP.Providers.Statistics.StatsServer[]>("SolidCP.Server.StatisticsServer", "GetServers");
         }
 
         public string GetSiteId(string siteName)
@@ -84,32 +72,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.StatisticsServer", "GetSites");
         }
 
-        public StatsSite GetSite(string siteId)
+        public SolidCP.Providers.Statistics.StatsSite GetSite(string siteId)
         {
-            return (StatsSite)Invoke("SolidCP.Server.StatisticsServer", "GetSite", siteId);
+            return (SolidCP.Providers.Statistics.StatsSite)Invoke("SolidCP.Server.StatisticsServer", "GetSite", siteId);
         }
 
-        public async System.Threading.Tasks.Task<StatsSite> GetSiteAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsSite> GetSiteAsync(string siteId)
         {
-            return await InvokeAsync<StatsSite>("SolidCP.Server.StatisticsServer", "GetSite", siteId);
+            return await InvokeAsync<SolidCP.Providers.Statistics.StatsSite>("SolidCP.Server.StatisticsServer", "GetSite", siteId);
         }
 
-        public string AddSite(StatsSite site)
+        public string AddSite(SolidCP.Providers.Statistics.StatsSite site)
         {
             return (string)Invoke("SolidCP.Server.StatisticsServer", "AddSite", site);
         }
 
-        public async System.Threading.Tasks.Task<string> AddSiteAsync(StatsSite site)
+        public async System.Threading.Tasks.Task<string> AddSiteAsync(SolidCP.Providers.Statistics.StatsSite site)
         {
             return await InvokeAsync<string>("SolidCP.Server.StatisticsServer", "AddSite", site);
         }
 
-        public void UpdateSite(StatsSite site)
+        public void UpdateSite(SolidCP.Providers.Statistics.StatsSite site)
         {
             Invoke("SolidCP.Server.StatisticsServer", "UpdateSite", site);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteAsync(StatsSite site)
+        public async System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.Statistics.StatsSite site)
         {
             await InvokeAsync("SolidCP.Server.StatisticsServer", "UpdateSite", site);
         }
@@ -129,12 +117,12 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class StatisticsServer : SolidCP.Web.Client.ClientBase<IStatisticsServer, StatisticsServerAssemblyClient>, IStatisticsServer
     {
-        public StatsServer[] GetServers()
+        public SolidCP.Providers.Statistics.StatsServer[] GetServers()
         {
             return base.Client.GetServers();
         }
 
-        public async System.Threading.Tasks.Task<StatsServer[]> GetServersAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsServer[]> GetServersAsync()
         {
             return await base.Client.GetServersAsync();
         }
@@ -159,32 +147,32 @@ namespace SolidCP.Server.Client
             return await base.Client.GetSitesAsync();
         }
 
-        public StatsSite GetSite(string siteId)
+        public SolidCP.Providers.Statistics.StatsSite GetSite(string siteId)
         {
             return base.Client.GetSite(siteId);
         }
 
-        public async System.Threading.Tasks.Task<StatsSite> GetSiteAsync(string siteId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsSite> GetSiteAsync(string siteId)
         {
             return await base.Client.GetSiteAsync(siteId);
         }
 
-        public string AddSite(StatsSite site)
+        public string AddSite(SolidCP.Providers.Statistics.StatsSite site)
         {
             return base.Client.AddSite(site);
         }
 
-        public async System.Threading.Tasks.Task<string> AddSiteAsync(StatsSite site)
+        public async System.Threading.Tasks.Task<string> AddSiteAsync(SolidCP.Providers.Statistics.StatsSite site)
         {
             return await base.Client.AddSiteAsync(site);
         }
 
-        public void UpdateSite(StatsSite site)
+        public void UpdateSite(SolidCP.Providers.Statistics.StatsSite site)
         {
             base.Client.UpdateSite(site);
         }
 
-        public async System.Threading.Tasks.Task UpdateSiteAsync(StatsSite site)
+        public async System.Threading.Tasks.Task UpdateSiteAsync(SolidCP.Providers.Statistics.StatsSite site)
         {
             await base.Client.UpdateSiteAsync(site);
         }

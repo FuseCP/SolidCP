@@ -1,17 +1,4 @@
 ﻿#if Client
-using System;
-using System.Data;
-using System.Web;
-using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.ComponentModel;
-using Microsoft.Web.Services3;
-using SolidCP.Providers;
-using SolidCP.Providers.OS;
-using SolidCP.Providers.SharePoint;
-using SolidCP.Server.Utils;
-using SolidCP.Server;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -22,9 +9,9 @@ namespace SolidCP.Server.Client
     public interface ISharePointServer
     {
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/ExtendVirtualServer", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/ExtendVirtualServerResponse")]
-        void ExtendVirtualServer(SharePointSite site);
+        void ExtendVirtualServer(SolidCP.Providers.SharePoint.SharePointSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/ExtendVirtualServer", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/ExtendVirtualServerResponse")]
-        System.Threading.Tasks.Task ExtendVirtualServerAsync(SharePointSite site);
+        System.Threading.Tasks.Task ExtendVirtualServerAsync(SolidCP.Providers.SharePoint.SharePointSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/UnextendVirtualServer", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/UnextendVirtualServerResponse")]
         void UnextendVirtualServer(string url, bool deleteContent);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/UnextendVirtualServer", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/UnextendVirtualServerResponse")]
@@ -66,17 +53,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/GetUsers", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/GetUsersResponse")]
         System.Threading.Tasks.Task<string[]> GetUsersAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/GetUser", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/GetUserResponse")]
-        SystemUser GetUser(string username);
+        SolidCP.Providers.OS.SystemUser GetUser(string username);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/GetUser", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/GetUserResponse")]
-        System.Threading.Tasks.Task<SystemUser> GetUserAsync(string username);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemUser> GetUserAsync(string username);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/CreateUserResponse")]
-        void CreateUser(SystemUser user);
+        void CreateUser(SolidCP.Providers.OS.SystemUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/CreateUser", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/CreateUserResponse")]
-        System.Threading.Tasks.Task CreateUserAsync(SystemUser user);
+        System.Threading.Tasks.Task CreateUserAsync(SolidCP.Providers.OS.SystemUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/UpdateUser", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/UpdateUserResponse")]
-        void UpdateUser(SystemUser user);
+        void UpdateUser(SolidCP.Providers.OS.SystemUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/UpdateUser", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/UpdateUserResponse")]
-        System.Threading.Tasks.Task UpdateUserAsync(SystemUser user);
+        System.Threading.Tasks.Task UpdateUserAsync(SolidCP.Providers.OS.SystemUser user);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/ChangeUserPassword", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/ChangeUserPasswordResponse")]
         void ChangeUserPassword(string username, string password);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/ChangeUserPassword", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/ChangeUserPasswordResponse")]
@@ -94,17 +81,17 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/GetGroups", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/GetGroupsResponse")]
         System.Threading.Tasks.Task<string[]> GetGroupsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/GetGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/GetGroupResponse")]
-        SystemGroup GetGroup(string groupName);
+        SolidCP.Providers.OS.SystemGroup GetGroup(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/GetGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/GetGroupResponse")]
-        System.Threading.Tasks.Task<SystemGroup> GetGroupAsync(string groupName);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemGroup> GetGroupAsync(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/CreateGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/CreateGroupResponse")]
-        void CreateGroup(SystemGroup group);
+        void CreateGroup(SolidCP.Providers.OS.SystemGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/CreateGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/CreateGroupResponse")]
-        System.Threading.Tasks.Task CreateGroupAsync(SystemGroup group);
+        System.Threading.Tasks.Task CreateGroupAsync(SolidCP.Providers.OS.SystemGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/UpdateGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/UpdateGroupResponse")]
-        void UpdateGroup(SystemGroup group);
+        void UpdateGroup(SolidCP.Providers.OS.SystemGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/UpdateGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/UpdateGroupResponse")]
-        System.Threading.Tasks.Task UpdateGroupAsync(SystemGroup group);
+        System.Threading.Tasks.Task UpdateGroupAsync(SolidCP.Providers.OS.SystemGroup group);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/DeleteGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/DeleteGroupResponse")]
         void DeleteGroup(string groupName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/ISharePointServer/DeleteGroup", ReplyAction = "http://smbsaas/solidcp/server/ISharePointServer/DeleteGroupResponse")]
@@ -115,12 +102,12 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class SharePointServerAssemblyClient : SolidCP.Web.Client.ClientAssemblyBase, ISharePointServer
     {
-        public void ExtendVirtualServer(SharePointSite site)
+        public void ExtendVirtualServer(SolidCP.Providers.SharePoint.SharePointSite site)
         {
             Invoke("SolidCP.Server.SharePointServer", "ExtendVirtualServer", site);
         }
 
-        public async System.Threading.Tasks.Task ExtendVirtualServerAsync(SharePointSite site)
+        public async System.Threading.Tasks.Task ExtendVirtualServerAsync(SolidCP.Providers.SharePoint.SharePointSite site)
         {
             await InvokeAsync("SolidCP.Server.SharePointServer", "ExtendVirtualServer", site);
         }
@@ -225,32 +212,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.SharePointServer", "GetUsers");
         }
 
-        public SystemUser GetUser(string username)
+        public SolidCP.Providers.OS.SystemUser GetUser(string username)
         {
-            return (SystemUser)Invoke("SolidCP.Server.SharePointServer", "GetUser", username);
+            return (SolidCP.Providers.OS.SystemUser)Invoke("SolidCP.Server.SharePointServer", "GetUser", username);
         }
 
-        public async System.Threading.Tasks.Task<SystemUser> GetUserAsync(string username)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemUser> GetUserAsync(string username)
         {
-            return await InvokeAsync<SystemUser>("SolidCP.Server.SharePointServer", "GetUser", username);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemUser>("SolidCP.Server.SharePointServer", "GetUser", username);
         }
 
-        public void CreateUser(SystemUser user)
+        public void CreateUser(SolidCP.Providers.OS.SystemUser user)
         {
             Invoke("SolidCP.Server.SharePointServer", "CreateUser", user);
         }
 
-        public async System.Threading.Tasks.Task CreateUserAsync(SystemUser user)
+        public async System.Threading.Tasks.Task CreateUserAsync(SolidCP.Providers.OS.SystemUser user)
         {
             await InvokeAsync("SolidCP.Server.SharePointServer", "CreateUser", user);
         }
 
-        public void UpdateUser(SystemUser user)
+        public void UpdateUser(SolidCP.Providers.OS.SystemUser user)
         {
             Invoke("SolidCP.Server.SharePointServer", "UpdateUser", user);
         }
 
-        public async System.Threading.Tasks.Task UpdateUserAsync(SystemUser user)
+        public async System.Threading.Tasks.Task UpdateUserAsync(SolidCP.Providers.OS.SystemUser user)
         {
             await InvokeAsync("SolidCP.Server.SharePointServer", "UpdateUser", user);
         }
@@ -295,32 +282,32 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string[]>("SolidCP.Server.SharePointServer", "GetGroups");
         }
 
-        public SystemGroup GetGroup(string groupName)
+        public SolidCP.Providers.OS.SystemGroup GetGroup(string groupName)
         {
-            return (SystemGroup)Invoke("SolidCP.Server.SharePointServer", "GetGroup", groupName);
+            return (SolidCP.Providers.OS.SystemGroup)Invoke("SolidCP.Server.SharePointServer", "GetGroup", groupName);
         }
 
-        public async System.Threading.Tasks.Task<SystemGroup> GetGroupAsync(string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemGroup> GetGroupAsync(string groupName)
         {
-            return await InvokeAsync<SystemGroup>("SolidCP.Server.SharePointServer", "GetGroup", groupName);
+            return await InvokeAsync<SolidCP.Providers.OS.SystemGroup>("SolidCP.Server.SharePointServer", "GetGroup", groupName);
         }
 
-        public void CreateGroup(SystemGroup group)
+        public void CreateGroup(SolidCP.Providers.OS.SystemGroup group)
         {
             Invoke("SolidCP.Server.SharePointServer", "CreateGroup", group);
         }
 
-        public async System.Threading.Tasks.Task CreateGroupAsync(SystemGroup group)
+        public async System.Threading.Tasks.Task CreateGroupAsync(SolidCP.Providers.OS.SystemGroup group)
         {
             await InvokeAsync("SolidCP.Server.SharePointServer", "CreateGroup", group);
         }
 
-        public void UpdateGroup(SystemGroup group)
+        public void UpdateGroup(SolidCP.Providers.OS.SystemGroup group)
         {
             Invoke("SolidCP.Server.SharePointServer", "UpdateGroup", group);
         }
 
-        public async System.Threading.Tasks.Task UpdateGroupAsync(SystemGroup group)
+        public async System.Threading.Tasks.Task UpdateGroupAsync(SolidCP.Providers.OS.SystemGroup group)
         {
             await InvokeAsync("SolidCP.Server.SharePointServer", "UpdateGroup", group);
         }
@@ -340,12 +327,12 @@ namespace SolidCP.Server.Client
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     public class SharePointServer : SolidCP.Web.Client.ClientBase<ISharePointServer, SharePointServerAssemblyClient>, ISharePointServer
     {
-        public void ExtendVirtualServer(SharePointSite site)
+        public void ExtendVirtualServer(SolidCP.Providers.SharePoint.SharePointSite site)
         {
             base.Client.ExtendVirtualServer(site);
         }
 
-        public async System.Threading.Tasks.Task ExtendVirtualServerAsync(SharePointSite site)
+        public async System.Threading.Tasks.Task ExtendVirtualServerAsync(SolidCP.Providers.SharePoint.SharePointSite site)
         {
             await base.Client.ExtendVirtualServerAsync(site);
         }
@@ -450,32 +437,32 @@ namespace SolidCP.Server.Client
             return await base.Client.GetUsersAsync();
         }
 
-        public SystemUser GetUser(string username)
+        public SolidCP.Providers.OS.SystemUser GetUser(string username)
         {
             return base.Client.GetUser(username);
         }
 
-        public async System.Threading.Tasks.Task<SystemUser> GetUserAsync(string username)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemUser> GetUserAsync(string username)
         {
             return await base.Client.GetUserAsync(username);
         }
 
-        public void CreateUser(SystemUser user)
+        public void CreateUser(SolidCP.Providers.OS.SystemUser user)
         {
             base.Client.CreateUser(user);
         }
 
-        public async System.Threading.Tasks.Task CreateUserAsync(SystemUser user)
+        public async System.Threading.Tasks.Task CreateUserAsync(SolidCP.Providers.OS.SystemUser user)
         {
             await base.Client.CreateUserAsync(user);
         }
 
-        public void UpdateUser(SystemUser user)
+        public void UpdateUser(SolidCP.Providers.OS.SystemUser user)
         {
             base.Client.UpdateUser(user);
         }
 
-        public async System.Threading.Tasks.Task UpdateUserAsync(SystemUser user)
+        public async System.Threading.Tasks.Task UpdateUserAsync(SolidCP.Providers.OS.SystemUser user)
         {
             await base.Client.UpdateUserAsync(user);
         }
@@ -520,32 +507,32 @@ namespace SolidCP.Server.Client
             return await base.Client.GetGroupsAsync();
         }
 
-        public SystemGroup GetGroup(string groupName)
+        public SolidCP.Providers.OS.SystemGroup GetGroup(string groupName)
         {
             return base.Client.GetGroup(groupName);
         }
 
-        public async System.Threading.Tasks.Task<SystemGroup> GetGroupAsync(string groupName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemGroup> GetGroupAsync(string groupName)
         {
             return await base.Client.GetGroupAsync(groupName);
         }
 
-        public void CreateGroup(SystemGroup group)
+        public void CreateGroup(SolidCP.Providers.OS.SystemGroup group)
         {
             base.Client.CreateGroup(group);
         }
 
-        public async System.Threading.Tasks.Task CreateGroupAsync(SystemGroup group)
+        public async System.Threading.Tasks.Task CreateGroupAsync(SolidCP.Providers.OS.SystemGroup group)
         {
             await base.Client.CreateGroupAsync(group);
         }
 
-        public void UpdateGroup(SystemGroup group)
+        public void UpdateGroup(SolidCP.Providers.OS.SystemGroup group)
         {
             base.Client.UpdateGroup(group);
         }
 
-        public async System.Threading.Tasks.Task UpdateGroupAsync(SystemGroup group)
+        public async System.Threading.Tasks.Task UpdateGroupAsync(SolidCP.Providers.OS.SystemGroup group)
         {
             await base.Client.UpdateGroupAsync(group);
         }
