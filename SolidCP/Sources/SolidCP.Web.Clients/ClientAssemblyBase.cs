@@ -24,5 +24,10 @@ namespace SolidCP.Web.Client
 		{
 			return Task.Factory.StartNew<T>(() => (T)Invoke(typeName, methodName, parameters));
 		}
-	}
+        protected Task InvokeAsync(string typeName, string methodName, params object[] parameters)
+        {
+            return Task.Factory.StartNew(() => Invoke(typeName, methodName, parameters));
+        }
+
+    }
 }

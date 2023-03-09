@@ -14,6 +14,7 @@ using SolidCP.Server.Utils;
 using System.Collections.Generic;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -22,7 +23,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface IVirtualizationServerProxmox
     {
         [WebMethod, SoapHeader("settings")]
@@ -211,7 +213,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class VirtualizationServerProxmoxService : VirtualizationServerProxmox, IVirtualizationServerProxmox
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class VirtualizationServerProxmox : SolidCP.Server.VirtualizationServerProxmox, IVirtualizationServerProxmox
     {
         public new VirtualMachine GetVirtualMachine(string vmId)
         {

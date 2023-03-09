@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+//using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
 namespace SolidCP.Web.Services
 {
@@ -35,7 +35,7 @@ namespace SolidCP.Web.Services
 				var file = new SvcFile(service, $"{name}.svc");
 				DictionaryVirtualPathProvider.Current.Add(file);
 			}
-			DynamicModuleUtility.RegisterModule(typeof(SvcHttpModule));
+			//DynamicModuleUtility.RegisterModule(typeof(SvcHttpModule));
 		}
 	}
 }

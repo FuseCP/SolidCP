@@ -127,7 +127,9 @@ namespace SolidCP.Build
 
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
-						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
+						.AddUsings(
+							UsingDirective(ParseName("System.ServiceModel")),
+							UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
@@ -155,19 +157,29 @@ namespace SolidCP.Build
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
-						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
+						.AddUsings(
+							UsingDirective(ParseName("System.ServiceModel")),
+							UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
-						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
+						.AddUsings(
+							UsingDirective(ParseName("System.ServiceModel")));
 
 				}
+
+				var webServiceNamespace = attr.ArgumentList.Arguments
+					.Where(a => a.NameEquals != null && a.NameEquals.Name.ToString() == "Namespace" && a.Expression is LiteralExpressionSyntax)
+					.Select(a => (string)((LiteralExpressionSyntax)a.Expression).Token.Value)
+					.FirstOrDefault() ?? "http://tempuri.org/";
+				if (!webServiceNamespace.EndsWith("/")) webServiceNamespace = $"{webServiceNamespace}/";
 
 				// wcf service contract interface
 				var intf = ParseMemberDeclaration(
 					new ServiceInterface()
 					{
+						WebServiceNamespace = webServiceNamespace,
 						Class = ws.Class,
 						WebMethods = methods
 					}
@@ -178,6 +190,7 @@ namespace SolidCP.Build
 				var service = ParseMemberDeclaration(
 					new ServiceClass()
 					{
+						OldNamespace = oldNS.Name.ToString(),
 						Class = ws.Class,
 						WebMethods = methods
 					}
@@ -191,11 +204,39 @@ namespace SolidCP.Build
 						}));
 
 
-				var client = ParseMemberDeclaration("");
+				var client = ParseMemberDeclaration(
+					new ClientClass()
+					{
+						Class = ws.Class,
+						WebMethods = methods
+					}
+					.Render())
+					.NormalizeWhitespace();
+
+
+				var clientIntf = ParseMemberDeclaration(
+					new ClientInterface()
+					{
+						WebServiceNamespace = webServiceNamespace,
+						Class = ws.Class,
+						WebMethods = methods
+					}
+					.Render())
+					.NormalizeWhitespace();
+
+				var clientAssemblyClass = ParseMemberDeclaration(
+					new ClientAssemblyClass()
+					{
+						OldNamespace = oldNS.Name.ToString(),
+						Class = ws.Class,
+						WebMethods = methods
+					}
+					.Render())
+					.NormalizeWhitespace();
 
 				clientNS = clientNS
 					.WithMembers(List(new MemberDeclarationSyntax[] {
-						intf //, client
+						clientIntf, clientAssemblyClass, client
 					}));
 
 

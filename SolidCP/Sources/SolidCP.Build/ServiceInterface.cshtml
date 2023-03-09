@@ -11,7 +11,8 @@
 @inherits RazorBlade.PlainTextTemplate
 
 @Class.AttributeLists
-[ServiceContract]
+[System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+[ServiceContract(Namespace="@(WebServiceNamespace)")]
 public interface I@(Class.Identifier) {
 
 	@foreach (var method in WebMethods
@@ -27,6 +28,7 @@ public interface I@(Class.Identifier) {
 
 @functions
 {
+	public string WebServiceNamespace { get; set; }
 	public ClassDeclarationSyntax Class { get; set; }
 	public IEnumerable<MethodDeclarationSyntax> WebMethods { get; set; }
 }

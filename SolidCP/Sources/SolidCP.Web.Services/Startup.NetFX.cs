@@ -9,10 +9,11 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Web;
 using System.Web.Services;
+using System.Web.Routing;
 using Microsoft.Web.Infrastructure;
 using System.ComponentModel;
 
-[assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.StartupFX), "Start")]
+//[assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.StartupFX), "Start")]
 namespace SolidCP.Web.Services
 {
 	public static class StartupFX
@@ -68,10 +69,23 @@ namespace SolidCP.Web.Services
 				.ToArray();
 			var webServices = types
 					.Where(t => t.GetCustomAttribute(attributeType) != null &&
-						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)));
+						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)))
+					.ToArray();
+			AddServiceRoutes(webServices);
+			//SvcVirtualPathProvider.SetupSvcServices(webServices);
+			//DictionaryVirtualPathProvider.Startup();
+		}
 
-			SvcVirtualPathProvider.SetupSvcServices(webServices);
-			DictionaryVirtualPathProvider.Startup();
+		static void AddServiceRoutes(Type[] services)
+		{
+			foreach (var service in services)
+			{
+				RouteTable.Routes.Add(new ServiceRoute(service.Name, new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"/basic/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"/ws/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"/net/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"/ssl/{service.Name}", new ServiceHostFactory(), service));
+			}
 		}
 	}
 }

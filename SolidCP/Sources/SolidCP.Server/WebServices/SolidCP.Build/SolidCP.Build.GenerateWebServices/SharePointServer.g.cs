@@ -13,6 +13,7 @@ using SolidCP.Providers.SharePoint;
 using SolidCP.Server.Utils;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -21,7 +22,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface ISharePointServer
     {
         [WebMethod, SoapHeader("settings")]
@@ -93,7 +95,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class SharePointServerService : SharePointServer, ISharePointServer
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class SharePointServer : SolidCP.Server.SharePointServer, ISharePointServer
     {
         public new void ExtendVirtualServer(SharePointSite site)
         {

@@ -29,6 +29,7 @@ using SolidCP.Providers;
 using SolidCP.Server.WPIService;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -37,7 +38,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface IWindowsServer
     {
         [WebMethod]
@@ -118,7 +120,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class WindowsServerService : WindowsServer, IWindowsServer
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class WindowsServer : SolidCP.Server.WindowsServer, IWindowsServer
     {
         public new TerminalSession[] GetTerminalServicesSessions()
         {

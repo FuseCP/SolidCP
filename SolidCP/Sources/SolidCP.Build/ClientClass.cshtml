@@ -1,0 +1,75 @@
+// wcf client proxy class
+@using Microsoft.CodeAnalysis
+@using Microsoft.CodeAnalysis.CSharp
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using System.Collections.Generic;
+@using System.Linq;
+
+@using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory
+
+@namespace SolidCP.Build
+@inherits RazorBlade.PlainTextTemplate
+
+[System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+public class @(Class.Identifier): SolidCP.Web.Client.ClientBase<I@(Class.Identifier), @(Class.Identifier)AssemblyClient>, I@(Class.Identifier) {
+
+	@foreach (var method in WebMethods
+		.Select(m => new {
+			Method = m,
+			Normal = (MemberDeclarationSyntax)MethodDeclaration(m.ReturnType, m.Identifier)
+					.WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+					.WithParameterList(m.ParameterList),
+			Async = (MemberDeclarationSyntax)MethodDeclaration(ParseTypeName(
+						(m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)) ? 
+						"System.Threading.Tasks.Task" : $"System.Threading.Tasks.Task<{m.ReturnType}>"),
+						$"{m.Identifier}Async")
+					.WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
+					.WithParameterList(m.ParameterList),
+			IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))
+			}))
+	{
+		@method.Normal.NormalizeWhitespace()
+		<text>
+		{
+			@(method.IsVoid ? "" : $"return ")base.Client.@(method.Method.Identifier)(
+		</text>
+
+		var first = true;
+		foreach (var par in method.Method.ParameterList.Parameters)
+		{
+			if (!first) {
+				<text>, </text>
+			} else { first = false; }
+			<text>@par.Identifier</text>
+		}
+
+		<text>);
+        }</text>
+		
+		@method.Async.NormalizeWhitespace()
+		<text>
+        {
+			@(method.IsVoid ? "await " : $"return await ")base.Client.@(method.Method.Identifier)Async(
+		</text>
+
+		first = true;
+		foreach (var par in method.Method.ParameterList.Parameters)
+		{
+			if (!first) {
+				<text>, </text>
+			} else { first = false; }
+			<text>@par.Identifier</text>
+		}
+
+		<text>);
+        }</text>
+
+	}
+
+}
+
+@functions
+ {
+	public ClassDeclarationSyntax Class { get; set; }
+	public IEnumerable<MethodDeclarationSyntax> WebMethods { get; set; }
+}

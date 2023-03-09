@@ -1,0 +1,51 @@
+// wcf client contract
+@using Microsoft.CodeAnalysis
+@using Microsoft.CodeAnalysis.CSharp
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using System.Collections.Generic;
+@using System.Linq;
+@using System;
+
+@using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory
+
+@namespace SolidCP.Build
+@inherits RazorBlade.PlainTextTemplate
+
+[System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+[ServiceContract(ConfigurationName="I@(Class.Identifier)", Namespace="@(WebServiceNamespace)")]
+public interface I@(Class.Identifier) {
+
+	@foreach (var method in Methods)
+	{
+		@method.Item1.NormalizeWhitespace()
+
+		@method.Item2.NormalizeWhitespace()
+	}
+
+}
+
+@functions
+ {
+	public string WebServiceNamespace { get; set; }
+	public ClassDeclarationSyntax Class { get; set; }
+	public IEnumerable<MethodDeclarationSyntax> WebMethods { get; set; }
+		public IEnumerable<Tuple<MethodDeclarationSyntax, MethodDeclarationSyntax>> Methods => WebMethods
+			.Select(m => new
+			{
+				Method = m,
+				IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))
+			})
+			.Select(m => new Tuple<MethodDeclarationSyntax, MethodDeclarationSyntax>(
+				MethodDeclaration(m.Method.ReturnType, m.Method.Identifier)
+					.WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract"),
+						ParseAttributeArgumentList($"(Action = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}\", ReplyAction = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}Response\")"))))))
+					.WithParameterList(m.Method.ParameterList)
+					.WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+				MethodDeclaration(ParseTypeName((m.IsVoid) ? "System.Threading.Tasks.Task" : $"System.Threading.Tasks.Task<{m.Method.ReturnType}>"), $"{m.Method.Identifier}Async")
+					.WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract"),
+						ParseAttributeArgumentList($"(Action = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}\", ReplyAction = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}Response\")"))))))
+					.WithParameterList(m.Method.ParameterList)
+					.WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
+			));
+
+}

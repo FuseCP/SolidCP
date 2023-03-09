@@ -11,6 +11,7 @@ using SolidCP.Providers.ResultObjects;
 using SolidCP.Server.Utils;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -18,7 +19,8 @@ namespace SolidCP.Server.Services
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://tempuri.org/")]
     public interface IOrganizations
     {
         [WebMethod, SoapHeader("settings")]
@@ -129,7 +131,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class OrganizationsService : Organizations, IOrganizations
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class Organizations : SolidCP.Server.Organizations, IOrganizations
     {
         public new bool OrganizationExists(string organizationId)
         {

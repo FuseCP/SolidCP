@@ -6,7 +6,7 @@
 //     the code is regenerated. 
 // </auto-generated>
 //------------------------------------------------------------------------------
-#if !NET
+#if NETFRAMEWORK
 namespace SolidCP.Server {
     
     

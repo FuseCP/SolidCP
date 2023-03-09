@@ -18,12 +18,7 @@ namespace SolidCP.Web.Services
 
 		public override ServiceHostBase CreateServiceHost(string constructorString, Uri[] baseAddresses)
 		{
-			return CreateServiceHost(
-				StartupFX.ServiceAssemblies
-					.Select(a => a.GetType(constructorString))
-					.Where(t => t != null)
-					.FirstOrDefault()
-				, baseAddresses);
+			return CreateServiceHost(Type.GetType(constructorString), baseAddresses);
 		}
 	}
 }

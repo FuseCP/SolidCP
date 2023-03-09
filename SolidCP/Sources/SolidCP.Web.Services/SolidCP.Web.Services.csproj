@@ -24,10 +24,11 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.Web" />
-    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
+    <!--<PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />-->
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="System.IdentityModel" />
     <Reference Include="System.Net" />
   </ItemGroup>
 

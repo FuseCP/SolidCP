@@ -18,6 +18,7 @@ using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base.RDS;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -26,7 +27,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface IRemoteDesktopServices
     {
         [WebMethod, SoapHeader("settings")]
@@ -161,7 +163,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class RemoteDesktopServicesService : RemoteDesktopServices, IRemoteDesktopServices
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class RemoteDesktopServices : SolidCP.Server.RemoteDesktopServices, IRemoteDesktopServices
     {
         public new bool CreateCollection(string organizationId, RdsCollection collection)
         {

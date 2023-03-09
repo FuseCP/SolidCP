@@ -9,6 +9,7 @@ using SolidCP.Providers.ResultObjects;
 using Microsoft.Web.Services3;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -17,7 +18,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface IBlackBerry
     {
         [WebMethod, SoapHeader("settings")]
@@ -41,7 +43,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class BlackBerryService : BlackBerry, IBlackBerry
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class BlackBerry : SolidCP.Server.BlackBerry, IBlackBerry
     {
         public new ResultObject CreateBlackBerryUser(string primaryEmailAddress)
         {

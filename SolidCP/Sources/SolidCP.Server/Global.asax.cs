@@ -40,23 +40,25 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Net;
 using System.Timers;
+using SolidCP.Web.Services;
 
 namespace SolidCP.Server
 {
-    public class Global : System.Web.HttpApplication
-    {
-        private int keepAliveMinutes = 10;
-        private static string keepAliveUrl = "";
-        private static Timer timer = null;
+	public class Global : System.Web.HttpApplication
+	{
+		private int keepAliveMinutes = 10;
+		private static string keepAliveUrl = "";
+		private static Timer timer = null;
 
-        protected void Application_Start(object sender, EventArgs e)
-        {
-        }
+		protected void Application_Start(object sender, EventArgs e)
+		{
+			StartupFX.Start();
+		}
 
-        protected void Application_End(object sender, EventArgs e)
-        {
+		protected void Application_End(object sender, EventArgs e)
+		{
 
-        }
+		}
 
 		protected void Application_BeginRequest(object sender, EventArgs e)
 		{
@@ -74,15 +76,16 @@ namespace SolidCP.Server
 			}
 		}
 
-        public override void Init()
-        {
 
-        }
+		public override void Init()
+		{
 
-        private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
-        {
-            using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
-        } 
-    }
+		}
+
+		private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
+		{
+			using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+		}
+	}
 }
 #endif

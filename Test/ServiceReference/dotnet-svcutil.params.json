@@ -1,0 +1,12 @@
+{
+  "providerId": "Microsoft.Tools.ServiceModel.Svcutil",
+  "version": "2.1.0",
+  "options": {
+    "inputs": [
+      "http://localhost/server/AutoDiscovery?wsdl"
+    ],
+    "outputFile": "Reference.cs",
+    "targetFramework": "net7.0",
+    "typeReuseMode": "All"
+  }
+}

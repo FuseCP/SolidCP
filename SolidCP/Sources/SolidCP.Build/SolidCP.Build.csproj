@@ -25,4 +25,8 @@
     <None Include="Razor\**\*.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <RazorBlade Include="Razor\**\*.cshtml" />
+  </ItemGroup>
+
 </Project>

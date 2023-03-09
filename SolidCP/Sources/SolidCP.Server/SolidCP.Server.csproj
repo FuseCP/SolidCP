@@ -54,6 +54,7 @@
     <Compile Include="AutoDiscovery.asmx.cs" />
     <Compile Include="BlackBerry.asmx.cs" />
     <Compile Include="Code\AutoDiscoveryHelper.cs" />
+    <Compile Include="Code\PasswordValidator.cs" />
     <Compile Include="Code\ServerConfiguration.cs" />
     <Compile Include="CRM.asmx.cs" />
     <Compile Include="DatabaseServer.asmx.cs" />
@@ -84,6 +85,16 @@
     <Compile Include="VirtualizationServerProxmox.asmx.cs" />
     <Compile Include="WebServer.asmx.cs" />
     <Compile Include="WindowsServer.asmx.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+    <None Include="Default.aspx.designer.cs" />
+    <Compile Remove="Default.aspx.designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <None Include="Default.aspx.designer.cs" />
+    <Compile Remove="Default.aspx.designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

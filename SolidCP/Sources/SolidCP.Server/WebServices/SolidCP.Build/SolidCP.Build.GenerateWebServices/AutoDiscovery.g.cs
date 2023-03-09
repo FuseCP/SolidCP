@@ -5,6 +5,7 @@ using SolidCP.Providers.Common;
 using SolidCP.Server.Code;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -12,7 +13,8 @@ namespace SolidCP.Server.Services
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://tempuri.org/")]
     public interface IAutoDiscovery
     {
         [WebMethod]
@@ -27,7 +29,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class AutoDiscoveryService : AutoDiscovery, IAutoDiscovery
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class AutoDiscovery : SolidCP.Server.AutoDiscovery, IAutoDiscovery
     {
         public new BoolResult IsInstalled(string providerName)
         {

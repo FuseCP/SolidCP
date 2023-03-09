@@ -9,6 +9,7 @@ using SolidCP.Server.Utils;
 using Microsoft.Web.Services3;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -17,7 +18,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface ILyncServer
     {
         [WebMethod, SoapHeader("settings")]
@@ -62,7 +64,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class LyncServerService : LyncServer, ILyncServer
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class LyncServer : SolidCP.Server.LyncServer, ILyncServer
     {
         public new string CreateOrganization(string organizationId, string sipDomain, bool enableConferencing, bool enableConferencingVideo, int maxConferenceSize, bool enabledFederation, bool enabledEnterpriseVoice)
         {

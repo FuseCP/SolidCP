@@ -13,6 +13,7 @@ using SolidCP.Server.Utils;
 using System.Collections.Generic;
 using SolidCP.Server;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -21,7 +22,8 @@ namespace SolidCP.Server.Services
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    [ServiceContract]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [ServiceContract(Namespace = "http://smbsaas/solidcp/server/")]
     public interface IVirtualizationServerForPrivateCloud
     {
         [WebMethod, SoapHeader("settings")]
@@ -198,7 +200,9 @@ namespace SolidCP.Server.Services
     }
 
     // wcf service
-    public class VirtualizationServerForPrivateCloudService : VirtualizationServerForPrivateCloud, IVirtualizationServerForPrivateCloud
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+    public class VirtualizationServerForPrivateCloud : SolidCP.Server.VirtualizationServerForPrivateCloud, IVirtualizationServerForPrivateCloud
     {
         public new VMInfo GetVirtualMachine(string vmId)
         {
