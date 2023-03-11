@@ -8,6 +8,7 @@ using System.Net;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Linq;
+using System.ServiceModel.Security;
 #if NETCOREAPP
 using ProtoBuf.Grpc.Client;
 using Grpc.Net.Client;
@@ -18,7 +19,13 @@ namespace SolidCP.Web.Client
 
 	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
-	public class ClientBase
+	public class UserNamePasswordCredentials
+	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
+	}
+
+	public class ClientBase: IDisposable
 	{
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
@@ -52,8 +59,8 @@ namespace SolidCP.Web.Client
 				protocol = value;
 			}
 		}
-		public ICredentials Credentials { get; set; }
-		public object SoapHeader { get; set; }
+		public UserNamePasswordCredentials Credentials { get; set; } = new UserNamePasswordCredentials();
+		public object SoapHeader { get; set; } = null;
 
 		protected string url;
 		public string Url
@@ -68,7 +75,8 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("net")) protocol = Protocols.NetHttp;
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
-					else if (url.HasApi("gprc/web")) protocol = Protocols.gRPCWeb;
+					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
+					else if (IsAuthenticated) Protocol = Protocols.WSHttp;
 					else Protocol = Protocols.NetHttp;
 				}
 				else if (url.StartsWith("https://"))
@@ -77,7 +85,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("net")) Protocol = Protocols.NetHttps;
 					else if (url.HasApi("ws")) Protocol = Protocols.WSHttps;
 					else if (url.HasApi("grpc")) Protocol = Protocols.gRPCSsl;
-					else if (url.HasApi("gprc/web")) Protocol = Protocols.gRPCWebSsl;
+					else if (url.HasApi("grpc/web")) Protocol = Protocols.gRPCWebSsl;
 					else Protocol = Protocols.NetHttps;
 				}
 				else if (url.StartsWith("net.tcp://"))
@@ -97,21 +105,26 @@ namespace SolidCP.Web.Client
 			}
 		}
 
-		public bool IsWCF => Protocol < Protocols.gRPC;
-		public bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
-		public bool IsAssembly => Protocol == Protocols.Assembly;
-		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
+		protected bool IsWCF => Protocol < Protocols.gRPC;
+		protected bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
+		protected bool IsAssembly => Protocol == Protocols.Assembly;
+		protected bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
-
+		protected bool IsAuthenticated => this.GetType().GetCustomAttributes(false).OfType<HasPolicyAttribute>().Any();
+		public virtual void Close() { }
+		public void Dispose()
+		{
+			Close();
+		}
 	}
 	static class StringExtensions
 	{
-		public static string Strip(this string url, string api) => url.Replace($"/{api}/", "/");
-		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "[a-zA-Z.]://", $"{scheme}://");
-		public static string SetApi(this string url, string api) => Regex.Replace(url, "/(?:net/|ws/|basic/|ssl/|grpc/|grpc/web/)(?=[a-zA-Z0-9_]+\\?|$)", $"/{api}/");
+		public static string Strip(this string url, string api) => Regex.Replace(url, $"/{api}(?:/|$)", "/");
+		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
+		public static string SetApi(this string url, string api) => Regex.Replace(url, "/(?:net|ws|basic|ssl|grpc|grpc/web)(?=/[a-zA-Z0-9_]+\\?|$)", $"/{api}");
 
-		public static bool HasApi(this string url, string api) => url.Contains($"/{api}/");
+		public static bool HasApi(this string url, string api) => Regex.IsMatch(url, $"/{api}(?:/|$)");
 	}
 	// web service client
 	public class ClientBase<T, U> : ClientBase
@@ -126,35 +139,61 @@ namespace SolidCP.Web.Client
 		static Dictionary<string, ChannelFactory<T>> FactoryPool = new Dictionary<string, ChannelFactory<T>>();
 		ChannelFactory<T> factory;
 
+		T client = null;
+
 		protected T Client
 		{
 			get
 			{
-				T client = default(T);
+				if (client != null)
+				{
+					if (client is IClientChannel)
+					{
+						var channel = (IClientChannel)client;
+						if (channel.State != CommunicationState.Opened && channel.State != CommunicationState.Opening)
+						{
+							channel.Open();
+						}
+					}
+					return client;
+				}
+
+				string serviceurl = $"{url}/{this.GetType().Name}";
+
 				if (IsWCF)
 				{
+					var isAuthenticated = IsAuthenticated;
+
 					Binding binding = null;
 					switch (Protocol)
 					{
-						case Protocols.BasicHttp: binding = new BasicHttpBinding(BasicHttpSecurityMode.None); break;
+						case Protocols.BasicHttp:
+							if (isAuthenticated) throw new NotSupportedException("This api is not supported on this service.");
+							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
+							break;
 						case Protocols.BasicHttps: binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential); break;
-						case Protocols.NetHttp: binding = new NetHttpBinding(BasicHttpSecurityMode.None); break;
+						case Protocols.NetHttp:
+							if (isAuthenticated) throw new NotSupportedException("This api is not supported on this service.");
+							binding = new NetHttpBinding(BasicHttpSecurityMode.None);
+							break;
 						case Protocols.NetHttps: binding = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential); break;
-						case Protocols.WSHttp: binding = new WSHttpBinding(SecurityMode.None); break;
+						case Protocols.WSHttp: binding = new WSHttpBinding(SecurityMode.Message); break;
 						case Protocols.WSHttps: binding = new WSHttpBinding(SecurityMode.TransportWithMessageCredential); break;
-						case Protocols.NetTcp: binding = new NetTcpBinding(SecurityMode.None); break;
+						case Protocols.NetTcp: binding = new NetTcpBinding(SecurityMode.Message); break;
 						case Protocols.NetTcpSsl: binding = new NetTcpBinding(SecurityMode.TransportWithMessageCredential); break;
 #if NETFRAMEWORK
 						case Protocols.NetPipe: binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None); break;
 						case Protocols.NetPipeSsl: binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport); break;
 #endif
 					}
-					var endpoint = new EndpointAddress(url);
+					binding.ReceiveTimeout = TimeSpan.FromSeconds(120);
+					binding.SendTimeout = TimeSpan.FromSeconds(120);
 
+					var endpoint = new EndpointAddress(serviceurl);
 
 					lock (FactoryPool)
 					{
-						if (!FactoryPool.TryGetValue(url, out factory))
+						if (!FactoryPool.TryGetValue(serviceurl, out factory))
 						{
 							factory = new ChannelFactory<T>(binding, endpoint);
 						}
@@ -170,6 +209,11 @@ namespace SolidCP.Web.Client
 							if (b is SoapHeaderClientBehavior) factory.Endpoint.EndpointBehaviors.Remove(b);
 						}
 						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
+					}
+					if (Credentials != null && Credentials.Password != null)
+					{
+						factory.Credentials.UserName.UserName = Credentials.UserName ?? string.Empty;
+						factory.Credentials.UserName.Password = Credentials.Password ?? string.Empty;
 					}
 					client = factory.CreateChannel();
 				}
@@ -194,13 +238,14 @@ namespace SolidCP.Web.Client
 			}
 		}
 
-		protected void Close(T client)
+		public override void Close()
 		{
 			lock (FactoryPool)
 			{
 				FactoryPool[url] = factory;
+				factory = null;
 			}
-			if (client is IClientChannel) ((IClientChannel)client).Close();
+			if (client != null && client is IClientChannel) ((IClientChannel)client).Close();
 		}
 
 

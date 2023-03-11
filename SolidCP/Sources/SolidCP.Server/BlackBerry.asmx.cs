@@ -32,7 +32,7 @@
 
 ﻿using System.ComponentModel;
 using System.Web.Services;
-using System.Web.Services.Protocols;
+//using System.Web.Services.Protocols;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;

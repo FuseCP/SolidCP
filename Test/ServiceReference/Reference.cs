@@ -7,223 +7,482 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Providers.Common
+namespace ServiceReference
 {
     using System.Runtime.Serialization;
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ResultObject", Namespace="http://schemas.datacontract.org/2004/07/SolidCP.Providers.Common")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SolidCP.Providers.ResultObjects.ValueResultObjectOfboolean))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SolidCP.Providers.Common.BoolResult))]
-    public partial class ResultObject : object
+    [System.Runtime.Serialization.DataContractAttribute(Name="StringDictionary", Namespace="http://schemas.datacontract.org/2004/07/System.Collections.Specialized")]
+    public partial class StringDictionary : object
     {
         
-        private string[] ErrorCodesField;
+        private System.Collections.Generic.Dictionary<object, object> contentsField;
         
-        private bool IsSuccessField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string[] ErrorCodes
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public System.Collections.Generic.Dictionary<object, object> contents
         {
             get
             {
-                return this.ErrorCodesField;
+                return this.contentsField;
             }
             set
             {
-                this.ErrorCodesField = value;
+                this.contentsField = value;
             }
         }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="http://smbsaas/solidcp/server/", ConfigurationName="ServiceReference.IOperatingSystem")]
+    public interface IOperatingSystem
+    {
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool IsSuccess
-        {
-            get
-            {
-                return this.IsSuccessField;
-            }
-            set
-            {
-                this.IsSuccessField = value;
-            }
-        }
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CreatePackageFolder", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CreatePackageFolderResponse")]
+        System.Threading.Tasks.Task<string> CreatePackageFolderAsync(string initialPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/FileExists", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/FileExistsResponse")]
+        System.Threading.Tasks.Task<bool> FileExistsAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/DirectoryExists", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/DirectoryExistsResponse")]
+        System.Threading.Tasks.Task<bool> DirectoryExistsAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFile", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFileResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFileAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFiles", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFilesResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetDirectoriesRecursive", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetDirectoriesRecursiveResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursive", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveByPattern", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFilesRecursiveByPatternResponse" +
+            "")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContent", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContentResponse")]
+        System.Threading.Tasks.Task<byte[]> GetFileBinaryContentAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContentUsingEncoding", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryContentUsingEncodingR" +
+            "esponse")]
+        System.Threading.Tasks.Task<byte[]> GetFileBinaryContentUsingEncodingAsync(string path, string encoding);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryChunk", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFileBinaryChunkResponse")]
+        System.Threading.Tasks.Task<byte[]> GetFileBinaryChunkAsync(string path, int offset, int length);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFileTextContent", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFileTextContentResponse")]
+        System.Threading.Tasks.Task<string> GetFileTextContentAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CreateFile", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CreateFileResponse")]
+        System.Threading.Tasks.Task CreateFileAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CreateDirectory", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CreateDirectoryResponse")]
+        System.Threading.Tasks.Task CreateDirectoryAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/ChangeFileAttributes", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/ChangeFileAttributesResponse")]
+        System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, System.DateTime createdTime, System.DateTime changedTime);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/DeleteFile", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/DeleteFileResponse")]
+        System.Threading.Tasks.Task DeleteFileAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/DeleteFiles", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/DeleteFilesResponse")]
+        System.Threading.Tasks.Task DeleteFilesAsync(string[] files);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/DeleteEmptyDirectories", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/DeleteEmptyDirectoriesResponse")]
+        System.Threading.Tasks.Task DeleteEmptyDirectoriesAsync(string[] directories);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/UpdateFileBinaryContent", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/UpdateFileBinaryContentResponse")]
+        System.Threading.Tasks.Task UpdateFileBinaryContentAsync(string path, byte[] content);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/UpdateFileBinaryContentUsingEncodi" +
+            "ng", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/UpdateFileBinaryContentUsingEncodi" +
+            "ngResponse")]
+        System.Threading.Tasks.Task UpdateFileBinaryContentUsingEncodingAsync(string path, byte[] content, string encoding);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/AppendFileBinaryContent", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/AppendFileBinaryContentResponse")]
+        System.Threading.Tasks.Task AppendFileBinaryContentAsync(string path, byte[] chunk);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/UpdateFileTextContent", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/UpdateFileTextContentResponse")]
+        System.Threading.Tasks.Task UpdateFileTextContentAsync(string path, string content);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/MoveFile", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/MoveFileResponse")]
+        System.Threading.Tasks.Task MoveFileAsync(string sourcePath, string destinationPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CopyFile", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CopyFileResponse")]
+        System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/ZipFiles", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/ZipFilesResponse")]
+        System.Threading.Tasks.Task ZipFilesAsync(string zipFile, string rootPath, string[] files);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/UnzipFiles", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/UnzipFilesResponse")]
+        System.Threading.Tasks.Task<string[]> UnzipFilesAsync(string zipFile, string destFolder);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CreateBackupZip", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CreateBackupZipResponse")]
+        System.Threading.Tasks.Task CreateBackupZipAsync(string zipFile, string rootPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CreateAccessDatabase", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CreateAccessDatabaseResponse")]
+        System.Threading.Tasks.Task CreateAccessDatabaseAsync(string databasePath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetGroupNtfsPermissions", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetGroupNtfsPermissionsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.UserPermission[]> GetGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GrantGroupNtfsPermissions", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GrantGroupNtfsPermissionsResponse")]
+        System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/SetQuotaLimitOnFolder", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/SetQuotaLimitOnFolderResponse")]
+        System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetQuotaOnFolder", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetQuotaOnFolderResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/DeleteDirectoryRecursive", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/DeleteDirectoryRecursiveResponse")]
+        System.Threading.Tasks.Task DeleteDirectoryRecursiveAsync(string rootPath);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CheckFileServicesInstallation", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CheckFileServicesInstallationRespo" +
+            "nse")]
+        System.Threading.Tasks.Task<bool> CheckFileServicesInstallationAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/InstallFsrmService", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/InstallFsrmServiceResponse")]
+        System.Threading.Tasks.Task<bool> InstallFsrmServiceAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetFolderGraph", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetFolderGraphResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.FolderGraph> GetFolderGraphAsync(string path);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSyncActions", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSyncActionsResponse")]
+        System.Threading.Tasks.Task ExecuteSyncActionsAsync(SolidCP.Providers.OS.FileSyncAction[] actions);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetInstalledOdbcDrivers", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetInstalledOdbcDriversResponse")]
+        System.Threading.Tasks.Task<string[]> GetInstalledOdbcDriversAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetDSNNames", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetDSNNamesResponse")]
+        System.Threading.Tasks.Task<string[]> GetDSNNamesAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/GetDSN", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/GetDSNResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemDSN> GetDSNAsync(string dsnName);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/CreateDSN", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/CreateDSNResponse")]
+        System.Threading.Tasks.Task CreateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/UpdateDSN", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/UpdateDSNResponse")]
+        System.Threading.Tasks.Task UpdateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSN", ReplyAction="http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSNResponse")]
+        System.Threading.Tasks.Task DeleteDSNAsync(string dsnName);
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
+    public interface IOperatingSystemChannel : ServiceReference.IOperatingSystem, System.ServiceModel.IClientChannel
+    {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="BoolResult", Namespace="http://schemas.datacontract.org/2004/07/SolidCP.Providers.Common")]
-    public partial class BoolResult : SolidCP.Providers.ResultObjects.ValueResultObjectOfboolean
-    {
-    }
-}
-namespace SolidCP.Providers.ResultObjects
-{
-    using System.Runtime.Serialization;
-    
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ValueResultObjectOfboolean", Namespace="http://schemas.datacontract.org/2004/07/SolidCP.Providers.ResultObjects")]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(SolidCP.Providers.Common.BoolResult))]
-    public partial class ValueResultObjectOfboolean : SolidCP.Providers.Common.ResultObject
+    public partial class OperatingSystemClient : System.ServiceModel.ClientBase<ServiceReference.IOperatingSystem>, ServiceReference.IOperatingSystem
     {
         
-        private bool ValueField;
+        /// <summary>
+        /// Implementieren Sie diese partielle Methode, um den Dienstendpunkt zu konfigurieren.
+        /// </summary>
+        /// <param name="serviceEndpoint">Der zu konfigurierende Endpunkt</param>
+        /// <param name="clientCredentials">Die Clientanmeldeinformationen</param>
+        static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Value
+        public OperatingSystemClient() : 
+                base(OperatingSystemClient.GetDefaultBinding(), OperatingSystemClient.GetDefaultEndpointAddress())
         {
-            get
+            this.Endpoint.Name = EndpointConfiguration.NetHttpBinding_IOperatingSystem.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public OperatingSystemClient(EndpointConfiguration endpointConfiguration) : 
+                base(OperatingSystemClient.GetBindingForEndpoint(endpointConfiguration), OperatingSystemClient.GetEndpointAddress(endpointConfiguration))
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public OperatingSystemClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
+                base(OperatingSystemClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public OperatingSystemClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(OperatingSystemClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
+        {
+            this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+        
+        public OperatingSystemClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(binding, remoteAddress)
+        {
+        }
+        
+        public System.Threading.Tasks.Task<string> CreatePackageFolderAsync(string initialPath)
+        {
+            return base.Channel.CreatePackageFolderAsync(initialPath);
+        }
+        
+        public System.Threading.Tasks.Task<bool> FileExistsAsync(string path)
+        {
+            return base.Channel.FileExistsAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task<bool> DirectoryExistsAsync(string path)
+        {
+            return base.Channel.DirectoryExistsAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFileAsync(string path)
+        {
+            return base.Channel.GetFileAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesAsync(string path)
+        {
+            return base.Channel.GetFilesAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path)
+        {
+            return base.Channel.GetDirectoriesRecursiveAsync(rootFolder, path);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path)
+        {
+            return base.Channel.GetFilesRecursiveAsync(rootFolder, path);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern)
+        {
+            return base.Channel.GetFilesRecursiveByPatternAsync(rootFolder, path, pattern);
+        }
+        
+        public System.Threading.Tasks.Task<byte[]> GetFileBinaryContentAsync(string path)
+        {
+            return base.Channel.GetFileBinaryContentAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task<byte[]> GetFileBinaryContentUsingEncodingAsync(string path, string encoding)
+        {
+            return base.Channel.GetFileBinaryContentUsingEncodingAsync(path, encoding);
+        }
+        
+        public System.Threading.Tasks.Task<byte[]> GetFileBinaryChunkAsync(string path, int offset, int length)
+        {
+            return base.Channel.GetFileBinaryChunkAsync(path, offset, length);
+        }
+        
+        public System.Threading.Tasks.Task<string> GetFileTextContentAsync(string path)
+        {
+            return base.Channel.GetFileTextContentAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task CreateFileAsync(string path)
+        {
+            return base.Channel.CreateFileAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task CreateDirectoryAsync(string path)
+        {
+            return base.Channel.CreateDirectoryAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task ChangeFileAttributesAsync(string path, System.DateTime createdTime, System.DateTime changedTime)
+        {
+            return base.Channel.ChangeFileAttributesAsync(path, createdTime, changedTime);
+        }
+        
+        public System.Threading.Tasks.Task DeleteFileAsync(string path)
+        {
+            return base.Channel.DeleteFileAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task DeleteFilesAsync(string[] files)
+        {
+            return base.Channel.DeleteFilesAsync(files);
+        }
+        
+        public System.Threading.Tasks.Task DeleteEmptyDirectoriesAsync(string[] directories)
+        {
+            return base.Channel.DeleteEmptyDirectoriesAsync(directories);
+        }
+        
+        public System.Threading.Tasks.Task UpdateFileBinaryContentAsync(string path, byte[] content)
+        {
+            return base.Channel.UpdateFileBinaryContentAsync(path, content);
+        }
+        
+        public System.Threading.Tasks.Task UpdateFileBinaryContentUsingEncodingAsync(string path, byte[] content, string encoding)
+        {
+            return base.Channel.UpdateFileBinaryContentUsingEncodingAsync(path, content, encoding);
+        }
+        
+        public System.Threading.Tasks.Task AppendFileBinaryContentAsync(string path, byte[] chunk)
+        {
+            return base.Channel.AppendFileBinaryContentAsync(path, chunk);
+        }
+        
+        public System.Threading.Tasks.Task UpdateFileTextContentAsync(string path, string content)
+        {
+            return base.Channel.UpdateFileTextContentAsync(path, content);
+        }
+        
+        public System.Threading.Tasks.Task MoveFileAsync(string sourcePath, string destinationPath)
+        {
+            return base.Channel.MoveFileAsync(sourcePath, destinationPath);
+        }
+        
+        public System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath)
+        {
+            return base.Channel.CopyFileAsync(sourcePath, destinationPath);
+        }
+        
+        public System.Threading.Tasks.Task ZipFilesAsync(string zipFile, string rootPath, string[] files)
+        {
+            return base.Channel.ZipFilesAsync(zipFile, rootPath, files);
+        }
+        
+        public System.Threading.Tasks.Task<string[]> UnzipFilesAsync(string zipFile, string destFolder)
+        {
+            return base.Channel.UnzipFilesAsync(zipFile, destFolder);
+        }
+        
+        public System.Threading.Tasks.Task CreateBackupZipAsync(string zipFile, string rootPath)
+        {
+            return base.Channel.CreateBackupZipAsync(zipFile, rootPath);
+        }
+        
+        public System.Threading.Tasks.Task CreateAccessDatabaseAsync(string databasePath)
+        {
+            return base.Channel.CreateAccessDatabaseAsync(databasePath);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.UserPermission[]> GetGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
+        {
+            return base.Channel.GetGroupNtfsPermissionsAsync(path, users, usersOU);
+        }
+        
+        public System.Threading.Tasks.Task GrantGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU, bool resetChildPermissions)
+        {
+            return base.Channel.GrantGroupNtfsPermissionsAsync(path, users, usersOU, resetChildPermissions);
+        }
+        
+        public System.Threading.Tasks.Task SetQuotaLimitOnFolderAsync(string folderPath, string shareNameDrive, SolidCP.Providers.OS.QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+        {
+            return base.Channel.SetQuotaLimitOnFolderAsync(folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword)
+        {
+            return base.Channel.GetQuotaOnFolderAsync(folderPath, wmiUserName, wmiPassword);
+        }
+        
+        public System.Threading.Tasks.Task DeleteDirectoryRecursiveAsync(string rootPath)
+        {
+            return base.Channel.DeleteDirectoryRecursiveAsync(rootPath);
+        }
+        
+        public System.Threading.Tasks.Task<bool> CheckFileServicesInstallationAsync()
+        {
+            return base.Channel.CheckFileServicesInstallationAsync();
+        }
+        
+        public System.Threading.Tasks.Task<bool> InstallFsrmServiceAsync()
+        {
+            return base.Channel.InstallFsrmServiceAsync();
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.FolderGraph> GetFolderGraphAsync(string path)
+        {
+            return base.Channel.GetFolderGraphAsync(path);
+        }
+        
+        public System.Threading.Tasks.Task ExecuteSyncActionsAsync(SolidCP.Providers.OS.FileSyncAction[] actions)
+        {
+            return base.Channel.ExecuteSyncActionsAsync(actions);
+        }
+        
+        public System.Threading.Tasks.Task<string[]> GetInstalledOdbcDriversAsync()
+        {
+            return base.Channel.GetInstalledOdbcDriversAsync();
+        }
+        
+        public System.Threading.Tasks.Task<string[]> GetDSNNamesAsync()
+        {
+            return base.Channel.GetDSNNamesAsync();
+        }
+        
+        public System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemDSN> GetDSNAsync(string dsnName)
+        {
+            return base.Channel.GetDSNAsync(dsnName);
+        }
+        
+        public System.Threading.Tasks.Task CreateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn)
+        {
+            return base.Channel.CreateDSNAsync(dsn);
+        }
+        
+        public System.Threading.Tasks.Task UpdateDSNAsync(SolidCP.Providers.OS.SystemDSN dsn)
+        {
+            return base.Channel.UpdateDSNAsync(dsn);
+        }
+        
+        public System.Threading.Tasks.Task DeleteDSNAsync(string dsnName)
+        {
+            return base.Channel.DeleteDSNAsync(dsnName);
+        }
+        
+        public virtual System.Threading.Tasks.Task OpenAsync()
+        {
+            return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
+        }
+        
+        private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
+        {
+            if ((endpointConfiguration == EndpointConfiguration.NetHttpBinding_IOperatingSystem))
             {
-                return this.ValueField;
+                System.ServiceModel.Channels.CustomBinding result = new System.ServiceModel.Channels.CustomBinding();
+                result.Elements.Add(new System.ServiceModel.Channels.BinaryMessageEncodingBindingElement());
+                System.ServiceModel.Channels.HttpTransportBindingElement httpBindingElement = new System.ServiceModel.Channels.HttpTransportBindingElement();
+                httpBindingElement.AllowCookies = true;
+                httpBindingElement.MaxBufferSize = int.MaxValue;
+                httpBindingElement.MaxReceivedMessageSize = int.MaxValue;
+                result.Elements.Add(httpBindingElement);
+                return result;
             }
-            set
+            throw new System.InvalidOperationException(string.Format("Es wurde kein Endpunkt mit dem Namen \"{0}\" gefunden.", endpointConfiguration));
+        }
+        
+        private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
+        {
+            if ((endpointConfiguration == EndpointConfiguration.NetHttpBinding_IOperatingSystem))
             {
-                this.ValueField = value;
+                return new System.ServiceModel.EndpointAddress("http://pinocho/server/OperatingSystem");
             }
+            throw new System.InvalidOperationException(string.Format("Es wurde kein Endpunkt mit dem Namen \"{0}\" gefunden.", endpointConfiguration));
         }
-    }
-}
-
-
-[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
-[System.ServiceModel.ServiceContractAttribute(ConfigurationName="IAutoDiscovery")]
-public interface IAutoDiscovery
-{
-    
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAutoDiscovery/IsInstalled", ReplyAction="http://tempuri.org/IAutoDiscovery/IsInstalledResponse")]
-    System.Threading.Tasks.Task<SolidCP.Providers.Common.BoolResult> IsInstalledAsync(string providerName);
-    
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAutoDiscovery/GetServerFilePath", ReplyAction="http://tempuri.org/IAutoDiscovery/GetServerFilePathResponse")]
-    System.Threading.Tasks.Task<string> GetServerFilePathAsync();
-    
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IAutoDiscovery/GetServerVersion", ReplyAction="http://tempuri.org/IAutoDiscovery/GetServerVersionResponse")]
-    System.Threading.Tasks.Task<string> GetServerVersionAsync();
-}
-
-[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
-public interface IAutoDiscoveryChannel : IAutoDiscovery, System.ServiceModel.IClientChannel
-{
-}
-
-[System.Diagnostics.DebuggerStepThroughAttribute()]
-[System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.1.0")]
-public partial class AutoDiscoveryClient : System.ServiceModel.ClientBase<IAutoDiscovery>, IAutoDiscovery
-{
-    
-    /// <summary>
-    /// Implementieren Sie diese partielle Methode, um den Dienstendpunkt zu konfigurieren.
-    /// </summary>
-    /// <param name="serviceEndpoint">Der zu konfigurierende Endpunkt</param>
-    /// <param name="clientCredentials">Die Clientanmeldeinformationen</param>
-    static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
-    
-    public AutoDiscoveryClient(EndpointConfiguration endpointConfiguration) : 
-            base(AutoDiscoveryClient.GetBindingForEndpoint(endpointConfiguration), AutoDiscoveryClient.GetEndpointAddress(endpointConfiguration))
-    {
-        this.Endpoint.Name = endpointConfiguration.ToString();
-        ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-    }
-    
-    public AutoDiscoveryClient(EndpointConfiguration endpointConfiguration, string remoteAddress) : 
-            base(AutoDiscoveryClient.GetBindingForEndpoint(endpointConfiguration), new System.ServiceModel.EndpointAddress(remoteAddress))
-    {
-        this.Endpoint.Name = endpointConfiguration.ToString();
-        ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-    }
-    
-    public AutoDiscoveryClient(EndpointConfiguration endpointConfiguration, System.ServiceModel.EndpointAddress remoteAddress) : 
-            base(AutoDiscoveryClient.GetBindingForEndpoint(endpointConfiguration), remoteAddress)
-    {
-        this.Endpoint.Name = endpointConfiguration.ToString();
-        ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
-    }
-    
-    public AutoDiscoveryClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-            base(binding, remoteAddress)
-    {
-    }
-    
-    public System.Threading.Tasks.Task<SolidCP.Providers.Common.BoolResult> IsInstalledAsync(string providerName)
-    {
-        return base.Channel.IsInstalledAsync(providerName);
-    }
-    
-    public System.Threading.Tasks.Task<string> GetServerFilePathAsync()
-    {
-        return base.Channel.GetServerFilePathAsync();
-    }
-    
-    public System.Threading.Tasks.Task<string> GetServerVersionAsync()
-    {
-        return base.Channel.GetServerVersionAsync();
-    }
-    
-    public virtual System.Threading.Tasks.Task OpenAsync()
-    {
-        return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
-    }
-    
-    private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
-    {
-        if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_IAutoDiscovery))
-        {
-            System.ServiceModel.BasicHttpBinding result = new System.ServiceModel.BasicHttpBinding();
-            result.MaxBufferSize = int.MaxValue;
-            result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
-            result.MaxReceivedMessageSize = int.MaxValue;
-            result.AllowCookies = true;
-            return result;
-        }
-        if ((endpointConfiguration == EndpointConfiguration.NetHttpBinding_IAutoDiscovery))
-        {
-            System.ServiceModel.Channels.CustomBinding result = new System.ServiceModel.Channels.CustomBinding();
-            result.Elements.Add(new System.ServiceModel.Channels.BinaryMessageEncodingBindingElement());
-            System.ServiceModel.Channels.HttpTransportBindingElement httpBindingElement = new System.ServiceModel.Channels.HttpTransportBindingElement();
-            httpBindingElement.AllowCookies = true;
-            httpBindingElement.MaxBufferSize = int.MaxValue;
-            httpBindingElement.MaxReceivedMessageSize = int.MaxValue;
-            result.Elements.Add(httpBindingElement);
-            return result;
-        }
-        if ((endpointConfiguration == EndpointConfiguration.WSHttpBinding_IAutoDiscovery))
-        {
-            System.ServiceModel.WSHttpBinding result = new System.ServiceModel.WSHttpBinding();
-            result.ReaderQuotas = System.Xml.XmlDictionaryReaderQuotas.Max;
-            result.MaxReceivedMessageSize = int.MaxValue;
-            result.AllowCookies = true;
-            result.Security.Mode = System.ServiceModel.SecurityMode.None;
-            return result;
-        }
-        throw new System.InvalidOperationException(string.Format("Es wurde kein Endpunkt mit dem Namen \"{0}\" gefunden.", endpointConfiguration));
-    }
-    
-    private static System.ServiceModel.EndpointAddress GetEndpointAddress(EndpointConfiguration endpointConfiguration)
-    {
-        if ((endpointConfiguration == EndpointConfiguration.BasicHttpBinding_IAutoDiscovery))
-        {
-            return new System.ServiceModel.EndpointAddress("http://pinocho/server/AutoDiscovery/basic");
-        }
-        if ((endpointConfiguration == EndpointConfiguration.NetHttpBinding_IAutoDiscovery))
-        {
-            return new System.ServiceModel.EndpointAddress("http://pinocho/server/AutoDiscovery/net");
-        }
-        if ((endpointConfiguration == EndpointConfiguration.WSHttpBinding_IAutoDiscovery))
-        {
-            return new System.ServiceModel.EndpointAddress("http://pinocho/server/AutoDiscovery/ws");
-        }
-        throw new System.InvalidOperationException(string.Format("Es wurde kein Endpunkt mit dem Namen \"{0}\" gefunden.", endpointConfiguration));
-    }
-    
-    public enum EndpointConfiguration
-    {
         
-        BasicHttpBinding_IAutoDiscovery,
+        private static System.ServiceModel.Channels.Binding GetDefaultBinding()
+        {
+            return OperatingSystemClient.GetBindingForEndpoint(EndpointConfiguration.NetHttpBinding_IOperatingSystem);
+        }
         
-        NetHttpBinding_IAutoDiscovery,
+        private static System.ServiceModel.EndpointAddress GetDefaultEndpointAddress()
+        {
+            return OperatingSystemClient.GetEndpointAddress(EndpointConfiguration.NetHttpBinding_IOperatingSystem);
+        }
         
-        WSHttpBinding_IAutoDiscovery,
+        public enum EndpointConfiguration
+        {
+            
+            NetHttpBinding_IOperatingSystem,
+        }
     }
 }

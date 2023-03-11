@@ -3,9 +3,33 @@
   "version": "2.1.0",
   "options": {
     "inputs": [
-      "http://localhost/server/AutoDiscovery?wsdl"
+      "http://localhost/server/OperatingSystem"
+    ],
+    "namespaceMappings": [
+      "*, ServiceReference"
     ],
     "outputFile": "Reference.cs",
+    "references": [
+      "C:\\GitHub\\SolidCP\\Test\\bin\\Debug\\net7.0\\SolidCP.Providers.Base.dll",
+      "C:\\GitHub\\SolidCP\\Test\\bin\\Debug\\net7.0\\SolidCP.Server.Client.dll",
+      "C:\\GitHub\\SolidCP\\Test\\bin\\Debug\\net7.0\\SolidCP.Web.Clients.dll",
+      "Grpc.Core.Api, {Grpc.Core.Api, 2.51.0}",
+      "Grpc.Net.Client, {Grpc.Net.Client, 2.51.0}",
+      "Grpc.Net.Client.Web, {Grpc.Net.Client.Web, 2.51.0}",
+      "Grpc.Net.Common, {Grpc.Net.Common, 2.51.0}",
+      "Microsoft.Bcl.AsyncInterfaces, {Microsoft.Bcl.AsyncInterfaces, 5.0.0}",
+      "Microsoft.Extensions.Logging.Abstractions, {Microsoft.Extensions.Logging.Abstractions, 3.0.3}",
+      "Microsoft.Extensions.ObjectPool, {Microsoft.Extensions.ObjectPool, 5.0.10}",
+      "protobuf-net, {protobuf-net, 2.4.8}",
+      "protobuf-net.Grpc, {protobuf-net.Grpc, 1.1.1}",
+      "System.Drawing.Common, {System.Drawing.Common, 5.0.0}",
+      "System.Reflection.DispatchProxy, {System.Reflection.DispatchProxy, 4.7.1}",
+      "System.Security.AccessControl, {System.Security.AccessControl, 5.0.0}",
+      "System.Security.Cryptography.Xml, {System.Security.Cryptography.Xml, 5.0.0}",
+      "System.Security.Permissions, {System.Security.Permissions, 5.0.0}",
+      "System.Security.Principal.Windows, {System.Security.Principal.Windows, 5.0.0}",
+      "System.Windows.Extensions, {System.Windows.Extensions, 5.0.0}"
+    ],
     "targetFramework": "net7.0",
     "typeReuseMode": "All"
   }

@@ -4,6 +4,7 @@ using System.ServiceModel;
 namespace SolidCP.Server.Client
 {
     // wcf client contract
+    [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IWebServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IWebServer

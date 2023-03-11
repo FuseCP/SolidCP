@@ -8,8 +8,8 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Services.Protocols;
 using System.Collections.ObjectModel;
+using SolidCP.Providers;
 
 namespace SolidCP.Web.Services
 {
@@ -17,30 +17,38 @@ namespace SolidCP.Web.Services
 	{
 		public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
 		{
-			throw new NotImplementedException();
 		}
 
 		public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
 		{
 			var instance = instanceContext.GetServiceInstance();
+			var instanceType = instance.GetType();
 			var action = request.Headers.Action;
 			var operationName = action.Substring(action.LastIndexOf("/") + 1);
-			var contract = instance.GetType().GetInterfaces()
-				.Select(intf => intf.GetCustomAttribute<ServiceContractAttribute>())
-				.FirstOrDefault(intf => intf != null);
-			var method = contract.GetType().GetMethod(operationName);
+			var contract = instanceType.GetInterfaces()
+				.FirstOrDefault(intf => intf.GetCustomAttribute<ServiceContractAttribute>() != null);
+			var method = contract.GetMethod(operationName);
 			var soapattr = method.GetCustomAttribute<SoapHeaderAttribute>();
 			if (soapattr != null)
 			{
-				var instanceType = instance.GetType();
-				var p = instanceType.GetProperty(soapattr.Field);
+				var p = instanceType.GetProperty(soapattr.Field, BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 				if (p != null)
 				{
-					int hpos = request.Headers.FindHeader(p.PropertyType.Name, $"http://temuri.org/{p.PropertyType.Name}");
+					int hpos = request.Headers.FindHeader(p.PropertyType.Name, $"http://tempuri.org/headers/{p.PropertyType.Name}");
 					var getHeaderMethod = request.Headers.GetType().GetMethod("GetHeader", new Type[] { typeof(string), typeof(string) });
-					getHeaderMethod.MakeGenericMethod(p.PropertyType);
-					var header = getHeaderMethod.Invoke(request.Headers, new object[] { p.PropertyType.Name, $"http://temuri.org/{p.PropertyType.Name}" });
+					getHeaderMethod = getHeaderMethod.MakeGenericMethod(p.PropertyType);
+					var header = getHeaderMethod.Invoke(request.Headers, new object[] { p.PropertyType.Name, $"http://tempuri.org/headers/{p.PropertyType.Name}" });
 					p.SetValue(instance, header);
+				} else {
+					var f = instanceType.GetField(soapattr.Field, BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					if (f != null)
+					{
+						int hpos = request.Headers.FindHeader(f.FieldType.Name, $"http://tempuri.org/headers/{f.FieldType.Name}");
+						var getHeaderMethod = request.Headers.GetType().GetMethod("GetHeader", new Type[] { typeof(string), typeof(string) });
+						getHeaderMethod = getHeaderMethod.MakeGenericMethod(f.FieldType);
+						var header = getHeaderMethod.Invoke(request.Headers, new object[] { f.FieldType.Name, $"http://tempuri.org/headers/{f.FieldType.Name}" });
+						f.SetValue(instance, header);
+					}
 				}
 			}
 			return null;
@@ -54,9 +62,9 @@ namespace SolidCP.Web.Services
 		{
 			var channelDispatcher = endpointDispatcher.ChannelDispatcher;
 			if (channelDispatcher == null) return;
+			var inspector = new SoapHeaderMessageInspector();
 			foreach (var ed in channelDispatcher.Endpoints)
 			{
-				var inspector = new SoapHeaderMessageInspector();
 				ed.DispatchRuntime.MessageInspectors.Add(inspector);
 			}
 		}

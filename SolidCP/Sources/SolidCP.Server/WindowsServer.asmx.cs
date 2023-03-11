@@ -42,7 +42,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Web.Services;
-using System.Web.Services.Protocols;
+//using System.Web.Services.Protocols;
 using System.ComponentModel;
 using System.ServiceProcess;
 using System.Runtime.Remoting;

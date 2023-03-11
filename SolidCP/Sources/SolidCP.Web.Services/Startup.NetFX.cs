@@ -81,10 +81,10 @@ namespace SolidCP.Web.Services
 			foreach (var service in services)
 			{
 				RouteTable.Routes.Add(new ServiceRoute(service.Name, new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"/basic/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"/ws/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"/net/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"/ssl/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"basic/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"ws/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"net/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"ssl/{service.Name}", new ServiceHostFactory(), service));
 			}
 		}
 	}

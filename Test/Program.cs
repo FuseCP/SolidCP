@@ -1,17 +1,21 @@
-﻿var builder = WebApplication.CreateBuilder();
+﻿using SolidCP.Server.Client;
+using SolidCP.Providers;
+using System.ServiceModel.Security;
+using SolidCP.Web.Client;
 
-builder.Services.AddServiceModelServices();
-builder.Services.AddServiceModelMetadata();
-builder.Services.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
+// See https://aka.ms/new-console-template for more information
+Console.WriteLine("Hello, World!");
 
-var app = builder.Build();
+using (var client = new AutoDiscovery() { Url = "http://localhost:9900" }) {
+	Console.WriteLine($"Server Path: {client.GetServerFilePath()}");
+}
 
-app.UseServiceModel(serviceBuilder =>
-{
-    serviceBuilder.AddService<Service>();
-    serviceBuilder.AddServiceEndpoint<Service, IService>(new BasicHttpBinding(BasicHttpSecurityMode.Transport), "/Service.svc");
-    var serviceMetadataBehavior = app.Services.GetRequiredService<ServiceMetadataBehavior>();
-    serviceMetadataBehavior.HttpsGetEnabled = true;
-});
+using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://localhost:9900/ws" }) {
+	client.SoapHeader = new ServiceProviderSettingsSoapHeader() {
+		Settings = new string[] { "Hello", "Howdy" }
+	};
+	client.Credentials.Password = "+uxnDOdf55yuH6iZYXgYAxsfIBw=";
+	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
+}
 
-app.Run();
+Console.ReadKey();

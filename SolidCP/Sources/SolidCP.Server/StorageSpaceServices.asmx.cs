@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Services;
-using System.Web.Services.Protocols;
+//using System.Web.Services.Protocols;
 using Microsoft.Web.Services3;
 using SolidCP.Providers;
 using SolidCP.Providers.EnterpriseStorage;

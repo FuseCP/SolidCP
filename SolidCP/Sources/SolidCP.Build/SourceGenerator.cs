@@ -244,9 +244,23 @@ namespace SolidCP.Build
 					.NormalizeWhitespace();
 
 
+				var policy = ws.Class.AttributeLists
+					.SelectMany(a => a.Attributes)
+					.FirstOrDefault(a => 
+						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "Microsoft.Web.Services3.PolicyAttribute");
+
+				AttributeListSyntax hasPolicy = null;
+
+				if (policy != null)
+				{
+					hasPolicy = AttributeList(SingletonSeparatedList(Attribute(ParseName("SolidCP.Web.Client.HasPolicy"))
+						.WithArgumentList(policy.ArgumentList)));
+				}
+
 				var clientIntf = ParseMemberDeclaration(
 					new ClientInterface()
 					{
+						HasPolicyAttribute = hasPolicy,
 						WebServiceNamespace = webServiceNamespace,
 						Class = ws.Class,
 						WebMethods = globalizedMethods

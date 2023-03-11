@@ -2,7 +2,7 @@ using System;
 
 namespace System.Web.Services
 {
-#if NET48
+#if NETFRAMEWORK
 	public enum WsiProfiles { BasicProfile1_1 }
 #endif  
 	public class WebService { }

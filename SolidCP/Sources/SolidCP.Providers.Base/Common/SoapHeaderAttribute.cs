@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace System.Web.Services.Protocols
+namespace SolidCP.Providers
 {
 	public class SoapHeaderAttribute : Attribute
 	{
