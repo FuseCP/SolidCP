@@ -1,16 +1,17 @@
-﻿#if NETFRAMEWORK
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.ServiceModel;
+#if NETFRAMEWORK
 using System.ServiceModel.Activation;
 using System.Web;
 using System.Web.Services;
 using System.Web.Routing;
-using Microsoft.Web.Infrastructure;
+#endif
+//using Microsoft.Web.Infrastructure;
 using System.ComponentModel;
 
 //[assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.StartupFX), "Start")]
@@ -36,6 +37,40 @@ namespace SolidCP.Web.Services
 
 		static object startLock = new object();
 		static bool wasCalled = false;
+
+		public static Type[] GetWebServices()
+		{
+			Assembly eserver = null, server = null;
+
+			try
+			{
+				eserver = Assembly.Load("SolidCP.EnterpriseServer");
+			}
+			catch { }
+			try
+			{
+				server = Assembly.Load("SolidCP.Server");
+			}
+			catch { }
+			ServiceAssemblies = new Assembly[]
+			{
+				eserver, server
+			}
+			.Where(a => a != null)
+			.ToArray();
+
+			var attributeType = Type.GetType("System.Web.Services.WebServiceAttribute, SolidCP.Web.Services");
+
+			var types = ServiceAssemblies
+				.SelectMany(a => a.GetLoadableTypes())
+				.ToArray();
+			var webServices = types
+					.Where(t => t.GetCustomAttribute<System.Web.Services.WebServiceAttribute>() != null &&
+						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)))
+					.ToArray();
+			return webServices;
+		}
+
 		public static void Start()
 		{
 
@@ -45,39 +80,14 @@ namespace SolidCP.Web.Services
 				wasCalled = true;
 			}
 
-			Assembly eserver = null, server = null;
-
-			try
-			{
-				eserver = Assembly.Load("SolidCP.EnterpriseServer");
-			} catch { }
-			try
-			{
-				server = Assembly.Load("SolidCP.Server");
-			} catch { }
-			ServiceAssemblies = new Assembly[]
-			{
-				eserver, server
-			}
-			.Where(a => a != null)
-			.ToArray();
-
-			var attributeType = Assembly.Load("SolidCP.Web.Services").GetType("System.Web.Services.WebServiceAttribute");
-
-			var types = ServiceAssemblies
-				.SelectMany(a => a.GetLoadableTypes())
-				.ToArray();
-			var webServices = types
-					.Where(t => t.GetCustomAttribute(attributeType) != null &&
-						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)))
-					.ToArray();
-			AddServiceRoutes(webServices);
+			AddServiceRoutes(GetWebServices());
 			//SvcVirtualPathProvider.SetupSvcServices(webServices);
 			//DictionaryVirtualPathProvider.Startup();
 		}
 
 		static void AddServiceRoutes(Type[] services)
 		{
+#if NETFRAMEWORK
 			foreach (var service in services)
 			{
 				RouteTable.Routes.Add(new ServiceRoute(service.Name, new ServiceHostFactory(), service));
@@ -86,7 +96,7 @@ namespace SolidCP.Web.Services
 				RouteTable.Routes.Add(new ServiceRoute($"net/{service.Name}", new ServiceHostFactory(), service));
 				RouteTable.Routes.Add(new ServiceRoute($"ssl/{service.Name}", new ServiceHostFactory(), service));
 			}
+#endif
 		}
 	}
 }
-#endif

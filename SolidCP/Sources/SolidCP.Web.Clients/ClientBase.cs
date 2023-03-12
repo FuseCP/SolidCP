@@ -4,11 +4,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using System.Net;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Linq;
-using System.ServiceModel.Security;
+using System.Reflection;
 #if NETCOREAPP
 using ProtoBuf.Grpc.Client;
 using Grpc.Net.Client;
@@ -25,7 +23,7 @@ namespace SolidCP.Web.Client
 		public string Password { get; set; }
 	}
 
-	public class ClientBase: IDisposable
+	public class ClientBase : IDisposable
 	{
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
@@ -111,7 +109,11 @@ namespace SolidCP.Web.Client
 		protected bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
-		protected bool IsAuthenticated => this.GetType().GetCustomAttributes(false).OfType<HasPolicyAttribute>().Any();
+		protected bool IsAuthenticated => this.GetType().GetInterfaces()
+					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
+					?.GetCustomAttribute<HasPolicyAttribute>()
+					!= null;
+
 		public virtual void Close() { }
 		public void Dispose()
 		{
@@ -136,7 +138,7 @@ namespace SolidCP.Web.Client
 #if NETCOREAPP
 		static Dictionary<string, GrpcChannel> GrpcPool = new Dictionary<string, GrpcChannel>();
 #endif
-		static Dictionary<string, ChannelFactory<T>> FactoryPool = new Dictionary<string, ChannelFactory<T>>();
+		static readonly Dictionary<string, ChannelFactory<T>> FactoryPool = new Dictionary<string, ChannelFactory<T>>();
 		ChannelFactory<T> factory;
 
 		T client = null;
@@ -147,12 +149,11 @@ namespace SolidCP.Web.Client
 			{
 				if (client != null)
 				{
-					if (client is IClientChannel)
+					if (client is IClientChannel chan)
 					{
-						var channel = (IClientChannel)client;
-						if (channel.State != CommunicationState.Opened && channel.State != CommunicationState.Opening)
+						if (chan.State != CommunicationState.Opened && chan.State != CommunicationState.Opening)
 						{
-							channel.Open();
+							chan.Open();
 						}
 					}
 					return client;
@@ -168,21 +169,66 @@ namespace SolidCP.Web.Client
 					switch (Protocol)
 					{
 						case Protocols.BasicHttp:
-							if (isAuthenticated) throw new NotSupportedException("This api is not supported on this service.");
+							if (isAuthenticated)
+							{
+								//var basic = new BasicHttpBinding(BasicHttpSecurityMode.Message);
+								//basic.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+								//binding = basic;
+								throw new NotSupportedException("This api is not supported on this service.");
+							}
 							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
 							break;
-						case Protocols.BasicHttps: binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential); break;
-						case Protocols.NetHttp:
-							if (isAuthenticated) throw new NotSupportedException("This api is not supported on this service.");
-							binding = new NetHttpBinding(BasicHttpSecurityMode.None);
+						case Protocols.BasicHttps: 
+							var basics = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
+							basics.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+							binding = basics;
 							break;
-						case Protocols.NetHttps: binding = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential); break;
-						case Protocols.WSHttp: binding = new WSHttpBinding(SecurityMode.Message); break;
-						case Protocols.WSHttps: binding = new WSHttpBinding(SecurityMode.TransportWithMessageCredential); break;
-						case Protocols.NetTcp: binding = new NetTcpBinding(SecurityMode.Message); break;
-						case Protocols.NetTcpSsl: binding = new NetTcpBinding(SecurityMode.TransportWithMessageCredential); break;
+						case Protocols.NetHttp:
+							if (isAuthenticated)
+							{
+								//var net = new NetHttpBinding(BasicHttpSecurityMode.Message);
+								//net.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+								//binding = net;
+								throw new NotSupportedException("This api is not supported on this service.");
+							} else binding = new NetHttpBinding(BasicHttpSecurityMode.None);
+							break;
+						case Protocols.NetHttps: 
+							var nets = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
+							nets.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+							binding = nets;
+							break;
+						case Protocols.WSHttp:
+							if (isAuthenticated)
+							{
+								var ws = new WSHttpBinding(SecurityMode.Message);
+								ws.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+								binding = ws;
+							}
+							else binding = new WSHttpBinding(SecurityMode.None);
+							break;
+						case Protocols.WSHttps: 
+							var wss = new WSHttpBinding(SecurityMode.TransportWithMessageCredential);
+							wss.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+							binding = wss;
+							break;
+						case Protocols.NetTcp:
+							if (isAuthenticated)
+							{
+								var nettcp = new NetTcpBinding(SecurityMode.Message);
+								nettcp.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+								binding = nettcp;
+							}
+							else binding = new NetTcpBinding(SecurityMode.None);
+							break;
+						case Protocols.NetTcpSsl: 
+							var nettcps = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
+							nettcps.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+							binding = nettcps;
+							break;
 #if NETFRAMEWORK
-						case Protocols.NetPipe: binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None); break;
+						case Protocols.NetPipe: 
+							
+							binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None); break;
 						case Protocols.NetPipeSsl: binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport); break;
 #endif
 					}
@@ -212,20 +258,20 @@ namespace SolidCP.Web.Client
 					}
 					if (Credentials != null && Credentials.Password != null)
 					{
-						factory.Credentials.UserName.UserName = Credentials.UserName ?? string.Empty;
+						factory.Credentials.UserName.UserName = Credentials.UserName ?? "_";
 						factory.Credentials.UserName.Password = Credentials.Password ?? string.Empty;
 					}
 					client = factory.CreateChannel();
 				}
-#if NETCOREAPP
+#if !NETFRAMEWORK
 				else if (IsGRPC)
 				{
-					GrpcChannel channel;
-					if (!GrpcPool.TryGetValue(url, out channel))
+					GrpcChannel gchannel;
+					if (!GrpcPool.TryGetValue(url, out gchannel))
 					{
-						GrpcPool[url] = channel = GrpcChannel.ForAddress(url);
+						GrpcPool[url] = gchannel = GrpcChannel.ForAddress(url);
 					}
-					client = channel.CreateGrpcService<T>();
+					client = gchannel.CreateGrpcService<T>();
 				}
 #endif
 				else if (IsAssembly)
@@ -233,7 +279,7 @@ namespace SolidCP.Web.Client
 					client = new U();
 				}
 				else throw new NotSupportedException("Unsupported protocol in SolidCP.Web.Clients.ClientBase");
-				if (client is IClientChannel) ((IClientChannel)client).Open();
+				if (client is IClientChannel channel) channel.Open();
 				return client;
 			}
 		}
@@ -245,7 +291,7 @@ namespace SolidCP.Web.Client
 				FactoryPool[url] = factory;
 				factory = null;
 			}
-			if (client != null && client is IClientChannel) ((IClientChannel)client).Close();
+			if (client != null && client is IClientChannel channel) channel.Close();
 		}
 
 

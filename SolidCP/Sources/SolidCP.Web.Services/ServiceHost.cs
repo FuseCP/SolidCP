@@ -56,41 +56,87 @@ namespace SolidCP.Web.Services
 
 					if (HasApi(adr, "basic"))
 					{
-						if (isAuthenticated) throw new NotSupportedException("Api not supported.");
+						if (isAuthenticated)
+						{
+							// var binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
+							// binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+							// AddEndpoint(contract, binding, adr);
+							throw new NotSupportedException("Api not supported.");
+						}
 						else AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None), adr);
 					}
 					else if (HasApi(adr, "net"))
 					{
-						if (isAuthenticated) throw new NotSupportedException("Api not supported.");
-						AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None), adr);
+						if (isAuthenticated)
+						{
+							//var binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
+							//binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+							//AddEndpoint(contract, binding, adr);
+							throw new NotSupportedException("Api not supported.");
+						}
+						else AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None), adr);
 					}
 					else if (HasApi(adr, "ws"))
 					{
-						if (isAuthenticated) AddEndpoint(contract, new WSHttpBinding(SecurityMode.Message), adr);
+						if (isAuthenticated)
+						{
+							var binding = new WSHttpBinding(SecurityMode.Message);
+							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+							AddEndpoint(contract, binding, adr);
+						}
 						else AddEndpoint(contract, new WSHttpBinding(SecurityMode.None), adr);
 					}
-					else
+					else // use wsHttp as default for authenticated services and netHttp for anonymous services
 					{
-						if (isAuthenticated) AddEndpoint(contract, new WSHttpBinding(SecurityMode.Message), adr);
+						if (isAuthenticated)
+						{
+							var binding = new WSHttpBinding(SecurityMode.Message);
+							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+							AddEndpoint(contract, binding, adr);
+						}
 						else AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None), adr);
 					}
 				}
 				else if (adr.StartsWith("https://"))
 				{
 					if (HasApi(adr, "basic"))
-						AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential), adr);
-					else if (HasApi(adr, "ws"))
-						AddEndpoint(contract, new WSHttpBinding(SecurityMode.TransportWithMessageCredential), adr);
+					{
+						var binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
+						binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+						AddEndpoint(contract, binding, adr);
+					}
+					else if (HasApi(adr, "ws")) {
+						var binding = new WSHttpBinding(SecurityMode.TransportWithMessageCredential);
+						binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+						AddEndpoint(contract, binding, adr);
+					}
 					else
-						AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential), adr);
+					{
+						var binding = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
+						binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+						AddEndpoint(contract, binding, adr);
+					}
 				}
 				else if (adr.StartsWith("net.tcp://"))
 				{
 					if (HasApi(adr, "ssl"))
-						AddEndpoint(contract, new NetTcpBinding(SecurityMode.TransportWithMessageCredential), adr);
-					else AddEndpoint(contract, new NetTcpBinding(SecurityMode.Message), adr);
-				}
+					{
+						var binding = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
+						binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+						AddEndpoint(contract, binding, adr);
 
+					}
+					else
+					{
+						if (isAuthenticated)
+						{
+							var binding = new NetTcpBinding(SecurityMode.Message);
+							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+							AddEndpoint(contract, binding, adr);
+						}
+						else AddEndpoint(contract, new NetTcpBinding(SecurityMode.None), adr);
+					}
+				}
 #if NETFRAMEWORK
 				else if (adr.StartsWith("net.pipe://"))
 				{
@@ -98,7 +144,7 @@ namespace SolidCP.Web.Services
 						AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport), adr);
 					else
 					{
-						if (isAuthenticated) throw new NotSupportedException("Api not supported.");
+						if (isAuthenticated) AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport), adr);
 						else AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.None), adr);
 					}
 				}

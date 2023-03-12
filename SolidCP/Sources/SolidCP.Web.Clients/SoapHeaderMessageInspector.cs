@@ -12,6 +12,7 @@ namespace SolidCP.Web.Client
 {
 	public class SoapHeaderClientMessageInspector : IClientMessageInspector
 	{
+		public const string Namespace = "http://solidcp.com/headers/";
 
 		public ClientBase Client;
 		public object SoapHeader => Client.SoapHeader;
@@ -28,7 +29,7 @@ namespace SolidCP.Web.Client
 				MessageBuffer buffer = request.CreateBufferedCopy(Int32.MaxValue);
 				request = buffer.CreateMessage();
 
-				var header = MessageHeader.CreateHeader(SoapHeader.GetType().Name, $"http://tempuri.org/headers/{SoapHeader.GetType().Name}", SoapHeader);
+				var header = MessageHeader.CreateHeader(SoapHeader.GetType().Name, $"{Namespace}{SoapHeader.GetType().Name}", SoapHeader);
 				request.Headers.Add(header);
 			}
 			return null;

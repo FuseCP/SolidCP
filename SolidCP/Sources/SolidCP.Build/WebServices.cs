@@ -80,7 +80,7 @@ namespace SolidCP.Build
 	}
 
 	[Generator(LanguageNames.CSharp)]
-	public class GenerateWebServices : ISourceGenerator
+	public class WebServices : ISourceGenerator
 	{
 
 		public static readonly string NewLine = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "\r\n" : "\n";

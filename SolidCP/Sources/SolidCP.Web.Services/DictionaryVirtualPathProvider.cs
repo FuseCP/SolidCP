@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if NETFRAMEWORK
 using System.Linq;
 using System.IO;
 using System.Collections.ObjectModel;
@@ -757,3 +758,4 @@ namespace SolidCP.Web.Services
 
 	}
 }
+#endif

@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net7.0;net48</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net48</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>11</LangVersion>
   </PropertyGroup>
+
   <ItemGroup>
+    <ProjectReference Include="..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\SolidCP\Sources\SolidCP.Server\WebServices\SolidCP.Server.Client.csproj" />
+    <ProjectReference Include="..\SolidCP\Sources\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.Http" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.Security" Version="4.10.*" />
-    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.*" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
+
 </Project>

@@ -3,15 +3,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+#if NETFRAMEWORK
 using System.ServiceModel;
+#else
+using CoreWCF;
+#endif
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SolidCP.Web.Services
 {
+#if NETFRAMEWORK
 	public class UserNamePasswordValidator: System.IdentityModel.Selectors.UserNamePasswordValidator
+#else
+	public class UserNamePasswordValidator : CoreWCF.IdentityModel.Selectors.UserNamePasswordValidator
+#endif
 	{
+#if NETFRAMEWORK
 		public override void Validate(string userName, string password)
+#else
+		public override ValueTask ValidateAsync(string userName, string password)
+
+#endif
 		{
 			var service = OperationContext.Current.InstanceContext.GetServiceInstance();
 			var contract = service.GetType().GetInterfaces()
@@ -31,6 +44,9 @@ namespace SolidCP.Web.Services
 				}
 			}
 
+#if !NETFRAMEWORK
+			return ValueTask.CompletedTask;
+ #endif
 		}
 
 		public static Func<string, bool> ValidateServer;
