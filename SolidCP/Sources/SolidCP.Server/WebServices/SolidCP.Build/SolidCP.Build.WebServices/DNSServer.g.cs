@@ -63,60 +63,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class DNSServer : SolidCP.Server.DNSServer, IDNSServer
     {
-        public new bool ZoneExists(string zoneName)
-        {
-            return base.ZoneExists(zoneName);
-        }
-
-        public new string[] GetZones()
-        {
-            return base.GetZones();
-        }
-
-        public new void AddPrimaryZone(string zoneName, string[] secondaryServers)
-        {
-            base.AddPrimaryZone(zoneName, secondaryServers);
-        }
-
-        public new void AddSecondaryZone(string zoneName, string[] masterServers)
-        {
-            base.AddSecondaryZone(zoneName, masterServers);
-        }
-
-        public new void DeleteZone(string zoneName)
-        {
-            base.DeleteZone(zoneName);
-        }
-
-        public new void UpdateSoaRecord(string zoneName, string host, string primaryNsServer, string primaryPerson)
-        {
-            base.UpdateSoaRecord(zoneName, host, primaryNsServer, primaryPerson);
-        }
-
-        public new DnsRecord[] GetZoneRecords(string zoneName)
-        {
-            return base.GetZoneRecords(zoneName);
-        }
-
-        public new void AddZoneRecord(string zoneName, DnsRecord record)
-        {
-            base.AddZoneRecord(zoneName, record);
-        }
-
-        public new void DeleteZoneRecord(string zoneName, DnsRecord record)
-        {
-            base.DeleteZoneRecord(zoneName, record);
-        }
-
-        public new void AddZoneRecords(string zoneName, DnsRecord[] records)
-        {
-            base.AddZoneRecords(zoneName, records);
-        }
-
-        public new void DeleteZoneRecords(string zoneName, DnsRecord[] records)
-        {
-            base.DeleteZoneRecords(zoneName, records);
-        }
     }
 }
 #endif

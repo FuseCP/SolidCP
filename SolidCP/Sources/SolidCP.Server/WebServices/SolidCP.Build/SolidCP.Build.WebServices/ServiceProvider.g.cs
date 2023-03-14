@@ -55,45 +55,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class ServiceProvider : SolidCP.Server.ServiceProvider, IServiceProvider
     {
-        public new string[] Install()
-        {
-            return base.Install();
-        }
-
-        public new SettingPair[] GetProviderDefaultSettings()
-        {
-            return base.GetProviderDefaultSettings();
-        }
-
-        public new void Uninstall()
-        {
-            base.Uninstall();
-        }
-
-        public new bool IsInstalled()
-        {
-            return base.IsInstalled();
-        }
-
-        public new void ChangeServiceItemsState(SoapServiceProviderItem[] items, bool enabled)
-        {
-            base.ChangeServiceItemsState(items, enabled);
-        }
-
-        public new void DeleteServiceItems(SoapServiceProviderItem[] items)
-        {
-            base.DeleteServiceItems(items);
-        }
-
-        public new ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SoapServiceProviderItem[] items)
-        {
-            return base.GetServiceItemsDiskSpace(items);
-        }
-
-        public new ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SoapServiceProviderItem[] items, DateTime since)
-        {
-            return base.GetServiceItemsBandwidth(items, since);
-        }
     }
 }
 #endif

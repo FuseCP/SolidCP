@@ -35,15 +35,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class OCSEdgeServer : SolidCP.Server.OCSEdgeServer, IOCSEdgeServer
     {
-        public new void AddDomain(string domainName)
-        {
-            base.AddDomain(domainName);
-        }
-
-        public new void DeleteDomain(string domainName)
-        {
-            base.DeleteDomain(domainName);
-        }
     }
 }
 #endif

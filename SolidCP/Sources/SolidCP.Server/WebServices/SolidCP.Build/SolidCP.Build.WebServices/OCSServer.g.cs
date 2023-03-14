@@ -44,30 +44,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class OCSServer : SolidCP.Server.OCSServer, IOCSServer
     {
-        public new string CreateUser(string userUpn, string userDistinguishedName)
-        {
-            return base.CreateUser(userUpn, userDistinguishedName);
-        }
-
-        public new OCSUser GetUserGeneralSettings(string instanceId)
-        {
-            return base.GetUserGeneralSettings(instanceId);
-        }
-
-        public new void SetUserGeneralSettings(string instanceId, bool enabledForFederation, bool enabledForPublicIMConectivity, bool archiveInternalCommunications, bool archiveFederatedCommunications, bool enabledForEnhancedPresence)
-        {
-            base.SetUserGeneralSettings(instanceId, enabledForFederation, enabledForPublicIMConectivity, archiveInternalCommunications, archiveFederatedCommunications, enabledForEnhancedPresence);
-        }
-
-        public new void DeleteUser(string instanceId)
-        {
-            base.DeleteUser(instanceId);
-        }
-
-        public new void SetUserPrimaryUri(string instanceId, string userUpn)
-        {
-            base.SetUserPrimaryUri(instanceId, userUpn);
-        }
     }
 }
 #endif

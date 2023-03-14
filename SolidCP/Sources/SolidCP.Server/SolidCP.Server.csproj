@@ -6,8 +6,9 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
-    <RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9900</RunArguments>
+    <LangVersion>11</LangVersion>
+    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
+    <RunArguments>/site:server</RunArguments>
     <!--<SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>
@@ -29,6 +30,8 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <ImplicitUsings>disable</ImplicitUsings>
+    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
+    <RunArguments>/path:&quot;$(MSBuildProjectDirectory)&quot; /port:9900</RunArguments>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">

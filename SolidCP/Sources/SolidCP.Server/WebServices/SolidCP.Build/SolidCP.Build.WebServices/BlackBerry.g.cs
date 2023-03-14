@@ -47,35 +47,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class BlackBerry : SolidCP.Server.BlackBerry, IBlackBerry
     {
-        public new ResultObject CreateBlackBerryUser(string primaryEmailAddress)
-        {
-            return base.CreateBlackBerryUser(primaryEmailAddress);
-        }
-
-        public new ResultObject DeleteBlackBerryUser(string primaryEmailAddress)
-        {
-            return base.DeleteBlackBerryUser(primaryEmailAddress);
-        }
-
-        public new BlackBerryUserStatsResult GetBlackBerryUserStats(string primaryEmailAddress)
-        {
-            return base.GetBlackBerryUserStats(primaryEmailAddress);
-        }
-
-        public new ResultObject SetActivationPasswordWithExpirationTime(string primaryEmailAddress, string password, int time)
-        {
-            return base.SetActivationPasswordWithExpirationTime(primaryEmailAddress, password, time);
-        }
-
-        public new ResultObject SetEmailActivationPassword(string primaryEmailAddress)
-        {
-            return base.SetEmailActivationPassword(primaryEmailAddress);
-        }
-
-        public new ResultObject DeleteDataFromBlackBerryDevice(string primaryEmailAddress)
-        {
-            return base.DeleteDataFromBlackBerryDevice(primaryEmailAddress);
-        }
     }
 }
 #endif

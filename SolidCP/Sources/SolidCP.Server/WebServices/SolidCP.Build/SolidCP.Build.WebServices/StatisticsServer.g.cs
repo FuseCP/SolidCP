@@ -53,40 +53,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class StatisticsServer : SolidCP.Server.StatisticsServer, IStatisticsServer
     {
-        public new StatsServer[] GetServers()
-        {
-            return base.GetServers();
-        }
-
-        public new string GetSiteId(string siteName)
-        {
-            return base.GetSiteId(siteName);
-        }
-
-        public new string[] GetSites()
-        {
-            return base.GetSites();
-        }
-
-        public new StatsSite GetSite(string siteId)
-        {
-            return base.GetSite(siteId);
-        }
-
-        public new string AddSite(StatsSite site)
-        {
-            return base.AddSite(site);
-        }
-
-        public new void UpdateSite(StatsSite site)
-        {
-            base.UpdateSite(site);
-        }
-
-        public new void DeleteSite(string siteId)
-        {
-            base.DeleteSite(siteId);
-        }
     }
 }
 #endif

@@ -33,20 +33,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class AutoDiscovery : SolidCP.Server.AutoDiscovery, IAutoDiscovery
     {
-        public new BoolResult IsInstalled(string providerName)
-        {
-            return base.IsInstalled(providerName);
-        }
-
-        public new string GetServerFilePath()
-        {
-            return base.GetServerFilePath();
-        }
-
-        public new string GetServerVersion()
-        {
-            return base.GetServerVersion();
-        }
     }
 }
 #endif

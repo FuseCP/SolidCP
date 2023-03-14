@@ -19,6 +19,9 @@ namespace SolidCP.Web.Services
 	public class UserNamePasswordValidator : CoreWCF.IdentityModel.Selectors.UserNamePasswordValidator
 #endif
 	{
+
+		public PolicyAttribute Policy;
+
 #if NETFRAMEWORK
 		public override void Validate(string userName, string password)
 #else
@@ -26,22 +29,14 @@ namespace SolidCP.Web.Services
 
 #endif
 		{
-			var service = OperationContext.Current.InstanceContext.GetServiceInstance();
-			var contract = service.GetType().GetInterfaces()
-				.FirstOrDefault(t => t.GetCustomAttribute<ServiceContractAttribute>() != null);
-
-			if (contract != null)
+			if (Policy != null)
 			{
-				var policy = contract.GetCustomAttribute<PolicyAttribute>();
-				if (policy != null)
+				if (Policy.Policy == "ServerPolicy" && ValidateServer != null)
 				{
-					if (policy.Policy == "ServerPolicy" && ValidateServer != null)
-					{
-						if (!ValidateServer(password)) throw new FaultException("Invalid server password");
-					}
-					else if (policy.Policy == "EnterpriseServerPolicy" && ValidateEnterpriseServer != null)
-						if (!ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user");
+					if (ValidateServer != null && !ValidateServer(password)) throw new FaultException("Invalid server password");
 				}
+				else if (Policy.Policy == "EnterpriseServerPolicy" && ValidateEnterpriseServer != null)
+					if (ValidateEnterpriseServer != null && !ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user");
 			}
 
 #if !NETFRAMEWORK

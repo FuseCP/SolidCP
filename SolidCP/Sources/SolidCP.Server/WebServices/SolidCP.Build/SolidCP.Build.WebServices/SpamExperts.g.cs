@@ -62,55 +62,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class SpamExperts : SolidCP.Server.SpamExperts, ISpamExperts
     {
-        public new SpamExpertsResult AddDomainFilter(string domain, string password, string email, string[] destinations)
-        {
-            return base.AddDomainFilter(domain, password, email, destinations);
-        }
-
-        public new SpamExpertsResult AddEmailFilter(string name, string domain, string password)
-        {
-            return base.AddEmailFilter(name, domain, password);
-        }
-
-        public new SpamExpertsResult DeleteDomainFilter(string domain)
-        {
-            return base.DeleteDomainFilter(domain);
-        }
-
-        public new SpamExpertsResult DeleteEmailFilter(string email)
-        {
-            return base.DeleteEmailFilter(email);
-        }
-
-        public new SpamExpertsResult SetDomainFilterDestinations(string name, string[] destinations)
-        {
-            return base.SetDomainFilterDestinations(name, destinations);
-        }
-
-        public new SpamExpertsResult SetDomainFilterUser(string domain, string password, string email)
-        {
-            return base.SetDomainFilterUser(domain, password, email);
-        }
-
-        public new SpamExpertsResult SetDomainFilterUserPassword(string name, string password)
-        {
-            return base.SetDomainFilterUserPassword(name, password);
-        }
-
-        public new SpamExpertsResult SetEmailFilterUserPassword(string email, string password)
-        {
-            return base.SetEmailFilterUserPassword(email, password);
-        }
-
-        public new SpamExpertsResult AddDomainFilterAlias(string domain, string alias)
-        {
-            return base.AddDomainFilterAlias(domain, alias);
-        }
-
-        public new SpamExpertsResult DeleteDomainFilterAlias(string domain, string alias)
-        {
-            return base.DeleteDomainFilterAlias(domain, alias);
-        }
     }
 }
 #endif

@@ -71,65 +71,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class EnterpriseStorage : SolidCP.Server.EnterpriseStorage, IEnterpriseStorage
     {
-        public new SystemFile[] GetFolders(string organizationId, WebDavSetting[] settings)
-        {
-            return base.GetFolders(organizationId, settings);
-        }
-
-        public new SystemFile[] GetFoldersWithoutFrsm(string organizationId, WebDavSetting[] settings)
-        {
-            return base.GetFoldersWithoutFrsm(organizationId, settings);
-        }
-
-        public new SystemFile GetFolder(string organizationId, string folder, WebDavSetting setting)
-        {
-            return base.GetFolder(organizationId, folder, setting);
-        }
-
-        public new void CreateFolder(string organizationId, string folder, WebDavSetting setting)
-        {
-            base.CreateFolder(organizationId, folder, setting);
-        }
-
-        public new void DeleteFolder(string organizationId, string folder, WebDavSetting setting)
-        {
-            base.DeleteFolder(organizationId, folder, setting);
-        }
-
-        public new bool SetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting, WebDavFolderRule[] rules)
-        {
-            return base.SetFolderWebDavRules(organizationId, folder, setting, rules);
-        }
-
-        public new WebDavFolderRule[] GetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting)
-        {
-            return base.GetFolderWebDavRules(organizationId, folder, setting);
-        }
-
-        public new bool CheckFileServicesInstallation()
-        {
-            return base.CheckFileServicesInstallation();
-        }
-
-        public new SystemFile[] Search(string organizationId, string[] searchPaths, string searchText, string userPrincipalName, bool recursive)
-        {
-            return base.Search(organizationId, searchPaths, searchText, userPrincipalName, recursive);
-        }
-
-        public new SystemFile RenameFolder(string organizationId, string originalFolder, string newFolder, WebDavSetting setting)
-        {
-            return base.RenameFolder(organizationId, originalFolder, newFolder, setting);
-        }
-
-        public new SystemFile[] GetQuotasForOrganization(SystemFile[] folders)
-        {
-            return base.GetQuotasForOrganization(folders);
-        }
-
-        public new void MoveFolder(string oldPath, string newPath)
-        {
-            base.MoveFolder(oldPath, newPath);
-        }
     }
 }
 #endif

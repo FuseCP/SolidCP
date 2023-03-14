@@ -106,7 +106,7 @@ namespace SolidCP.Web.Client
 		protected bool IsWCF => Protocol < Protocols.gRPC;
 		protected bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
 		protected bool IsAssembly => Protocol == Protocols.Assembly;
-		protected bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
+		protected bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
 		protected bool IsAuthenticated => this.GetType().GetInterfaces()
@@ -122,9 +122,19 @@ namespace SolidCP.Web.Client
 	}
 	static class StringExtensions
 	{
-		public static string Strip(this string url, string api) => Regex.Replace(url, $"/{api}(?:/|$)", "/");
+		public static string Strip(this string url, string api)
+		{
+			url = Regex.Replace(url, $"/{api}/", "/");
+			url = Regex.Replace(url, $"/{api}(?=\\?|$)", "");
+			return url;
+		}
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
-		public static string SetApi(this string url, string api) => Regex.Replace(url, "/(?:net|ws|basic|ssl|grpc|grpc/web)(?=/[a-zA-Z0-9_]+\\?|$)", $"/{api}");
+		public static string SetApi(this string url, string api)
+		{
+			url = Regex.Replace(url, "/(?:net|ws|basic|ssl|grpc|grpc/web)(?=(?:/[a-zA-Z0-9_]+)?(?:\\?|$))", $"/{api}");
+			if (!url.Contains($"/{api}")) url = Regex.Replace(url, "(?=\\?)|$", $"/{api}");
+			return url;
+		}
 
 		public static bool HasApi(this string url, string api) => Regex.IsMatch(url, $"/{api}(?:/|$)");
 	}
@@ -256,7 +266,7 @@ namespace SolidCP.Web.Client
 						}
 						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
 					}
-					if (Credentials != null && Credentials.Password != null)
+					if (Credentials != null && Credentials.Password != null || IsSsl)
 					{
 						factory.Credentials.UserName.UserName = Credentials.UserName ?? "_";
 						factory.Credentials.UserName.Password = Credentials.Password ?? string.Empty;

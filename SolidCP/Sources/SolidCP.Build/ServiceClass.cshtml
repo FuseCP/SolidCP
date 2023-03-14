@@ -13,13 +13,14 @@
 [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
 public class @(Class.Identifier): @(OldNamespace).@Class.Identifier, I@(Class.Identifier) {
 
+	@*
 	@foreach (var m in WebMethods) {
 		@:public new @m.ReturnType @(m.Identifier)@m.ParameterList {
 			@((m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)) ? "base." : "return base.")@(m.Identifier)@(ArgumentList(
 				SeparatedList<ArgumentSyntax>(m.ParameterList.Parameters
 					.Select(par => Argument(IdentifierName(par.Identifier))))))<text>;</text>
 		<text>}</text>
-	}
+	} *@
 }
 
 @functions

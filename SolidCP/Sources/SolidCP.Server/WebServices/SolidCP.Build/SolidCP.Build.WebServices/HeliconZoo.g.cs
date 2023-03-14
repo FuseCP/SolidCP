@@ -61,45 +61,6 @@ namespace SolidCP.Server.Services
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class HeliconZoo : SolidCP.Server.HeliconZoo, IHeliconZoo
     {
-        public new HeliconZooEngine[] GetEngines()
-        {
-            return base.GetEngines();
-        }
-
-        public new void SetEngines(HeliconZooEngine[] userEngines)
-        {
-            base.SetEngines(userEngines);
-        }
-
-        public new bool IsEnginesEnabled()
-        {
-            return base.IsEnginesEnabled();
-        }
-
-        public new void SwithEnginesEnabled(bool enabled)
-        {
-            base.SwithEnginesEnabled(enabled);
-        }
-
-        public new string[] GetEnabledEnginesForSite(string siteId)
-        {
-            return base.GetEnabledEnginesForSite(siteId);
-        }
-
-        public new void SetEnabledEnginesForSite(string siteId, string[] engineNames)
-        {
-            base.SetEnabledEnginesForSite(siteId, engineNames);
-        }
-
-        public new bool IsWebCosoleEnabled()
-        {
-            return base.IsWebCosoleEnabled();
-        }
-
-        public new void SetWebCosoleEnabled(bool enabled)
-        {
-            base.SetWebCosoleEnabled(enabled);
-        }
     }
 }
 #endif

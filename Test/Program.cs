@@ -7,12 +7,12 @@ using System;
 // See https://aka.ms/new-console-template for more information
 Console.WriteLine("Hello, World!");
 
-using (var client = new AutoDiscovery() { Url = "http://localhost:9900" })
+using (var client = new AutoDiscovery() { Url = "https://localhost:9901" })
 {
 	Console.WriteLine($"Server Path: {client.GetServerFilePath()}");
 }
 
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://localhost:9900" })
+using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901" })
 {
 	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
 	{
@@ -22,7 +22,7 @@ using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://
 	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
 }
 
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://localhost:9900/basic" })
+using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901/basic" })
 {
 	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
 	{
@@ -32,7 +32,7 @@ using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://
 	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
 }
 
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://localhost:9900/ws" })
+using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901/ws" })
 {
 	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
 	{
@@ -42,7 +42,7 @@ using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://
 	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
 }
 
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "http://localhost:9900/net" })
+using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901/net" })
 {
 	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
 	{

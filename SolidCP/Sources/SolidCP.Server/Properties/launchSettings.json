@@ -1,12 +1,28 @@
 {
   "profiles": {
-    "SolidCP.Server": {
+    "Kestrel": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "https://localhost:9901",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:51086;http://localhost:51087"
+      "applicationUrl": "https://localhost:9901;http://localhost:9900"
+    },
+    "IISExpress": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:9900",
+      "use64Bit": true,
+      "ancmHostingModel": "InProcess"
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "https://localhost:9901;http://localhost:9900",
+      "sslPort": 9901
     }
   }
 }
