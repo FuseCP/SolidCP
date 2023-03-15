@@ -36,6 +36,7 @@ using System.Xml;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
+using SolidCP.Server.Client;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;

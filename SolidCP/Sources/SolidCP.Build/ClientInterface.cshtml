@@ -12,6 +12,7 @@
 @inherits RazorBlade.PlainTextTemplate
 
 @(HasPolicyAttribute?.ToString() ?? "")
+@(HasSoapHeader ? "[SolidCP.Providers.SoapHeader]" : "")
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
 [ServiceContract(ConfigurationName="I@(Class.Identifier)", Namespace="@(WebServiceNamespace)")]
 public interface I@(Class.Identifier) {
@@ -27,11 +28,12 @@ public interface I@(Class.Identifier) {
 
 @functions
  {
+	public bool HasSoapHeader { get; set; }
 	public AttributeListSyntax HasPolicyAttribute { get; set; } 
 	public string WebServiceNamespace { get; set; }
 	public ClassDeclarationSyntax Class { get; set; }
 	public IEnumerable<MethodDeclarationSyntax> WebMethods { get; set; }
-		public IEnumerable<Tuple<MethodDeclarationSyntax, MethodDeclarationSyntax>> Methods => WebMethods
+	public IEnumerable<Tuple<MethodDeclarationSyntax, MethodDeclarationSyntax>> Methods => WebMethods
 			.Select(m => new
 			{
 				Method = m,

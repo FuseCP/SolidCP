@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IOCSServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IOCSServer
@@ -37,7 +39,7 @@ namespace SolidCP.Server.Client
     {
         public string CreateUser(string userUpn, string userDistinguishedName)
         {
-            return (string)Invoke("SolidCP.Server.OCSServer", "CreateUser", userUpn, userDistinguishedName);
+            return Invoke<string>("SolidCP.Server.OCSServer", "CreateUser", userUpn, userDistinguishedName);
         }
 
         public async System.Threading.Tasks.Task<string> CreateUserAsync(string userUpn, string userDistinguishedName)
@@ -47,7 +49,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.OCSUser GetUserGeneralSettings(string instanceId)
         {
-            return (SolidCP.Providers.HostedSolution.OCSUser)Invoke("SolidCP.Server.OCSServer", "GetUserGeneralSettings", instanceId);
+            return Invoke<SolidCP.Providers.HostedSolution.OCSUser>("SolidCP.Server.OCSServer", "GetUserGeneralSettings", instanceId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OCSUser> GetUserGeneralSettingsAsync(string instanceId)

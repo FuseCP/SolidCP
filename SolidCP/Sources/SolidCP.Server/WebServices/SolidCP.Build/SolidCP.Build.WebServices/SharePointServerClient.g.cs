@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "ISharePointServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface ISharePointServer
@@ -125,7 +127,7 @@ namespace SolidCP.Server.Client
 
         public string BackupVirtualServer(string url, string fileName, bool zipBackup)
         {
-            return (string)Invoke("SolidCP.Server.SharePointServer", "BackupVirtualServer", url, fileName, zipBackup);
+            return Invoke<string>("SolidCP.Server.SharePointServer", "BackupVirtualServer", url, fileName, zipBackup);
         }
 
         public async System.Threading.Tasks.Task<string> BackupVirtualServerAsync(string url, string fileName, bool zipBackup)
@@ -145,7 +147,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetTempFileBinaryChunk(string path, int offset, int length)
         {
-            return (byte[])Invoke("SolidCP.Server.SharePointServer", "GetTempFileBinaryChunk", path, offset, length);
+            return Invoke<byte[]>("SolidCP.Server.SharePointServer", "GetTempFileBinaryChunk", path, offset, length);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetTempFileBinaryChunkAsync(string path, int offset, int length)
@@ -155,7 +157,7 @@ namespace SolidCP.Server.Client
 
         public string AppendTempFileBinaryChunk(string fileName, string path, byte[] chunk)
         {
-            return (string)Invoke("SolidCP.Server.SharePointServer", "AppendTempFileBinaryChunk", fileName, path, chunk);
+            return Invoke<string>("SolidCP.Server.SharePointServer", "AppendTempFileBinaryChunk", fileName, path, chunk);
         }
 
         public async System.Threading.Tasks.Task<string> AppendTempFileBinaryChunkAsync(string fileName, string path, byte[] chunk)
@@ -165,7 +167,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetInstalledWebParts(string url)
         {
-            return (string[])Invoke("SolidCP.Server.SharePointServer", "GetInstalledWebParts", url);
+            return Invoke<string[]>("SolidCP.Server.SharePointServer", "GetInstalledWebParts", url);
         }
 
         public async System.Threading.Tasks.Task<string[]> GetInstalledWebPartsAsync(string url)
@@ -195,7 +197,7 @@ namespace SolidCP.Server.Client
 
         public bool UserExists(string username)
         {
-            return (bool)Invoke("SolidCP.Server.SharePointServer", "UserExists", username);
+            return Invoke<bool>("SolidCP.Server.SharePointServer", "UserExists", username);
         }
 
         public async System.Threading.Tasks.Task<bool> UserExistsAsync(string username)
@@ -205,7 +207,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetUsers()
         {
-            return (string[])Invoke("SolidCP.Server.SharePointServer", "GetUsers");
+            return Invoke<string[]>("SolidCP.Server.SharePointServer", "GetUsers");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetUsersAsync()
@@ -215,7 +217,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemUser GetUser(string username)
         {
-            return (SolidCP.Providers.OS.SystemUser)Invoke("SolidCP.Server.SharePointServer", "GetUser", username);
+            return Invoke<SolidCP.Providers.OS.SystemUser>("SolidCP.Server.SharePointServer", "GetUser", username);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemUser> GetUserAsync(string username)
@@ -265,7 +267,7 @@ namespace SolidCP.Server.Client
 
         public bool GroupExists(string groupName)
         {
-            return (bool)Invoke("SolidCP.Server.SharePointServer", "GroupExists", groupName);
+            return Invoke<bool>("SolidCP.Server.SharePointServer", "GroupExists", groupName);
         }
 
         public async System.Threading.Tasks.Task<bool> GroupExistsAsync(string groupName)
@@ -275,7 +277,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetGroups()
         {
-            return (string[])Invoke("SolidCP.Server.SharePointServer", "GetGroups");
+            return Invoke<string[]>("SolidCP.Server.SharePointServer", "GetGroups");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetGroupsAsync()
@@ -285,7 +287,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemGroup GetGroup(string groupName)
         {
-            return (SolidCP.Providers.OS.SystemGroup)Invoke("SolidCP.Server.SharePointServer", "GetGroup", groupName);
+            return Invoke<SolidCP.Providers.OS.SystemGroup>("SolidCP.Server.SharePointServer", "GetGroup", groupName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemGroup> GetGroupAsync(string groupName)

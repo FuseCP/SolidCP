@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IServiceProvider", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IServiceProvider
@@ -49,7 +51,7 @@ namespace SolidCP.Server.Client
     {
         public string[] Install()
         {
-            return (string[])Invoke("SolidCP.Server.ServiceProvider", "Install");
+            return Invoke<string[]>("SolidCP.Server.ServiceProvider", "Install");
         }
 
         public async System.Threading.Tasks.Task<string[]> InstallAsync()
@@ -59,7 +61,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.SettingPair[] GetProviderDefaultSettings()
         {
-            return (SolidCP.Providers.SettingPair[])Invoke("SolidCP.Server.ServiceProvider", "GetProviderDefaultSettings");
+            return Invoke<SolidCP.Providers.SettingPair[]>("SolidCP.Server.ServiceProvider", "GetProviderDefaultSettings");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> GetProviderDefaultSettingsAsync()
@@ -79,7 +81,7 @@ namespace SolidCP.Server.Client
 
         public bool IsInstalled()
         {
-            return (bool)Invoke("SolidCP.Server.ServiceProvider", "IsInstalled");
+            return Invoke<bool>("SolidCP.Server.ServiceProvider", "IsInstalled");
         }
 
         public async System.Threading.Tasks.Task<bool> IsInstalledAsync()
@@ -109,7 +111,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(SolidCP.Providers.SoapServiceProviderItem[] items)
         {
-            return (SolidCP.Providers.ServiceProviderItemDiskSpace[])Invoke("SolidCP.Server.ServiceProvider", "GetServiceItemsDiskSpace", items);
+            return Invoke<SolidCP.Providers.ServiceProviderItemDiskSpace[]>("SolidCP.Server.ServiceProvider", "GetServiceItemsDiskSpace", items);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemDiskSpace[]> GetServiceItemsDiskSpaceAsync(SolidCP.Providers.SoapServiceProviderItem[] items)
@@ -119,7 +121,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.ServiceProviderItemBandwidth[] GetServiceItemsBandwidth(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since)
         {
-            return (SolidCP.Providers.ServiceProviderItemBandwidth[])Invoke("SolidCP.Server.ServiceProvider", "GetServiceItemsBandwidth", items, since);
+            return Invoke<SolidCP.Providers.ServiceProviderItemBandwidth[]>("SolidCP.Server.ServiceProvider", "GetServiceItemsBandwidth", items, since);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.ServiceProviderItemBandwidth[]> GetServiceItemsBandwidthAsync(SolidCP.Providers.SoapServiceProviderItem[] items, System.DateTime since)

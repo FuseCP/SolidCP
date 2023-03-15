@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IHeliconZoo", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IHeliconZoo
@@ -49,7 +51,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.HeliconZoo.HeliconZooEngine[] GetEngines()
         {
-            return (SolidCP.Providers.HeliconZoo.HeliconZooEngine[])Invoke("SolidCP.Server.HeliconZoo", "GetEngines");
+            return Invoke<SolidCP.Providers.HeliconZoo.HeliconZooEngine[]>("SolidCP.Server.HeliconZoo", "GetEngines");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HeliconZoo.HeliconZooEngine[]> GetEnginesAsync()
@@ -69,7 +71,7 @@ namespace SolidCP.Server.Client
 
         public bool IsEnginesEnabled()
         {
-            return (bool)Invoke("SolidCP.Server.HeliconZoo", "IsEnginesEnabled");
+            return Invoke<bool>("SolidCP.Server.HeliconZoo", "IsEnginesEnabled");
         }
 
         public async System.Threading.Tasks.Task<bool> IsEnginesEnabledAsync()
@@ -89,7 +91,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetEnabledEnginesForSite(string siteId)
         {
-            return (string[])Invoke("SolidCP.Server.HeliconZoo", "GetEnabledEnginesForSite", siteId);
+            return Invoke<string[]>("SolidCP.Server.HeliconZoo", "GetEnabledEnginesForSite", siteId);
         }
 
         public async System.Threading.Tasks.Task<string[]> GetEnabledEnginesForSiteAsync(string siteId)
@@ -109,7 +111,7 @@ namespace SolidCP.Server.Client
 
         public bool IsWebCosoleEnabled()
         {
-            return (bool)Invoke("SolidCP.Server.HeliconZoo", "IsWebCosoleEnabled");
+            return Invoke<bool>("SolidCP.Server.HeliconZoo", "IsWebCosoleEnabled");
         }
 
         public async System.Threading.Tasks.Task<bool> IsWebCosoleEnabledAsync()

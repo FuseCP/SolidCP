@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IHostedSharePointServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IHostedSharePointServer
@@ -69,7 +71,7 @@ namespace SolidCP.Server.Client
     {
         public int[] GetSupportedLanguages()
         {
-            return (int[])Invoke("SolidCP.Server.HostedSharePointServer", "GetSupportedLanguages");
+            return Invoke<int[]>("SolidCP.Server.HostedSharePointServer", "GetSupportedLanguages");
         }
 
         public async System.Threading.Tasks.Task<int[]> GetSupportedLanguagesAsync()
@@ -79,7 +81,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.SharePoint.SharePointSiteCollection[] GetSiteCollections()
         {
-            return (SolidCP.Providers.SharePoint.SharePointSiteCollection[])Invoke("SolidCP.Server.HostedSharePointServer", "GetSiteCollections");
+            return Invoke<SolidCP.Providers.SharePoint.SharePointSiteCollection[]>("SolidCP.Server.HostedSharePointServer", "GetSiteCollections");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointSiteCollection[]> GetSiteCollectionsAsync()
@@ -89,7 +91,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.SharePoint.SharePointSiteCollection GetSiteCollection(string url)
         {
-            return (SolidCP.Providers.SharePoint.SharePointSiteCollection)Invoke("SolidCP.Server.HostedSharePointServer", "GetSiteCollection", url);
+            return Invoke<SolidCP.Providers.SharePoint.SharePointSiteCollection>("SolidCP.Server.HostedSharePointServer", "GetSiteCollection", url);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointSiteCollection> GetSiteCollectionAsync(string url)
@@ -119,7 +121,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[] CalculateSiteCollectionsDiskSpace(string[] urls)
         {
-            return (SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[])Invoke("SolidCP.Server.HostedSharePointServer", "CalculateSiteCollectionsDiskSpace", urls);
+            return Invoke<SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[]>("SolidCP.Server.HostedSharePointServer", "CalculateSiteCollectionsDiskSpace", urls);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.SharePoint.SharePointSiteDiskSpace[]> CalculateSiteCollectionsDiskSpaceAsync(string[] urls)
@@ -139,7 +141,7 @@ namespace SolidCP.Server.Client
 
         public string BackupSiteCollection(string url, string filename, bool zip)
         {
-            return (string)Invoke("SolidCP.Server.HostedSharePointServer", "BackupSiteCollection", url, filename, zip);
+            return Invoke<string>("SolidCP.Server.HostedSharePointServer", "BackupSiteCollection", url, filename, zip);
         }
 
         public async System.Threading.Tasks.Task<string> BackupSiteCollectionAsync(string url, string filename, bool zip)
@@ -159,7 +161,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetTempFileBinaryChunk(string path, int offset, int length)
         {
-            return (byte[])Invoke("SolidCP.Server.HostedSharePointServer", "GetTempFileBinaryChunk", path, offset, length);
+            return Invoke<byte[]>("SolidCP.Server.HostedSharePointServer", "GetTempFileBinaryChunk", path, offset, length);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetTempFileBinaryChunkAsync(string path, int offset, int length)
@@ -169,7 +171,7 @@ namespace SolidCP.Server.Client
 
         public string AppendTempFileBinaryChunk(string fileName, string path, byte[] chunk)
         {
-            return (string)Invoke("SolidCP.Server.HostedSharePointServer", "AppendTempFileBinaryChunk", fileName, path, chunk);
+            return Invoke<string>("SolidCP.Server.HostedSharePointServer", "AppendTempFileBinaryChunk", fileName, path, chunk);
         }
 
         public async System.Threading.Tasks.Task<string> AppendTempFileBinaryChunkAsync(string fileName, string path, byte[] chunk)
@@ -179,7 +181,7 @@ namespace SolidCP.Server.Client
 
         public long GetSiteCollectionSize(string url)
         {
-            return (long)Invoke("SolidCP.Server.HostedSharePointServer", "GetSiteCollectionSize", url);
+            return Invoke<long>("SolidCP.Server.HostedSharePointServer", "GetSiteCollectionSize", url);
         }
 
         public async System.Threading.Tasks.Task<long> GetSiteCollectionSizeAsync(string url)

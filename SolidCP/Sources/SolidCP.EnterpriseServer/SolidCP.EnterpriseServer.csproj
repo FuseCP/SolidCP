@@ -81,10 +81,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
     </Reference>
-    <Reference Include="SolidCP.Server.Client, Version=2.1.0.1, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\SolidCP.Server.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +356,14 @@
     <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
       <Project>{60e39314-659c-4fad-ab91-d0d08e223578}</Project>
       <Name>SolidCP.EnterpriseServer.Code</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Server.Client.csproj">
+      <Project>{fbfe9641-18d9-4bdd-b773-fe0ad6b4475f}</Project>
+      <Name>SolidCP.Server.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
+      <Project>{6da30bbf-ad6e-49f3-a210-2c5d5b2567ce}</Project>
+      <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

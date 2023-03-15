@@ -29,15 +29,24 @@ public class @(Class.Identifier)AssemblyClient: SolidCP.Web.Client.ClientAssembl
                IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))
            }))
 {
+    var returnTypeIsList = !method.IsVoid && method.Method.ReturnType is ArrayTypeSyntax array && array.HasTrailingTrivia && array.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/");
+    var elementType = returnTypeIsList ? ((ArrayTypeSyntax)method.Method.ReturnType).ElementType : null;
     @method.Normal.NormalizeWhitespace()
     <text>
         {
-        @(method.IsVoid ? "" : $"return ({method.Method.ReturnType})")Invoke("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
+        @(method.IsVoid ? "Invoke(" : $"return Invoke<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>(")"@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
     </text>
-
     foreach (var par in method.Method.ParameterList.Parameters)
     {
-        <text>, @par.Identifier</text>
+        if (par.Type is ArrayTypeSyntax parray && parray.HasTrailingTrivia && parray.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/"))
+        {
+            <text>, @(par.Identifier).ToList()</text>
+        }
+        else
+        {
+            <text>, @par.Identifier</text>
+        }
+
     }
 
     <text>);
@@ -46,7 +55,7 @@ public class @(Class.Identifier)AssemblyClient: SolidCP.Web.Client.ClientAssembl
     @method.Async.NormalizeWhitespace()
     <text>
         {
-        @(method.IsVoid ? "await " : "return await ")InvokeAsync@(method.IsVoid ? "" : $"<{method.Method.ReturnType}>")("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
+        @(method.IsVoid ? "await " : "return await ")InvokeAsync@(method.IsVoid ? "" : $"<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>")("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
     </text>
 
     foreach (var par in method.Method.ParameterList.Parameters)

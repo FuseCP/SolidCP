@@ -40,9 +40,11 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using SolidCP.Server;
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
-using OS = SolidCP.Providers.OS;
+//using OS = SolidCP.Providers.OS;
 using System.Collections;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.DNS;

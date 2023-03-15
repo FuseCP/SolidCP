@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SolidCP.Providers.VirtualizationProxmox;
+using SolidCP.Server.Client;
+//using SolidCP.Providers.VirtualizationProxmox;
 
 namespace SolidCP.EnterpriseServer.Code.VirtualizationProxmox
 {

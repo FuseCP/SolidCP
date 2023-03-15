@@ -44,7 +44,7 @@ namespace SolidCP.EnterpriseServer
 {
     public class ServiceProviderProxy
     {
-        public static WebServicesClientProtocol Init(WebServicesClientProtocol proxy, int serviceId, StringDictionary additionalSettings = null)
+        public static SolidCP.Web.Client.ClientBase Init(SolidCP.Web.Client.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
         {
             ServerProxyConfigurator cnfg = new ServerProxyConfigurator();
 
@@ -77,7 +77,7 @@ namespace SolidCP.EnterpriseServer
             return ServerInit(proxy, cnfg, service.ServerId);
         }
 
-        public static WebServicesClientProtocol ServerInit(WebServicesClientProtocol proxy, ServerProxyConfigurator cnfg, int serverId)
+        public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
         {
             // get server info
             ServerInfo server = ServerController.GetServerByIdInternal(serverId);
@@ -105,12 +105,15 @@ namespace SolidCP.EnterpriseServer
             return ServerInit(proxy, cnfg, server.ServerUrl, server.Password);
         }
 
-        private static WebServicesClientProtocol ServerInit(WebServicesClientProtocol proxy,
+        private static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
             ServerProxyConfigurator cnfg, string serverUrl, string serverPassword)
         {
             // set URL & password
-            cnfg.ServerUrl = serverUrl;
-            cnfg.ServerPassword = serverPassword;
+            proxy.Url = serverUrl;
+            proxy.Credentials.Password = serverPassword;
+
+            //cnfg.ServerUrl = serverUrl;
+            //cnfg.ServerPassword = serverPassword;
 
             // configure proxy!
             cnfg.Configure(proxy);
@@ -118,13 +121,13 @@ namespace SolidCP.EnterpriseServer
             return proxy;
         }
 
-        public static WebServicesClientProtocol ServerInit(WebServicesClientProtocol proxy,
+        public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
             string serverUrl, string serverPassword)
         {
             return ServerInit(proxy, new ServerProxyConfigurator(), serverUrl, serverPassword);
         }
 
-        public static WebServicesClientProtocol ServerInit(WebServicesClientProtocol proxy, int serverId)
+        public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, int serverId)
         {
             return ServerInit(proxy, new ServerProxyConfigurator(), serverId);
         }

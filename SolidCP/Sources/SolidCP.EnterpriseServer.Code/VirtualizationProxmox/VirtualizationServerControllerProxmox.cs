@@ -48,7 +48,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using SolidCP.EnterpriseServer.Code.VirtualizationProxmox;
-using SolidCP.Providers.VirtualizationProxmox;
+using SolidCP.Server.Client;
+//using SolidCP.Providers.VirtualizationProxmox;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -97,7 +98,7 @@ namespace SolidCP.EnterpriseServer
             VirtualizationServerProxmox vps = GetVirtualizationProxy(serviceId);
 
             // load details
-            return vps.GetVirtualMachines();
+            return vps.GetVirtualMachines().ToArray();
         }
         #endregion
 
@@ -1564,7 +1565,7 @@ namespace SolidCP.EnterpriseServer
             VirtualizationServerProxmox vps = GetVirtualizationProxy(vm.ServiceId);
 
             // load jobs
-            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VirtualMachineId);
+            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VirtualMachineId).ToArray();
             List<ConcreteJob> retJobs = new List<ConcreteJob>();
 
             foreach (ConcreteJob job in jobs)

@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "ISfBServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface ISfBServer
@@ -69,7 +71,7 @@ namespace SolidCP.Server.Client
     {
         public string CreateOrganization(string organizationId, string sipDomain, bool enableConferencing, bool enableConferencingVideo, int maxConferenceSize, bool enabledFederation, bool enabledEnterpriseVoice)
         {
-            return (string)Invoke("SolidCP.Server.SfBServer", "CreateOrganization", organizationId, sipDomain, enableConferencing, enableConferencingVideo, maxConferenceSize, enabledFederation, enabledEnterpriseVoice);
+            return Invoke<string>("SolidCP.Server.SfBServer", "CreateOrganization", organizationId, sipDomain, enableConferencing, enableConferencingVideo, maxConferenceSize, enabledFederation, enabledEnterpriseVoice);
         }
 
         public async System.Threading.Tasks.Task<string> CreateOrganizationAsync(string organizationId, string sipDomain, bool enableConferencing, bool enableConferencingVideo, int maxConferenceSize, bool enabledFederation, bool enabledEnterpriseVoice)
@@ -79,7 +81,7 @@ namespace SolidCP.Server.Client
 
         public string GetOrganizationTenantId(string organizationId)
         {
-            return (string)Invoke("SolidCP.Server.SfBServer", "GetOrganizationTenantId", organizationId);
+            return Invoke<string>("SolidCP.Server.SfBServer", "GetOrganizationTenantId", organizationId);
         }
 
         public async System.Threading.Tasks.Task<string> GetOrganizationTenantIdAsync(string organizationId)
@@ -89,7 +91,7 @@ namespace SolidCP.Server.Client
 
         public bool DeleteOrganization(string organizationId, string sipDomain)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "DeleteOrganization", organizationId, sipDomain);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "DeleteOrganization", organizationId, sipDomain);
         }
 
         public async System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string sipDomain)
@@ -99,7 +101,7 @@ namespace SolidCP.Server.Client
 
         public bool CreateUser(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "CreateUser", organizationId, userUpn, plan);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "CreateUser", organizationId, userUpn, plan);
         }
 
         public async System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
@@ -109,7 +111,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.SfBUser GetSfBUserGeneralSettings(string organizationId, string userUpn)
         {
-            return (SolidCP.Providers.HostedSolution.SfBUser)Invoke("SolidCP.Server.SfBServer", "GetSfBUserGeneralSettings", organizationId, userUpn);
+            return Invoke<SolidCP.Providers.HostedSolution.SfBUser>("SolidCP.Server.SfBServer", "GetSfBUserGeneralSettings", organizationId, userUpn);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBUser> GetSfBUserGeneralSettingsAsync(string organizationId, string userUpn)
@@ -119,7 +121,7 @@ namespace SolidCP.Server.Client
 
         public bool SetSfBUserGeneralSettings(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "SetSfBUserGeneralSettings", organizationId, userUpn, sfbUser);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "SetSfBUserGeneralSettings", organizationId, userUpn, sfbUser);
         }
 
         public async System.Threading.Tasks.Task<bool> SetSfBUserGeneralSettingsAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUser sfbUser)
@@ -129,7 +131,7 @@ namespace SolidCP.Server.Client
 
         public bool SetSfBUserPlan(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "SetSfBUserPlan", organizationId, userUpn, plan);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "SetSfBUserPlan", organizationId, userUpn, plan);
         }
 
         public async System.Threading.Tasks.Task<bool> SetSfBUserPlanAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.SfBUserPlan plan)
@@ -139,7 +141,7 @@ namespace SolidCP.Server.Client
 
         public bool DeleteUser(string userUpn)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "DeleteUser", userUpn);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "DeleteUser", userUpn);
         }
 
         public async System.Threading.Tasks.Task<bool> DeleteUserAsync(string userUpn)
@@ -149,7 +151,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.SfBFederationDomain[] GetFederationDomains(string organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.SfBFederationDomain[])Invoke("SolidCP.Server.SfBServer", "GetFederationDomains", organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.SfBFederationDomain[]>("SolidCP.Server.SfBServer", "GetFederationDomains", organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.SfBFederationDomain[]> GetFederationDomainsAsync(string organizationId)
@@ -159,7 +161,7 @@ namespace SolidCP.Server.Client
 
         public bool AddFederationDomain(string organizationId, string domainName, string proxyFqdn)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "AddFederationDomain", organizationId, domainName, proxyFqdn);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "AddFederationDomain", organizationId, domainName, proxyFqdn);
         }
 
         public async System.Threading.Tasks.Task<bool> AddFederationDomainAsync(string organizationId, string domainName, string proxyFqdn)
@@ -169,7 +171,7 @@ namespace SolidCP.Server.Client
 
         public bool RemoveFederationDomain(string organizationId, string domainName)
         {
-            return (bool)Invoke("SolidCP.Server.SfBServer", "RemoveFederationDomain", organizationId, domainName);
+            return Invoke<bool>("SolidCP.Server.SfBServer", "RemoveFederationDomain", organizationId, domainName);
         }
 
         public async System.Threading.Tasks.Task<bool> RemoveFederationDomainAsync(string organizationId, string domainName)
@@ -189,7 +191,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetPolicyList(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name)
         {
-            return (string[])Invoke("SolidCP.Server.SfBServer", "GetPolicyList", type, name);
+            return Invoke<string[]>("SolidCP.Server.SfBServer", "GetPolicyList", type, name);
         }
 
         public async System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SolidCP.Providers.HostedSolution.SfBPolicyType type, string name)

@@ -1,4 +1,5 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -28,7 +29,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.Common.BoolResult IsInstalled(string providerName)
         {
-            return (SolidCP.Providers.Common.BoolResult)Invoke("SolidCP.Server.AutoDiscovery", "IsInstalled", providerName);
+            return Invoke<SolidCP.Providers.Common.BoolResult>("SolidCP.Server.AutoDiscovery", "IsInstalled", providerName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Common.BoolResult> IsInstalledAsync(string providerName)
@@ -38,7 +39,7 @@ namespace SolidCP.Server.Client
 
         public string GetServerFilePath()
         {
-            return (string)Invoke("SolidCP.Server.AutoDiscovery", "GetServerFilePath");
+            return Invoke<string>("SolidCP.Server.AutoDiscovery", "GetServerFilePath");
         }
 
         public async System.Threading.Tasks.Task<string> GetServerFilePathAsync()
@@ -48,7 +49,7 @@ namespace SolidCP.Server.Client
 
         public string GetServerVersion()
         {
-            return (string)Invoke("SolidCP.Server.AutoDiscovery", "GetServerVersion");
+            return Invoke<string>("SolidCP.Server.AutoDiscovery", "GetServerVersion");
         }
 
         public async System.Threading.Tasks.Task<string> GetServerVersionAsync()

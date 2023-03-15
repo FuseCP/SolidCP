@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IEnterpriseStorage", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IEnterpriseStorage
@@ -65,7 +67,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.OS.SystemFile[] GetFolders(string organizationId, SolidCP.Providers.Web.WebDavSetting[] settings)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.EnterpriseStorage", "GetFolders", organizationId, settings);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.EnterpriseStorage", "GetFolders", organizationId, settings);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFoldersAsync(string organizationId, SolidCP.Providers.Web.WebDavSetting[] settings)
@@ -75,7 +77,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] GetFoldersWithoutFrsm(string organizationId, SolidCP.Providers.Web.WebDavSetting[] settings)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.EnterpriseStorage", "GetFoldersWithoutFrsm", organizationId, settings);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.EnterpriseStorage", "GetFoldersWithoutFrsm", organizationId, settings);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFoldersWithoutFrsmAsync(string organizationId, SolidCP.Providers.Web.WebDavSetting[] settings)
@@ -85,7 +87,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile GetFolder(string organizationId, string folder, SolidCP.Providers.Web.WebDavSetting setting)
         {
-            return (SolidCP.Providers.OS.SystemFile)Invoke("SolidCP.Server.EnterpriseStorage", "GetFolder", organizationId, folder, setting);
+            return Invoke<SolidCP.Providers.OS.SystemFile>("SolidCP.Server.EnterpriseStorage", "GetFolder", organizationId, folder, setting);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFolderAsync(string organizationId, string folder, SolidCP.Providers.Web.WebDavSetting setting)
@@ -115,7 +117,7 @@ namespace SolidCP.Server.Client
 
         public bool SetFolderWebDavRules(string organizationId, string folder, SolidCP.Providers.Web.WebDavSetting setting, SolidCP.Providers.Web.WebDavFolderRule[] rules)
         {
-            return (bool)Invoke("SolidCP.Server.EnterpriseStorage", "SetFolderWebDavRules", organizationId, folder, setting, rules);
+            return Invoke<bool>("SolidCP.Server.EnterpriseStorage", "SetFolderWebDavRules", organizationId, folder, setting, rules);
         }
 
         public async System.Threading.Tasks.Task<bool> SetFolderWebDavRulesAsync(string organizationId, string folder, SolidCP.Providers.Web.WebDavSetting setting, SolidCP.Providers.Web.WebDavFolderRule[] rules)
@@ -125,7 +127,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Web.WebDavFolderRule[] GetFolderWebDavRules(string organizationId, string folder, SolidCP.Providers.Web.WebDavSetting setting)
         {
-            return (SolidCP.Providers.Web.WebDavFolderRule[])Invoke("SolidCP.Server.EnterpriseStorage", "GetFolderWebDavRules", organizationId, folder, setting);
+            return Invoke<SolidCP.Providers.Web.WebDavFolderRule[]>("SolidCP.Server.EnterpriseStorage", "GetFolderWebDavRules", organizationId, folder, setting);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Web.WebDavFolderRule[]> GetFolderWebDavRulesAsync(string organizationId, string folder, SolidCP.Providers.Web.WebDavSetting setting)
@@ -135,7 +137,7 @@ namespace SolidCP.Server.Client
 
         public bool CheckFileServicesInstallation()
         {
-            return (bool)Invoke("SolidCP.Server.EnterpriseStorage", "CheckFileServicesInstallation");
+            return Invoke<bool>("SolidCP.Server.EnterpriseStorage", "CheckFileServicesInstallation");
         }
 
         public async System.Threading.Tasks.Task<bool> CheckFileServicesInstallationAsync()
@@ -145,7 +147,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] Search(string organizationId, string[] searchPaths, string searchText, string userPrincipalName, bool recursive)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.EnterpriseStorage", "Search", organizationId, searchPaths, searchText, userPrincipalName, recursive);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.EnterpriseStorage", "Search", organizationId, searchPaths, searchText, userPrincipalName, recursive);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> SearchAsync(string organizationId, string[] searchPaths, string searchText, string userPrincipalName, bool recursive)
@@ -155,7 +157,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile RenameFolder(string organizationId, string originalFolder, string newFolder, SolidCP.Providers.Web.WebDavSetting setting)
         {
-            return (SolidCP.Providers.OS.SystemFile)Invoke("SolidCP.Server.EnterpriseStorage", "RenameFolder", organizationId, originalFolder, newFolder, setting);
+            return Invoke<SolidCP.Providers.OS.SystemFile>("SolidCP.Server.EnterpriseStorage", "RenameFolder", organizationId, originalFolder, newFolder, setting);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> RenameFolderAsync(string organizationId, string originalFolder, string newFolder, SolidCP.Providers.Web.WebDavSetting setting)
@@ -165,7 +167,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] GetQuotasForOrganization(SolidCP.Providers.OS.SystemFile[] folders)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.EnterpriseStorage", "GetQuotasForOrganization", folders);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.EnterpriseStorage", "GetQuotasForOrganization", folders);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetQuotasForOrganizationAsync(SolidCP.Providers.OS.SystemFile[] folders)

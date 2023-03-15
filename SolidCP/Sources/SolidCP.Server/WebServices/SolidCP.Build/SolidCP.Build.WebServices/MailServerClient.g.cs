@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IMailServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IMailServer
@@ -153,7 +155,7 @@ namespace SolidCP.Server.Client
     {
         public bool DomainExists(string domainName)
         {
-            return (bool)Invoke("SolidCP.Server.MailServer", "DomainExists", domainName);
+            return Invoke<bool>("SolidCP.Server.MailServer", "DomainExists", domainName);
         }
 
         public async System.Threading.Tasks.Task<bool> DomainExistsAsync(string domainName)
@@ -163,7 +165,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailDomain GetDomain(string domainName)
         {
-            return (SolidCP.Providers.Mail.MailDomain)Invoke("SolidCP.Server.MailServer", "GetDomain", domainName);
+            return Invoke<SolidCP.Providers.Mail.MailDomain>("SolidCP.Server.MailServer", "GetDomain", domainName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailDomain> GetDomainAsync(string domainName)
@@ -173,7 +175,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetDomains()
         {
-            return (string[])Invoke("SolidCP.Server.MailServer", "GetDomains");
+            return Invoke<string[]>("SolidCP.Server.MailServer", "GetDomains");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetDomainsAsync()
@@ -213,7 +215,7 @@ namespace SolidCP.Server.Client
 
         public bool DomainAliasExists(string domainName, string aliasName)
         {
-            return (bool)Invoke("SolidCP.Server.MailServer", "DomainAliasExists", domainName, aliasName);
+            return Invoke<bool>("SolidCP.Server.MailServer", "DomainAliasExists", domainName, aliasName);
         }
 
         public async System.Threading.Tasks.Task<bool> DomainAliasExistsAsync(string domainName, string aliasName)
@@ -223,7 +225,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetDomainAliases(string domainName)
         {
-            return (string[])Invoke("SolidCP.Server.MailServer", "GetDomainAliases", domainName);
+            return Invoke<string[]>("SolidCP.Server.MailServer", "GetDomainAliases", domainName);
         }
 
         public async System.Threading.Tasks.Task<string[]> GetDomainAliasesAsync(string domainName)
@@ -253,7 +255,7 @@ namespace SolidCP.Server.Client
 
         public bool AccountExists(string accountName)
         {
-            return (bool)Invoke("SolidCP.Server.MailServer", "AccountExists", accountName);
+            return Invoke<bool>("SolidCP.Server.MailServer", "AccountExists", accountName);
         }
 
         public async System.Threading.Tasks.Task<bool> AccountExistsAsync(string accountName)
@@ -263,7 +265,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailAccount[] GetAccounts(string domainName)
         {
-            return (SolidCP.Providers.Mail.MailAccount[])Invoke("SolidCP.Server.MailServer", "GetAccounts", domainName);
+            return Invoke<SolidCP.Providers.Mail.MailAccount[]>("SolidCP.Server.MailServer", "GetAccounts", domainName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount[]> GetAccountsAsync(string domainName)
@@ -273,7 +275,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailAccount GetAccount(string accountName)
         {
-            return (SolidCP.Providers.Mail.MailAccount)Invoke("SolidCP.Server.MailServer", "GetAccount", accountName);
+            return Invoke<SolidCP.Providers.Mail.MailAccount>("SolidCP.Server.MailServer", "GetAccount", accountName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAccount> GetAccountAsync(string accountName)
@@ -313,7 +315,7 @@ namespace SolidCP.Server.Client
 
         public bool MailAliasExists(string mailAliasName)
         {
-            return (bool)Invoke("SolidCP.Server.MailServer", "MailAliasExists", mailAliasName);
+            return Invoke<bool>("SolidCP.Server.MailServer", "MailAliasExists", mailAliasName);
         }
 
         public async System.Threading.Tasks.Task<bool> MailAliasExistsAsync(string mailAliasName)
@@ -323,7 +325,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailAlias[] GetMailAliases(string domainName)
         {
-            return (SolidCP.Providers.Mail.MailAlias[])Invoke("SolidCP.Server.MailServer", "GetMailAliases", domainName);
+            return Invoke<SolidCP.Providers.Mail.MailAlias[]>("SolidCP.Server.MailServer", "GetMailAliases", domainName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias[]> GetMailAliasesAsync(string domainName)
@@ -333,7 +335,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailAlias GetMailAlias(string mailAliasName)
         {
-            return (SolidCP.Providers.Mail.MailAlias)Invoke("SolidCP.Server.MailServer", "GetMailAlias", mailAliasName);
+            return Invoke<SolidCP.Providers.Mail.MailAlias>("SolidCP.Server.MailServer", "GetMailAlias", mailAliasName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailAlias> GetMailAliasAsync(string mailAliasName)
@@ -373,7 +375,7 @@ namespace SolidCP.Server.Client
 
         public bool GroupExists(string groupName)
         {
-            return (bool)Invoke("SolidCP.Server.MailServer", "GroupExists", groupName);
+            return Invoke<bool>("SolidCP.Server.MailServer", "GroupExists", groupName);
         }
 
         public async System.Threading.Tasks.Task<bool> GroupExistsAsync(string groupName)
@@ -383,7 +385,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailGroup[] GetGroups(string domainName)
         {
-            return (SolidCP.Providers.Mail.MailGroup[])Invoke("SolidCP.Server.MailServer", "GetGroups", domainName);
+            return Invoke<SolidCP.Providers.Mail.MailGroup[]>("SolidCP.Server.MailServer", "GetGroups", domainName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup[]> GetGroupsAsync(string domainName)
@@ -393,7 +395,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailGroup GetGroup(string groupName)
         {
-            return (SolidCP.Providers.Mail.MailGroup)Invoke("SolidCP.Server.MailServer", "GetGroup", groupName);
+            return Invoke<SolidCP.Providers.Mail.MailGroup>("SolidCP.Server.MailServer", "GetGroup", groupName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailGroup> GetGroupAsync(string groupName)
@@ -433,7 +435,7 @@ namespace SolidCP.Server.Client
 
         public bool ListExists(string listName)
         {
-            return (bool)Invoke("SolidCP.Server.MailServer", "ListExists", listName);
+            return Invoke<bool>("SolidCP.Server.MailServer", "ListExists", listName);
         }
 
         public async System.Threading.Tasks.Task<bool> ListExistsAsync(string listName)
@@ -443,7 +445,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailList[] GetLists(string domainName)
         {
-            return (SolidCP.Providers.Mail.MailList[])Invoke("SolidCP.Server.MailServer", "GetLists", domainName);
+            return Invoke<SolidCP.Providers.Mail.MailList[]>("SolidCP.Server.MailServer", "GetLists", domainName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList[]> GetListsAsync(string domainName)
@@ -453,7 +455,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Mail.MailList GetList(string listName)
         {
-            return (SolidCP.Providers.Mail.MailList)Invoke("SolidCP.Server.MailServer", "GetList", listName);
+            return Invoke<SolidCP.Providers.Mail.MailList>("SolidCP.Server.MailServer", "GetList", listName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Mail.MailList> GetListAsync(string listName)

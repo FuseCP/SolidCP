@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IBlackBerry", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IBlackBerry
@@ -41,7 +43,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.Common.ResultObject CreateBlackBerryUser(string primaryEmailAddress)
         {
-            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.BlackBerry", "CreateBlackBerryUser", primaryEmailAddress);
+            return Invoke<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.BlackBerry", "CreateBlackBerryUser", primaryEmailAddress);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> CreateBlackBerryUserAsync(string primaryEmailAddress)
@@ -51,7 +53,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Common.ResultObject DeleteBlackBerryUser(string primaryEmailAddress)
         {
-            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.BlackBerry", "DeleteBlackBerryUser", primaryEmailAddress);
+            return Invoke<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.BlackBerry", "DeleteBlackBerryUser", primaryEmailAddress);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteBlackBerryUserAsync(string primaryEmailAddress)
@@ -61,7 +63,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.ResultObjects.BlackBerryUserStatsResult GetBlackBerryUserStats(string primaryEmailAddress)
         {
-            return (SolidCP.Providers.ResultObjects.BlackBerryUserStatsResult)Invoke("SolidCP.Server.BlackBerry", "GetBlackBerryUserStats", primaryEmailAddress);
+            return Invoke<SolidCP.Providers.ResultObjects.BlackBerryUserStatsResult>("SolidCP.Server.BlackBerry", "GetBlackBerryUserStats", primaryEmailAddress);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.BlackBerryUserStatsResult> GetBlackBerryUserStatsAsync(string primaryEmailAddress)
@@ -71,7 +73,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Common.ResultObject SetActivationPasswordWithExpirationTime(string primaryEmailAddress, string password, int time)
         {
-            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.BlackBerry", "SetActivationPasswordWithExpirationTime", primaryEmailAddress, password, time);
+            return Invoke<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.BlackBerry", "SetActivationPasswordWithExpirationTime", primaryEmailAddress, password, time);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetActivationPasswordWithExpirationTimeAsync(string primaryEmailAddress, string password, int time)
@@ -81,7 +83,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Common.ResultObject SetEmailActivationPassword(string primaryEmailAddress)
         {
-            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.BlackBerry", "SetEmailActivationPassword", primaryEmailAddress);
+            return Invoke<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.BlackBerry", "SetEmailActivationPassword", primaryEmailAddress);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> SetEmailActivationPasswordAsync(string primaryEmailAddress)
@@ -91,7 +93,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Common.ResultObject DeleteDataFromBlackBerryDevice(string primaryEmailAddress)
         {
-            return (SolidCP.Providers.Common.ResultObject)Invoke("SolidCP.Server.BlackBerry", "DeleteDataFromBlackBerryDevice", primaryEmailAddress);
+            return Invoke<SolidCP.Providers.Common.ResultObject>("SolidCP.Server.BlackBerry", "DeleteDataFromBlackBerryDevice", primaryEmailAddress);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Common.ResultObject> DeleteDataFromBlackBerryDeviceAsync(string primaryEmailAddress)

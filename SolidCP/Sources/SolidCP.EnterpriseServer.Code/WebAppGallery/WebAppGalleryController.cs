@@ -41,6 +41,7 @@ using SolidCP.Providers.WebAppGallery;
 using System.Collections.Specialized;
 using SolidCP.Providers.Common;
 using System.Diagnostics;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -827,7 +828,7 @@ namespace SolidCP.EnterpriseServer
                 }
 				
                 // install application
-                result = webServer.InstallGalleryApplication(originalUserId, webAppId, parameters.ToArray(), languageId);
+                result = webServer.InstallGalleryApplication(originalUserId, webAppId, parameters, languageId);
 
 				#region Rollback in case of failure
 				// Rollback - remove resources have been created previously

@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "ILyncServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface ILyncServer
@@ -69,7 +71,7 @@ namespace SolidCP.Server.Client
     {
         public string CreateOrganization(string organizationId, string sipDomain, bool enableConferencing, bool enableConferencingVideo, int maxConferenceSize, bool enabledFederation, bool enabledEnterpriseVoice)
         {
-            return (string)Invoke("SolidCP.Server.LyncServer", "CreateOrganization", organizationId, sipDomain, enableConferencing, enableConferencingVideo, maxConferenceSize, enabledFederation, enabledEnterpriseVoice);
+            return Invoke<string>("SolidCP.Server.LyncServer", "CreateOrganization", organizationId, sipDomain, enableConferencing, enableConferencingVideo, maxConferenceSize, enabledFederation, enabledEnterpriseVoice);
         }
 
         public async System.Threading.Tasks.Task<string> CreateOrganizationAsync(string organizationId, string sipDomain, bool enableConferencing, bool enableConferencingVideo, int maxConferenceSize, bool enabledFederation, bool enabledEnterpriseVoice)
@@ -79,7 +81,7 @@ namespace SolidCP.Server.Client
 
         public string GetOrganizationTenantId(string organizationId)
         {
-            return (string)Invoke("SolidCP.Server.LyncServer", "GetOrganizationTenantId", organizationId);
+            return Invoke<string>("SolidCP.Server.LyncServer", "GetOrganizationTenantId", organizationId);
         }
 
         public async System.Threading.Tasks.Task<string> GetOrganizationTenantIdAsync(string organizationId)
@@ -89,7 +91,7 @@ namespace SolidCP.Server.Client
 
         public bool DeleteOrganization(string organizationId, string sipDomain)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "DeleteOrganization", organizationId, sipDomain);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "DeleteOrganization", organizationId, sipDomain);
         }
 
         public async System.Threading.Tasks.Task<bool> DeleteOrganizationAsync(string organizationId, string sipDomain)
@@ -99,7 +101,7 @@ namespace SolidCP.Server.Client
 
         public bool CreateUser(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.LyncUserPlan plan)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "CreateUser", organizationId, userUpn, plan);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "CreateUser", organizationId, userUpn, plan);
         }
 
         public async System.Threading.Tasks.Task<bool> CreateUserAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.LyncUserPlan plan)
@@ -109,7 +111,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.LyncUser GetLyncUserGeneralSettings(string organizationId, string userUpn)
         {
-            return (SolidCP.Providers.HostedSolution.LyncUser)Invoke("SolidCP.Server.LyncServer", "GetLyncUserGeneralSettings", organizationId, userUpn);
+            return Invoke<SolidCP.Providers.HostedSolution.LyncUser>("SolidCP.Server.LyncServer", "GetLyncUserGeneralSettings", organizationId, userUpn);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.LyncUser> GetLyncUserGeneralSettingsAsync(string organizationId, string userUpn)
@@ -119,7 +121,7 @@ namespace SolidCP.Server.Client
 
         public bool SetLyncUserGeneralSettings(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.LyncUser lyncUser)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "SetLyncUserGeneralSettings", organizationId, userUpn, lyncUser);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "SetLyncUserGeneralSettings", organizationId, userUpn, lyncUser);
         }
 
         public async System.Threading.Tasks.Task<bool> SetLyncUserGeneralSettingsAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.LyncUser lyncUser)
@@ -129,7 +131,7 @@ namespace SolidCP.Server.Client
 
         public bool SetLyncUserPlan(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.LyncUserPlan plan)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "SetLyncUserPlan", organizationId, userUpn, plan);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "SetLyncUserPlan", organizationId, userUpn, plan);
         }
 
         public async System.Threading.Tasks.Task<bool> SetLyncUserPlanAsync(string organizationId, string userUpn, SolidCP.Providers.HostedSolution.LyncUserPlan plan)
@@ -139,7 +141,7 @@ namespace SolidCP.Server.Client
 
         public bool DeleteUser(string userUpn)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "DeleteUser", userUpn);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "DeleteUser", userUpn);
         }
 
         public async System.Threading.Tasks.Task<bool> DeleteUserAsync(string userUpn)
@@ -149,7 +151,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.LyncFederationDomain[] GetFederationDomains(string organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.LyncFederationDomain[])Invoke("SolidCP.Server.LyncServer", "GetFederationDomains", organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.LyncFederationDomain[]>("SolidCP.Server.LyncServer", "GetFederationDomains", organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.LyncFederationDomain[]> GetFederationDomainsAsync(string organizationId)
@@ -159,7 +161,7 @@ namespace SolidCP.Server.Client
 
         public bool AddFederationDomain(string organizationId, string domainName, string proxyFqdn)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "AddFederationDomain", organizationId, domainName, proxyFqdn);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "AddFederationDomain", organizationId, domainName, proxyFqdn);
         }
 
         public async System.Threading.Tasks.Task<bool> AddFederationDomainAsync(string organizationId, string domainName, string proxyFqdn)
@@ -169,7 +171,7 @@ namespace SolidCP.Server.Client
 
         public bool RemoveFederationDomain(string organizationId, string domainName)
         {
-            return (bool)Invoke("SolidCP.Server.LyncServer", "RemoveFederationDomain", organizationId, domainName);
+            return Invoke<bool>("SolidCP.Server.LyncServer", "RemoveFederationDomain", organizationId, domainName);
         }
 
         public async System.Threading.Tasks.Task<bool> RemoveFederationDomainAsync(string organizationId, string domainName)
@@ -189,7 +191,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetPolicyList(SolidCP.Providers.HostedSolution.LyncPolicyType type, string name)
         {
-            return (string[])Invoke("SolidCP.Server.LyncServer", "GetPolicyList", type, name);
+            return Invoke<string[]>("SolidCP.Server.LyncServer", "GetPolicyList", type, name);
         }
 
         public async System.Threading.Tasks.Task<string[]> GetPolicyListAsync(SolidCP.Providers.HostedSolution.LyncPolicyType type, string name)

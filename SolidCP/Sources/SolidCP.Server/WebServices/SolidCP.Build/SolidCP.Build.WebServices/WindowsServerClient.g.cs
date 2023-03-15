@@ -1,4 +1,5 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
@@ -82,13 +83,13 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/WpiGetLogsInDirectory", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/WpiGetLogsInDirectoryResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/GetLogNames", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/GetLogNamesResponse")]
-        System.Collections.Generic.List<string> GetLogNames();
+        string[] /*List*/ GetLogNames();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/GetLogNames", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/GetLogNamesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<string>> GetLogNamesAsync();
+        System.Threading.Tasks.Task<string[]> GetLogNamesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntries", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntriesResponse")]
-        System.Collections.Generic.List<SolidCP.Server.SystemLogEntry> GetLogEntries(string logName);
+        SolidCP.Server.SystemLogEntry[] /*List*/ GetLogEntries(string logName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntries", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntriesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Server.SystemLogEntry>> GetLogEntriesAsync(string logName);
+        System.Threading.Tasks.Task<SolidCP.Server.SystemLogEntry[]> GetLogEntriesAsync(string logName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntriesPaged", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntriesPagedResponse")]
         SolidCP.Server.SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntriesPaged", ReplyAction = "http://smbsaas/solidcp/server/IWindowsServer/GetLogEntriesPagedResponse")]
@@ -117,7 +118,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Server.TerminalSession[] GetTerminalServicesSessions()
         {
-            return (SolidCP.Server.TerminalSession[])Invoke("SolidCP.Server.WindowsServer", "GetTerminalServicesSessions");
+            return Invoke<SolidCP.Server.TerminalSession[]>("SolidCP.Server.WindowsServer", "GetTerminalServicesSessions");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.TerminalSession[]> GetTerminalServicesSessionsAsync()
@@ -137,7 +138,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WindowsProcess[] GetWindowsProcesses()
         {
-            return (SolidCP.Server.WindowsProcess[])Invoke("SolidCP.Server.WindowsServer", "GetWindowsProcesses");
+            return Invoke<SolidCP.Server.WindowsProcess[]>("SolidCP.Server.WindowsServer", "GetWindowsProcesses");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WindowsProcess[]> GetWindowsProcessesAsync()
@@ -157,7 +158,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WindowsService[] GetWindowsServices()
         {
-            return (SolidCP.Server.WindowsService[])Invoke("SolidCP.Server.WindowsServer", "GetWindowsServices");
+            return Invoke<SolidCP.Server.WindowsService[]>("SolidCP.Server.WindowsServer", "GetWindowsServices");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WindowsService[]> GetWindowsServicesAsync()
@@ -177,7 +178,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
         {
-            return (SolidCP.Server.WPIProduct[])Invoke("SolidCP.Server.WindowsServer", "GetWPIProducts", tabId, keywordId);
+            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.WindowsServer", "GetWPIProducts", tabId, keywordId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
@@ -187,7 +188,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter)
         {
-            return (SolidCP.Server.WPIProduct[])Invoke("SolidCP.Server.WindowsServer", "GetWPIProductsFiltered", filter);
+            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.WindowsServer", "GetWPIProductsFiltered", filter);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
@@ -197,7 +198,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WPIProduct GetWPIProductById(string productdId)
         {
-            return (SolidCP.Server.WPIProduct)Invoke("SolidCP.Server.WindowsServer", "GetWPIProductById", productdId);
+            return Invoke<SolidCP.Server.WPIProduct>("SolidCP.Server.WindowsServer", "GetWPIProductById", productdId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId)
@@ -207,7 +208,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WPITab[] GetWPITabs()
         {
-            return (SolidCP.Server.WPITab[])Invoke("SolidCP.Server.WindowsServer", "GetWPITabs");
+            return Invoke<SolidCP.Server.WPITab[]>("SolidCP.Server.WindowsServer", "GetWPITabs");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync()
@@ -227,7 +228,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WPIKeyword[] GetWPIKeywords()
         {
-            return (SolidCP.Server.WPIKeyword[])Invoke("SolidCP.Server.WindowsServer", "GetWPIKeywords");
+            return Invoke<SolidCP.Server.WPIKeyword[]>("SolidCP.Server.WindowsServer", "GetWPIKeywords");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync()
@@ -237,7 +238,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
         {
-            return (SolidCP.Server.WPIProduct[])Invoke("SolidCP.Server.WindowsServer", "GetWPIProductsWithDependencies", products);
+            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.WindowsServer", "GetWPIProductsWithDependencies", products);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
@@ -267,7 +268,7 @@ namespace SolidCP.Server.Client
 
         public string GetWPIStatus()
         {
-            return (string)Invoke("SolidCP.Server.WindowsServer", "GetWPIStatus");
+            return Invoke<string>("SolidCP.Server.WindowsServer", "GetWPIStatus");
         }
 
         public async System.Threading.Tasks.Task<string> GetWPIStatusAsync()
@@ -277,7 +278,7 @@ namespace SolidCP.Server.Client
 
         public string WpiGetLogFileDirectory()
         {
-            return (string)Invoke("SolidCP.Server.WindowsServer", "WpiGetLogFileDirectory");
+            return Invoke<string>("SolidCP.Server.WindowsServer", "WpiGetLogFileDirectory");
         }
 
         public async System.Threading.Tasks.Task<string> WpiGetLogFileDirectoryAsync()
@@ -287,7 +288,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.SettingPair[] WpiGetLogsInDirectory(string Path)
         {
-            return (SolidCP.Providers.SettingPair[])Invoke("SolidCP.Server.WindowsServer", "WpiGetLogsInDirectory", Path);
+            return Invoke<SolidCP.Providers.SettingPair[]>("SolidCP.Server.WindowsServer", "WpiGetLogsInDirectory", Path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path)
@@ -295,29 +296,29 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.SettingPair[]>("SolidCP.Server.WindowsServer", "WpiGetLogsInDirectory", Path);
         }
 
-        public System.Collections.Generic.List<string> GetLogNames()
+        public string[] /*List*/ GetLogNames()
         {
-            return (System.Collections.Generic.List<string>)Invoke("SolidCP.Server.WindowsServer", "GetLogNames");
+            return Invoke<string[], string>("SolidCP.Server.WindowsServer", "GetLogNames");
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<string>> GetLogNamesAsync()
+        public async System.Threading.Tasks.Task<string[]> GetLogNamesAsync()
         {
-            return await InvokeAsync<System.Collections.Generic.List<string>>("SolidCP.Server.WindowsServer", "GetLogNames");
+            return await InvokeAsync<string[], string>("SolidCP.Server.WindowsServer", "GetLogNames");
         }
 
-        public System.Collections.Generic.List<SolidCP.Server.SystemLogEntry> GetLogEntries(string logName)
+        public SolidCP.Server.SystemLogEntry[] /*List*/ GetLogEntries(string logName)
         {
-            return (System.Collections.Generic.List<SolidCP.Server.SystemLogEntry>)Invoke("SolidCP.Server.WindowsServer", "GetLogEntries", logName);
+            return Invoke<SolidCP.Server.SystemLogEntry[], SolidCP.Server.SystemLogEntry>("SolidCP.Server.WindowsServer", "GetLogEntries", logName);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Server.SystemLogEntry>> GetLogEntriesAsync(string logName)
+        public async System.Threading.Tasks.Task<SolidCP.Server.SystemLogEntry[]> GetLogEntriesAsync(string logName)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Server.SystemLogEntry>>("SolidCP.Server.WindowsServer", "GetLogEntries", logName);
+            return await InvokeAsync<SolidCP.Server.SystemLogEntry[], SolidCP.Server.SystemLogEntry>("SolidCP.Server.WindowsServer", "GetLogEntries", logName);
         }
 
         public SolidCP.Server.SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
         {
-            return (SolidCP.Server.SystemLogEntriesPaged)Invoke("SolidCP.Server.WindowsServer", "GetLogEntriesPaged", logName, startRow, maximumRows);
+            return Invoke<SolidCP.Server.SystemLogEntriesPaged>("SolidCP.Server.WindowsServer", "GetLogEntriesPaged", logName, startRow, maximumRows);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.SystemLogEntriesPaged> GetLogEntriesPagedAsync(string logName, int startRow, int maximumRows)
@@ -347,7 +348,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Server.Memory GetMemory()
         {
-            return (SolidCP.Server.Memory)Invoke("SolidCP.Server.WindowsServer", "GetMemory");
+            return Invoke<SolidCP.Server.Memory>("SolidCP.Server.WindowsServer", "GetMemory");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Server.Memory> GetMemoryAsync()
@@ -357,7 +358,7 @@ namespace SolidCP.Server.Client
 
         public string ExecuteSystemCommand(string path, string args)
         {
-            return (string)Invoke("SolidCP.Server.WindowsServer", "ExecuteSystemCommand", path, args);
+            return Invoke<string>("SolidCP.Server.WindowsServer", "ExecuteSystemCommand", path, args);
         }
 
         public async System.Threading.Tasks.Task<string> ExecuteSystemCommandAsync(string path, string args)
@@ -550,22 +551,22 @@ namespace SolidCP.Server.Client
             return await base.Client.WpiGetLogsInDirectoryAsync(Path);
         }
 
-        public System.Collections.Generic.List<string> GetLogNames()
+        public string[] /*List*/ GetLogNames()
         {
             return base.Client.GetLogNames();
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<string>> GetLogNamesAsync()
+        public async System.Threading.Tasks.Task<string[]> GetLogNamesAsync()
         {
             return await base.Client.GetLogNamesAsync();
         }
 
-        public System.Collections.Generic.List<SolidCP.Server.SystemLogEntry> GetLogEntries(string logName)
+        public SolidCP.Server.SystemLogEntry[] /*List*/ GetLogEntries(string logName)
         {
             return base.Client.GetLogEntries(logName);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Server.SystemLogEntry>> GetLogEntriesAsync(string logName)
+        public async System.Threading.Tasks.Task<SolidCP.Server.SystemLogEntry[]> GetLogEntriesAsync(string logName)
         {
             return await base.Client.GetLogEntriesAsync(logName);
         }

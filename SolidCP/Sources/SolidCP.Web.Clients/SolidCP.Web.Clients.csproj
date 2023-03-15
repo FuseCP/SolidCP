@@ -26,5 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
   </ItemGroup>
 </Project>

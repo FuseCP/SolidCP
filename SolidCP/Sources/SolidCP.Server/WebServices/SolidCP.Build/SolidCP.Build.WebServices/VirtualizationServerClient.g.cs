@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IVirtualizationServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IVirtualizationServer
@@ -18,9 +20,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineEx", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineExResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine> GetVirtualMachineExAsync(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachines", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachinesResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine> GetVirtualMachines();
+        SolidCP.Providers.Virtualization.VirtualMachine[] /*List*/ GetVirtualMachines();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachines", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachinesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine>> GetVirtualMachinesAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine[]> GetVirtualMachinesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineThumbnailImage", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineThumbnailImageResponse")]
         byte[] GetVirtualMachineThumbnailImage(string vmId, SolidCP.Providers.Virtualization.ThumbnailSize size);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineThumbnailImage", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineThumbnailImageResponse")]
@@ -42,9 +44,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/ShutDownVirtualMachine", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/ShutDownVirtualMachineResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ReturnCode> ShutDownVirtualMachineAsync(string vmId, bool force, string reason);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineJobs", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineJobsResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob> GetVirtualMachineJobs(string vmId);
+        SolidCP.Providers.Virtualization.ConcreteJob[] /*List*/ GetVirtualMachineJobs(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineJobs", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineJobsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>> GetVirtualMachineJobsAsync(string vmId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob[]> GetVirtualMachineJobsAsync(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/RenameVirtualMachine", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/RenameVirtualMachineResponse")]
         SolidCP.Providers.Virtualization.JobResult RenameVirtualMachine(string vmId, string name);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/RenameVirtualMachine", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/RenameVirtualMachineResponse")]
@@ -58,9 +60,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/ExportVirtualMachine", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/ExportVirtualMachineResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ExportVirtualMachineAsync(string vmId, string exportPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineSnapshots", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineSnapshotsResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId);
+        SolidCP.Providers.Virtualization.VirtualMachineSnapshot[] /*List*/ GetVirtualMachineSnapshots(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineSnapshots", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetVirtualMachineSnapshotsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot>> GetVirtualMachineSnapshotsAsync(string vmId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachineSnapshot[]> GetVirtualMachineSnapshotsAsync(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSnapshot", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSnapshotResponse")]
         SolidCP.Providers.Virtualization.VirtualMachineSnapshot GetSnapshot(string snapshotId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSnapshot", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSnapshotResponse")]
@@ -90,13 +92,13 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSnapshotThumbnailImage", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSnapshotThumbnailImageResponse")]
         System.Threading.Tasks.Task<byte[]> GetSnapshotThumbnailImageAsync(string snapshotId, SolidCP.Providers.Virtualization.ThumbnailSize size);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetExternalSwitches", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetExternalSwitchesResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch> GetExternalSwitches(string computerName);
+        SolidCP.Providers.Virtualization.VirtualSwitch[] /*List*/ GetExternalSwitches(string computerName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetExternalSwitches", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetExternalSwitchesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>> GetExternalSwitchesAsync(string computerName);
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch[]> GetExternalSwitchesAsync(string computerName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSwitches", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSwitchesResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch> GetSwitches();
+        SolidCP.Providers.Virtualization.VirtualSwitch[] /*List*/ GetSwitches();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSwitches", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetSwitchesResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>> GetSwitchesAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch[]> GetSwitchesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/SwitchExists", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/SwitchExistsResponse")]
         bool SwitchExists(string switchId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/SwitchExists", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/SwitchExistsResponse")]
@@ -126,13 +128,13 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetLibraryItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetLibraryItemsResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.LibraryItem[]> GetLibraryItemsAsync(string path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetKVPItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetKVPItemsResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem> GetKVPItems(string vmId);
+        SolidCP.Providers.Virtualization.KvpExchangeDataItem[] /*List*/ GetKVPItems(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetKVPItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetKVPItemsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>> GetKVPItemsAsync(string vmId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.KvpExchangeDataItem[]> GetKVPItemsAsync(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetStandardKVPItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetStandardKVPItemsResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem> GetStandardKVPItems(string vmId);
+        SolidCP.Providers.Virtualization.KvpExchangeDataItem[] /*List*/ GetStandardKVPItems(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetStandardKVPItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetStandardKVPItemsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>> GetStandardKVPItemsAsync(string vmId);
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.KvpExchangeDataItem[]> GetStandardKVPItemsAsync(string vmId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/AddKVPItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/AddKVPItemsResponse")]
         SolidCP.Providers.Virtualization.JobResult AddKVPItems(string vmId, SolidCP.Providers.Virtualization.KvpExchangeDataItem[] items);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/AddKVPItems", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/AddKVPItemsResponse")]
@@ -186,9 +188,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetJob", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetJobResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob> GetJobAsync(string jobId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetAllJobs", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetAllJobsResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob> GetAllJobs();
+        SolidCP.Providers.Virtualization.ConcreteJob[] /*List*/ GetAllJobs();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/GetAllJobs", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/GetAllJobsResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>> GetAllJobsAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob[]> GetAllJobsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/ChangeJobState", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/ChangeJobStateResponse")]
         SolidCP.Providers.Virtualization.ChangeJobStateReturnCode ChangeJobState(string jobId, SolidCP.Providers.Virtualization.ConcreteJobRequestedState newState);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IVirtualizationServer/ChangeJobState", ReplyAction = "http://smbsaas/solidcp/server/IVirtualizationServer/ChangeJobStateResponse")]
@@ -205,7 +207,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.Virtualization.VirtualMachine GetVirtualMachine(string vmId)
         {
-            return (SolidCP.Providers.Virtualization.VirtualMachine)Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualMachine", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "GetVirtualMachine", vmId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine> GetVirtualMachineAsync(string vmId)
@@ -215,7 +217,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.VirtualMachine GetVirtualMachineEx(string vmId)
         {
-            return (SolidCP.Providers.Virtualization.VirtualMachine)Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualMachineEx", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineEx", vmId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine> GetVirtualMachineExAsync(string vmId)
@@ -223,19 +225,19 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineEx", vmId);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine> GetVirtualMachines()
+        public SolidCP.Providers.Virtualization.VirtualMachine[] /*List*/ GetVirtualMachines()
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine>)Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualMachines");
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachine[], SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "GetVirtualMachines");
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine>> GetVirtualMachinesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine[]> GetVirtualMachinesAsync()
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine>>("SolidCP.Server.VirtualizationServer", "GetVirtualMachines");
+            return await InvokeAsync<SolidCP.Providers.Virtualization.VirtualMachine[], SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "GetVirtualMachines");
         }
 
         public byte[] GetVirtualMachineThumbnailImage(string vmId, SolidCP.Providers.Virtualization.ThumbnailSize size)
         {
-            return (byte[])Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualMachineThumbnailImage", vmId, size);
+            return Invoke<byte[]>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineThumbnailImage", vmId, size);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetVirtualMachineThumbnailImageAsync(string vmId, SolidCP.Providers.Virtualization.ThumbnailSize size)
@@ -245,7 +247,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.VirtualMachine CreateVirtualMachine(SolidCP.Providers.Virtualization.VirtualMachine vm)
         {
-            return (SolidCP.Providers.Virtualization.VirtualMachine)Invoke("SolidCP.Server.VirtualizationServer", "CreateVirtualMachine", vm);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "CreateVirtualMachine", vm);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine> CreateVirtualMachineAsync(SolidCP.Providers.Virtualization.VirtualMachine vm)
@@ -255,7 +257,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.VirtualMachine UpdateVirtualMachine(SolidCP.Providers.Virtualization.VirtualMachine vm)
         {
-            return (SolidCP.Providers.Virtualization.VirtualMachine)Invoke("SolidCP.Server.VirtualizationServer", "UpdateVirtualMachine", vm);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachine>("SolidCP.Server.VirtualizationServer", "UpdateVirtualMachine", vm);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine> UpdateVirtualMachineAsync(SolidCP.Providers.Virtualization.VirtualMachine vm)
@@ -265,7 +267,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult ChangeVirtualMachineState(string vmId, SolidCP.Providers.Virtualization.VirtualMachineRequestedState newState)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "ChangeVirtualMachineState", vmId, newState);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ChangeVirtualMachineState", vmId, newState);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ChangeVirtualMachineStateAsync(string vmId, SolidCP.Providers.Virtualization.VirtualMachineRequestedState newState)
@@ -275,7 +277,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason)
         {
-            return (SolidCP.Providers.Virtualization.ReturnCode)Invoke("SolidCP.Server.VirtualizationServer", "ShutDownVirtualMachine", vmId, force, reason);
+            return Invoke<SolidCP.Providers.Virtualization.ReturnCode>("SolidCP.Server.VirtualizationServer", "ShutDownVirtualMachine", vmId, force, reason);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ReturnCode> ShutDownVirtualMachineAsync(string vmId, bool force, string reason)
@@ -283,19 +285,19 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.Virtualization.ReturnCode>("SolidCP.Server.VirtualizationServer", "ShutDownVirtualMachine", vmId, force, reason);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob> GetVirtualMachineJobs(string vmId)
+        public SolidCP.Providers.Virtualization.ConcreteJob[] /*List*/ GetVirtualMachineJobs(string vmId)
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>)Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualMachineJobs", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.ConcreteJob[], SolidCP.Providers.Virtualization.ConcreteJob>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineJobs", vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>> GetVirtualMachineJobsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob[]> GetVirtualMachineJobsAsync(string vmId)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineJobs", vmId);
+            return await InvokeAsync<SolidCP.Providers.Virtualization.ConcreteJob[], SolidCP.Providers.Virtualization.ConcreteJob>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineJobs", vmId);
         }
 
         public SolidCP.Providers.Virtualization.JobResult RenameVirtualMachine(string vmId, string name)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "RenameVirtualMachine", vmId, name);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "RenameVirtualMachine", vmId, name);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> RenameVirtualMachineAsync(string vmId, string name)
@@ -305,7 +307,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult DeleteVirtualMachine(string vmId)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "DeleteVirtualMachine", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "DeleteVirtualMachine", vmId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> DeleteVirtualMachineAsync(string vmId)
@@ -315,7 +317,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult ExportVirtualMachine(string vmId, string exportPath)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "ExportVirtualMachine", vmId, exportPath);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ExportVirtualMachine", vmId, exportPath);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ExportVirtualMachineAsync(string vmId, string exportPath)
@@ -323,19 +325,19 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ExportVirtualMachine", vmId, exportPath);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId)
+        public SolidCP.Providers.Virtualization.VirtualMachineSnapshot[] /*List*/ GetVirtualMachineSnapshots(string vmId)
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot>)Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualMachineSnapshots", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachineSnapshot[], SolidCP.Providers.Virtualization.VirtualMachineSnapshot>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineSnapshots", vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot>> GetVirtualMachineSnapshotsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachineSnapshot[]> GetVirtualMachineSnapshotsAsync(string vmId)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot>>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineSnapshots", vmId);
+            return await InvokeAsync<SolidCP.Providers.Virtualization.VirtualMachineSnapshot[], SolidCP.Providers.Virtualization.VirtualMachineSnapshot>("SolidCP.Server.VirtualizationServer", "GetVirtualMachineSnapshots", vmId);
         }
 
         public SolidCP.Providers.Virtualization.VirtualMachineSnapshot GetSnapshot(string snapshotId)
         {
-            return (SolidCP.Providers.Virtualization.VirtualMachineSnapshot)Invoke("SolidCP.Server.VirtualizationServer", "GetSnapshot", snapshotId);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualMachineSnapshot>("SolidCP.Server.VirtualizationServer", "GetSnapshot", snapshotId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachineSnapshot> GetSnapshotAsync(string snapshotId)
@@ -345,7 +347,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult CreateSnapshot(string vmId)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "CreateSnapshot", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "CreateSnapshot", vmId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> CreateSnapshotAsync(string vmId)
@@ -355,7 +357,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult RenameSnapshot(string vmId, string snapshotId, string name)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "RenameSnapshot", vmId, snapshotId, name);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "RenameSnapshot", vmId, snapshotId, name);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> RenameSnapshotAsync(string vmId, string snapshotId, string name)
@@ -365,7 +367,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult ApplySnapshot(string vmId, string snapshotId)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "ApplySnapshot", vmId, snapshotId);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ApplySnapshot", vmId, snapshotId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ApplySnapshotAsync(string vmId, string snapshotId)
@@ -375,7 +377,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult DeleteSnapshot(string snapshotId)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "DeleteSnapshot", snapshotId);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "DeleteSnapshot", snapshotId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> DeleteSnapshotAsync(string snapshotId)
@@ -385,7 +387,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult DeleteSnapshotSubtree(string snapshotId)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "DeleteSnapshotSubtree", snapshotId);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "DeleteSnapshotSubtree", snapshotId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> DeleteSnapshotSubtreeAsync(string snapshotId)
@@ -395,7 +397,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetSnapshotThumbnailImage(string snapshotId, SolidCP.Providers.Virtualization.ThumbnailSize size)
         {
-            return (byte[])Invoke("SolidCP.Server.VirtualizationServer", "GetSnapshotThumbnailImage", snapshotId, size);
+            return Invoke<byte[]>("SolidCP.Server.VirtualizationServer", "GetSnapshotThumbnailImage", snapshotId, size);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetSnapshotThumbnailImageAsync(string snapshotId, SolidCP.Providers.Virtualization.ThumbnailSize size)
@@ -403,29 +405,29 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<byte[]>("SolidCP.Server.VirtualizationServer", "GetSnapshotThumbnailImage", snapshotId, size);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch> GetExternalSwitches(string computerName)
+        public SolidCP.Providers.Virtualization.VirtualSwitch[] /*List*/ GetExternalSwitches(string computerName)
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>)Invoke("SolidCP.Server.VirtualizationServer", "GetExternalSwitches", computerName);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualSwitch[], SolidCP.Providers.Virtualization.VirtualSwitch>("SolidCP.Server.VirtualizationServer", "GetExternalSwitches", computerName);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>> GetExternalSwitchesAsync(string computerName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch[]> GetExternalSwitchesAsync(string computerName)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>>("SolidCP.Server.VirtualizationServer", "GetExternalSwitches", computerName);
+            return await InvokeAsync<SolidCP.Providers.Virtualization.VirtualSwitch[], SolidCP.Providers.Virtualization.VirtualSwitch>("SolidCP.Server.VirtualizationServer", "GetExternalSwitches", computerName);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch> GetSwitches()
+        public SolidCP.Providers.Virtualization.VirtualSwitch[] /*List*/ GetSwitches()
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>)Invoke("SolidCP.Server.VirtualizationServer", "GetSwitches");
+            return Invoke<SolidCP.Providers.Virtualization.VirtualSwitch[], SolidCP.Providers.Virtualization.VirtualSwitch>("SolidCP.Server.VirtualizationServer", "GetSwitches");
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>> GetSwitchesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch[]> GetSwitchesAsync()
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>>("SolidCP.Server.VirtualizationServer", "GetSwitches");
+            return await InvokeAsync<SolidCP.Providers.Virtualization.VirtualSwitch[], SolidCP.Providers.Virtualization.VirtualSwitch>("SolidCP.Server.VirtualizationServer", "GetSwitches");
         }
 
         public bool SwitchExists(string switchId)
         {
-            return (bool)Invoke("SolidCP.Server.VirtualizationServer", "SwitchExists", switchId);
+            return Invoke<bool>("SolidCP.Server.VirtualizationServer", "SwitchExists", switchId);
         }
 
         public async System.Threading.Tasks.Task<bool> SwitchExistsAsync(string switchId)
@@ -435,7 +437,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.VirtualSwitch CreateSwitch(string name)
         {
-            return (SolidCP.Providers.Virtualization.VirtualSwitch)Invoke("SolidCP.Server.VirtualizationServer", "CreateSwitch", name);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualSwitch>("SolidCP.Server.VirtualizationServer", "CreateSwitch", name);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch> CreateSwitchAsync(string name)
@@ -445,7 +447,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.ReturnCode DeleteSwitch(string switchId)
         {
-            return (SolidCP.Providers.Virtualization.ReturnCode)Invoke("SolidCP.Server.VirtualizationServer", "DeleteSwitch", switchId);
+            return Invoke<SolidCP.Providers.Virtualization.ReturnCode>("SolidCP.Server.VirtualizationServer", "DeleteSwitch", switchId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ReturnCode> DeleteSwitchAsync(string switchId)
@@ -455,7 +457,7 @@ namespace SolidCP.Server.Client
 
         public string GetInsertedDVD(string vmId)
         {
-            return (string)Invoke("SolidCP.Server.VirtualizationServer", "GetInsertedDVD", vmId);
+            return Invoke<string>("SolidCP.Server.VirtualizationServer", "GetInsertedDVD", vmId);
         }
 
         public async System.Threading.Tasks.Task<string> GetInsertedDVDAsync(string vmId)
@@ -465,7 +467,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult InsertDVD(string vmId, string isoPath)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "InsertDVD", vmId, isoPath);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "InsertDVD", vmId, isoPath);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> InsertDVDAsync(string vmId, string isoPath)
@@ -475,7 +477,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult EjectDVD(string vmId)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "EjectDVD", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "EjectDVD", vmId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> EjectDVDAsync(string vmId)
@@ -485,7 +487,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.LibraryItem[] GetLibraryItems(string path)
         {
-            return (SolidCP.Providers.Virtualization.LibraryItem[])Invoke("SolidCP.Server.VirtualizationServer", "GetLibraryItems", path);
+            return Invoke<SolidCP.Providers.Virtualization.LibraryItem[]>("SolidCP.Server.VirtualizationServer", "GetLibraryItems", path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.LibraryItem[]> GetLibraryItemsAsync(string path)
@@ -493,29 +495,29 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.Virtualization.LibraryItem[]>("SolidCP.Server.VirtualizationServer", "GetLibraryItems", path);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem> GetKVPItems(string vmId)
+        public SolidCP.Providers.Virtualization.KvpExchangeDataItem[] /*List*/ GetKVPItems(string vmId)
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>)Invoke("SolidCP.Server.VirtualizationServer", "GetKVPItems", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.KvpExchangeDataItem[], SolidCP.Providers.Virtualization.KvpExchangeDataItem>("SolidCP.Server.VirtualizationServer", "GetKVPItems", vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>> GetKVPItemsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.KvpExchangeDataItem[]> GetKVPItemsAsync(string vmId)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>>("SolidCP.Server.VirtualizationServer", "GetKVPItems", vmId);
+            return await InvokeAsync<SolidCP.Providers.Virtualization.KvpExchangeDataItem[], SolidCP.Providers.Virtualization.KvpExchangeDataItem>("SolidCP.Server.VirtualizationServer", "GetKVPItems", vmId);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem> GetStandardKVPItems(string vmId)
+        public SolidCP.Providers.Virtualization.KvpExchangeDataItem[] /*List*/ GetStandardKVPItems(string vmId)
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>)Invoke("SolidCP.Server.VirtualizationServer", "GetStandardKVPItems", vmId);
+            return Invoke<SolidCP.Providers.Virtualization.KvpExchangeDataItem[], SolidCP.Providers.Virtualization.KvpExchangeDataItem>("SolidCP.Server.VirtualizationServer", "GetStandardKVPItems", vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>> GetStandardKVPItemsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.KvpExchangeDataItem[]> GetStandardKVPItemsAsync(string vmId)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>>("SolidCP.Server.VirtualizationServer", "GetStandardKVPItems", vmId);
+            return await InvokeAsync<SolidCP.Providers.Virtualization.KvpExchangeDataItem[], SolidCP.Providers.Virtualization.KvpExchangeDataItem>("SolidCP.Server.VirtualizationServer", "GetStandardKVPItems", vmId);
         }
 
         public SolidCP.Providers.Virtualization.JobResult AddKVPItems(string vmId, SolidCP.Providers.Virtualization.KvpExchangeDataItem[] items)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "AddKVPItems", vmId, items);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "AddKVPItems", vmId, items);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> AddKVPItemsAsync(string vmId, SolidCP.Providers.Virtualization.KvpExchangeDataItem[] items)
@@ -525,7 +527,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult RemoveKVPItems(string vmId, string[] itemNames)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "RemoveKVPItems", vmId, itemNames);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "RemoveKVPItems", vmId, itemNames);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> RemoveKVPItemsAsync(string vmId, string[] itemNames)
@@ -535,7 +537,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult ModifyKVPItems(string vmId, SolidCP.Providers.Virtualization.KvpExchangeDataItem[] items)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "ModifyKVPItems", vmId, items);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ModifyKVPItems", vmId, items);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ModifyKVPItemsAsync(string vmId, SolidCP.Providers.Virtualization.KvpExchangeDataItem[] items)
@@ -545,7 +547,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.VirtualHardDiskInfo GetVirtualHardDiskInfo(string vhdPath)
         {
-            return (SolidCP.Providers.Virtualization.VirtualHardDiskInfo)Invoke("SolidCP.Server.VirtualizationServer", "GetVirtualHardDiskInfo", vhdPath);
+            return Invoke<SolidCP.Providers.Virtualization.VirtualHardDiskInfo>("SolidCP.Server.VirtualizationServer", "GetVirtualHardDiskInfo", vhdPath);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualHardDiskInfo> GetVirtualHardDiskInfoAsync(string vhdPath)
@@ -555,7 +557,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.MountedDiskInfo MountVirtualHardDisk(string vhdPath)
         {
-            return (SolidCP.Providers.Virtualization.MountedDiskInfo)Invoke("SolidCP.Server.VirtualizationServer", "MountVirtualHardDisk", vhdPath);
+            return Invoke<SolidCP.Providers.Virtualization.MountedDiskInfo>("SolidCP.Server.VirtualizationServer", "MountVirtualHardDisk", vhdPath);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.MountedDiskInfo> MountVirtualHardDiskAsync(string vhdPath)
@@ -565,7 +567,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.ReturnCode UnmountVirtualHardDisk(string vhdPath)
         {
-            return (SolidCP.Providers.Virtualization.ReturnCode)Invoke("SolidCP.Server.VirtualizationServer", "UnmountVirtualHardDisk", vhdPath);
+            return Invoke<SolidCP.Providers.Virtualization.ReturnCode>("SolidCP.Server.VirtualizationServer", "UnmountVirtualHardDisk", vhdPath);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ReturnCode> UnmountVirtualHardDiskAsync(string vhdPath)
@@ -575,7 +577,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult ExpandVirtualHardDisk(string vhdPath, System.UInt64 sizeGB)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "ExpandVirtualHardDisk", vhdPath, sizeGB);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ExpandVirtualHardDisk", vhdPath, sizeGB);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ExpandVirtualHardDiskAsync(string vhdPath, System.UInt64 sizeGB)
@@ -585,7 +587,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.JobResult ConvertVirtualHardDisk(string sourcePath, string destinationPath, SolidCP.Providers.Virtualization.VirtualHardDiskType diskType)
         {
-            return (SolidCP.Providers.Virtualization.JobResult)Invoke("SolidCP.Server.VirtualizationServer", "ConvertVirtualHardDisk", sourcePath, destinationPath, diskType);
+            return Invoke<SolidCP.Providers.Virtualization.JobResult>("SolidCP.Server.VirtualizationServer", "ConvertVirtualHardDisk", sourcePath, destinationPath, diskType);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.JobResult> ConvertVirtualHardDiskAsync(string sourcePath, string destinationPath, SolidCP.Providers.Virtualization.VirtualHardDiskType diskType)
@@ -615,7 +617,7 @@ namespace SolidCP.Server.Client
 
         public string ReadRemoteFile(string path)
         {
-            return (string)Invoke("SolidCP.Server.VirtualizationServer", "ReadRemoteFile", path);
+            return Invoke<string>("SolidCP.Server.VirtualizationServer", "ReadRemoteFile", path);
         }
 
         public async System.Threading.Tasks.Task<string> ReadRemoteFileAsync(string path)
@@ -635,7 +637,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Virtualization.ConcreteJob GetJob(string jobId)
         {
-            return (SolidCP.Providers.Virtualization.ConcreteJob)Invoke("SolidCP.Server.VirtualizationServer", "GetJob", jobId);
+            return Invoke<SolidCP.Providers.Virtualization.ConcreteJob>("SolidCP.Server.VirtualizationServer", "GetJob", jobId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob> GetJobAsync(string jobId)
@@ -643,19 +645,19 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.Virtualization.ConcreteJob>("SolidCP.Server.VirtualizationServer", "GetJob", jobId);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob> GetAllJobs()
+        public SolidCP.Providers.Virtualization.ConcreteJob[] /*List*/ GetAllJobs()
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>)Invoke("SolidCP.Server.VirtualizationServer", "GetAllJobs");
+            return Invoke<SolidCP.Providers.Virtualization.ConcreteJob[], SolidCP.Providers.Virtualization.ConcreteJob>("SolidCP.Server.VirtualizationServer", "GetAllJobs");
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>> GetAllJobsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob[]> GetAllJobsAsync()
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>>("SolidCP.Server.VirtualizationServer", "GetAllJobs");
+            return await InvokeAsync<SolidCP.Providers.Virtualization.ConcreteJob[], SolidCP.Providers.Virtualization.ConcreteJob>("SolidCP.Server.VirtualizationServer", "GetAllJobs");
         }
 
         public SolidCP.Providers.Virtualization.ChangeJobStateReturnCode ChangeJobState(string jobId, SolidCP.Providers.Virtualization.ConcreteJobRequestedState newState)
         {
-            return (SolidCP.Providers.Virtualization.ChangeJobStateReturnCode)Invoke("SolidCP.Server.VirtualizationServer", "ChangeJobState", jobId, newState);
+            return Invoke<SolidCP.Providers.Virtualization.ChangeJobStateReturnCode>("SolidCP.Server.VirtualizationServer", "ChangeJobState", jobId, newState);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ChangeJobStateReturnCode> ChangeJobStateAsync(string jobId, SolidCP.Providers.Virtualization.ConcreteJobRequestedState newState)
@@ -665,7 +667,7 @@ namespace SolidCP.Server.Client
 
         public int GetProcessorCoresNumber()
         {
-            return (int)Invoke("SolidCP.Server.VirtualizationServer", "GetProcessorCoresNumber");
+            return Invoke<int>("SolidCP.Server.VirtualizationServer", "GetProcessorCoresNumber");
         }
 
         public async System.Threading.Tasks.Task<int> GetProcessorCoresNumberAsync()
@@ -698,12 +700,12 @@ namespace SolidCP.Server.Client
             return await base.Client.GetVirtualMachineExAsync(vmId);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine> GetVirtualMachines()
+        public SolidCP.Providers.Virtualization.VirtualMachine[] /*List*/ GetVirtualMachines()
         {
             return base.Client.GetVirtualMachines();
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachine>> GetVirtualMachinesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachine[]> GetVirtualMachinesAsync()
         {
             return await base.Client.GetVirtualMachinesAsync();
         }
@@ -758,12 +760,12 @@ namespace SolidCP.Server.Client
             return await base.Client.ShutDownVirtualMachineAsync(vmId, force, reason);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob> GetVirtualMachineJobs(string vmId)
+        public SolidCP.Providers.Virtualization.ConcreteJob[] /*List*/ GetVirtualMachineJobs(string vmId)
         {
             return base.Client.GetVirtualMachineJobs(vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>> GetVirtualMachineJobsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob[]> GetVirtualMachineJobsAsync(string vmId)
         {
             return await base.Client.GetVirtualMachineJobsAsync(vmId);
         }
@@ -798,12 +800,12 @@ namespace SolidCP.Server.Client
             return await base.Client.ExportVirtualMachineAsync(vmId, exportPath);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot> GetVirtualMachineSnapshots(string vmId)
+        public SolidCP.Providers.Virtualization.VirtualMachineSnapshot[] /*List*/ GetVirtualMachineSnapshots(string vmId)
         {
             return base.Client.GetVirtualMachineSnapshots(vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualMachineSnapshot>> GetVirtualMachineSnapshotsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualMachineSnapshot[]> GetVirtualMachineSnapshotsAsync(string vmId)
         {
             return await base.Client.GetVirtualMachineSnapshotsAsync(vmId);
         }
@@ -878,22 +880,22 @@ namespace SolidCP.Server.Client
             return await base.Client.GetSnapshotThumbnailImageAsync(snapshotId, size);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch> GetExternalSwitches(string computerName)
+        public SolidCP.Providers.Virtualization.VirtualSwitch[] /*List*/ GetExternalSwitches(string computerName)
         {
             return base.Client.GetExternalSwitches(computerName);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>> GetExternalSwitchesAsync(string computerName)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch[]> GetExternalSwitchesAsync(string computerName)
         {
             return await base.Client.GetExternalSwitchesAsync(computerName);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch> GetSwitches()
+        public SolidCP.Providers.Virtualization.VirtualSwitch[] /*List*/ GetSwitches()
         {
             return base.Client.GetSwitches();
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.VirtualSwitch>> GetSwitchesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.VirtualSwitch[]> GetSwitchesAsync()
         {
             return await base.Client.GetSwitchesAsync();
         }
@@ -968,22 +970,22 @@ namespace SolidCP.Server.Client
             return await base.Client.GetLibraryItemsAsync(path);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem> GetKVPItems(string vmId)
+        public SolidCP.Providers.Virtualization.KvpExchangeDataItem[] /*List*/ GetKVPItems(string vmId)
         {
             return base.Client.GetKVPItems(vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>> GetKVPItemsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.KvpExchangeDataItem[]> GetKVPItemsAsync(string vmId)
         {
             return await base.Client.GetKVPItemsAsync(vmId);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem> GetStandardKVPItems(string vmId)
+        public SolidCP.Providers.Virtualization.KvpExchangeDataItem[] /*List*/ GetStandardKVPItems(string vmId)
         {
             return base.Client.GetStandardKVPItems(vmId);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.KvpExchangeDataItem>> GetStandardKVPItemsAsync(string vmId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.KvpExchangeDataItem[]> GetStandardKVPItemsAsync(string vmId)
         {
             return await base.Client.GetStandardKVPItemsAsync(vmId);
         }
@@ -1118,12 +1120,12 @@ namespace SolidCP.Server.Client
             return await base.Client.GetJobAsync(jobId);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob> GetAllJobs()
+        public SolidCP.Providers.Virtualization.ConcreteJob[] /*List*/ GetAllJobs()
         {
             return base.Client.GetAllJobs();
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.Virtualization.ConcreteJob>> GetAllJobsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Virtualization.ConcreteJob[]> GetAllJobsAsync()
         {
             return await base.Client.GetAllJobsAsync();
         }

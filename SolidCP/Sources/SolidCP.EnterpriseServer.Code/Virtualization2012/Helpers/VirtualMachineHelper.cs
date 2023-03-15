@@ -2,7 +2,8 @@
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.Virtualization2012;
+//using SolidCP.Providers.Virtualization2012;
+using SolidCP.Server.Client;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,7 +113,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             VirtualizationServer2012 vps = VirtualizationHelper.GetVirtualizationProxy(vm.ServiceId);
 
             // load jobs
-            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VirtualMachineId);
+            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VirtualMachineId).ToArray();
             List<ConcreteJob> retJobs = new List<ConcreteJob>();
 
             foreach (ConcreteJob job in jobs)

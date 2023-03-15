@@ -59,6 +59,7 @@ namespace SolidCP.Web.Client
 		}
 		public UserNamePasswordCredentials Credentials { get; set; } = new UserNamePasswordCredentials();
 		public object SoapHeader { get; set; } = null;
+		public TimeSpan? Timeout { get; set; } = null;
 
 		protected string url;
 		public string Url
@@ -109,10 +110,14 @@ namespace SolidCP.Web.Client
 		protected bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
-		protected bool IsAuthenticated => this.GetType().GetInterfaces()
+		public bool IsAuthenticated => this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
 					?.GetCustomAttribute<HasPolicyAttribute>()
 					!= null;
+		public bool HasSoapHeaders => this.GetType().GetInterfaces()
+			.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
+			?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>()
+			!= null;
 
 		public virtual void Close() { }
 		public void Dispose()
@@ -141,7 +146,7 @@ namespace SolidCP.Web.Client
 	// web service client
 	public class ClientBase<T, U> : ClientBase
 		where T : class
-		where U : T, new()
+		where U : ClientAssemblyBase, T, new()
 	{
 
 
@@ -242,8 +247,8 @@ namespace SolidCP.Web.Client
 						case Protocols.NetPipeSsl: binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport); break;
 #endif
 					}
-					binding.ReceiveTimeout = TimeSpan.FromSeconds(120);
-					binding.SendTimeout = TimeSpan.FromSeconds(120);
+					binding.ReceiveTimeout = Timeout ?? TimeSpan.FromSeconds(120);
+					binding.SendTimeout = Timeout ?? TimeSpan.FromSeconds(120);
 
 					var endpoint = new EndpointAddress(serviceurl);
 
@@ -272,6 +277,7 @@ namespace SolidCP.Web.Client
 						factory.Credentials.UserName.Password = Credentials.Password ?? string.Empty;
 					}
 					client = factory.CreateChannel();
+					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
 				}
 #if !NETFRAMEWORK
 				else if (IsGRPC)
@@ -286,7 +292,9 @@ namespace SolidCP.Web.Client
 #endif
 				else if (IsAssembly)
 				{
-					client = new U();
+					var assemblyClient = new U();
+					assemblyClient.AssemblyName = url.Substring("assembly://".Length);
+					client = assemblyClient;
 				}
 				else throw new NotSupportedException("Unsupported protocol in SolidCP.Web.Clients.ClientBase");
 				if (client is IClientChannel channel) channel.Open();

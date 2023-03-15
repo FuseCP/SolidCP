@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IOperatingSystem", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IOperatingSystem
@@ -189,7 +191,7 @@ namespace SolidCP.Server.Client
     {
         public string CreatePackageFolder(string initialPath)
         {
-            return (string)Invoke("SolidCP.Server.OperatingSystem", "CreatePackageFolder", initialPath);
+            return Invoke<string>("SolidCP.Server.OperatingSystem", "CreatePackageFolder", initialPath);
         }
 
         public async System.Threading.Tasks.Task<string> CreatePackageFolderAsync(string initialPath)
@@ -199,7 +201,7 @@ namespace SolidCP.Server.Client
 
         public bool FileExists(string path)
         {
-            return (bool)Invoke("SolidCP.Server.OperatingSystem", "FileExists", path);
+            return Invoke<bool>("SolidCP.Server.OperatingSystem", "FileExists", path);
         }
 
         public async System.Threading.Tasks.Task<bool> FileExistsAsync(string path)
@@ -209,7 +211,7 @@ namespace SolidCP.Server.Client
 
         public bool DirectoryExists(string path)
         {
-            return (bool)Invoke("SolidCP.Server.OperatingSystem", "DirectoryExists", path);
+            return Invoke<bool>("SolidCP.Server.OperatingSystem", "DirectoryExists", path);
         }
 
         public async System.Threading.Tasks.Task<bool> DirectoryExistsAsync(string path)
@@ -219,7 +221,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile GetFile(string path)
         {
-            return (SolidCP.Providers.OS.SystemFile)Invoke("SolidCP.Server.OperatingSystem", "GetFile", path);
+            return Invoke<SolidCP.Providers.OS.SystemFile>("SolidCP.Server.OperatingSystem", "GetFile", path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile> GetFileAsync(string path)
@@ -229,7 +231,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] GetFiles(string path)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFiles", path);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFiles", path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesAsync(string path)
@@ -239,7 +241,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetDirectoriesRecursive", rootFolder, path);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetDirectoriesRecursive", rootFolder, path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetDirectoriesRecursiveAsync(string rootFolder, string path)
@@ -249,7 +251,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] GetFilesRecursive(string rootFolder, string path)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFilesRecursive", rootFolder, path);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFilesRecursive", rootFolder, path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveAsync(string rootFolder, string path)
@@ -259,7 +261,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
         {
-            return (SolidCP.Providers.OS.SystemFile[])Invoke("SolidCP.Server.OperatingSystem", "GetFilesRecursiveByPattern", rootFolder, path, pattern);
+            return Invoke<SolidCP.Providers.OS.SystemFile[]>("SolidCP.Server.OperatingSystem", "GetFilesRecursiveByPattern", rootFolder, path, pattern);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemFile[]> GetFilesRecursiveByPatternAsync(string rootFolder, string path, string pattern)
@@ -269,7 +271,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetFileBinaryContent(string path)
         {
-            return (byte[])Invoke("SolidCP.Server.OperatingSystem", "GetFileBinaryContent", path);
+            return Invoke<byte[]>("SolidCP.Server.OperatingSystem", "GetFileBinaryContent", path);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetFileBinaryContentAsync(string path)
@@ -279,7 +281,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetFileBinaryContentUsingEncoding(string path, string encoding)
         {
-            return (byte[])Invoke("SolidCP.Server.OperatingSystem", "GetFileBinaryContentUsingEncoding", path, encoding);
+            return Invoke<byte[]>("SolidCP.Server.OperatingSystem", "GetFileBinaryContentUsingEncoding", path, encoding);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetFileBinaryContentUsingEncodingAsync(string path, string encoding)
@@ -289,7 +291,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetFileBinaryChunk(string path, int offset, int length)
         {
-            return (byte[])Invoke("SolidCP.Server.OperatingSystem", "GetFileBinaryChunk", path, offset, length);
+            return Invoke<byte[]>("SolidCP.Server.OperatingSystem", "GetFileBinaryChunk", path, offset, length);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetFileBinaryChunkAsync(string path, int offset, int length)
@@ -299,7 +301,7 @@ namespace SolidCP.Server.Client
 
         public string GetFileTextContent(string path)
         {
-            return (string)Invoke("SolidCP.Server.OperatingSystem", "GetFileTextContent", path);
+            return Invoke<string>("SolidCP.Server.OperatingSystem", "GetFileTextContent", path);
         }
 
         public async System.Threading.Tasks.Task<string> GetFileTextContentAsync(string path)
@@ -439,7 +441,7 @@ namespace SolidCP.Server.Client
 
         public string[] UnzipFiles(string zipFile, string destFolder)
         {
-            return (string[])Invoke("SolidCP.Server.OperatingSystem", "UnzipFiles", zipFile, destFolder);
+            return Invoke<string[]>("SolidCP.Server.OperatingSystem", "UnzipFiles", zipFile, destFolder);
         }
 
         public async System.Threading.Tasks.Task<string[]> UnzipFilesAsync(string zipFile, string destFolder)
@@ -469,7 +471,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.UserPermission[] GetGroupNtfsPermissions(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
         {
-            return (SolidCP.Providers.OS.UserPermission[])Invoke("SolidCP.Server.OperatingSystem", "GetGroupNtfsPermissions", path, users, usersOU);
+            return Invoke<SolidCP.Providers.OS.UserPermission[]>("SolidCP.Server.OperatingSystem", "GetGroupNtfsPermissions", path, users, usersOU);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.UserPermission[]> GetGroupNtfsPermissionsAsync(string path, SolidCP.Providers.OS.UserPermission[] users, string usersOU)
@@ -499,7 +501,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
         {
-            return (SolidCP.Providers.OS.Quota)Invoke("SolidCP.Server.OperatingSystem", "GetQuotaOnFolder", folderPath, wmiUserName, wmiPassword);
+            return Invoke<SolidCP.Providers.OS.Quota>("SolidCP.Server.OperatingSystem", "GetQuotaOnFolder", folderPath, wmiUserName, wmiPassword);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Quota> GetQuotaOnFolderAsync(string folderPath, string wmiUserName, string wmiPassword)
@@ -519,7 +521,7 @@ namespace SolidCP.Server.Client
 
         public bool CheckFileServicesInstallation()
         {
-            return (bool)Invoke("SolidCP.Server.OperatingSystem", "CheckFileServicesInstallation");
+            return Invoke<bool>("SolidCP.Server.OperatingSystem", "CheckFileServicesInstallation");
         }
 
         public async System.Threading.Tasks.Task<bool> CheckFileServicesInstallationAsync()
@@ -529,7 +531,7 @@ namespace SolidCP.Server.Client
 
         public bool InstallFsrmService()
         {
-            return (bool)Invoke("SolidCP.Server.OperatingSystem", "InstallFsrmService");
+            return Invoke<bool>("SolidCP.Server.OperatingSystem", "InstallFsrmService");
         }
 
         public async System.Threading.Tasks.Task<bool> InstallFsrmServiceAsync()
@@ -539,7 +541,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.FolderGraph GetFolderGraph(string path)
         {
-            return (SolidCP.Providers.OS.FolderGraph)Invoke("SolidCP.Server.OperatingSystem", "GetFolderGraph", path);
+            return Invoke<SolidCP.Providers.OS.FolderGraph>("SolidCP.Server.OperatingSystem", "GetFolderGraph", path);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.FolderGraph> GetFolderGraphAsync(string path)
@@ -559,7 +561,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetInstalledOdbcDrivers()
         {
-            return (string[])Invoke("SolidCP.Server.OperatingSystem", "GetInstalledOdbcDrivers");
+            return Invoke<string[]>("SolidCP.Server.OperatingSystem", "GetInstalledOdbcDrivers");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetInstalledOdbcDriversAsync()
@@ -569,7 +571,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetDSNNames()
         {
-            return (string[])Invoke("SolidCP.Server.OperatingSystem", "GetDSNNames");
+            return Invoke<string[]>("SolidCP.Server.OperatingSystem", "GetDSNNames");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetDSNNamesAsync()
@@ -579,7 +581,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.SystemDSN GetDSN(string dsnName)
         {
-            return (SolidCP.Providers.OS.SystemDSN)Invoke("SolidCP.Server.OperatingSystem", "GetDSN", dsnName);
+            return Invoke<SolidCP.Providers.OS.SystemDSN>("SolidCP.Server.OperatingSystem", "GetDSN", dsnName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemDSN> GetDSNAsync(string dsnName)

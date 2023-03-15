@@ -58,22 +58,40 @@ namespace SolidCP.Build
 			} else if (type is GenericNameSyntax)
 			{
 				var generic = (GenericNameSyntax)type;
-				return GenericName(Identifier(((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName()),
+				var typeName = ((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName();
+				if (typeName.StartsWith("System.Collections.Generic.List")) // change List to array
+					return ArrayType(generic.TypeArgumentList.Arguments.FirstOrDefault().Globalized(model))
+						.WithRankSpecifiers(SingletonList<ArrayRankSpecifierSyntax>(
+							ArrayRankSpecifier(
+								SingletonSeparatedList<ExpressionSyntax>(OmittedArraySizeExpression()))))
+						.WithTrailingTrivia(TriviaList(Comment("/*List*/")));
+				else return GenericName(Identifier(typeName),
 					TypeArgumentList(SeparatedList(generic.TypeArgumentList.Arguments
 						.Select(arg => arg.Globalized(model)))));
 			}
 			return ParseTypeName(((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName());
 		}
 
+		/*public static SyntaxList<AttributeListSyntax> GlobalizedSoapHeader(this SyntaxList<AttributeListSyntax> attributes, SemanticModel model)
+		{
+			return List(AttributeList(SeparatedList<AttributeSyntax>(attributes.Attributes
+				.Select(at => Attribute(ParseName(((INamedTypeSymbol)model.GetTypeInfo(at.Name).Type).GetFullTypeName()))
+					.WithArgumentList(at.ArgumentList))
+				.Where(at => at.Name == "SolidCP.Providers.SoapHeaderAttribute")));
+		}*/
 		public static MethodDeclarationSyntax[] GlobalizedWebMethods(this ClassDeclarationSyntax classDeclaration, IEnumerable<MethodDeclarationSyntax> methods, SemanticModel model)
 		{
 			var globalizedMethods = methods
-				.Select(m => MethodDeclaration(m.ReturnType.Globalized(model), m.Identifier)
-					.WithAttributeLists(m.AttributeLists)
-					.WithModifiers(m.Modifiers)
-					.WithParameterList(ParameterList(SeparatedList<ParameterSyntax>(
-						m.ParameterList.Parameters
-							.Select(p => Parameter(p.AttributeLists, p.Modifiers, p.Type.Globalized(model), p.Identifier, p.Default))))))
+				.Select(m =>
+				{
+					var method = MethodDeclaration(m.ReturnType.Globalized(model), m.Identifier)
+						//.WithAttributeLists(m.AttributeLists.
+						.WithModifiers(m.Modifiers)
+						.WithParameterList(ParameterList(SeparatedList<ParameterSyntax>(
+							m.ParameterList.Parameters
+								.Select(p => Parameter(p.AttributeLists, p.Modifiers, p.Type.Globalized(model), p.Identifier, p.Default)))));
+					return method;
+				})
 				.ToArray();
 			return globalizedMethods;
 		}
@@ -140,6 +158,11 @@ namespace SolidCP.Build
 				var methods = ws.Class.WebMethods(ws.Model);
 				var globalizedMethods = ws.Class.GlobalizedWebMethods(methods, ws.Model);
 
+				var hasSoapHeaders = methods
+					.SelectMany(m => m.AttributeLists)
+					.SelectMany(at => at.Attributes)
+					.Any(at => at.Name.ToString() == "SoapHeader" || at.Name.ToString() == "SoapHeaderAttribute");
+
 				var attr = ws.Class.AttributeLists
 					.SelectMany(l => l.Attributes)
 					.FirstOrDefault(a =>
@@ -166,7 +189,9 @@ namespace SolidCP.Build
 						//.AddUsings(UsingDirective(ParseName("CoreWCF"))
 						//	.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
 						//	.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))))
-						.AddUsings(UsingDirective(ParseName("System.ServiceModel")));
+						.AddUsings(
+							UsingDirective(ParseName("System.Linq")),
+		                    UsingDirective(ParseName("System.ServiceModel")));
 							//.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET48"), true, true, true)))
 							//.WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))); ;
 
@@ -192,14 +217,15 @@ namespace SolidCP.Build
 							UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
-						//.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
-						//.AddUsings(UsingDirective(oldNS.Name))
-						.AddUsings(
-							UsingDirective(ParseName("System.ServiceModel")));
+                        //.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
+                        //.AddUsings(UsingDirective(oldNS.Name))
+                        .AddUsings(
+                            UsingDirective(ParseName("System.Linq")),
+                            UsingDirective(ParseName("System.ServiceModel")));
 
-				}
+                }
 
-				var webServiceNamespace = attr.ArgumentList.Arguments
+                var webServiceNamespace = attr.ArgumentList.Arguments
 					.Where(a => a.NameEquals != null && a.NameEquals.Name.ToString() == "Namespace" && a.Expression is LiteralExpressionSyntax)
 					.Select(a => (string)((LiteralExpressionSyntax)a.Expression).Token.Value)
 					.FirstOrDefault() ?? "http://tempuri.org/";
@@ -260,6 +286,7 @@ namespace SolidCP.Build
 				var clientIntf = ParseMemberDeclaration(
 					new ClientInterface()
 					{
+						HasSoapHeader = hasSoapHeaders,
 						HasPolicyAttribute = hasPolicy,
 						WebServiceNamespace = webServiceNamespace,
 						Class = ws.Class,

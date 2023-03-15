@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IDatabaseServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IDatabaseServer
@@ -109,7 +111,7 @@ namespace SolidCP.Server.Client
     {
         public bool CheckConnectivity(string databaseName, string username, string password)
         {
-            return (bool)Invoke("SolidCP.Server.DatabaseServer", "CheckConnectivity", databaseName, username, password);
+            return Invoke<bool>("SolidCP.Server.DatabaseServer", "CheckConnectivity", databaseName, username, password);
         }
 
         public async System.Threading.Tasks.Task<bool> CheckConnectivityAsync(string databaseName, string username, string password)
@@ -119,7 +121,7 @@ namespace SolidCP.Server.Client
 
         public System.Data.DataSet ExecuteSqlQuery(string databaseName, string commandText)
         {
-            return (System.Data.DataSet)Invoke("SolidCP.Server.DatabaseServer", "ExecuteSqlQuery", databaseName, commandText);
+            return Invoke<System.Data.DataSet>("SolidCP.Server.DatabaseServer", "ExecuteSqlQuery", databaseName, commandText);
         }
 
         public async System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQueryAsync(string databaseName, string commandText)
@@ -139,7 +141,7 @@ namespace SolidCP.Server.Client
 
         public System.Data.DataSet ExecuteSqlQuerySafe(string databaseName, string username, string password, string commandText)
         {
-            return (System.Data.DataSet)Invoke("SolidCP.Server.DatabaseServer", "ExecuteSqlQuerySafe", databaseName, username, password, commandText);
+            return Invoke<System.Data.DataSet>("SolidCP.Server.DatabaseServer", "ExecuteSqlQuerySafe", databaseName, username, password, commandText);
         }
 
         public async System.Threading.Tasks.Task<System.Data.DataSet> ExecuteSqlQuerySafeAsync(string databaseName, string username, string password, string commandText)
@@ -159,7 +161,7 @@ namespace SolidCP.Server.Client
 
         public bool DatabaseExists(string databaseName)
         {
-            return (bool)Invoke("SolidCP.Server.DatabaseServer", "DatabaseExists", databaseName);
+            return Invoke<bool>("SolidCP.Server.DatabaseServer", "DatabaseExists", databaseName);
         }
 
         public async System.Threading.Tasks.Task<bool> DatabaseExistsAsync(string databaseName)
@@ -169,7 +171,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetDatabases()
         {
-            return (string[])Invoke("SolidCP.Server.DatabaseServer", "GetDatabases");
+            return Invoke<string[]>("SolidCP.Server.DatabaseServer", "GetDatabases");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetDatabasesAsync()
@@ -179,7 +181,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Database.SqlDatabase GetDatabase(string databaseName)
         {
-            return (SolidCP.Providers.Database.SqlDatabase)Invoke("SolidCP.Server.DatabaseServer", "GetDatabase", databaseName);
+            return Invoke<SolidCP.Providers.Database.SqlDatabase>("SolidCP.Server.DatabaseServer", "GetDatabase", databaseName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlDatabase> GetDatabaseAsync(string databaseName)
@@ -229,7 +231,7 @@ namespace SolidCP.Server.Client
 
         public byte[] GetTempFileBinaryChunk(string path, int offset, int length)
         {
-            return (byte[])Invoke("SolidCP.Server.DatabaseServer", "GetTempFileBinaryChunk", path, offset, length);
+            return Invoke<byte[]>("SolidCP.Server.DatabaseServer", "GetTempFileBinaryChunk", path, offset, length);
         }
 
         public async System.Threading.Tasks.Task<byte[]> GetTempFileBinaryChunkAsync(string path, int offset, int length)
@@ -239,7 +241,7 @@ namespace SolidCP.Server.Client
 
         public string AppendTempFileBinaryChunk(string fileName, string path, byte[] chunk)
         {
-            return (string)Invoke("SolidCP.Server.DatabaseServer", "AppendTempFileBinaryChunk", fileName, path, chunk);
+            return Invoke<string>("SolidCP.Server.DatabaseServer", "AppendTempFileBinaryChunk", fileName, path, chunk);
         }
 
         public async System.Threading.Tasks.Task<string> AppendTempFileBinaryChunkAsync(string fileName, string path, byte[] chunk)
@@ -249,7 +251,7 @@ namespace SolidCP.Server.Client
 
         public string BackupDatabase(string databaseName, string backupName, bool zipBackup)
         {
-            return (string)Invoke("SolidCP.Server.DatabaseServer", "BackupDatabase", databaseName, backupName, zipBackup);
+            return Invoke<string>("SolidCP.Server.DatabaseServer", "BackupDatabase", databaseName, backupName, zipBackup);
         }
 
         public async System.Threading.Tasks.Task<string> BackupDatabaseAsync(string databaseName, string backupName, bool zipBackup)
@@ -269,7 +271,7 @@ namespace SolidCP.Server.Client
 
         public bool UserExists(string userName)
         {
-            return (bool)Invoke("SolidCP.Server.DatabaseServer", "UserExists", userName);
+            return Invoke<bool>("SolidCP.Server.DatabaseServer", "UserExists", userName);
         }
 
         public async System.Threading.Tasks.Task<bool> UserExistsAsync(string userName)
@@ -279,7 +281,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetUsers()
         {
-            return (string[])Invoke("SolidCP.Server.DatabaseServer", "GetUsers");
+            return Invoke<string[]>("SolidCP.Server.DatabaseServer", "GetUsers");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetUsersAsync()
@@ -289,7 +291,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Database.SqlUser GetUser(string username, string[] databases)
         {
-            return (SolidCP.Providers.Database.SqlUser)Invoke("SolidCP.Server.DatabaseServer", "GetUser", username, databases);
+            return Invoke<SolidCP.Providers.Database.SqlUser>("SolidCP.Server.DatabaseServer", "GetUser", username, databases);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Database.SqlUser> GetUserAsync(string username, string[] databases)

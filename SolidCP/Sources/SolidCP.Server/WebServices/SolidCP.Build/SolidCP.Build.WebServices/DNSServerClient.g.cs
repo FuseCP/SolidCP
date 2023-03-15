@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IDNSServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IDNSServer
@@ -61,7 +63,7 @@ namespace SolidCP.Server.Client
     {
         public bool ZoneExists(string zoneName)
         {
-            return (bool)Invoke("SolidCP.Server.DNSServer", "ZoneExists", zoneName);
+            return Invoke<bool>("SolidCP.Server.DNSServer", "ZoneExists", zoneName);
         }
 
         public async System.Threading.Tasks.Task<bool> ZoneExistsAsync(string zoneName)
@@ -71,7 +73,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetZones()
         {
-            return (string[])Invoke("SolidCP.Server.DNSServer", "GetZones");
+            return Invoke<string[]>("SolidCP.Server.DNSServer", "GetZones");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetZonesAsync()
@@ -121,7 +123,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.DNS.DnsRecord[] GetZoneRecords(string zoneName)
         {
-            return (SolidCP.Providers.DNS.DnsRecord[])Invoke("SolidCP.Server.DNSServer", "GetZoneRecords", zoneName);
+            return Invoke<SolidCP.Providers.DNS.DnsRecord[]>("SolidCP.Server.DNSServer", "GetZoneRecords", zoneName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.DNS.DnsRecord[]> GetZoneRecordsAsync(string zoneName)

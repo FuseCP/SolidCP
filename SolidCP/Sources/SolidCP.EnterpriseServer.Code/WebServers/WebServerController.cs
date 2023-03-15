@@ -55,6 +55,7 @@ using SolidCP.Templates;
 using SolidCP.Providers.Database;
 using SolidCP.Providers.FTP;
 using System.Collections;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -2229,7 +2230,7 @@ namespace SolidCP.EnterpriseServer
 
             // get folders
             WebServer web = GetWebServer(siteItem.ServiceId);
-            return web.GetFolders(siteItem.SiteId);
+            return web.GetFolders(siteItem.SiteId).ToArray();
         }
 
         public static WebFolder GetFolder(int siteItemId, string folderPath)
@@ -2317,7 +2318,7 @@ namespace SolidCP.EnterpriseServer
 
             // get users
             WebServer web = GetWebServer(siteItem.ServiceId);
-            return web.GetUsers(siteItem.SiteId);
+            return web.GetUsers(siteItem.SiteId).ToArray();
         }
 
         public static WebUser GetUser(int siteItemId, string userName)

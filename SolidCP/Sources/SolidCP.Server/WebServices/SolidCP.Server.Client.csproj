@@ -6,7 +6,13 @@
     <LangVersion>11</LangVersion>
     <DefineConstants>$(DefineConstants);Client</DefineConstants>
     <ImplicitUsings>disable</ImplicitUsings>
+    <OutputPath>..\..\..\Bin</OutputPath>
+    <!--<SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>
+
+  <ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
@@ -15,9 +21,11 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.DirectoryServices" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+    <PackageReference Include="System.DirectoryServices" Version="7.0.1" />
   </ItemGroup>
 </Project>

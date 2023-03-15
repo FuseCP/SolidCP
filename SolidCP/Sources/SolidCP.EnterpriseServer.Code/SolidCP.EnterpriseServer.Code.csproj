@@ -113,12 +113,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="SolidCP.Providers.Base">
-      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.Server.Client">
-      <HintPath>..\..\Bin\SolidCP.Server.Client.dll</HintPath>
-    </Reference>
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Twilio.3.6.29\lib\3.5\Twilio.Api.dll</HintPath>
     </Reference>
@@ -276,9 +270,21 @@
       <Project>{53D22D35-4013-415F-BA09-F67A0DBBB0C1}</Project>
       <Name>SolidCP.Common.Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Server.Client.csproj">
+      <Project>{fbfe9641-18d9-4bdd-b773-fe0ad6b4475f}</Project>
+      <Name>SolidCP.Server.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SolidCP.Templates\SolidCP.Templates.csproj">
       <Project>{387FA0EF-3927-45FF-8F8F-BCCD735540C6}</Project>
       <Name>SolidCP.Templates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
+      <Project>{6da30bbf-ad6e-49f3-a210-2c5d5b2567ce}</Project>
+      <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

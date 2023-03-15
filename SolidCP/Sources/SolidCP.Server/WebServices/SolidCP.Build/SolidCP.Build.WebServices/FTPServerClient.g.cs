@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IFTPServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IFTPServer
@@ -83,7 +85,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.ServerState GetSiteState(string siteId)
         {
-            return (SolidCP.Providers.ServerState)Invoke("SolidCP.Server.FTPServer", "GetSiteState", siteId);
+            return Invoke<SolidCP.Providers.ServerState>("SolidCP.Server.FTPServer", "GetSiteState", siteId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.ServerState> GetSiteStateAsync(string siteId)
@@ -93,7 +95,7 @@ namespace SolidCP.Server.Client
 
         public bool SiteExists(string siteId)
         {
-            return (bool)Invoke("SolidCP.Server.FTPServer", "SiteExists", siteId);
+            return Invoke<bool>("SolidCP.Server.FTPServer", "SiteExists", siteId);
         }
 
         public async System.Threading.Tasks.Task<bool> SiteExistsAsync(string siteId)
@@ -103,7 +105,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.FTP.FtpSite[] GetSites()
         {
-            return (SolidCP.Providers.FTP.FtpSite[])Invoke("SolidCP.Server.FTPServer", "GetSites");
+            return Invoke<SolidCP.Providers.FTP.FtpSite[]>("SolidCP.Server.FTPServer", "GetSites");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite[]> GetSitesAsync()
@@ -113,7 +115,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.FTP.FtpSite GetSite(string siteId)
         {
-            return (SolidCP.Providers.FTP.FtpSite)Invoke("SolidCP.Server.FTPServer", "GetSite", siteId);
+            return Invoke<SolidCP.Providers.FTP.FtpSite>("SolidCP.Server.FTPServer", "GetSite", siteId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpSite> GetSiteAsync(string siteId)
@@ -123,7 +125,7 @@ namespace SolidCP.Server.Client
 
         public string CreateSite(SolidCP.Providers.FTP.FtpSite site)
         {
-            return (string)Invoke("SolidCP.Server.FTPServer", "CreateSite", site);
+            return Invoke<string>("SolidCP.Server.FTPServer", "CreateSite", site);
         }
 
         public async System.Threading.Tasks.Task<string> CreateSiteAsync(SolidCP.Providers.FTP.FtpSite site)
@@ -153,7 +155,7 @@ namespace SolidCP.Server.Client
 
         public bool AccountExists(string accountName)
         {
-            return (bool)Invoke("SolidCP.Server.FTPServer", "AccountExists", accountName);
+            return Invoke<bool>("SolidCP.Server.FTPServer", "AccountExists", accountName);
         }
 
         public async System.Threading.Tasks.Task<bool> AccountExistsAsync(string accountName)
@@ -163,7 +165,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.FTP.FtpAccount[] GetAccounts()
         {
-            return (SolidCP.Providers.FTP.FtpAccount[])Invoke("SolidCP.Server.FTPServer", "GetAccounts");
+            return Invoke<SolidCP.Providers.FTP.FtpAccount[]>("SolidCP.Server.FTPServer", "GetAccounts");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount[]> GetAccountsAsync()
@@ -173,7 +175,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.FTP.FtpAccount GetAccount(string accountName)
         {
-            return (SolidCP.Providers.FTP.FtpAccount)Invoke("SolidCP.Server.FTPServer", "GetAccount", accountName);
+            return Invoke<SolidCP.Providers.FTP.FtpAccount>("SolidCP.Server.FTPServer", "GetAccount", accountName);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.FTP.FtpAccount> GetAccountAsync(string accountName)

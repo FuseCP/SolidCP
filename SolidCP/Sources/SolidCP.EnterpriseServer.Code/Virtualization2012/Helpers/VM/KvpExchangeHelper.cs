@@ -1,6 +1,7 @@
 ﻿using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.Virtualization2012;
+//using SolidCP.Providers.Virtualization2012;
+using SolidCP.Server.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -181,7 +182,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             {
                 // delete completed task definitions
                 List<string> completedTasks = new List<string>();
-                KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VirtualMachineId);
+                KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VirtualMachineId).ToArray();
                 foreach (KvpExchangeDataItem vmKvp in vmKvps)
                 {
                     if (vmKvp.Name.StartsWith(TASK_PREFIX))
@@ -266,7 +267,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 ushort waitSec = 60;
                 for (ushort i = 0; i < waitSec; i++)
                 {
-                    KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VirtualMachineId);
+                    KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VirtualMachineId).ToArray();
                     System.Threading.Thread.Sleep(1000);
                     foreach (KvpExchangeDataItem vmKvp in vmKvps)
                     {

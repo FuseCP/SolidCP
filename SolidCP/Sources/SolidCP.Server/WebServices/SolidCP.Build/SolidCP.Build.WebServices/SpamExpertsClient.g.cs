@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "ISpamExperts", Namespace = "http://smbsaas/solidcp/server/")]
     public interface ISpamExperts
@@ -57,7 +59,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.Filters.SpamExpertsResult AddDomainFilter(string domain, string password, string email, string[] destinations)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "AddDomainFilter", domain, password, email, destinations);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "AddDomainFilter", domain, password, email, destinations);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> AddDomainFilterAsync(string domain, string password, string email, string[] destinations)
@@ -67,7 +69,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult AddEmailFilter(string name, string domain, string password)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "AddEmailFilter", name, domain, password);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "AddEmailFilter", name, domain, password);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> AddEmailFilterAsync(string name, string domain, string password)
@@ -77,7 +79,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult DeleteDomainFilter(string domain)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "DeleteDomainFilter", domain);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "DeleteDomainFilter", domain);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> DeleteDomainFilterAsync(string domain)
@@ -87,7 +89,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult DeleteEmailFilter(string email)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "DeleteEmailFilter", email);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "DeleteEmailFilter", email);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> DeleteEmailFilterAsync(string email)
@@ -97,7 +99,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult SetDomainFilterDestinations(string name, string[] destinations)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "SetDomainFilterDestinations", name, destinations);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "SetDomainFilterDestinations", name, destinations);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> SetDomainFilterDestinationsAsync(string name, string[] destinations)
@@ -107,7 +109,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult SetDomainFilterUser(string domain, string password, string email)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "SetDomainFilterUser", domain, password, email);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "SetDomainFilterUser", domain, password, email);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> SetDomainFilterUserAsync(string domain, string password, string email)
@@ -117,7 +119,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult SetDomainFilterUserPassword(string name, string password)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "SetDomainFilterUserPassword", name, password);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "SetDomainFilterUserPassword", name, password);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> SetDomainFilterUserPasswordAsync(string name, string password)
@@ -127,7 +129,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult SetEmailFilterUserPassword(string email, string password)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "SetEmailFilterUserPassword", email, password);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "SetEmailFilterUserPassword", email, password);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> SetEmailFilterUserPasswordAsync(string email, string password)
@@ -137,7 +139,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult AddDomainFilterAlias(string domain, string alias)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "AddDomainFilterAlias", domain, alias);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "AddDomainFilterAlias", domain, alias);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> AddDomainFilterAliasAsync(string domain, string alias)
@@ -147,7 +149,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Filters.SpamExpertsResult DeleteDomainFilterAlias(string domain, string alias)
         {
-            return (SolidCP.Providers.Filters.SpamExpertsResult)Invoke("SolidCP.Server.SpamExperts", "DeleteDomainFilterAlias", domain, alias);
+            return Invoke<SolidCP.Providers.Filters.SpamExpertsResult>("SolidCP.Server.SpamExperts", "DeleteDomainFilterAlias", domain, alias);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Filters.SpamExpertsResult> DeleteDomainFilterAliasAsync(string domain, string alias)

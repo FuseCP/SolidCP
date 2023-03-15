@@ -1,10 +1,12 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
     [SolidCP.Web.Client.HasPolicy("ServerPolicy")]
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IStatisticsServer", Namespace = "http://smbsaas/solidcp/server/")]
     public interface IStatisticsServer
@@ -45,7 +47,7 @@ namespace SolidCP.Server.Client
     {
         public SolidCP.Providers.Statistics.StatsServer[] GetServers()
         {
-            return (SolidCP.Providers.Statistics.StatsServer[])Invoke("SolidCP.Server.StatisticsServer", "GetServers");
+            return Invoke<SolidCP.Providers.Statistics.StatsServer[]>("SolidCP.Server.StatisticsServer", "GetServers");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsServer[]> GetServersAsync()
@@ -55,7 +57,7 @@ namespace SolidCP.Server.Client
 
         public string GetSiteId(string siteName)
         {
-            return (string)Invoke("SolidCP.Server.StatisticsServer", "GetSiteId", siteName);
+            return Invoke<string>("SolidCP.Server.StatisticsServer", "GetSiteId", siteName);
         }
 
         public async System.Threading.Tasks.Task<string> GetSiteIdAsync(string siteName)
@@ -65,7 +67,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetSites()
         {
-            return (string[])Invoke("SolidCP.Server.StatisticsServer", "GetSites");
+            return Invoke<string[]>("SolidCP.Server.StatisticsServer", "GetSites");
         }
 
         public async System.Threading.Tasks.Task<string[]> GetSitesAsync()
@@ -75,7 +77,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.Statistics.StatsSite GetSite(string siteId)
         {
-            return (SolidCP.Providers.Statistics.StatsSite)Invoke("SolidCP.Server.StatisticsServer", "GetSite", siteId);
+            return Invoke<SolidCP.Providers.Statistics.StatsSite>("SolidCP.Server.StatisticsServer", "GetSite", siteId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.Statistics.StatsSite> GetSiteAsync(string siteId)
@@ -85,7 +87,7 @@ namespace SolidCP.Server.Client
 
         public string AddSite(SolidCP.Providers.Statistics.StatsSite site)
         {
-            return (string)Invoke("SolidCP.Server.StatisticsServer", "AddSite", site);
+            return Invoke<string>("SolidCP.Server.StatisticsServer", "AddSite", site);
         }
 
         public async System.Threading.Tasks.Task<string> AddSiteAsync(SolidCP.Providers.Statistics.StatsSite site)

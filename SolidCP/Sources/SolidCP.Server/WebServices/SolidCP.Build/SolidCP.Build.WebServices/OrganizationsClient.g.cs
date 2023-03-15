@@ -1,9 +1,11 @@
 ﻿#if Client
+using System.Linq;
 using System.ServiceModel;
 
 namespace SolidCP.Server.Client
 {
     // wcf client contract
+    [SolidCP.Providers.SoapHeader]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
     [ServiceContract(ConfigurationName = "IOrganizations", Namespace = "http://tempuri.org/")]
     public interface IOrganizations
@@ -125,9 +127,9 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://tempuri.org/IOrganizations/ChangeDriveMapFolderPath", ReplyAction = "http://tempuri.org/IOrganizations/ChangeDriveMapFolderPathResponse")]
         System.Threading.Tasks.Task ChangeDriveMapFolderPathAsync(string organizationId, string oldFolder, string newFolder);
         [OperationContract(Action = "http://tempuri.org/IOrganizations/GetOrganizationUsersWithExpiredPassword", ReplyAction = "http://tempuri.org/IOrganizations/GetOrganizationUsersWithExpiredPasswordResponse")]
-        System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser> GetOrganizationUsersWithExpiredPassword(string organizationId, int daysBeforeExpiration);
+        SolidCP.Providers.HostedSolution.OrganizationUser[] /*List*/ GetOrganizationUsersWithExpiredPassword(string organizationId, int daysBeforeExpiration);
         [OperationContract(Action = "http://tempuri.org/IOrganizations/GetOrganizationUsersWithExpiredPassword", ReplyAction = "http://tempuri.org/IOrganizations/GetOrganizationUsersWithExpiredPasswordResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser>> GetOrganizationUsersWithExpiredPasswordAsync(string organizationId, int daysBeforeExpiration);
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OrganizationUser[]> GetOrganizationUsersWithExpiredPasswordAsync(string organizationId, int daysBeforeExpiration);
         [OperationContract(Action = "http://tempuri.org/IOrganizations/ApplyPasswordSettings", ReplyAction = "http://tempuri.org/IOrganizations/ApplyPasswordSettingsResponse")]
         void ApplyPasswordSettings(string organizationId, SolidCP.Providers.HostedSolution.OrganizationPasswordSettings passwordSettings);
         [OperationContract(Action = "http://tempuri.org/IOrganizations/ApplyPasswordSettings", ReplyAction = "http://tempuri.org/IOrganizations/ApplyPasswordSettingsResponse")]
@@ -156,7 +158,7 @@ namespace SolidCP.Server.Client
     {
         public bool OrganizationExists(string organizationId)
         {
-            return (bool)Invoke("SolidCP.Server.Organizations", "OrganizationExists", organizationId);
+            return Invoke<bool>("SolidCP.Server.Organizations", "OrganizationExists", organizationId);
         }
 
         public async System.Threading.Tasks.Task<bool> OrganizationExistsAsync(string organizationId)
@@ -166,7 +168,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.Organization CreateOrganization(string organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.Organization)Invoke("SolidCP.Server.Organizations", "CreateOrganization", organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.Organization>("SolidCP.Server.Organizations", "CreateOrganization", organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.Organization> CreateOrganizationAsync(string organizationId)
@@ -186,7 +188,7 @@ namespace SolidCP.Server.Client
 
         public int CreateUser(string organizationId, string loginName, string displayName, string upn, string password, bool enabled)
         {
-            return (int)Invoke("SolidCP.Server.Organizations", "CreateUser", organizationId, loginName, displayName, upn, password, enabled);
+            return Invoke<int>("SolidCP.Server.Organizations", "CreateUser", organizationId, loginName, displayName, upn, password, enabled);
         }
 
         public async System.Threading.Tasks.Task<int> CreateUserAsync(string organizationId, string loginName, string displayName, string upn, string password, bool enabled)
@@ -216,7 +218,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.OrganizationUser GetUserGeneralSettings(string loginName, string organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.OrganizationUser)Invoke("SolidCP.Server.Organizations", "GetUserGeneralSettings", loginName, organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.OrganizationUser>("SolidCP.Server.Organizations", "GetUserGeneralSettings", loginName, organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OrganizationUser> GetUserGeneralSettingsAsync(string loginName, string organizationId)
@@ -226,7 +228,7 @@ namespace SolidCP.Server.Client
 
         public int CreateSecurityGroup(string organizationId, string groupName)
         {
-            return (int)Invoke("SolidCP.Server.Organizations", "CreateSecurityGroup", organizationId, groupName);
+            return Invoke<int>("SolidCP.Server.Organizations", "CreateSecurityGroup", organizationId, groupName);
         }
 
         public async System.Threading.Tasks.Task<int> CreateSecurityGroupAsync(string organizationId, string groupName)
@@ -236,7 +238,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.OrganizationSecurityGroup GetSecurityGroupGeneralSettings(string groupName, string organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.OrganizationSecurityGroup)Invoke("SolidCP.Server.Organizations", "GetSecurityGroupGeneralSettings", groupName, organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.OrganizationSecurityGroup>("SolidCP.Server.Organizations", "GetSecurityGroupGeneralSettings", groupName, organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OrganizationSecurityGroup> GetSecurityGroupGeneralSettingsAsync(string groupName, string organizationId)
@@ -246,7 +248,7 @@ namespace SolidCP.Server.Client
 
         public string[] GetSecurityGroupsNotes(string[] groupNames, string organizationId)
         {
-            return (string[])Invoke("SolidCP.Server.Organizations", "GetSecurityGroupsNotes", groupNames, organizationId);
+            return Invoke<string[]>("SolidCP.Server.Organizations", "GetSecurityGroupsNotes", groupNames, organizationId);
         }
 
         public async System.Threading.Tasks.Task<string[]> GetSecurityGroupsNotesAsync(string[] groupNames, string organizationId)
@@ -346,7 +348,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.ResultObjects.PasswordPolicyResult GetPasswordPolicy()
         {
-            return (SolidCP.Providers.ResultObjects.PasswordPolicyResult)Invoke("SolidCP.Server.Organizations", "GetPasswordPolicy");
+            return Invoke<SolidCP.Providers.ResultObjects.PasswordPolicyResult>("SolidCP.Server.Organizations", "GetPasswordPolicy");
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.ResultObjects.PasswordPolicyResult> GetPasswordPolicyAsync()
@@ -356,7 +358,7 @@ namespace SolidCP.Server.Client
 
         public string GetSamAccountNameByUserPrincipalName(string organizationId, string userPrincipalName)
         {
-            return (string)Invoke("SolidCP.Server.Organizations", "GetSamAccountNameByUserPrincipalName", organizationId, userPrincipalName);
+            return Invoke<string>("SolidCP.Server.Organizations", "GetSamAccountNameByUserPrincipalName", organizationId, userPrincipalName);
         }
 
         public async System.Threading.Tasks.Task<string> GetSamAccountNameByUserPrincipalNameAsync(string organizationId, string userPrincipalName)
@@ -366,7 +368,7 @@ namespace SolidCP.Server.Client
 
         public bool DoesSamAccountNameExist(string accountName)
         {
-            return (bool)Invoke("SolidCP.Server.Organizations", "DoesSamAccountNameExist", accountName);
+            return Invoke<bool>("SolidCP.Server.Organizations", "DoesSamAccountNameExist", accountName);
         }
 
         public async System.Threading.Tasks.Task<bool> DoesSamAccountNameExistAsync(string accountName)
@@ -376,7 +378,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.OS.MappedDrive[] GetDriveMaps(string organizationId)
         {
-            return (SolidCP.Providers.OS.MappedDrive[])Invoke("SolidCP.Server.Organizations", "GetDriveMaps", organizationId);
+            return Invoke<SolidCP.Providers.OS.MappedDrive[]>("SolidCP.Server.Organizations", "GetDriveMaps", organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.OS.MappedDrive[]> GetDriveMapsAsync(string organizationId)
@@ -386,7 +388,7 @@ namespace SolidCP.Server.Client
 
         public int CreateMappedDrive(string organizationId, string drive, string labelAs, string path)
         {
-            return (int)Invoke("SolidCP.Server.Organizations", "CreateMappedDrive", organizationId, drive, labelAs, path);
+            return Invoke<int>("SolidCP.Server.Organizations", "CreateMappedDrive", organizationId, drive, labelAs, path);
         }
 
         public async System.Threading.Tasks.Task<int> CreateMappedDriveAsync(string organizationId, string drive, string labelAs, string path)
@@ -444,14 +446,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.Organizations", "ChangeDriveMapFolderPath", organizationId, oldFolder, newFolder);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser> GetOrganizationUsersWithExpiredPassword(string organizationId, int daysBeforeExpiration)
+        public SolidCP.Providers.HostedSolution.OrganizationUser[] /*List*/ GetOrganizationUsersWithExpiredPassword(string organizationId, int daysBeforeExpiration)
         {
-            return (System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser>)Invoke("SolidCP.Server.Organizations", "GetOrganizationUsersWithExpiredPassword", organizationId, daysBeforeExpiration);
+            return Invoke<SolidCP.Providers.HostedSolution.OrganizationUser[], SolidCP.Providers.HostedSolution.OrganizationUser>("SolidCP.Server.Organizations", "GetOrganizationUsersWithExpiredPassword", organizationId, daysBeforeExpiration);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser>> GetOrganizationUsersWithExpiredPasswordAsync(string organizationId, int daysBeforeExpiration)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OrganizationUser[]> GetOrganizationUsersWithExpiredPasswordAsync(string organizationId, int daysBeforeExpiration)
         {
-            return await InvokeAsync<System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser>>("SolidCP.Server.Organizations", "GetOrganizationUsersWithExpiredPassword", organizationId, daysBeforeExpiration);
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.OrganizationUser[], SolidCP.Providers.HostedSolution.OrganizationUser>("SolidCP.Server.Organizations", "GetOrganizationUsersWithExpiredPassword", organizationId, daysBeforeExpiration);
         }
 
         public void ApplyPasswordSettings(string organizationId, SolidCP.Providers.HostedSolution.OrganizationPasswordSettings passwordSettings)
@@ -466,7 +468,7 @@ namespace SolidCP.Server.Client
 
         public bool CheckPhoneNumberIsInUse(string phoneNumber, string userSamAccountName = null)
         {
-            return (bool)Invoke("SolidCP.Server.Organizations", "CheckPhoneNumberIsInUse", phoneNumber, userSamAccountName);
+            return Invoke<bool>("SolidCP.Server.Organizations", "CheckPhoneNumberIsInUse", phoneNumber, userSamAccountName);
         }
 
         public async System.Threading.Tasks.Task<bool> CheckPhoneNumberIsInUseAsync(string phoneNumber, string userSamAccountName = null)
@@ -476,7 +478,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.OrganizationUser GetOrganizationUserWithExtraData(string loginName, string organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.OrganizationUser)Invoke("SolidCP.Server.Organizations", "GetOrganizationUserWithExtraData", loginName, organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.OrganizationUser>("SolidCP.Server.Organizations", "GetOrganizationUserWithExtraData", loginName, organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OrganizationUser> GetOrganizationUserWithExtraDataAsync(string loginName, string organizationId)
@@ -496,7 +498,7 @@ namespace SolidCP.Server.Client
 
         public SolidCP.Providers.HostedSolution.ExchangeAccount[] GetUserGroups(string userName, int organizationId)
         {
-            return (SolidCP.Providers.HostedSolution.ExchangeAccount[])Invoke("SolidCP.Server.Organizations", "GetUserGroups", userName, organizationId);
+            return Invoke<SolidCP.Providers.HostedSolution.ExchangeAccount[]>("SolidCP.Server.Organizations", "GetUserGroups", userName, organizationId);
         }
 
         public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeAccount[]> GetUserGroupsAsync(string userName, int organizationId)
@@ -799,12 +801,12 @@ namespace SolidCP.Server.Client
             await base.Client.ChangeDriveMapFolderPathAsync(organizationId, oldFolder, newFolder);
         }
 
-        public System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser> GetOrganizationUsersWithExpiredPassword(string organizationId, int daysBeforeExpiration)
+        public SolidCP.Providers.HostedSolution.OrganizationUser[] /*List*/ GetOrganizationUsersWithExpiredPassword(string organizationId, int daysBeforeExpiration)
         {
             return base.Client.GetOrganizationUsersWithExpiredPassword(organizationId, daysBeforeExpiration);
         }
 
-        public async System.Threading.Tasks.Task<System.Collections.Generic.List<SolidCP.Providers.HostedSolution.OrganizationUser>> GetOrganizationUsersWithExpiredPasswordAsync(string organizationId, int daysBeforeExpiration)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.OrganizationUser[]> GetOrganizationUsersWithExpiredPasswordAsync(string organizationId, int daysBeforeExpiration)
         {
             return await base.Client.GetOrganizationUsersWithExpiredPasswordAsync(organizationId, daysBeforeExpiration);
         }

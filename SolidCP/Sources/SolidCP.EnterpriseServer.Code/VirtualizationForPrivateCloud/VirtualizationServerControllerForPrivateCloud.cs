@@ -44,6 +44,7 @@ using SolidCP.Providers;
 using System.Text;
 using System.Collections;
 using System.Net.Mail;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -99,7 +100,7 @@ namespace SolidCP.EnterpriseServer
             var vps = GetVirtualizationProxy(serviceId);
 
             // load details
-            return vps.GetVirtualMachines();
+            return vps.GetVirtualMachines().ToArray();
         }
         #endregion
 
@@ -1450,7 +1451,7 @@ namespace SolidCP.EnterpriseServer
             {
                 // delete completed task definitions
                 List<string> completedTasks = new List<string>();
-                KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VmGuid.ToString());
+                KvpExchangeDataItem[] vmKvps = vs.GetKVPItems(vm.VmGuid.ToString()).ToArray();
                 foreach (KvpExchangeDataItem vmKvp in vmKvps)
                 {
                     if (vmKvp.Name.StartsWith(TASK_PREFIX))
@@ -1576,7 +1577,7 @@ namespace SolidCP.EnterpriseServer
             var vps = GetVirtualizationProxy(vm.ServiceId);
 
             // load jobs
-            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VmId.ToString());
+            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VmId.ToString()).ToArray();
             List<ConcreteJob> retJobs = new List<ConcreteJob>();
 
             foreach (ConcreteJob job in jobs)
@@ -2302,7 +2303,7 @@ namespace SolidCP.EnterpriseServer
 
             // get proxy
             var vs = GetVirtualizationProxy(vm.ServiceId);
-            return vs.GetVirtualMachineSnapshots(vm.Name);
+            return vs.GetVirtualMachineSnapshots(vm.Name).ToArray();
         }
 
         public static VirtualMachineSnapshot GetSnapshot(int itemId, string snaphostId)
@@ -2353,7 +2354,7 @@ namespace SolidCP.EnterpriseServer
                 PackageContext cntx = PackageController.GetPackageContext(vm.PackageId);
 
                                 // check the number of created snapshots
-                int createdNumber = vs.GetVirtualMachineSnapshots(vm.Name).Length;
+                int createdNumber = vs.GetVirtualMachineSnapshots(vm.Name).Count;
                 if (createdNumber >= vm.SnapshotsNumber)
                 {
                     TaskManager.CompleteResultTask(res, VirtualizationErrorCodes.QUOTA_EXCEEDED_SNAPSHOTS + ":" + vm.SnapshotsNumber);
@@ -3278,7 +3279,7 @@ namespace SolidCP.EnterpriseServer
         {
 			var vs = new VirtualizationServerForPrivateCloud();
             ServiceProviderProxy.Init(vs, serviceId);
-            return vs.GetExternalSwitches(computerName);
+            return vs.GetExternalSwitches(computerName).ToArray();
         }
         #endregion
 
@@ -3689,7 +3690,7 @@ namespace SolidCP.EnterpriseServer
 
                 var vs = GetVirtualizationProxy(serviceProviderItem.ServiceId);
 
-                ret = vs.GetDeviceEvents(serviceInfo.ServerName, serviceProviderItem.Name);
+                ret = vs.GetDeviceEvents(serviceInfo.ServerName, serviceProviderItem.Name).ToArray();
             }
             catch(Exception )
             {
@@ -3715,7 +3716,7 @@ namespace SolidCP.EnterpriseServer
 
                 var vs = GetVirtualizationProxy(serviceProviderItem.ServiceId);
 
-                ret  = vs.GetMonitoringAlerts(serviceInfo.ServerName, serviceProviderItem.Name);
+                ret  = vs.GetMonitoringAlerts(serviceInfo.ServerName, serviceProviderItem.Name).ToArray();
             }
             catch (Exception )
             { 
@@ -3743,7 +3744,7 @@ namespace SolidCP.EnterpriseServer
 
                 var vs = GetVirtualizationProxy(serviceProviderItem.ServiceId);
 
-                ret = vs.GetPerfomanceValue(serviceProviderItem.Name, perf, startPeriod, endPeriod);
+                ret = vs.GetPerfomanceValue(serviceProviderItem.Name, perf, startPeriod, endPeriod).ToArray();
             }
             catch (Exception )
             {
