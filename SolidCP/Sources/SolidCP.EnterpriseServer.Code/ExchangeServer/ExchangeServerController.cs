@@ -46,9 +46,8 @@ using SolidCP.EnterpriseServer.Code.HostedSolution;
 using SolidCP.EnterpriseServer.Extensions;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
-using SolidCP.Providers.Exchange;
 using SolidCP.Providers.HostedSolution;
-using SolidCP.Providers.OCS;
+using SolidCP.Server.Client;
 using SolidCP.Providers.ResultObjects;
 
 
@@ -6311,7 +6310,7 @@ namespace SolidCP.EnterpriseServer
 
             ServiceProviderProxy.Init(orgProxy, organizationServiceId);
 
-            string[] organizationSettings = orgProxy.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] organizationSettings = ((ServiceProviderSettingsSoapHeader)orgProxy.SoapHeader).Settings;
 
 
 
@@ -6355,14 +6354,14 @@ namespace SolidCP.EnterpriseServer
 
             ServiceProviderProxy.Init(ws, exchangeServiceId);
 
-            string[] exchangeSettings = ws.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] exchangeSettings = ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings;
 
             List<string> resSettings = new List<string>(exchangeSettings);
 
             string orgPrimaryDomainController = GetPrimaryDomainController(organizationServiceId);
 
             ExtendExchangeSettings(resSettings, orgPrimaryDomainController);
-            ws.ServiceProviderSettingsSoapHeaderValue.Settings = resSettings.ToArray();
+            ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
             return ws;
         }
 
@@ -6372,14 +6371,14 @@ namespace SolidCP.EnterpriseServer
 
             ServiceProviderProxy.Init(ws, exchangeServiceId);
 
-            string[] exchangeSettings = ws.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] exchangeSettings = ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings;
 
-            List<string> resSettings = new List<string>(exchangeSettings);
+			List<string> resSettings = new List<string>(exchangeSettings);
 
             string orgPrimaryDomainController = GetPrimaryDomainController(organizationServiceId);
 
             ExtendExchangeSettings(resSettings, orgPrimaryDomainController);
-            ws.ServiceProviderSettingsSoapHeaderValue.Settings = resSettings.ToArray();
+			((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
             return ws;
         }
 
@@ -6389,14 +6388,14 @@ namespace SolidCP.EnterpriseServer
 
             ServiceProviderProxy.Init(ws, exchangeServiceId);
 
-            string[] exchangeSettings = ws.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] exchangeSettings = ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings;
 
-            List<string> resSettings = new List<string>(exchangeSettings);
+			List<string> resSettings = new List<string>(exchangeSettings);
 
             string orgPrimaryDomainController = GetPrimaryDomainController(organizationServiceId);
 
             ExtendExchangeSettings(resSettings, orgPrimaryDomainController);
-            ws.ServiceProviderSettingsSoapHeaderValue.Settings = resSettings.ToArray();
+			((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
             return ws;
         }
 

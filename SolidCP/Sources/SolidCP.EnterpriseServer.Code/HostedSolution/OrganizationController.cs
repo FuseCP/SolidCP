@@ -51,7 +51,7 @@ using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.SharePoint;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.DNS;
-using SolidCP.Providers.OCS;
+using OS = SolidCP.Server.Client;
 using System.Linq;
 
 using System.IO;
@@ -4774,13 +4774,13 @@ namespace SolidCP.EnterpriseServer
 
         #region OS
 
-        private static SolidCP.Providers.OS.OperatingSystem GetOS(int packageId)
+        private static OS.OperatingSystem GetOS(int packageId)
         {
             int sid = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
             if (sid <= 0)
                 return null;
 
-            var os = new SolidCP.Providers.OS.OperatingSystem();
+            var os = new OS.OperatingSystem();
             ServiceProviderProxy.Init(os, sid);
 
             return os;

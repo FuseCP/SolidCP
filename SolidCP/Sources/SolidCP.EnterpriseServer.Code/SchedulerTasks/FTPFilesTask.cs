@@ -35,7 +35,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-using SolidCP.Server;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

@@ -45,7 +45,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.HeliconZoo;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.DNS;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using System.Resources;

@@ -42,6 +42,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.SharePoint;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.SharePoint
 {

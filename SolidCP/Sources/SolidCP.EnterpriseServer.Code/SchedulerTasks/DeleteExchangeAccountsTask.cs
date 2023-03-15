@@ -31,7 +31,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 
-using SolidCP.Providers.Exchange;
+using SolidCP.Server.Client;
 using SolidCP.Providers.HostedSolution;
 
 namespace SolidCP.EnterpriseServer

@@ -37,7 +37,7 @@ using System.Web;
 using Microsoft.ApplicationBlocks.Data;
 using SolidCP.Providers.HeliconZoo;
 using SolidCP.Providers.Web;
-using SolidCP.Server;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

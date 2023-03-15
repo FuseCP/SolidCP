@@ -40,6 +40,7 @@ using System.Xml.Serialization;
 
 using SolidCP.Providers;
 using SolidCP.Providers.FTP;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

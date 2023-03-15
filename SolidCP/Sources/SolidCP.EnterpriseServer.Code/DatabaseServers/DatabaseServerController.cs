@@ -46,6 +46,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.Database;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

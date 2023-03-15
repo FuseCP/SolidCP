@@ -33,6 +33,7 @@
 using System.Collections.Generic;
 using SolidCP.Providers.Filters;
 using SolidCP.EnterpriseServer.Base;
+using SolidCP.Server.Client;
 using System;
 using System.Collections.Specialized;
 
@@ -46,11 +47,13 @@ namespace SolidCP.EnterpriseServer
 
             ServiceProviderProxy.Init(ws, serviceId);
 
+            /*
             string[] settings = ws.ServiceProviderSettingsSoapHeaderValue.Settings;
 
             List<string> resSettings = new List<string>(settings);
 
-            ws.ServiceProviderSettingsSoapHeaderValue.Settings = resSettings.ToArray();
+            ws.ServiceProviderSettingsSoapHeaderValue.Settings = resSettings.ToArray();*/
+
             return ws;
         }
 

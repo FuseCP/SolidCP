@@ -38,6 +38,7 @@ using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.SharePoint;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

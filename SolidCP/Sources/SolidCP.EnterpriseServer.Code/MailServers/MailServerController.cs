@@ -43,6 +43,7 @@ using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Code.MailServers;
 using SolidCP.Providers;
 using SolidCP.Providers.Mail;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

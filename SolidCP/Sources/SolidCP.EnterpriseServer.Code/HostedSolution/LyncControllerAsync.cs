@@ -38,7 +38,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers.Lync;
+using SolidCP.Server.Client;
 using SolidCP.EnterpriseServer.Code.HostedSolution;
 
 

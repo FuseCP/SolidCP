@@ -45,6 +45,7 @@ using SolidCP.Providers.StorageSpaces;
 using SolidCP.Server;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
 using SolidCP.Providers.EnterpriseStorage;
 using System.Collections;
 using SolidCP.Providers.Common;
@@ -2007,7 +2008,7 @@ namespace SolidCP.EnterpriseServer
             return null;
         }
 
-        private static SolidCP.Providers.OS.OperatingSystem GetOS(int packageId)
+        private static OS.OperatingSystem GetOS(int packageId)
         {
             var esServiceInfo = ServerController.GetServiceInfo(GetEnterpriseStorageServiceID(packageId));
             var esProviderInfo = ServerController.GetProvider(esServiceInfo.ProviderId);
@@ -2025,7 +2026,7 @@ namespace SolidCP.EnterpriseServer
 
                     if (result.IsSuccess && result.Value)
                     {
-                        var os = new SolidCP.Providers.OS.OperatingSystem();
+                        var os = new OS.OperatingSystem();
                         ServerProxyConfigurator cnfg = new ServerProxyConfigurator();
 
                         cnfg.ProviderSettings.ProviderGroupID = osProvider.GroupId;

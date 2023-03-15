@@ -828,7 +828,7 @@ namespace SolidCP.EnterpriseServer
                 }
 				
                 // install application
-                result = webServer.InstallGalleryApplication(originalUserId, webAppId, parameters, languageId);
+                result = webServer.InstallGalleryApplication(originalUserId, webAppId, parameters.ToArray(), languageId);
 
 				#region Rollback in case of failure
 				// Rollback - remove resources have been created previously

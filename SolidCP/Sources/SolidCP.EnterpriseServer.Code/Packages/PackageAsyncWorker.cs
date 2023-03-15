@@ -38,6 +38,7 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.Virtualization;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

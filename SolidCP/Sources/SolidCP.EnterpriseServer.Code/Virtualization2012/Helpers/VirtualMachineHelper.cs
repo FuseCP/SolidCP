@@ -113,7 +113,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             VirtualizationServer2012 vps = VirtualizationHelper.GetVirtualizationProxy(vm.ServiceId);
 
             // load jobs
-            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VirtualMachineId).ToArray();
+            ConcreteJob[] jobs = vps.GetVirtualMachineJobs(vm.VirtualMachineId);
             List<ConcreteJob> retJobs = new List<ConcreteJob>();
 
             foreach (ConcreteJob job in jobs)

@@ -41,7 +41,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
 
 using SolidCP.Providers;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
 using SolidCP.EnterpriseServer;
 
 namespace SolidCP.EnterpriseServer

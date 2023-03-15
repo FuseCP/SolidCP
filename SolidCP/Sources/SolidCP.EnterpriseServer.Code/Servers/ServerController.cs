@@ -49,7 +49,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Whois.NET;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
 
 
 namespace SolidCP.EnterpriseServer
@@ -996,7 +997,7 @@ namespace SolidCP.EnterpriseServer
 					return res;
 				}
 
-				AutoDiscovery.AutoDiscovery ad = new AutoDiscovery.AutoDiscovery();
+				AutoDiscovery ad = new AutoDiscovery();
 				ServiceProviderProxy.ServerInit(ad, serverId);
 
 				res = ad.IsInstalled(provider.ProviderType);
@@ -1013,7 +1014,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static string GetServerVersion(int serverId)
 		{
-			AutoDiscovery.AutoDiscovery ad = new AutoDiscovery.AutoDiscovery();
+			AutoDiscovery ad = new AutoDiscovery();
 			ServiceProviderProxy.ServerInit(ad, serverId);
 
 			return ad.GetServerVersion();
@@ -1021,7 +1022,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static string GetServerFilePath(int serverId)
 		{
-			AutoDiscovery.AutoDiscovery ad = new AutoDiscovery.AutoDiscovery();
+			AutoDiscovery ad = new AutoDiscovery();
 			ServiceProviderProxy.ServerInit(ad, serverId);
 
 			return ad.GetServerFilePath(); // ad.GetServer

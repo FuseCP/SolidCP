@@ -59,6 +59,8 @@ namespace SolidCP.Web.Client
 		}
 		public UserNamePasswordCredentials Credentials { get; set; } = new UserNamePasswordCredentials();
 		public object SoapHeader { get; set; } = null;
+
+		public V Header<V>() => (V)SoapHeader;
 		public TimeSpan? Timeout { get; set; } = null;
 
 		protected string url;

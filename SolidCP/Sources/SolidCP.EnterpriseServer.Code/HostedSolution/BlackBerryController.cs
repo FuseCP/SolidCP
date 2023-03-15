@@ -36,6 +36,7 @@ using System.Data;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {

@@ -49,7 +49,8 @@ using SolidCP.Providers.FTP;
 using SolidCP.Providers.Mail;
 using SolidCP.Providers.Database;
 using SolidCP.Providers.OS;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
 
 
 namespace SolidCP.EnterpriseServer
@@ -363,7 +364,7 @@ namespace SolidCP.EnterpriseServer
         private string GetFullPathToInstallFolder(int userId)
         {
             string userhomeFolder = String.Empty;
-            string[] osSesstings = os.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] osSesstings = os.Header<ServiceProviderSettingsSoapHeader>().Settings;
             foreach (string s in osSesstings)
             {
                 if (s.Contains("usershome"))

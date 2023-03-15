@@ -44,7 +44,6 @@ using SolidCP.Providers.ResultObjects;
 using Microsoft.Web.Services3;
 using SolidCP.Providers;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.VirtualizationProxmox;
 
 namespace SolidCP.EnterpriseServer
 {
