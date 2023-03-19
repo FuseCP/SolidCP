@@ -9,7 +9,9 @@ using CoreWCF.Configuration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Razor;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using CoreWCF.Description;
 using CoreWCF.Channels;
 using System.Diagnostics;
@@ -48,14 +50,20 @@ namespace SolidCP.Web.Services
 		public void ConfigureServices(IServiceCollection services)
 		{
 			//Enable CoreWCF Services, with metadata (WSDL) support
-			services.AddServiceModelServices()
+			services
+				.AddServiceModelServices()
 				.AddServiceModelMetadata()
-				.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
+				.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>()
+				.AddRazorPages();
 		}
 
 		public void Configure(IApplicationBuilder app)
 		{
-			app.UseServiceModel(builder =>
+			app.UseDefaultFiles()
+				.UseStaticFiles()
+				.UseRouting()
+				.UseEndpoints(ep => ep.MapRazorPages())
+				.UseServiceModel(builder =>
 			{
 				var webServices = StartupFX.GetWebServices()
 					.Select(ws => new
@@ -63,13 +71,13 @@ namespace SolidCP.Web.Services
 						Service = ws,
 						Contract = ws.GetInterfaces().FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
 					})
+					.Where(ws => ws.Contract != null)
 					.Select(ws => new
 					{
 						Service = ws.Service,
 						Contract = ws.Contract,
 						IsAuth = ws.Contract.GetCustomAttribute<PolicyAttribute>() != null
-					})
-					.Where(ws => ws.Contract != null);
+					});
 
 
 				foreach (var ws in webServices)

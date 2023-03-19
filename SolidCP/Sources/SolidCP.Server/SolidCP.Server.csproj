@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.SDK.SystemWeb/4.0.88">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
@@ -7,22 +7,20 @@
     <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>11</LangVersion>
-    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
-    <RunArguments>/site:server</RunArguments>
+    <!--<RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
+    <RunArguments>/site:server</RunArguments>-->
     <!--<SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <OutputPath>bin/net.core</OutputPath>
-    <OutputType>exe</OutputType>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <OutputPath>bin/net.core</OutputPath>
-    <OutputType>exe</OutputType>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -123,9 +121,5 @@
 
   <ItemGroup>
     <Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\RazorBlade.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\" />
   </ItemGroup>
 </Project>

@@ -32,7 +32,7 @@
 
 ﻿using System;
 using System.IO;
-using System.Configuration;
+//using System.Configuration;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Server.Utils;
@@ -53,7 +53,7 @@ namespace SolidCP.Server.Code
             {
                 bool disableAutoDiscovery;
 
-                if (!bool.TryParse(ConfigurationManager.AppSettings[DisableAutoDiscovery], out disableAutoDiscovery))
+                if (!bool.TryParse(System.Configuration.ConfigurationManager.AppSettings[DisableAutoDiscovery], out disableAutoDiscovery))
                     disableAutoDiscovery = false;
                 
                 if (disableAutoDiscovery)
