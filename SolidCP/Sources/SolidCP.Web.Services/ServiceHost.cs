@@ -165,7 +165,7 @@ namespace SolidCP.Web.Services
 				}
 				
 				if (!Description.Behaviors.OfType<ServiceMetadataBehavior>().Any())
-					Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true });
+					Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true, HttpsGetEnabled = true });
 			}
 		}
 

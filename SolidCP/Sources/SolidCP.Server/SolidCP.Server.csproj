@@ -16,13 +16,14 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <OutputPath>bin/net.core</OutputPath>
     <OutputType>exe</OutputType>
+    <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <OutputPath>bin/net.core</OutputPath>
     <OutputType>exe</OutputType>
-
+    <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -122,5 +123,9 @@
 
   <ItemGroup>
     <Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\RazorBlade.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\" />
   </ItemGroup>
 </Project>
