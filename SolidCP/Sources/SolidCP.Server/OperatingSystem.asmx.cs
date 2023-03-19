@@ -1233,7 +1233,25 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
-		#endregion
+        #endregion
 
-	}
+        [WebMethod, SoapHeader("settings")]
+        public bool IsUnix()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' IsUnix", ProviderSettings.ProviderName);
+                var result = OsProvider.IsUnix();
+                Log.WriteEnd("'{0}' IsUnix", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' IsUnix", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+
+    }
 }

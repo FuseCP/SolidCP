@@ -239,6 +239,9 @@ namespace SolidCP.Server.Services
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         SettingPair[] WpiGetLogsInDirectory(string Path);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        bool IsUnix();
     }
 
     // wcf service

@@ -291,6 +291,10 @@ namespace SolidCP.Server.Client
         SolidCP.Providers.SettingPair[] WpiGetLogsInDirectory(string Path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectoryResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnix", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnixResponse")]
+        bool IsUnix();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnix", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnixResponse")]
+        System.Threading.Tasks.Task<bool> IsUnixAsync();
     }
 
     // wcf client assembly proxy class
@@ -996,6 +1000,16 @@ namespace SolidCP.Server.Client
         {
             return await InvokeAsync<SolidCP.Providers.SettingPair[]>("SolidCP.Server.OperatingSystem", "WpiGetLogsInDirectory", Path);
         }
+
+        public bool IsUnix()
+        {
+            return Invoke<bool>("SolidCP.Server.OperatingSystem", "IsUnix");
+        }
+
+        public async System.Threading.Tasks.Task<bool> IsUnixAsync()
+        {
+            return await InvokeAsync<bool>("SolidCP.Server.OperatingSystem", "IsUnix");
+        }
     }
 
     // wcf client proxy class
@@ -1700,6 +1714,16 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path)
         {
             return await base.Client.WpiGetLogsInDirectoryAsync(Path);
+        }
+
+        public bool IsUnix()
+        {
+            return base.Client.IsUnix();
+        }
+
+        public async System.Threading.Tasks.Task<bool> IsUnixAsync()
+        {
+            return await base.Client.IsUnixAsync();
         }
     }
 }

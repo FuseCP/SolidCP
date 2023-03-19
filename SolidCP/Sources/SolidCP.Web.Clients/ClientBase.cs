@@ -41,7 +41,7 @@ namespace SolidCP.Web.Client
 						.Strip("gprc/web")
 						.Strip("ssl")
 						.Strip("net.tcp/ssl")
-						.Stript("net.tcp");
+						.Strip("net.tcp");
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
 					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").SetApi("basic");
 					else if (value == Protocols.NetHttp) url = url.SetScheme("http").SetApi("net");

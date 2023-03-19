@@ -440,5 +440,7 @@ namespace SolidCP.Providers.OS {
 				throw;
 			}
 		}
+
+		public bool IsUnix() => true;
 	}
 }

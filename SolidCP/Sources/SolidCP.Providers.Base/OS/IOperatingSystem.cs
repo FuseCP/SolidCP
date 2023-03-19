@@ -111,6 +111,7 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string path, string args);
 
+		bool IsUnix();
 
 	}
 

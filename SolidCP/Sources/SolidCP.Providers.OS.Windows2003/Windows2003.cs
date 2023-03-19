@@ -1795,6 +1795,8 @@ namespace SolidCP.Providers.OS
 				throw;
 			}
 		}
+
+		public virtual bool IsUnix() => false;
 		#endregion
 
 		#region System Commands
