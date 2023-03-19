@@ -42,6 +42,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 
 using SolidCP.Server;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Portal
 {
@@ -56,7 +57,7 @@ namespace SolidCP.Portal
         {
             try
             {
-                gvServices.DataSource = ES.Services.Servers.GetWindowsServices(PanelRequest.ServerId);
+                gvServices.DataSource = ES.Services.Servers.GetOSServices(PanelRequest.ServerId);
                 gvServices.DataBind();
             }
             catch (Exception ex)
@@ -68,12 +69,12 @@ namespace SolidCP.Portal
 
         protected void gvServices_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            WindowsServiceStatus status = (WindowsServiceStatus)Enum.Parse(typeof(WindowsServiceStatus), e.CommandName, true);
+            OSServiceStatus status = (OSServiceStatus)Enum.Parse(typeof(OSServiceStatus), e.CommandName, true);
             string id = (string)e.CommandArgument;
 
             try
             {
-                int result = ES.Services.Servers.ChangeWindowsServiceStatus(PanelRequest.ServerId, id, status);
+                int result = ES.Services.Servers.ChangeOSServiceStatus(PanelRequest.ServerId, id, status);
                 if (result < 0)
                 {
                     ShowResultMessage(result);
@@ -92,7 +93,7 @@ namespace SolidCP.Portal
 
         protected void gvServices_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            WindowsService serv = (WindowsService)e.Row.DataItem;
+            OSService serv = (OSService)e.Row.DataItem;
             ImageButton cmdStart = (ImageButton)e.Row.FindControl("cmdStart");
             ImageButton cmdPause = (ImageButton)e.Row.FindControl("cmdPause");
             ImageButton cmdContinue = (ImageButton)e.Row.FindControl("cmdContinue");
@@ -101,11 +102,11 @@ namespace SolidCP.Portal
             if (cmdStart == null)
                 return;
 
-            cmdStart.Visible = (serv.Status == WindowsServiceStatus.Stopped);
-            cmdPause.Visible = (serv.Status == WindowsServiceStatus.Running && serv.CanPauseAndContinue);
-            cmdContinue.Visible = (serv.Status == WindowsServiceStatus.Paused && serv.CanPauseAndContinue);
-            cmdStop.Visible = (serv.Status == WindowsServiceStatus.Running
-                || serv.Status == WindowsServiceStatus.Paused
+            cmdStart.Visible = (serv.Status == OSServiceStatus.Stopped);
+            cmdPause.Visible = (serv.Status == OSServiceStatus.Running && serv.CanPauseAndContinue);
+            cmdContinue.Visible = (serv.Status == OSServiceStatus.Paused && serv.CanPauseAndContinue);
+            cmdStop.Visible = (serv.Status == OSServiceStatus.Running
+                || serv.Status == OSServiceStatus.Paused
                 && serv.CanStop);
         }
 

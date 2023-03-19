@@ -54,7 +54,7 @@ namespace SolidCP.Portal
         {
             try
             {
-                gvProcesses.DataSource = ES.Services.Servers.GetWindowsProcesses(PanelRequest.ServerId);
+                gvProcesses.DataSource = ES.Services.Servers.GetOSProcesses(PanelRequest.ServerId);
                 gvProcesses.DataBind();
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace SolidCP.Portal
             try
             {
                 int pid = (int)gvProcesses.DataKeys[e.RowIndex][0];
-                int result = ES.Services.Servers.TerminateWindowsProcess(PanelRequest.ServerId, pid);
+                int result = ES.Services.Servers.TerminateOSProcess(PanelRequest.ServerId, pid);
                 if (result < 0)
                 {
                     ShowResultMessage(result);
