@@ -39,15 +39,17 @@ namespace SolidCP.Web.Client
 						.Strip("ws")
 						.Strip("gprc")
 						.Strip("gprc/web")
-						.Strip("ssl");
+						.Strip("ssl")
+						.Strip("net.tcp/ssl")
+						.Stript("net.tcp");
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
 					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").SetApi("basic");
 					else if (value == Protocols.NetHttp) url = url.SetScheme("http").SetApi("net");
 					else if (value == Protocols.NetHttps) url = url.SetScheme("https").SetApi("net");
 					else if (value == Protocols.WSHttp) url = url.SetScheme("http").SetApi("ws");
 					else if (value == Protocols.WSHttps) url = url.SetScheme("https").SetApi("ws");
-					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp");
-					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").SetApi("ssl");
+					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").SetApi("net.tcp");
+					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").SetApi("net.tcp/ssl");
 					else if (value == Protocols.gRPC) url = url.SetScheme("http").SetApi("grpc");
 					else if (value == Protocols.gRPCSsl) url = url.SetScheme("https").SetApi("grpc");
 					else if (value == Protocols.gRPCWeb) url = url.SetScheme("http").SetApi("grpc/web");
@@ -91,7 +93,7 @@ namespace SolidCP.Web.Client
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
-					if (url.HasApi("ssl")) Protocol = Protocols.NetTcpSsl;
+					if (url.HasApi("net.tcp/ssl")) Protocol = Protocols.NetTcpSsl;
 					else Protocol = Protocols.NetTcp;
 				}
 #if NETFRAMEWORK
@@ -217,9 +219,10 @@ namespace SolidCP.Web.Client
 						case Protocols.WSHttp:
 							if (isAuthenticated)
 							{
-								var ws = new WSHttpBinding(SecurityMode.Message);
+                                throw new NotSupportedException("This api is not supported on this service.");
+								/* var ws = new WSHttpBinding(SecurityMode.Message);
 								ws.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-								binding = ws;
+								binding = ws; */
 							}
 							else binding = new WSHttpBinding(SecurityMode.None);
 							break;
