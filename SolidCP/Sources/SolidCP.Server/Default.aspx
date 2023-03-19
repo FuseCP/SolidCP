@@ -54,7 +54,7 @@
     <form id="AspForm" runat="server">
 		<div class="Content">
 			<div>
-				<asp:Image ID="imgLogo" runat="server" />
+				<asp:Image ID="imgLogo" runat="server" ImageUrl="~/wwwroot/img/logo.png" />
 			</div>
 		
 			<h1>Server</h1>

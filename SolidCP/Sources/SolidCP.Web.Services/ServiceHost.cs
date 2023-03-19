@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
+using SolidCP.Web.Services;
 
 namespace SolidCP.Web.Services
 {
@@ -45,7 +46,14 @@ namespace SolidCP.Web.Services
 
 			if (contract == null) throw new NotSupportedException();
 
+
+/* Unmerged change from project 'SolidCP.Web.Services (net48)'
+Before:
 			var policy = contract.GetCustomAttributes(false).OfType<Microsoft.Web.Services3.PolicyAttribute>().FirstOrDefault();
+After:
+			var policy = contract.GetCustomAttributes(false).OfType<PolicyAttribute>().FirstOrDefault();
+*/
+			var policy = contract.GetCustomAttributes(false).OfType<Services.PolicyAttribute>().FirstOrDefault();
 			var isAuthenticated = policy != null;
 
 
@@ -87,11 +95,11 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							var binding = new WSHttpBinding(SecurityMode.Message);
+							/* var binding = new WSHttpBinding(SecurityMode.Message);
 							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
 							binding.Security.Message.NegotiateServiceCredential = true;
 							binding.Name = "ws.message";
-							AddEndpoint(contract, binding, adr);
+							AddEndpoint(contract, binding, adr); */
 						}
 						else AddEndpoint(contract, new WSHttpBinding(SecurityMode.None) { Name = "ws.none" }, adr);
 					}
@@ -99,11 +107,11 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							var binding = new WSHttpBinding(SecurityMode.Message);
+							/* var binding = new WSHttpBinding(SecurityMode.Message);
 							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
 							binding.Security.Message.NegotiateServiceCredential = true;
 							binding.Name = "ws.message";
-							AddEndpoint(contract, binding, adr);
+							AddEndpoint(contract, binding, adr); */
 						}
 						else AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 					}
@@ -133,7 +141,7 @@ namespace SolidCP.Web.Services
 				}
 				else if (adr.StartsWith("net.tcp://"))
 				{
-					if (HasApi(adr, "ssl"))
+					if (HasApi(adr, "net.tcp/ssl"))
 					{
 						var binding = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
 						binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
@@ -145,10 +153,10 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							var binding = new NetTcpBinding(SecurityMode.Message);
+							/* var binding = new NetTcpBinding(SecurityMode.Message);
 							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
 							binding.Name = "nettcp.transportwithmessage";
-							AddEndpoint(contract, binding, adr);
+							AddEndpoint(contract, binding, adr); */
 						}
 						else AddEndpoint(contract, new NetTcpBinding(SecurityMode.None) {  Name="nettcp.none" }, adr);
 					}

@@ -35,6 +35,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using SolidCP.Providers.ResultObjects;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Providers.Web
 {
@@ -42,6 +43,7 @@ namespace SolidCP.Providers.Web
 	/// Summary description for WebSiteItem.
 	/// </summary>
 	[Serializable]
+	[DataContract]
 	public class WebSite : WebAppVirtualDirectory
     {
         #region String constants
@@ -76,12 +78,14 @@ namespace SolidCP.Providers.Web
 		}
 
 		[Persistent]
+		[DataMember]
 		public string SiteId
 		{
 			get { return siteId; }
 			set { siteId = value; }
 		}
 
+		[DataMember]
 		public string SiteIPAddress
 		{
 			get { return siteIPAddress; }
@@ -89,12 +93,14 @@ namespace SolidCP.Providers.Web
 		}
 
         [Persistent]
+		[DataMember]
         public int SiteIPAddressId
         {
             get { return siteIPAddressId; }
             set { siteIPAddressId = value; }
         }
 
+		[DataMember]
         public bool IsDedicatedIP
         {
             get { return isDedicatedIP; }
@@ -105,15 +111,18 @@ namespace SolidCP.Providers.Web
 		/// Gets or sets logs path for the web site
 		/// </summary>
 		[Persistent]
+		[DataMember]
 		public string LogsPath { get; set; }
 
         [Persistent]
+		[DataMember]
         public string DataPath
         {
             get { return dataPath; }
             set { dataPath = value; }
         }
 
+		[DataMember]
         public ServerBinding[] Bindings
 		{
 			get { return bindings; }
@@ -121,6 +130,7 @@ namespace SolidCP.Providers.Web
 		}
 
         [Persistent]
+		[DataMember]
         public string FrontPageAccount
         {
             get { return this.frontPageAccount; }
@@ -128,85 +138,98 @@ namespace SolidCP.Providers.Web
         }
 
         [Persistent]
+		[DataMember]
         public string FrontPagePassword
         {
             get { return this.frontPagePassword; }
             set { this.frontPagePassword = value; }
         }
 
+		[DataMember]
         public bool FrontPageAvailable
         {
             get { return this.frontPageAvailable; }
             set { this.frontPageAvailable = value; }
         }
 
+		[DataMember]
         public bool FrontPageInstalled
         {
             get { return this.frontPageInstalled; }
             set { this.frontPageInstalled = value; }
         }
 
+		[DataMember]
 	    public bool ColdFusionAvailable
 	    {
             get { return this.coldFusionAvailable; }
             set { this.coldFusionAvailable = value; }
 	    }
 
+		[DataMember]
 	    public string ColdFusionVersion
 	    {
             get { return this.coldFusionVersion; }
             set { this.coldFusionVersion = value; }
 	    }
 
+		[DataMember]
 	    public bool CreateCFAppVirtualDirectories
 	    {
             get { return this.createCFAppVirtualDirectories; }
             set { this.createCFAppVirtualDirectories = value; }
 	    }
-		
+
+		[DataMember]
 	    public bool CreateCFAppVirtualDirectoriesPol
 	    {
             get { return this.createCFAppVirtualDirectoriesPol; }
             set { this.createCFAppVirtualDirectoriesPol = value; }
 	    }
 
+		[DataMember]
 	    public ServerState SiteState
         {
             get { return this.siteState; }
             set { this.siteState = value; }
         }
 
+		[DataMember]
         public bool SecuredFoldersInstalled
         {
             get { return this.securedFoldersInstalled; }
             set { this.securedFoldersInstalled = value; }
         }
 
+		[DataMember]
         public bool HeliconApeInstalled
         {
             get { return this.heliconApeInstalled; }
             set { this.heliconApeInstalled = value; }
         }
 
-
+		[DataMember]
 	    public bool HeliconApeEnabled
 	    {
             get { return this.heliconApeEnabled; }
             set { this.heliconApeEnabled = value; }
 	    }
 
+		[DataMember]
         public HeliconApeStatus HeliconApeStatus
         {
             get { return this.heliconApeStatus; }
             set { this.heliconApeStatus = value; }
         }
 
+		[DataMember]
 	    public bool SniEnabled
 	    {
             get { return this.sniEnabled; }
             set { this.sniEnabled = value; }
 	    }
 
+		[DataMember]
         public string SiteInternalIPAddress
 		{
 			get { return siteInternalIPAddress; }

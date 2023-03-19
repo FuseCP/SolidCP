@@ -3,16 +3,18 @@ using System;
 using System.Data;
 using System.Web;
 using System.Collections;
-using System.Web.Services;
-//using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using System.ComponentModel;
-using Microsoft.Web.Services3;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.SharePoint;
 using SolidCP.Server.Utils;
 using SolidCP.Server;
+#if NETFRAMEWORK
 using System.ServiceModel;
+#else
+using CoreWCF;
+#endif
 
 namespace SolidCP.Server.Services
 {
@@ -96,7 +98,7 @@ namespace SolidCP.Server.Services
     // wcf service
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
 #if NETFRAMEWORK
-[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
 #endif
     public class SharePointServer : SolidCP.Server.SharePointServer, ISharePointServer
     {

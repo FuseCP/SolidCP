@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.Web.Services3
+namespace SolidCP.Web.Services
 {
 	public class PolicyAttribute : Attribute
 	{

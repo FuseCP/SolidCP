@@ -33,8 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web.Services;
-//using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.OS;
@@ -48,6 +47,7 @@ namespace SolidCP.Server
     /// </summary>
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [Policy("ServerPolicy")]
     [ToolboxItem(false)]
     public class Organizations : HostingServiceProviderWebService
     {

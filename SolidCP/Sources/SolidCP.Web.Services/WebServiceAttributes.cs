@@ -1,10 +1,11 @@
 using System;
+//using System.Web.Services;
 
-namespace System.Web.Services
+namespace SolidCP.Web.Services
 {
-#if NETFRAMEWORK
+//#if NETFRAMEWORK
 	public enum WsiProfiles { BasicProfile1_1 }
-#endif  
+//#endif
 	public class WebService { }
 	public class WebServiceAttribute : Attribute
 	{

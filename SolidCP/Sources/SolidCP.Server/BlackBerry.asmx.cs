@@ -31,13 +31,11 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ﻿using System.ComponentModel;
-using System.Web.Services;
-//using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
-using Microsoft.Web.Services3;
 
 namespace SolidCP.Server
 {

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net48</TargetFrameworks>
     <Nullable>disable</Nullable>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
@@ -15,12 +15,16 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <OutputPath>bin/net.core</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <OutputPath>bin/net.core</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -46,10 +50,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="Images\logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="WindowsServer.asmx.cs" />
     <None Include="WindowsServer.asmx.cs" />
   </ItemGroup>
@@ -68,17 +68,21 @@
     <Compile Remove="Default.aspx.cs" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Content Remove="Pages\Index.cshtml" />
+    <Compile Remove="Pages\Index.cshtml.cs" />
+    <None Include="Pages\Index.cshtml" />
+    <None Include="Pages\Index.cshtml.cs" />
+  </ItemGroup>
+  
   <ItemGroup>
     <None Include="Code\ServerUsernameTokenManager.cs" />
     <None Include="Code\UsernameAssertion.cs" />
     <None Include="Code\WPIHelper.cs" />
+    <None Include="wwwroot\img\logo.png" />
     <Compile Remove="Code\ServerUsernameTokenManager.cs" />
     <Compile Remove="Code\UsernameAssertion.cs" />
     <Compile Remove="Code\WPIHelper.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Images\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,40 +90,24 @@
     <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-    <!--<ProjectReference Include="..\SolidCP.Server.WPIServiceContract\SolidCP.Server.WPIServiceContract.csproj" />-->
   </ItemGroup>
 
   <ItemGroup>
-   <!-- <PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
-    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />-->
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <!--<Reference Include="Microsoft.SharePoint">
-      <HintPath>..\..\Lib\References\Microsoft\Microsoft.SharePoint.dll</HintPath>
-    </Reference>-->
-    <!--<Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
-    </Reference>-->
-    <!--<Reference Include="Microsoft.Web.PlatformInstaller, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.PlatformInstaller.dll</HintPath>
-      <Private>True</Private>
-    </Reference>-->
-    <!--<Reference Include="Microsoft.Web.Deployment, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Deployment.dll</HintPath>
-      <Private>True</Private>
-    </Reference>-->
-    <Reference Include="System.ServiceModel" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Runtime.Remoting" />
   </ItemGroup>
 
   <ItemGroup>
     <Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\RazorBlade.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
   </ItemGroup>
 </Project>

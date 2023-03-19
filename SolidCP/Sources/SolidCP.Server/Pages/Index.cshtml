@@ -1,4 +1,22 @@
-﻿@page
+﻿@page "/"
+@using System.Reflection
+
+@functions {
+    string Version {get; set; }
+    string Bitness { get; set; }
+    //string Url { get; set; }
+}
+
+@{
+    // set version
+    object[] attrs = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
+    if(attrs.Length > 0)
+        Version = ((AssemblyFileVersionAttribute)attrs[0]).Version;
+
+    // asp.net mode
+    Bitness = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
+}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head id="Head1" runat="server">
@@ -48,7 +66,7 @@
     <form id="AspForm" runat="server">
         <div class="Content">
             <div>
-                <asp:Image ID="imgLogo" runat="server" />
+                <img src="img/logo.png" />
             </div>
 
             <h1>Server</h1>
@@ -60,19 +78,19 @@
                 </tr>
                 <tr>
                     <td class="FieldName">Version:</td>
-                    <td></td>
+                    <td>@Version</td>
                 </tr>
                 <tr>
                     <td class="FieldName">URL:</td>
-                    <td></td>
+                    <td>@(HttpContext.Request.Scheme)://@(HttpContext.Request.Host)@(HttpContext.Request.Path)</td>
                 </tr>
                 <tr>
                     <td class="FieldName">ASP.NET Mode:</td>
-                    <td></td>
+                    <td>@Bitness</td>
                 </tr>
             </table>
             <br /><br />
-            <a href="https://solidcp.com">SolidCP</a> &COPY; Copyright <%=DateTime.Now.Year%> All Rights Reserved.
+            <a href="https://solidcp.com">SolidCP</a> &COPY; Copyright @DateTime.Now.Year All Rights Reserved.
         </div>
     </form>
 </body>

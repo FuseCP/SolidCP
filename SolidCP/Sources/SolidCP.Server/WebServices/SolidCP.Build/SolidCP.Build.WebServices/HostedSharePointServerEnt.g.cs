@@ -1,15 +1,17 @@
 ﻿#if !Client
 using System;
 using System.ComponentModel;
-using System.Web.Services;
-//using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.SharePoint;
 using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
 using SolidCP.Server;
+#if NETFRAMEWORK
 using System.ServiceModel;
+#else
+using CoreWCF;
+#endif
 
 namespace SolidCP.Server.Services
 {
@@ -66,7 +68,7 @@ namespace SolidCP.Server.Services
     // wcf service
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
 #if NETFRAMEWORK
-[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
 #endif
     public class HostedSharePointServerEnt : SolidCP.Server.HostedSharePointServerEnt, IHostedSharePointServerEnt
     {

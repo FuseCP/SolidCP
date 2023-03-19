@@ -55,9 +55,6 @@ namespace SolidCP.Server
 
             // asp.net mode
             litAspNetMode.Text = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
-
-			imgLogo.ImageUrl = Page.ClientScript.GetWebResourceUrl(
-				typeof(DefaultPage), "SolidCP.Server.Images.logo.png");
         }
     }
 }

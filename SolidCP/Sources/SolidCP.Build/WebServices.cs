@@ -43,7 +43,7 @@ namespace SolidCP.Build
 			return classDeclaration.Members.OfType<MethodDeclarationSyntax>()
 						.Where(m => m.AttributeLists
 							.Any(l => l.Attributes
-							.Any(a => ((INamedTypeSymbol)model.GetTypeInfo(a).Type).GetFullTypeName() == "System.Web.Services.WebMethodAttribute")))
+							.Any(a => ((INamedTypeSymbol)model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebMethodAttribute")))
 						.ToArray();
 
 		}
@@ -145,7 +145,7 @@ namespace SolidCP.Build
 				.Where(c => c.Class.AttributeLists
 				.Any(al => al.Attributes
 					.Any(a =>
-						((INamedTypeSymbol)c.Model.GetTypeInfo(a).Type).GetFullTypeName() == "System.Web.Services.WebServiceAttribute")))
+						((INamedTypeSymbol)c.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebServiceAttribute")))
 				.ToList();
 					
 			foreach (var ws in webServiceClasses)
@@ -166,7 +166,7 @@ namespace SolidCP.Build
 				var attr = ws.Class.AttributeLists
 					.SelectMany(l => l.Attributes)
 					.FirstOrDefault(a =>
-						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "System.Web.Services.WebServiceAttribute");
+						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebServiceAttribute");
 
 
 				var parent = ws.Class.Parent;
@@ -181,10 +181,13 @@ namespace SolidCP.Build
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(
-							UsingDirective(ParseName("System.ServiceModel")));
-							//UsingDirective(ParseName("System.ServiceModel.Activation")));
+							UsingDirective(ParseName("System.ServiceModel"))
+							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true)))
+							.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
+							UsingDirective(ParseName("CoreWCF")));
+                            //UsingDirective(ParseName("System.ServiceModel.Activation")));
 
-					clientTree = CompilationUnit()
+                    clientTree = CompilationUnit()
 						//.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						//.AddUsings(UsingDirective(ParseName("CoreWCF"))
 						//	.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
@@ -213,7 +216,12 @@ namespace SolidCP.Build
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
 						.AddUsings(
-							UsingDirective(ParseName("System.ServiceModel")));
+							UsingDirective(ParseName("System.ServiceModel"))
+							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true)))
+							.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
+							UsingDirective(ParseName("CoreWCF"))
+							 .WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
+							);
 							//UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
@@ -273,7 +281,7 @@ namespace SolidCP.Build
 				var policy = ws.Class.AttributeLists
 					.SelectMany(a => a.Attributes)
 					.FirstOrDefault(a => 
-						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "Microsoft.Web.Services3.PolicyAttribute");
+						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.PolicyAttribute");
 
 				AttributeListSyntax hasPolicy = null;
 

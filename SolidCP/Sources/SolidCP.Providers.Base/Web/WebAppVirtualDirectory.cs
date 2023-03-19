@@ -32,11 +32,13 @@
 
 using System;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 
 namespace SolidCP.Providers.Web
 {
+    [DataContract]
     public class WebAppVirtualDirectory : ServiceProviderItem
 	{
 		#region Web Management Service Constants
@@ -87,209 +89,245 @@ namespace SolidCP.Providers.Web
         private string consoleUrl;
         private string php5VersionsInstalled;
 
+        [DataMember]
         public string AnonymousUsername
         {
             get { return anonymousUsername; }
             set { anonymousUsername = value; }
         }
 
+        [DataMember]
         public string AnonymousUserPassword
         {
             get { return anonymousUserPassword; }
             set { anonymousUserPassword = value; }
         }
 
+        [DataMember]
         public string ContentPath
         {
             get { return contentPath; }
             set { contentPath = value; }
         }
 
+        [DataMember]
         public string HttpRedirect
         {
             get { return httpRedirect; }
             set { httpRedirect = value; }
         }
 
+        [DataMember]
         public string DefaultDocs
         {
             get { return defaultDocs; }
             set { defaultDocs = value; }
         }
 
+        [DataMember]
         public MimeMap[] MimeMaps
         {
             get { return mimeMaps; }
             set { mimeMaps = value; }
         }
 
+        [DataMember]
         public HttpError[] HttpErrors
         {
             get { return httpErrors; }
             set { httpErrors = value; }
         }
 
+        [DataMember]
         public HttpErrorsMode ErrorMode
         {
             get { return errorMode; }
             set { errorMode = value; }
         }
 
+        [DataMember]
         public HttpErrorsExistingResponse ExistingResponse
         {
             get { return existingResponse; }
             set { existingResponse = value; }
         }
 
+        [DataMember]
         public string ApplicationPool
         {
             get { return this.applicationPool; }
             set { this.applicationPool = value; }
         }
 
+        [DataMember]
         public bool EnableParentPaths
         {
             get { return this.enableParentPaths; }
             set { this.enableParentPaths = value; }
         }
 
+        [DataMember]
         public HttpHeader[] HttpHeaders
         {
             get { return this.httpHeaders; }
             set { this.httpHeaders = value; }
         }
 
+        [DataMember]
         public bool EnableWritePermissions
         {
             get { return this.enableWritePermissions; }
             set { this.enableWritePermissions = value; }
         }
 
+        [DataMember]
         public bool EnableDirectoryBrowsing
         {
             get { return this.enableDirectoryBrowsing; }
             set { this.enableDirectoryBrowsing = value; }
         }
 
+        [DataMember]
         public bool EnableAnonymousAccess
         {
             get { return this.enableAnonymousAccess; }
             set { this.enableAnonymousAccess = value; }
         }
 
+        [DataMember]
         public bool EnableWindowsAuthentication
         {
             get { return this.enableWindowsAuthentication; }
             set { this.enableWindowsAuthentication = value; }
         }
 
+        [DataMember]
         public bool EnableBasicAuthentication
         {
             get { return this.enableBasicAuthentication; }
             set { this.enableBasicAuthentication = value; }
         }
 
+        [DataMember]
         public bool EnableDynamicCompression
         {
             get { return this.enableDynamicCompression; }
             set { this.enableDynamicCompression = value; }
         }
+
+        [DataMember]
         public bool EnableStaticCompression
         {
             get { return this.enableStaticCompression; }
             set { this.enableStaticCompression = value; }
         }
 
+        [DataMember]
         public bool AspInstalled
         {
             get { return this.aspInstalled; }
             set { this.aspInstalled = value; }
         }
 
+        [DataMember]
         public string AspNetInstalled
         {
             get { return this.aspNetInstalled; }
             set { this.aspNetInstalled = value; }
         }
 
+        [DataMember]
         public string PhpInstalled
         {
             get { return this.phpInstalled; }
             set { this.phpInstalled = value; }
         }
 
+        [DataMember]
         public bool PerlInstalled
         {
             get { return this.perlInstalled; }
             set { this.perlInstalled = value; }
         }
 
+        [DataMember]
         public bool PythonInstalled
         {
             get { return this.pythonInstalled; }
             set { this.pythonInstalled = value; }
         }
 
+        [DataMember]
         public bool ColdFusionInstalled
         {
             get { return this.coldfusionInstalled; }
             set { this.coldfusionInstalled = value; }
         }
 
+        [DataMember]
         public bool DedicatedApplicationPool
         {
             get { return this.dedicatedApplicationPool; }
             set { this.dedicatedApplicationPool = value; }
         }
 
+        [DataMember]
         public string ParentSiteName
         {
             get { return this.parentSiteName; }
             set { this.parentSiteName = value; }
         }
 
+        [DataMember]
         public bool RedirectExactUrl
         {
             get { return this.redirectExactUrl; }
             set { this.redirectExactUrl = value; }
         }
 
+        [DataMember]
         public bool RedirectDirectoryBelow
         {
             get { return this.redirectDirectoryBelow; }
             set { this.redirectDirectoryBelow = value; }
         }
 
+        [DataMember]
         public bool RedirectPermanent
         {
             get { return this.redirectPermanent; }
             set { this.redirectPermanent = value; }
         }
 
+        [DataMember]
         public bool CgiBinInstalled
         {
             get { return this.cgiBinInstalled; }
             set { this.cgiBinInstalled = value; }
         }
 
+        [DataMember]
         public bool SharePointInstalled
         {
             get { return this.sharePointInstalled; }
             set { this.sharePointInstalled = value; }
         }
 
+        [DataMember]
         public bool IIs7
         {
             get { return this.iis7; }
             set { this.iis7 = value; }
         }
-        
+
+        [DataMember]
         public string ConsoleUrl
         {
             get { return consoleUrl; }
             set { consoleUrl = value; }
         }
 
+        [DataMember]
         public string Php5VersionsInstalled
         {
             get { return php5VersionsInstalled; }
@@ -301,29 +339,34 @@ namespace SolidCP.Providers.Web
 		/// Gets or sets Web Deploy publishing account name
 		/// </summary>
 		[Persistent]
+        [DataMember]
 		public string WebDeployPublishingAccount { get; set; }
 
 		/// <summary>
 		/// Gets or sets Web Deploy publishing password
 		/// </summary>
 		[Persistent]
+        [DataMember]
 		public string WebDeployPublishingPassword { get; set; }
 
-		/// <summary>
-		/// Gets or sets whether Web Deploy publishing is enabled on the server
-		/// </summary>
+        /// <summary>
+        /// Gets or sets whether Web Deploy publishing is enabled on the server
+        /// </summary>
+        [DataMember]
 		public bool WebDeployPublishingAvailable { get; set; }
 
 		/// <summary>
 		/// Gets or sets whether Web Deploy publishing is enabled for this particular web site
 		/// </summary>
 		[Persistent]
+        [DataMember]
 		public bool WebDeploySitePublishingEnabled { get; set; }
 
 		/// <summary>
 		/// Gets or sets Web Deploy publishing profile data for this particular web site
 		/// </summary>
 		[Persistent]
+        [DataMember]
 		public string WebDeploySitePublishingProfile { get; set; }
 
 		#endregion
@@ -332,6 +375,7 @@ namespace SolidCP.Providers.Web
 		/// Gets fully qualified name which consists of parent website name if present and virtual directory name.
 		/// </summary>
 		[XmlIgnore]
+        [IgnoreDataMember]
     	public string VirtualPath
     	{
     		get
@@ -350,6 +394,7 @@ namespace SolidCP.Providers.Web
         /// Gets fully qualified name which consists of parent website name if present and virtual directory name.
         /// </summary>
         [XmlIgnore]
+        [IgnoreDataMember]
         public string FullQualifiedPath
         {
             get

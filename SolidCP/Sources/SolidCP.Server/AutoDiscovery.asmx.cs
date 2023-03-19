@@ -30,17 +30,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System.ComponentModel;
-using System.Web.Services;
+using System.ComponentModel;
 using SolidCP.Providers.Common;
 using SolidCP.Server.Code;
+using SolidCP.Web.Services;
 
 namespace SolidCP.Server
 {
-    /// <summary>
-    /// Summary description for AutoDiscovery
-    /// </summary>
-    [WebService(Namespace = "http://tempuri.org/")]
+	/// <summary>
+	/// Summary description for AutoDiscovery
+	/// </summary>
+	[WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ToolboxItem(false)]
     public class AutoDiscovery : WebService {
