@@ -55,15 +55,23 @@ namespace SolidCP.Server
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    public class OperatingSystem : HostingServiceProviderWebService, IOperatingSystem
+    public class OperatingSystem : HostingServiceProviderWebService, IWindowsOperatingSystem, IUnixOperatingSystem
     {
         private IOperatingSystem OsProvider
         {
             get { return (IOperatingSystem)Provider; }
         }
+		private IWindowsOperatingSystem WinProvider
+		{
+			get { return (IWindowsOperatingSystem)Provider; }
+		}
+        private IUnixOperatingSystem UnixProvider
+        {
+            get { return (IUnixOperatingSystem)Provider; }
+        }
 
-        #region Files
-        [WebMethod, SoapHeader("settings")]
+		#region Files
+		[WebMethod, SoapHeader("settings")]
         public string CreatePackageFolder(string initialPath)
         {
             try
@@ -514,7 +522,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' CreateAccessDatabase", ProviderSettings.ProviderName);
-                OsProvider.CreateAccessDatabase(databasePath);
+                WinProvider.CreateAccessDatabase(databasePath);
                 Log.WriteEnd("'{0}' CreateAccessDatabase", ProviderSettings.ProviderName);
             }
             catch (Exception ex)
@@ -530,7 +538,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetGroupNtfsPermissions", ProviderSettings.ProviderName);
-                UserPermission[] result = OsProvider.GetGroupNtfsPermissions(path, users, usersOU);
+                UserPermission[] result = WinProvider.GetGroupNtfsPermissions(path, users, usersOU);
                 Log.WriteEnd("'{0}' GetGroupNtfsPermissions", ProviderSettings.ProviderName);
                 return result;
             }
@@ -547,7 +555,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GrantGroupNtfsPermissions", ProviderSettings.ProviderName);
-                OsProvider.GrantGroupNtfsPermissions(path, users, usersOU, resetChildPermissions);
+                WinProvider.GrantGroupNtfsPermissions(path, users, usersOU, resetChildPermissions);
                 Log.WriteEnd("'{0}' GrantGroupNtfsPermissions", ProviderSettings.ProviderName);
             }
             catch (Exception ex)
@@ -613,7 +621,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' CheckFileServicesInstallation", ProviderSettings.ProviderName);
-                bool bResult =  OsProvider.CheckFileServicesInstallation();
+                bool bResult =  WinProvider.CheckFileServicesInstallation();
                 Log.WriteEnd("'{0}' CheckFileServicesInstallation", ProviderSettings.ProviderName);
                 return bResult;
             }
@@ -631,7 +639,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' InstallFsrmService", ProviderSettings.ProviderName);
-                bool bResult = OsProvider.InstallFsrmService();
+                bool bResult = WinProvider.InstallFsrmService();
                 Log.WriteEnd("'{0}' InstallFsrmService", ProviderSettings.ProviderName);
                 return bResult;
             }
@@ -685,7 +693,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetInstalledOdbcDrivers", ProviderSettings.ProviderName);
-                string[] result = OsProvider.GetInstalledOdbcDrivers();
+                string[] result = WinProvider.GetInstalledOdbcDrivers();
                 Log.WriteEnd("'{0}' GetInstalledOdbcDrivers", ProviderSettings.ProviderName);
                 return result;
             }
@@ -702,7 +710,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetDSNNames", ProviderSettings.ProviderName);
-                string[] result = OsProvider.GetDSNNames();
+                string[] result = WinProvider.GetDSNNames();
                 Log.WriteEnd("'{0}' GetDSNNames", ProviderSettings.ProviderName);
                 return result;
             }
@@ -719,7 +727,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetDSN", ProviderSettings.ProviderName);
-                SystemDSN result = OsProvider.GetDSN(dsnName);
+                SystemDSN result = WinProvider.GetDSN(dsnName);
                 Log.WriteEnd("'{0}' GetDSN", ProviderSettings.ProviderName);
                 return result;
             }
@@ -736,7 +744,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' CreateDSN", ProviderSettings.ProviderName);
-                OsProvider.CreateDSN(dsn);
+                WinProvider.CreateDSN(dsn);
                 Log.WriteEnd("'{0}' CreateDSN", ProviderSettings.ProviderName);
             }
             catch (Exception ex)
@@ -752,7 +760,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' UpdateDSN", ProviderSettings.ProviderName);
-                OsProvider.UpdateDSN(dsn);
+                WinProvider.UpdateDSN(dsn);
                 Log.WriteEnd("'{0}' UpdateDSN", ProviderSettings.ProviderName);
             }
             catch (Exception ex)
@@ -768,7 +776,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' DeleteDSN", ProviderSettings.ProviderName);
-                OsProvider.DeleteDSN(dsnName);
+                WinProvider.DeleteDSN(dsnName);
                 Log.WriteEnd("'{0}' DeleteDSN", ProviderSettings.ProviderName);
             }
             catch (Exception ex)
@@ -777,7 +785,458 @@ namespace SolidCP.Server
                 throw;
             }
         }
-        #endregion
 
-    }
+		[WebMethod, SoapHeader("settings")]
+		public UnixFileMode GetUnixPermissions(string path)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetUnixPermissions", ProviderSettings.ProviderName);
+				var result = UnixProvider.GetUnixPermissions(path);
+				Log.WriteEnd("'{0}' GetUnixPermissions", ProviderSettings.ProviderName);
+                return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetUnixPermissions", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GrantUnixPermissions", ProviderSettings.ProviderName);
+				UnixProvider.GrantUnixPermissions(path, mode, resetChildPermissions);
+				Log.WriteEnd("'{0}' GrantUnixPermissions", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GrantUnixPermissions", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public TerminalSession[] GetTerminalServicesSessions()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetTerminalServicesSessions", ProviderSettings.ProviderName);
+				var result =  WinProvider.GetTerminalServicesSessions();
+				Log.WriteEnd("'{0}' GetTerminalServicesSessions", ProviderSettings.ProviderName);
+			    return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetTerminalServicesSessions", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void CloseTerminalServicesSession(int sessionId)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' CloseTerminalServicesSession", ProviderSettings.ProviderName);
+				WinProvider.CloseTerminalServicesSession(sessionId);
+				Log.WriteEnd("'{0}' CloseTerminalServicesSession", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' CloseTerminalServicesSession", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public List<string> GetLogNames()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetLogNames", ProviderSettings.ProviderName);
+			    var result =  OsProvider.GetLogNames();
+				Log.WriteEnd("'{0}' GetLogNames", ProviderSettings.ProviderName);
+                return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetLogNames", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public List<SystemLogEntry> GetLogEntries(string logName)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetLogEntries", ProviderSettings.ProviderName);
+				var result = OsProvider.GetLogEntries(logName);
+				Log.WriteEnd("'{0}' GetLogEntries", ProviderSettings.ProviderName);
+                return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetLogEntries", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetLogEntriesPaged", ProviderSettings.ProviderName);
+				var result = OsProvider.GetLogEntriesPaged(logName, startRow, maximumRows);
+				Log.WriteEnd("'{0}' GetLogEntriesPaged", ProviderSettings.ProviderName);
+			    return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetLogEntriesPaged", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void ClearLog(string logName)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' ClearLog", ProviderSettings.ProviderName);
+			    OsProvider.ClearLog(logName);
+				Log.WriteEnd("'{0}' ClearLog", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' ClearLog", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public OSProcess[] GetOSProcesses()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetOSProcesses", ProviderSettings.ProviderName);
+				var result = OsProvider.GetOSProcesses();
+				Log.WriteEnd("'{0}' GetOSProcesses", ProviderSettings.ProviderName);
+                return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetOSProcesses", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void TerminateOSProcess(int pid)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' TerminateOSProcess", ProviderSettings.ProviderName);
+				OsProvider.TerminateOSProcess(pid);
+				Log.WriteEnd("'{0}' TerminateOSProcess", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' TerminateOSProcess", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public OSService[] GetOSServices()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetOSServices", ProviderSettings.ProviderName);
+				var result = OsProvider.GetOSServices();
+				Log.WriteEnd("'{0}' GetOSServices", ProviderSettings.ProviderName);
+                return result;
+            }
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetOSServices", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void ChangeOSServiceStatus(string id, OSServiceStatus status)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' ChangeOSServiceStatus", ProviderSettings.ProviderName);
+				OsProvider.ChangeOSServiceStatus(id, status);
+				Log.WriteEnd("'{0}' ChangeOSServiceStatus", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' ChangeOSServiceStatus", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void RebootSystem()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' RebootSystem", ProviderSettings.ProviderName);
+				OsProvider.RebootSystem();
+				Log.WriteEnd("'{0}' RebootSystem", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' RebootSystem", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public Memory GetMemory()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetMemory", ProviderSettings.ProviderName);
+                var result = OsProvider.GetMemory();
+                Log.WriteEnd("'{0}' GetMemory", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetMemory", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+		[WebMethod, SoapHeader("settings")]
+		public string ExecuteSystemCommand(string path, string args)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName);
+				var result = OsProvider.ExecuteSystemCommand(path, args);
+				Log.WriteEnd("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public WPIProduct[] GetWPIProducts(string tabId, string keywordId)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetWPIProducts", ProviderSettings.ProviderName);
+				var result = WinProvider.GetWPIProducts(tabId, keywordId);
+				Log.WriteEnd("'{0}' GetWPIProducts", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetWPIProducts", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public WPIProduct[] GetWPIProductsFiltered(string filter)
+		{
+		    try
+		    {
+			    Log.WriteStart("'{0}' GetWPIProductsFiltered", ProviderSettings.ProviderName);
+			    var result = WinProvider.GetWPIProductsFiltered(filter);
+			    Log.WriteEnd("'{0}' GetWPIProductsFiltered", ProviderSettings.ProviderName);
+			    return result;
+		    }
+		    catch (Exception ex)
+		    {
+			    Log.WriteError(String.Format("'{0}' GetWPIProductsFiltered", ProviderSettings.ProviderName), ex);
+			    throw;
+		    }
+	    }
+
+		[WebMethod, SoapHeader("settings")]
+		public WPIProduct GetWPIProductById(string productdId)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetWPIProductById", ProviderSettings.ProviderName);
+				var result = WinProvider.GetWPIProductById(productdId);
+				Log.WriteEnd("'{0}' GetWPIProductById", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetWPIProductById", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public WPITab[] GetWPITabs()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetWPITabs", ProviderSettings.ProviderName);
+				var result = WinProvider.GetWPITabs();
+				Log.WriteEnd("'{0}' GetWPITabs", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetWPITabs", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void InitWPIFeeds(string feedUrls)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' InitWPIFeeds", ProviderSettings.ProviderName);
+				WinProvider.InitWPIFeeds(feedUrls);
+				Log.WriteEnd("'{0}' InitWPIFeeds", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' InitWPIFeeds", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public WPIKeyword[] GetWPIKeywords()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetWPIKeywords", ProviderSettings.ProviderName);
+				var result = WinProvider.GetWPIKeywords();
+				Log.WriteEnd("'{0}' GetWPIKeywords", ProviderSettings.ProviderName);
+                return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetWPIKeywords", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public WPIProduct[] GetWPIProductsWithDependencies(string[] products)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetWPIProductsWithDependencies", ProviderSettings.ProviderName);
+				var result = WinProvider.GetWPIProductsWithDependencies(products);
+				Log.WriteEnd("'{0}' GetWPIProductsWithDependencies", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetWPIProductsWithDependencies", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void InstallWPIProducts(string[] products)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' InstallWPIProducts", ProviderSettings.ProviderName);
+				WinProvider.InstallWPIProducts(products);
+				Log.WriteEnd("'{0}' InstallWPIProducts", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' InstallWPIProducts", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public void CancelInstallWPIProducts()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' CancelInstallWPIProducts", ProviderSettings.ProviderName);
+				WinProvider.CancelInstallWPIProducts();
+				Log.WriteEnd("'{0}' CancelInstallWPIProducts", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' CancelInstallWPIProducts", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public string GetWPIStatus()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetWPIStatus", ProviderSettings.ProviderName);
+				var result = WinProvider.GetWPIStatus();
+				Log.WriteEnd("'{0}' GetWPIStatus", ProviderSettings.ProviderName);
+                return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetWPIStatus", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public string WpiGetLogFileDirectory()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' WpiGetLogFileDirectory", ProviderSettings.ProviderName);
+				var result = WinProvider.WpiGetLogFileDirectory();
+				Log.WriteEnd("'{0}' WpiGetLogFileDirectory", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' WpiGetLogFileDirectory", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
+		public SettingPair[] WpiGetLogsInDirectory(string Path)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' WpiGetLogsInDirectory", ProviderSettings.ProviderName);
+				var result = WinProvider.WpiGetLogsInDirectory(Path);
+				Log.WriteEnd("'{0}' WpiGetLogsInDirectory", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' WpiGetLogsInDirectory", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+		#endregion
+
+	}
 }

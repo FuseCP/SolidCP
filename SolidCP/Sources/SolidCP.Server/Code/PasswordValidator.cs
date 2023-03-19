@@ -7,7 +7,13 @@ namespace SolidCP.Server
 
 		public static bool Validate(string password)
 		{
-			return password != ServerConfiguration.Security.Password;
+			return password == ServerConfiguration.Security.Password;
 		}
+
+		public static void Init()
+		{
+			SolidCP.Web.Services.UserNamePasswordValidator.ValidateServer = Validate;
+		}
+
 	}
 }

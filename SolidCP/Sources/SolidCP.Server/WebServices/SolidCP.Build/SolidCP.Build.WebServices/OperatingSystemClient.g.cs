@@ -183,6 +183,114 @@ namespace SolidCP.Server.Client
         void DeleteDSN(string dsnName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSN", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/DeleteDSNResponse")]
         System.Threading.Tasks.Task DeleteDSNAsync(string dsnName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetUnixPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetUnixPermissionsResponse")]
+        SolidCP.Providers.OS.UnixFileMode GetUnixPermissions(string path);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetUnixPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetUnixPermissionsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.UnixFileMode> GetUnixPermissionsAsync(string path);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GrantUnixPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GrantUnixPermissionsResponse")]
+        void GrantUnixPermissions(string path, SolidCP.Providers.OS.UnixFileMode mode, bool resetChildPermissions = false);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GrantUnixPermissions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GrantUnixPermissionsResponse")]
+        System.Threading.Tasks.Task GrantUnixPermissionsAsync(string path, SolidCP.Providers.OS.UnixFileMode mode, bool resetChildPermissions = false);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetTerminalServicesSessions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetTerminalServicesSessionsResponse")]
+        SolidCP.Providers.OS.TerminalSession[] GetTerminalServicesSessions();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetTerminalServicesSessions", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetTerminalServicesSessionsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.TerminalSession[]> GetTerminalServicesSessionsAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CloseTerminalServicesSession", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CloseTerminalServicesSessionResponse")]
+        void CloseTerminalServicesSession(int sessionId);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CloseTerminalServicesSession", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CloseTerminalServicesSessionResponse")]
+        System.Threading.Tasks.Task CloseTerminalServicesSessionAsync(int sessionId);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogNames", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogNamesResponse")]
+        string[] /*List*/ GetLogNames();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogNames", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogNamesResponse")]
+        System.Threading.Tasks.Task<string[]> GetLogNamesAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntries", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntriesResponse")]
+        SolidCP.Providers.OS.SystemLogEntry[] /*List*/ GetLogEntries(string logName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntries", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntriesResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemLogEntry[]> GetLogEntriesAsync(string logName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntriesPaged", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntriesPagedResponse")]
+        SolidCP.Providers.OS.SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntriesPaged", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetLogEntriesPagedResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemLogEntriesPaged> GetLogEntriesPagedAsync(string logName, int startRow, int maximumRows);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ClearLog", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ClearLogResponse")]
+        void ClearLog(string logName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ClearLog", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ClearLogResponse")]
+        System.Threading.Tasks.Task ClearLogAsync(string logName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSProcesses", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSProcessesResponse")]
+        SolidCP.Providers.OS.OSProcess[] GetOSProcesses();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSProcesses", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSProcessesResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.OSProcess[]> GetOSProcessesAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/TerminateOSProcess", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/TerminateOSProcessResponse")]
+        void TerminateOSProcess(int pid);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/TerminateOSProcess", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/TerminateOSProcessResponse")]
+        System.Threading.Tasks.Task TerminateOSProcessAsync(int pid);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSServices", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSServicesResponse")]
+        SolidCP.Providers.OS.OSService[] GetOSServices();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSServices", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSServicesResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.OSService[]> GetOSServicesAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeOSServiceStatus", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeOSServiceStatusResponse")]
+        void ChangeOSServiceStatus(string id, SolidCP.Providers.OS.OSServiceStatus status);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeOSServiceStatus", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ChangeOSServiceStatusResponse")]
+        System.Threading.Tasks.Task ChangeOSServiceStatusAsync(string id, SolidCP.Providers.OS.OSServiceStatus status);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/RebootSystem", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/RebootSystemResponse")]
+        void RebootSystem();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/RebootSystem", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/RebootSystemResponse")]
+        System.Threading.Tasks.Task RebootSystemAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetMemory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetMemoryResponse")]
+        SolidCP.Providers.OS.Memory GetMemory();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetMemory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetMemoryResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.Memory> GetMemoryAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSystemCommand", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSystemCommandResponse")]
+        string ExecuteSystemCommand(string path, string args);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSystemCommand", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSystemCommandResponse")]
+        System.Threading.Tasks.Task<string> ExecuteSystemCommandAsync(string path, string args);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsResponse")]
+        SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFiltered", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFilteredResponse")]
+        SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFiltered", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFilteredResponse")]
+        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductById", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductByIdResponse")]
+        SolidCP.Server.WPIProduct GetWPIProductById(string productdId);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductById", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductByIdResponse")]
+        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabs", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabsResponse")]
+        SolidCP.Server.WPITab[] GetWPITabs();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabs", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeeds", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeedsResponse")]
+        void InitWPIFeeds(string feedUrls);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeeds", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeedsResponse")]
+        System.Threading.Tasks.Task InitWPIFeedsAsync(string feedUrls);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywords", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywordsResponse")]
+        SolidCP.Server.WPIKeyword[] GetWPIKeywords();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywords", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywordsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependencies", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependenciesResponse")]
+        SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependencies", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependenciesResponse")]
+        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProductsResponse")]
+        void InstallWPIProducts(string[] products);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProductsResponse")]
+        System.Threading.Tasks.Task InstallWPIProductsAsync(string[] products);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CancelInstallWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CancelInstallWPIProductsResponse")]
+        void CancelInstallWPIProducts();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CancelInstallWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CancelInstallWPIProductsResponse")]
+        System.Threading.Tasks.Task CancelInstallWPIProductsAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIStatus", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIStatusResponse")]
+        string GetWPIStatus();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIStatus", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIStatusResponse")]
+        System.Threading.Tasks.Task<string> GetWPIStatusAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogFileDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogFileDirectoryResponse")]
+        string WpiGetLogFileDirectory();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogFileDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogFileDirectoryResponse")]
+        System.Threading.Tasks.Task<string> WpiGetLogFileDirectoryAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectoryResponse")]
+        SolidCP.Providers.SettingPair[] WpiGetLogsInDirectory(string Path);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectoryResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path);
     }
 
     // wcf client assembly proxy class
@@ -618,6 +726,276 @@ namespace SolidCP.Server.Client
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "DeleteDSN", dsnName);
         }
+
+        public SolidCP.Providers.OS.UnixFileMode GetUnixPermissions(string path)
+        {
+            return Invoke<SolidCP.Providers.OS.UnixFileMode>("SolidCP.Server.OperatingSystem", "GetUnixPermissions", path);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.UnixFileMode> GetUnixPermissionsAsync(string path)
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.UnixFileMode>("SolidCP.Server.OperatingSystem", "GetUnixPermissions", path);
+        }
+
+        public void GrantUnixPermissions(string path, SolidCP.Providers.OS.UnixFileMode mode, bool resetChildPermissions = false)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "GrantUnixPermissions", path, mode, resetChildPermissions);
+        }
+
+        public async System.Threading.Tasks.Task GrantUnixPermissionsAsync(string path, SolidCP.Providers.OS.UnixFileMode mode, bool resetChildPermissions = false)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "GrantUnixPermissions", path, mode, resetChildPermissions);
+        }
+
+        public SolidCP.Providers.OS.TerminalSession[] GetTerminalServicesSessions()
+        {
+            return Invoke<SolidCP.Providers.OS.TerminalSession[]>("SolidCP.Server.OperatingSystem", "GetTerminalServicesSessions");
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.TerminalSession[]> GetTerminalServicesSessionsAsync()
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.TerminalSession[]>("SolidCP.Server.OperatingSystem", "GetTerminalServicesSessions");
+        }
+
+        public void CloseTerminalServicesSession(int sessionId)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "CloseTerminalServicesSession", sessionId);
+        }
+
+        public async System.Threading.Tasks.Task CloseTerminalServicesSessionAsync(int sessionId)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "CloseTerminalServicesSession", sessionId);
+        }
+
+        public string[] /*List*/ GetLogNames()
+        {
+            return Invoke<string[], string>("SolidCP.Server.OperatingSystem", "GetLogNames");
+        }
+
+        public async System.Threading.Tasks.Task<string[]> GetLogNamesAsync()
+        {
+            return await InvokeAsync<string[], string>("SolidCP.Server.OperatingSystem", "GetLogNames");
+        }
+
+        public SolidCP.Providers.OS.SystemLogEntry[] /*List*/ GetLogEntries(string logName)
+        {
+            return Invoke<SolidCP.Providers.OS.SystemLogEntry[], SolidCP.Providers.OS.SystemLogEntry>("SolidCP.Server.OperatingSystem", "GetLogEntries", logName);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemLogEntry[]> GetLogEntriesAsync(string logName)
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.SystemLogEntry[], SolidCP.Providers.OS.SystemLogEntry>("SolidCP.Server.OperatingSystem", "GetLogEntries", logName);
+        }
+
+        public SolidCP.Providers.OS.SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
+        {
+            return Invoke<SolidCP.Providers.OS.SystemLogEntriesPaged>("SolidCP.Server.OperatingSystem", "GetLogEntriesPaged", logName, startRow, maximumRows);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemLogEntriesPaged> GetLogEntriesPagedAsync(string logName, int startRow, int maximumRows)
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.SystemLogEntriesPaged>("SolidCP.Server.OperatingSystem", "GetLogEntriesPaged", logName, startRow, maximumRows);
+        }
+
+        public void ClearLog(string logName)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "ClearLog", logName);
+        }
+
+        public async System.Threading.Tasks.Task ClearLogAsync(string logName)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "ClearLog", logName);
+        }
+
+        public SolidCP.Providers.OS.OSProcess[] GetOSProcesses()
+        {
+            return Invoke<SolidCP.Providers.OS.OSProcess[]>("SolidCP.Server.OperatingSystem", "GetOSProcesses");
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.OSProcess[]> GetOSProcessesAsync()
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.OSProcess[]>("SolidCP.Server.OperatingSystem", "GetOSProcesses");
+        }
+
+        public void TerminateOSProcess(int pid)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "TerminateOSProcess", pid);
+        }
+
+        public async System.Threading.Tasks.Task TerminateOSProcessAsync(int pid)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "TerminateOSProcess", pid);
+        }
+
+        public SolidCP.Providers.OS.OSService[] GetOSServices()
+        {
+            return Invoke<SolidCP.Providers.OS.OSService[]>("SolidCP.Server.OperatingSystem", "GetOSServices");
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.OSService[]> GetOSServicesAsync()
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.OSService[]>("SolidCP.Server.OperatingSystem", "GetOSServices");
+        }
+
+        public void ChangeOSServiceStatus(string id, SolidCP.Providers.OS.OSServiceStatus status)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "ChangeOSServiceStatus", id, status);
+        }
+
+        public async System.Threading.Tasks.Task ChangeOSServiceStatusAsync(string id, SolidCP.Providers.OS.OSServiceStatus status)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "ChangeOSServiceStatus", id, status);
+        }
+
+        public void RebootSystem()
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "RebootSystem");
+        }
+
+        public async System.Threading.Tasks.Task RebootSystemAsync()
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "RebootSystem");
+        }
+
+        public SolidCP.Providers.OS.Memory GetMemory()
+        {
+            return Invoke<SolidCP.Providers.OS.Memory>("SolidCP.Server.OperatingSystem", "GetMemory");
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Memory> GetMemoryAsync()
+        {
+            return await InvokeAsync<SolidCP.Providers.OS.Memory>("SolidCP.Server.OperatingSystem", "GetMemory");
+        }
+
+        public string ExecuteSystemCommand(string path, string args)
+        {
+            return Invoke<string>("SolidCP.Server.OperatingSystem", "ExecuteSystemCommand", path, args);
+        }
+
+        public async System.Threading.Tasks.Task<string> ExecuteSystemCommandAsync(string path, string args)
+        {
+            return await InvokeAsync<string>("SolidCP.Server.OperatingSystem", "ExecuteSystemCommand", path, args);
+        }
+
+        public SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
+        {
+            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProducts", tabId, keywordId);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
+        {
+            return await InvokeAsync<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProducts", tabId, keywordId);
+        }
+
+        public SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter)
+        {
+            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsFiltered", filter);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
+        {
+            return await InvokeAsync<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsFiltered", filter);
+        }
+
+        public SolidCP.Server.WPIProduct GetWPIProductById(string productdId)
+        {
+            return Invoke<SolidCP.Server.WPIProduct>("SolidCP.Server.OperatingSystem", "GetWPIProductById", productdId);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId)
+        {
+            return await InvokeAsync<SolidCP.Server.WPIProduct>("SolidCP.Server.OperatingSystem", "GetWPIProductById", productdId);
+        }
+
+        public SolidCP.Server.WPITab[] GetWPITabs()
+        {
+            return Invoke<SolidCP.Server.WPITab[]>("SolidCP.Server.OperatingSystem", "GetWPITabs");
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync()
+        {
+            return await InvokeAsync<SolidCP.Server.WPITab[]>("SolidCP.Server.OperatingSystem", "GetWPITabs");
+        }
+
+        public void InitWPIFeeds(string feedUrls)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "InitWPIFeeds", feedUrls);
+        }
+
+        public async System.Threading.Tasks.Task InitWPIFeedsAsync(string feedUrls)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "InitWPIFeeds", feedUrls);
+        }
+
+        public SolidCP.Server.WPIKeyword[] GetWPIKeywords()
+        {
+            return Invoke<SolidCP.Server.WPIKeyword[]>("SolidCP.Server.OperatingSystem", "GetWPIKeywords");
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync()
+        {
+            return await InvokeAsync<SolidCP.Server.WPIKeyword[]>("SolidCP.Server.OperatingSystem", "GetWPIKeywords");
+        }
+
+        public SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
+        {
+            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsWithDependencies", products);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
+        {
+            return await InvokeAsync<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsWithDependencies", products);
+        }
+
+        public void InstallWPIProducts(string[] products)
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "InstallWPIProducts", products);
+        }
+
+        public async System.Threading.Tasks.Task InstallWPIProductsAsync(string[] products)
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "InstallWPIProducts", products);
+        }
+
+        public void CancelInstallWPIProducts()
+        {
+            Invoke("SolidCP.Server.OperatingSystem", "CancelInstallWPIProducts");
+        }
+
+        public async System.Threading.Tasks.Task CancelInstallWPIProductsAsync()
+        {
+            await InvokeAsync("SolidCP.Server.OperatingSystem", "CancelInstallWPIProducts");
+        }
+
+        public string GetWPIStatus()
+        {
+            return Invoke<string>("SolidCP.Server.OperatingSystem", "GetWPIStatus");
+        }
+
+        public async System.Threading.Tasks.Task<string> GetWPIStatusAsync()
+        {
+            return await InvokeAsync<string>("SolidCP.Server.OperatingSystem", "GetWPIStatus");
+        }
+
+        public string WpiGetLogFileDirectory()
+        {
+            return Invoke<string>("SolidCP.Server.OperatingSystem", "WpiGetLogFileDirectory");
+        }
+
+        public async System.Threading.Tasks.Task<string> WpiGetLogFileDirectoryAsync()
+        {
+            return await InvokeAsync<string>("SolidCP.Server.OperatingSystem", "WpiGetLogFileDirectory");
+        }
+
+        public SolidCP.Providers.SettingPair[] WpiGetLogsInDirectory(string Path)
+        {
+            return Invoke<SolidCP.Providers.SettingPair[]>("SolidCP.Server.OperatingSystem", "WpiGetLogsInDirectory", Path);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path)
+        {
+            return await InvokeAsync<SolidCP.Providers.SettingPair[]>("SolidCP.Server.OperatingSystem", "WpiGetLogsInDirectory", Path);
+        }
     }
 
     // wcf client proxy class
@@ -1052,6 +1430,276 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task DeleteDSNAsync(string dsnName)
         {
             await base.Client.DeleteDSNAsync(dsnName);
+        }
+
+        public SolidCP.Providers.OS.UnixFileMode GetUnixPermissions(string path)
+        {
+            return base.Client.GetUnixPermissions(path);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.UnixFileMode> GetUnixPermissionsAsync(string path)
+        {
+            return await base.Client.GetUnixPermissionsAsync(path);
+        }
+
+        public void GrantUnixPermissions(string path, SolidCP.Providers.OS.UnixFileMode mode, bool resetChildPermissions = false)
+        {
+            base.Client.GrantUnixPermissions(path, mode, resetChildPermissions);
+        }
+
+        public async System.Threading.Tasks.Task GrantUnixPermissionsAsync(string path, SolidCP.Providers.OS.UnixFileMode mode, bool resetChildPermissions = false)
+        {
+            await base.Client.GrantUnixPermissionsAsync(path, mode, resetChildPermissions);
+        }
+
+        public SolidCP.Providers.OS.TerminalSession[] GetTerminalServicesSessions()
+        {
+            return base.Client.GetTerminalServicesSessions();
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.TerminalSession[]> GetTerminalServicesSessionsAsync()
+        {
+            return await base.Client.GetTerminalServicesSessionsAsync();
+        }
+
+        public void CloseTerminalServicesSession(int sessionId)
+        {
+            base.Client.CloseTerminalServicesSession(sessionId);
+        }
+
+        public async System.Threading.Tasks.Task CloseTerminalServicesSessionAsync(int sessionId)
+        {
+            await base.Client.CloseTerminalServicesSessionAsync(sessionId);
+        }
+
+        public string[] /*List*/ GetLogNames()
+        {
+            return base.Client.GetLogNames();
+        }
+
+        public async System.Threading.Tasks.Task<string[]> GetLogNamesAsync()
+        {
+            return await base.Client.GetLogNamesAsync();
+        }
+
+        public SolidCP.Providers.OS.SystemLogEntry[] /*List*/ GetLogEntries(string logName)
+        {
+            return base.Client.GetLogEntries(logName);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemLogEntry[]> GetLogEntriesAsync(string logName)
+        {
+            return await base.Client.GetLogEntriesAsync(logName);
+        }
+
+        public SolidCP.Providers.OS.SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
+        {
+            return base.Client.GetLogEntriesPaged(logName, startRow, maximumRows);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.SystemLogEntriesPaged> GetLogEntriesPagedAsync(string logName, int startRow, int maximumRows)
+        {
+            return await base.Client.GetLogEntriesPagedAsync(logName, startRow, maximumRows);
+        }
+
+        public void ClearLog(string logName)
+        {
+            base.Client.ClearLog(logName);
+        }
+
+        public async System.Threading.Tasks.Task ClearLogAsync(string logName)
+        {
+            await base.Client.ClearLogAsync(logName);
+        }
+
+        public SolidCP.Providers.OS.OSProcess[] GetOSProcesses()
+        {
+            return base.Client.GetOSProcesses();
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.OSProcess[]> GetOSProcessesAsync()
+        {
+            return await base.Client.GetOSProcessesAsync();
+        }
+
+        public void TerminateOSProcess(int pid)
+        {
+            base.Client.TerminateOSProcess(pid);
+        }
+
+        public async System.Threading.Tasks.Task TerminateOSProcessAsync(int pid)
+        {
+            await base.Client.TerminateOSProcessAsync(pid);
+        }
+
+        public SolidCP.Providers.OS.OSService[] GetOSServices()
+        {
+            return base.Client.GetOSServices();
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.OSService[]> GetOSServicesAsync()
+        {
+            return await base.Client.GetOSServicesAsync();
+        }
+
+        public void ChangeOSServiceStatus(string id, SolidCP.Providers.OS.OSServiceStatus status)
+        {
+            base.Client.ChangeOSServiceStatus(id, status);
+        }
+
+        public async System.Threading.Tasks.Task ChangeOSServiceStatusAsync(string id, SolidCP.Providers.OS.OSServiceStatus status)
+        {
+            await base.Client.ChangeOSServiceStatusAsync(id, status);
+        }
+
+        public void RebootSystem()
+        {
+            base.Client.RebootSystem();
+        }
+
+        public async System.Threading.Tasks.Task RebootSystemAsync()
+        {
+            await base.Client.RebootSystemAsync();
+        }
+
+        public SolidCP.Providers.OS.Memory GetMemory()
+        {
+            return base.Client.GetMemory();
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.Memory> GetMemoryAsync()
+        {
+            return await base.Client.GetMemoryAsync();
+        }
+
+        public string ExecuteSystemCommand(string path, string args)
+        {
+            return base.Client.ExecuteSystemCommand(path, args);
+        }
+
+        public async System.Threading.Tasks.Task<string> ExecuteSystemCommandAsync(string path, string args)
+        {
+            return await base.Client.ExecuteSystemCommandAsync(path, args);
+        }
+
+        public SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
+        {
+            return base.Client.GetWPIProducts(tabId, keywordId);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
+        {
+            return await base.Client.GetWPIProductsAsync(tabId, keywordId);
+        }
+
+        public SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter)
+        {
+            return base.Client.GetWPIProductsFiltered(filter);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
+        {
+            return await base.Client.GetWPIProductsFilteredAsync(filter);
+        }
+
+        public SolidCP.Server.WPIProduct GetWPIProductById(string productdId)
+        {
+            return base.Client.GetWPIProductById(productdId);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId)
+        {
+            return await base.Client.GetWPIProductByIdAsync(productdId);
+        }
+
+        public SolidCP.Server.WPITab[] GetWPITabs()
+        {
+            return base.Client.GetWPITabs();
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync()
+        {
+            return await base.Client.GetWPITabsAsync();
+        }
+
+        public void InitWPIFeeds(string feedUrls)
+        {
+            base.Client.InitWPIFeeds(feedUrls);
+        }
+
+        public async System.Threading.Tasks.Task InitWPIFeedsAsync(string feedUrls)
+        {
+            await base.Client.InitWPIFeedsAsync(feedUrls);
+        }
+
+        public SolidCP.Server.WPIKeyword[] GetWPIKeywords()
+        {
+            return base.Client.GetWPIKeywords();
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync()
+        {
+            return await base.Client.GetWPIKeywordsAsync();
+        }
+
+        public SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
+        {
+            return base.Client.GetWPIProductsWithDependencies(products);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
+        {
+            return await base.Client.GetWPIProductsWithDependenciesAsync(products);
+        }
+
+        public void InstallWPIProducts(string[] products)
+        {
+            base.Client.InstallWPIProducts(products);
+        }
+
+        public async System.Threading.Tasks.Task InstallWPIProductsAsync(string[] products)
+        {
+            await base.Client.InstallWPIProductsAsync(products);
+        }
+
+        public void CancelInstallWPIProducts()
+        {
+            base.Client.CancelInstallWPIProducts();
+        }
+
+        public async System.Threading.Tasks.Task CancelInstallWPIProductsAsync()
+        {
+            await base.Client.CancelInstallWPIProductsAsync();
+        }
+
+        public string GetWPIStatus()
+        {
+            return base.Client.GetWPIStatus();
+        }
+
+        public async System.Threading.Tasks.Task<string> GetWPIStatusAsync()
+        {
+            return await base.Client.GetWPIStatusAsync();
+        }
+
+        public string WpiGetLogFileDirectory()
+        {
+            return base.Client.WpiGetLogFileDirectory();
+        }
+
+        public async System.Threading.Tasks.Task<string> WpiGetLogFileDirectoryAsync()
+        {
+            return await base.Client.WpiGetLogFileDirectoryAsync();
+        }
+
+        public SolidCP.Providers.SettingPair[] WpiGetLogsInDirectory(string Path)
+        {
+            return base.Client.WpiGetLogsInDirectory(Path);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path)
+        {
+            return await base.Client.WpiGetLogsInDirectoryAsync(Path);
         }
     }
 }

@@ -13,7 +13,6 @@ using SolidCP.Server.Utils;
 using System.Collections.Generic;
 using SolidCP.Server;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -246,7 +245,9 @@ namespace SolidCP.Server.Services
 
     // wcf service
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+#if NETFRAMEWORK
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+#endif
     public class VirtualizationServer2012 : SolidCP.Server.VirtualizationServer2012, IVirtualizationServer2012
     {
     }

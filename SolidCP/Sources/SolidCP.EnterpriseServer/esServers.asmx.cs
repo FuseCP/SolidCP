@@ -47,6 +47,7 @@ using SolidCP.Providers.DNS;
 using SolidCP.Server;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.DomainLookup;
 
 namespace SolidCP.EnterpriseServer
@@ -813,15 +814,15 @@ namespace SolidCP.EnterpriseServer
 
         #region Windows Processes
         [WebMethod]
-        public WindowsProcess[] GetWindowsProcesses(int serverId)
+        public OSProcess[] GetOSProcesses(int serverId)
         {
-            return OperatingSystemController.GetWindowsProcesses(serverId);
+            return OperatingSystemController.GetOSProcesses(serverId);
         }
 
         [WebMethod]
-        public int TerminateWindowsProcess(int serverId, int pid)
+        public int TerminateOSProcess(int serverId, int pid)
         {
-            return OperatingSystemController.TerminateWindowsProcess(serverId, pid);
+            return OperatingSystemController.TerminateOSProcess(serverId, pid);
         }
         #endregion
 
@@ -952,15 +953,15 @@ namespace SolidCP.EnterpriseServer
 
         #region Windows Services
         [WebMethod]
-        public WindowsService[] GetWindowsServices(int serverId)
+        public OSService[] GetOSServices(int serverId)
         {
-            return OperatingSystemController.GetWindowsServices(serverId);
+            return OperatingSystemController.GetOSServices(serverId);
         }
 
         [WebMethod]
-        public int ChangeWindowsServiceStatus(int serverId, string id, WindowsServiceStatus status)
+        public int ChangeOSServiceStatus(int serverId, string id, OSServiceStatus status)
         {
-            return OperatingSystemController.ChangeWindowsServiceStatus(serverId, id, status);
+            return OperatingSystemController.ChangeOSServiceStatus(serverId, id, status);
         }
         #endregion
 

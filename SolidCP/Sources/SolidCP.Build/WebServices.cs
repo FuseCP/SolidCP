@@ -181,8 +181,8 @@ namespace SolidCP.Build
 					serverTree = CompilationUnit()
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(
-							UsingDirective(ParseName("System.ServiceModel")),
-							UsingDirective(ParseName("System.ServiceModel.Activation")));
+							UsingDirective(ParseName("System.ServiceModel")));
+							//UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
 						//.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
@@ -213,8 +213,8 @@ namespace SolidCP.Build
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(UsingDirective(oldNS.Name))
 						.AddUsings(
-							UsingDirective(ParseName("System.ServiceModel")),
-							UsingDirective(ParseName("System.ServiceModel.Activation")));
+							UsingDirective(ParseName("System.ServiceModel")));
+							//UsingDirective(ParseName("System.ServiceModel.Activation")));
 
 					clientTree = CompilationUnit()
                         //.WithUsings(((CompilationUnitSyntax)oldTree).Usings)

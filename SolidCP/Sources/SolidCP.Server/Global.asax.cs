@@ -53,6 +53,7 @@ namespace SolidCP.Server
 		protected void Application_Start(object sender, EventArgs e)
 		{
 			StartupFX.Start();
+			PasswordValidator.Init();
 		}
 
 		protected void Application_End(object sender, EventArgs e)

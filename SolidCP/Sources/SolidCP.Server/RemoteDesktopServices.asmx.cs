@@ -722,8 +722,9 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetExistingCollection", ProviderSettings.ProviderName);
-                return RDSProvider.GetExistingCollection(collectionName);
+                var result = RDSProvider.GetExistingCollection(collectionName);
                 Log.WriteEnd("'{0}' GetExistingCollection", ProviderSettings.ProviderName);
+                return result;
             }
             catch (Exception ex)
             {

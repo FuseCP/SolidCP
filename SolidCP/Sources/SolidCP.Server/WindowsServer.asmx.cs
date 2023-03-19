@@ -155,13 +155,13 @@ namespace SolidCP.Server
 
         #region Windows Processes
         [WebMethod]
-        public WindowsProcess[] GetWindowsProcesses()
+        public OSProcess[] GetWindowsProcesses()
         {
             try
             {
                 Log.WriteStart("GetWindowsProcesses");
 
-                List<WindowsProcess> winProcesses = new List<WindowsProcess>();
+                List<OSProcess> winProcesses = new List<OSProcess>();
 
                 WmiHelper wmi = new WmiHelper("root\\cimv2");
                 ManagementObjectCollection objProcesses = wmi.ExecuteQuery(
@@ -177,7 +177,7 @@ namespace SolidCP.Server
                     objProcess.InvokeMethod("GetOwner", (object[])methodParams);
                     string username = methodParams[0];
 
-                    WindowsProcess winProcess = new WindowsProcess();
+                    OSProcess winProcess = new OSProcess();
                     winProcess.Pid = pid;
                     winProcess.Name = name;
                     winProcess.Username = username;
@@ -222,32 +222,32 @@ namespace SolidCP.Server
 
         #region Windows Services
         [WebMethod]
-        public WindowsService[] GetWindowsServices()
+        public OSService[] GetWindowsServices()
         {
             try
             {
                 Log.WriteStart("GetWindowsServices");
-                List<WindowsService> winServices = new List<WindowsService>();
+                List<OSService> winServices = new List<OSService>();
 
                 ServiceController[] services = ServiceController.GetServices();
                 foreach (ServiceController service in services)
                 {
-                    WindowsService winService = new WindowsService();
+                    OSService winService = new OSService();
                     winService.Id = service.ServiceName;
                     winService.Name = service.DisplayName;
                     winService.CanStop = service.CanStop;
                     winService.CanPauseAndContinue = service.CanPauseAndContinue;
 
-                    WindowsServiceStatus status = WindowsServiceStatus.ContinuePending;
+                    OSServiceStatus status = OSServiceStatus.ContinuePending;
                     switch (service.Status)
                     {
-                        case ServiceControllerStatus.ContinuePending: status = WindowsServiceStatus.ContinuePending; break;
-                        case ServiceControllerStatus.Paused: status = WindowsServiceStatus.Paused; break;
-                        case ServiceControllerStatus.PausePending: status = WindowsServiceStatus.PausePending; break;
-                        case ServiceControllerStatus.Running: status = WindowsServiceStatus.Running; break;
-                        case ServiceControllerStatus.StartPending: status = WindowsServiceStatus.StartPending; break;
-                        case ServiceControllerStatus.Stopped: status = WindowsServiceStatus.Stopped; break;
-                        case ServiceControllerStatus.StopPending: status = WindowsServiceStatus.StopPending; break;
+                        case ServiceControllerStatus.ContinuePending: status = OSServiceStatus.ContinuePending; break;
+                        case ServiceControllerStatus.Paused: status = OSServiceStatus.Paused; break;
+                        case ServiceControllerStatus.PausePending: status = OSServiceStatus.PausePending; break;
+                        case ServiceControllerStatus.Running: status = OSServiceStatus.Running; break;
+                        case ServiceControllerStatus.StartPending: status = OSServiceStatus.StartPending; break;
+                        case ServiceControllerStatus.Stopped: status = OSServiceStatus.Stopped; break;
+                        case ServiceControllerStatus.StopPending: status = OSServiceStatus.StopPending; break;
                     }
                     winService.Status = status;
 
@@ -265,7 +265,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod]
-        public void ChangeWindowsServiceStatus(string id, WindowsServiceStatus status)
+        public void ChangeWindowsServiceStatus(string id, OSServiceStatus status)
         {
             try
             {
@@ -278,17 +278,17 @@ namespace SolidCP.Server
                 {
                     if (String.Compare(service.ServiceName, id, true) == 0)
                     {
-                        if (status == WindowsServiceStatus.Paused
+                        if (status == OSServiceStatus.Paused
                             && service.Status == ServiceControllerStatus.Running)
                             service.Pause();
-                        else if (status == WindowsServiceStatus.Running
+                        else if (status == OSServiceStatus.Running
                             && service.Status == ServiceControllerStatus.Stopped)
                             service.Start();
-                        else if (status == WindowsServiceStatus.Stopped
+                        else if (status == OSServiceStatus.Stopped
                             && ((service.Status == ServiceControllerStatus.Running) ||
                                 (service.Status == ServiceControllerStatus.Paused)))
                             service.Stop();
-                        else if (status == WindowsServiceStatus.ContinuePending
+                        else if (status == OSServiceStatus.ContinuePending
                             && service.Status == ServiceControllerStatus.Paused)
                             service.Continue();
                     }

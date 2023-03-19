@@ -10,7 +10,9 @@
 @inherits RazorBlade.PlainTextTemplate
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+#if NETFRAMEWORK
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+#endif
 public class @(Class.Identifier): @(OldNamespace).@Class.Identifier, I@(Class.Identifier) {
 
 	@*

@@ -53,11 +53,12 @@ using System.Collections;
 using System.Security;
 using System.Web;
 using System.Management;
+using System.ServiceProcess;
 using Microsoft.Web.PlatformInstaller;
 
 namespace SolidCP.Providers.OS
 {
-    public class Windows2003 : HostingServiceProviderBase, IOperatingSystem
+    public class Windows2003 : HostingServiceProviderBase, IWindowsOperatingSystem
     {
         #region Constants
         private const string ODBC_SOURCES_KEY = @"SOFTWARE\ODBC\ODBC.INI";
@@ -1033,13 +1034,12 @@ namespace SolidCP.Providers.OS
 			return installedVersion;
 		}
 
-		public WPIProduct[] GetWPIProducts(string tabId, string keywordId)
+		public virtual WPIProduct[] GetWPIProducts(string tabId, string keywordId)
 		{
 
 
 			try
 			{
-				Log.WriteStart("GetWPIProducts");
 				List<WPIProduct> wpiProducts = new List<WPIProduct>();
 
 
@@ -1076,28 +1076,21 @@ namespace SolidCP.Providers.OS
 
 
 				}
-
-
-
-				Log.WriteEnd("GetWPIProducts");
 				return wpiProducts.ToArray();
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("GetWPIProducts", ex);
 				throw;
 			}
 		}
 
-		public WPIProduct[] GetWPIProductsFiltered(string filter)
+		public virtual WPIProduct[] GetWPIProductsFiltered(string filter)
 		{
 
 
 			try
 			{
-				Log.WriteStart("GetWPIProductsFiltered");
 				List<WPIProduct> wpiProducts = new List<WPIProduct>();
-
 
 				WpiHelper wpi = GetWpiFeed();
 
@@ -1117,24 +1110,18 @@ namespace SolidCP.Providers.OS
 					}
 
 				}
-
-
-
-				Log.WriteEnd("GetWPIProductsFiltered");
 				return wpiProducts.ToArray();
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("GetWPIProductsFiltered", ex);
 				throw;
 			}
 		}
 
-		public WPIProduct GetWPIProductById(string productdId)
+		public virtual WPIProduct GetWPIProductById(string productdId)
 		{
 			try
 			{
-				Log.WriteStart("GetWPIProductById");
 				WpiHelper wpi = GetWpiFeed();
 
 				Product product = wpi.GetWPIProductById(productdId);
@@ -1146,22 +1133,18 @@ namespace SolidCP.Providers.OS
 					CheckProductForUpdate("", wpiProduct);
 				}
 
-				Log.WriteEnd("GetWPIProductById");
 				return wpiProduct;
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("GetWPIProductById", ex);
 				throw;
 			}
 		}
 
-		public WPITab[] GetWPITabs()
+		public virtual WPITab[] GetWPITabs()
 		{
 			try
 			{
-				Log.WriteStart("GetWPITabs");
-
 				WpiHelper wpi = GetWpiFeed();
 
 				List<WPITab> result = new List<WPITab>();
@@ -1170,15 +1153,10 @@ namespace SolidCP.Providers.OS
 				{
 					result.Add(new WPITab(tab.Id, tab.Name));
 				}
-
-
-				Log.WriteEnd("GetWPITabs");
-
 				return result.ToArray();
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("GetWPITabs", ex);
 				throw;
 			}
 		}
@@ -1186,7 +1164,7 @@ namespace SolidCP.Providers.OS
 
 		static private string[] _feeds = new string[] { };
 
-		public void InitWPIFeeds(string feedUrls)
+		public virtual void InitWPIFeeds(string feedUrls)
 		{
 			if (string.IsNullOrEmpty(feedUrls))
 			{
@@ -1201,8 +1179,6 @@ namespace SolidCP.Providers.OS
 			}
 			if (!ArraysEqual<string>(newFeeds, _feeds))
 			{
-				Log.WriteInfo("InitWPIFeeds - new value: " + feedUrls);
-
 				//Feeds settings have been channged
 				_feeds = newFeeds;
 				wpi = null;
@@ -1230,12 +1206,10 @@ namespace SolidCP.Providers.OS
 			return true;
 		}
 
-		public WPIKeyword[] GetWPIKeywords()
+		public virtual WPIKeyword[] GetWPIKeywords()
 		{
 			try
 			{
-				Log.WriteStart("GetWPIKeywords");
-
 				WpiHelper wpi = GetWpiFeed();
 
 				List<WPIKeyword> result = new List<WPIKeyword>();
@@ -1250,26 +1224,19 @@ namespace SolidCP.Providers.OS
 					}
 
 				}
-
-
-				Log.WriteEnd("GetWPIKeywords");
-
 				return result.ToArray();
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("GetWPIKeywords", ex);
 				throw;
 			}
 		}
 
 
-		public WPIProduct[] GetWPIProductsWithDependencies(string[] products)
+		public virtual WPIProduct[] GetWPIProductsWithDependencies(string[] products)
 		{
 			try
 			{
-				Log.WriteStart("GetWPIProductsWithDependencies");
-
 				WpiHelper wpi = GetWpiFeed();
 
 				List<WPIProduct> result = new List<WPIProduct>();
@@ -1277,25 +1244,19 @@ namespace SolidCP.Providers.OS
 				{
 					result.Add(ProductToWPIProduct(product));
 				}
-
-				Log.WriteEnd("GetWPIProductsWithDependencies");
-
 				return result.ToArray();
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("GetWPIProductsWithDependencies", ex);
 				throw;
 			}
 		}
 
 		static Process _WpiServiceExe = null;
-		public void InstallWPIProducts(string[] products)
+		public virtual void InstallWPIProducts(string[] products)
 		{
 			try
 			{
-				Log.WriteStart("InstallWPIProducts");
-
 				StartWpiService();
 
 				RegisterWpiService();
@@ -1304,16 +1265,9 @@ namespace SolidCP.Providers.OS
 
 				client.Initialize(_feeds);
 				client.BeginInstallation(products);
-
-
-
-
-
-				Log.WriteEnd("InstallWPIProducts");
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError("InstallWPIProducts", ex);
 				throw;
 			}
 		}
@@ -1354,7 +1308,7 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public void CancelInstallWPIProducts()
+		public virtual void CancelInstallWPIProducts()
 		{
 			try
 			{
@@ -1391,19 +1345,15 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public string GetWPIStatus()
+		public virtual string GetWPIStatus()
 		{
 			try
 			{
-				Log.WriteStart("GetWPIStatus");
-
 				RegisterWpiService();
 
 				WPIServiceContract client = new WPIServiceContract();
 
 				string status = client.GetStatus();
-
-				Log.WriteEnd("GetWPIStatus");
 
 				return status; //OK
 			}
@@ -1417,45 +1367,33 @@ namespace SolidCP.Providers.OS
 					wpi = null;
 					return ""; //OK
 				}
-
-				Log.WriteError("GetWPIStatus", ex);
-
 				return ex.ToString();
 			}
 		}
 
-		public string WpiGetLogFileDirectory()
+		public virtual string WpiGetLogFileDirectory()
 		{
 			try
 			{
-				Log.WriteStart("WpiGetLogFileDirectory");
-
 				RegisterWpiService();
 
 				WPIServiceContract client = new WPIServiceContract();
 
 				string result = client.GetLogFileDirectory();
 
-				Log.WriteEnd("WpiGetLogFileDirectory");
-
 				return result; //OK
 			}
 			catch (Exception ex)
 			{
-
-				Log.WriteError("WpiGetLogFileDirectory", ex);
-
 				//throw;
 				return string.Empty;
 			}
 		}
 
-		public SettingPair[] WpiGetLogsInDirectory(string Path)
+		public virtual SettingPair[] WpiGetLogsInDirectory(string Path)
 		{
 			try
 			{
-				Log.WriteStart("WpiGetLogsInDirectory");
-
 				ArrayList result = new ArrayList();
 
 				string[] filePaths = Directory.GetFiles(Path);
@@ -1468,16 +1406,10 @@ namespace SolidCP.Providers.OS
 					}
 
 				}
-
-				Log.WriteEnd("WpiGetLogFileDirectory");
-
 				return (SettingPair[])result.ToArray(typeof(SettingPair)); //OK
 			}
 			catch (Exception ex)
 			{
-
-				Log.WriteError("WpiGetLogFileDirectory", ex);
-
 				//throw;
 				return null;
 			}
@@ -1535,19 +1467,13 @@ namespace SolidCP.Providers.OS
 					KillWpiService();
 					//StartWpiService();
 				}
-
-
-
-
 			}
-
-
 		}
 		#endregion Web Platform Installer
 
 
 		#region Event Viewer
-		public List<string> GetLogNames()
+		public virtual List<string> GetLogNames()
 		{
 			List<string> logs = new List<string>();
 			EventLog[] eventLogs = EventLog.GetEventLogs();
@@ -1558,7 +1484,7 @@ namespace SolidCP.Providers.OS
 			return logs;
 		}
 
-		public List<SystemLogEntry> GetLogEntries(string logName)
+		public virtual List<SystemLogEntry> GetLogEntries(string logName)
 		{
 			SystemLogEntriesPaged result = new SystemLogEntriesPaged();
 			List<SystemLogEntry> entries = new List<SystemLogEntry>();
@@ -1637,6 +1563,252 @@ namespace SolidCP.Providers.OS
 				entry.Message = logEntry.Message;
 
 			return entry;
+		}
+		#endregion
+
+		#region Terminal connections
+		public TerminalSession[] GetTerminalServicesSessions()
+		{
+			try
+			{
+				Log.WriteStart("GetTerminalServicesSessions");
+				List<TerminalSession> sessions = new List<TerminalSession>();
+				string ret = FileUtils.ExecuteSystemCommand("qwinsta", "");
+
+				// parse returned string
+				StringReader reader = new StringReader(ret);
+				string line = null;
+				int lineIndex = 0;
+				while ((line = reader.ReadLine()) != null)
+				{
+					/*if (line.IndexOf("USERNAME") != -1 )
+                        continue;*/
+					//
+					if (lineIndex == 0)
+					{
+						lineIndex++;
+						continue;
+					}
+
+					Regex re = new Regex(@"(\S+)\s+", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+					MatchCollection matches = re.Matches(line);
+
+					// add row to the table
+					string username = matches[1].Value.Trim();
+					if (Regex.IsMatch(username, "^[0-9]*$"))
+					{
+						username = "";
+					}
+
+					if (username != "")
+					{
+						TerminalSession session = new TerminalSession();
+						//
+						session.SessionId = Int32.Parse(matches[2].Value.Trim());
+						session.Username = username;
+						session.Status = matches[3].Value.Trim();
+
+						sessions.Add(session);
+					}
+					//
+					lineIndex++;
+				}
+				reader.Close();
+
+				Log.WriteEnd("GetTerminalServicesSessions");
+				return sessions.ToArray();
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("GetTerminalServicesSessions", ex);
+				throw;
+			}
+		}
+
+		public void CloseTerminalServicesSession(int sessionId)
+		{
+			try
+			{
+				Log.WriteStart("CloseTerminalServicesSession");
+				FileUtils.ExecuteSystemCommand("rwinsta", sessionId.ToString());
+				Log.WriteEnd("CloseTerminalServicesSession");
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("CloseTerminalServicesSession", ex);
+				throw;
+			}
+		}
+		#endregion
+
+		#region Windows Processes
+		public OSProcess[] GetOSProcesses()
+		{
+			try
+			{
+				List<OSProcess> winProcesses = new List<OSProcess>();
+
+				WmiHelper wmi = new WmiHelper("root\\cimv2");
+				ManagementObjectCollection objProcesses = wmi.ExecuteQuery(
+					"SELECT * FROM Win32_Process");
+
+				foreach (ManagementObject objProcess in objProcesses)
+				{
+					int pid = Int32.Parse(objProcess["ProcessID"].ToString());
+					string name = objProcess["Name"].ToString();
+
+					// get user info
+					string[] methodParams = new String[2];
+					objProcess.InvokeMethod("GetOwner", (object[])methodParams);
+					string username = methodParams[0];
+
+					OSProcess winProcess = new OSProcess();
+					winProcess.Pid = pid;
+					winProcess.Name = name;
+					winProcess.Username = username;
+					winProcess.MemUsage = Int64.Parse(objProcess["WorkingSetSize"].ToString());
+
+					winProcesses.Add(winProcess);
+				}
+
+				return winProcesses.ToArray();
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
+		public void TerminateOSProcess(int pid)
+		{
+			try
+			{
+				Process[] processes = Process.GetProcesses();
+				foreach (Process process in processes)
+				{
+					if (process.Id == pid)
+						process.Kill();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+		#endregion
+
+		#region Windows Services
+		public OSService[] GetOSServices()
+		{
+			try
+			{
+				List<OSService> winServices = new List<OSService>();
+
+				ServiceController[] services = ServiceController.GetServices();
+				foreach (ServiceController service in services)
+				{
+					OSService winService = new OSService();
+					winService.Id = service.ServiceName;
+					winService.Name = service.DisplayName;
+					winService.CanStop = service.CanStop;
+					winService.CanPauseAndContinue = service.CanPauseAndContinue;
+
+					OSServiceStatus status = OSServiceStatus.ContinuePending;
+					switch (service.Status)
+					{
+						case ServiceControllerStatus.ContinuePending: status = OSServiceStatus.ContinuePending; break;
+						case ServiceControllerStatus.Paused: status = OSServiceStatus.Paused; break;
+						case ServiceControllerStatus.PausePending: status = OSServiceStatus.PausePending; break;
+						case ServiceControllerStatus.Running: status = OSServiceStatus.Running; break;
+						case ServiceControllerStatus.StartPending: status = OSServiceStatus.StartPending; break;
+						case ServiceControllerStatus.Stopped: status = OSServiceStatus.Stopped; break;
+						case ServiceControllerStatus.StopPending: status = OSServiceStatus.StopPending; break;
+					}
+					winService.Status = status;
+
+					winServices.Add(winService);
+				}
+
+				return winServices.ToArray();
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
+		public void ChangeOSServiceStatus(string id, OSServiceStatus status)
+		{
+			try
+			{
+				// get all services
+				ServiceController[] services = ServiceController.GetServices();
+
+				// find required service
+				foreach (ServiceController service in services)
+				{
+					if (String.Compare(service.ServiceName, id, true) == 0)
+					{
+						if (status == OSServiceStatus.Paused
+							&& service.Status == ServiceControllerStatus.Running)
+							service.Pause();
+						else if (status == OSServiceStatus.Running
+							&& service.Status == ServiceControllerStatus.Stopped)
+							service.Start();
+						else if (status == OSServiceStatus.Stopped
+							&& ((service.Status == ServiceControllerStatus.Running) ||
+								(service.Status == ServiceControllerStatus.Paused)))
+							service.Stop();
+						else if (status == OSServiceStatus.ContinuePending
+							&& service.Status == ServiceControllerStatus.Paused)
+							service.Continue();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+		#endregion
+
+		#region OS informations
+		public Memory GetMemory()
+		{
+			try
+			{
+				Memory memory = new Memory();
+
+				WmiHelper wmi = new WmiHelper("root\\cimv2");
+				ManagementObjectCollection objOses = wmi.ExecuteQuery("SELECT * FROM Win32_OperatingSystem");
+				foreach (ManagementObject objOs in objOses)
+				{
+					memory.FreePhysicalMemoryKB = UInt64.Parse(objOs["FreePhysicalMemory"].ToString());
+					memory.TotalVisibleMemorySizeKB = UInt64.Parse(objOs["TotalVisibleMemorySize"].ToString());
+					memory.TotalVirtualMemorySizeKB = UInt64.Parse(objOs["TotalVirtualMemorySize"].ToString());
+					memory.FreeVirtualMemoryKB = UInt64.Parse(objOs["FreeVirtualMemory"].ToString());
+				}
+				return memory;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+		#endregion
+
+		#region System Commands
+		public string ExecuteSystemCommand(string path, string args)
+		{
+			try
+			{
+				string result = FileUtils.ExecuteSystemCommand(path, args);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
 		}
 		#endregion
 

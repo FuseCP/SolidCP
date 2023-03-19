@@ -82,20 +82,6 @@ namespace SolidCP.Providers.OS
 		string[] UnzipFiles(string zipFile, string destFolder);
 		void CreateBackupZip(string zipFile, string rootPath);
 
-		UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU);
-		void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions);
-
-		// ODBC DSNs
-		string[] GetInstalledOdbcDrivers();
-		string[] GetDSNNames();
-		SystemDSN GetDSN(string dsnName);
-		void CreateDSN(SystemDSN dsn);
-		void UpdateDSN(SystemDSN dsn);
-		void DeleteDSN(string dsnName);
-
-		// Access databases
-		void CreateAccessDatabase(string databasePath);
-
 		// Synchronizing
 		FolderGraph GetFolderGraph(string path);
 		void ExecuteSyncActions(FileSyncAction[] actions);
@@ -104,8 +90,28 @@ namespace SolidCP.Providers.OS
 		Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword);
 		void DeleteDirectoryRecursive(string rootPath);
 
-		// File Services
-		bool CheckFileServicesInstallation();
-		bool InstallFsrmService();
+		// logging
+		List<string> GetLogNames();
+		List<SystemLogEntry> GetLogEntries(string logName);
+		SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows);
+		void ClearLog(string logName);
+
+		// processes
+		OSProcess[] GetOSProcesses();
+		void TerminateOSProcess(int pid);
+		OSService[] GetOSServices();
+		void ChangeOSServiceStatus(string id, OSServiceStatus status);
+
+		// reboot
+		void RebootSystem();
+
+		// memory
+		Memory GetMemory();
+
+		// execute command
+		string ExecuteSystemCommand(string path, string args);
+
+
 	}
+
 }

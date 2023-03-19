@@ -53,10 +53,11 @@ namespace SolidCP.EnterpriseServer {
     using System.Data;
     using SolidCP.Providers;
     using SolidCP.Providers.Statistics;
-    
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
+	using SolidCP.EnterpriseServer.Servers;
+
+
+	/// <remarks/>
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="esStatisticsServersSoap", Namespace="http://smbsaas/solidcp/enterpriseserver")]
@@ -444,7 +445,8 @@ namespace SolidCP.EnterpriseServer {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     public delegate void GetStatisticsSitesCompletedEventHandler(object sender, GetStatisticsSitesCompletedEventArgs e);
-    
+
+    public delegate void GetServersCompletedEventHandler(object sender, GetServersCompletedEventArgs e);
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.42")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]

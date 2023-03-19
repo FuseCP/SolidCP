@@ -299,9 +299,9 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        private static WindowsServer GetServerService(int serverId)
+        private static Server.Client.OperatingSystem GetServerService(int serverId)
         {
-            WindowsServer winServer = new WindowsServer();
+            Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(winServer, serverId);
             return winServer;
         }
@@ -342,12 +342,12 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Windows Processes
-        public static WindowsProcess[] GetWindowsProcesses(int serverId)
+        public static OSProcess[] GetOSProcesses(int serverId)
         {
-            return GetServerService(serverId).GetWindowsProcesses();
+            return GetServerService(serverId).GetOSProcesses();
         }
 
-        public static int TerminateWindowsProcess(int serverId, int pid)
+        public static int TerminateOSProcess(int serverId, int pid)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -362,7 +362,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                GetServerService(serverId).TerminateWindowsProcess(pid);
+                GetServerService(serverId).TerminateOSProcess(pid);
                 return 0;
             }
             catch (Exception ex)
@@ -377,12 +377,12 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Windows Services
-        public static WindowsService[] GetWindowsServices(int serverId)
+        public static OSService[] GetOSServices(int serverId)
         {
-            return GetServerService(serverId).GetWindowsServices();
+            return GetServerService(serverId).GetOSServices();
         }
 
-        public static int ChangeWindowsServiceStatus(int serverId, string id, WindowsServiceStatus status)
+        public static int ChangeOSServiceStatus(int serverId, string id, OSServiceStatus status)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -398,7 +398,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                GetServerService(serverId).ChangeWindowsServiceStatus(id, status);
+                GetServerService(serverId).ChangeOSServiceStatus(id, status);
                 return 0;
             }
             catch (Exception ex)

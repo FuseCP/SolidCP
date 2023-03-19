@@ -18,36 +18,21 @@ using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https:/
 	{
 		Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
 	};
-	client.Credentials.Password = "+uxnDOdf55yuH6iZYXgYAxsfIBw=";
+	client.Credentials.Password = "aWs7wiWmcyph0oYjIRyMBP2yQZQ=";
 	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
 }
 
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901/basic" })
+using (var client = new SolidCP.Server.Client.WindowsServer() { Url = "https://localhost:9901" })
 {
 	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
 	{
 		Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
 	};
-	client.Credentials.Password = "+uxnDOdf55yuH6iZYXgYAxsfIBw=";
-	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
+	client.Credentials.Password = "aWs7wiWmcyph0oYjIRyMBP2yQZQ=";
+	Console.WriteLine("Log Names:");
+	foreach (var log in client.GetLogNames())
+	{
+		Console.WriteLine(log);
+	}
 }
 
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901/ws" })
-{
-	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
-	{
-		Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
-	};
-	client.Credentials.Password = "+uxnDOdf55yuH6iZYXgYAxsfIBw=";
-	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
-}
-
-using (var client = new SolidCP.Server.Client.OperatingSystem() { Url = "https://localhost:9901/net" })
-{
-	client.SoapHeader = new ServiceProviderSettingsSoapHeader()
-	{
-		Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
-	};
-	client.Credentials.Password = "+uxnDOdf55yuH6iZYXgYAxsfIBw=";
-	Console.WriteLine($"C:\\GitHub exists: {client.DirectoryExists("C:\\GitHub")}");
-}

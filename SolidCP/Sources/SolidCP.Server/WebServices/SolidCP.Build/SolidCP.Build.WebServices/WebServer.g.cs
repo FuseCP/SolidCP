@@ -14,11 +14,8 @@ using SolidCP.Server.Utils;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.WebAppGallery;
 using SolidCP.Providers.Common;
-using Microsoft.Web.Administration;
-using Microsoft.Web.Management.Server;
 using SolidCP.Server;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -347,7 +344,9 @@ namespace SolidCP.Server.Services
 
     // wcf service
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+#if NETFRAMEWORK
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+#endif
     public class WebServer : SolidCP.Server.WebServer, IWebServer
     {
     }

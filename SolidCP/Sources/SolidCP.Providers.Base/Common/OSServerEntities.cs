@@ -34,7 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidCP.Server
+namespace SolidCP.Providers.OS
 {
     public class TerminalSession
     {
@@ -61,7 +61,7 @@ namespace SolidCP.Server
         }
     }
 
-    public class WindowsProcess
+    public class OSProcess
     {
         private int pid;
         private string name;
@@ -100,15 +100,15 @@ namespace SolidCP.Server
         }
     }
 
-    public class WindowsService
+    public class OSService
     {
         private string id;
         private string name;
-        private WindowsServiceStatus status;
+        private OSServiceStatus status;
         private bool canStop;
         private bool canPauseAndContinue;
 
-        public WindowsService()
+        public OSService()
         {
         }
 
@@ -118,7 +118,7 @@ namespace SolidCP.Server
             set { this.name = value; }
         }
 
-        public WindowsServiceStatus Status
+        public OSServiceStatus Status
         {
             get { return this.status; }
             set { this.status = value; }
@@ -143,7 +143,7 @@ namespace SolidCP.Server
         }
     }
 
-    public enum WindowsServiceStatus
+    public enum OSServiceStatus
     {
         ContinuePending = 1,
         Paused = 2,

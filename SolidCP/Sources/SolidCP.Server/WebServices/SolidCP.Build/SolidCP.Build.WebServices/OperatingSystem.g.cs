@@ -15,7 +15,6 @@ using SolidCP.Providers.DomainLookup;
 using System.Collections.Generic;
 using SolidCP.Server;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -157,11 +156,94 @@ namespace SolidCP.Server.Services
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         void DeleteDSN(string dsnName);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        UnixFileMode GetUnixPermissions(string path);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        TerminalSession[] GetTerminalServicesSessions();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void CloseTerminalServicesSession(int sessionId);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        List<string> GetLogNames();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        List<SystemLogEntry> GetLogEntries(string logName);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void ClearLog(string logName);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        OSProcess[] GetOSProcesses();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void TerminateOSProcess(int pid);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        OSService[] GetOSServices();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void ChangeOSServiceStatus(string id, OSServiceStatus status);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void RebootSystem();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        Memory GetMemory();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        string ExecuteSystemCommand(string path, string args);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        WPIProduct[] GetWPIProducts(string tabId, string keywordId);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        WPIProduct[] GetWPIProductsFiltered(string filter);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        WPIProduct GetWPIProductById(string productdId);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        WPITab[] GetWPITabs();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void InitWPIFeeds(string feedUrls);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        WPIKeyword[] GetWPIKeywords();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        WPIProduct[] GetWPIProductsWithDependencies(string[] products);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void InstallWPIProducts(string[] products);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void CancelInstallWPIProducts();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        string GetWPIStatus();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        string WpiGetLogFileDirectory();
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        SettingPair[] WpiGetLogsInDirectory(string Path);
     }
 
     // wcf service
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+#if NETFRAMEWORK
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+#endif
     public class OperatingSystem : SolidCP.Server.OperatingSystem, IOperatingSystem
     {
     }

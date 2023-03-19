@@ -159,6 +159,8 @@
     <Compile Include="HostedSolution\SharePointEnterpriseStatisticsReport.cs" />
     <Compile Include="HostedSolution\SharePointEntetpriseStatistics.cs" />
     <Compile Include="HostedSolution\TransactionAction.cs" />
+    <Compile Include="OS\IUnixOperatingSystem.cs" />
+    <Compile Include="OS\IWindowsOperatingSystem.cs" />
     <Compile Include="OS\MappedDrivesPaged.cs" />
     <Compile Include="OS\MappedDrive.cs" />
     <Compile Include="OS\Quota.cs" />
@@ -250,7 +252,7 @@
     <Compile Include="Common\HostingServiceProviderWebService.cs" />
     <Compile Include="Common\SettingPair.cs" />
     <Compile Include="Common\SoapServiceProviderItem.cs" />
-    <Compile Include="Common\WindowsServerEntities.cs" />
+    <Compile Include="Common\OSServerEntities.cs" />
     <Compile Include="DNS\DnsRecord.cs" />
     <Compile Include="DNS\DnsRecordType.cs" />
     <Compile Include="DNS\DnsSOARecord.cs" />

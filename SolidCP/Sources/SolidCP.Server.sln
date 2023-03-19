@@ -273,6 +273,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Services", "Sol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Server.Client", "SolidCP.Server\WebServices\SolidCP.Server.Client.csproj", "{B9CCDB60-DC38-46D7-9835-63BCD763B369}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.OS.Unix", "SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj", "{6E5FB778-0A54-4E89-9823-FCCA5B83B103}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1325,6 +1327,18 @@ Global
 		{B9CCDB60-DC38-46D7-9835-63BCD763B369}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B9CCDB60-DC38-46D7-9835-63BCD763B369}.Release|x86.ActiveCfg = Release|Any CPU
 		{B9CCDB60-DC38-46D7-9835-63BCD763B369}.Release|x86.Build.0 = Release|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Debug|x86.Build.0 = Debug|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Release|x86.ActiveCfg = Release|Any CPU
+		{6E5FB778-0A54-4E89-9823-FCCA5B83B103}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

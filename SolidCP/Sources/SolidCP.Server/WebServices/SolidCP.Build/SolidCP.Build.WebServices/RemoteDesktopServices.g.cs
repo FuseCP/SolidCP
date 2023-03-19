@@ -18,7 +18,6 @@ using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base.RDS;
 using SolidCP.Server;
 using System.ServiceModel;
-using System.ServiceModel.Activation;
 
 namespace SolidCP.Server.Services
 {
@@ -164,7 +163,9 @@ namespace SolidCP.Server.Services
 
     // wcf service
     [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
+#if NETFRAMEWORK
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServcieModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+#endif
     public class RemoteDesktopServices : SolidCP.Server.RemoteDesktopServices, IRemoteDesktopServices
     {
     }

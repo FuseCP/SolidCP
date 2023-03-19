@@ -420,7 +420,7 @@ namespace SolidCP.Portal
             return usersService.ActivateUserMfaQrCode(username, pin);
         }
 
-        public static string CreateEncyptedAuthenticationTicket(string username, string password, string ipAddress, bool rememberLogin, string preferredLocale, string theme)
+        public static string CreateEncryptedAuthenticationTicket(string username, string password, string ipAddress, bool rememberLogin, string preferredLocale, string theme)
         {
             esAuthentication authService = new esAuthentication();
             ConfigureEnterpriseServerProxy(authService, false);

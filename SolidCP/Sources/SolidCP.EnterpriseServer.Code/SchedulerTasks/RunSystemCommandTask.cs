@@ -78,7 +78,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             // execute system command
-            WindowsServer winServer = new WindowsServer();
+            Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(winServer, server.ServerId);
             TaskManager.Write(winServer.ExecuteSystemCommand(execPath, execParams));
         }

@@ -51,8 +51,11 @@ namespace SolidCP.Web.Services
 
 			Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
 			Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new UserNamePasswordValidator() { Policy = policy };
-			Credentials.ServiceCertificate.SetCertificate(
-				StoreLocation.LocalMachine, StoreName.My, X509FindType.FindBySubjectName, "localhost");
+			var behavior = Description.Behaviors.Find<ServiceDebugBehavior>();
+			if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
+
+			//Credentials.ServiceCertificate.SetCertificate(
+			//	StoreLocation.LocalMachine, StoreName.My, X509FindType.FindBySubjectName, "localhost");
 
 			foreach (var adr in baseAdresses.Select(uri => uri.AbsoluteUri)) {
 				if (adr.StartsWith("http://"))

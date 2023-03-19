@@ -223,7 +223,7 @@ namespace SolidCP.Portal
                 return;
             }
 
-            string encryptedTicket = PortalUtils.CreateEncyptedAuthenticationTicket(username, password, ipAddress, rememberLogin, preferredLocale, theme);
+            string encryptedTicket = PortalUtils.CreateEncryptedAuthenticationTicket(username, password, ipAddress, rememberLogin, preferredLocale, theme);
 
             if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE)
             {

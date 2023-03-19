@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ﻿using System;
+using System.IO;
 using System.Configuration;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
@@ -89,7 +90,11 @@ namespace SolidCP.Server.Code
         }
 
         public static string GetServerFilePath() {
+#if NETFRAMEWORK
             return System.Web.HttpContext.Current.Server.MapPath("~/");
+#else
+            return new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..")).FullName;
+#endif
         }
 
         public static string GetServerVersion()
