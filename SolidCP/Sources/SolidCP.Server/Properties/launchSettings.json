@@ -2,7 +2,7 @@
   "profiles": {
     "Kestrel": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "https://localhost:9007",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -11,8 +11,8 @@
     },
     "IISExpress": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:9006",
+      "launchBrowser": false,
+      "launchUrl": "https://localhost:9007",
       "use64Bit": true,
       "ancmHostingModel": "OutOfProcess"
     }

@@ -25,6 +25,7 @@ using System.Security.Cryptography.X509Certificates;
 using SolidCP.Web.Services;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.Intrinsics.X86;
 
 namespace SolidCP.Web.Services
 {
@@ -44,23 +45,6 @@ namespace SolidCP.Web.Services
 
 		public static void Init(string[] args)
 		{
-			/* var app = WebHost.CreateDefaultBuilder(args)
-				.UseKestrel(options => {
-					options.ListenAnyIP(HTTP_PORT);
-					options.ListenAnyIP(HTTPS_PORT, listenOptions =>
-					{
-						listenOptions.UseHttps();
-						if (Debugger.IsAttached)
-						{
-							listenOptions.UseConnectionLogging();
-						}
-					});
-				})
-			.UseNetTcp(NETTCP_PORT)
-			.UseStartup<CoreWebServicesApp>()
-			.Build();
-			app.Run(); */
-
 			var builder = WebApplication.CreateBuilder(args);
 			var urls = builder.Configuration["applicationUrls"];
 			foreach (var url in urls.Split(';'))
@@ -93,18 +77,24 @@ namespace SolidCP.Web.Services
 
 			if (NetTcpPort.HasValue) builder.WebHost.UseNetTcp(NetTcpPort.Value);
 
-				/*.UseKestrel(options =>
+			builder.WebHost.UseKestrel(options =>
 			{
-				options.ListenAnyIP(HTTP_PORT);
-				options.ListenAnyIP(HTTPS_PORT, listenOptions =>
+				if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
 				{
-					listenOptions.UseHttps();
-					if (Debugger.IsAttached)
-					{
-						listenOptions.UseConnectionLogging();
-					}
+					if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
 				});
-			}) */
+				if (HttpsPort.HasValue) options.ListenAnyIP(HttpsPort.Value, listenOptions =>
+				{
+					listenOptions.UseHttps(listenOptions =>
+					{
+						X509Store store = new X509Store(StoreName, StoreLocation);
+						store.Open(OpenFlags.ReadOnly);
+						var cert = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
+						if (cert != null) listenOptions.ServerCertificate = cert;
+					});
+					if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+				});
+			});
 
 			var app = builder.Build();
 
@@ -129,8 +119,8 @@ namespace SolidCP.Web.Services
 			//Enable CoreWCF Services, with metadata (WSDL) support
 			services
 				.AddServiceModelServices()
-				.AddServiceModelMetadata()
-				.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
+				.AddServiceModelMetadata();
+				//.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
 		}
 
 		public static IServiceBuilder AddServiceEndpoint(this IServiceBuilder builder, Type service, Type contract, Binding binding, Uri address)
@@ -185,10 +175,10 @@ namespace SolidCP.Web.Services
 							netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
 							netHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/net/{ws.Service.Name}");
 							defaultUri = new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}");
-							service.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
+							service.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri)
+								.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
 								.AddServiceEndpoint(ws.Service, ws.Contract, wsHttpBinding, wsHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri);
+								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);
 						}
 						if (NetTcpPort.HasValue)
 						{
@@ -208,10 +198,11 @@ namespace SolidCP.Web.Services
 							netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.None);
 							netHttpUri = new Uri($"http://{HttpHost}:{HttpPort}/net/{ws.Service.Name}");
 							defaultUri = new Uri($"http://{HttpHost}:{HttpPort}/{ws.Service.Name}");
-							service.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
+							service.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri)
+								.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
 								.AddServiceEndpoint(ws.Service, ws.Contract, wsHttpBinding, wsHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri);
+								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);
+								
 						}
 						if (HttpsPort.HasValue)
 						{
@@ -222,10 +213,10 @@ namespace SolidCP.Web.Services
 							netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
 							netHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/net/{ws.Service.Name}");
 							defaultUri = new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}");
-							service.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
+							service.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri)
+								.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
 								.AddServiceEndpoint(ws.Service, ws.Contract, wsHttpBinding, wsHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri);
+								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);
 						}
 						if (NetTcpPort.HasValue)
 						{

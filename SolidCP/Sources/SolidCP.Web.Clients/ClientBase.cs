@@ -166,19 +166,28 @@ namespace SolidCP.Web.Client
 		{
 			get
 			{
-				if (client != null)
+                string serviceurl = $"{url}/{this.GetType().Name}";
+
+                if (client != null)
 				{
 					if (client is IClientChannel chan)
 					{
-						if (chan.State != CommunicationState.Opened && chan.State != CommunicationState.Opening)
+						if (chan.RemoteAddress.Uri.AbsoluteUri != serviceurl)
 						{
-							chan.Open();
+							client = null;
+						}
+						else
+						{
+							if (chan.State != CommunicationState.Opened && chan.State != CommunicationState.Opening)
+							{
+								chan.Open();
+							}
+							return client;
 						}
 					}
-					return client;
+					else return client;
 				}
 
-				string serviceurl = $"{url}/{this.GetType().Name}";
 
 				if (IsWCF)
 				{
