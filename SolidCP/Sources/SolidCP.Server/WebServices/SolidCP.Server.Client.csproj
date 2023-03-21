@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
   </ItemGroup>
 

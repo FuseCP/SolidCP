@@ -44,8 +44,8 @@ namespace SolidCP.Web.Client
 						.Strip("net.tcp");
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
 					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").SetApi("basic");
-					else if (value == Protocols.NetHttp) url = url.SetScheme("http").SetApi("net");
-					else if (value == Protocols.NetHttps) url = url.SetScheme("https").SetApi("net");
+					else if (value == Protocols.NetHttp) url = url.SetScheme("http"); // .SetApi("net");
+					else if (value == Protocols.NetHttps) url = url.SetScheme("https"); //.SetApi("net");
 					else if (value == Protocols.WSHttp) url = url.SetScheme("http").SetApi("ws");
 					else if (value == Protocols.WSHttps) url = url.SetScheme("https").SetApi("ws");
 					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").SetApi("net.tcp");
@@ -166,8 +166,36 @@ namespace SolidCP.Web.Client
 		{
 			get
 			{
-                string serviceurl = $"{url}/{this.GetType().Name}";
 
+				var serviceurl = url;
+
+				if (IsWCF)
+				{
+					serviceurl = url
+					   .Strip("basic")
+					   .Strip("net")
+					   .Strip("ws")
+					   .Strip("gprc")
+					   .Strip("gprc/web")
+					   .Strip("ssl")
+					   .Strip("net.tcp/ssl")
+					   .Strip("net.tcp");
+
+					serviceurl = $"{serviceurl}/{this.GetType().Name}";
+					switch (Protocol)
+					{
+						case Protocols.BasicHttp:
+						case Protocols.BasicHttps: serviceurl = $"{serviceurl}/basic"; break;
+						case Protocols.NetHttp:
+						case Protocols.NetHttps: serviceurl = $"{serviceurl}/net"; break;
+						case Protocols.WSHttp:
+						case Protocols.WSHttps: serviceurl = $"{serviceurl}/ws"; break;
+						case Protocols.NetTcp:
+						case Protocols.NetTcpSsl: serviceurl = $"{serviceurl}/nettcp"; break;
+						case Protocols.NetPipe:
+						case Protocols.NetPipeSsl: serviceurl = $"{serviceurl}/pipe"; break;
+					}
+				}
                 if (client != null)
 				{
 					if (client is IClientChannel chan)

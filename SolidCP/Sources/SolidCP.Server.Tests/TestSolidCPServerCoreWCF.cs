@@ -1,41 +1,104 @@
 namespace SolidCP.Server.Tests
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using SolidCP.Providers;
     using SolidCP.Server.Client;
+    using SolidCP.Web.Client;
+    using System.ServiceModel;
 
     [TestClass]
     public class TestSolidCPServerCoreWCF
     {
 
-        Kestrel Server;
+        static object Lock = new object();
+        static Kestrel Server = null;
+        public TestContext TestContext { get; set; }
 
-        //[ClassInitialize]
-        public void InitTest(TestContext context)
+        [ClassInitialize]
+        public static void InitTest(TestContext context)
         {
-            Server = new Kestrel();
+            lock (Lock)
+            {
+                if (Server == null) Server = new Kestrel();
+            }
         }
 
-        //[ClassCleanup]
-        public void Dispose()
+        [ClassCleanup]
+        public static void Dispose()
         {
-            Server.Dispose();
+            lock (Lock)
+            {
+                //Server?.Dispose();
+                Server = null;
+            }
         }
-
-
 
         [TestMethod]
-        public void TestAutoDiscovery()
+        [DataRow(Protocols.BasicHttps)]
+        [DataRow(Protocols.WSHttps)]
+        [DataRow(Protocols.NetHttps)]
+        public void TestAnonymous(Protocols protocol)
         {
             using (var client = new AutoDiscovery() { Url = "https://localhost:9007" })
             {
                 try
                 {
+                    client.Protocol = protocol;
                     var path = client.GetServerFilePath();
                 }
-                catch
+                catch (FaultException fex)
                 {
+                    TestContext.WriteLine($"Fault: {fex};{fex.InnerException}");
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                    Assert.Fail("Exception", ex);
+                }
+            }
+        }
+
+        [TestMethod]
+        public async Task TestAnonymousAsync()
+        {
+            using (var client = new AutoDiscovery() { Url = "https://localhost:9007" })
+            {
+                try
+                {
+                    var path = await client.GetServerFilePathAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw;
                     Assert.Fail();
                 }
             }
         }
+
+        [TestMethod]
+        [DataRow(Protocols.BasicHttps)]
+        [DataRow(Protocols.WSHttps)]
+        [DataRow(Protocols.NetHttps)]
+        public async Task TestPassword(Protocols protocol)
+        {
+            using (var client = new OperatingSystem() { Url = "https://localhost:9007" })
+            {
+                try
+                {
+                    client.SoapHeader = new ServiceProviderSettingsSoapHeader()
+                    {
+                        Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
+                    };
+                    client.Credentials.Password = "aWs7wiWmcyph0oYjIRyMBP2yQZQ=";
+                    client.Protocol = protocol;
+                    var res = client.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

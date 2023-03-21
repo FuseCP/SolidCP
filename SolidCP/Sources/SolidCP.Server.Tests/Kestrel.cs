@@ -4,16 +4,41 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Net;
 
 namespace SolidCP.Server.Tests
 {
     public class Kestrel: IDisposable
     {
-        Process process;
+        Process? process = null;
         public Kestrel()
         {
-            var exe = new FileInfo(@"..\SolidCP.Server\bin\net.core\SolidCP.Server.exe").FullName;
-            process = Process.Start(exe);
+            var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin\net.core\SolidCP.Server.exe").FullName;
+            var startInfo = new ProcessStartInfo(exe)
+            {
+                CreateNoWindow = false,
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Normal,
+                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.Server\bin\net.core").FullName
+            };
+            process = Process.Start(startInfo);
+            
+            // wait for the server to be ready
+            bool done = false;
+            do
+            {
+                try
+                {
+                    var client = new HttpClient();
+                    var response = client.GetAsync("https://localhost:9007").Result;
+                    done = true;
+                }
+                catch (Exception ex) { }
+
+                if (!done) Thread.Sleep(2000);
+                if (process.HasExited) throw new Exception("Server has terminated.");
+    
+            } while (!done) ;
         }
 
         public void Dispose()
