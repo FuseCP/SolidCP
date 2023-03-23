@@ -97,12 +97,11 @@ After:
 			foreach (var service in services)
 			{
 				RouteTable.Routes.Add(new ServiceRoute(service.Name, new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"basic/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"ws/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"net/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"ssl/{service.Name}", new ServiceHostFactory(), service));
-                RouteTable.Routes.Add(new ServiceRoute($"net.tcp/{service.Name}", new ServiceHostFactory(), service));
-                RouteTable.Routes.Add(new ServiceRoute($"net.tcp/ssl/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/basic", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/ws", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/net", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/nettcp", new ServiceHostFactory(), service));
+                RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/pipe", new ServiceHostFactory(), service));
             }
 #endif
         }

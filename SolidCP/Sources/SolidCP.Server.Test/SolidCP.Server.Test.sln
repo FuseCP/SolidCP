@@ -19,16 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Base", ".
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Server.Utils", "..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj", "{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWCF.Primitives", "..\..\Lib\CoreWCF\src\CoreWCF.Primitives\src\CoreWCF.Primitives.csproj", "{F19703EB-7A61-4251-B1FA-5D807A769CBF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWCF.Http", "..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj", "{8BE12C13-78B8-4E50-977C-5B215CAC1B23}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWCF.NetTcp", "..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj", "{8D4B4EF4-760D-48E8-B0FC-355B2379E9DC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWCF.BuildTools.Roslyn4.0", "..\..\Lib\CoreWCF\src\CoreWCF.BuildTools\src\CoreWCF.BuildTools.Roslyn4.0.csproj", "{702B207C-1FBE-4F65-9BBB-EC43FF98E48F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreWCF.BuildTools.Roslyn3.11", "..\..\Lib\CoreWCF\src\CoreWCF.BuildTools\src\CoreWCF.BuildTools.Roslyn3.11.csproj", "{48ACF995-5540-4D90-A23A-B341B31EFC76}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,26 +57,6 @@ Global
 		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F19703EB-7A61-4251-B1FA-5D807A769CBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F19703EB-7A61-4251-B1FA-5D807A769CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F19703EB-7A61-4251-B1FA-5D807A769CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F19703EB-7A61-4251-B1FA-5D807A769CBF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8BE12C13-78B8-4E50-977C-5B215CAC1B23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8BE12C13-78B8-4E50-977C-5B215CAC1B23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8BE12C13-78B8-4E50-977C-5B215CAC1B23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8BE12C13-78B8-4E50-977C-5B215CAC1B23}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D4B4EF4-760D-48E8-B0FC-355B2379E9DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D4B4EF4-760D-48E8-B0FC-355B2379E9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D4B4EF4-760D-48E8-B0FC-355B2379E9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D4B4EF4-760D-48E8-B0FC-355B2379E9DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{702B207C-1FBE-4F65-9BBB-EC43FF98E48F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{702B207C-1FBE-4F65-9BBB-EC43FF98E48F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{702B207C-1FBE-4F65-9BBB-EC43FF98E48F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{702B207C-1FBE-4F65-9BBB-EC43FF98E48F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48ACF995-5540-4D90-A23A-B341B31EFC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48ACF995-5540-4D90-A23A-B341B31EFC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48ACF995-5540-4D90-A23A-B341B31EFC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48ACF995-5540-4D90-A23A-B341B31EFC76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

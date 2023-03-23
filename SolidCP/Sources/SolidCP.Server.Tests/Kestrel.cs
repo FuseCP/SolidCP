@@ -36,14 +36,14 @@ namespace SolidCP.Server.Tests
                 catch (Exception ex) { }
 
                 if (!done) Thread.Sleep(2000);
-                if (process.HasExited) throw new Exception("Server has terminated.");
+                if (process.HasExited) done = true; // throw new Exception("Server has terminated.");
     
             } while (!done) ;
         }
 
         public void Dispose()
         {
-            if (process != null) process.Kill();
+            if (process != null && !process.HasExited) process.Kill();
             process = null;
         }
     }

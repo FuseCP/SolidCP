@@ -60,11 +60,18 @@ namespace SolidCP.Server
         }
 		private IWindowsOperatingSystem WinProvider
 		{
-			get { return (IWindowsOperatingSystem)Provider; }
+            get
+            {
+                if (Provider is IWindowsOperatingSystem win) return win;
+                else throw new NotSupportedException("This command is only supported on a Windows Server.");
+            }
 		}
         private IUnixOperatingSystem UnixProvider
         {
-            get { return (IUnixOperatingSystem)Provider; }
+            get {
+                if (Provider is IUnixOperatingSystem unix) return unix;
+                else throw new NotSupportedException("This command is only supported on a Unix Server.");
+            }
         }
 
 		#region Files

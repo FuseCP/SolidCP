@@ -1,0 +1,3 @@
+[submodule "SolidCP/Lib/CoreWCF"]
+	path = SolidCP/Lib/CoreWCF
+	url = https://github.com/CoreWCF/CoreWCF
