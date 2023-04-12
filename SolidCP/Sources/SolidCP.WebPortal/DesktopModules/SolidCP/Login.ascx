@@ -48,16 +48,14 @@
         </div>
     </div>
      <div class="row">
-         <div class="col-sm-6">
+         <div class="col-sm-12">
+            <CPCC:StyleButton ID="StyleButton2" runat="server" CssClass="btn btn-success pull-right" OnClick="btnVerifyPin_Click">
+                <asp:Localize runat="server" meta:resourcekey="btnLogin" />&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i>
+            </CPCC:StyleButton>
             <CPCC:StyleButton runat="server" id="StyleButton1" CssClass="btn btn-succsess" OnClick="btnResendPin_Click">
                 <asp:Localize runat="server" meta:resourcekey="btResendPin" />
             </CPCC:StyleButton>
         </div>
-        <div class="col-sm-6">
-            <CPCC:StyleButton ID="StyleButton2" runat="server" CssClass="btn btn-success pull-right" OnClick="btnVerifyPin_Click">
-                <asp:Localize runat="server" meta:resourcekey="btnLogin" />&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i></CPCC:StyleButton>
-        </div>
-         
     </div>
 </div>
 <div class="panel-footer">
