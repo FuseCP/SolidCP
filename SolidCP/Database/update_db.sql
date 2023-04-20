@@ -22466,6 +22466,96 @@ BEGIN
 	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'OCS', N'GET_OCS_USERS', N'Get OCS users')
 END
 GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'ADD_EXTERNAL_IP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'ADD_EXTERNAL_IP', N'Add external IP')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'ADD_PRIVATE_IP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'ADD_PRIVATE_IP', N'Add private IP')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'APPLY_SNAPSHOT')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'APPLY_SNAPSHOT', N'Apply VM snapshot')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'CHANGE_ADMIN_PASSWORD')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'CHANGE_ADMIN_PASSWORD', N'Change administrator password')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'CHANGE_STATE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'CHANGE_STATE', N'Change VM state')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'DELETE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'DELETE', N'Delete VM')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'DELETE_EXTERNAL_IP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'DELETE_EXTERNAL_IP', N'Delete external IP')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'DELETE_PRIVATE_IP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'DELETE_PRIVATE_IP', N'Delete private IP')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'DELETE_SNAPSHOT')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'DELETE_SNAPSHOT', N'Delete VM snapshot')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'DELETE_SNAPSHOT_SUBTREE')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'DELETE_SNAPSHOT_SUBTREE', N'Delete VM snapshot subtree')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'EJECT_DVD_DISK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'EJECT_DVD_DISK', N'Eject DVD disk')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'INSERT_DVD_DISK')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'INSERT_DVD_DISK', N'Insert DVD disk')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'RENAME_SNAPSHOT')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'RENAME_SNAPSHOT', N'Rename VM snapshot')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'SET_PRIMARY_EXTERNAL_IP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'SET_PRIMARY_EXTERNAL_IP', N'Set primary external IP')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'SET_PRIMARY_PRIVATE_IP')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'SET_PRIMARY_PRIVATE_IP', N'Set primary private IP')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'TAKE_SNAPSHOT')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'TAKE_SNAPSHOT', N'Take VM snapshot')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'UPDATE_CONFIGURATION')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'UPDATE_CONFIGURATION', N'Update VM configuration')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'VPS2012' AND [TaskName] = 'UPDATE_HOSTNAME')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'VPS2012', N'UPDATE_HOSTNAME', N'Update host name')
+END
+GO
 
 
 
