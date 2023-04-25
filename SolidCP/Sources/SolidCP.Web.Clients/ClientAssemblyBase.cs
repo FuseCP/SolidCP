@@ -20,6 +20,7 @@ namespace SolidCP.Web.Client
 			var type = Assembly.GetType(typeName);
 			var method = type.GetMethod(methodName);
 			//TODO authentication & soap headers
+			throw new NotImplementedException("Assembly protocol not implemented.");
 			return (T)method.Invoke(Activator.CreateInstance(type), parameters);
 		}
         protected void Invoke(string typeName, string methodName, params object[] parameters)

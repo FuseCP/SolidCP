@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Server.Client.csproj" />
+    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
   </ItemGroup>
 
 </Project>

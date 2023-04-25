@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace SolidCP.Server
 {
@@ -17,7 +18,9 @@ namespace SolidCP.Server
 
 		public static void Main(string[] args)
 		{
-			SolidCP.Web.Services.CoreWebServicesApp.Init(args);
+			//if (!Debugger.IsAttached) Debugger.Launch();
+			PasswordValidator.Init();
+			SolidCP.Web.Services.StartupCore.Init(args);
 		}
 	}
 }

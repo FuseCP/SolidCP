@@ -35,6 +35,7 @@ using System;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Diagnostics;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
@@ -52,7 +53,8 @@ namespace SolidCP.Server
 
 		protected void Application_Start(object sender, EventArgs e)
 		{
-			StartupFX.Start();
+			//if (!Debugger.IsAttached) Debugger.Launch();
+			StartupNetFX.Start();
 			PasswordValidator.Init();
 		}
 

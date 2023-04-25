@@ -7,7 +7,9 @@ using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
-#if NETCOREAPP
+#if !NETFRAMEWORK
+using Grpc.Core;
+using Grpc.Core.Interceptors;
 using ProtoBuf.Grpc.Client;
 using Grpc.Net.Client;
 #endif
@@ -40,16 +42,19 @@ namespace SolidCP.Web.Client
 						.Strip("gprc")
 						.Strip("gprc/web")
 						.Strip("ssl")
-						.Strip("net.tcp/ssl")
-						.Strip("net.tcp");
+						.Strip("nettcp");
+					
+					if (value == Protocols.NetTcp && IsAuthenticated) value = Protocols.NetTcpSsl;
+
+						//.Strip("nettcp/ssl");
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
 					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").SetApi("basic");
-					else if (value == Protocols.NetHttp) url = url.SetScheme("http"); // .SetApi("net");
-					else if (value == Protocols.NetHttps) url = url.SetScheme("https"); //.SetApi("net");
+					else if (value == Protocols.NetHttp) url = url.SetScheme("http").SetApi("net");
+					else if (value == Protocols.NetHttps) url = url.SetScheme("https").SetApi("net");
 					else if (value == Protocols.WSHttp) url = url.SetScheme("http").SetApi("ws");
 					else if (value == Protocols.WSHttps) url = url.SetScheme("https").SetApi("ws");
-					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").SetApi("net.tcp");
-					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").SetApi("net.tcp/ssl");
+					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").SetApi("nettcp");
+					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").SetApi("nettcp");
 					else if (value == Protocols.gRPC) url = url.SetScheme("http").SetApi("grpc");
 					else if (value == Protocols.gRPCSsl) url = url.SetScheme("https").SetApi("grpc");
 					else if (value == Protocols.gRPCWeb) url = url.SetScheme("http").SetApi("grpc/web");
@@ -93,8 +98,11 @@ namespace SolidCP.Web.Client
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
-					if (url.HasApi("net.tcp/ssl")) Protocol = Protocols.NetTcpSsl;
-					else Protocol = Protocols.NetTcp;
+					if (url.HasApi("nettcp"))
+					{
+						if (IsAuthenticated) Protocol = Protocols.NetTcpSsl;
+						else Protocol = Protocols.NetTcp;
+					}
 				}
 #if NETFRAMEWORK
 				else if (url.StartsWith("net.pipe://"))
@@ -140,12 +148,12 @@ namespace SolidCP.Web.Client
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
 		public static string SetApi(this string url, string api)
 		{
-			url = Regex.Replace(url, "/(?:net|ws|basic|ssl|grpc|grpc/web)(?=(?:/[a-zA-Z0-9_]+)?(?:\\?|$))", $"/{api}");
+			url = Regex.Replace(url, "/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web)(?=(?:/[a-zA-Z0-9_]+)?(?:\\?|$))", $"/{api}");
 			if (!url.Contains($"/{api}")) url = Regex.Replace(url, "(?=\\?)|$", $"/{api}");
 			return url;
 		}
 
-		public static bool HasApi(this string url, string api) => Regex.IsMatch(url, $"/{api}(?:/|$)");
+		public static bool HasApi(this string url, string api) => Regex.IsMatch(url, $"/{api}(?:/|$|\\?)");
 	}
 	// web service client
 	public class ClientBase<T, U> : ClientBase
@@ -161,14 +169,17 @@ namespace SolidCP.Web.Client
 		ChannelFactory<T> factory;
 
 		T client = null;
+		UserNamePasswordCredentials clientCredentials;
 
-		protected T Client
+
+        protected T Client
 		{
 			get
 			{
 
-				var serviceurl = url;
+				var serviceurl = $"{url}/{this.GetType().Name}";
 
+                /*
 				if (IsWCF)
 				{
 					serviceurl = url
@@ -196,11 +207,17 @@ namespace SolidCP.Web.Client
 						case Protocols.NetPipeSsl: serviceurl = $"{serviceurl}/pipe"; break;
 					}
 				}
+				*/
+
+				// TODO set the credentials on client
                 if (client != null)
 				{
 					if (client is IClientChannel chan)
 					{
-						if (chan.RemoteAddress.Uri.AbsoluteUri != serviceurl)
+						// reuse client if it uses the same address and credentials
+						if (chan.RemoteAddress.Uri.AbsoluteUri != serviceurl ||
+							((Credentials != null) != (clientCredentials != null)) ||
+							Credentials != null && (Credentials.UserName != clientCredentials.UserName || Credentials.Password != clientCredentials.Password))
 						{
 							client = null;
 						}
@@ -235,10 +252,17 @@ namespace SolidCP.Web.Client
 							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
 							break;
 						case Protocols.BasicHttps: 
-							var basics = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
-							basics.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-							binding = basics;
-							break;
+							if (isAuthenticated)
+							{
+								var basics = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
+								basics.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+								binding = basics;
+							} else
+							{
+                                var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+                                binding = basics;
+                            }
+                            break;
 						case Protocols.NetHttp:
 							if (isAuthenticated)
 							{
@@ -249,10 +273,18 @@ namespace SolidCP.Web.Client
 							} else binding = new NetHttpBinding(BasicHttpSecurityMode.None);
 							break;
 						case Protocols.NetHttps: 
-							var nets = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
-							nets.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-							binding = nets;
-							break;
+							if (isAuthenticated)
+							{
+								var nets = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
+								nets.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+								binding = nets;
+                            } else
+							{
+                                var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
+                                binding = nets;
+                            }
+
+                            break;
 						case Protocols.WSHttp:
 							if (isAuthenticated)
 							{
@@ -264,23 +296,26 @@ namespace SolidCP.Web.Client
 							else binding = new WSHttpBinding(SecurityMode.None);
 							break;
 						case Protocols.WSHttps: 
-							var wss = new WSHttpBinding(SecurityMode.TransportWithMessageCredential);
-							wss.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-							binding = wss;
-							break;
-						case Protocols.NetTcp:
 							if (isAuthenticated)
 							{
-								var nettcp = new NetTcpBinding(SecurityMode.Message);
+								var wss = new WSHttpBinding(SecurityMode.TransportWithMessageCredential);
+								wss.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+								binding = wss;
+							} else
+							{
+                                var wss = new WSHttpBinding(SecurityMode.Transport);
+                                binding = wss;
+                            }
+                            break;
+						case Protocols.NetTcp:
+						case Protocols.NetTcpSsl:
+							if (isAuthenticated)
+							{
+								var nettcp = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
 								nettcp.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
 								binding = nettcp;
 							}
 							else binding = new NetTcpBinding(SecurityMode.None);
-							break;
-						case Protocols.NetTcpSsl: 
-							var nettcps = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
-							nettcps.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-							binding = nettcps;
 							break;
 #if NETFRAMEWORK
 						case Protocols.NetPipe: 
@@ -313,17 +348,23 @@ namespace SolidCP.Web.Client
 						}
 						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
 					}
-					if (Credentials != null && Credentials.Password != null || IsSsl)
+					if (Credentials != null && Credentials.Password != null && IsSsl)
 					{
 						factory.Credentials.UserName.UserName = Credentials.UserName ?? "_";
 						factory.Credentials.UserName.Password = Credentials.Password ?? string.Empty;
+						clientCredentials = new UserNamePasswordCredentials { UserName = Credentials.UserName, Password = Credentials.Password };
 					}
+					else clientCredentials = null;
 					client = factory.CreateChannel();
 					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
 				}
 #if !NETFRAMEWORK
 				else if (IsGRPC)
 				{
+					// TODO soap header & username credentials
+
+					throw new NotSupportedException("gRPC is not supported.");
+
 					GrpcChannel gchannel;
 					if (!GrpcPool.TryGetValue(url, out gchannel))
 					{

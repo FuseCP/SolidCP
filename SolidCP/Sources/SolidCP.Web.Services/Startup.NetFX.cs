@@ -18,7 +18,7 @@ using System.ComponentModel;
 //[assembly: PreApplicationStartMethod(typeof(SolidCP.Web.Services.StartupFX), "Start")]
 namespace SolidCP.Web.Services
 {
-	public static class StartupFX
+	public static class StartupNetFX
 	{
 
 		public static Assembly[] ServiceAssemblies { get; set; }
@@ -97,11 +97,11 @@ After:
 			foreach (var service in services)
 			{
 				RouteTable.Routes.Add(new ServiceRoute(service.Name, new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/basic", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/ws", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/net", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/nettcp", new ServiceHostFactory(), service));
-                RouteTable.Routes.Add(new ServiceRoute($"{service.Name}/pipe", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"basic/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"ws/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"net/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"nettcp/{service.Name}", new ServiceHostFactory(), service));
+                RouteTable.Routes.Add(new ServiceRoute($"pipe/{service.Name}", new ServiceHostFactory(), service));
             }
 #endif
         }
