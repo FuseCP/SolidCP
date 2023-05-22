@@ -430,5 +430,45 @@
                 </div>
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading panel-heading-link">
+                <span><i class="fa fa-lock" aria-hidden="true">&nbsp;</i>&nbsp;&nbsp;</span>
+                <a data-toggle="collapse" data-parent="#accordion" href="#AuthenticationSettings" aria-expanded="false" class="collapsed">
+                    <asp:Localize ID="HeaderAuthenticationSettings" runat="server" meta:resourcekey="HeaderAuthenticationSettings" /><span class='fa fa-plus pull-right' aria-hidden='true'> </span>
+                </a>
+            </div>
+            <div id="AuthenticationSettings" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                <div class="panel-body">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <CPCC:H5Label runat="server" for="txtMfaTokenAppDisplayName" class="col-sm-2 control-label">
+                                                <asp:Localize ID="SettingtxtMfaTokenAppDisplayName" runat="server" meta:resourcekey="SettingtxtMfaTokenAppDisplayName" />
+                                    </CPCC:H5Label>
+                                    <div class="col-sm-6">
+                                        <asp:TextBox runat="server" Rows="10" ID="txtMfaTokenAppDisplayName" CssClass="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <CPCC:H5Label runat="server" for="chkCanPeerChangeMFa" class="col-sm-2 control-label">
+                                        <asp:Localize ID="SettingchkCanPeerChangeMFa" runat="server" meta:resourcekey="SettingchkCanPeerChangeMFa" />
+                                    </CPCC:H5Label>
+                                <div class="col-sm-6">
+                                    <asp:CheckBox ID="chkCanPeerChangeMFa" runat="server" CssClass="form-control" Text="Yes" meta:resourcekey="SettingchkCanPeerChangeMFa" />
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </fieldset>
+                    <hr />
+                    <CPCC:StyleButton ID="btnAuthenticationSettings" CssClass="btn btn-success btn-block" runat="server" meta:resourcekey="SettingbtnSaveSettings" OnClick="btnAuthenticationSettings_Click" />
+                </div>
+            </div>
+        </div>
     </div>
 </div>

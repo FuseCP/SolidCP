@@ -132,15 +132,6 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.WebControls.TextBox txtPin;
 
         /// <summary>
-        /// StyleButton1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::CPCC.StyleButton StyleButton1;
-
-        /// <summary>
         /// StyleButton2 control.
         /// </summary>
         /// <remarks>
@@ -148,6 +139,15 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton2;
+
+        /// <summary>
+        /// btnResendPin control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton btnResendPin;
 
         /// <summary>
         /// lblLanguage control.

@@ -121,7 +121,9 @@ namespace SolidCP.Portal
                 lblUsername.Text = user.Username;
                 ddlMailFormat.SelectedIndex = user.HtmlMail ? 1 : 0;
                 cbxMfaEnabled.Checked = user.MfaMode > 0 ? true : false;
+                cbxMfaEnabled.Enabled = ES.Services.Users.CanUserChangeMfa(PanelSecurity.LoggedUserId);
                 btnGetQRCodeData.Visible = cbxMfaEnabled.Checked;
+                lblMfaEnabled.Visible = cbxMfaEnabled.Checked;
 
                 // contact info
                 contact.CompanyName = user.CompanyName;
@@ -321,9 +323,10 @@ namespace SolidCP.Portal
         protected void cbxMfaEnabled_CheckedChanged(object sender, EventArgs e)
         {
             UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.LoggedUserId);
-            PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
+            var result = PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
             qrData.Visible = false;
-            btnGetQRCodeData.Visible = cbxMfaEnabled.Checked;
+            btnGetQRCodeData.Visible = result;
+            lblMfaEnabled.Visible = result;
         }
 
         private void SetCurrentLanguage()

@@ -288,6 +288,12 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public bool CanUserChangeMfa(int changeUserId)
+        {
+            return UserController.CanUserChangeMfa(changeUserId);
+        }
+
+        [WebMethod]
         public string[] GetUserMfaQrCodeData(string username)
         {
             return UserController.GetUserMfaQrCodeData(username);

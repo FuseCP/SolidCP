@@ -430,6 +430,15 @@ namespace SolidCP.Portal
             return FormsAuthentication.Encrypt(ticket);
         }
 
+        public static int GetUserMfaMode(string username, string password, string ipAddress)
+        {
+            esAuthentication authService = new esAuthentication();
+            ConfigureEnterpriseServerProxy(authService, false);
+            UserInfo user = authService.GetUserByUsernamePassword(username, SHA1(password), ipAddress);
+           
+            return user.MfaMode;
+        }
+
         public static void SetTicketAndCompleteLogin(string encryptedTicket, string username, bool rememberLogin, string preferredLocale, string theme)
         {
             var ticket = FormsAuthentication.Decrypt(encryptedTicket);

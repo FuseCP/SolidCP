@@ -19689,3 +19689,117 @@ BEGIN
 UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 75 WHERE [DisplayName] = 'Microsoft SQL Server 2022'
 END
 GO
+
+-- Authenticaion Settings
+IF NOT EXISTS (SELECT * FROM [dbo].[SystemSettings] WHERE [SettingsName] = 'AuthenticationSettings')
+BEGIN
+INSERT [dbo].[SystemSettings] ([SettingsName], [PropertyName], [PropertyValue]) VALUES (N'AuthenticationSettings', N'MfaTokenAppDisplayName', N'SolidCP')
+INSERT [dbo].[SystemSettings] ([SettingsName], [PropertyName], [PropertyValue]) VALUES (N'AuthenticationSettings', N'CanPeerChangeMfa', N'True')
+END
+GO
+
+-- CanChangeMfa Function --
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type IN ('FN', 'IF', 'TF') AND name = 'CanChangeMfaFunc') 
+DROP FUNCTION [dbo].[CanChangeMfaFunc]
+GO
+
+CREATE FUNCTION [dbo].[CanChangeMfaFunc]
+(
+	@CallerID int,
+	@ChangeUserID int,
+	@CanPeerChangeMfa bit
+)
+RETURNS bit
+AS
+BEGIN
+
+DECLARE @IsPeer int, @OwnerID int, @Result int,  @UserId int, @GenerationNumber int
+SET @Result = 0;
+SET @GenerationNumber = 0;
+-- get data for user
+SELECT @IsPeer = IsPeer, @OwnerID = OwnerID, @UserId = UserID FROM Users
+WHERE UserID = @CallerID;
+
+-- userif not found
+IF(@UserId IS NULL)
+BEGIN
+	RETURN 0
+END
+
+-- is rootuser serveradmin
+IF (@OwnerID IS NULL)
+BEGIN
+	RETURN 1
+END
+
+-- check if the user requests himself
+IF (@CallerID = @ChangeUserID AND @IsPeer > 0 AND @CanPeerChangeMfa <> 0)
+BEGIN
+	RETURN 1
+END
+
+IF (@CallerID = @ChangeUserID AND @IsPeer = 0)
+BEGIN
+	RETURN 1
+END
+
+IF (@IsPeer = 1)
+BEGIN
+	SET @UserID = @OwnerID
+	SET @GenerationNumber = 1;
+END;
+
+WITH generation AS (
+    SELECT UserID,
+           Username,
+		   OwnerID,
+		   IsPeer,
+           0 AS generation_number
+    FROM Users
+	where UserID = @UserID
+UNION ALL
+    SELECT child.UserID,
+         child.Username,
+         child.OwnerId,
+		 child.IsPeer,
+		 generation_number + 1 AS generation_number
+    FROM Users child
+    JOIN generation g
+      ON g.UserID = child.OwnerId
+)
+
+Select @Result = count(*)
+FROM generation g
+JOIN Users parent
+ON g.OwnerID = parent.UserID
+where (g.generation_number > @GenerationNumber or g.IsPeer <> 1) and g.UserID = @ChangeUserID;
+
+
+if(@Result > 0)
+BEGIN
+	RETURN 1
+END
+ELSE
+BEGIN
+	RETURN 0
+END
+
+RETURN 0
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'CanChangeMfa')
+DROP PROCEDURE [dbo].[CanChangeMfa]
+GO
+
+CREATE PROCEDURE [dbo].[CanChangeMfa]
+(
+	@CallerID int,
+	@ChangeUserID int,
+	@CanPeerChangeMfa bit,
+	@Result bit OUTPUT
+)
+AS
+	SET @Result = dbo.CanChangeMfaFunc(@CallerID, @ChangeUserID, @CanPeerChangeMfa)
+	RETURN
+GO

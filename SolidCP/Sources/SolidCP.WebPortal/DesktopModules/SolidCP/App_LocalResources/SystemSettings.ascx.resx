@@ -133,6 +133,10 @@
     <value>PORTAL IP ADDRESS RESTRICTION SETTINGS</value>
     <comment>PORTAL IP ADDRESS RESTRICTION SETTINGS HEADER Lang = English</comment>
   </data>
+  <data name="HeaderAuthenticationSettings.Text" xml:space="preserve">
+    <value>PORTAL AUTHENTICATION SETTINGS</value>
+    <comment>PORTAL AUTHENTICATION SETTINGS HEADER Lang = English</comment>
+  </data>
   <data name="HeaderNew.Text" xml:space="preserve">
     <value>SPARE</value>
     <comment>SPARE Header</comment>
@@ -195,6 +199,14 @@
   </data>
   <data name="SettinglblIpAddressRestriction.Text" xml:space="preserve">
     <value>IP Addresses:</value>
+    <comment>Label Text</comment>
+  </data>
+  <data name="SettingtxtMfaTokenAppDisplayName.Text" xml:space="preserve">
+    <value>Authenticator Display Name:</value>
+    <comment>Label Text</comment>
+  </data>
+  <data name="SettingchkCanPeerChangeMFa.Text" xml:space="preserve">
+    <value>Can Peer Change Mfa</value>
     <comment>Label Text</comment>
   </data>
   <data name="SettinglblOwaUrl.Text" xml:space="preserve">
