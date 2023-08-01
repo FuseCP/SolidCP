@@ -77,6 +77,8 @@ namespace SolidCP.WebDavPortal.Controllers
             if (user != null && user.Identity.IsAuthenticated)
             {
                 _authenticationService.CreateAuthenticationTicket(user);
+                var userSettings = ScpContext.Services.Organizations.GetUserGeneralSettings(user.ItemId, user.AccountId);
+                if (userSettings.UserMustChangePassword) return RedirectToRoute(AccountRouteNames.PasswordChange);
 
                 return RedirectToRoute(FileSystemRouteNames.ShowContentPath, new { org = ScpContext.User.OrganizationId });
             }
