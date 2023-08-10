@@ -128,7 +128,8 @@ function solidcp_module_ClientEdit($params)
                                 'HtmlMail' => $user['HtmlMail'],
                                 'CompanyName' => $clientsDetails['companyname'],
                                 'EcommerceEnabled' => $user['EcommerceEnabled'],
-                                'SubscriberNumber' => '');
+                                'SubscriberNumber' => '',
+								'MfaMode' => $user['MfaMode']);
 
                 // Execute the UpdateUserDetails method
                 $scp->updateUserDetails($userParams);
