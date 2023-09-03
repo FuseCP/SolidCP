@@ -53,9 +53,10 @@ namespace SolidCP.EnterpriseServer
         public const string WEBDAV_PORTAL_SETTINGS = "WebdavPortalSettings";
         public const string TWILIO_SETTINGS = "TwilioSettings";
         public const string ACCESS_IP_SETTINGS = "AccessIpsSettings";
+		public const string AUTHENTICATION_SETTINGS = "AuthenticationSettings";
 
-        //Keys
-        public const string TWILIO_ACTIVE_KEY = "TwilioActive";
+		//Keys
+		public const string TWILIO_ACTIVE_KEY = "TwilioActive";
         public const string TWILIO_ACCOUNTSID_KEY = "TwilioAccountSid";
         public const string TWILIO_AUTHTOKEN_KEY = "TwilioAuthToken";
         public const string TWILIO_PHONEFROM_KEY = "TwilioPhoneFrom";
@@ -69,8 +70,12 @@ namespace SolidCP.EnterpriseServer
         public const string WPI_MAIN_FEED_KEY = "WpiMainFeedUrl";
         public const string FEED_ULS_KEY = "FeedUrls";
 
-        // Constant for IPAccess
-        public const string ACCESS_IPs = "AccessIps";
+		//Mfa token app display name
+		public const string MFA_TOKEN_APP_DISPLAY_NAME = "MfaTokenAppDisplayName";
+		public const string MFA_CAN_PEER_CHANGE_MFA = "CanPeerChangeMfa";
+
+		// Constant for IPAccess
+		public const string ACCESS_IPs = "AccessIps";
 
         // Constants for Reporting Transforms
         public const string BANDWIDTH_TRANSFORM = "BandwidthXLST";

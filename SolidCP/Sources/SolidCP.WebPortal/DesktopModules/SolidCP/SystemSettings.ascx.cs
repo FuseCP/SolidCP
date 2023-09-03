@@ -195,6 +195,15 @@ namespace SolidCP.Portal
             {
                 txtIPAddress.Text = settings.GetValueOrDefault(SCP.SystemSettings.ACCESS_IPs, string.Empty);
             }
+
+            // Authenitcation settings
+            settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.AUTHENTICATION_SETTINGS);
+
+            if (settings != null)
+            {
+                txtMfaTokenAppDisplayName.Text = settings.GetValueOrDefault(SCP.SystemSettings.MFA_TOKEN_APP_DISPLAY_NAME, string.Empty);
+                chkCanPeerChangeMFa.Checked = settings.GetValueOrDefault(SCP.SystemSettings.MFA_CAN_PEER_CHANGE_MFA, true);
+            }
         }
         private void SaveSMTP()
         {
@@ -449,7 +458,36 @@ namespace SolidCP.Portal
 
             ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
         }
-        
+
+        private void SaveAuthentication()
+        {
+            try
+            {
+                SCP.SystemSettings settings = new SCP.SystemSettings();
+
+                // authentication settings
+                settings = new SCP.SystemSettings();
+                settings[SCP.SystemSettings.MFA_TOKEN_APP_DISPLAY_NAME] = txtMfaTokenAppDisplayName.Text.Trim();
+                settings[SCP.SystemSettings.MFA_CAN_PEER_CHANGE_MFA] = chkCanPeerChangeMFa.Checked ? "True" : "False";
+
+
+                int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.AUTHENTICATION_SETTINGS, settings);
+
+                if (result < 0)
+                {
+                    ShowResultMessage(result);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("SYSTEM_SETTINGS_SAVE", ex);
+                return;
+            }
+
+            ShowSuccessMessage("SYSTEM_SETTINGS_SAVE");
+        }
+
         #region Button Calls
         protected void btnSaveSMTP_Click(object sender, EventArgs e)
         {
@@ -490,6 +528,11 @@ namespace SolidCP.Portal
         protected void btnSaveRESTRICT_Click(object sender, EventArgs e)
         {
             SaveRESTRICT();
+        }
+
+        protected void btnAuthenticationSettings_Click(object sender, EventArgs e)
+        {
+            SaveAuthentication();
         }
         #endregion
     }

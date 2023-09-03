@@ -124,6 +124,9 @@ namespace SolidCP.Portal
                 lblUsername.Text = user.Username;
                 chkDemo.Checked = user.IsDemo;
                 cbxMfaEnabled.Checked = user.MfaMode > 0 ? true : false;
+                cbxMfaEnabled.Enabled = ES.Services.Users.CanUserChangeMfa(PanelRequest.PeerID);
+                lblMfaEnabled.Visible = cbxMfaEnabled.Checked;
+
 
                 if (user.RoleId == (int)UserRole.ResellerCSR) role.SelectedIndex = 0;
                 if (user.RoleId == (int)UserRole.PlatformCSR) role.SelectedIndex = 0;
@@ -360,8 +363,10 @@ namespace SolidCP.Portal
 
         protected void cbxMfaEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.SelectedUserId);
-            PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
+            UserInfo user = ES.Services.Users.GetUserById(PanelRequest.PeerID);
+            bool result = PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
+            lblMfaEnabled.Visible = result;
+            cbxMfaEnabled.Checked = result;
         }
     }
 }

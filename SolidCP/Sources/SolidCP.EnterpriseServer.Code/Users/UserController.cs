@@ -202,10 +202,23 @@ namespace SolidCP.EnterpriseServer
 		public static bool UpdateUserMfaSecret(string username, bool activate)
 		{
 			UserInfoInternal user = GetUserInternally(username);
+
+			var authSettings = SystemController.GetSystemSettingsInternal(SystemSettings.AUTHENTICATION_SETTINGS, false);
+			var canPeerChangeMfa = Convert.ToBoolean(authSettings[SystemSettings.MFA_CAN_PEER_CHANGE_MFA]);
+
+			var canChange = DataProvider.CanUserChangeMfa(SecurityContext.User.UserId, user.UserId, canPeerChangeMfa);
+
+			System.Diagnostics.Debug.WriteLine($"canPeerChangeMfa {canPeerChangeMfa} / canhange {canChange}");
+
+			if (!canChange)
+				return false;
+
 			var pinSecret = activate ? CryptoUtils.Encrypt(GetRandomString(20)) : null;
 			DataProvider.UpdateUserPinSecret(SecurityContext.User.UserId, user.UserId, pinSecret);
 			DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, pinSecret != null ? 1 : 0);
-			return true;
+
+			UserInfoInternal userAfterUpdate = GetUserInternally(username);
+			return userAfterUpdate.MfaMode > 0;
 		}
 
 		public static string[] GetUserMfaQrCodeData(string username)
@@ -215,8 +228,11 @@ namespace SolidCP.EnterpriseServer
 			if (user.MfaMode == 0)
 				return new string[0];
 
+			var authSettings = SystemController.GetSystemSettingsInternal(SystemSettings.AUTHENTICATION_SETTINGS, false);
+			var mfaTokenAppDisplayName = authSettings == null ? "SolidCP" : authSettings[SystemSettings.MFA_TOKEN_APP_DISPLAY_NAME];
+
 			TwoFactorAuthenticator twoFactorAuthenticator = new TwoFactorAuthenticator();
-			var faSetupCode = twoFactorAuthenticator.GenerateSetupCode("SolidCP", $"{user.Username}_SolidCP", CryptoUtils.Decrypt(user.PinSecret), false);
+			var faSetupCode = twoFactorAuthenticator.GenerateSetupCode(mfaTokenAppDisplayName, $"{user.Username}", CryptoUtils.Decrypt(user.PinSecret), false);
 			return new string[] { faSetupCode.ManualEntryKey, faSetupCode.QrCodeSetupImageUrl };
 		}
 
@@ -232,6 +248,15 @@ namespace SolidCP.EnterpriseServer
 
 			DataProvider.UpdateUserMfaMode(SecurityContext.User.UserId, user.UserId, 2);
 			return true;
+		}
+		
+		public static bool CanUserChangeMfa(int changeUserId)
+		{
+			var currentUserId = SecurityContext.User.UserId;
+			var authSettings = SystemController.GetSystemSettingsInternal(SystemSettings.AUTHENTICATION_SETTINGS, false);
+			var canPeerChangeMfa = Convert.ToBoolean(authSettings[SystemSettings.MFA_CAN_PEER_CHANGE_MFA]);
+
+			return DataProvider.CanUserChangeMfa(currentUserId, changeUserId, canPeerChangeMfa);
 		}
 
 		public static UserInfo GetUserByUsernamePassword(string username, string password, string ip)
@@ -282,7 +307,7 @@ namespace SolidCP.EnterpriseServer
             //}
         }
 
-		public static int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
+        public static int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
 		{
 			// place log record
 			TaskManager.StartTask("USER", "CHANGE_PASSWORD_BY_USERNAME_PASSWORD", username);
@@ -390,8 +415,15 @@ namespace SolidCP.EnterpriseServer
 				if (user == null)
 				{
 					TaskManager.WriteWarning("Account not found");
-					return 0;
+					return 1;
 				}
+
+				if(user.MfaMode == 2)
+                {
+					TaskManager.WriteWarning("Mode is 2 Email will not be sent");
+					return 2;
+				}
+				
 
 				UserSettings settings = UserController.GetUserSettings(user.UserId, UserSettings.VERIFICATION_CODE_LETTER);
 				string from = settings["From"];
