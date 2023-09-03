@@ -974,6 +974,10 @@ namespace SolidCP.Setup
                         {
                             serviceInfo.ProviderId = 1705;
                         }
+                        else if (sqlVersion.StartsWith("16."))
+                        {
+                            serviceInfo.ProviderId = 1706;
+                        }
                         serviceId = ES.Services.Servers.AddService(serviceInfo);
 					}
 					else
