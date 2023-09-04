@@ -6793,16 +6793,16 @@
     <value>Aktivierung nicht erfolgreich</value>
   </data>
   <data name="Error.WrongPin" xml:space="preserve">
-    <value>Falscher PIN</value>
+    <value>Falscher Bestätigungscode</value>
   </data>
   <data name="Success.PinSend" xml:space="preserve">
-    <value>PIN erfolgreich gesendet</value>
+    <value>Bestätigungscode erfolgreich gesendet</value>
   </data>
   <data name="Success.QRCodeActivation" xml:space="preserve">
     <value>Aktivierung erfolgreich</value>
   </data>
   <data name="SuccessDescription.PinSend" xml:space="preserve">
-    <value>PIN wurde erfolgreich zur primären E-Mail-Adresse gesendet.</value>
+    <value>Bestätigungscode wurde erfolgreich zur primären E-Mail-Adresse gesendet.</value>
   </data>
   <data name="TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT" xml:space="preserve">
     <value>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</value>

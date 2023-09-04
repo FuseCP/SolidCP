@@ -210,7 +210,15 @@ namespace SolidCP.EnterpriseServer
         public event DeleteUserThemeSettingCompletedEventHandler DeleteUserThemeSettingCompleted;
 
         /// <remarks/>
-		[System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateUserMfa", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/CanUserChangeMfa", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public bool CanUserChangeMfa(int changeUserId)
+        {
+            object[] results = this.Invoke("CanUserChangeMfa", new object[] {
+                        changeUserId });
+            return ((bool)(results[0]));
+        }
+
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateUserMfa", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public bool UpdateUserMfa(string username, bool activate)
         {
             object[] results = this.Invoke("UpdateUserMfa", new object[] {

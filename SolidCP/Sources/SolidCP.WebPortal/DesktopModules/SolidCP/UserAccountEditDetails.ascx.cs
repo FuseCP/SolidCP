@@ -92,6 +92,8 @@ namespace SolidCP.Portal
                     ddlMailFormat.SelectedIndex = user.HtmlMail ? 1 : 0;
                     lblUsername.Text = user.Username;
                     cbxMfaEnabled.Checked = user.MfaMode > 0 ? true: false;
+                    cbxMfaEnabled.Enabled = ES.Services.Users.CanUserChangeMfa(PanelSecurity.SelectedUserId);
+                    lblMfaEnabled.Visible = cbxMfaEnabled.Checked;
 
                     // contact info
                     contact.CompanyName = user.CompanyName;
@@ -218,7 +220,9 @@ namespace SolidCP.Portal
         protected void cbxMfaEnabled_CheckedChanged(object sender, EventArgs e)
         {
             UserInfo user = ES.Services.Users.GetUserById(PanelSecurity.SelectedUserId);
-            PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
+            bool result = PortalUtils.UpdateUserMfa(user.Username, cbxMfaEnabled.Checked);
+            lblMfaEnabled.Visible = result;
+            cbxMfaEnabled.Checked = result;
         }
     }
 }

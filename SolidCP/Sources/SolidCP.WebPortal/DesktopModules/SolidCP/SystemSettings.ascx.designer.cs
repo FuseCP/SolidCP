@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal {
-    
-    
-    public partial class SystemSettings {
-        
+namespace SolidCP.Portal
+{
+
+
+    public partial class SystemSettings
+    {
+
         /// <summary>
         /// SettinglblSmtpServer control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblSmtpServer;
-        
+
         /// <summary>
         /// txtSmtpServer control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSmtpServer;
-        
+
         /// <summary>
         /// SettinglblSmtpPort control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblSmtpPort;
-        
+
         /// <summary>
         /// txtSmtpPort control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSmtpPort;
-        
+
         /// <summary>
         /// SettinglblSmtpUser control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblSmtpUser;
-        
+
         /// <summary>
         /// txtSmtpUser control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSmtpUser;
-        
+
         /// <summary>
         /// SettinglblSmtpUserPassword control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblSmtpUserPassword;
-        
+
         /// <summary>
         /// txtSmtpPassword control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSmtpPassword;
-        
+
         /// <summary>
         /// SettinglblSmtpEnableSSL control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblSmtpEnableSSL;
-        
+
         /// <summary>
         /// chkEnableSsl control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkEnableSsl;
-        
+
         /// <summary>
         /// configuremailtemplates control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize configuremailtemplates;
-        
+
         /// <summary>
         /// MailTemplates control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink MailTemplates;
-        
+
         /// <summary>
         /// StyleButton1 control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton1;
-        
+
         /// <summary>
         /// SettinglblBackupFolderPath control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblBackupFolderPath;
-        
+
         /// <summary>
         /// txtBackupsPath control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtBackupsPath;
-        
+
         /// <summary>
         /// StyleButton2 control.
         /// </summary>
@@ -155,7 +157,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton2;
-        
+
         /// <summary>
         /// SettinglblWpiMainFeedUrl control.
         /// </summary>
@@ -164,7 +166,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblWpiMainFeedUrl;
-        
+
         /// <summary>
         /// txtMainFeedUrl control.
         /// </summary>
@@ -173,7 +175,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMainFeedUrl;
-        
+
         /// <summary>
         /// SettingBtnWpiAddCustomFeeds control.
         /// </summary>
@@ -182,7 +184,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettingBtnWpiAddCustomFeeds;
-        
+
         /// <summary>
         /// wpiEditFeedsList control.
         /// </summary>
@@ -191,7 +193,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.EditFeedsList wpiEditFeedsList;
-        
+
         /// <summary>
         /// StyleButton3 control.
         /// </summary>
@@ -200,7 +202,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton3;
-        
+
         /// <summary>
         /// SettinglblFileManagerEditableExtensions control.
         /// </summary>
@@ -209,7 +211,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblFileManagerEditableExtensions;
-        
+
         /// <summary>
         /// txtFileManagerEditableExtensions control.
         /// </summary>
@@ -218,7 +220,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFileManagerEditableExtensions;
-        
+
         /// <summary>
         /// SettinglitFileManagerEditableExtensions control.
         /// </summary>
@@ -227,7 +229,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal SettinglitFileManagerEditableExtensions;
-        
+
         /// <summary>
         /// StyleButton4 control.
         /// </summary>
@@ -236,7 +238,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton4;
-        
+
         /// <summary>
         /// SettinglblRdsController control.
         /// </summary>
@@ -245,7 +247,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblRdsController;
-        
+
         /// <summary>
         /// ddlRdsController control.
         /// </summary>
@@ -254,7 +256,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlRdsController;
-        
+
         /// <summary>
         /// StyleButton5 control.
         /// </summary>
@@ -263,7 +265,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton5;
-        
+
         /// <summary>
         /// SettinglblEnableOwa control.
         /// </summary>
@@ -272,7 +274,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblEnableOwa;
-        
+
         /// <summary>
         /// chkEnableOwa control.
         /// </summary>
@@ -281,7 +283,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkEnableOwa;
-        
+
         /// <summary>
         /// SettinglblOwaUrl control.
         /// </summary>
@@ -290,7 +292,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblOwaUrl;
-        
+
         /// <summary>
         /// txtOwaUrl control.
         /// </summary>
@@ -299,7 +301,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtOwaUrl;
-        
+
         /// <summary>
         /// StyleButton6 control.
         /// </summary>
@@ -308,7 +310,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton6;
-        
+
         /// <summary>
         /// SettinglblTwilioAccountSid control.
         /// </summary>
@@ -317,7 +319,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblTwilioAccountSid;
-        
+
         /// <summary>
         /// txtAccountSid control.
         /// </summary>
@@ -326,7 +328,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAccountSid;
-        
+
         /// <summary>
         /// SettinglblTwilioAuthToken control.
         /// </summary>
@@ -335,7 +337,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblTwilioAuthToken;
-        
+
         /// <summary>
         /// txtAuthToken control.
         /// </summary>
@@ -344,7 +346,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtAuthToken;
-        
+
         /// <summary>
         /// SettinglblTwilioPhoneFrom control.
         /// </summary>
@@ -353,7 +355,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblTwilioPhoneFrom;
-        
+
         /// <summary>
         /// txtPhoneFrom control.
         /// </summary>
@@ -362,7 +364,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPhoneFrom;
-        
+
         /// <summary>
         /// SettingNoteTwilioAccount control.
         /// </summary>
@@ -371,7 +373,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettingNoteTwilioAccount;
-        
+
         /// <summary>
         /// btnTwilioDisable control.
         /// </summary>
@@ -380,7 +382,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton btnTwilioDisable;
-        
+
         /// <summary>
         /// StyleButton7 control.
         /// </summary>
@@ -389,7 +391,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton7;
-        
+
         /// <summary>
         /// SettinglblEnablePasswordReset control.
         /// </summary>
@@ -398,7 +400,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblEnablePasswordReset;
-        
+
         /// <summary>
         /// chkEnablePasswordReset control.
         /// </summary>
@@ -407,7 +409,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkEnablePasswordReset;
-        
+
         /// <summary>
         /// SettinglblPasswordResetLinkLifeSpan control.
         /// </summary>
@@ -416,7 +418,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblPasswordResetLinkLifeSpan;
-        
+
         /// <summary>
         /// txtPasswordResetLinkLifeSpan control.
         /// </summary>
@@ -425,7 +427,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtPasswordResetLinkLifeSpan;
-        
+
         /// <summary>
         /// SettingNotePasswordResetLinkLifeSpan control.
         /// </summary>
@@ -434,7 +436,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettingNotePasswordResetLinkLifeSpan;
-        
+
         /// <summary>
         /// SettinglblWebdavPortalUrl control.
         /// </summary>
@@ -443,7 +445,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblWebdavPortalUrl;
-        
+
         /// <summary>
         /// txtWebdavPortalUrl control.
         /// </summary>
@@ -452,7 +454,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtWebdavPortalUrl;
-        
+
         /// <summary>
         /// StyleButton8 control.
         /// </summary>
@@ -461,7 +463,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton8;
-        
+
         /// <summary>
         /// HeaderIpRestrictionSettings control.
         /// </summary>
@@ -470,7 +472,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize HeaderIpRestrictionSettings;
-        
+
         /// <summary>
         /// SettinglblIpAddressRestriction control.
         /// </summary>
@@ -479,7 +481,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize SettinglblIpAddressRestriction;
-        
+
         /// <summary>
         /// txtIPAddress control.
         /// </summary>
@@ -488,7 +490,7 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtIPAddress;
-        
+
         /// <summary>
         /// StyleButton9 control.
         /// </summary>
@@ -497,5 +499,59 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::CPCC.StyleButton StyleButton9;
+
+        /// <summary>
+        /// HeaderAuthenticationSettings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize HeaderAuthenticationSettings;
+
+        /// <summary>
+        /// SettingtxtMfaTokenAppDisplayName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize SettingtxtMfaTokenAppDisplayName;
+
+        /// <summary>
+        /// txtMfaTokenAppDisplayName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMfaTokenAppDisplayName;
+
+        /// <summary>
+        /// SettingchkCanPeerChangeMFa control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize SettingchkCanPeerChangeMFa;
+
+        /// <summary>
+        /// chkCanPeerChangeMFa control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkCanPeerChangeMFa;
+
+        /// <summary>
+        /// btnAuthenticationSettings control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::CPCC.StyleButton btnAuthenticationSettings;
     }
 }

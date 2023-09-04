@@ -85,7 +85,7 @@ namespace SolidCP.Setup.Internal
                 if (CheckConnectionInfo(ConnStr, out MsgStr))
                 {
                     string V = SqlUtils.GetSqlServerVersion(ConnStr);
-                    var Valid = new string[] { "9.", "10.", "11.", "12.", "13." }.Any(x => V.StartsWith(x));
+                    var Valid = new string[] { "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16." }.Any(x => V.StartsWith(x));
                     if (Valid)
                         if (SqlUtils.GetSqlServerSecurityMode(ConnStr) == 0)
                         {
@@ -95,7 +95,7 @@ namespace SolidCP.Setup.Internal
                         else
                             MsgBuilder.AppendLine("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
                     else
-                        MsgBuilder.AppendLine("This program can be installed on SQL Server 2005/2008/2012/2014/2016 only.");
+                        MsgBuilder.AppendLine("This program can be installed on SQL Server 2005/2008/2012/2014/2016/2017/2019/2022 only.");
                 }
                 else
                 {
@@ -1657,6 +1657,10 @@ namespace SolidCP.Setup.Internal
                         else if (sqlVersion.StartsWith("15."))
                         {
                             serviceInfo.ProviderId = 1705;
+                        }
+                        else if (sqlVersion.StartsWith("16."))
+                        {
+                            serviceInfo.ProviderId = 1706;
                         }
                         serviceId = ES.Services.Servers.AddService(serviceInfo);
                     }

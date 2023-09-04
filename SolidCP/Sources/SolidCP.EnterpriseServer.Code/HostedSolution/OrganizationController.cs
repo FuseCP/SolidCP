@@ -62,6 +62,7 @@ using SolidCP.Providers.OS;
 using System.Text.RegularExpressions;
 using SolidCP.Server.Client;
 using SolidCP.Providers.StorageSpaces;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -1800,9 +1801,9 @@ namespace SolidCP.EnterpriseServer
                 // send Sms message
                 var response = SendSms(phoneTo, body);
 
-                if (response.RestException != null)
+                if (response.ErrorCode != null)
                 {
-                    throw new Exception(response.RestException.Message);
+                    throw new Exception(response.ErrorMessage);
                 }
 
                 SetAccessTokenResponse(token, pincode);
@@ -1867,9 +1868,9 @@ namespace SolidCP.EnterpriseServer
                 // send Sms message
                 var response = SendSms(phoneTo, body);
 
-                if (response.RestException != null)
+                if (response.ErrorCode != null)
                 {
-                    throw new Exception(response.RestException.Message);
+                    throw new Exception(response.ErrorMessage);
                 }
 
                 SetAccessTokenResponse(token, pincode);
@@ -1934,9 +1935,9 @@ namespace SolidCP.EnterpriseServer
                 // send Sms message
                 var response = SendSms(phoneTo, body);
 
-                if (response.RestException != null)
+                if (response.ErrorCode != null)
                 {
-                    throw new Exception(response.RestException.Message);
+                    throw new Exception(response.ErrorMessage);
                 }
 
                 SetAccessTokenResponse(token, pincode);
@@ -2044,7 +2045,7 @@ namespace SolidCP.EnterpriseServer
             return random.Next(10000, 99999).ToString(CultureInfo.InvariantCulture);
         }
 
-        private static SMSMessage SendSms(string to, string body)
+        private static MessageResource SendSms(string to, string body)
         {
             SystemSettings settings = SystemController.GetSystemSettingsInternal(SystemSettings.TWILIO_SETTINGS, false);
 
@@ -2062,9 +2063,15 @@ namespace SolidCP.EnterpriseServer
                 throw new Exception("Twilio settings are not set (System settings)");
             }
 
-            var client = new TwilioRestClient(accountSid, authToken);
+            TwilioClient.Init(accountSid, authToken);
 
-            return client.SendSmsMessage(phoneFrom, to, body);
+            var message = MessageResource.Create(
+                body: body,
+                from: new Twilio.Types.PhoneNumber(phoneFrom),
+                to: new Twilio.Types.PhoneNumber(to)
+            );
+
+            return message;
         }
 
         /// <summary>

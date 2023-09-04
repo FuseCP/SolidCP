@@ -52,7 +52,7 @@
             <CPCC:StyleButton ID="StyleButton2" runat="server" CssClass="btn btn-success pull-right" OnClick="btnVerifyPin_Click">
                 <asp:Localize runat="server" meta:resourcekey="btnLogin" />&nbsp;<i class="fa fa-sign-in" aria-hidden="true"></i>
             </CPCC:StyleButton>
-            <CPCC:StyleButton runat="server" id="StyleButton1" CssClass="btn btn-succsess" OnClick="btnResendPin_Click">
+            <CPCC:StyleButton runat="server" id="btnResendPin" CssClass="btn btn-succsess" OnClick="btnResendPin_Click">
                 <asp:Localize runat="server" meta:resourcekey="btResendPin" />
             </CPCC:StyleButton>
         </div>
