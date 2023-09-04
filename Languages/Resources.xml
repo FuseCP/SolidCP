@@ -23019,6 +23019,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>HeaderAuthenticationSettings.Text</Key>
+    <DefaultValue>PORTAL AUTHENTICATION SETTINGS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
     <Key>HeaderNew.Text</Key>
     <DefaultValue>SPARE</DefaultValue>
   </Resource>
@@ -23096,6 +23101,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
     <Key>SettinglblIpAddressRestriction.Text</Key>
     <DefaultValue>IP Addresses:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>SettingtxtMfaTokenAppDisplayName.Text</Key>
+    <DefaultValue>Authenticator Display Name:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>SettingchkCanPeerChangeMFa.Text</Key>
+    <DefaultValue>Can Peer Change Mfa</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
