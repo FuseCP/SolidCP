@@ -13478,7 +13478,7 @@ SET @sql = @sql + '
   I3.ItemID AS ItemID,
   EAEA.EmailAddress as TextSearch,
   ''ExchangeAccount'' as ColumnType,
-  ''Mailbox'' as FullType,
+  FullType = CASE EA.AccountType ' + @sqlNameAccountType + ' ELSE CAST(EA.AccountType AS varchar(12)) END,
   SI3.PackageID as PackageID,
   EAEA.AccountID as AccountID,
   I3.Username,
@@ -13487,7 +13487,7 @@ SET @sql = @sql + '
  INNER JOIN ServiceItems AS SI3 ON I3.ItemID = SI3.ItemID
  INNER JOIN ExchangeAccounts AS EA ON I3.ItemID = EA.ItemID
  INNER JOIN ExchangeAccountEmailAddresses AS EAEA ON EA.AccountID = EAEA.AccountID
- WHERE I3.ItemTypeID = 29 AND EA.AccountType = 1'
+ WHERE I3.ItemTypeID = 29'
 IF @FilterValue <> ''
  SET @sql = @sql + ' AND (EAEA.EmailAddress LIKE ''' + @FilterValue + ''')'
  SET @sql = @sql + ')'
