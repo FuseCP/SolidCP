@@ -384,6 +384,14 @@ namespace SolidCP.Portal.HostedSolution
 
                 imgVipUser.Visible = chkVIP.Checked && secServiceLevels.Visible;
 
+                if (sendToControl.SendEmail)
+                {
+                    ES.Services.Organizations.SendUserPasswordRequestEmail(PanelRequest.ItemID, PanelRequest.AccountID, "Change user settings", sendToControl.Email, true);
+                }
+                else if (sendToControl.SendMobile)
+                {
+                    ES.Services.Organizations.SendUserPasswordRequestSms(PanelRequest.ItemID, PanelRequest.AccountID, "Change user settings", sendToControl.Mobile);
+                }
 
                 messageBox.ShowSuccessMessage("ORGANIZATION_UPDATE_USER_SETTINGS");
             }
