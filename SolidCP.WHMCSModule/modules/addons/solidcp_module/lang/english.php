@@ -81,13 +81,16 @@ $_ADDONLANG['SolidCP_whmcs_id'] = 'WHMCS ID';
 $_ADDONLANG['SolidCP_solidcp_id'] = 'SolidCP ID';
 $_ADDONLANG['SolidCP_hidden'] = 'Hidden';
 $_ADDONLANG['SolidCP_delete'] = 'Delete';
-$_ADDONLANG['SolidCP_addassignment'] = 'Add new assignment';
-$_ADDONLANG['SolidCP_add_configurable_option'] = 'Add a new configurable option assignment';
-$_ADDONLANG['SolidCP_add_addon_option'] = 'Add a new Addon assignment';
+$_ADDONLANG['SolidCP_edit_configurable_option'] = 'Edit configurable option assignment';
+$_ADDONLANG['SolidCP_edit_addon_option'] = 'Edit addon assignment';
 $_ADDONLANG['SolidCP_whmcs_id_tooltip'] = 'Fill the WHMCS-ID from the database.';
 $_ADDONLANG['SolidCP_solidcp_id_tooltip'] = 'Fill the SolidCP Addon-ID';
 $_ADDONLANG['SolidCP_is_ip_address'] = 'Is IP address';
 $_ADDONLANG['SolidCP_is_ip_address_tooltip'] = 'Should a new dedicated IP address be assigned in SolidCP?';
+$_ADDONLANG['SolidCP_search_configurable'] = 'Search for configurable name or SolidCP-ID...';
+$_ADDONLANG['SolidCP_show_only_assigned_conf'] = 'Show only assigned configurable';
+$_ADDONLANG['SolidCP_search_addon'] = 'Search for addon name or SolidCP-ID...';
+$_ADDONLANG['SolidCP_show_only_assigned_addons'] = 'Show only assigned addons';
 
 $_ADDONLANG['SolidCP_general_settings'] = 'General Settings';
 $_ADDONLANG['SolidCP_setting_AddonsActive'] = 'Addon Automation active';
@@ -103,6 +106,6 @@ $_ADDONLANG['SolidCP_setting_WhmcsAdmin_tooltip'] = 'WHMCS admin user, who will 
 
 $_ADDONLANG['SolidCP_save_changes'] = 'Save Changes';
 $_ADDONLANG['SolidCP_cancel_changes'] = 'Cancel Changes';
-$_ADDONLANG['SolidCP_add_new'] = 'Add new';
+$_ADDONLANG['SolidCP_edit'] = 'Edit';
 $_ADDONLANG['SolidCP_cancel'] = 'Cancel';
 $_ADDONLANG['SolidCP_saving'] = 'Saving in progress';

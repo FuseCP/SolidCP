@@ -181,33 +181,43 @@ function solidcp_module_output($params)
             $aInt->adminTemplate = ROOTDIR.DS."modules".DS."addons".DS."solidcp_module".DS."templates".DS."ajax";
             $template = "admin_".str_replace("#", "", strip_tags ($_POST['area'])).".tpl";
         }
-        elseif($_POST['ajax']==1 && $_POST['module']=="solidcp_module" && $_POST['action']=="add_configurable") {
+        elseif($_POST['ajax']==1 && $_POST['module']=="solidcp_module" && $_POST['action']=="edit_configurable") {
             $aInt->adminTemplate = ROOTDIR.DS."modules".DS."addons".DS."solidcp_module".DS."templates".DS."ajax";
             $result = $solidcp_configurable->setConfigurableOption($_POST);
+			$scp_smarty->assign('searchConf', $_POST['searchConf']);
+			$scp_smarty->assign('showOnlyAssignedConf', $_POST['showOnlyAssignedConf']);
             $template = "admin_configurable.tpl";
         }
         elseif($_POST['ajax']==1 && $_POST['module']=="solidcp_module" && $_POST['action']=="delete_configurable") {
             $aInt->adminTemplate = ROOTDIR.DS."modules".DS."addons".DS."solidcp_module".DS."templates".DS."ajax";
             $result = $solidcp_configurable->deleteConfigurableOption($_POST['id']);
+			$scp_smarty->assign('searchConf', $_POST['searchConf']);
+			$scp_smarty->assign('showOnlyAssignedConf', $_POST['showOnlyAssignedConf']);
             $template = "admin_configurable.tpl";
         }
-        elseif($_POST['ajax']==1 && $_POST['module']=="solidcp_module" && $_POST['action']=="add_addon") {
+        elseif($_POST['ajax']==1 && $_POST['module']=="solidcp_module" && $_POST['action']=="edit_addon") {
             $aInt->adminTemplate = ROOTDIR.DS."modules".DS."addons".DS."solidcp_module".DS."templates".DS."ajax";
             $result = $solidcp_addon->setAddonAutomation($_POST);
+			$scp_smarty->assign('searchAddon', $_POST['searchAddon']);
+			$scp_smarty->assign('showOnlyAssignedAddon', $_POST['showOnlyAssignedAddon']);
             $template = "admin_addon.tpl";
         }
         elseif($_POST['ajax']==1 && $_POST['module']=="solidcp_module" && $_POST['action']=="delete_addon") {
             $aInt->adminTemplate = ROOTDIR.DS."modules".DS."addons".DS."solidcp_module".DS."templates".DS."ajax";
             $result = $solidcp_addon->deleteAddonAutomation($_POST['id']);
+			$scp_smarty->assign('searchAddon', $_POST['searchAddon']);
+			$scp_smarty->assign('showOnlyAssignedAddon', $_POST['showOnlyAssignedAddon']);
             $template = "admin_addon.tpl";
         }
         else $template = "admin.tpl";
         if($solidcp_settings->settings['ConfigurableOptionsActive'] == 1){
-            $result = $solidcp_configurable->getConfigurableOptions();
+            $res = $solidcp_configurable->getConfigurableOptions();
+			if ($res['status'] == 'error') $result = $res;
             $scp_smarty->assign('configurableoptions',$solidcp_configurable->configurableoptions);
         }
         if($solidcp_settings->settings['AddonsActive'] == 1){
-            $result = $solidcp_addon->getAddonAutomation();
+            $res = $solidcp_addon->getAddonAutomation();
+			if ($res['status'] == 'error') $result = $res;
             $scp_smarty->assign('addonautomation',$solidcp_addon->addonautomation);
         }
 

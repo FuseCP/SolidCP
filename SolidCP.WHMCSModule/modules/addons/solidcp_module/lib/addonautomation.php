@@ -53,9 +53,13 @@ Class solidcp_addonautomation{
     
     public function getAddonAutomation(){
         try{
-            $this->addonautomation = Capsule::select("SELECT a.name AS 'name', w.whmcs_id AS 'whmcs_id', w.scp_id AS 'scp_id' FROM ".SOLIDCP_ADDONS_TABLE." AS w"
-                    . " left join tbladdons as a on w.whmcs_id = a.id"
-                    . " order by a.name");
+            $this->addonautomation = Capsule::select("(SELECT a.name, a.id AS whmcs_id, sa.scp_id, sa.is_ipaddress, a.hidden FROM tbladdons AS a
+				LEFT JOIN ".SOLIDCP_ADDONS_TABLE." AS sa ON sa.whmcs_id=a.id)
+                UNION
+                (SELECT '*** Removed ***' AS name, sa.whmcs_id, sa.scp_id, sa.is_ipaddress, 0 AS hidden FROM tbladdons AS a
+                RIGHT JOIN ".SOLIDCP_ADDONS_TABLE." AS sa ON sa.whmcs_id=a.id
+                WHERE a.id IS NULL)
+				ORDER BY name");
         }
         catch (Exception $e){
             return array('status' => 'error', 'description' => "Couldn't read the SolidCP Addons: (Code: {$e->getCode()}, Message: {$e->getMessage()}");
@@ -67,14 +71,35 @@ Class solidcp_addonautomation{
         if($new['is_ipaddress']=="on") $new['is_ipaddress'] = 1;
         else $new['is_ipaddress'] = 0;
         try{
-            Capsule::table(SOLIDCP_ADDONS_TABLE)->insert(
-                    ['whmcs_id' => $new['whmcs_id'], 'scp_id' => $new['scp_id'],'is_ipaddress' => $new['is_ipaddress'], 'created_at' => date('Y-m-d H:i:s')]
-                    );
+            $count = Capsule::table(SOLIDCP_ADDONS_TABLE)
+				->where('whmcs_id', $new['whmcs_id'])
+				->count();
+			if ($count){
+				Capsule::table(SOLIDCP_ADDONS_TABLE)
+					->where('whmcs_id', $new['whmcs_id'])
+					->update(
+					[
+						'scp_id' => $new['scp_id'],
+						'is_ipaddress' => $new['is_ipaddress'],
+						'updated_at' => date('Y-m-d H:i:s')
+					]
+				);
+			}else{
+				Capsule::table(SOLIDCP_ADDONS_TABLE)
+					->insert(
+					[
+						'whmcs_id' => $new['whmcs_id'],
+						'scp_id' => $new['scp_id'],
+						'is_ipaddress' => $new['is_ipaddress'],
+						'created_at' => date('Y-m-d H:i:s')
+					]
+				);
+			}
         }
         catch (Exception $e){
             return array('status' => 'error', 'description' => "Couldn't write the SolidCP Addon automation: (Code: {$e->getCode()}, Message: {$e->getMessage()}");
         }
-        return array('status' => 'success', 'description' => "SolidCP Addon automationwas written successfully.");
+        return array('status' => 'success', 'description' => "SolidCP Addon automation was written successfully.");
     }
     
     public function deleteAddonAutomation($whmcs_id){
