@@ -53,11 +53,16 @@ Class solidcp_configurableoptions{
     
     public function getConfigurableOptions(){
         try{
-            $this->configurableoptions = Capsule::select("select concat(g.name, ' -> ', o.optionname, ' -> ', os.optionname) as name, c.whmcs_id as whmcs_id, c.scp_id as scp_id, os.hidden as hidden from ".SOLIDCP_CONFIGURABLE_OPTIONS_TABLE." as c
-left join tblproductconfigoptionssub as os on c.whmcs_id=os.id
-left join tblproductconfigoptions as o on os.configid=o.id
-left join tblproductconfiggroups as g on o.gid=g.id
-order by g.name,  o.`order`, os.sortorder");
+            $this->configurableoptions = Capsule::select("(SELECT CONCAT(g.name, ' -> ', o.optionname, ' -> ', os.optionname) AS name, os.id AS whmcs_id, c.scp_id, c.is_ipaddress, os.hidden,
+				o.`order`, os.sortorder FROM tblproductconfigoptionssub AS os
+				LEFT JOIN ".SOLIDCP_CONFIGURABLE_OPTIONS_TABLE." AS c ON c.whmcs_id=os.id
+				LEFT JOIN tblproductconfigoptions AS o ON os.configid=o.id
+				LEFT JOIN tblproductconfiggroups AS g ON o.gid=g.id)
+				UNION
+				(SELECT '*** Removed ***' AS name, c.whmcs_id, c.scp_id, c.is_ipaddress, 0 AS hidden, 0 AS `order`, 0 AS sortorder FROM tblproductconfigoptionssub AS os
+				RIGHT JOIN ".SOLIDCP_CONFIGURABLE_OPTIONS_TABLE." AS c ON c.whmcs_id=os.id
+				WHERE os.id IS NULL)
+				ORDER BY name, `order`, sortorder");
         }
         catch (Exception $e){
             return array('status' => 'error', 'description' => "Couldn't read the SolidCP configurable options: (Code: {$e->getCode()}, Message: {$e->getMessage()}");
@@ -69,9 +74,30 @@ order by g.name,  o.`order`, os.sortorder");
         if($new['is_ipaddress']=="on") $new['is_ipaddress'] = 1;
         else $new['is_ipaddress'] = 0;
         try{
-            Capsule::table(SOLIDCP_CONFIGURABLE_OPTIONS_TABLE)->insert(
-                    ['whmcs_id' => $new['whmcs_id'], 'scp_id' => $new['scp_id'],'is_ipaddress' => $new['is_ipaddress'], 'created_at' => date('Y-m-d H:i:s')]
-                    );
+			$count = Capsule::table(SOLIDCP_CONFIGURABLE_OPTIONS_TABLE)
+				->where('whmcs_id', $new['whmcs_id'])
+				->count();
+			if ($count){
+				Capsule::table(SOLIDCP_CONFIGURABLE_OPTIONS_TABLE)
+					->where('whmcs_id', $new['whmcs_id'])
+					->update(
+					[
+						'scp_id' => $new['scp_id'],
+						'is_ipaddress' => $new['is_ipaddress'],
+						'updated_at' => date('Y-m-d H:i:s')
+					]
+				);
+			}else{
+				Capsule::table(SOLIDCP_CONFIGURABLE_OPTIONS_TABLE)
+					->insert(
+					[
+						'whmcs_id' => $new['whmcs_id'],
+						'scp_id' => $new['scp_id'],
+						'is_ipaddress' => $new['is_ipaddress'],
+						'created_at' => date('Y-m-d H:i:s')
+					]
+				);
+			}
         }
         catch (Exception $e){
             return array('status' => 'error', 'description' => "Couldn't write the SolidCP configurable options: (Code: {$e->getCode()}, Message: {$e->getMessage()}");
