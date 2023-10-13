@@ -180,7 +180,7 @@ namespace SolidCP.Portal
                     {
                         if (user.Role == UserRole.User)
                         {
-                            btnDelete.Enabled = !Utils.CheckQouta(Quotas.OS_NOTALLOWTENANTCREATEDOMAINS, cntx);
+                            btnDelete.Enabled = !Utils.CheckQouta(Quotas.OS_NOTALLOWTENANTDELETEDOMAINS, cntx);
                         }
                     }
                 }

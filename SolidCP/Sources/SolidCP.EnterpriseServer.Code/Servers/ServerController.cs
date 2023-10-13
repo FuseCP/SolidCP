@@ -2339,6 +2339,16 @@ namespace SolidCP.EnterpriseServer
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
 			if (accountCheck < 0) return accountCheck;
 
+			if (domainType == DomainType.Domain)
+            {
+				PackageContext cntx = PackageController.GetPackageContext(packageId);
+				if (!cntx.Quotas[Quotas.OS_NOTALLOWTENANTCREATEDOMAINS].QuotaExhausted)
+				{
+					accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin);
+					if (accountCheck < 0) return accountCheck;
+				}
+			}
+
 			// check package
 			int packageCheck = SecurityContext.CheckPackage(packageId, DemandPackage.IsActive);
 			if (packageCheck < 0) return packageCheck;
@@ -2754,6 +2764,16 @@ namespace SolidCP.EnterpriseServer
 			DomainInfo domain = GetDomain(domainId);
 			if (domain == null)
 				return 0;
+
+			if (!(domain.IsDomainPointer || domain.IsSubDomain || domain.IsPreviewDomain))
+			{
+				PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
+				if (!cntx.Quotas[Quotas.OS_NOTALLOWTENANTDELETEDOMAINS].QuotaExhausted)
+                {
+					accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin);
+					if (accountCheck < 0) return accountCheck;
+				}
+			}
 
 			// place log record
 			TaskManager.StartTask("DOMAIN", "DELETE", domain.DomainName, domain.DomainId);
