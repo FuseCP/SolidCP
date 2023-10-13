@@ -1656,8 +1656,11 @@
   <data name="Quota.OS.FileManager" xml:space="preserve">
     <value>File Manager</value>
   </data>
-  <data name="Quota.OS.AllowTenantCreateDomains" xml:space="preserve">
+  <data name="Quota.OS.NotAllowTenantCreateDomains" xml:space="preserve">
     <value>Disable Tenant To Create Top-Level Domain</value>
+  </data>
+  <data name="Quota.OS.NotAllowTenantDeleteDomains" xml:space="preserve">
+    <value>Disable Tenant To Remove Top-Level Domain</value>
   </data>
   <data name="Quota.SharePoint.Groups" xml:space="preserve">
     <value>SharePoint Groups</value>

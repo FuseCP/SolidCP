@@ -19803,3 +19803,10 @@ AS
 	SET @Result = dbo.CanChangeMfaFunc(@CallerID, @ChangeUserID, @CanPeerChangeMfa)
 	RETURN
 GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaID] = 409)
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (409, 1, 13, N'OS.NotAllowTenantDeleteDomains', N'Not allow Tenants to Delete Top Level Domains', 1, 0, NULL, NULL)
+	UPDATE [dbo].[Quotas] SET [QuotaName] = N'OS.NotAllowTenantCreateDomains', [QuotaDescription] = N'Not allow Tenants to Create Top Level Domains' WHERE [QuotaID] = 410
+END
+GO

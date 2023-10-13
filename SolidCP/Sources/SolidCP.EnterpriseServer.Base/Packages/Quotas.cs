@@ -54,8 +54,9 @@ order by rg.groupOrder
 		public const string OS_MINIMUMTASKINTERVAL = "OS.MinimumTaskInterval";  // Minimum Tasks Interval, minutes
 		public const string OS_APPINSTALLER = "OS.AppInstaller";  // Applications Installer
 		public const string OS_EXTRAAPPLICATIONS = "OS.ExtraApplications";  // Extra Application Packs
-        public const string OS_NOTALLOWTENANTCREATEDOMAINS = "OS.AllowTenantCreateDomains";  // Do not Allow tenant to create top level domains
-		public const string WEB_SITES = "Web.Sites";  // Web Sites
+        public const string OS_NOTALLOWTENANTCREATEDOMAINS = "OS.NotAllowTenantCreateDomains";  // Do not Allow tenant to create top level domains
+        public const string OS_NOTALLOWTENANTDELETEDOMAINS = "OS.NotAllowTenantDeleteDomains";  // Do not Allow tenant to delete top level domains
+        public const string WEB_SITES = "Web.Sites";  // Web Sites
 		public const string WEB_ASPNET11 = "Web.AspNet11";  // ASP.NET 1.1
 		public const string WEB_ASPNET20 = "Web.AspNet20";  // ASP.NET 2.0
 		public const string WEB_ASPNET40 = "Web.AspNet40";  // ASP.NET 4.0

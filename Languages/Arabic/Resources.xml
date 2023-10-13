@@ -5647,9 +5647,15 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
-    <Key>Quota.OS.AllowTenantCreateDomains</Key>
+    <Key>Quota.OS.NotAllowTenantCreateDomains</Key>
     <DefaultValue>Disable Tenant To Create Top-Level Domain</DefaultValue>
     <Value>تعطيل المستأجر لإنشاء نطاق المستوى الأعلى</Value>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.OS.NotAllowTenantDeleteDomains</Key>
+    <DefaultValue>Disable Tenant To Remove Top-Level Domain</DefaultValue>
+    <Value>تعطيل المستأجر لحذف مجال المستوى الأعلى</Value>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>

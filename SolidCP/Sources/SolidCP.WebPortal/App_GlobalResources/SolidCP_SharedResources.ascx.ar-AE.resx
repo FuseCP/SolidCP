@@ -1656,8 +1656,11 @@
   <data name="Quota.OS.FileManager" xml:space="preserve">
     <value>مدير الملفات</value>
   </data>
-  <data name="Quota.OS.AllowTenantCreateDomains" xml:space="preserve">
+  <data name="Quota.OS.NotAllowTenantCreateDomains" xml:space="preserve">
     <value>تعطيل المستأجر لإنشاء نطاق المستوى الأعلى</value>
+  </data>
+  <data name="Quota.OS.NotAllowTenantDeleteDomains" xml:space="preserve">
+    <value>تعطيل المستأجر لحذف مجال المستوى الأعلى</value>
   </data>
   <data name="Quota.SharePoint.Groups" xml:space="preserve">
     <value>مجموعات شيربوينت</value>
