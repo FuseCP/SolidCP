@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="buttonPanel.OnSaveClientClick" xml:space="preserve">
     <value>ShowProgressDialog('Postfacheinstellungen werden aktualisiert...');</value>
@@ -141,8 +141,8 @@
   <data name="locTitle.Text" xml:space="preserve">
     <value>Postfach bearbeiten</value>
   </data>
-  <data name="secCalendarSettings.Text" xml:space="preserve">
-    <value>Kalendereinstellungen</value>
+  <data name="secBookingOptions.Text" xml:space="preserve">
+    <value>Buchungsoptionen</value>
   </data>
   <data name="secGeneral.Text" xml:space="preserve">
     <value>Allgemein</value>
@@ -170,5 +170,56 @@
   </data>
   <data name="secAdvancedInfo.Text" xml:space="preserve">
     <value>Erweiterte Informationen</value>
+  </data>
+  <data name="chkAllowRecurringMeetings.Text" xml:space="preserve">
+    <value>Besprechungsserien zulassen</value>
+  </data>
+  <data name="chkEnforceSchedulingHorizon.Text" xml:space="preserve">
+    <value>Immer ablehnen, wenn das Enddatum hinter diesem Grenzwert liegt</value>
+  </data>
+  <data name="chkScheduleOnlyDuringWorkHours.Text" xml:space="preserve">
+    <value>Terminplanung nur während der Arbeitszeit zulassen</value>
+  </data>
+  <data name="locAdditionalResponse.Text" xml:space="preserve">
+    <value>Wenn Sie dem Besprechungsorganisator antworten möchten, geben Sie den Text unten ein:</value>
+  </data>
+  <data name="locBookingRequests.Text" xml:space="preserve">
+    <value>Buchungsanfragen:</value>
+  </data>
+  <data name="locBookingWindowInDays.Text" xml:space="preserve">
+    <value>Maximale Buchungsvorlaufzeit (Tage):</value>
+  </data>
+  <data name="locCapacity.Text" xml:space="preserve">
+    <value>Kapazität:</value>
+  </data>
+  <data name="locDelegates.Text" xml:space="preserve">
+    <value>Stellvertretungen:</value>
+  </data>
+  <data name="locMaximumDuration.Text" xml:space="preserve">
+    <value>Maximale Dauer (Stunden):</value>
+  </data>
+  <data name="rblBookingRequestsAuto.Text" xml:space="preserve">
+    <value>Buchungsanfragen automatisch annehmen oder ablehnen</value>
+  </data>
+  <data name="rblBookingRequestsCustom.Text" xml:space="preserve">
+    <value>Benutzerdefinierte Einstellung zum Annehmen oder Ablehnen von Buchungsanfragen verwenden</value>
+  </data>
+  <data name="rblBookingRequestsDelegates.Text" xml:space="preserve">
+    <value>Stellvertretungen auswählen, die Buchungsanfragen annehmen oder ablehnen können</value>
+  </data>
+  <data name="secBookingDelegates.Text" xml:space="preserve">
+    <value>Stellvertretungen für Buchungen</value>
+  </data>
+  <data name="valBookingWindowInDays.ErrorMessage" xml:space="preserve">
+    <value>Falsches Zahlenformat</value>
+  </data>
+  <data name="valCapacity.ErrorMessage" xml:space="preserve">
+    <value>Falsches Zahlenformat</value>
+  </data>
+  <data name="valDelegates.ErrorMessage" xml:space="preserve">
+    <value>Bitte wählen Sie einen Stellvertretenden aus.</value>
+  </data>
+  <data name="valMaximumDuration.ErrorMessage" xml:space="preserve">
+    <value>Falsches Zahlenformat</value>
   </data>
 </root>

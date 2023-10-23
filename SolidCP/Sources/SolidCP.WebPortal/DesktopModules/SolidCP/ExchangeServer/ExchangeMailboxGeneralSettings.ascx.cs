@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Web.UI.WebControls;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer;
 
@@ -38,6 +39,9 @@ namespace SolidCP.Portal.ExchangeServer
 {
     public partial class ExchangeMailboxGeneralSettings : SolidCPModuleBase
     {
+        private const string bookingRequestCustom = "Custom";
+        private const string bookingRequestAuto = "Auto";
+        private const string bookingRequestDelegates = "Delegates";
 
         private PackageContext cntx = null;
         private PackageContext Cntx
@@ -159,7 +163,49 @@ namespace SolidCP.Portal.ExchangeServer
                 mailboxSize.QuotaUsedValue = Convert.ToInt32(stats.TotalSize / 1024 / 1024);
                 mailboxSize.QuotaValue = (stats.MaxSize == -1) ? -1 : (int)Math.Round((double)(stats.MaxSize / 1024 / 1024));
 
-                secCalendarSettings.Visible = ((account.AccountType == ExchangeAccountType.Equipment) | (account.AccountType == ExchangeAccountType.Room));
+                bool resourceMailbox = ((account.AccountType == ExchangeAccountType.Equipment) || (account.AccountType == ExchangeAccountType.Room));
+                secBookingDelegates.Visible = resourceMailbox;
+                secBookingOptions.Visible = resourceMailbox;
+                trCapacity.Visible = resourceMailbox;
+                if (resourceMailbox)
+                {
+                    ExchangeResourceMailboxSettings resourceSettings = ES.Services.ExchangeServer.GetResourceMailboxSettings(PanelRequest.ItemID, PanelRequest.AccountID);
+
+                    txtCapacity.Text = resourceSettings.ResourceCapacity >= 0 ? resourceSettings.ResourceCapacity.ToString() : "";
+
+                    if (resourceSettings.AutomateProcessing != CalendarProcessingFlags.AutoAccept || resourceSettings.AllBookInPolicy == resourceSettings.AllRequestInPolicy)
+                    {
+                        rblBookingRequests.SelectedValue = bookingRequestCustom;
+                    }
+                    else
+                    {
+                        rblBookingRequests.Items.FindByValue(bookingRequestCustom).Attributes.Add("hidden", "hidden");
+                        if (resourceSettings.AllBookInPolicy)
+                        {
+                            rblBookingRequests.SelectedValue = bookingRequestAuto;
+                        }
+                        else
+                        {
+                            rblBookingRequests.SelectedValue = bookingRequestDelegates;
+                        }
+                    }
+
+                    msDelegates.Visible = bookingRequestDelegates.Equals(rblBookingRequests.SelectedValue);
+                    locDelegates.Visible = msDelegates.Visible;
+
+                    if (resourceSettings.ResourceDelegates != null && resourceSettings.ResourceDelegates.Length > 0)
+                    {
+                        msDelegates.SetAccount(resourceSettings.ResourceDelegates[0]);
+                    }
+
+                    chkAllowRecurringMeetings.Checked = resourceSettings.AllowRecurringMeetings;
+                    chkScheduleOnlyDuringWorkHours.Checked = resourceSettings.ScheduleOnlyDuringWorkHours;
+                    chkEnforceSchedulingHorizon.Checked = resourceSettings.EnforceSchedulingHorizon;
+
+                    txtBookingWindowInDays.Text = resourceSettings.BookingWindowInDays.ToString();
+                    txtMaximumDuration.Text = Math.Round((resourceSettings.MaximumDurationInMinutes / 60f), 1).ToString();
+                    txtAdditionalResponse.Text = resourceSettings.AdditionalResponse;
+                }
 
                 secLitigationHoldSettings.Visible = mailbox.EnableLitigationHold;
 
@@ -189,6 +235,8 @@ namespace SolidCP.Portal.ExchangeServer
 
                 }
                 imgVipUser.Visible = account.IsVIP && Cntx.Groups.ContainsKey(ResourceGroups.ServiceLevels);
+
+                litMailboxType.Text = account.AccountType.ToString();
 
                 if (account.AccountType == ExchangeAccountType.SharedMailbox)
                     litDisplayName.Text += GetSharedLocalizedString("SharedMailbox.Text");
@@ -252,6 +300,69 @@ namespace SolidCP.Portal.ExchangeServer
                     int disclaimerId;
                     if (int.TryParse(ddDisclaimer.SelectedValue, out disclaimerId))
                         ES.Services.ExchangeServer.SetExchangeAccountDisclaimerId(PanelRequest.ItemID, PanelRequest.AccountID, disclaimerId);
+                }
+
+                String accountType = litMailboxType.Text;
+                bool resourceMailbox = ((ExchangeAccountType.Equipment.ToString().Equals(accountType)) || (ExchangeAccountType.Room.ToString().Equals(accountType)));
+                if (resourceMailbox)
+                {
+                    ExchangeResourceMailboxSettings resourceSettings = new ExchangeResourceMailboxSettings();
+
+                    int capacity = -1;
+                    if (!String.IsNullOrEmpty(txtCapacity.Text)) int.TryParse(txtCapacity.Text, out capacity);
+                    resourceSettings.ResourceCapacity = capacity;
+                    if (bookingRequestAuto.Equals(rblBookingRequests.SelectedValue))
+                    {
+                        resourceSettings.AutomateProcessing = CalendarProcessingFlags.AutoAccept;
+                        resourceSettings.AllBookInPolicy = true;
+                        resourceSettings.AllRequestInPolicy = false;
+                    }
+                    else if (bookingRequestDelegates.Equals(rblBookingRequests.SelectedValue))
+                    {
+                        resourceSettings.AutomateProcessing = CalendarProcessingFlags.AutoAccept;
+                        resourceSettings.AllBookInPolicy = false;
+                        resourceSettings.AllRequestInPolicy = true;
+                    }
+                    else
+                    {
+                        resourceSettings.AutomateProcessing = CalendarProcessingFlags.AutoUpdate;
+                    }
+
+                    if (!String.IsNullOrEmpty(msDelegates.GetAccount()))
+                    {
+                        ExchangeAccount account = new ExchangeAccount();
+                        account.AccountName = msDelegates.GetAccount();
+                        account.AccountId = msDelegates.GetAccountId();
+                        resourceSettings.ResourceDelegates = new ExchangeAccount[] { account };
+                    }
+
+                    resourceSettings.AllowRecurringMeetings = chkAllowRecurringMeetings.Checked;
+                    resourceSettings.ScheduleOnlyDuringWorkHours = chkScheduleOnlyDuringWorkHours.Checked;
+                    resourceSettings.EnforceSchedulingHorizon = chkEnforceSchedulingHorizon.Checked;
+
+                    int bookingWindowInDays = 0;
+                    int.TryParse(txtBookingWindowInDays.Text, out bookingWindowInDays);
+                    resourceSettings.BookingWindowInDays = bookingWindowInDays;
+
+                    if (!String.IsNullOrEmpty(txtMaximumDuration.Text))
+                    {
+                        float maximumDuration = 0;
+                        float.TryParse(txtMaximumDuration.Text, out maximumDuration);
+                        resourceSettings.MaximumDurationInMinutes = (int)Math.Round(maximumDuration * 60);
+                    }
+
+                    if (!String.IsNullOrEmpty(txtAdditionalResponse.Text))
+                    {
+                        resourceSettings.AddAdditionalResponse = true;
+                        resourceSettings.AdditionalResponse = txtAdditionalResponse.Text;
+                    }
+
+                    result = ES.Services.ExchangeServer.SetResourceMailboxSettings(PanelRequest.ItemID, PanelRequest.AccountID, resourceSettings);
+                    if (result < 0)
+                    {
+                        messageBox.ShowResultMessage(result);
+                        return false;
+                    }
                 }
 
                 messageBox.ShowSuccessMessage("EXCHANGE_UPDATE_MAILBOX_SETTINGS");
@@ -333,5 +444,23 @@ namespace SolidCP.Portal.ExchangeServer
         {
         }
 
+        protected void valDelegates_ServerValidate(object source, ServerValidateEventArgs args)
+        {
+            args.IsValid = (msDelegates.GetAccount() != null || !"Delegates".Equals(rblBookingRequests.SelectedValue));
+            if (!bookingRequestCustom.Equals(rblBookingRequests.SelectedValue))
+            {
+                rblBookingRequests.Items.FindByValue(bookingRequestCustom).Attributes.Add("hidden", "hidden");
+            }
+        }
+
+        protected void rblBookingRequests_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            msDelegates.Visible = bookingRequestDelegates.Equals(rblBookingRequests.SelectedValue);
+            locDelegates.Visible = msDelegates.Visible;
+            if (!bookingRequestCustom.Equals(rblBookingRequests.SelectedValue))
+            {
+                rblBookingRequests.Items.FindByValue(bookingRequestCustom).Attributes.Add("hidden", "hidden");
+            }
+        }
     }
 }

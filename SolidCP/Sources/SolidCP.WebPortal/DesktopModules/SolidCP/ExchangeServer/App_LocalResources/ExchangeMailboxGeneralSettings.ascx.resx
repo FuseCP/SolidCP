@@ -141,8 +141,8 @@
   <data name="locTitle.Text" xml:space="preserve">
     <value>Edit Mailbox</value>
   </data>
-  <data name="secCalendarSettings.Text" xml:space="preserve">
-    <value>Calendar Settings</value>
+  <data name="secBookingOptions.Text" xml:space="preserve">
+    <value>Booking Options</value>
   </data>
   <data name="secGeneral.Text" xml:space="preserve">
     <value>General</value>
@@ -170,5 +170,56 @@
   </data>
   <data name="secAdvancedInfo.Text" xml:space="preserve">
     <value>Advanced Information</value>
+  </data>
+  <data name="chkAllowRecurringMeetings.Text" xml:space="preserve">
+    <value>Allow repeating meetings</value>
+  </data>
+  <data name="chkEnforceSchedulingHorizon.Text" xml:space="preserve">
+    <value>Always decline if the end date is beyond this limit</value>
+  </data>
+  <data name="chkScheduleOnlyDuringWorkHours.Text" xml:space="preserve">
+    <value>Allow scheduling only during working hours</value>
+  </data>
+  <data name="locAdditionalResponse.Text" xml:space="preserve">
+    <value>If you want the meeting organizer to receive a reply, enter the text below:</value>
+  </data>
+  <data name="locBookingRequests.Text" xml:space="preserve">
+    <value>Booking Requests:</value>
+  </data>
+  <data name="locBookingWindowInDays.Text" xml:space="preserve">
+    <value>Maximum booking lead time (days):</value>
+  </data>
+  <data name="locCapacity.Text" xml:space="preserve">
+    <value>Capacity:</value>
+  </data>
+  <data name="locDelegates.Text" xml:space="preserve">
+    <value>Delegates:</value>
+  </data>
+  <data name="locMaximumDuration.Text" xml:space="preserve">
+    <value>Maximum duration (hours):</value>
+  </data>
+  <data name="rblBookingRequestsAuto.Text" xml:space="preserve">
+    <value>Accept or decline booking requests automatically</value>
+  </data>
+  <data name="rblBookingRequestsCustom.Text" xml:space="preserve">
+    <value>Use customized setting to accept or decline booking requests</value>
+  </data>
+  <data name="rblBookingRequestsDelegates.Text" xml:space="preserve">
+    <value>Select delegates who can accept or decline booking requests</value>
+  </data>
+  <data name="secBookingDelegates.Text" xml:space="preserve">
+    <value>Booking Delegates</value>
+  </data>
+  <data name="valBookingWindowInDays.ErrorMessage" xml:space="preserve">
+    <value>Wrong number format</value>
+  </data>
+  <data name="valCapacity.ErrorMessage" xml:space="preserve">
+    <value>Wrong number format</value>
+  </data>
+  <data name="valDelegates.ErrorMessage" xml:space="preserve">
+    <value>Please specify a delegate</value>
+  </data>
+  <data name="valMaximumDuration.ErrorMessage" xml:space="preserve">
+    <value>Wrong number format</value>
   </data>
 </root>

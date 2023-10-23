@@ -3294,6 +3294,12 @@
   <data name="AuditLogTask.GET_ORG_STATS" xml:space="preserve">
     <value>Get organization statistics</value>
   </data>
+  <data name="AuditLogTask.EXCHANGE_GET_RESOURCE_MAILBOX" xml:space="preserve">
+    <value>Get resource mailbox settings</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_UPDATE_RESOURCE_MAILBOX" xml:space="preserve">
+    <value>Update resource mailbox settings</value>
+  </data>
   <data name="AuditLogTask.GET_EXCHANGE_MAILBOXPLANS" xml:space="preserve">
     <value>Get Exchange Mailbox plans</value>
   </data>

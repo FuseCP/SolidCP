@@ -18052,6 +18052,16 @@ BEGIN
 	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'SET_EXCHANGE_MAILBOXPLAN', N'Set exchange Mailbox plan')
 END
 GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'GET_RESOURCE_MAILBOX')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'GET_RESOURCE_MAILBOX', N'Get resource Mailbox settings')
+END
+GO
+IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'EXCHANGE' AND [TaskName] = 'UPDATE_RESOURCE_MAILBOX')
+BEGIN
+	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'EXCHANGE', N'UPDATE_RESOURCE_MAILBOX', N'Update resource Mailbox settings')
+END
+GO
 IF NOT EXISTS (SELECT * FROM [dbo].[AuditLogTasks] WHERE [SourceName] = 'STORAGE_SPACES' AND [TaskName] = 'SAVE_STORAGE_SPACE')
 BEGIN
 	INSERT [dbo].[AuditLogTasks] ([SourceName], [TaskName], [TaskDescription]) VALUES (N'STORAGE_SPACES', N'SAVE_STORAGE_SPACE', N'Save storage space')
