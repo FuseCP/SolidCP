@@ -3288,6 +3288,12 @@
   <data name="AuditLogTask.GET_ORG_STATS" xml:space="preserve">
     <value>Organisationsstatistiken abrufen</value>
   </data>
+  <data name="AuditLogTask.EXCHANGE_GET_RESOURCE_MAILBOX" xml:space="preserve">
+    <value>Ressourcenpostfacheinstellungen holen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_UPDATE_RESOURCE_MAILBOX" xml:space="preserve">
+    <value>Ressourcenpostfacheinstellungen aktualisieren</value>
+  </data>
   <data name="AuditLogTask.GET_EXCHANGE_MAILBOXPLANS" xml:space="preserve">
     <value>Exchange Postfachpläne abrufen</value>
   </data>

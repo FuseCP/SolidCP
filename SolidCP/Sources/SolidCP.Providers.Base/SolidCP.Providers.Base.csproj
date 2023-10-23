@@ -117,6 +117,7 @@
     <Compile Include="HostedSolution\ExchangeAcceptedDomainType.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxPlanType.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxPlan.cs" />
+    <Compile Include="HostedSolution\ExchangeResourceMailboxSettings.cs" />
     <Compile Include="HostedSolution\ExchangeRetentionPolicyTag.cs" />
     <Compile Include="HostedSolution\ExchangeRetentionPolicyTagAction.cs" />
     <Compile Include="HostedSolution\ExchangeRetentionPolicyTagType.cs" />

@@ -73,6 +73,8 @@ namespace SolidCP.Providers.HostedSolution
         void SetMailboxAutoReplySettings(string accountName, ExchangeMailboxAutoReplySettings settings);
         ExchangeMailbox GetMailboxGeneralSettings(string accountName);
         void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled);
+        ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName);
+        void SetResourceMailboxSettings(string accountName, ExchangeResourceMailboxSettings resourceSettings);
         ExchangeMailbox GetMailboxMailFlowSettings(string accountName);
         void SetMailboxMailFlowSettings(string accountName, bool enableForwarding, int saveSentItems, string forwardingAccountName, bool forwardToBoth, string[] sendOnBehalfAccounts, string[] acceptAccounts, string[] rejectAccounts, bool requireSenderAuthentication);
         ExchangeMailbox GetMailboxAdvancedSettings(string accountName);

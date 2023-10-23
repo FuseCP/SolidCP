@@ -427,6 +427,39 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName)
+        {
+            try
+            {
+                LogStart("GetResourceMailboxSettings");
+                ExchangeResourceMailboxSettings ret = ES.GetResourceMailboxSettings(accountName);
+                LogEnd("GetResourceMailboxSettings");
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                LogError("GetResourceMailboxSettings", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public void SetResourceMailboxSettings(string accountName, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            try
+            {
+                LogStart("SetResourceMailboxSettings");
+                ES.SetResourceMailboxSettings(accountName, resourceSettings);
+                LogEnd("SetResourceMailboxSettings");
+            }
+            catch (Exception ex)
+            {
+                LogError("SetResourceMailboxSettings", ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
         {
             try

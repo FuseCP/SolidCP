@@ -75,7 +75,11 @@ namespace SolidCP.Providers.Exchange {
         private System.Threading.SendOrPostCallback GetMailboxGeneralSettingsOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetMailboxGeneralSettingsOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback GetResourceMailboxSettingsOperationCompleted;
+
+        private System.Threading.SendOrPostCallback SetResourceMailboxSettingsOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetMailboxMailFlowSettingsOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetMailboxMailFlowSettingsOperationCompleted;
@@ -274,7 +278,13 @@ namespace SolidCP.Providers.Exchange {
         
         /// <remarks/>
         public event SetMailboxGeneralSettingsCompletedEventHandler SetMailboxGeneralSettingsCompleted;
-        
+
+        /// <remarks/>
+        public event GetResourceMailboxSettingsCompletedEventHandler GetResourceMailboxSettingsCompleted;
+
+        /// <remarks/>
+        public event SetResourceMailboxSettingsCompletedEventHandler SetResourceMailboxSettingsCompleted;
+
         /// <remarks/>
         public event GetMailboxMailFlowSettingsCompletedEventHandler GetMailboxMailFlowSettingsCompleted;
         
@@ -1571,7 +1581,108 @@ namespace SolidCP.Providers.Exchange {
                 this.SetMailboxGeneralSettingsCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetResourceMailboxSettings", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName)
+        {
+            object[] results = this.Invoke("GetResourceMailboxSettings", new object[] {
+                        accountName});
+            return ((ExchangeResourceMailboxSettings)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetResourceMailboxSettings(string accountName, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetResourceMailboxSettings", new object[] {
+                        accountName}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public ExchangeResourceMailboxSettings EndGetResourceMailboxSettings(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((ExchangeResourceMailboxSettings)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetResourceMailboxSettingsAsync(string accountName)
+        {
+            this.GetResourceMailboxSettingsAsync(accountName, null);
+        }
+
+        /// <remarks/>
+        public void GetResourceMailboxSettingsAsync(string accountName, object userState)
+        {
+            if ((this.GetResourceMailboxSettingsOperationCompleted == null))
+            {
+                this.GetResourceMailboxSettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetResourceMailboxSettingsOperationCompleted);
+            }
+            this.InvokeAsync("GetResourceMailboxSettings", new object[] {
+                        accountName}, this.GetResourceMailboxSettingsOperationCompleted, userState);
+        }
+
+        private void OnGetResourceMailboxSettingsOperationCompleted(object arg)
+        {
+            if ((this.GetResourceMailboxSettingsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetResourceMailboxSettingsCompleted(this, new GetResourceMailboxSettingsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/SetResourceMailboxSettings", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SetResourceMailboxSettings(string accountName, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            this.Invoke("SetResourceMailboxSettings", new object[] {
+                        accountName,
+                        resourceSettings});
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginSetResourceMailboxSettings(string accountName, ExchangeResourceMailboxSettings resourceSettings, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("SetResourceMailboxSettings", new object[] {
+                        accountName,
+                        resourceSettings}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public void EndSetResourceMailboxSettings(System.IAsyncResult asyncResult)
+        {
+            this.EndInvoke(asyncResult);
+        }
+
+        /// <remarks/>
+        public void SetResourceMailboxSettingsAsync(string accountName, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            this.SetResourceMailboxSettingsAsync(accountName, resourceSettings, null);
+        }
+
+        /// <remarks/>
+        public void SetResourceMailboxSettingsAsync(string accountName, ExchangeResourceMailboxSettings resourceSettings, object userState)
+        {
+            if ((this.SetResourceMailboxSettingsOperationCompleted == null))
+            {
+                this.SetResourceMailboxSettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetResourceMailboxSettingsOperationCompleted);
+            }
+            this.InvokeAsync("SetResourceMailboxSettings", new object[] {
+                        accountName,
+                        resourceSettings}, this.SetResourceMailboxSettingsOperationCompleted, userState);
+        }
+
+        private void OnSetResourceMailboxSettingsOperationCompleted(object arg)
+        {
+            if ((this.SetResourceMailboxSettingsCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetResourceMailboxSettingsCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetMailboxMailFlowSettings", RequestNamespace="http://smbsaas/solidcp/server/", ResponseNamespace="http://smbsaas/solidcp/server/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -5439,7 +5550,41 @@ namespace SolidCP.Providers.Exchange {
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void SetMailboxGeneralSettingsCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
-    
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void GetResourceMailboxSettingsCompletedEventHandler(object sender, GetResourceMailboxSettingsCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetResourceMailboxSettingsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetResourceMailboxSettingsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public ExchangeResourceMailboxSettings Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((ExchangeResourceMailboxSettings)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
+    public delegate void SetResourceMailboxSettingsCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "2.0.50727.3038")]
     public delegate void GetMailboxMailFlowSettingsCompletedEventHandler(object sender, GetMailboxMailFlowSettingsCompletedEventArgs e);
