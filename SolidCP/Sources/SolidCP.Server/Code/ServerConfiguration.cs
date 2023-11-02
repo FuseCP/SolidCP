@@ -45,7 +45,7 @@ namespace SolidCP.Server
     public class ServerConfiguration : IConfigurationSectionHandler
     {
         #region Public Properties
-        private static SecuritySettings security = null;
+        private static SecuritySettings security = new SecuritySettings();
 
         public static SecuritySettings Security
         {

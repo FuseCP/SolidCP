@@ -40,7 +40,7 @@ namespace SolidCP.Web.Services
 
 #if !NETFRAMEWORK
 			return ValueTask.CompletedTask;
- #endif
+#endif
 		}
 
 		public static Func<string, bool> ValidateServer;

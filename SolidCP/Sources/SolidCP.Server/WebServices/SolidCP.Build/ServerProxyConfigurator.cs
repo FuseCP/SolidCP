@@ -1,3 +1,4 @@
+#if Client
 // Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
@@ -151,3 +152,4 @@ namespace SolidCP.Server.Client
         }
     }
 }
+#endif

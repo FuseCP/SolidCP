@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using System.ServiceModel.Channels;
+using SolidCP.Providers;
 
 namespace SolidCP.Web.Client
 {
@@ -23,13 +24,22 @@ namespace SolidCP.Web.Client
 
 		public object BeforeSendRequest(ref Message request, IClientChannel channel)
 		{
-			if (SoapHeader != null)
+			if (SoapHeader != null || Client.Credentials != null && Client.Credentials.Password != null && Client.IsSsl)
 			{
 				// Prepare the request message copy to be modified
 				MessageBuffer buffer = request.CreateBufferedCopy(Int32.MaxValue);
 				request = buffer.CreateMessage();
+			}
 
+			if (SoapHeader != null)
+			{
 				var header = MessageHeader.CreateHeader(SoapHeader.GetType().Name, $"{Namespace}{SoapHeader.GetType().Name}", SoapHeader);
+				request.Headers.Add(header);
+			}
+			if (Client.Credentials != null && Client.Credentials.Password != null && Client.IsSsl)
+			{
+				var cred = new Credentials { Username = Client.Credentials.UserName, Password = Client.Credentials.Password };
+				var header = MessageHeader.CreateHeader(nameof(Credentials), $"{Namespace}{nameof(Credentials)}", cred);
 				request.Headers.Add(header);
 			}
 			return null;

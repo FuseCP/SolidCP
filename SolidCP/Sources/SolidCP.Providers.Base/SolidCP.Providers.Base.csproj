@@ -39,7 +39,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -47,11 +47,12 @@
     <WarningsAsErrors>618</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <IntermediateOutputPath>C:\Users\simon\AppData\Local\Temp\vs5F7F.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,6 +60,7 @@
     <WarningsAsErrors>618</WarningsAsErrors>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <IntermediateOutputPath>C:\Users\simon\AppData\Local\Temp\vs5F7F.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AntiXSSLibrary">
@@ -84,9 +86,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
     <Compile Include="Common\SoapHeaderAttribute.cs" />
     <Compile Include="HostedSolution\ADPermissions.cs" />
     <Compile Include="Common\LogExtension\LogExtensionHelper.cs" />

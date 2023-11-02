@@ -697,7 +697,7 @@ namespace SolidCP.Providers.Utils
 			using (ZipFile zip = new ZipFile())
 			{
 				//use unicode if necessary
-				zip.UseUnicodeAsNecessary = true;
+				//zip.UseUnicodeAsNecessary = true;
                 zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
 
 				//skip locked files
@@ -732,7 +732,7 @@ namespace SolidCP.Providers.Utils
             using (ZipFile zip = new ZipFile())
             {
                 //use unicode if necessary
-                zip.UseUnicodeAsNecessary = true;
+                //zip.UseUnicodeAsNecessary = true;
                 zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
 
                 //skip locked files

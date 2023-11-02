@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using SolidCP.Web.Services;
 
 namespace SolidCP.Server
 {
@@ -7,7 +8,12 @@ namespace SolidCP.Server
 
 		public static bool Validate(string password)
 		{
+#if NETFRAMEWORK
 			return password == ServerConfiguration.Security.Password;
+#else
+			return password == StartupCore.Password;
+#endif
+
 		}
 
 		public static void Init()

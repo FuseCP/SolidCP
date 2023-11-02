@@ -63,10 +63,43 @@ namespace SolidCP.Server.Tests
                 }
             }
         }
+
+        [TestMethod]
+        [DataRow(Protocols.BasicHttps)]
+        [DataRow(Protocols.WSHttps)]
+        [DataRow(Protocols.NetHttps)]
+
+        public void AnonymousWithSoapHeaderNet6(Protocols protocol)
+        {
+            using (var client = new Test() { Url = "https://localhost:9007" })
+            {
+                try
+                {
+                    client.Protocol = protocol;
+                    var h = new ServiceProviderSettingsSoapHeader();
+                    h.Settings = new string[] { "Hello from Settings!" };
+                    client.SoapHeader = h;
+                    var msg = client.EchoSettings();
+
+                    Assert.AreEqual("Hello from Settings!", msg);
+                }
+                catch (FaultException fex)
+                {
+                    TestContext.WriteLine($"Fault: {fex};{fex.InnerException}");
+                    Assert.Fail("FaultException", fex);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                    Assert.Fail("Exception", ex);
+                }
+            }
+        }
+
         [TestMethod]
         public void AnonymousNetTcp()
         {
-            using (var client = new Test() { Url = "net.tcp://localhost:9020" })
+            using (var client = new Test() { Url = "net.tcp://localhost:9022" })
             {
                 try
                 {
@@ -119,7 +152,7 @@ namespace SolidCP.Server.Tests
                     };
                     client.Credentials.Password = "uqCP8Qc3EjbAzzjpiSOu+Z+icAqYOtzM7Luy+OTIRZ8=";
                     client.Protocol = protocol;
-                    
+
                     // test echo method
                     var res = client.Echo("Hello");
                     Assert.AreEqual("Hello", res);
@@ -142,12 +175,13 @@ namespace SolidCP.Server.Tests
         // requires an IIS application on localhost/server pointing to the SolidCP.Server directory
         public void AnonymousNet48(Protocols protocol)
         {
-            using (var client = new Test() { Url = "https://localhost:44300" })
+            using (var client = new Test() { Url = "https://localhost:44301" })
             {
                 try
                 {
                     client.Protocol = protocol;
                     var res = client.Echo("Hello");
+
                     Assert.AreEqual("Hello", res);
                 }
                 catch (FaultException fex)
@@ -166,9 +200,41 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.BasicHttps)]
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
+        // requires an IIS application on localhost/server pointing to the SolidCP.Server directory
+        public void AnonymousWithSoapHeaderNet48(Protocols protocol)
+        {
+            using (var client = new Test() { Url = "https://localhost:44301" })
+            {
+                try
+                {
+                    client.Protocol = protocol;
+                    var h = new ServiceProviderSettingsSoapHeader();
+                    h.Settings = new string[] { "Hello from Settings!" };
+                    client.SoapHeader = h;
+                    var msg = client.EchoSettings();
+
+                    Assert.AreEqual("Hello from Settings!", msg);
+                }
+                catch (FaultException fex)
+                {
+                    TestContext.WriteLine($"Fault: {fex};{fex.InnerException}");
+                    Assert.Fail("FaultException", fex);
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                    Assert.Fail("Exception", ex);
+                }
+            }
+        }
+
+        [TestMethod]
+        [DataRow(Protocols.BasicHttps)]
+        [DataRow(Protocols.WSHttps)]
+        [DataRow(Protocols.NetHttps)]
         public void AuthenticatedNet48(Protocols protocol)
         {
-            using (var client = new TestWithAuthentication() { Url = "https://localhost:44300" })
+            using (var client = new TestWithAuthentication() { Url = "https://localhost:44301" })
             {
                 try
                 {
@@ -194,5 +260,80 @@ namespace SolidCP.Server.Tests
                 }
             }
         }
+
+        [TestMethod]
+        [DataRow(Protocols.BasicHttps)]
+        [DataRow(Protocols.WSHttps)]
+        [DataRow(Protocols.NetHttps)]
+        public void WrongPasswordNet48(Protocols protocol)
+        {
+            using (var client = new TestWithAuthentication() { Url = "https://localhost:44301" })
+            {
+                try
+                {
+                    client.SoapHeader = new ServiceProviderSettingsSoapHeader()
+                    {
+                        Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
+                    };
+                    client.Credentials.Password = "1234";
+                    client.Protocol = protocol;
+
+                    // test echo method
+                    var res = client.Echo("Hello");
+                    Assert.AreEqual("Hello", res);
+
+                    // test method with soap header
+                    var settings = client.EchoSettings();
+                    Assert.AreEqual(((ServiceProviderSettingsSoapHeader)client.SoapHeader).Settings[0], settings);
+                    Assert.Fail("Authorized with wrong password");
+                }
+                catch (FaultException fex)
+                {
+                    TestContext.WriteLine($"Access denied: {fex.StackTrace}");
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
+        [TestMethod]
+        [DataRow(Protocols.BasicHttps)]
+        [DataRow(Protocols.WSHttps)]
+        [DataRow(Protocols.NetHttps)]
+        public void WrongPasswordNet6(Protocols protocol)
+        {
+            using (var client = new TestWithAuthentication() { Url = "https://localhost:9007" })
+            {
+                try
+                {
+                    client.SoapHeader = new ServiceProviderSettingsSoapHeader()
+                    {
+                        Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
+                    };
+                    client.Credentials.Password = "1234";
+                    client.Protocol = protocol;
+
+                    // test echo method
+                    var res = client.Echo("Hello");
+                    Assert.AreEqual("Hello", res);
+
+                    // test method with soap header
+                    var settings = client.EchoSettings();
+                    Assert.AreEqual(((ServiceProviderSettingsSoapHeader)client.SoapHeader).Settings[0], settings);
+                    Assert.Fail("Authorized with wrong password");
+                }
+                catch (FaultException fex)
+                {
+                    TestContext.WriteLine($"Access denied: {fex.StackTrace}");
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+        }
+
     }
 }

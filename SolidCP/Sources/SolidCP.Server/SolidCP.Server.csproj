@@ -29,6 +29,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <OutputPath>bin/net.core</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <StartupObject>SolidCP.Server.Program</StartupObject>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
     <OutputPath>bin</OutputPath>
     <OutputType>Library</OutputType>
@@ -43,12 +51,7 @@
     <Compile Remove="WebServices\**\*.*" />
     <None Include="WebServices\**\*.*" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Code\ServerUsernameTokenManager.cs" />
-    <Compile Remove="Code\UsernameAssertion.cs" />
-  </ItemGroup>
-
+    
   <ItemGroup>
     <Compile Remove="WindowsServer.asmx.cs" />
     <None Include="WindowsServer.asmx.cs" />
@@ -68,6 +71,13 @@
     <Compile Remove="Default.aspx.cs" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <None Include="Default.aspx.designer.cs" />
+    <None Include="Default.aspx.cs" />
+    <Compile Remove="Default.aspx.designer.cs" />
+    <Compile Remove="Default.aspx.cs" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Content Remove="Pages\Index.cshtml" />
     <Compile Remove="Pages\Index.cshtml.cs" />
@@ -79,7 +89,6 @@
     <None Include="Code\ServerUsernameTokenManager.cs" />
     <None Include="Code\UsernameAssertion.cs" />
     <None Include="Code\WPIHelper.cs" />
-    <None Include="wwwroot\img\logo.png" />
     <Compile Remove="Code\ServerUsernameTokenManager.cs" />
     <Compile Remove="Code\UsernameAssertion.cs" />
     <Compile Remove="Code\WPIHelper.cs" />
@@ -98,8 +107,24 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+   <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Runtime.Remoting" />
   </ItemGroup>
 

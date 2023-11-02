@@ -84,8 +84,8 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else if (IsAuthenticated) Protocol = Protocols.WSHttp;
-					else Protocol = Protocols.NetHttp;
+					else if (IsAuthenticated) throw new NotSupportedException("Services with authentication can't be called over http.");
+					else Protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
 				{
@@ -94,7 +94,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) Protocol = Protocols.WSHttps;
 					else if (url.HasApi("grpc")) Protocol = Protocols.gRPCSsl;
 					else if (url.HasApi("grpc/web")) Protocol = Protocols.gRPCWebSsl;
-					else Protocol = Protocols.NetHttps;
+					else Protocol = Protocols.BasicHttps;
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
@@ -116,10 +116,10 @@ namespace SolidCP.Web.Client
 			}
 		}
 
-		protected bool IsWCF => Protocol < Protocols.gRPC;
-		protected bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
-		protected bool IsAssembly => Protocol == Protocols.Assembly;
-		protected bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
+		public bool IsWCF => Protocol < Protocols.gRPC;
+		public bool IsGRPC => Protocol >= Protocols.gRPC && Protocol < Protocols.Assembly;
+		public bool IsAssembly => Protocol == Protocols.Assembly;
+		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
 		public bool IsAuthenticated => this.GetType().GetInterfaces()
@@ -215,9 +215,7 @@ namespace SolidCP.Web.Client
 					if (client is IClientChannel chan)
 					{
 						// reuse client if it uses the same address and credentials
-						if (chan.RemoteAddress.Uri.AbsoluteUri != serviceurl ||
-							((Credentials != null) != (clientCredentials != null)) ||
-							Credentials != null && (Credentials.UserName != clientCredentials.UserName || Credentials.Password != clientCredentials.Password))
+						if (chan.RemoteAddress.Uri.AbsoluteUri != serviceurl)
 						{
 							client = null;
 						}
@@ -225,7 +223,8 @@ namespace SolidCP.Web.Client
 						{
 							if (chan.State != CommunicationState.Opened && chan.State != CommunicationState.Opening)
 							{
-								chan.Open();
+								if (chan.State == CommunicationState.Faulted) client = null;
+								else chan.Open();
 							}
 							return client;
 						}
@@ -244,9 +243,6 @@ namespace SolidCP.Web.Client
 						case Protocols.BasicHttp:
 							if (isAuthenticated)
 							{
-								//var basic = new BasicHttpBinding(BasicHttpSecurityMode.Message);
-								//basic.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-								//binding = basic;
 								throw new NotSupportedException("This api is not supported on this service.");
 							}
 							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
@@ -254,8 +250,7 @@ namespace SolidCP.Web.Client
 						case Protocols.BasicHttps: 
 							if (isAuthenticated)
 							{
-								var basics = new BasicHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
-								basics.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+								var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
 								binding = basics;
 							} else
 							{
@@ -266,17 +261,13 @@ namespace SolidCP.Web.Client
 						case Protocols.NetHttp:
 							if (isAuthenticated)
 							{
-								//var net = new NetHttpBinding(BasicHttpSecurityMode.Message);
-								//net.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-								//binding = net;
 								throw new NotSupportedException("This api is not supported on this service.");
 							} else binding = new NetHttpBinding(BasicHttpSecurityMode.None);
 							break;
 						case Protocols.NetHttps: 
 							if (isAuthenticated)
 							{
-								var nets = new NetHttpBinding(BasicHttpSecurityMode.TransportWithMessageCredential);
-								nets.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+								var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
 								binding = nets;
                             } else
 							{
@@ -289,17 +280,13 @@ namespace SolidCP.Web.Client
 							if (isAuthenticated)
 							{
                                 throw new NotSupportedException("This api is not supported on this service.");
-								/* var ws = new WSHttpBinding(SecurityMode.Message);
-								ws.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
-								binding = ws; */
 							}
 							else binding = new WSHttpBinding(SecurityMode.None);
 							break;
 						case Protocols.WSHttps: 
 							if (isAuthenticated)
 							{
-								var wss = new WSHttpBinding(SecurityMode.TransportWithMessageCredential);
-								wss.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+								var wss = new WSHttpBinding(SecurityMode.Transport);
 								binding = wss;
 							} else
 							{
@@ -311,11 +298,10 @@ namespace SolidCP.Web.Client
 						case Protocols.NetTcpSsl:
 							if (isAuthenticated)
 							{
-								var nettcp = new NetTcpBinding(SecurityMode.TransportWithMessageCredential);
-								nettcp.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+								var nettcp = new NetTcpBinding(SecurityMode.Transport);
 								binding = nettcp;
 							}
-							else binding = new NetTcpBinding(SecurityMode.None);
+							else binding = new NetTcpBinding(SecurityMode.Transport);
 							break;
 #if NETFRAMEWORK
 						case Protocols.NetPipe: 
@@ -340,19 +326,13 @@ namespace SolidCP.Web.Client
 							FactoryPool[url] = null;
 						}
 					}
-					if (SoapHeader != null)
+					if (SoapHeader != null || Credentials != null && Credentials.Password != null && IsSsl)
 					{
 						foreach (var b in factory.Endpoint.EndpointBehaviors.ToArray())
 						{
 							if (b is SoapHeaderClientBehavior) factory.Endpoint.EndpointBehaviors.Remove(b);
 						}
 						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
-					}
-					if (Credentials != null && Credentials.Password != null && IsSsl)
-					{
-						factory.Credentials.UserName.UserName = Credentials.UserName ?? "_";
-						factory.Credentials.UserName.Password = Credentials.Password ?? string.Empty;
-						clientCredentials = new UserNamePasswordCredentials { UserName = Credentials.UserName, Password = Credentials.Password };
 					}
 					else clientCredentials = null;
 					client = factory.CreateChannel();

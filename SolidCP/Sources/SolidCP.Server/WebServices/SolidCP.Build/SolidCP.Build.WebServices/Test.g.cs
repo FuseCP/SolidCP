@@ -1,6 +1,8 @@
 ﻿#if !Client
 using System.ComponentModel;
 using SolidCP.Web.Services;
+using SolidCP.Providers;
+using System.Linq;
 using SolidCP.Server;
 #if NETFRAMEWORK
 using System.ServiceModel;
@@ -21,6 +23,9 @@ namespace SolidCP.Server.Services
         [WebMethod]
         [OperationContract]
         string Echo(string message);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        string EchoSettings();
     }
 
     // wcf service

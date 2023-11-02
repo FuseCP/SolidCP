@@ -62,7 +62,20 @@ namespace SolidCP.Web.Services
 					}
 				}
 			}
-			return null;
+			var policy = contract.GetCustomAttribute<PolicyAttribute>();
+			if (policy != null)
+			{
+                int hpos = request.Headers.FindHeader(nameof(Credentials), $"{Namespace}{nameof(Credentials)}");
+				if (hpos < 0) throw new AccessViolationException("No anonymous access allowed.");
+				var header = request.Headers.GetHeader<Credentials>(hpos);
+				var validator = new UserNamePasswordValidator() { Policy = policy };
+#if NETFRAMEWORK
+				validator.Validate(header.Username, header.Password);
+#else
+				validator.ValidateAsync(header.Username, header.Password).AsTask().Wait();
+#endif
+			}
+            return null;
 		}
 
 		public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
