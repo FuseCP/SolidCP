@@ -643,7 +643,7 @@ namespace SolidCP.Providers.Web.Iis
         #region PowerShell integration
         private static InitialSessionState session = null;
 
-        protected virtual Runspace OpenRunspace()
+        protected override Runspace OpenRunspace()
         {
             Log.WriteStart("OpenRunspace");
 
@@ -707,7 +707,7 @@ namespace SolidCP.Providers.Web.Iis
             return ExecuteShellCommand(runSpace, invokeCommand, false, out errors);
         }
 
-        protected Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, bool useDomainController)
+        protected new Collection<PSObject> ExecuteShellCommand(Runspace runSpace, Command cmd, bool useDomainController)
         {
             object[] errors;
             return ExecuteShellCommand(runSpace, cmd, useDomainController, out errors);
@@ -770,7 +770,7 @@ namespace SolidCP.Providers.Web.Iis
             return results;
         }
 
-        protected object GetPSObjectProperty(PSObject obj, string name)
+        protected new virtual object GetPSObjectProperty(PSObject obj, string name)
         {
             return obj.Members[name].Value;
         }

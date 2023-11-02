@@ -894,11 +894,11 @@ namespace SolidCP.Providers.Web
 		}
 
         // AppPool
-        public void ChangeAppPoolState(string siteId, AppPoolState state)
+        public virtual void ChangeAppPoolState(string siteId, AppPoolState state)
         {
         }
 
-        public AppPoolState GetAppPoolState(string siteId)
+        public virtual AppPoolState GetAppPoolState(string siteId)
         {
             return AppPoolState.Unknown;
         }

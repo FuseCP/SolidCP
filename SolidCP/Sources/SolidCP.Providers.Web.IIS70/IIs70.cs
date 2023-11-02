@@ -2,7 +2,7 @@
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
-// Copyright (c) 2015, Outercurve Foundation.
+// Copyright (c) 2015, Outercurve Foundation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -1680,12 +1680,12 @@ namespace SolidCP.Providers.Web
 		}
 
         // AppPool
-        public void ChangeAppPoolState(string siteId, AppPoolState state)
+        public override void ChangeAppPoolState(string siteId, AppPoolState state)
         {
             webObjectsSvc.ChangeAppPoolState(siteId, state);
         }
 
-        public AppPoolState GetAppPoolState(string siteId)
+        public override AppPoolState GetAppPoolState(string siteId)
         {
             using (ServerManager srvman = webObjectsSvc.GetServerManager())
             {
@@ -1693,7 +1693,7 @@ namespace SolidCP.Providers.Web
             }
         }
 
-        public AppPoolState GetAppPoolState(ServerManager srvman, string siteId)
+        public virtual AppPoolState GetAppPoolState(ServerManager srvman, string siteId)
         {
             return webObjectsSvc.GetAppPoolState(srvman, siteId);
         }
