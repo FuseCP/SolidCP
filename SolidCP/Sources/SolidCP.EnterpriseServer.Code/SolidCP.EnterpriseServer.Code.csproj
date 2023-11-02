@@ -274,8 +274,8 @@
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
       <Name>SolidCP.Providers.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Server.Client.csproj">
-      <Project>{fbfe9641-18d9-4bdd-b773-fe0ad6b4475f}</Project>
+    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj">
+      <Project>{7e4cbd22-1508-4bbe-ba89-44711a0d0b0e}</Project>
       <Name>SolidCP.Server.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.Templates\SolidCP.Templates.csproj">
@@ -291,7 +291,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

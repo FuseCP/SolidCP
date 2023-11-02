@@ -39,6 +39,7 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Net;
 using System.Timers;
+using System.Diagnostics;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -50,6 +51,8 @@ namespace SolidCP.EnterpriseServer
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            if (!Debugger.IsAttached) Debugger.Launch();
+            Web.Services.StartupNetFX.Start();
         }
 
         protected void Application_End(object sender, EventArgs e)

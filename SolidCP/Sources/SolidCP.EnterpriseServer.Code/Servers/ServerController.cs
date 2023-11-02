@@ -143,7 +143,7 @@ namespace SolidCP.EnterpriseServer
 				DataProvider.GetServerShortDetails(serverId));
 		}
 
-		public static ServerInfo GetServerById(int serverId, bool forAutodiscover)
+		public static ServerInfo GetServerById(int serverId, bool forAutodiscover = false)
 		{
 			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServer(SecurityContext.User.UserId, serverId, forAutodiscover));

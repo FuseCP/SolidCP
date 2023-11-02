@@ -48,9 +48,9 @@ namespace SolidCP.EnterpriseServer
     {
         private const int FILE_BUFFER_LENGTH = 5000000; // ~5MB
 
-        private static OS.OperatingSystem GetOS(int serviceId)
+        private static Server.Client.OperatingSystem GetOS(int serviceId)
         {
-            OS.OperatingSystem os = new OS.OperatingSystem();
+            Server.Client.OperatingSystem os = new Server.Client.OperatingSystem();
             ServiceProviderProxy.Init(os, serviceId);
             return os;
         }
@@ -81,7 +81,7 @@ namespace SolidCP.EnterpriseServer
         {
             // load service item
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
-            OS.OperatingSystem os = GetOS(serviceId);
+            Server.Client.OperatingSystem os = GetOS(serviceId);
             return os.GetInstalledOdbcDrivers();
         }
 
@@ -91,7 +91,7 @@ namespace SolidCP.EnterpriseServer
             SystemDSN item = (SystemDSN)PackageController.GetPackageItem(itemId);
 
             // load service item
-            OS.OperatingSystem os = GetOS(item.ServiceId);
+            Server.Client.OperatingSystem os = GetOS(item.ServiceId);
             SystemDSN dsn = os.GetDSN(item.Name);
 
             // add common properties
@@ -135,7 +135,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // check service items
-                OS.OperatingSystem os = GetOS(serviceId);
+                Server.Client.OperatingSystem os = GetOS(serviceId);
                 if (os.GetDSN(item.Name) != null)
                     return BusinessErrorCodes.ERROR_OS_DSN_SERVICE_ITEM_EXISTS;
 
@@ -197,7 +197,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // get service
-                OS.OperatingSystem os = GetOS(origItem.ServiceId);
+                Server.Client.OperatingSystem os = GetOS(origItem.ServiceId);
 
                 // password
                 item.Driver = origItem.Driver;
@@ -271,7 +271,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // get service
-                OS.OperatingSystem os = GetOS(origItem.ServiceId);
+                Server.Client.OperatingSystem os = GetOS(origItem.ServiceId);
 
                 // delete service item
                 os.DeleteDSN(origItem.Name);
@@ -292,17 +292,17 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        private static WindowsServer GetServerService(int serverId)
+        /*private static WindowsServer GetServerService(int serverId)
         {
             WindowsServer winServer = new WindowsServer();
             ServiceProviderProxy.ServerInit(winServer, serverId);
             return winServer;
-        }
+        }*/
 
         #region Terminal Services Sessions
         public static TerminalSession[] GetTerminalServicesSessions(int serverId)
 	    {
-            return GetServerService(serverId).GetTerminalServicesSessions();
+            return GetOS(serverId).GetTerminalServicesSessions();
 	    }
 
         public static int CloseTerminalServicesSession(int serverId, int sessionId)
@@ -336,9 +336,9 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Windows Processes
-        public static WindowsProcess[] GetWindowsProcesses(int serverId)
+        public static OSProcess[] GetOSProcesses(int serverId)
         {
-            return GetServerService(serverId).GetWindowsProcesses();
+            return GetOS(serverId).GetOSProcesses();
         }
 
         public static int TerminateWindowsProcess(int serverId, int pid)
@@ -372,12 +372,12 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Windows Services
-        public static WindowsService[] GetWindowsServices(int serverId)
+        public static OSService[] GetWindowsServices(int serverId)
         {
             return GetServerService(serverId).GetWindowsServices();
         }
 
-        public static int ChangeWindowsServiceStatus(int serverId, string id, WindowsServiceStatus status)
+        public static int ChangeWindowsServiceStatus(int serverId, string id, OSServiceStatus status)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -410,7 +410,7 @@ namespace SolidCP.EnterpriseServer
         // Check If FSRM Role services were installed
         public static bool CheckFileServicesInstallation(int serviceId)
         {
-            OS.OperatingSystem os = GetOS(serviceId);
+            Server.Client.OperatingSystem os = GetOS(serviceId);
             return os.CheckFileServicesInstallation();
 
         }
@@ -623,7 +623,7 @@ namespace SolidCP.EnterpriseServer
             if (serviceId == 0)
                 return items;
 
-            OS.OperatingSystem os = GetOS(serviceId);
+            Server.Client.OperatingSystem os = GetOS(serviceId);
             if (itemType == typeof(SystemDSN))
                 items.AddRange(os.GetDSNNames());
 
@@ -707,7 +707,7 @@ namespace SolidCP.EnterpriseServer
             else if (item is SystemDSN)
             {
                 // backup ODBC DSN
-                OS.OperatingSystem os = GetOS(item.ServiceId);
+                Server.Client.OperatingSystem os = GetOS(item.ServiceId);
 
                 // read DSN info
                 SystemDSN itemDsn = item as SystemDSN;
@@ -725,7 +725,7 @@ namespace SolidCP.EnterpriseServer
         {
             if (itemType == typeof(HomeFolder))
             {
-                OS.OperatingSystem os = GetOS(serviceId);
+                Server.Client.OperatingSystem os = GetOS(serviceId);
                 
                 // extract meta item
                 XmlSerializer serializer = new XmlSerializer(typeof(HomeFolder));
@@ -786,7 +786,7 @@ namespace SolidCP.EnterpriseServer
             }
             else if (itemType == typeof(SystemDSN))
             {
-                OS.OperatingSystem os = GetOS(serviceId);
+                Server.Client.OperatingSystem os = GetOS(serviceId);
 
                 // extract meta item
                 XmlSerializer serializer = new XmlSerializer(typeof(SystemDSN));

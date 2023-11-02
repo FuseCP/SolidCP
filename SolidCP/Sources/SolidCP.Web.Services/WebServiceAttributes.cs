@@ -22,6 +22,7 @@ namespace SolidCP.Web.Services
 	}
 	public class WebMethodAttribute : Attribute
 	{
+		public string Description { get; set; }
 		public WebMethodAttribute() { }
 	}
 

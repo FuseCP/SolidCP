@@ -33,10 +33,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web.Services;
+using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.Providers.SharePoint;
-using Microsoft.Web.Services3;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -45,7 +44,7 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	[WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-	[Policy("ServerPolicy")]
+	[Policy("EnterpriseServerPolicy")]
 	[ToolboxItem(false)]
 	public class esHostedSharePointServersEnt : WebService
 	{

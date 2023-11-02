@@ -33,11 +33,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Web.Services;
+using SolidCP.Web.Services;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
-using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 
 namespace SolidCP.EnterpriseServer
@@ -47,7 +46,7 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("ServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
     public class esExchangeServer : WebService
     {

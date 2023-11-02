@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web;
-using System.Web.Services;
-using Microsoft.Web.Services3;
+using SolidCP.Web.Services;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
@@ -17,7 +16,7 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("ServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
     public class esStorageSpaces : System.Web.Services.WebService
     {

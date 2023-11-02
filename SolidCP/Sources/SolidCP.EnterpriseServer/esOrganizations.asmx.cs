@@ -34,7 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Web.Services;
+using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
@@ -49,6 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [ToolboxItem(false)]
+    [Policy("EnterpriseServerPolicy")]
     public class esOrganizations : WebService
     {
         #region Organizations
