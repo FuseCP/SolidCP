@@ -25,7 +25,8 @@ public class @(Class.Identifier): SolidCP.Web.Client.ClientBase<I@(Class.Identif
 						$"{m.Identifier}Async")
 					.WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
 					.WithParameterList(m.ParameterList),
-			IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))
+			IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)),
+			IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any()))
 			}))
 	{
 		@method.Normal.NormalizeWhitespace()
@@ -40,34 +41,42 @@ public class @(Class.Identifier): SolidCP.Web.Client.ClientBase<I@(Class.Identif
 			if (!first) {
 				<text>, </text>
 			} else { first = false; }
-			<text>@par.Identifier</text>
+			<text>@(par.Modifiers.Any() ? $"{par.Modifiers} " : "")@(par.Identifier)</text>
 		}
 
 		<text>);
-        }</text>
-		
-		@method.Async.NormalizeWhitespace()
-		<text>
-        {
-			@(method.IsVoid ? "await " : $"return await ")base.Client.@(method.Method.Identifier)Async(
-		</text>
+			}</text>
 
-		first = true;
-		foreach (var par in method.Method.ParameterList.Parameters)
+		if (!method.IsRefPar)
 		{
-			if (!first) {
-				<text>, </text>
-			} else { first = false; }
-			<text>@par.Identifier</text>
+			@method.Async.NormalizeWhitespace()
+			<text>
+				{
+				@(method.IsVoid ? "await " : $"return await ")base.Client.@(method.Method.Identifier)Async(
+			</text>
+
+			first = true;
+			foreach (var par in method.Method.ParameterList.Parameters)
+			{
+				if (!first)
+				{
+					<text>, </text>
+				}
+				else { first = false; }
+				<text>@par.Identifier</text>
+			}
+
+			<text>);
+				}</text>
+		} else {
+			<text>
+				
+			//No async method, because the method has ref, in or out parameters.
+
+			</text>
 		}
-
-		<text>);
-        }</text>
-
 	}
-
 }
-
 @functions
  {
 	public ClassDeclarationSyntax Class { get; set; }

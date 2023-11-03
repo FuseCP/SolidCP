@@ -169,8 +169,6 @@ namespace SolidCP.Web.Client
 		ChannelFactory<T> factory;
 
 		T client = null;
-		UserNamePasswordCredentials clientCredentials;
-
 
         protected T Client
 		{
@@ -334,7 +332,6 @@ namespace SolidCP.Web.Client
 						}
 						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
 					}
-					else clientCredentials = null;
 					client = factory.CreateChannel();
 					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
 				}

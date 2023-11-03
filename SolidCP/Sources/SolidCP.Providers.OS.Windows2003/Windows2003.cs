@@ -894,12 +894,12 @@ namespace SolidCP.Providers.OS
 
         public override bool IsInstalled()
         {
-            return SolidCP.Server.Utils.OS.GetVersion() == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2003;                        
+            return SolidCP.Server.Utils.WindowsOS.GetVersion() == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2003;                        
         }
 
         public virtual bool CheckFileServicesInstallation()
         {
-            return SolidCP.Server.Utils.OS.CheckFileServicesInstallation();
+            return SolidCP.Server.Utils.WindowsOS.CheckFileServicesInstallation();
 
         }
 

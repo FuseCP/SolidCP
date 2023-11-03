@@ -51,7 +51,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esVirtualizationServer : System.Web.Services.WebService
+    public class esVirtualizationServer
     {
         #region Virtual Machines
         [WebMethod]

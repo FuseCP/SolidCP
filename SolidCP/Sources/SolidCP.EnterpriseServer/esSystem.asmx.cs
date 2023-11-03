@@ -35,7 +35,6 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using SolidCP.Web.Services;
-using System.Web.Services.Protocols;
 using System.ComponentModel;
 
 namespace SolidCP.EnterpriseServer
@@ -47,7 +46,7 @@ namespace SolidCP.EnterpriseServer
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
 	[Policy("EnterpriseServerPolicy")]
 	[ToolboxItem(false)]
-	public class esSystem : System.Web.Services.WebService
+	public class esSystem
 	{
 		[WebMethod]
 		public SystemSettings GetSystemSettings(string settingsName)

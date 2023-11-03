@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esFtpServers : System.Web.Services.WebService
+    public class esFtpServers
     {
         [WebMethod]
         public FtpSite[] GetFtpSites(int serviceId)

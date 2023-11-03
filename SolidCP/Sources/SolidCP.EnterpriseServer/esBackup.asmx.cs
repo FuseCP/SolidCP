@@ -39,7 +39,6 @@ using SolidCP.Web.Services;
 using System.ComponentModel;
 
 using SolidCP.Providers;
-using SolidCP.EnterpriseServer;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -50,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esBackup : System.Web.Services.WebService
+    public class esBackup
     {
 		[WebMethod]
 		public KeyValueBunch GetBackupContentSummary(int userId, int packageId, 

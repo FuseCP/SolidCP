@@ -79,6 +79,7 @@
     <Compile Include="CRC32.cs" />
     <Compile Include="EventLogTraceListener.cs" />
     <Compile Include="FileUtils.cs" />
+    <Compile Include="Installer.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogParser\LogParser.cs" />
     <Compile Include="LogParser\LogReader.cs" />
@@ -87,12 +88,14 @@
     <Compile Include="LogParser\StatsLine.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="OS.cs" />
+    <Compile Include="WindowsOS.cs" />
     <Compile Include="PInvoke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SecurityUtils.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="JsonUtils.cs" />
+    <Compile Include="Shell.cs" />
     <Compile Include="StringUtils.cs" />
     <Compile Include="SystemSID.cs" />
     <Compile Include="WmiHelper.cs" />

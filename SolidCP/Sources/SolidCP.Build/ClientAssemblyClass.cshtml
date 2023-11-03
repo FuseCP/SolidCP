@@ -13,61 +13,120 @@
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
 public class @(Class.Identifier)AssemblyClient: SolidCP.Web.Client.ClientAssemblyBase, I@(Class.Identifier) {
 
-@foreach (var method in WebMethods
-           .Select(m => new
-           {
-               Method = m,
-               Normal = (MemberDeclarationSyntax)MethodDeclaration(m.ReturnType, m.Identifier)
-                       .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+    @foreach (var method in WebMethods
+       .Select(m => new
+       {
+           Method = m,
+           Normal = (MemberDeclarationSyntax)MethodDeclaration(m.ReturnType, m.Identifier)
+                   .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+                   .WithParameterList(m.ParameterList),
+           Async = (MemberDeclarationSyntax)MethodDeclaration(ParseTypeName(
+                           (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)) ?
+                           "System.Threading.Tasks.Task" : $"System.Threading.Tasks.Task<{m.ReturnType}>"),
+                           $"{m.Identifier}Async")
+                       .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
                        .WithParameterList(m.ParameterList),
-               Async = (MemberDeclarationSyntax)MethodDeclaration(ParseTypeName(
-                               (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)) ?
-                               "System.Threading.Tasks.Task" : $"System.Threading.Tasks.Task<{m.ReturnType}>"),
-                               $"{m.Identifier}Async")
-                           .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.AsyncKeyword)))
-                           .WithParameterList(m.ParameterList),
-               IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))
-           }))
+           IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)),
+           IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any()))
+       }))
 {
     var returnTypeIsList = !method.IsVoid && method.Method.ReturnType is ArrayTypeSyntax array && array.HasTrailingTrivia && array.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/");
     var elementType = returnTypeIsList ? ((ArrayTypeSyntax)method.Method.ReturnType).ElementType : null;
     @method.Normal.NormalizeWhitespace()
     <text>
+     {</text>
+        @if (method.IsRefPar)
         {
-        @(method.IsVoid ? "Invoke(" : $"return Invoke<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>(")"@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
-    </text>
-    foreach (var par in method.Method.ParameterList.Parameters)
-    {
-        if (par.Type is ArrayTypeSyntax parray && parray.HasTrailingTrivia && parray.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/"))
-        {
-            <text>, @(par.Identifier).ToList()</text>
+            <text>var _params = new object[] { </text>
+            int n = 0;
+            foreach (var par in method.Method.ParameterList.Parameters)
+            {
+                if (n++ > 0)
+                {
+                    <text>, </text>
+                }
+                if (par.Type is ArrayTypeSyntax parray && parray.HasTrailingTrivia && parray.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/"))
+                {
+                    <text>@(par.Modifiers.Any(m => m.IsKind(SyntaxKind.OutKeyword)) ? "null" :  $"{par.Identifier}.ToList()")</text>
+                }
+                else
+                {
+                <text>@(par.Modifiers.Any(m => m.IsKind(SyntaxKind.OutKeyword)) ? "null" : par.Identifier)</text>
+                }
+            }
+            <text>};</text>
+            @(method.IsVoid ? "Invoke(" : $"var _result = Invoke<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>(")<text>"@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier", _params);</text>
+
+            n = 0;
+            @foreach (var par in method.Method.ParameterList.Parameters)
+            {
+                if (par.Modifiers.Any())
+                {
+                    if (par.Type is ArrayTypeSyntax parray && parray.HasTrailingTrivia && parray.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/"))
+                    {
+                        var parElementType = ((ArrayTypeSyntax)par.Type).ElementType;
+                        @(par.Identifier)<text> = ((IEnumerable<@(parElementType)>)_params[@n]).ToArray();</text>
+                    }
+                    else
+                    {
+                    @(par.Identifier)
+
+                    <text> = (@par.Type)_params[@n];</text>
+                }
+                n++;
+            }
+        }
+            if (!method.IsVoid)
+            {
+                <text>return _result;</text>
+            }
         }
         else
         {
-            <text>, @par.Identifier</text>
+
+            @(method.IsVoid ? "Invoke(" : $"return Invoke<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>(")<text>"@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"</text>
+          
+            foreach (var par in method.Method.ParameterList.Parameters)
+            {
+                if (par.Type is ArrayTypeSyntax parray && parray.HasTrailingTrivia && parray.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/"))
+                {
+                    <text>, @(par.Identifier).ToList()</text>
+                }
+                else
+                {
+                    <text>, @par.Identifier</text>
+                }
+            }
+
+            <text>);</text>
         }
-
-    }
-
-    <text>);
-        }</text>
-
-    @method.Async.NormalizeWhitespace()
-    <text>
-        {
-        @(method.IsVoid ? "await " : "return await ")InvokeAsync@(method.IsVoid ? "" : $"<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>")("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
-    </text>
-
-    foreach (var par in method.Method.ParameterList.Parameters)
+<text>}</text>
+      
+    @if (!method.IsRefPar)
     {
-        <text>, @par.Identifier</text>
-    }
-    <text>);
-        }</text>
+        @method.Async.NormalizeWhitespace()
+        <text>
+            {
+            @(method.IsVoid ? "await " : "return await ")InvokeAsync@(method.IsVoid ? "" : $"<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>")("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
+         </text>
 
+         @foreach (var par in method.Method.ParameterList.Parameters)
+         {
+            <text>, @par.Identifier</text>
+         }
+         <text>
+          );
+          }
+          </text>
+    } else {
+        <text>
+
+            // No async method since asnyc methods cannot contain ref, in or out parameters.
+
+        </text>
     }
 }
-
+}
 @functions
 {
     public string OldNamespace { get; set; }

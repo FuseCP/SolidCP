@@ -370,7 +370,7 @@ namespace SolidCP.Providers.EnterpriseStorage
 
         public bool CheckFileServicesInstallation()
         {
-            return SolidCP.Server.Utils.OS.CheckFileServicesInstallation();
+            return SolidCP.Server.Utils.WindowsOS.CheckFileServicesInstallation();
         }
 
         #endregion
@@ -540,11 +540,11 @@ namespace SolidCP.Providers.EnterpriseStorage
 
         public override bool IsInstalled()
         {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012R2 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2016 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2019;
+            Server.Utils.WindowsOS.WindowsVersion version = SolidCP.Server.Utils.WindowsOS.GetVersion();
+            return version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2012 ||
+                   version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2012R2 ||
+                   version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2016 ||
+                   version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2019;
         }
 
         protected WebDavSetting GetWebDavSetting(WebDavSetting setting)

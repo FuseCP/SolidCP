@@ -45,7 +45,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
     [Policy("EnterpriseServerPolicy")]
-    public class esWebApplicationGallery : System.Web.Services.WebService
+    public class esWebApplicationGallery
     {
         [WebMethod]
         public void InitFeeds(int packageId)

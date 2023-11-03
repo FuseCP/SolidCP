@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esImport : System.Web.Services.WebService
+    public class esImport
     {
         [WebMethod]
         public List<ServiceProviderItemType> GetImportableItemTypes(int packageId)

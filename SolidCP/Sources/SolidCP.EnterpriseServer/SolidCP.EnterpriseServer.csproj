@@ -60,6 +60,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="WebServices\SolidCP.Build\EnterpriseServerProxyConfigurator.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" />
@@ -70,21 +75,9 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
 
@@ -135,6 +128,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="WebServices\SolidCP.Build\EnterpriseServerProxyConfigurator.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -151,6 +145,15 @@
   
   <ItemGroup>
     <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\RazorBlade.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
   </ItemGroup>
 
 </Project>

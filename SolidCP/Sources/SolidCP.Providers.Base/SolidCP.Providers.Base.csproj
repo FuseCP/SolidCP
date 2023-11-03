@@ -89,6 +89,8 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Common\Installer.cs" />
+    <Compile Include="Common\Shell.cs" />
     <Compile Include="Common\SoapHeaderAttribute.cs" />
     <Compile Include="HostedSolution\ADPermissions.cs" />
     <Compile Include="Common\LogExtension\LogExtensionHelper.cs" />

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SolidCP.Providers;
 
 namespace SolidCP.Web.Client
 {
@@ -17,14 +18,36 @@ namespace SolidCP.Web.Client
 		Assembly Assembly => Assembly.Load(AssemblyName);
 		protected T Invoke<T>(string typeName, string methodName, params object[] parameters)
 		{
-			var type = Assembly.GetType(typeName);
+			var assembly = Assembly;
+			var type = assembly.GetType(typeName);
 			var method = type.GetMethod(methodName);
-			//TODO authentication & soap headers
-			throw new NotImplementedException("Assembly protocol not implemented.");
-			return (T)method.Invoke(Activator.CreateInstance(type), parameters);
+			// authentication
+			if (Client.IsAuthenticated)
+			{
+				var serviceAssembly = Assembly.Load("SolidCP.Web.Services");
+				var validator = serviceAssembly.GetType("UserNamePasswordValidator");
+				var validateMethod = validator.GetMethod("Validate", BindingFlags.Public | BindingFlags.Static);
+				if (validateMethod == null) validateMethod = validator.GetMethod("ValidateAsync", BindingFlags.Public | BindingFlags.Static);
+				if (validateMethod != null) validateMethod.Invoke(null, new object[] { Client.Credentials.UserName, Client.Credentials.Password });
+			}
+			object service = Activator.CreateInstance(type);
+			// set soap headers
+			if (Client.HasSoapHeaders)
+			{
+				var attr = method.GetCustomAttribute<SoapHeaderAttribute>();
+				var prop = type.GetProperty(attr.Field);
+				if (prop == null)
+				{
+					var field = type.GetField(attr.Field);
+					field.SetValue(service, Client.SoapHeader);
+				} else
+				{
+					prop.SetValue(service, Client.SoapHeader);
+				}
+			}
+			return (T)method.Invoke(service, parameters);
 		}
-        protected void Invoke(string typeName, string methodName, params object[] parameters)
-		{
+        protected void Invoke(string typeName, string methodName, params object[] parameters) {
 			Invoke<object>(typeName, methodName, null, parameters);
 		}
 

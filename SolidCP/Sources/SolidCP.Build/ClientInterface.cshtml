@@ -21,7 +21,7 @@ public interface I@(Class.Identifier) {
 	{
 		@method.Item1.NormalizeWhitespace()
 
-		@method.Item2.NormalizeWhitespace()
+		@(method.Item2 != null ? method.Item2.NormalizeWhitespace() : "\n\n// No async method, because method has ref, in or out parameters.\n\n")
 	}
 
 }
@@ -37,7 +37,8 @@ public interface I@(Class.Identifier) {
 			.Select(m => new
 			{
 				Method = m,
-				IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword))
+				IsVoid = (m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)),
+				IsRefPar = (m.ParameterList.Parameters.Any(p => p.Modifiers.Any()))
 			})
 			.Select(m => new Tuple<MethodDeclarationSyntax, MethodDeclarationSyntax>(
 				MethodDeclaration(m.Method.ReturnType, m.Method.Identifier)
@@ -45,7 +46,7 @@ public interface I@(Class.Identifier) {
 						ParseAttributeArgumentList($"(Action = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}\", ReplyAction = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}Response\")"))))))
 					.WithParameterList(m.Method.ParameterList)
 					.WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-				MethodDeclaration(ParseTypeName((m.IsVoid) ? "System.Threading.Tasks.Task" : $"System.Threading.Tasks.Task<{m.Method.ReturnType}>"), $"{m.Method.Identifier}Async")
+				m.IsRefPar ? null : MethodDeclaration(ParseTypeName((m.IsVoid) ? "System.Threading.Tasks.Task" : $"System.Threading.Tasks.Task<{m.Method.ReturnType}>"), $"{m.Method.Identifier}Async")
 					.WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract"),
 						ParseAttributeArgumentList($"(Action = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}\", ReplyAction = \"{WebServiceNamespace}I{Class.Identifier}/{m.Method.Identifier}Response\")"))))))
 					.WithParameterList(m.Method.ParameterList)

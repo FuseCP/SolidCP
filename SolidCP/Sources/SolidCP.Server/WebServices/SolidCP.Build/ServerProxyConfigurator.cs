@@ -108,6 +108,7 @@ namespace SolidCP.Server.Client
 
                 //proxy.SetPolicy(policy);
                 proxy.Credentials.Password = serverPassword;
+                proxy.Credentials.UserName = string.Empty;
             }
 
             // provider settings

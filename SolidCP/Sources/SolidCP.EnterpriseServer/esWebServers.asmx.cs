@@ -51,7 +51,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esWebServers : System.Web.Services.WebService
+    public class esWebServers
     {
         [WebMethod]
         public DataSet GetRawWebSitesPaged(int packageId,

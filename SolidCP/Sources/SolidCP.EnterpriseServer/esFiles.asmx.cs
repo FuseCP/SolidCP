@@ -49,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esFiles : System.Web.Services.WebService
+    public class esFiles
     {
         [WebMethod]
         public SystemSettings GetFileManagerSettings()
@@ -58,7 +58,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public static string GetHomeFolder(int packageId)
+        public string GetHomeFolder(int packageId)
         {
             return FilesController.GetHomeFolder(packageId);
         }

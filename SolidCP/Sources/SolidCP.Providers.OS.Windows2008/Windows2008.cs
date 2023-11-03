@@ -36,11 +36,11 @@ namespace SolidCP.Providers.OS
     {
         public override bool IsInstalled()
         {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2008
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2008R2
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Vista
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Windows7;
+            Server.Utils.WindowsOS.WindowsVersion version = SolidCP.Server.Utils.WindowsOS.GetVersion();
+            return version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2008
+                || version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2008R2
+                || version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.Vista
+                || version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.Windows7;
         }
     }
 }

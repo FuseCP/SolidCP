@@ -51,7 +51,7 @@ namespace SolidCP.EnterpriseServer
 
         protected void Application_Start(object sender, EventArgs e)
         {
-            if (!Debugger.IsAttached) Debugger.Launch();
+            //if (!Debugger.IsAttached) Debugger.Launch();
             Web.Services.StartupNetFX.Start();
         }
 

@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esComments : System.Web.Services.WebService
+    public class esComments
     {
         [WebMethod]
         public DataSet GetComments(int userId, string itemTypeId, int itemId)

@@ -55,7 +55,8 @@ namespace SolidCP.Build
 			{
 				var array = (ArrayTypeSyntax)type;
 				return ArrayType(array.ElementType.Globalized(model), array.RankSpecifiers);
-			} else if (type is GenericNameSyntax)
+			}
+			else if (type is GenericNameSyntax)
 			{
 				var generic = (GenericNameSyntax)type;
 				var typeName = ((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName();
@@ -69,6 +70,7 @@ namespace SolidCP.Build
 					TypeArgumentList(SeparatedList(generic.TypeArgumentList.Arguments
 						.Select(arg => arg.Globalized(model)))));
 			}
+			else if (type is NullableTypeSyntax) return NullableType(((NullableTypeSyntax)type).ElementType.Globalized(model));
 			return ParseTypeName(((INamedTypeSymbol)model.GetTypeInfo(type).Type).GetFullTypeName());
 		}
 
@@ -107,10 +109,7 @@ namespace SolidCP.Build
 		{
 
 #if DEBUG
-			if (!Debugger.IsAttached)
-			{
-				//Debugger.Launch();
-			}
+			//if (!Debugger.IsAttached) Debugger.Launch();
 #endif
 
 			// get WebServices
@@ -167,7 +166,6 @@ namespace SolidCP.Build
 					.SelectMany(l => l.Attributes)
 					.FirstOrDefault(a =>
 						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebServiceAttribute");
-
 
 				var parent = ws.Class.Parent;
 				while (parent != null && !(parent is NamespaceDeclarationSyntax)) parent = parent.Parent;

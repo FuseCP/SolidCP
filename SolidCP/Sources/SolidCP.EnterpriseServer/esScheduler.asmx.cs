@@ -48,7 +48,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esScheduler : System.Web.Services.WebService
+    public class esScheduler
     {
         [WebMethod]
         public DateTime GetSchedulerTime()

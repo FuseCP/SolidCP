@@ -36,7 +36,6 @@ using System.Web;
 using System.Collections;
 using System.Collections.Generic;
 using SolidCP.Web.Services;
-using System.Web.Services.Protocols;
 using System.ComponentModel;
 
 using SolidCP.Providers.Statistics;
@@ -50,7 +49,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esStatisticsServers : System.Web.Services.WebService
+    public class esStatisticsServers
     {
         [WebMethod]
         public DataSet GetRawStatisticsSitesPaged(int packageId,
