@@ -84,16 +84,16 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else if (IsAuthenticated) throw new NotSupportedException("Services with authentication can't be called over http.");
+					else if (IsAuthenticated) Protocol = Protocols.WSHttp;
 					else Protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
 				{
-					if (url.HasApi("basic")) Protocol = Protocols.BasicHttps;
-					else if (url.HasApi("net")) Protocol = Protocols.NetHttps;
-					else if (url.HasApi("ws")) Protocol = Protocols.WSHttps;
-					else if (url.HasApi("grpc")) Protocol = Protocols.gRPCSsl;
-					else if (url.HasApi("grpc/web")) Protocol = Protocols.gRPCWebSsl;
+					if (url.HasApi("basic")) protocol = Protocols.BasicHttps;
+					else if (url.HasApi("net")) protocol = Protocols.NetHttps;
+					else if (url.HasApi("ws")) protocol = Protocols.WSHttps;
+					else if (url.HasApi("grpc")) protocol = Protocols.gRPCSsl;
+					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWebSsl;
 					else Protocol = Protocols.BasicHttps;
 				}
 				else if (url.StartsWith("net.tcp://"))
@@ -148,8 +148,7 @@ namespace SolidCP.Web.Client
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
 		public static string SetApi(this string url, string api)
 		{
-			url = Regex.Replace(url, "/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web)(?=(?:/[a-zA-Z0-9_]+)?(?:\\?|$))", $"/{api}");
-			if (!url.Contains($"/{api}")) url = Regex.Replace(url, "(?=\\?)|$", $"/{api}");
+			url = Regex.Replace(url, "(/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web))?(?=(?:/[a-zA-Z0-9_]+)?(?:/?(?:\\?|$)))", $"/{api}");
 			return url;
 		}
 
@@ -241,7 +240,8 @@ namespace SolidCP.Web.Client
 						case Protocols.BasicHttp:
 							if (isAuthenticated)
 							{
-								throw new NotSupportedException("This api is not supported on this service.");
+								//throw new NotSupportedException("This api is not supported on this service.");
+								binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
 							}
 							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
 							break;
@@ -259,7 +259,8 @@ namespace SolidCP.Web.Client
 						case Protocols.NetHttp:
 							if (isAuthenticated)
 							{
-								throw new NotSupportedException("This api is not supported on this service.");
+								// throw new NotSupportedException("This api is not supported on this service.");
+								binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
 							} else binding = new NetHttpBinding(BasicHttpSecurityMode.None);
 							break;
 						case Protocols.NetHttps: 
@@ -277,7 +278,12 @@ namespace SolidCP.Web.Client
 						case Protocols.WSHttp:
 							if (isAuthenticated)
 							{
-                                throw new NotSupportedException("This api is not supported on this service.");
+								//throw new NotSupportedException("This api is not supported on this service.");
+								var ws = new WSHttpBinding(SecurityMode.Message);
+								ws.Security.Message.ClientCredentialType = MessageCredentialType.None;
+								ws.Security.Message.NegotiateServiceCredential = true;
+								ws.Security.Message.EstablishSecurityContext = true;
+								binding = ws;
 							}
 							else binding = new WSHttpBinding(SecurityMode.None);
 							break;

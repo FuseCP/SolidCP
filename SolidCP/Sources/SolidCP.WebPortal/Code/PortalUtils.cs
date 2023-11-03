@@ -49,8 +49,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 
-using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Client;
 using SolidCP.WebPortal;
 using System.Collections;
 
@@ -624,7 +624,8 @@ namespace SolidCP.Portal
             try
             {
                 // add user to SolidCP server
-                return usersService.AddUser(user, sendLetter, password);
+                // TODO correct value for prameter notes (instead of null).
+                return usersService.AddUser(user, sendLetter, password, null);
             }
             catch (Exception ex)
             {
@@ -710,12 +711,12 @@ namespace SolidCP.Portal
             }
         }
 
-        public static void ConfigureEnterpriseServerProxy(WebServicesClientProtocol proxy)
+        public static void ConfigureEnterpriseServerProxy(SolidCP.Web.Client.ClientBase proxy)
         {
             ConfigureEnterpriseServerProxy(proxy, true);
         }
 
-        public static void ConfigureEnterpriseServerProxy(WebServicesClientProtocol proxy, bool applyPolicy)
+        public static void ConfigureEnterpriseServerProxy(SolidCP.Web.Client.ClientBase proxy, bool applyPolicy)
         {
             // load ES properties
             string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];

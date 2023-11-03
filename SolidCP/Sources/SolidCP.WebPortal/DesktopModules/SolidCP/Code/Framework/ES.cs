@@ -32,16 +32,10 @@
 
 using System;
 using System.Web;
-using SolidCP.EnterpriseServer.HostedSolution;
-using Microsoft.Web.Services3;
+using SolidCP.EnterpriseServer.Client;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base;
-using SolidCP.EnterpriseServer.Servers;
-using SolidCP.EnterpriseServer.VirtualizationServer;
-using SolidCP.EnterpriseServer.VirtualizationServer2012;
-using SolidCP.EnterpriseServer.VirtualizationServerProxmox;
-using SolidCP.EnterpriseServer.VirtualizationServerForPrivateCloud;
 
 namespace SolidCP.Portal
 {
@@ -295,7 +289,7 @@ namespace SolidCP.Portal
             object p = proxy;
 
             // configure proxy
-			PortalUtils.ConfigureEnterpriseServerProxy((WebServicesClientProtocol)p, secureCalls);
+			PortalUtils.ConfigureEnterpriseServerProxy((SolidCP.Web.Client.ClientBase)p, secureCalls);
 
             return proxy;
         }

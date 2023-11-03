@@ -244,9 +244,9 @@ namespace SolidCP.Portal.CRM
                 int baseLanguage = 0;
                 int.TryParse(ddlBaseLanguage.SelectedValue, out baseLanguage);
 
-                EnterpriseServer.esCRM CRM = ES.Services.CRM;
+                EnterpriseServer.Client.esCRM CRM = ES.Services.CRM;
 
-                CRM.Timeout = 7200000; //# Set longer timeout
+                CRM.Timeout = TimeSpan.FromHours(2); //# Set longer timeout
 
                 OrganizationResult res = CRM.CreateOrganization(org.Id, cuurrencyData[0], cuurrencyData[1], cuurrencyData[2], cuurrencyData[3],
                                                    administrator.GetAccountId(), ddlCollation.SelectedValue, baseLanguage);

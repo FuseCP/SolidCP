@@ -72,10 +72,10 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							// var binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
-							// binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-							// AddEndpoint(contract, binding, adr);
-							//throw new NotSupportedException("Api not supported.");
+#if NETFRAMEWORK
+							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
+							AddEndpoint(contract, binding, adr);
+#endif
 						}
 						else AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "basic.none" }, adr);
 					}
@@ -83,10 +83,10 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							//var binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
-							//binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
-							//AddEndpoint(contract, binding, adr);
-							//throw new NotSupportedException("Api not supported.");
+#if NETFRAMEWORK
+							var binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
+							AddEndpoint(contract, binding, adr);
+#endif
 						}
 						else AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 					}
@@ -94,11 +94,14 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							/* var binding = new WSHttpBinding(SecurityMode.Message);
-							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+#if NETFRAMEWORK
+							var binding = new WSHttpBinding(SecurityMode.Message);
+							binding.Security.Message.ClientCredentialType = MessageCredentialType.None;
 							binding.Security.Message.NegotiateServiceCredential = true;
+							binding.Security.Message.EstablishSecurityContext = true;
 							binding.Name = "ws.message";
-							AddEndpoint(contract, binding, adr); */
+							AddEndpoint(contract, binding, adr);
+#endif
 						}
 						else AddEndpoint(contract, new WSHttpBinding(SecurityMode.None) { Name = "ws.none" }, adr);
 					}
@@ -106,11 +109,13 @@ namespace SolidCP.Web.Services
 					{
 						if (isAuthenticated)
 						{
-							/* var binding = new WSHttpBinding(SecurityMode.Message);
-							binding.Security.Message.ClientCredentialType = MessageCredentialType.UserName;
+#if NETFRAMEWORK
+							var binding = new WSHttpBinding(SecurityMode.Message);
 							binding.Security.Message.NegotiateServiceCredential = true;
+							binding.Security.Message.EstablishSecurityContext = true;
 							binding.Name = "ws.message";
-							AddEndpoint(contract, binding, adr); */
+							AddEndpoint(contract, binding, adr);
+#endif
 						}
 						else AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 					}

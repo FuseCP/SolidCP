@@ -216,8 +216,9 @@ namespace SolidCP.Portal
 
         public static int AddUser(List<string> log, int portalId, UserInfo user, bool sendLetter, string password)
         {
-            // add user to SolidCP server
-            return ES.Services.Users.AddUser(user, sendLetter, password);
+			// add user to SolidCP server
+			//TODO supply correct value for parameter notes.
+			return ES.Services.Users.AddUser(user, sendLetter, password, null);
         }
 
         public static void AddUserVLan(int userId, UserVlan vLan)

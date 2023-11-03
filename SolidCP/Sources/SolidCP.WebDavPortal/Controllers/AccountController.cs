@@ -4,7 +4,6 @@ using System.Net;
 using System.Web.Mvc;
 using System.Web.Routing;
 using AutoMapper;
-using Microsoft.Web.Services3.Addressing;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.WebDav.Core.Config;
 using SolidCP.WebDav.Core.Security.Authentication;

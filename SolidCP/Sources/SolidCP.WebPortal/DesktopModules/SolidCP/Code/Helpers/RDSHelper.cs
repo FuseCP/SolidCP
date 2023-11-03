@@ -54,7 +54,7 @@ namespace SolidCP.Portal
 
         public RdsServer[] GetRDSServersPaged(int maximumRows, int startRowIndex, string sortColumn, string filterColumn, string filterValue)
         {
-            rdsServers = ES.Services.RDS.GetRdsServersPaged(filterColumn, filterValue, sortColumn, startRowIndex, maximumRows, 0);
+            rdsServers = ES.Services.RDS.GetRdsServersPaged(filterColumn, filterValue, sortColumn, startRowIndex, maximumRows, "0");
 
             foreach (var rdsServer in rdsServers.Servers)
             {
@@ -72,7 +72,9 @@ namespace SolidCP.Portal
 
         public RdsServer[] GetOrganizationRdsServersPaged(int itemId, int maximumRows, int startRowIndex, string sortColumn, string filterValue)
         {
-            rdsServers = ES.Services.RDS.GetOrganizationRdsServersPaged(itemId, null, "S.Name", filterValue, sortColumn, startRowIndex, maximumRows);
+            //TODO supply correct value for parameter rdsControllerServiceID.
+            throw new NotImplementedException("This feture has to be corrected.");
+            rdsServers = ES.Services.RDS.GetOrganizationRdsServersPaged(itemId, null, "S.Name", filterValue, sortColumn, startRowIndex, maximumRows, "");
 
             return rdsServers.Servers;
         }

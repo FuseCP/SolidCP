@@ -55,10 +55,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\Microsoft.Web.Services3.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -132,9 +128,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="SolidCP.EnterpriseServer.Base">
       <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Client">
-      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
     </Reference>
     <Reference Include="SolidCP.Providers.Base">
       <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
@@ -269,6 +262,14 @@
     <ProjectReference Include="..\CPCC\CPCC.csproj">
       <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
       <Name>CPCC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
+      <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
+      <Name>SolidCP.EnterpriseServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
+      <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
+      <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
