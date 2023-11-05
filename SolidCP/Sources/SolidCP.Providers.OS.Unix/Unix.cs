@@ -449,11 +449,12 @@ namespace SolidCP.Providers.OS {
 		Installer apt, yum, brew;
 		public Shell Bash => bash != null ? bash : bash = new Bash();
 		public Shell Sh => sh != null ? sh : sh = new Sh();
-		public Installer Apt => new Apt();
-		public Installer Yum => new Yum();
-		public Installer Brew => new Brew();
+		public Installer Apt => apt != null ? apt : apt = new Apt();
+		public Installer Yum => yum != null ? yum : yum = new Yum();
+		public Installer Brew => brew != null ? brew : brew = new Brew();
 
 		public virtual Shell DefaultShell => Bash;
-		public virtual Installer DefaultInstaller => Apt;
+		public virtual Installer DefaultInstaller => Apt.IsInstalled ? Apt : 
+			(Yum.IsInstalled ? Yum : (Server.Utils.OS.IsMac ? Brew : null));
 	}
 }
