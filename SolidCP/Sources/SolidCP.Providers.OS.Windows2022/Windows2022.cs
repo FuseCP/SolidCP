@@ -69,8 +69,8 @@ namespace SolidCP.Providers.OS
         
         public override bool IsInstalled()
         {
-            Server.Utils.WindowsOS.WindowsVersion version = SolidCP.Server.Utils.WindowsOS.GetVersion();
-            return version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2019;
+            Server.Utils.WindowsOS.WindowsVersion version = Server.Utils.WindowsOS.GetVersion();
+            return version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2022 || version == Server.Utils.WindowsOS.WindowsVersion.Windows11;
         }
         
         public override void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)

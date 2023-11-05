@@ -74,6 +74,28 @@ namespace SolidCP.Server
             }
         }
 
+		public Installer WinGet => WinProvider.WinGet;
+
+		public Installer Chocolatey => WinProvider.Chocolatey;
+
+		public Shell Cmd => WinProvider.Cmd;
+
+		public Shell PowerShell => WinProvider.PowerShell;
+
+		public Shell DefaultShell => WinProvider.DefaultShell;
+
+		public Installer DefaultInstaller => WinProvider.DefaultInstaller;
+
+		public Shell Sh => UnixProvider.Sh;
+
+		public Shell Bash => UnixProvider.Bash;
+
+		public Installer Apt => UnixProvider.Apt;
+
+		public Installer Yum => UnixProvider.Yum;
+
+		public Installer Brew => UnixProvider.Brew;
+
 		#region Files
 		[WebMethod, SoapHeader("settings")]
         public string CreatePackageFolder(string initialPath)

@@ -45,6 +45,7 @@ using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Server;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.OS
 {
@@ -73,6 +74,12 @@ namespace SolidCP.Providers.OS
 	{
 		UnixFileMode GetUnixPermissions(string path);
 		void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false);
+
+		Shell Sh { get; }
+		Shell Bash { get; }
+		Installer Apt { get; }
+		Installer Yum { get; }
+		Installer Brew { get; }
 
 	}
 }

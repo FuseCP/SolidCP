@@ -74,6 +74,7 @@
     <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.Web.Management.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -92,6 +93,7 @@
     <Compile Include="Common\Installer.cs" />
     <Compile Include="Common\Shell.cs" />
     <Compile Include="Common\SoapHeaderAttribute.cs" />
+    <Compile Include="Common\Transaction.cs" />
     <Compile Include="HostedSolution\ADPermissions.cs" />
     <Compile Include="Common\LogExtension\LogExtensionHelper.cs" />
     <Compile Include="Common\LogExtension\Attributes\LogParentPropertyAttribute.cs" />
@@ -167,9 +169,11 @@
     <Compile Include="OS\IWindowsOperatingSystem.cs" />
     <Compile Include="OS\MappedDrivesPaged.cs" />
     <Compile Include="OS\MappedDrive.cs" />
+    <Compile Include="OS\OS.cs" />
     <Compile Include="OS\Quota.cs" />
     <Compile Include="OS\QuotaType.cs" />
     <Compile Include="OS\SystemFilesPaged.cs" />
+    <Compile Include="OS\WindowsOS.cs" />
     <Compile Include="RemoteDesktopServices\ImportedRdsCollection.cs" />
     <Compile Include="RemoteDesktopServices\IRemoteDesktopServices.cs" />
     <Compile Include="RemoteDesktopServices\RdsCertificate.cs" />

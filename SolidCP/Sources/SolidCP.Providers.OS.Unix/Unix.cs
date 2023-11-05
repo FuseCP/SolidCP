@@ -11,6 +11,7 @@ using System.Text;
 using Mono.Unix;
 using SolidCP.Server;
 using System.IO.Compression;
+using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.Providers.OS { 
 
@@ -442,5 +443,17 @@ namespace SolidCP.Providers.OS {
 		}
 
 		public bool IsUnix() => true;
+
+		Shell bash, sh;
+		
+		Installer apt, yum, brew;
+		public Shell Bash => bash != null ? bash : bash = new Bash();
+		public Shell Sh => sh != null ? sh : sh = new Sh();
+		public Installer Apt => new Apt();
+		public Installer Yum => new Yum();
+		public Installer Brew => new Brew();
+
+		public virtual Shell DefaultShell => Bash;
+		public virtual Installer DefaultInstaller => Apt;
 	}
 }

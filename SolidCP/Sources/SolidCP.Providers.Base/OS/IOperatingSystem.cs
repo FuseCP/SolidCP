@@ -45,6 +45,7 @@ using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Server;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.OS
 {
@@ -113,6 +114,8 @@ namespace SolidCP.Providers.OS
 
 		bool IsUnix();
 
+		Shell DefaultShell { get; }
+		Installer DefaultInstaller { get; }
 	}
 
 }

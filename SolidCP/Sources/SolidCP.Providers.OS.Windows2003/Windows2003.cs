@@ -1814,5 +1814,18 @@ namespace SolidCP.Providers.OS
 		}
 		#endregion
 
+		Shell cmd, powershell;
+		Installer winget, chocolatey;
+
+		public virtual Installer WinGet => winget != null ? winget : winget = new WinGet();
+		public virtual Installer Chocolatey => chocolatey != null ? chocolatey : chocolatey = new Chocolatey();
+
+		public Shell Cmd => cmd != null ? cmd : cmd = new Cmd();
+
+		public Shell PowerShell => powershell != null ? powershell : powershell = new PowerShell();
+
+		public Shell DefaultShell => Cmd;
+
+		public Installer DefaultInstaller => WinGet;
 	}
 }
