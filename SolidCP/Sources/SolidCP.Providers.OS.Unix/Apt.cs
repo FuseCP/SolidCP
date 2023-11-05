@@ -13,13 +13,11 @@ namespace SolidCP.Providers.OS
 		public override bool IsInstalled => Shell.Find("apt-get") != null;
 		public override Shell InstallAsync(string apps)
 		{
-			CheckInstalled();
 			return Shell.ExecAsync($"apt-get install -y {apps}");
 		}
 
 		public override void AddSources(string sources)
 		{
-			CheckInstalled();
 			string list;
 			IEnumerable<string> store;
 

@@ -142,25 +142,13 @@ namespace SolidCP.Web.Client
 		public static string Strip(this string url, string api)
 		{
 			url = Regex.Replace(url, $"/{api}/", "/");
-			url = Regex.Replace(url, $"/{api}(?=/?(?:\\?|$))", "");
+			url = Regex.Replace(url, $"/{api}(?=\\?|$)", "");
 			return url;
 		}
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
 		public static string SetApi(this string url, string api)
 		{
-			var p = url.IndexOf('?');
-			string adr, query;
-			if (p == -1)
-			{
-				adr = url; query = "";
-			}
-			else
-			{
-				adr = url.Substring(0, p);
-				query = url.Substring(p, url.Length - p);
-			}
-			adr = Regex.Replace(adr, "((/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web))(?=(?:/[a-zA-Z0-9_]+)?/?$))|((?<!/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web)(?:/[a-zA-Z0-9_]+)?)(?:/?(?:(?<!/)$|/$)))", $"/{api}");
-			url = adr + query;
+			url = Regex.Replace(url, "(/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web))?(?=(?:/[a-zA-Z0-9_]+)?(?:/?(?:\\?|$)))", $"/{api}");
 			return url;
 		}
 
