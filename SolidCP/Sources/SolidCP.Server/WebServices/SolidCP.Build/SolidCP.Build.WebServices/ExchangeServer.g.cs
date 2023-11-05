@@ -88,6 +88,12 @@ namespace SolidCP.Server.Services
         void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
+        ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        void SetResourceMailboxSettings(string accountName, ExchangeResourceMailboxSettings resourceSettings);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
         ExchangeMailbox GetMailboxMailFlowSettings(string accountName);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]

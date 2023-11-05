@@ -91,6 +91,14 @@ namespace SolidCP.Server.Client
         void SetMailboxGeneralSettings(string accountName, bool hideFromAddressBook, bool disabled);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxGeneralSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetMailboxGeneralSettingsResponse")]
         System.Threading.Tasks.Task SetMailboxGeneralSettingsAsync(string accountName, bool hideFromAddressBook, bool disabled);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetResourceMailboxSettingsResponse")]
+        SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetResourceMailboxSettingsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings> GetResourceMailboxSettingsAsync(string accountName);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetResourceMailboxSettingsResponse")]
+        void SetResourceMailboxSettings(string accountName, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/SetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/SetResourceMailboxSettingsResponse")]
+        System.Threading.Tasks.Task SetResourceMailboxSettingsAsync(string accountName, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettingsResponse")]
         SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxMailFlowSettings(string accountName);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettings", ReplyAction = "http://smbsaas/solidcp/server/IExchangeServer/GetMailboxMailFlowSettingsResponse")]
@@ -563,6 +571,26 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task SetMailboxGeneralSettingsAsync(string accountName, bool hideFromAddressBook, bool disabled)
         {
             await InvokeAsync("SolidCP.Server.ExchangeServer", "SetMailboxGeneralSettings", accountName, hideFromAddressBook, disabled);
+        }
+
+        public SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName)
+        {
+            return Invoke<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings>("SolidCP.Server.ExchangeServer", "GetResourceMailboxSettings", accountName);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings> GetResourceMailboxSettingsAsync(string accountName)
+        {
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings>("SolidCP.Server.ExchangeServer", "GetResourceMailboxSettings", accountName);
+        }
+
+        public void SetResourceMailboxSettings(string accountName, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            Invoke("SolidCP.Server.ExchangeServer", "SetResourceMailboxSettings", accountName, resourceSettings);
+        }
+
+        public async System.Threading.Tasks.Task SetResourceMailboxSettingsAsync(string accountName, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            await InvokeAsync("SolidCP.Server.ExchangeServer", "SetResourceMailboxSettings", accountName, resourceSettings);
         }
 
         public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
@@ -1438,6 +1466,26 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task SetMailboxGeneralSettingsAsync(string accountName, bool hideFromAddressBook, bool disabled)
         {
             await base.Client.SetMailboxGeneralSettingsAsync(accountName, hideFromAddressBook, disabled);
+        }
+
+        public SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName)
+        {
+            return base.Client.GetResourceMailboxSettings(accountName);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings> GetResourceMailboxSettingsAsync(string accountName)
+        {
+            return await base.Client.GetResourceMailboxSettingsAsync(accountName);
+        }
+
+        public void SetResourceMailboxSettings(string accountName, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            base.Client.SetResourceMailboxSettings(accountName, resourceSettings);
+        }
+
+        public async System.Threading.Tasks.Task SetResourceMailboxSettingsAsync(string accountName, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            await base.Client.SetResourceMailboxSettingsAsync(accountName, resourceSettings);
         }
 
         public SolidCP.Providers.HostedSolution.ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
