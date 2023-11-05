@@ -2475,6 +2475,24 @@ namespace SolidCP.EnterpriseServer
             return mb;
         }
 
+        private static ExchangeResourceMailboxSettings GetDemoResourceMailboxSettings()
+        {
+            ExchangeResourceMailboxSettings mb = new ExchangeResourceMailboxSettings();
+            mb.DisplayName = "Meeting Room";
+            mb.AccountName = "room1";
+            mb.AddAdditionalResponse = false;
+            mb.AllBookInPolicy = true;
+            mb.AllowRecurringMeetings = true;
+            mb.AllRequestInPolicy = false;
+            mb.AutomateProcessing = CalendarProcessingFlags.AutoAccept;
+            mb.BookingWindowInDays = 180;
+            mb.EnforceSchedulingHorizon = true;
+            mb.MaximumDurationInMinutes = 1440;
+            mb.ResourceCapacity = 20;
+            mb.ScheduleOnlyDuringWorkHours = false;
+            return mb;
+        }
+
         public static ExchangeMailboxAutoReplySettings GetMailboxAutoReplySettings(int itemId, int accountId)
         {
             #region Demo Mode
@@ -2652,6 +2670,102 @@ namespace SolidCP.EnterpriseServer
                     disabled);
 
                 var newObj = exchange.GetMailboxGeneralSettings(account.UserPrincipalName);
+
+                // Log Extension
+                LogExtension.LogPropertiesIfChanged(oldObj, newObj);
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        public static ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId)
+        {
+            #region Demo Mode
+            if (IsDemoMode)
+            {
+                return GetDemoResourceMailboxSettings();
+            }
+            #endregion
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "GET_RESOURCE_MAILBOX", itemId);
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null)
+                    return null;
+
+                // load account
+                ExchangeAccount account = GetAccount(itemId, accountId);
+
+                // get mailbox settings
+
+                int exchangeServiceId = GetExchangeServiceID(org.PackageId);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+                ExchangeResourceMailboxSettings resourceMailbox = exchange.GetResourceMailboxSettings(account.UserPrincipalName);
+                resourceMailbox.DisplayName = account.DisplayName;
+                return resourceMailbox;
+            }
+            catch (Exception ex)
+            {
+                throw TaskManager.WriteError(ex);
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        public static int SetResourceMailboxSettings(int itemId, int accountId, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0) return accountCheck;
+
+            // place log record
+            TaskManager.StartTask("EXCHANGE", "UPDATE_RESOURCE_MAILBOX", itemId);
+
+            try
+            {
+                // load organization
+                Organization org = GetOrganization(itemId);
+                if (org == null)
+                    return -1;
+
+                // check package
+                int packageCheck = SecurityContext.CheckPackage(org.PackageId, DemandPackage.IsActive);
+                if (packageCheck < 0) return packageCheck;
+
+                // load account
+                ExchangeAccount account = GetAccount(itemId, accountId);
+
+                // Log Extension
+                LogExtension.SetItemName(account.UserPrincipalName);
+
+                // get mailbox settings
+                int exchangeServiceId = GetExchangeServiceID(org.PackageId);
+                ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
+
+
+                PackageContext cntx = PackageController.GetPackageContext(org.PackageId);
+
+                var oldObj = exchange.GetResourceMailboxSettings(account.UserPrincipalName);
+
+                exchange.SetResourceMailboxSettings(
+                    account.UserPrincipalName,
+                    resourceSettings);
+
+                var newObj = exchange.GetResourceMailboxSettings(account.UserPrincipalName);
 
                 // Log Extension
                 LogExtension.LogPropertiesIfChanged(oldObj, newObj);

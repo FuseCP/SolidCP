@@ -227,9 +227,12 @@ namespace SolidCP.Portal
 
             if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE)
             {
+                int mfaMode = PortalUtils.GetUserMfaMode(username, password, ipAddress);
+                btnResendPin.Visible = mfaMode != 2;
                 userPwdDiv.Visible = false;
                 tokenDiv.Visible = true;
                 tokenDiv.Attributes["value"] = encryptedTicket;
+                txtPin.Focus();
                 return;
             }
 
@@ -458,7 +461,9 @@ namespace SolidCP.Portal
 
         protected void btnResendPin_Click(object sender, EventArgs e)
         {
-            if (PortalUtils.SendPin(txtUsername.Text.Trim()) == 0)
+            int sendPinResult = PortalUtils.SendPin(txtUsername.Text.Trim());
+            
+            if(sendPinResult == 0)
                 ShowSuccessMessage("PinSend");
             else
                 ShowErrorMessage("PinSendError");

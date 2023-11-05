@@ -38,8 +38,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -123,6 +123,7 @@
     <Compile Include="HostedSolution\ExchangeAcceptedDomainType.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxPlanType.cs" />
     <Compile Include="HostedSolution\ExchangeMailboxPlan.cs" />
+    <Compile Include="HostedSolution\ExchangeResourceMailboxSettings.cs" />
     <Compile Include="HostedSolution\ExchangeRetentionPolicyTag.cs" />
     <Compile Include="HostedSolution\ExchangeRetentionPolicyTagAction.cs" />
     <Compile Include="HostedSolution\ExchangeRetentionPolicyTagType.cs" />

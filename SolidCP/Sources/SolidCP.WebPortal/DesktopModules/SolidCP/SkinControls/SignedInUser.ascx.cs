@@ -64,7 +64,7 @@ namespace SolidCP.Portal.SkinControls
                // lnkEditUserDetails.Text = PanelSecurity.LoggedUser.Username;
                 lnkEditUserDetails.NavigateUrl = PortalUtils.GetLoggedUserAccountPageUrl();
                 lnkEditUserDetailsSm.NavigateUrl = PortalUtils.GetLoggedUserAccountPageUrl();
-
+                lnkEditUserDetails.Text = user.Username;
             }
 
 			AnonymousPanel.Visible = !Request.IsAuthenticated;

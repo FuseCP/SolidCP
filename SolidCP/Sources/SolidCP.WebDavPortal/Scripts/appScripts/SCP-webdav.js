@@ -36,6 +36,9 @@ $(document).on('dblclick', '.element-container', function (e) {
     }
 });
 
+window.addEventListener("pageshow", function (event) {
+    scp.dialogs.hideProcessDialog();
+});
 
 //Delete button click
 $(document).on('click', '.file-deletion #delete-button', function (e) {

@@ -4717,8 +4717,13 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
-    <Key>Quota.OS.AllowTenantCreateDomains</Key>
+    <Key>Quota.OS.NotAllowTenantCreateDomains</Key>
     <DefaultValue>Disable Tenant To Create Top-Level Domain</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>Quota.OS.NotAllowTenantDeleteDomains</Key>
+    <DefaultValue>Disable Tenant To Remove Top-Level Domain</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -7439,6 +7444,16 @@
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>AuditLogTask.GET_ORG_STATS</Key>
     <DefaultValue>Get organization statistics</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_GET_RESOURCE_MAILBOX</Key>
+    <DefaultValue>Get resource mailbox settings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>AuditLogTask.EXCHANGE_UPDATE_RESOURCE_MAILBOX</Key>
+    <DefaultValue>Update resource mailbox settings</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
@@ -23019,6 +23034,11 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>HeaderAuthenticationSettings.Text</Key>
+    <DefaultValue>PORTAL AUTHENTICATION SETTINGS</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
     <Key>HeaderNew.Text</Key>
     <DefaultValue>SPARE</DefaultValue>
   </Resource>
@@ -23096,6 +23116,16 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
     <Key>SettinglblIpAddressRestriction.Text</Key>
     <DefaultValue>IP Addresses:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>SettingtxtMfaTokenAppDisplayName.Text</Key>
+    <DefaultValue>Authenticator Display Name:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
+    <Key>SettingchkCanPeerChangeMFa.Text</Key>
+    <DefaultValue>Can Peer Change Mfa</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SystemSettings.ascx.resx</File>
@@ -31088,8 +31118,8 @@ After creating your virtual directory go to FP administrator and create a subweb
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
-    <Key>secCalendarSettings.Text</Key>
-    <DefaultValue>Calendar Settings</DefaultValue>
+    <Key>secBookingOptions.Text</Key>
+    <DefaultValue>Booking Options</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
@@ -31135,6 +31165,91 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
     <Key>secAdvancedInfo.Text</Key>
     <DefaultValue>Advanced Information</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>chkAllowRecurringMeetings.Text</Key>
+    <DefaultValue>Allow repeating meetings</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>chkEnforceSchedulingHorizon.Text</Key>
+    <DefaultValue>Always decline if the end date is beyond this limit</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>chkScheduleOnlyDuringWorkHours.Text</Key>
+    <DefaultValue>Allow scheduling only during working hours</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>locAdditionalResponse.Text</Key>
+    <DefaultValue>If you want the meeting organizer to receive a reply, enter the text below:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>locBookingRequests.Text</Key>
+    <DefaultValue>Booking Requests:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>locBookingWindowInDays.Text</Key>
+    <DefaultValue>Maximum booking lead time (days):</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>locCapacity.Text</Key>
+    <DefaultValue>Capacity:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>locDelegates.Text</Key>
+    <DefaultValue>Delegates:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>locMaximumDuration.Text</Key>
+    <DefaultValue>Maximum duration (hours):</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>rblBookingRequestsAuto.Text</Key>
+    <DefaultValue>Accept or decline booking requests automatically</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>rblBookingRequestsCustom.Text</Key>
+    <DefaultValue>Use customized setting to accept or decline booking requests</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>rblBookingRequestsDelegates.Text</Key>
+    <DefaultValue>Select delegates who can accept or decline booking requests</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>secBookingDelegates.Text</Key>
+    <DefaultValue>Booking Delegates</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>valBookingWindowInDays.ErrorMessage</Key>
+    <DefaultValue>Wrong number format</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>valCapacity.ErrorMessage</Key>
+    <DefaultValue>Wrong number format</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>valDelegates.ErrorMessage</Key>
+    <DefaultValue>Please specify a delegate</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxGeneralSettings.ascx.resx</File>
+    <Key>valMaximumDuration.ErrorMessage</Key>
+    <DefaultValue>Wrong number format</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\ExchangeMailboxMailFlowSettings.ascx.resx</File>

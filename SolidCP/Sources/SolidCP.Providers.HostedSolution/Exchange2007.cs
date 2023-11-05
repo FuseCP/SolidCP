@@ -281,6 +281,16 @@ namespace SolidCP.Providers.HostedSolution
             SetMailboxGeneralSettingsInternal(accountName, hideFromAddressBook, disabled);
         }
 
+        public ExchangeResourceMailboxSettings GetResourceMailboxSettings(string accountName)
+        {
+            return GetResourceMailboxSettingsInternal(accountName);
+        }
+
+        public void SetResourceMailboxSettings(string accountName, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            SetResourceMailboxSettingsInternal(accountName, resourceSettings);
+        }
+
         public ExchangeMailbox GetMailboxMailFlowSettings(string accountName)
         {
             return GetMailboxMailFlowSettingsInternal(accountName);
@@ -2486,7 +2496,6 @@ namespace SolidCP.Providers.HostedSolution
                 info.Pager = (string)GetPSObjectProperty(user, "Pager");
                 info.WebPage = (string)GetPSObjectProperty(user, "WebPage");
                 info.Notes = (string)GetPSObjectProperty(user, "Notes");
-
             }
             finally
             {
@@ -2530,6 +2539,118 @@ namespace SolidCP.Providers.HostedSolution
                 CloseRunspace(runSpace);
             }
             ExchangeLog.LogEnd("SetMailboxGeneralSettingsInternal");
+        }
+
+        private ExchangeResourceMailboxSettings GetResourceMailboxSettingsInternal(string accountName)
+        {
+            ExchangeLog.LogStart("GetResourceMailboxSettingsInternal");
+            ExchangeLog.DebugInfo("Account: {0}", accountName);
+
+            ExchangeResourceMailboxSettings info = new ExchangeResourceMailboxSettings();
+            info.AccountName = accountName;
+            Runspace runSpace = null;
+            try
+            {
+                runSpace = OpenRunspace();
+
+                Collection<PSObject> result = GetMailboxObject(runSpace, accountName);
+                PSObject mailbox = result[0];
+
+                object resourceCapacity = GetPSObjectProperty(mailbox, "ResourceCapacity");
+                info.ResourceCapacity = (resourceCapacity != null) ? (int)resourceCapacity : -1;
+
+                Command cmd = new Command("Get-CalendarProcessing");
+                cmd.Parameters.Add("Identity", accountName);
+                result = ExecuteShellCommand(runSpace, cmd);
+                PSObject calendar = result[0];
+                info.AddAdditionalResponse = (bool)GetPSObjectProperty(calendar, "AddAdditionalResponse");
+                info.AdditionalResponse = ObjToString(GetPSObjectProperty(calendar, "AdditionalResponse"));
+                info.AllBookInPolicy = (bool)GetPSObjectProperty(calendar, "AllBookInPolicy");
+                info.AllowRecurringMeetings = (bool)GetPSObjectProperty(calendar, "AllowRecurringMeetings");
+                info.AllRequestInPolicy = (bool)GetPSObjectProperty(calendar, "AllRequestInPolicy");
+                info.AutomateProcessing = (CalendarProcessingFlags)GetPSObjectProperty(calendar, "AutomateProcessing");
+                info.BookingWindowInDays = (int)GetPSObjectProperty(calendar, "BookingWindowInDays");
+                info.EnforceSchedulingHorizon = (bool)GetPSObjectProperty(calendar, "EnforceSchedulingHorizon");
+                info.MaximumDurationInMinutes = (int)GetPSObjectProperty(calendar, "MaximumDurationInMinutes");
+                List<ExchangeAccount> accounts = new List<ExchangeAccount>();
+                IList<ADObjectId> ids = (IList<ADObjectId>)GetPSObjectProperty(calendar, "ResourceDelegates");
+                foreach (ADObjectId id in ids)
+                {
+                    ExchangeAccount account = GetExchangeAccount(runSpace, id.ToString());
+                    if (account != null) accounts.Add(account);
+                }
+                info.ResourceDelegates = accounts.ToArray();
+                info.ScheduleOnlyDuringWorkHours = (bool)GetPSObjectProperty(calendar, "ScheduleOnlyDuringWorkHours");
+            }
+            finally
+            {
+
+                CloseRunspace(runSpace);
+            }
+            ExchangeLog.LogEnd("GetResourceMailboxSettingsInternal");
+            return info;
+        }
+
+
+        private void SetResourceMailboxSettingsInternal(string accountName, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            ExchangeLog.LogStart("SetResourceMailboxSettingsInternal");
+            ExchangeLog.DebugInfo("Account: {0}", accountName);
+
+            Runspace runSpace = null;
+            try
+            {
+                runSpace = OpenRunspace();
+
+                Command cmd = new Command("Set-Mailbox");
+                cmd.Parameters.Add("Identity", accountName);
+                object capacity = null;
+                if (resourceSettings.ResourceCapacity >= 0) capacity = (Int32)resourceSettings.ResourceCapacity;
+                cmd.Parameters.Add("ResourceCapacity", capacity);
+                ExecuteShellCommand(runSpace, cmd);
+
+                cmd = new Command("Set-CalendarProcessing");
+                cmd.Parameters.Add("Identity", accountName);
+                cmd.Parameters.Add("AddAdditionalResponse", resourceSettings.AddAdditionalResponse);
+                cmd.Parameters.Add("AdditionalResponse", resourceSettings.AdditionalResponse);
+                cmd.Parameters.Add("AllowRecurringMeetings", resourceSettings.AllowRecurringMeetings);
+                cmd.Parameters.Add("BookingWindowInDays", resourceSettings.BookingWindowInDays);
+                cmd.Parameters.Add("EnforceSchedulingHorizon", resourceSettings.EnforceSchedulingHorizon);
+                cmd.Parameters.Add("MaximumDurationInMinutes", resourceSettings.MaximumDurationInMinutes);
+                cmd.Parameters.Add("ScheduleOnlyDuringWorkHours", resourceSettings.ScheduleOnlyDuringWorkHours);
+
+                if (resourceSettings.AutomateProcessing == CalendarProcessingFlags.AutoAccept && resourceSettings.AllBookInPolicy != resourceSettings.AllRequestInPolicy)
+                {
+                    cmd.Parameters.Add("AutomateProcessing", resourceSettings.AutomateProcessing);
+                    cmd.Parameters.Add("AllBookInPolicy", resourceSettings.AllBookInPolicy);
+                    cmd.Parameters.Add("AllRequestInPolicy", resourceSettings.AllRequestInPolicy);
+                }
+
+                if (resourceSettings.ResourceDelegates != null && resourceSettings.ResourceDelegates.Length > 0)
+                {
+                    MultiValuedProperty<ADObjectId> ids = null;
+                    MultiValuedProperty<ADObjectId> dlIds = null;
+                    List<string> accounts = new List<string>();
+                    foreach (ExchangeAccount account in resourceSettings.ResourceDelegates)
+                    {
+                        accounts.Add(account.AccountName);
+                    }
+                    SetAccountIds(runSpace, accounts.ToArray(), out ids, out dlIds);
+                    cmd.Parameters.Add("ResourceDelegates", ids);
+                }
+                else
+                {
+                    cmd.Parameters.Add("ResourceDelegates", null);
+                }
+
+                ExecuteShellCommand(runSpace, cmd);
+            }
+            finally
+            {
+
+                CloseRunspace(runSpace);
+            }
+            ExchangeLog.LogEnd("SetResourceMailboxSettingsInternal");
         }
 
         private void ChangeMailboxState(string id, bool enabled)

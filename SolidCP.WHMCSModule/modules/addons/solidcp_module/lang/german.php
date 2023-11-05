@@ -1,5 +1,5 @@
 <?php if (!defined('WHMCS')) exit('ACCESS DENIED');
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2023, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -39,7 +39,7 @@
  * @link https://solidcp.com/
  * @access public
  * @name SolidCP
- * @version 1.1.3
+ * @version 1.1.4
  * @package WHMCS
  */
 $_ADDONLANG['SolidCP_migration'] = 'Migration';
@@ -81,13 +81,16 @@ $_ADDONLANG['SolidCP_whmcs_id'] = 'WHMCS-ID';
 $_ADDONLANG['SolidCP_solidcp_id'] = 'SolidCP-ID';
 $_ADDONLANG['SolidCP_hidden'] = 'Versteckt';
 $_ADDONLANG['SolidCP_delete'] = 'Löschen';
-$_ADDONLANG['SolidCP_addassignment'] = 'Neue Zuordnung hinzufügen';
-$_ADDONLANG['SolidCP_add_configurable_option'] = 'Neue Zuordnung der konfigurierbaren Optionen hinzufügen';
-$_ADDONLANG['SolidCP_add_addon_option'] = 'Neue Zuordnung der Addons hinzufügen';
+$_ADDONLANG['SolidCP_edit_configurable_option'] = 'Die Zuordnung der konfigurierbaren Optionen bearbeiten';
+$_ADDONLANG['SolidCP_edit_addon_option'] = 'Die Zuordnung der Addons bearbeiten';
 $_ADDONLANG['SolidCP_whmcs_id_tooltip'] = 'Geben Sie die WHMCS-ID aus der Datenbank ein.';
 $_ADDONLANG['SolidCP_solidcp_id_tooltip'] = 'Geben Sie die SolidCP Addon-ID ein.';
 $_ADDONLANG['SolidCP_is_ip_address'] = 'Ist IP-Addresse';
 $_ADDONLANG['SolidCP_is_ip_address_tooltip'] = 'Soll eine neue dedizierte IP-Adresse in SolidCP zugeordnet werden?';
+$_ADDONLANG['SolidCP_search_configurable'] = 'Suche nach konfigurierbare Option oder SolidCP-ID...';
+$_ADDONLANG['SolidCP_show_only_assigned_conf'] = 'Nur zugewiesene konfigurierbare Optionen anzeigen';
+$_ADDONLANG['SolidCP_search_addon'] = 'Suche nach Addon-Name oder SolidCP-ID...';
+$_ADDONLANG['SolidCP_show_only_assigned_addons'] = 'Nur zugewiesene Addons anzeigen';
 
 $_ADDONLANG['SolidCP_general_settings'] = 'Allgemeine Einstellungen';
 $_ADDONLANG['SolidCP_setting_AddonsActive'] = 'Addon-Automatisierung aktiv';
@@ -103,6 +106,6 @@ $_ADDONLANG['SolidCP_setting_WhmcsAdmin_tooltip'] = 'WHMCS-Admin-Benutzer, der f
 
 $_ADDONLANG['SolidCP_save_changes'] = 'Änderungen speichern';
 $_ADDONLANG['SolidCP_cancel_changes'] = 'Änderungen verwerfen';
-$_ADDONLANG['SolidCP_add_new'] = 'Neu hinzufügen';
+$_ADDONLANG['SolidCP_edit'] = 'Bearbeiten';
 $_ADDONLANG['SolidCP_cancel'] = 'Abbrechen';
 $_ADDONLANG['SolidCP_saving'] = 'Wird gespeichert';

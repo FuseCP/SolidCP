@@ -17,8 +17,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\SolidCP.Server\bin\Dns2012\DNS\</OutputPath>
+    <Optimize>false</Optimize>
+    <OutputPath>..\SolidCP.Server\bin\DNS</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

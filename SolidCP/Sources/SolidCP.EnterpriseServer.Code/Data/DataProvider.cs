@@ -470,6 +470,21 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@MfaMode", mfaMode));
         }
 
+        public static bool CanUserChangeMfa(int callerId, int changeUserId, bool canPeerChangeMfa)
+        {
+            SqlParameter prmResult = new SqlParameter("@Result", SqlDbType.Bit);
+            prmResult.Direction = ParameterDirection.Output;
+            SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                ObjectQualifier + "CanChangeMfa",
+                new SqlParameter("@CallerID", callerId),
+                new SqlParameter("@ChangeUserID", changeUserId),
+                new SqlParameter("@CanPeerChangeMfa", canPeerChangeMfa ? 1 : 0),
+                prmResult
+                );
+
+            return Convert.ToBoolean(prmResult.Value);
+        }
+
         #endregion
 
         #region User Settings

@@ -35,8 +35,11 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using SolidCP.Web.Services;
+using System.Web.Services;
+using System.Web.Services.Protocols;
 using System.ComponentModel;
+
+using Microsoft.Web.Services3;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -45,9 +48,9 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("EnterpriseServerPolicy")]
+    [Policy("ServerPolicy")]
     [ToolboxItem(false)]
-    public class esUsers
+    public class esUsers : System.Web.Services.WebService
     {
         [WebMethod(Description = "Checks if the account with the specified username exists.")]
         public bool UserExists(string username)
@@ -282,6 +285,12 @@ namespace SolidCP.EnterpriseServer
         public bool UpdateUserMfa(string username, bool activate)
         {
             return UserController.UpdateUserMfaSecret(username, activate);
+        }
+
+        [WebMethod]
+        public bool CanUserChangeMfa(int changeUserId)
+        {
+            return UserController.CanUserChangeMfa(changeUserId);
         }
 
         [WebMethod]

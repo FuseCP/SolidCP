@@ -1,5 +1,5 @@
 <?php if (!defined('WHMCS')) exit('ACCESS DENIED');
-// Copyright (c) 2016, SolidCP
+// Copyright (c) 2023, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -38,7 +38,7 @@
  * @link https://solidcp.com/
  * @access public
  * @name SolidCP
- * @version 1.1.3
+ * @version 1.1.4
  * @package WHMCS
  */
 
@@ -128,7 +128,8 @@ function solidcp_module_ClientEdit($params)
                                 'HtmlMail' => $user['HtmlMail'],
                                 'CompanyName' => $clientsDetails['companyname'],
                                 'EcommerceEnabled' => $user['EcommerceEnabled'],
-                                'SubscriberNumber' => '');
+                                'SubscriberNumber' => '',
+								'MfaMode' => $user['MfaMode']);
 
                 // Execute the UpdateUserDetails method
                 $scp->updateUserDetails($userParams);

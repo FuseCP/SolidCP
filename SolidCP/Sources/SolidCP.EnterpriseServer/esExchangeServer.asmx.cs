@@ -317,6 +317,18 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
+        public ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId)
+        {
+            return ExchangeServerController.GetResourceMailboxSettings(itemId, accountId);
+        }
+
+        [WebMethod]
+        public int SetResourceMailboxSettings(int itemId, int accountId, ExchangeResourceMailboxSettings resourceSettings)
+        {
+            return ExchangeServerController.SetResourceMailboxSettings(itemId, accountId, resourceSettings);
+        }
+
+        [WebMethod]
         public ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId)
         {
             return ExchangeServerController.GetMailboxEmailAddresses(itemId, accountId);

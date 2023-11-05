@@ -1656,8 +1656,11 @@
   <data name="Quota.OS.FileManager" xml:space="preserve">
     <value>Dateimanager</value>
   </data>
-  <data name="Quota.OS.AllowTenantCreateDomains" xml:space="preserve">
+  <data name="Quota.OS.NotAllowTenantCreateDomains" xml:space="preserve">
     <value>Mandant darf keine Top-Level Domains erstellen.</value>
+  </data>
+  <data name="Quota.OS.NotAllowTenantDeleteDomains" xml:space="preserve">
+    <value>Mandant darf keine Top-Level Domains löschen.</value>
   </data>
   <data name="Quota.SharePoint.Groups" xml:space="preserve">
     <value>SharePoint-Gruppen</value>
@@ -3284,6 +3287,12 @@
   </data>
   <data name="AuditLogTask.GET_ORG_STATS" xml:space="preserve">
     <value>Organisationsstatistiken abrufen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_GET_RESOURCE_MAILBOX" xml:space="preserve">
+    <value>Ressourcenpostfacheinstellungen holen</value>
+  </data>
+  <data name="AuditLogTask.EXCHANGE_UPDATE_RESOURCE_MAILBOX" xml:space="preserve">
+    <value>Ressourcenpostfacheinstellungen aktualisieren</value>
   </data>
   <data name="AuditLogTask.GET_EXCHANGE_MAILBOXPLANS" xml:space="preserve">
     <value>Exchange Postfachpläne abrufen</value>
@@ -6793,16 +6802,16 @@
     <value>Aktivierung nicht erfolgreich</value>
   </data>
   <data name="Error.WrongPin" xml:space="preserve">
-    <value>Falscher PIN</value>
+    <value>Falscher Bestätigungscode</value>
   </data>
   <data name="Success.PinSend" xml:space="preserve">
-    <value>PIN erfolgreich gesendet</value>
+    <value>Bestätigungscode erfolgreich gesendet</value>
   </data>
   <data name="Success.QRCodeActivation" xml:space="preserve">
     <value>Aktivierung erfolgreich</value>
   </data>
   <data name="SuccessDescription.PinSend" xml:space="preserve">
-    <value>PIN wurde erfolgreich zur primären E-Mail-Adresse gesendet.</value>
+    <value>Bestätigungscode wurde erfolgreich zur primären E-Mail-Adresse gesendet.</value>
   </data>
   <data name="TaskActivity.VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT" xml:space="preserve">
     <value>Attempting to finish a job after a thread interruption. Remaining attempts: {0}</value>
