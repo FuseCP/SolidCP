@@ -112,6 +112,7 @@ namespace SolidCP.Web.Services
 #if NETFRAMEWORK
 							var binding = new WSHttpBinding(SecurityMode.Message);
 							binding.Security.Message.NegotiateServiceCredential = true;
+							binding.Security.Message.ClientCredentialType = MessageCredentialType.None;
 							binding.Security.Message.EstablishSecurityContext = true;
 							binding.Name = "ws.message";
 							AddEndpoint(contract, binding, adr);
