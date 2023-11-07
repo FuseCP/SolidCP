@@ -232,7 +232,7 @@ namespace SolidCP.Web.Client
 						{
 							if (chan.State != CommunicationState.Opened && chan.State != CommunicationState.Opening)
 							{
-								if (chan.State == CommunicationState.Faulted) client = null;
+								if (chan.State == CommunicationState.Faulted || chan.State == CommunicationState.Closed) client = null;
 								else chan.Open();
 							}
 							return client;

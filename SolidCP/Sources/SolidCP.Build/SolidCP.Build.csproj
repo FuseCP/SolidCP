@@ -31,6 +31,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <RazorBlade Remove="WCFServiceTypes.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="WCFServiceTypes.cshtml">
+      <IsRazorBlade>True</IsRazorBlade>
+      <Namespace>$([MSBuild]::ValueOrDefault('$(RootNamespace).%(RelativeDir)', '').Replace('\', '.').Replace('/', '.').Trim('.'))</Namespace>
+    </AdditionalFiles>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
   </ItemGroup>
 

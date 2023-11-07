@@ -53,10 +53,6 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Services3">
-      <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -67,10 +63,6 @@
     </Reference>
     <Reference Include="RestSharp, Version=108.0.3.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.108.0.3\lib\netstandard2.0\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -135,11 +127,11 @@
     <Compile Include="Common\MailHelper.cs" />
     <Compile Include="Common\MailTemplates\TemplateHashtable.cs" />
     <Compile Include="Common\ObjectUtils.cs" />
-    <Compile Include="Common\RestrictedTraceAssertion.cs" />
+    <None Include="Common\RestrictedTraceAssertion.cs" />
     <Compile Include="Common\SecurityContext.cs" />
     <Compile Include="Common\ServiceProviderProxy.cs" />
-    <Compile Include="Common\ServiceUsernameTokenManager.cs" />
-    <Compile Include="Common\UsernameAssertion.cs" />
+    <None Include="Common\ServiceUsernameTokenManager.cs" />
+    <None Include="Common\UsernameAssertion.cs" />
     <Compile Include="Common\Utils.cs" />
     <Compile Include="DatabaseServers\DatabaseServerController.cs" />
     <Compile Include="Data\DataProvider.cs" />
@@ -269,6 +261,10 @@
     <ProjectReference Include="..\SolidCP.Common.Utils\SolidCP.Common.Utils.csproj">
       <Project>{53D22D35-4013-415F-BA09-F67A0DBBB0C1}</Project>
       <Name>SolidCP.Common.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
+      <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
+      <Name>SolidCP.EnterpriseServer.Base</Name>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>

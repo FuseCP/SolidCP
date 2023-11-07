@@ -40,9 +40,11 @@ namespace SolidCP.Web.Services
 
         void AddEndpoint(Type contract, Binding binding, string address)
 		{
+			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
 			var endpoint = AddServiceEndpoint(contract, binding, address);
 			endpoint.EndpointBehaviors.Add(new SoapHeaderMessageInspector());
 		}
+
 		void AddEndpoints(Type serviceType, Uri[] baseAdresses)
 		{
 			var contract = serviceType
@@ -180,7 +182,7 @@ namespace SolidCP.Web.Services
 						{
 							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
 							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "basic.transportwithmessage";
+							binding.Name = "basic.transport";
 							AddEndpoint(contract, binding, adr);
 						}
 						else

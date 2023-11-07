@@ -66,7 +66,7 @@ namespace SolidCP.Web.Services
 			if (policy != null && policy.Policy != "CommonPolicy")
 			{
                 int hpos = request.Headers.FindHeader(nameof(Credentials), $"{Namespace}{nameof(Credentials)}");
-				if (hpos < 0) throw new AccessViolationException("No anonymous access allowed.");
+				if (hpos < 0) throw new FaultException("No anonymous access allowed.");
 				var header = request.Headers.GetHeader<Credentials>(hpos);
 				var validator = new UserNamePasswordValidator() { Policy = policy };
 #if NETFRAMEWORK

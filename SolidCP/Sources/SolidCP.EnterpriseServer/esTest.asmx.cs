@@ -32,59 +32,29 @@
 
 using System;
 using System.Data;
-using System.Configuration;
-using System.Collections;
 using System.Web;
-using System.Web.Security;
-using System.Web.SessionState;
-using System.Net;
-using System.Timers;
-using System.Diagnostics;
+using System.Collections;
+using SolidCP.Web.Services;
+using System.ComponentModel;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class Global : System.Web.HttpApplication
-    {
-        private int keepAliveMinutes = 10;
-        private static string keepAliveUrl = "";
-        private static Timer timer = null;
-
-        protected void Application_Start(object sender, EventArgs e)
-        {
-            if (!Debugger.IsAttached) Debugger.Launch();
-            UsernamePasswordValidator.Init();
-            Web.Services.StartupNetFX.Start();
-
-        }
-
-        protected void Application_End(object sender, EventArgs e)
-        {
-        }
-
-		protected void Application_BeginRequest(object sender, EventArgs e)
+	/// <summary>
+	/// Summary description for esSystem
+	/// </summary>
+	[WebService(Namespace = "http://tempuri.org/")]
+	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+	[ToolboxItem(false)]
+	public class esTest
+	{
+		/* [WebMethod]
+		public SystemSettings GetSystemSettings(string settingsName)
 		{
-			// ASP.NET Integration Mode workaround
-			if (String.IsNullOrEmpty(keepAliveUrl))
-			{
-				// init keep-alive
-				keepAliveUrl = HttpContext.Current.Request.Url.ToString();
-				if (this.keepAliveMinutes > 0)
-				{
-					timer = new Timer(60000 * this.keepAliveMinutes);
-					timer.Elapsed += new ElapsedEventHandler(KeepAlive);
-					timer.Start();
-				}
-			}
-		}
+			return SystemController.GetSystemSettings(settingsName);
+		} */
 
-        public override void Init()
-        {
-            
-        }
+		[WebMethod]
+		public string Echo(string msg) => msg;
 
-        private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
-        {
-            using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
-        } 
-    }
+	}
 }

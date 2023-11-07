@@ -35,12 +35,14 @@ namespace SolidCP.Web.Client
 			{
 				var header = MessageHeader.CreateHeader(SoapHeader.GetType().Name, $"{Namespace}{SoapHeader.GetType().Name}", SoapHeader);
 				request.Headers.Add(header);
+				Client.SoapHeader = null;
 			}
 			if (Client.Credentials != null && Client.Credentials.Password != null && Client.IsSsl)
 			{
 				var cred = new Credentials { Username = Client.Credentials.UserName, Password = Client.Credentials.Password };
 				var header = MessageHeader.CreateHeader(nameof(Credentials), $"{Namespace}{nameof(Credentials)}", cred);
 				request.Headers.Add(header);
+				Client.Credentials.UserName = Client.Credentials.Password = null;
 			}
 			return null;
 		}

@@ -1,12 +1,23 @@
 {
   "profiles": {
-    "SolidCP.EnterpriseServer": {
+    "IIS Express Net 4.8": {
+      "commandName": "IISExpress"
+    },
+    "NET 6": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "http://localhost:51686"
+      "applicationUrl": "http://localhost:9901"
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:9015",
+      "sslPort": 30000
     }
   }
 }
