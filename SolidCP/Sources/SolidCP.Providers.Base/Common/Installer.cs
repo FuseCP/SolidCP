@@ -15,6 +15,7 @@ namespace SolidCP.Providers
             if (!IsInstalled) throw new NotSupportedException($"The installer type {this.GetType().Name} is not installed on this system.");
         }
 
+        public static Installer Default => Server.Utils.OS.Current.DefaultInstaller;
 
     }
 

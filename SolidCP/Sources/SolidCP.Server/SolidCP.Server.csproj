@@ -11,37 +11,31 @@
     <RunArguments>/site:server</RunArguments>-->
     <!--<SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <OutputPath>bin/net.core</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <OutputPath>bin/net.core</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <OutputPath>bin/net.core</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
     <OutputPath>bin</OutputPath>
     <OutputType>Library</OutputType>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <ImplicitUsings>disable</ImplicitUsings>
     <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
     <RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9900</RunArguments>
@@ -51,7 +45,7 @@
     <Compile Remove="WebServices\**\*.*" />
     <None Include="WebServices\**\*.*" />
   </ItemGroup>
-    
+
   <ItemGroup>
     <Compile Remove="WindowsServer.asmx.cs" />
     <None Include="WindowsServer.asmx.cs" />
@@ -59,14 +53,14 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <None Include="Default.aspx.designer.cs" />
-    <None Include="Default.aspx.cs" /> 
+    <None Include="Default.aspx.cs" />
     <Compile Remove="Default.aspx.designer.cs" />
     <Compile Remove="Default.aspx.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
     <None Include="Default.aspx.designer.cs" />
-    <None Include="Default.aspx.cs" /> 
+    <None Include="Default.aspx.cs" />
     <Compile Remove="Default.aspx.designer.cs" />
     <Compile Remove="Default.aspx.cs" />
   </ItemGroup>
@@ -84,7 +78,7 @@
     <None Include="Pages\Index.cshtml" />
     <None Include="Pages\Index.cshtml.cs" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="Code\ServerUsernameTokenManager.cs" />
     <None Include="Code\UsernameAssertion.cs" />
@@ -107,7 +101,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-   <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -130,4 +124,27 @@
   <ItemGroup>
     <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\img\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="DeleteUnusedDlls" AfterTargets="Build">
+    <Message Text="Delete unused dll files" Importance="high" />
+    <ItemGroup>
+      <FilesToDelete Include="bin\SolidCP.Server.Utils.dll" />
+      <FilesToDelete Include="bin\SolidCP.Server.Utils.pdb" />
+      <FilesToDelete Include="bin\Ionic.Zip.Reduced.dll" />
+      <FilesToDelete Include="bin\DotNetZip.dll" />
+      <FilesToDelete Include="bin\Microsoft.Web.Delegation.dll" />
+      <FilesToDelete Include="bin\Newtonsoft.Json.dll" />
+      <FilesToDelete Include="bin\Microsoft.Win32.Registry.dll" />
+      <FilesToDelete Include="bin\Microsoft.Web.Deployment.dll" />
+      <FilesToDelete Include="bin\Microsoft.Web.Deployment.Tracing.dll" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
+
 </Project>

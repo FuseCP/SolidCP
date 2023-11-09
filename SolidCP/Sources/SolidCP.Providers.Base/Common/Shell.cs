@@ -186,5 +186,6 @@ namespace SolidCP.Providers
 			OnLog(text);
 		}
 
+		public static Shell Default => Server.Utils.OS.Current.DefaultShell;
 	}
 }

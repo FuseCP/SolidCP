@@ -17,13 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Server", "SolidCP.Server\SolidCP.Server.csproj", "{38C6047C-E447-4CC2-891F-ABE54D4659F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Base", "SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Base", "SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Server.Utils", "SolidCP.Server.Utils\SolidCP.Server.Utils.csproj", "{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Server.Utils", "SolidCP.Server.Utils\SolidCP.Server.Utils.csproj", "{E91E52F3-9555-4D00-B577-2B1DBDD87CA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Database.SqlServer", "SolidCP.Providers.Database.SqlServer\SolidCP.Providers.Database.SqlServer.csproj", "{3744791D-C7B5-4818-8521-78EB5261CB34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Database.SqlServer", "SolidCP.Providers.Database.SqlServer\SolidCP.Providers.Database.SqlServer.csproj", "{3744791D-C7B5-4818-8521-78EB5261CB34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Database.MySQL", "SolidCP.Providers.Database.MySQL\SolidCP.Providers.Database.MySQL.csproj", "{1C26EBB3-E92E-48A5-B1FB-3AED9D5B9D74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Database.MySQL", "SolidCP.Providers.Database.MySQL\SolidCP.Providers.Database.MySQL.csproj", "{1C26EBB3-E92E-48A5-B1FB-3AED9D5B9D74}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Windows2003", "SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj", "{899B3048-46BE-4C4D-9D41-0043C8B0D11E}"
 EndProject
@@ -59,7 +59,7 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SolidCP.Providers.Mail.MDae
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SolidCP.Providers.Mail.hMailServer43", "SolidCP.Providers.Mail.hMailServer43\SolidCP.Providers.Mail.hMailServer43.vbproj", "{622E452B-E1EF-4252-8039-A28C2EA25DC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.DNS.Bind", "SolidCP.Providers.DNS.Bind\SolidCP.Providers.DNS.Bind.csproj", "{3ACCBEAE-5E1E-43E5-971C-223539832DD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.DNS.Bind", "SolidCP.Providers.DNS.Bind\SolidCP.Providers.DNS.Bind.csproj", "{3ACCBEAE-5E1E-43E5-971C-223539832DD8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.FTP.ServU", "SolidCP.Providers.FTP.ServU\SolidCP.Providers.FTP.ServU.csproj", "{41FEC24A-67A2-4BF4-8889-1D5CD0A2B43D}"
 EndProject
@@ -165,7 +165,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.Crm2016", "SolidCP.Providers.HostedSolution.Crm2016\SolidCP.Providers.HostedSolution.Crm2016.csproj", "{90CF9433-3141-4826-8A32-93D32D1FC53F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Database.MariaDB", "SolidCP.Providers.Database.MariaDB\SolidCP.Providers.Database.MariaDB.csproj", "{FE00ABFA-44B3-48E3-8FD0-C8946357B267}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Database.MariaDB", "SolidCP.Providers.Database.MariaDB\SolidCP.Providers.Database.MariaDB.csproj", "{FE00ABFA-44B3-48E3-8FD0-C8946357B267}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.HostedSolution.Exchange2016", "SolidCP.Providers.HostedSolution.Exchange2016\SolidCP.Providers.HostedSolution.Exchange2016.csproj", "{EFDE132E-70D9-484A-A66E-F54248A8A2C1}"
 EndProject
@@ -262,8 +262,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Window
 	ProjectSection(ProjectDependencies) = postProject
 		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5} = {C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Core.Start", "SolidCP.Core\SolidCP.Core.Start.csproj", "{48B7040D-5A7F-4563-9DAF-A895FECAC57C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "SolidCP.Web.Clients\SolidCP.Web.Clients.csproj", "{ACDF2BC0-F5A1-43F9-B0FA-9A0192A549A1}"
 EndProject
@@ -1267,18 +1265,6 @@ Global
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|x86.ActiveCfg = Release|Any CPU
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|x86.Build.0 = Release|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Debug|x86.Build.0 = Debug|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Release|x86.ActiveCfg = Release|Any CPU
-		{48B7040D-5A7F-4563-9DAF-A895FECAC57C}.Release|x86.Build.0 = Release|Any CPU
 		{ACDF2BC0-F5A1-43F9-B0FA-9A0192A549A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ACDF2BC0-F5A1-43F9-B0FA-9A0192A549A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACDF2BC0-F5A1-43F9-B0FA-9A0192A549A1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

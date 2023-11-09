@@ -34,7 +34,6 @@ using System;
 using System.Collections.Specialized;
 //using System.Web.Services.Protocols;
 using System.Xml.Serialization;
-using System.ServiceModel;
 using System.Runtime.Serialization;
 
 namespace SolidCP.Providers

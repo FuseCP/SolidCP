@@ -42,10 +42,13 @@ namespace SolidCP.Web.Services
 		public static X509FindType FindType = X509FindType.FindBySubjectName;
 		public static object Name = "localhost";
 		public static string Password;
+		public static string ProbingPaths = "";
 
 		public static void Init(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+			var ProbingPaths = builder.Configuration["probingPaths"];
+			AssemblyLoaderNetCore.Init();
 			var urls = builder.Configuration["applicationUrls"];
 			foreach (var url in urls.Split(';'))
 			{
