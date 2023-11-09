@@ -95,6 +95,9 @@ namespace SolidCP.EnterpriseServer.Services
         bool UpdateUserMfa(string username, bool activate);
         [WebMethod]
         [OperationContract]
+        bool CanUserChangeMfa(int changeUserId);
+        [WebMethod]
+        [OperationContract]
         string[] GetUserMfaQrCodeData(string username);
         [WebMethod]
         [OperationContract]

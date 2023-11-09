@@ -102,6 +102,10 @@ namespace SolidCP.EnterpriseServer.Client
         bool UpdateUserMfa(string username, bool activate);
         [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesUsers/UpdateUserMfa", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesUsers/UpdateUserMfaResponse")]
         System.Threading.Tasks.Task<bool> UpdateUserMfaAsync(string username, bool activate);
+        [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesUsers/CanUserChangeMfa", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesUsers/CanUserChangeMfaResponse")]
+        bool CanUserChangeMfa(int changeUserId);
+        [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesUsers/CanUserChangeMfa", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesUsers/CanUserChangeMfaResponse")]
+        System.Threading.Tasks.Task<bool> CanUserChangeMfaAsync(int changeUserId);
         [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesUsers/GetUserMfaQrCodeData", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesUsers/GetUserMfaQrCodeDataResponse")]
         string[] GetUserMfaQrCodeData(string username);
         [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesUsers/GetUserMfaQrCodeData", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesUsers/GetUserMfaQrCodeDataResponse")]
@@ -368,6 +372,16 @@ namespace SolidCP.EnterpriseServer.Client
         public async System.Threading.Tasks.Task<bool> UpdateUserMfaAsync(string username, bool activate)
         {
             return await InvokeAsync<bool>("SolidCP.EnterpriseServer.esUsers", "UpdateUserMfa", username, activate);
+        }
+
+        public bool CanUserChangeMfa(int changeUserId)
+        {
+            return Invoke<bool>("SolidCP.EnterpriseServer.esUsers", "CanUserChangeMfa", changeUserId);
+        }
+
+        public async System.Threading.Tasks.Task<bool> CanUserChangeMfaAsync(int changeUserId)
+        {
+            return await InvokeAsync<bool>("SolidCP.EnterpriseServer.esUsers", "CanUserChangeMfa", changeUserId);
         }
 
         public string[] GetUserMfaQrCodeData(string username)
@@ -683,6 +697,16 @@ namespace SolidCP.EnterpriseServer.Client
         public async System.Threading.Tasks.Task<bool> UpdateUserMfaAsync(string username, bool activate)
         {
             return await base.Client.UpdateUserMfaAsync(username, activate);
+        }
+
+        public bool CanUserChangeMfa(int changeUserId)
+        {
+            return base.Client.CanUserChangeMfa(changeUserId);
+        }
+
+        public async System.Threading.Tasks.Task<bool> CanUserChangeMfaAsync(int changeUserId)
+        {
+            return await base.Client.CanUserChangeMfaAsync(changeUserId);
         }
 
         public string[] GetUserMfaQrCodeData(string username)

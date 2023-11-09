@@ -158,6 +158,14 @@ namespace SolidCP.EnterpriseServer.Client
         int SetMailboxGeneralSettings(int itemId, int accountId, bool hideAddressBook, bool disabled);
         [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/SetMailboxGeneralSettings", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/SetMailboxGeneralSettingsResponse")]
         System.Threading.Tasks.Task<int> SetMailboxGeneralSettingsAsync(int itemId, int accountId, bool hideAddressBook, bool disabled);
+        [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetResourceMailboxSettingsResponse")]
+        SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId);
+        [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetResourceMailboxSettingsResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings> GetResourceMailboxSettingsAsync(int itemId, int accountId);
+        [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/SetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/SetResourceMailboxSettingsResponse")]
+        int SetResourceMailboxSettings(int itemId, int accountId, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings);
+        [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/SetResourceMailboxSettings", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/SetResourceMailboxSettingsResponse")]
+        System.Threading.Tasks.Task<int> SetResourceMailboxSettingsAsync(int itemId, int accountId, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings);
         [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetMailboxEmailAddresses", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetMailboxEmailAddressesResponse")]
         SolidCP.EnterpriseServer.ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId);
         [OperationContract(Action = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetMailboxEmailAddresses", ReplyAction = "http://smbsaas/solidcp/enterpriseserver/IesExchangeServer/GetMailboxEmailAddressesResponse")]
@@ -840,6 +848,26 @@ namespace SolidCP.EnterpriseServer.Client
         public async System.Threading.Tasks.Task<int> SetMailboxGeneralSettingsAsync(int itemId, int accountId, bool hideAddressBook, bool disabled)
         {
             return await InvokeAsync<int>("SolidCP.EnterpriseServer.esExchangeServer", "SetMailboxGeneralSettings", itemId, accountId, hideAddressBook, disabled);
+        }
+
+        public SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId)
+        {
+            return Invoke<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings>("SolidCP.EnterpriseServer.esExchangeServer", "GetResourceMailboxSettings", itemId, accountId);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings> GetResourceMailboxSettingsAsync(int itemId, int accountId)
+        {
+            return await InvokeAsync<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings>("SolidCP.EnterpriseServer.esExchangeServer", "GetResourceMailboxSettings", itemId, accountId);
+        }
+
+        public int SetResourceMailboxSettings(int itemId, int accountId, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            return Invoke<int>("SolidCP.EnterpriseServer.esExchangeServer", "SetResourceMailboxSettings", itemId, accountId, resourceSettings);
+        }
+
+        public async System.Threading.Tasks.Task<int> SetResourceMailboxSettingsAsync(int itemId, int accountId, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            return await InvokeAsync<int>("SolidCP.EnterpriseServer.esExchangeServer", "SetResourceMailboxSettings", itemId, accountId, resourceSettings);
         }
 
         public SolidCP.EnterpriseServer.ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId)
@@ -1985,6 +2013,26 @@ namespace SolidCP.EnterpriseServer.Client
         public async System.Threading.Tasks.Task<int> SetMailboxGeneralSettingsAsync(int itemId, int accountId, bool hideAddressBook, bool disabled)
         {
             return await base.Client.SetMailboxGeneralSettingsAsync(itemId, accountId, hideAddressBook, disabled);
+        }
+
+        public SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId)
+        {
+            return base.Client.GetResourceMailboxSettings(itemId, accountId);
+        }
+
+        public async System.Threading.Tasks.Task<SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings> GetResourceMailboxSettingsAsync(int itemId, int accountId)
+        {
+            return await base.Client.GetResourceMailboxSettingsAsync(itemId, accountId);
+        }
+
+        public int SetResourceMailboxSettings(int itemId, int accountId, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            return base.Client.SetResourceMailboxSettings(itemId, accountId, resourceSettings);
+        }
+
+        public async System.Threading.Tasks.Task<int> SetResourceMailboxSettingsAsync(int itemId, int accountId, SolidCP.Providers.HostedSolution.ExchangeResourceMailboxSettings resourceSettings)
+        {
+            return await base.Client.SetResourceMailboxSettingsAsync(itemId, accountId, resourceSettings);
         }
 
         public SolidCP.EnterpriseServer.ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId)

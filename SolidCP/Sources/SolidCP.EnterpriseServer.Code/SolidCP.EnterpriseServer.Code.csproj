@@ -37,7 +37,7 @@
     <PackageReference Include="System.Text.Json" Version="7.0.1" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Twilio" Version="3.6.29" />
+    <PackageReference Include="Twilio" Version="6.15.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Reduced">

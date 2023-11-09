@@ -138,6 +138,12 @@ namespace SolidCP.EnterpriseServer.Services
         int SetMailboxGeneralSettings(int itemId, int accountId, bool hideAddressBook, bool disabled);
         [WebMethod]
         [OperationContract]
+        ExchangeResourceMailboxSettings GetResourceMailboxSettings(int itemId, int accountId);
+        [WebMethod]
+        [OperationContract]
+        int SetResourceMailboxSettings(int itemId, int accountId, ExchangeResourceMailboxSettings resourceSettings);
+        [WebMethod]
+        [OperationContract]
         ExchangeEmailAddress[] GetMailboxEmailAddresses(int itemId, int accountId);
         [WebMethod]
         [OperationContract]
