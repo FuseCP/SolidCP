@@ -37,7 +37,6 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Web.Services3;
 using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer

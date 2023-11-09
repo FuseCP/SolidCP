@@ -39,7 +39,7 @@ namespace SolidCP.Web.Services
 		static object startLock = new object();
 		static bool wasCalled = false;
 
-		public static Type[] GetWebServices()
+		public static IEnumerable<Type> GetWebServices()
 		{
 			Assembly eserver = null, server = null;
 
@@ -61,8 +61,10 @@ namespace SolidCP.Web.Services
 			.ToArray();
 
 			var types = ServiceAssemblies
-				.SelectMany(a => a.GetLoadableTypes())
-				.ToArray();
+				.SelectMany(a => {
+					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
+					return attrTypes == null ? new Type[0] : attrTypes;
+				});
 			var webServices = types
 
 /* Unmerged change from project 'SolidCP.Web.Services (net48)'
@@ -91,7 +93,7 @@ After:
 			//DictionaryVirtualPathProvider.Startup();
 		}
 
-		static void AddServiceRoutes(Type[] services)
+		static void AddServiceRoutes(IEnumerable<Type> services)
 		{
 #if NETFRAMEWORK
 			foreach (var service in services)

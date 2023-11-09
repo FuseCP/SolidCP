@@ -52,26 +52,45 @@ namespace SolidCP.Providers.Database {
         }
 
         public override bool IsInstalled() {
-            string versionNumber = null;
+            if (Server.Utils.OS.IsWindows)
+            {
 
-            RegistryKey HKLM = Registry.LocalMachine;
+                string versionNumber = null;
 
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.7");
+                RegistryKey HKLM = Registry.LocalMachine;
 
-            if(key != null) {
-                versionNumber = (string)key.GetValue("Version");
-            } else {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.7");
-                if(key != null) {
+                RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.7");
+
+                if (key != null)
+                {
                     versionNumber = (string)key.GetValue("Version");
-                } else {
-                    return false;
                 }
+                else
+                {
+                    key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.7");
+                    if (key != null)
+                    {
+                        versionNumber = (string)key.GetValue("Version");
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+
+                string[] split = versionNumber.Split(new char[] { '.' });
+
+                return split[0].Equals("5") & split[1].Equals("7");
             }
+            else if (Server.Utils.OS.IsUnix)
+            {
+                if (Shell.Default.Find("mysql") == null) return false;
 
-            string[] split = versionNumber.Split(new char[] { '.' });
+                var version = Shell.Default.ExecAsync("mysql -version").Output().Result;
 
-            return split[0].Equals("5") & split[1].Equals("7");
-        }
-    }
+                return version.Contains("Ver 5.7.");
+            }
+            else return false;
+		}
+	}
 }

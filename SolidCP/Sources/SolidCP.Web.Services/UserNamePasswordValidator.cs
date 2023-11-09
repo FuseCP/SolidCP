@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 #if NETFRAMEWORK
@@ -35,7 +36,12 @@ namespace SolidCP.Web.Services
 					if (ValidateServer != null && !ValidateServer(password)) throw new FaultException("Invalid server password");
 				}
 				else if (Policy.Policy == "EnterpriseServerPolicy" && ValidateEnterpriseServer != null)
+				{
 					if (ValidateEnterpriseServer != null && !ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user");
+				}
+				else if (Policy.Policy == "CommonPolicy") { } // do not require username & password
+				else throw new NotSupportedException($"Unuspported policy {Policy.Policy} on service.");
+				
 			}
 
 #if !NETFRAMEWORK

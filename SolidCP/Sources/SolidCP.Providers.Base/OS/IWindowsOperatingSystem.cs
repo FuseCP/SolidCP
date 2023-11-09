@@ -36,15 +36,12 @@ using System.Collections.Generic;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Server;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.OS

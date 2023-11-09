@@ -146,7 +146,9 @@ namespace SolidCP.Build
 					.Any(a =>
 						((INamedTypeSymbol)c.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebServiceAttribute")))
 				.ToList();
-					
+
+			var wcfTtypes = new List<QualifiedNameSyntax>();
+
 			foreach (var ws in webServiceClasses)
 			{
 
@@ -265,6 +267,7 @@ namespace SolidCP.Build
 							intf, service
 						}));
 
+				wcfTtypes.Add(QualifiedName(serverNS.Name, IdentifierName(((ClassDeclarationSyntax)service).Identifier)));
 
 				var client = ParseMemberDeclaration(
 					new ClientClass()
@@ -335,6 +338,16 @@ namespace SolidCP.Build
 				context.AddSource($"{typeName}.g", $"#if !Client{NewLine}{serverText}{NewLine}#endif");
 				context.AddSource($"{typeName}Client.g", $"#if Client{NewLine}{clientText}{NewLine}#endif");
 			}
+
+			var typesText = ParseCompilationUnit(new WCFServiceTypes()
+			{
+				Types = wcfTtypes
+			}
+			.Render())
+			.NormalizeWhitespace()
+			.ToString();
+
+			context.AddSource("WCFServiceTypes.g", $"#if !Client{NewLine}{typesText}{NewLine}#endif");
 
 		}
 

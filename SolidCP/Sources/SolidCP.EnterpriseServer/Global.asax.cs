@@ -52,7 +52,9 @@ namespace SolidCP.EnterpriseServer
         protected void Application_Start(object sender, EventArgs e)
         {
             //if (!Debugger.IsAttached) Debugger.Launch();
+            UsernamePasswordValidator.Init();
             Web.Services.StartupNetFX.Start();
+
         }
 
         protected void Application_End(object sender, EventArgs e)

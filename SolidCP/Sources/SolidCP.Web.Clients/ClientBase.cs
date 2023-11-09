@@ -84,8 +84,8 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else if (IsAuthenticated) Protocol = Protocols.WSHttp;
-					else Protocol = Protocols.BasicHttp;
+					else if (IsAuthenticated) protocol = Protocols.WSHttp;
+					else protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
 				{
@@ -94,7 +94,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttps;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPCSsl;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWebSsl;
-					else Protocol = Protocols.BasicHttps;
+					else protocol = Protocols.BasicHttps;
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
@@ -220,7 +220,7 @@ namespace SolidCP.Web.Client
 						{
 							if (chan.State != CommunicationState.Opened && chan.State != CommunicationState.Opening)
 							{
-								if (chan.State == CommunicationState.Faulted) client = null;
+								if (chan.State == CommunicationState.Faulted || chan.State == CommunicationState.Closed) client = null;
 								else chan.Open();
 							}
 							return client;
@@ -346,7 +346,7 @@ namespace SolidCP.Web.Client
 				{
 					// TODO soap header & username credentials
 
-					throw new NotSupportedException("gRPC is not supported.");
+					throw new NotSupportedException("gRPC is not yet supported.");
 
 					GrpcChannel gchannel;
 					if (!GrpcPool.TryGetValue(url, out gchannel))

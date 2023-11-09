@@ -30,47 +30,58 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 
 namespace SolidCP.Providers.Database
 {
-    public class MySqlServer50 : MySqlServer
-    {
+	public class MySqlServer50 : MySqlServer
+	{
 
-        public MySqlServer50()
-        {
-            
-        }
+		public MySqlServer50()
+		{
 
-        public override bool IsInstalled()
-        {
-            string versionNumber = null;
+		}
 
-            RegistryKey HKLM = Registry.LocalMachine;
+		public override bool IsInstalled()
+		{
+			if (Server.Utils.OS.IsWindows)
+			{
+				string versionNumber = null;
 
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.0");
+				RegistryKey HKLM = Registry.LocalMachine;
 
-            if (key != null)
-            {
-                versionNumber = (string)key.GetValue("Version");
-            }
-            else
-            {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.0");
-                if (key != null)   
-                {
-                    versionNumber = (string)key.GetValue("Version");
-                }
-                else
-                {
-                    return false;
-                }
-            }
+				RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.0");
 
-            string[] split = versionNumber.Split(new char[] { '.' });
+				if (key != null)
+				{
+					versionNumber = (string)key.GetValue("Version");
+				}
+				else
+				{
+					key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.0");
+					if (key != null)
+					{
+						versionNumber = (string)key.GetValue("Version");
+					}
+					else
+					{
+						return false;
+					}
+				}
 
-            return split[0].Equals("5") & split[1].Equals("0");
-        }
+				string[] split = versionNumber.Split(new char[] { '.' });
 
-    }
+				return split[0].Equals("5") & split[1].Equals("0");
+			}
+			else if (Server.Utils.OS.IsUnix)
+			{
+				if (Shell.Default.Find("mysql") == null) return false;
+
+				var version = Shell.Default.ExecAsync("mysql -version").Output().Result;
+
+				return version.Contains("Ver 5.0.");
+			}
+			else return false;
+		}
+	}
 }

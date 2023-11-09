@@ -31,6 +31,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "Soli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{DF3D477E-741C-4871-B838-C1635E72474B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.EnterpriseServer.Base", "SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj", "{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Base", "SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +69,14 @@ Global
 		{DF3D477E-741C-4871-B838-C1635E72474B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF3D477E-741C-4871-B838-C1635E72474B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF3D477E-741C-4871-B838-C1635E72474B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

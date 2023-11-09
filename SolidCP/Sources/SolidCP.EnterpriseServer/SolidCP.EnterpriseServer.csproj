@@ -67,7 +67,9 @@
     <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" />
+    <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
     <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
     <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
@@ -82,41 +84,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bin\Ionic.Zip.Reduced.dll" />
-    <Content Include="bin\IPAddressRange.dll" />
-    <Content Include="bin\SolidCP.Common.Utils.dll" />
-    <Content Include="bin\SolidCP.Common.Utils.pdb" />
+    <Content Include="bin\Code\Ionic.Zip.Reduced.dll" />
+    <Content Include="bin\Code\IPAddressRange.dll" />
     <Content Include="bin\SolidCP.EnterpriseServer.Base.dll" />
     <Content Include="bin\SolidCP.EnterpriseServer.Base.pdb" />
-    <Content Include="bin\SolidCP.EnterpriseServer.Code.dll" />
-    <Content Include="bin\SolidCP.EnterpriseServer.Code.pdb" />
+    <Content Include="bin\Code\SolidCP.EnterpriseServer.Code.dll" />
+    <Content Include="bin\Code\SolidCP.EnterpriseServer.Code.pdb" />
     <Content Include="bin\SolidCP.EnterpriseServer.dll" />
     <Content Include="bin\SolidCP.EnterpriseServer.pdb" />
-    <Content Include="bin\SolidCP.Plugins.2Checkout.dll" />
-    <Content Include="bin\SolidCP.Plugins.2Checkout.pdb" />
-    <Content Include="bin\SolidCP.Plugins.AuthorizeNet.dll" />
-    <Content Include="bin\SolidCP.Plugins.AuthorizeNet.pdb" />
-    <Content Include="bin\SolidCP.Plugins.Enom.dll" />
-    <Content Include="bin\SolidCP.Plugins.Enom.pdb" />
-    <Content Include="bin\SolidCP.Plugins.OfflinePayment.dll" />
-    <Content Include="bin\SolidCP.Plugins.OfflinePayment.pdb" />
-    <Content Include="bin\SolidCP.Plugins.OfflineRegistrar.dll" />
-    <Content Include="bin\SolidCP.Plugins.OfflineRegistrar.pdb" />
-    <Content Include="bin\SolidCP.Plugins.PayPalPro.dll" />
-    <Content Include="bin\SolidCP.Plugins.PayPalPro.pdb" />
-    <Content Include="bin\SolidCP.Plugins.PayPalStandard.dll" />
-    <Content Include="bin\SolidCP.Plugins.PayPalStandard.pdb" />
-    <Content Include="bin\SolidCP.Providers.Base.dll" />
-    <Content Include="bin\SolidCP.Providers.Base.pdb" />
-    <Content Include="bin\SolidCP.SchedulerService.exe" />
-    <Content Include="bin\SolidCP.SchedulerService.pdb" />
-    <Content Include="bin\SolidCP.Server.Client.dll" />
-    <Content Include="bin\SolidCP.Server.Client.pdb" />
-    <Content Include="bin\SolidCP.Templates.dll" />
-    <Content Include="bin\SolidCP.Templates.pdb" />
-    <Content Include="bin\SolidCP.Whois.dll" />
-    <Content Include="bin\SolidCP.Whois.pdb" />
-    <Content Include="bin\WhoisClient.dll" />
     <None Include="Code\OperatingSystems\OperatingSystemController.cs" />
     <None Include="Code\WebServers\WebServerController.cs" />
     <None Include="Web.config">
@@ -128,7 +103,6 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="WebServices\SolidCP.Build\EnterpriseServerProxyConfigurator.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -156,4 +130,18 @@
     <Reference Include="System.Web" />
   </ItemGroup>
 
+  <Target Name="DeleteUnusedDlls" AfterTargets="Build">
+     <Message Text="Delete unused dll files" Importance="high"/>
+    <ItemGroup>
+      <FilesToDelete Include="bin\Google.Authenticator.dll" />
+      <FilesToDelete Include="bin\Microsoft.Bcl.AsyncInterfaces.dll" />
+      <FilesToDelete Include="bin\Microsoft.Win32.Registry.dll" />
+      <FilesToDelete Include="bin\Newtonsoft.Json.dll" />
+      <FilesToDelete Include="bin\QRCoder.dll" />
+      <FilesToDelete Include="bin\RestSharp.dll" />
+      <FilesToDelete Include="bin\Google.Authenticator.dll" />
+      <FilesToDelete Include="bin\Google.Authenticator.dll" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
+  </Target>
 </Project>
