@@ -37,17 +37,17 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SolidCP.EnterpriseServer.Base")]
+[assembly: AssemblyTitle("SolidCP.Web.Services")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("SolidCP.EnterpriseServer.Base")]
+[assembly: AssemblyProduct("SolidCP.Web.Services")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(true)]
+[assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("674c7f66-6e55-4cd5-be83-1ac8831539b6")]
+[assembly: Guid("71B15BA4-CBB2-4D57-873A-A72359AEAE7F")]

@@ -66,7 +66,7 @@ namespace SolidCP.Server.Code
                     if (string.IsNullOrEmpty(name))
                     {
                         res.IsSuccess = false;
-                        res.ErrorCodes.Add(ErrorCodes.PROVIDER_NANE_IS_NOT_SPECIFIED);
+                        res.ErrorCodes.Add(ErrorCodes.PROVIDER_NAME_IS_NOT_SPECIFIED);
                         return res;
                     }
 

@@ -72,7 +72,7 @@ namespace SolidCP.EnterpriseServer
             // set timeout
             proxy.Timeout = TimeSpan.FromMinutes(15); //15 minutes // System.Threading.Timeout.Infinite;
 
-            if (!String.IsNullOrEmpty(username))
+            if (!String.IsNullOrEmpty(username) && proxy.IsAuthenticated)
             {
                 proxy.Credentials.UserName = username;
                 proxy.Credentials.Password = password;

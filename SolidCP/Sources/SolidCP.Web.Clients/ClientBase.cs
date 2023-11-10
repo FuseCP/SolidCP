@@ -44,7 +44,7 @@ namespace SolidCP.Web.Client
 						.Strip("ssl")
 						.Strip("nettcp");
 					
-					if (value == Protocols.NetTcp && IsAuthenticated) value = Protocols.NetTcpSsl;
+					if (value == Protocols.NetTcp && IsEncrypted) value = Protocols.NetTcpSsl;
 
 						//.Strip("nettcp/ssl");
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
@@ -84,7 +84,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else if (IsAuthenticated) protocol = Protocols.WSHttp;
+					else if (IsEncrypted) protocol = Protocols.WSHttp;
 					else protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
@@ -100,7 +100,7 @@ namespace SolidCP.Web.Client
 				{
 					if (url.HasApi("nettcp"))
 					{
-						if (IsAuthenticated) Protocol = Protocols.NetTcpSsl;
+						if (IsEncrypted) Protocol = Protocols.NetTcpSsl;
 						else Protocol = Protocols.NetTcp;
 					}
 				}
@@ -121,11 +121,22 @@ namespace SolidCP.Web.Client
 		public bool IsAssembly => Protocol == Protocols.Assembly;
 		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
+		public bool IsSecureProtocol => IsSsl || Protocol == Protocols.WSHttp;
 
-		public bool IsAuthenticated => this.GetType().GetInterfaces()
+		public bool IsEncrypted => this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-					?.GetCustomAttribute<HasPolicyAttribute>()
-					!= null;
+					?.GetCustomAttribute<HasPolicyAttribute>() != null;
+
+		public bool IsAuthenticated
+		{
+			get
+			{
+				var serviceInterface = this.GetType().GetInterfaces()
+					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
+				var policy = serviceInterface?.GetCustomAttribute<HasPolicyAttribute>()?.Policy;
+				return policy != null && policy != "CommonPolicy";
+			}
+		}
 		public bool HasSoapHeaders => this.GetType().GetInterfaces()
 			.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
 			?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>()
@@ -232,13 +243,13 @@ namespace SolidCP.Web.Client
 
 				if (IsWCF)
 				{
-					var isAuthenticated = IsAuthenticated;
+					var isEncrypted = IsEncrypted;
 
 					Binding binding = null;
 					switch (Protocol)
 					{
 						case Protocols.BasicHttp:
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								//throw new NotSupportedException("This api is not supported on this service.");
 								binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
@@ -246,7 +257,7 @@ namespace SolidCP.Web.Client
 							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
 							break;
 						case Protocols.BasicHttps: 
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
 								binding = basics;
@@ -257,14 +268,14 @@ namespace SolidCP.Web.Client
                             }
                             break;
 						case Protocols.NetHttp:
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								// throw new NotSupportedException("This api is not supported on this service.");
 								binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
 							} else binding = new NetHttpBinding(BasicHttpSecurityMode.None);
 							break;
 						case Protocols.NetHttps: 
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
 								binding = nets;
@@ -276,7 +287,7 @@ namespace SolidCP.Web.Client
 
                             break;
 						case Protocols.WSHttp:
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								//throw new NotSupportedException("This api is not supported on this service.");
 								var ws = new WSHttpBinding(SecurityMode.Message);
@@ -288,7 +299,7 @@ namespace SolidCP.Web.Client
 							else binding = new WSHttpBinding(SecurityMode.None);
 							break;
 						case Protocols.WSHttps: 
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								var wss = new WSHttpBinding(SecurityMode.Transport);
 								binding = wss;
@@ -300,7 +311,7 @@ namespace SolidCP.Web.Client
                             break;
 						case Protocols.NetTcp:
 						case Protocols.NetTcpSsl:
-							if (isAuthenticated)
+							if (isEncrypted)
 							{
 								var nettcp = new NetTcpBinding(SecurityMode.Transport);
 								binding = nettcp;

@@ -30,29 +30,27 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿namespace SolidCP.Providers.Common
-{
-    public class ErrorCodes
-    {
-        public const string CANNOT_CREATE_PROVIDER_INSTANCE = "CANNOT_CREATE_PROVIDER_INSTANCE";
+#if Client
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-        public const string PROVIDER_NAME_IS_NOT_SPECIFIED = "PROVIDER_NAME_IS_NOT_SPECIFIED";
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("SolidCP.EnterpriseServer.Client")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyProduct("SolidCP.EnterpriseServer.Client")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
 
-        public const string CANNOT_CHECK_IF_PROVIDER_SOFTWARE_INSTALLED = "CANNOT_CHECK_IF_PROVIDER_SOFTWARE_INSTALLED";
+// Setting ComVisible to false makes the types in this assembly not visible 
+// to COM components.  If you need to access a type in this assembly from 
+// COM, set the ComVisible attribute to true on that type.
+[assembly: ComVisible(false)]
 
-        public const string CANNOT_GET_PROVIDER_INFO = "CANNOT_GET_PROVIDER_INFO";
+// The following GUID is for the ID of the typelib if this project is exposed to COM
+[assembly: Guid("E3F24C8D-7DDE-4127-AD28-54E02B3310AA")]
 
-        public const string CANNOT_GET_PASSWORD_COMPLEXITY = "CANNOT_GET_PASSWORD_COMPLEXITY";
-
-        public const string CANNOT_GET_ORGANIZATION_PROXY = "CANNOT_GET_ORGANIZATION_PROXY";
-
-        public const string CANNOT_GET_ORGANIZATION_BY_ITEM_ID = "CANNOT_GET_ORGANIZATION_BY_ITEM_ID";
-
-        public const string CANNOT_GET_ACCOUNT = "CANNOT_GET_ACCOUNT";
-
-        public const string CANNOT_GET_DISTRIBUTION_LIST_PERMISSIONS = "CANNOT_GET_DISTRIBUTION_LIST_PERMISSIONS";
-
-        public const string CANNOT_SET_DISTRIBUTION_LIST_PERMISSIONS = "CANNOT_SET_DISTRIBUTION_LIST_PERMISSIONS";
-
-    }
-}
+#endif
