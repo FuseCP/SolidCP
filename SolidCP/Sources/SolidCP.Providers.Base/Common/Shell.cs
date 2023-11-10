@@ -12,7 +12,7 @@ using System.ComponentModel;
 namespace SolidCP.Providers
 {
 
-	public class LogReader : StreamReader
+	internal class LogReader : StreamReader
 	{
 		public LogReader(Shell shell, StreamReader r, Action<string> log) : base(r.BaseStream)
 		{

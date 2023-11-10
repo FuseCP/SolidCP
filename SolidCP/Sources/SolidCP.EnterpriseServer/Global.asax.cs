@@ -53,8 +53,8 @@ namespace SolidCP.EnterpriseServer
         {
             //if (!Debugger.IsAttached) Debugger.Launch();
             UsernamePasswordValidator.Init();
+            Web.Clients.CertificateValidator.Init();
             Web.Services.StartupNetFX.Start();
-
         }
 
         protected void Application_End(object sender, EventArgs e)
