@@ -39,7 +39,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public void TestAnonymousNet6(Protocols protocol)
         {
-            using (var client = new AutoDiscovery() { Url = "https://localhost:9007" })
+            using (var client = new AutoDiscovery() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
@@ -61,7 +61,7 @@ namespace SolidCP.Server.Tests
         [TestMethod]
         public async Task TestAnonymousNet6Async()
         {
-            using (var client = new AutoDiscovery() { Url = "https://localhost:9007" })
+            using (var client = new AutoDiscovery() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
@@ -81,7 +81,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public async Task TestPasswordNet6(Protocols protocol)
         {
-            using (var client = new OperatingSystem() { Url = "https://localhost/server" })
+            using (var client = new Client.OperatingSystem() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
@@ -92,10 +92,11 @@ namespace SolidCP.Server.Tests
                     client.Credentials.Password = "aWs7wiWmcyph0oYjIRyMBP2yQZQ=";
                     client.Protocol = protocol;
                     var res = client.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
+                    Assert.Fail();
                 }
                 catch (Exception ex)
                 {
-                    throw;
+                    
                 }
             }
         }
@@ -105,7 +106,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public void TestAnonymousNet48(Protocols protocol)
         {
-            using (var client = new AutoDiscovery() { Url = "https://localhost/server" })
+            using (var client = new AutoDiscovery() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {
@@ -127,7 +128,7 @@ namespace SolidCP.Server.Tests
         [TestMethod]
         public async Task TestAnonymousNet48Async()
         {
-            using (var client = new AutoDiscovery() { Url = "https://localhost/server" })
+            using (var client = new AutoDiscovery() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {
@@ -147,7 +148,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public async Task TestPasswordNet48(Protocols protocol)
         {
-            using (var client = new OperatingSystem() { Url = "https://localhost:9007" })
+            using (var client = new Client.OperatingSystem() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {

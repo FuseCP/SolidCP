@@ -11,25 +11,29 @@ using Microsoft.AspNetCore.Razor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
-#if NETFRAMEWORK
-using Microsoft.Web.Services3;
-using System.ServiceModel;
-#else
 using CoreWCF;
 using CoreWCF.Description;
 using CoreWCF.Channels;
 using CoreWCF.Configuration;
-#endif
+
 using System.Security.Cryptography.X509Certificates;
 using SolidCP.Web.Services;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.Extensions.Configuration;
 using System.Runtime.Intrinsics.X86;
+using System.IO;
 
 namespace SolidCP.Web.Services
 {
-    public static class StartupCore
+	public static class StartupCore
 	{
+
+		public static void Log(string msg)
+		{
+			Console.WriteLine(msg);
+			if (Debugger.IsAttached) Debugger.Log(1, "SolidCP", msg);
+		}
+
 		public static int? HttpPort = null;
 		public static int? HttpsPort = null;
 		public static int? NetTcpPort = null;
@@ -41,6 +45,8 @@ namespace SolidCP.Web.Services
 		public static StoreName StoreName = StoreName.My;
 		public static X509FindType FindType = X509FindType.FindBySubjectName;
 		public static object Name = "localhost";
+		public static string? CertificateFile = null;
+		public static string? CertificatePassword = null;
 		public static string Password;
 		public static string ProbingPaths = "";
 
@@ -73,11 +79,13 @@ namespace SolidCP.Web.Services
 			StoreName = builder.Configuration.GetValue<StoreName?>("ServerCertificate:StoreName") ?? StoreName.My;
 			FindType = builder.Configuration.GetValue<X509FindType?>("ServerCertificate:FindType") ?? X509FindType.FindBySubjectName;
 			Name = builder.Configuration.GetValue<object?>("ServerCertificate:Name") ?? "localhost";
+			CertificateFile = builder.Configuration.GetValue<string?>("ServerCertificate:File");
+			CertificatePassword = builder.Configuration.GetValue<string?>("ServerCertificate:Password");
 			Password = builder.Configuration.GetValue<string?>("Server:Password") ?? String.Empty;
 
 			builder.Services.AddRazorPages();
 			//builder.Services.AddHttpContextAccessor();
-  			ConfigureServices(builder.Services);
+			ConfigureServices(builder.Services);
 
 			if (NetTcpPort.HasValue) builder.WebHost.UseNetTcp(NetTcpPort.Value);
 
@@ -91,11 +99,35 @@ namespace SolidCP.Web.Services
 				{
 					listenOptions.UseHttps(listenOptions =>
 					{
-						X509Store store = new X509Store(StoreName, StoreLocation);
-						store.Open(OpenFlags.ReadOnly);
-						var cert = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
-						if (cert != null) listenOptions.ServerCertificate = cert;
+
+						X509Certificate2 cert = null;
+						if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
+						{
+							X509Store store = new X509Store(StoreName, StoreLocation);
+							store.Open(OpenFlags.ReadOnly);
+							cert = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
+							if (cert != null) Log($"Use certificate {cert.GetNameInfo(X509NameType.SimpleName, false)} {cert.FriendlyName} found in {StoreName} at {StoreLocation}");
+							else Log($"Certificate for {Name} not found in {StoreName} at {StoreLocation}");
+						}
+						else
+						{
+							var file = new DirectoryInfo(CertificateFile).FullName;
+							if (File.Exists(file))
+							{
+								var certs = new X509Certificate2Collection();
+								certs.Import(file, CertificatePassword, X509KeyStorageFlags.DefaultKeySet);
+								cert = certs.FirstOrDefault();
+								if (cert != null) Console.Write($"Use certificate {cert.SubjectName} from {file}.");
+								else Console.Write($"The certificate {file} was not found.");
+							}
+						}
+
+						if (cert == null) return;
+
+						listenOptions.ServerCertificate = cert;
+
 					});
+
 					if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
 				});
 			});
@@ -108,8 +140,8 @@ namespace SolidCP.Web.Services
 			}
 
 			app.UseDefaultFiles()
-				.UseStaticFiles()
-				.UseRouting();
+						.UseStaticFiles()
+						.UseRouting();
 
 			app.MapRazorPages();
 
@@ -124,7 +156,7 @@ namespace SolidCP.Web.Services
 			services
 				.AddServiceModelServices()
 				.AddServiceModelMetadata();
-				//.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
+			//.AddSingleton<IServiceBehavior, UseRequestHeadersForMetadataAddressBehavior>();
 		}
 
 		public static IServiceBuilder AddServiceEndpoint(this IServiceBuilder builder, Type service, Type contract, Binding binding, Uri address)
@@ -145,24 +177,25 @@ namespace SolidCP.Web.Services
 					})
 					.Where(ws => ws.Contract != null);
 
-                builder.ConfigureAllServiceHostBase(host => {
-                    host.Credentials.ServiceCertificate
-                        .SetCertificate(StoreLocation, StoreName, FindType, Name);
-                    var behavior = host.Description.Behaviors.Find<ServiceDebugBehavior>();
-                    if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
+				builder.ConfigureAllServiceHostBase(host =>
+				{
+					host.Credentials.ServiceCertificate
+						.SetCertificate(StoreLocation, StoreName, FindType, Name);
+					var behavior = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+					if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
 					else
 					{
 						var debugBehavior = new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true };
 						host.Description.Behaviors.Add(debugBehavior);
 					}
-                });
+				});
 
-                foreach (var ws in webServices)
+				foreach (var ws in webServices)
 				{
-                    var policy = ws.Contract.GetCustomAttributes(false).OfType<Services.PolicyAttribute>().FirstOrDefault();
-                    var isAuthenticated = policy != null;
+					var policy = ws.Contract.GetCustomAttributes(false).OfType<Services.PolicyAttribute>().FirstOrDefault();
+					var isAuthenticated = policy != null;
 
-                    BasicHttpBinding basicHttpBinding;
+					BasicHttpBinding basicHttpBinding;
 					WSHttpBinding wsHttpBinding;
 					NetHttpBinding netHttpBinding;
 					NetTcpBinding netTcpBinding = null;
@@ -171,11 +204,11 @@ namespace SolidCP.Web.Services
 					builder.AddService(ws.Service, options =>
 					{
 						//if (HttpPort.HasValue) options.BaseAddresses.Add(new Uri($"http://{HttpHost}:{HttpPort}/{ws.Service.Name}"));
-                        //if (HttpsPort.HasValue) options.BaseAddresses.Add(new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}"));
-                        //if (NetTcpPort.HasValue) options.BaseAddresses.Add(new Uri($"tcp.net://{NetTcpHost}:{NetTcpPort}/{ws.Service.Name}"));
-                    });
+						//if (HttpsPort.HasValue) options.BaseAddresses.Add(new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}"));
+						//if (NetTcpPort.HasValue) options.BaseAddresses.Add(new Uri($"tcp.net://{NetTcpHost}:{NetTcpPort}/{ws.Service.Name}"));
+					});
 
-                    if (isAuthenticated)
+					if (isAuthenticated)
 					{
 						if (HttpsPort.HasValue)
 						{
@@ -217,39 +250,39 @@ namespace SolidCP.Web.Services
 							builder.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri)
 								.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
 								.AddServiceEndpoint(ws.Service, ws.Contract, wsHttpBinding, wsHttpUri)
-								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);	
+								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);
 						}
 						if (HttpsPort.HasValue)
 						{
-                            basicHttpBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-                            basicHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-                            basicUri = new Uri($"https://{HttpsHost}:{HttpsPort}/basic/{ws.Service.Name}");
-                            wsHttpBinding = new WSHttpBinding(CoreWCF.SecurityMode.Transport);
-                            wsHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-                            wsHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/ws/{ws.Service.Name}");
-                            netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
-                            netHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-                            netHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/net/{ws.Service.Name}");
-                            defaultUri = new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}");
-                            builder.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri)
-                                .AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
-                                .AddServiceEndpoint(ws.Service, ws.Contract, wsHttpBinding, wsHttpUri)
-                                .AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);
-                        }
-                        if (NetTcpPort.HasValue)
+							basicHttpBinding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+							basicHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+							basicUri = new Uri($"https://{HttpsHost}:{HttpsPort}/basic/{ws.Service.Name}");
+							wsHttpBinding = new WSHttpBinding(CoreWCF.SecurityMode.Transport);
+							wsHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+							wsHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/ws/{ws.Service.Name}");
+							netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
+							netHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+							netHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/net/{ws.Service.Name}");
+							defaultUri = new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}");
+							builder.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, defaultUri)
+								.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, basicUri)
+								.AddServiceEndpoint(ws.Service, ws.Contract, wsHttpBinding, wsHttpUri)
+								.AddServiceEndpoint(ws.Service, ws.Contract, netHttpBinding, netHttpUri);
+						}
+						if (NetTcpPort.HasValue)
 						{
 							netTcpBinding = new NetTcpBinding(CoreWCF.SecurityMode.None);
 							netTcpUri = new Uri($"net.tcp://{NetTcpHost}:{NetTcpPort}/nettcp/{ws.Service.Name}");
 							builder.AddServiceEndpoint(ws.Service, ws.Contract, netTcpBinding, netTcpUri);
 						}
 					}
-                }
+				}
 
-                // Configure WSDL to be available
-                var serviceMetadataBehavior = app.ApplicationServices.GetRequiredService<ServiceMetadataBehavior>();
+				// Configure WSDL to be available
+				var serviceMetadataBehavior = app.ApplicationServices.GetRequiredService<ServiceMetadataBehavior>();
 				serviceMetadataBehavior.HttpGetEnabled = serviceMetadataBehavior.HttpsGetEnabled = true;
 			});
-			
+
 		}
 	}
 }

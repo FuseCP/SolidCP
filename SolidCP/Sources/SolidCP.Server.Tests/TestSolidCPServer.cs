@@ -146,10 +146,6 @@ namespace SolidCP.Server.Tests
             {
                 try
                 {
-                    client.SoapHeader = new ServiceProviderSettingsSoapHeader()
-                    {
-                        Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
-                    };
                     client.Credentials.Password = "uqCP8Qc3EjbAzzjpiSOu+Z+icAqYOtzM7Luy+OTIRZ8=";
                     client.Protocol = protocol;
 
@@ -157,9 +153,14 @@ namespace SolidCP.Server.Tests
                     var res = client.Echo("Hello");
                     Assert.AreEqual("Hello", res);
 
-                    // test method with soap header
-                    var settings = client.EchoSettings();
-                    Assert.AreEqual(((ServiceProviderSettingsSoapHeader)client.SoapHeader).Settings[0], settings);
+					// test method with soap header
+					var header = new ServiceProviderSettingsSoapHeader()
+					{
+						Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
+					};
+                    client.SoapHeader = header;
+					var settings = client.EchoSettings();
+                    Assert.AreEqual(header.Settings[0], settings);
 
                 }
                 catch (Exception ex)
@@ -175,7 +176,7 @@ namespace SolidCP.Server.Tests
         // requires an IIS application on localhost/server pointing to the SolidCP.Server directory
         public void AnonymousNet48(Protocols protocol)
         {
-            using (var client = new Test() { Url = "https://localhost:44301" })
+            using (var client = new Test() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {
@@ -203,7 +204,7 @@ namespace SolidCP.Server.Tests
         // requires an IIS application on localhost/server pointing to the SolidCP.Server directory
         public void AnonymousWithSoapHeaderNet48(Protocols protocol)
         {
-            using (var client = new Test() { Url = "https://localhost:44301" })
+            using (var client = new Test() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {
@@ -234,7 +235,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public void AuthenticatedNet48(Protocols protocol)
         {
-            using (var client = new TestWithAuthentication() { Url = "https://localhost:44301" })
+            using (var client = new TestWithAuthentication() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {
@@ -267,7 +268,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public void WrongPasswordNet48(Protocols protocol)
         {
-            using (var client = new TestWithAuthentication() { Url = "https://localhost:44301" })
+            using (var client = new TestWithAuthentication() { Url = IISExpress.HttpsUrl })
             {
                 try
                 {
@@ -304,7 +305,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public void WrongPasswordNet6(Protocols protocol)
         {
-            using (var client = new TestWithAuthentication() { Url = "https://localhost:9007" })
+            using (var client = new TestWithAuthentication() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {

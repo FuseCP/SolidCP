@@ -62,6 +62,7 @@ namespace SolidCP.Web.Services
 			Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new UserNamePasswordValidator() { Policy = policy };
 			var behavior = Description.Behaviors.Find<ServiceDebugBehavior>();
 			if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
+			else Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
 
 			//Credentials.ServiceCertificate.SetCertificate(
 			//	StoreLocation.LocalMachine, StoreName.My, X509FindType.FindBySubjectName, "localhost");

@@ -11,7 +11,10 @@ namespace SolidCP.Server.Tests
     public class Kestrel: IDisposable
     {
         Process? process = null;
-        public Kestrel()
+
+		public const string HttpUrl = "http://localhost:9011";
+		public const string HttpsUrl = "https://localhost:9007";
+		public Kestrel()
         {
             var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin\net.core\SolidCP.Server.exe").FullName;
             var startInfo = new ProcessStartInfo(exe)

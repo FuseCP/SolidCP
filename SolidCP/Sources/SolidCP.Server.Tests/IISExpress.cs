@@ -10,7 +10,9 @@ namespace SolidCP.Server.Tests
     public class IISExpress: IDisposable
     {
         Process? process = null;
-    
+
+        public const string HttpUrl = "http://localhost:9022";
+        public const string HttpsUrl = "https://localhost/server";
         public IISExpress()
         {
             var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
@@ -39,7 +41,7 @@ namespace SolidCP.Server.Tests
                 try
                 {
                     var client = new HttpClient();
-                    var response = client.GetAsync("https://localhost:44301").Result;
+                    var response = client.GetAsync(HttpsUrl).Result;
                     done = true;
                 }
                 catch (Exception ex) { }

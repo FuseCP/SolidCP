@@ -14,7 +14,8 @@ namespace SolidCP.Web.Clients
 		private static bool ValidateRemoteCertificate(object sender, X509Certificate cert, X509Chain chain, SslPolicyErrors error)
 		{
 #if DEBUG
-			return true;
+			//return true;
+			return error == SslPolicyErrors.None;
 #else
 			return error == SslPolicyErrors.None;
 #endif
@@ -22,6 +23,7 @@ namespace SolidCP.Web.Clients
 
 		public static void Init()
 		{
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 			ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
 		} 
 	}

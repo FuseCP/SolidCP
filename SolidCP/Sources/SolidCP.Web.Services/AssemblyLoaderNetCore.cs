@@ -18,10 +18,12 @@ namespace SolidCP.Web.Services
 		{
 			AssemblyLoadContext.Default.Resolving += Resolve;
 		}	
+
+		static readonly string exepath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+		static readonly string[] paths = StartupCore.ProbingPaths.Split(';');
+
 		public static Assembly Resolve(AssemblyLoadContext context, AssemblyName name)
 		{
-			var exepath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			string[] paths = StartupCore.ProbingPaths.Split(';');
 			return paths
 				.Select(p => {
 					var file = Path.Combine(new DirectoryInfo(Path.Combine(exepath, p)).FullName, $"{name.Name}.dll");

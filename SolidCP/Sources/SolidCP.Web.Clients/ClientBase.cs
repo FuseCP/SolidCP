@@ -43,10 +43,10 @@ namespace SolidCP.Web.Client
 						.Strip("gprc/web")
 						.Strip("ssl")
 						.Strip("nettcp");
+						//.Strip("nettcp/ssl");
 					
 					if (value == Protocols.NetTcp && IsEncrypted) value = Protocols.NetTcpSsl;
 
-						//.Strip("nettcp/ssl");
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
 					else if (value == Protocols.BasicHttps) url = url.SetScheme("https").SetApi("basic");
 					else if (value == Protocols.NetHttp) url = url.SetScheme("http").SetApi("net");
@@ -84,8 +84,8 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else if (IsEncrypted) protocol = Protocols.WSHttp;
-					else protocol = Protocols.BasicHttp;
+					else if (IsEncrypted) Protocol = Protocols.WSHttp;
+					else Protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
 				{
@@ -94,7 +94,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttps;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPCSsl;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWebSsl;
-					else protocol = Protocols.BasicHttps;
+					else Protocol = Protocols.BasicHttps;
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
@@ -159,8 +159,13 @@ namespace SolidCP.Web.Client
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
 		public static string SetApi(this string url, string api)
 		{
-			url = Regex.Replace(url, "(/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web))?(?=(?:/[a-zA-Z0-9_]+)?(?:/?(?:\\?|$)))", $"/{api}");
-			return url;
+			var parts = url.Split('?');
+			url = parts[0];
+			if (url[url.Length-1] == '/') url = url.Substring(0, url.Length - 1);
+			url = Regex.Replace(url, "(/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web))(?=(?:/[a-zA-Z0-9_]+)?$)|((?<!/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web)(?:/[a-zA-Z0-9_]+)?)$)", $"/{api}");
+
+			if (parts.Length > 1) return $"{url}?{parts[1]}";
+			else return url;
 		}
 
 		public static bool HasApi(this string url, string api) => Regex.IsMatch(url, $"/{api}(?:/|$|\\?)");
