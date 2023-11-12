@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -63,7 +64,7 @@ namespace SolidCP.EnterpriseServer
             set { this.dataTypeId = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public ScheduleTaskParameterType DataType
         {
             get { return (ScheduleTaskParameterType)Enum.Parse(typeof(ScheduleTaskParameterType), dataTypeId, true); }

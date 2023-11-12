@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -58,7 +59,7 @@ namespace SolidCP.EnterpriseServer
         private NameValueCollection settingsHash = null;
         public string[][] SettingsArray;
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         NameValueCollection Settings
         {
             get
@@ -79,7 +80,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public string this[string settingName]
         {
             get
