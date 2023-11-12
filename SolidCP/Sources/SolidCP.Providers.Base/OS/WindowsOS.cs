@@ -380,43 +380,48 @@ namespace SolidCP.Server.Utils
 							}
 							break;
 						case 6:
-                            switch (osInfo.Version.Minor)
-                            {
-                                case 0:
-                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-                                        ret = WindowsVersion.Vista;
-                                    else
-                                        ret = WindowsVersion.WindowsServer2008;
-                                    break;
-                                case 1:
-                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-                                        ret = WindowsVersion.Windows7;
-                                    else
-                                        ret = WindowsVersion.WindowsServer2008R2;
-                                    break;
-                                case 2:
-                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-                                        ret = WindowsVersion.Windows8;
-                                    else
-                                        ret = WindowsVersion.WindowsServer2012;
-                                    break;
-                                case 3:
-                                    if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
-                                        ret = WindowsVersion.Windows81;
-                                    else
-                                        ret = WindowsVersion.WindowsServer2012R2;
-                                    break;
-                            }
-                            break;
-                        case 10:
-                            int ReleaseId = GetReleaseId();
+							switch (osInfo.Version.Minor)
+							{
+								case 0:
+									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+										ret = WindowsVersion.Vista;
+									else
+										ret = WindowsVersion.WindowsServer2008;
+									break;
+								case 1:
+									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+										ret = WindowsVersion.Windows7;
+									else
+										ret = WindowsVersion.WindowsServer2008R2;
+									break;
+								case 2:
+									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+										ret = WindowsVersion.Windows8;
+									else
+										ret = WindowsVersion.WindowsServer2012;
+									break;
+								case 3:
+									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
+										ret = WindowsVersion.Windows81;
+									else
+										ret = WindowsVersion.WindowsServer2012R2;
+									break;
+							}
+							break;
+						case 10:
+							int ReleaseId = GetReleaseId();
 							// Server 2016
 							if (ReleaseId == 1607 || ReleaseId == 1803 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.WindowsServer2016;
 							// Windows 10 below 1903
 							else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
 							// Server 2019 and Windows 10 above 1903
-							else if (ReleaseId == 1809 || ReleaseId >= 1903) ret = WindowsVersion.WindowsServer2019;
-							else {
+							else if (ReleaseId == 1809 || ReleaseId == 1903)
+							{
+								if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.Windows10;
+								else ret = WindowsVersion.WindowsServer2019;
+							}
+							else
+							{
 								var reg = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
 
 								var currentBuildStr = (string)reg.GetValue("CurrentBuild");
@@ -425,7 +430,8 @@ namespace SolidCP.Server.Utils
 								if (currentBuild >= 22000 && info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)
 								{
 									ret = WindowsVersion.Windows11;
-								} else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
+								}
+								else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
 								{
 									ret = WindowsVersion.WindowsServer2022;
 								}
