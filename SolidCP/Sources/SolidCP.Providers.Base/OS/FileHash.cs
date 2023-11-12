@@ -52,7 +52,7 @@ namespace SolidCP.Providers.OS
             set { filesArray = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public List<FileHash> Files
         {
             get { return files; }

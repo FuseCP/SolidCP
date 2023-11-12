@@ -44,7 +44,7 @@ namespace SolidCP.Providers.OS
         Dictionary<uint, FileHash> checkSums = new Dictionary<uint, FileHash>();
         FileHash hash;
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public Dictionary<uint, FileHash> CheckSums
         {
             get { return checkSums; }

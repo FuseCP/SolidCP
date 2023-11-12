@@ -374,7 +374,7 @@ namespace SolidCP.Providers.Web
 		/// <summary>
 		/// Gets fully qualified name which consists of parent website name if present and virtual directory name.
 		/// </summary>
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
         [IgnoreDataMember]
     	public string VirtualPath
     	{
@@ -393,7 +393,7 @@ namespace SolidCP.Providers.Web
         /// <summary>
         /// Gets fully qualified name which consists of parent website name if present and virtual directory name.
         /// </summary>
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         [IgnoreDataMember]
         public string FullQualifiedPath
         {

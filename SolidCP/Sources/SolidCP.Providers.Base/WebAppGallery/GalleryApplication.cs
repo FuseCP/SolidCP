@@ -177,7 +177,7 @@ namespace SolidCP.Providers.WebAppGallery
 
 		public DateTime Published { get; set; }
 
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
         public string DownloadUrl
 		{
 			get
@@ -193,7 +193,7 @@ namespace SolidCP.Providers.WebAppGallery
 
         public string IconUrl { get; set; }
 
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
 		public string StartPage
 		{
 			get
@@ -207,7 +207,7 @@ namespace SolidCP.Providers.WebAppGallery
 			}
 		}
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public string Size
 		{
 			get

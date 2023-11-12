@@ -85,7 +85,7 @@ namespace SolidCP.Providers.FTP
 			set { this.enabled = value; }
 		}
 
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
 		public string VirtualPath
 		{
 			get
