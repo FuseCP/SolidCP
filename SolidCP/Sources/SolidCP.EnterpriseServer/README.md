@@ -6,7 +6,7 @@ In order to debug SolidCP.EnterpriseServer please:
   In order to configure IIS Express for this on my machine I'd have to run the following commands:
   
   IisExpressAdminCmd setupSslUrl -url:https://localhost:9021 -UseSelfSigned
-  appcmd add site /name:solidcp.enterpriseserver /bindings:http/*:9020:localhost,https/*:9021:localhost /physicalPath:c:\github\solidcp\solidcp\sources\solidcp.server
+  appcmd add site /name:solidcp.enterpriseserver /bindings:http/*:9020:localhost,https/*:9021:localhost /physicalPath:c:\github\solidcp\solidcp\sources\solidcp.enterpriseserver
 
   Unfortunately it's not possible to debug NET Framework projects directrly in Visual Studio for SDK style projects. In order to debug, you have to start iisexpress via the command shell and attach to the process within Visual Studio.
 
