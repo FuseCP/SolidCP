@@ -1,9 +1,11 @@
 {
   "profiles": {
-    "IIS Express Net 4.8": {
-      "commandName": "IISExpress"
+    "net48": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\IIS Express\\iisexpress.exe",
+      "commandLineArgs": "/site:solidcp.enterpriseserver"
     },
-    "NET 6": {
+    "net6": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

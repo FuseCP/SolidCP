@@ -16,6 +16,7 @@
     <PackageReference Include="System.ServiceModel.Http" Version="6.1.0" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="6.1.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="6.1.0" />
+    <PackageReference Include="System.ServiceModel.NetNamedPipe" Version="6.1.0" />  
 </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">

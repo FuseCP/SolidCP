@@ -23,7 +23,7 @@ namespace SolidCP.Web.Clients
 
 		public static void Init()
 		{
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 			ServicePointManager.ServerCertificateValidationCallback += ValidateRemoteCertificate;
 		} 
 	}

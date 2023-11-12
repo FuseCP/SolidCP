@@ -42,9 +42,11 @@ namespace SolidCP.Web.Client
 						.Strip("gprc")
 						.Strip("gprc/web")
 						.Strip("ssl")
-						.Strip("nettcp");
-						//.Strip("nettcp/ssl");
-					
+						.Strip("tcp")
+						.Strip("tcp/ssl")
+						.Strip("pipe")
+						.Strip("pipe/ssl");
+
 					if (value == Protocols.NetTcp && IsEncrypted) value = Protocols.NetTcpSsl;
 
 					if (value == Protocols.BasicHttp) url = url.SetScheme("http").SetApi("basic");
@@ -53,12 +55,14 @@ namespace SolidCP.Web.Client
 					else if (value == Protocols.NetHttps) url = url.SetScheme("https").SetApi("net");
 					else if (value == Protocols.WSHttp) url = url.SetScheme("http").SetApi("ws");
 					else if (value == Protocols.WSHttps) url = url.SetScheme("https").SetApi("ws");
-					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").SetApi("nettcp");
-					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").SetApi("nettcp");
+					else if (value == Protocols.NetTcp) url = url.SetScheme("net.tcp").SetApi("tcp");
+					else if (value == Protocols.NetTcpSsl) url = url.SetScheme("net.tcp").SetApi("tcp/ssl");
 					else if (value == Protocols.gRPC) url = url.SetScheme("http").SetApi("grpc");
 					else if (value == Protocols.gRPCSsl) url = url.SetScheme("https").SetApi("grpc");
 					else if (value == Protocols.gRPCWeb) url = url.SetScheme("http").SetApi("grpc/web");
 					else if (value == Protocols.gRPCWebSsl) url = url.SetScheme("https").SetApi("grpc/web");
+					else if (value == Protocols.NetPipe) url = url.SetScheme("net.pipe").SetApi("pipe");
+					else if (value == Protocols.NetPipeSsl) url = url.SetScheme("net.pipe").SetApi("pipe/ssl");
 					else if (value == Protocols.Assembly) url = url.SetScheme("assembly");
 				}
 				protocol = value;
@@ -98,19 +102,18 @@ namespace SolidCP.Web.Client
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
-					if (url.HasApi("nettcp"))
-					{
-						if (IsEncrypted) Protocol = Protocols.NetTcpSsl;
-						else Protocol = Protocols.NetTcp;
-					}
+					if (url.HasApi("tcp/ssl")) Protocol = Protocols.NetTcpSsl;
+					else if (url.HasApi("tcp")) Protocol = Protocols.NetTcp;
+					else throw new NotSupportedException("net.tcp url must include tcp api");
 				}
-#if NETFRAMEWORK
+				//#if NETFRAMEWORK
 				else if (url.StartsWith("net.pipe://"))
 				{
-					if (url.HasApi("ssl")) Protocol = Protocols.NetPipeSsl;
-					else Protocol = Protocols.NetPipe;
+					if (url.HasApi("pipe/ssl")) Protocol = Protocols.NetPipeSsl;
+					else if (url.HasApi("pipe")) Protocol = Protocols.NetPipe;
+					else throw new NotSupportedException("net.pipe url must include pipe api");
 				}
-#endif
+				//#endif
 				else if (url.StartsWith("assembly://")) Protocol = Protocols.Assembly;
 				else throw new NotSupportedException("illegal protocol");
 			}
@@ -126,6 +129,18 @@ namespace SolidCP.Web.Client
 		public bool IsEncrypted => this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
 					?.GetCustomAttribute<HasPolicyAttribute>() != null;
+
+		public bool IsLocal
+		{
+			get
+			{
+				var host = new Uri(url).Host;
+				return host == "localhost" || host == "127.0.0.1" || host == "::1" ||
+					Regex.IsMatch(host, "^192\\.168\\.[0-9]+\\.[0-9]+$") || // local network ip
+					url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase);
+			}
+		}
+
 
 		public bool IsAuthenticated
 		{
@@ -161,8 +176,8 @@ namespace SolidCP.Web.Client
 		{
 			var parts = url.Split('?');
 			url = parts[0];
-			if (url[url.Length-1] == '/') url = url.Substring(0, url.Length - 1);
-			url = Regex.Replace(url, "(/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web))(?=(?:/[a-zA-Z0-9_]+)?$)|((?<!/(?:net|ws|basic|ssl|nettcp|pipe|grpc|grpc/web)(?:/[a-zA-Z0-9_]+)?)$)", $"/{api}");
+			if (url[url.Length - 1] == '/') url = url.Substring(0, url.Length - 1);
+			url = Regex.Replace(url, "(/(?:net|ws|basic|ssl|tcp|pipe|tcp/ssl|pipe/ssl|grpc|grpc/web))(?=(?:/[a-zA-Z0-9_]+)?$)|((?<!/(?:net|ws|basic|ssl|tcp|pipe|tcp/ssl|pipe/ssl|grpc|grpc/web)(?:/[a-zA-Z0-9_]+)?)$)", $"/{api}");
 
 			if (parts.Length > 1) return $"{url}?{parts[1]}";
 			else return url;
@@ -185,49 +200,18 @@ namespace SolidCP.Web.Client
 
 		T client = null;
 
-        protected T Client
+		protected T Client
 		{
 			get
 			{
 
 				var serviceurl = $"{url}/{this.GetType().Name}";
 
-                /*
-				if (IsWCF)
-				{
-					serviceurl = url
-					   .Strip("basic")
-					   .Strip("net")
-					   .Strip("ws")
-					   .Strip("gprc")
-					   .Strip("gprc/web")
-					   .Strip("ssl")
-					   .Strip("net.tcp/ssl")
-					   .Strip("net.tcp");
-
-					serviceurl = $"{serviceurl}/{this.GetType().Name}";
-					switch (Protocol)
-					{
-						case Protocols.BasicHttp:
-						case Protocols.BasicHttps: serviceurl = $"{serviceurl}/basic"; break;
-						case Protocols.NetHttp:
-						case Protocols.NetHttps: serviceurl = $"{serviceurl}/net"; break;
-						case Protocols.WSHttp:
-						case Protocols.WSHttps: serviceurl = $"{serviceurl}/ws"; break;
-						case Protocols.NetTcp:
-						case Protocols.NetTcpSsl: serviceurl = $"{serviceurl}/nettcp"; break;
-						case Protocols.NetPipe:
-						case Protocols.NetPipeSsl: serviceurl = $"{serviceurl}/pipe"; break;
-					}
-				}
-				*/
-
-				// TODO set the credentials on client
-                if (client != null)
+				if (client != null)
 				{
 					if (client is IClientChannel chan)
 					{
-						// reuse client if it uses the same address and credentials
+						// reuse client if it uses the same address
 						if (chan.RemoteAddress.Uri.AbsoluteUri != serviceurl)
 						{
 							client = null;
@@ -254,81 +238,68 @@ namespace SolidCP.Web.Client
 					switch (Protocol)
 					{
 						case Protocols.BasicHttp:
-							if (isEncrypted)
+							if (!isEncrypted || IsLocal)
 							{
-								//throw new NotSupportedException("This api is not supported on this service.");
-								binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
+								binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
 							}
-							else binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
+							else
+							{
+								throw new NotSupportedException("This api is not secure on this connection.");
+							}
 							break;
-						case Protocols.BasicHttps: 
-							if (isEncrypted)
-							{
-								var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-								binding = basics;
-							} else
-							{
-                                var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-                                binding = basics;
-                            }
-                            break;
+						case Protocols.BasicHttps:
+							var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+							binding = basics;
+							break;
 						case Protocols.NetHttp:
-							if (isEncrypted)
+							if (!isEncrypted || IsLocal)
 							{
-								// throw new NotSupportedException("This api is not supported on this service.");
-								binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
-							} else binding = new NetHttpBinding(BasicHttpSecurityMode.None);
+								binding = new NetHttpBinding(BasicHttpSecurityMode.None);
+							}
+							else
+							{
+								throw new NotSupportedException("This api is not secure on this connection.");
+							}
 							break;
-						case Protocols.NetHttps: 
-							if (isEncrypted)
-							{
-								var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
-								binding = nets;
-                            } else
-							{
-                                var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
-                                binding = nets;
-                            }
-
-                            break;
+						case Protocols.NetHttps:
+							var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
+							binding = nets;
+							break;
 						case Protocols.WSHttp:
-							if (isEncrypted)
+							if (!isEncrypted || IsLocal)
 							{
-								//throw new NotSupportedException("This api is not supported on this service.");
-								var ws = new WSHttpBinding(SecurityMode.Message);
-								ws.Security.Message.ClientCredentialType = MessageCredentialType.None;
-								ws.Security.Message.NegotiateServiceCredential = true;
-								ws.Security.Message.EstablishSecurityContext = true;
-								binding = ws;
+								binding = new WSHttpBinding(SecurityMode.None);
 							}
-							else binding = new WSHttpBinding(SecurityMode.None);
+							else
+							{
+								throw new NotSupportedException("This api is not secure on this connection.");
+							}
 							break;
-						case Protocols.WSHttps: 
-							if (isEncrypted)
-							{
-								var wss = new WSHttpBinding(SecurityMode.Transport);
-								binding = wss;
-							} else
-							{
-                                var wss = new WSHttpBinding(SecurityMode.Transport);
-                                binding = wss;
-                            }
-                            break;
+						case Protocols.WSHttps:
+							var wss = new WSHttpBinding(SecurityMode.Transport);
+							binding = wss;
+							break;
 						case Protocols.NetTcp:
-						case Protocols.NetTcpSsl:
-							if (isEncrypted)
+							if (!isEncrypted || IsLocal)
 							{
-								var nettcp = new NetTcpBinding(SecurityMode.Transport);
-								binding = nettcp;
+								binding = new NetTcpBinding(SecurityMode.None);
 							}
-							else binding = new NetTcpBinding(SecurityMode.Transport);
+							else
+							{
+								throw new NotSupportedException("This api is not secure on this connection.");
+							}
 							break;
-#if NETFRAMEWORK
-						case Protocols.NetPipe: 
-							
-							binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None); break;
-						case Protocols.NetPipeSsl: binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport); break;
-#endif
+						case Protocols.NetTcpSsl:
+							binding = new NetTcpBinding(SecurityMode.Transport);
+							break;
+						//#if NETFRAMEWOR
+						case Protocols.NetPipe:
+							binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+							break;
+						case Protocols.NetPipeSsl:
+							binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+							break;
+							//#endif
 					}
 					binding.ReceiveTimeout = Timeout ?? TimeSpan.FromSeconds(120);
 					binding.SendTimeout = Timeout ?? TimeSpan.FromSeconds(120);

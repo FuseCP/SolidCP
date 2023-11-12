@@ -102,10 +102,12 @@ After:
 				RouteTable.Routes.Add(new ServiceRoute($"basic/{service.Name}", new ServiceHostFactory(), service));
 				RouteTable.Routes.Add(new ServiceRoute($"ws/{service.Name}", new ServiceHostFactory(), service));
 				RouteTable.Routes.Add(new ServiceRoute($"net/{service.Name}", new ServiceHostFactory(), service));
-				RouteTable.Routes.Add(new ServiceRoute($"nettcp/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"tcp/{service.Name}", new ServiceHostFactory(), service));
                 RouteTable.Routes.Add(new ServiceRoute($"pipe/{service.Name}", new ServiceHostFactory(), service));
+				RouteTable.Routes.Add(new ServiceRoute($"tcp/ssl/{service.Name}", new ServiceHostFactory(), service));
+                RouteTable.Routes.Add(new ServiceRoute($"pipe/ssl/{service.Name}", new ServiceHostFactory(), service));
             }
 #endif
-        }
+		}
 	}
 }
