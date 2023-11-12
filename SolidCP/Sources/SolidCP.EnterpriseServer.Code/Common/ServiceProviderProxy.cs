@@ -109,13 +109,21 @@ namespace SolidCP.EnterpriseServer
         {
             // set URL & password
             proxy.Url = serverUrl;
-            if (proxy.IsAuthenticated) proxy.Credentials.Password = serverPassword;
+            if (proxy.IsAuthenticated)
+            {
+                proxy.Credentials.Password = CryptoUtils.Encrypt(serverPassword);
+                proxy.Credentials.UserName = "";
+            }
+            else
+            {
+                proxy.Credentials.Password = "";
+                proxy.Credentials.UserName = "";
+            }
+                //cnfg.ServerUrl = serverUrl;
+                //cnfg.ServerPassword = serverPassword;
 
-            //cnfg.ServerUrl = serverUrl;
-            //cnfg.ServerPassword = serverPassword;
-
-            // configure proxy!
-            cnfg.Configure(proxy);
+                // configure proxy!
+                cnfg.Configure(proxy);
 
             return proxy;
         }
