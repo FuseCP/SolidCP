@@ -7,6 +7,7 @@ using System.ServiceModel.Channels;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
+using System.CodeDom;
 #if !NETFRAMEWORK
 using Grpc.Core;
 using Grpc.Core.Interceptors;
@@ -88,7 +89,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else if (IsEncrypted) Protocol = Protocols.WSHttp;
+					else if (IsEncrypted && !IsLocal) throw new NotSupportedException("This api is not secure over this connection.");
 					else Protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
@@ -103,14 +104,22 @@ namespace SolidCP.Web.Client
 				else if (url.StartsWith("net.tcp://"))
 				{
 					if (url.HasApi("tcp/ssl")) Protocol = Protocols.NetTcpSsl;
-					else if (url.HasApi("tcp")) Protocol = Protocols.NetTcp;
+					else if (url.HasApi("tcp"))
+					{
+						if (IsEncrypted && !IsLocal) throw new NotSupportedException("This api is not secure over this connection.");
+						else Protocol = Protocols.NetTcp;
+					}
 					else throw new NotSupportedException("net.tcp url must include tcp api");
 				}
 				//#if NETFRAMEWORK
 				else if (url.StartsWith("net.pipe://"))
 				{
 					if (url.HasApi("pipe/ssl")) Protocol = Protocols.NetPipeSsl;
-					else if (url.HasApi("pipe")) Protocol = Protocols.NetPipe;
+					else if (url.HasApi("pipe"))
+					{
+						if (IsEncrypted && !IsLocal) throw new NotSupportedException("This api is not secure over this connection.");
+						else Protocol = Protocols.NetPipe;
+					}
 					else throw new NotSupportedException("net.pipe url must include pipe api");
 				}
 				//#endif
@@ -124,7 +133,7 @@ namespace SolidCP.Web.Client
 		public bool IsAssembly => Protocol == Protocols.Assembly;
 		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
-		public bool IsSecureProtocol => IsSsl || Protocol == Protocols.WSHttp;
+		public bool IsSecureProtocol => IsSsl;
 
 		public bool IsEncrypted => this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
@@ -317,7 +326,7 @@ namespace SolidCP.Web.Client
 							FactoryPool[url] = null;
 						}
 					}
-					if (SoapHeader != null || Credentials != null && Credentials.Password != null && IsSsl)
+					if (SoapHeader != null || Credentials != null && Credentials.Password != null && (IsSecureProtocol || IsLocal))
 					{
 						foreach (var b in factory.Endpoint.EndpointBehaviors.ToArray())
 						{

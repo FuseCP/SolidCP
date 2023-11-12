@@ -24,7 +24,8 @@ namespace SolidCP.Web.Client
 
 		public object BeforeSendRequest(ref Message request, IClientChannel channel)
 		{
-			if (SoapHeader != null || Client.Credentials != null && Client.Credentials.Password != null && Client.IsSsl)
+			if (SoapHeader != null || Client.Credentials != null && Client.Credentials.Password != null && 
+				(Client.IsSecureProtocol || Client.IsLocal))
 			{
 				// Prepare the request message copy to be modified
 				MessageBuffer buffer = request.CreateBufferedCopy(Int32.MaxValue);
@@ -37,7 +38,7 @@ namespace SolidCP.Web.Client
 				request.Headers.Add(header);
 				Client.SoapHeader = null;
 			}
-			if (Client.Credentials != null && Client.Credentials.Password != null && Client.IsAuthenticated && Client.IsSecureProtocol)
+			if (Client.Credentials != null && Client.Credentials.Password != null && Client.IsAuthenticated && (Client.IsSecureProtocol || Client.IsLocal))
 			{
 				var cred = new Credentials { Username = Client.Credentials.UserName, Password = Client.Credentials.Password };
 				var header = MessageHeader.CreateHeader(nameof(Credentials), $"{Namespace}{nameof(Credentials)}", cred);
