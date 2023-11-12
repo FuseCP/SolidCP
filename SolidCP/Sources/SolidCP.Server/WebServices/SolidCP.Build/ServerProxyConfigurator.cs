@@ -143,7 +143,7 @@ namespace SolidCP.Server.Client
             // set header
             settingsHeader.Settings = settings.ToArray();
 
-            if (proxy.IsEncrypted && proxy.HasSoapHeaders)
+            if (proxy.HasSoapHeaders && (proxy.IsEncrypted || proxy.IsLocal))
             {
                 proxy.SoapHeader = settingsHeader;
             }
