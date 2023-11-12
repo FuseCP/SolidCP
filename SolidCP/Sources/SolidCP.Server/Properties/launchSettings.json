@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "net6": {
       "commandName": "Project",
@@ -10,7 +11,7 @@
         "APPSETTING_ServerCertificate.StoreLocation": "LocalMachine",
         "APPSETTING_ServerCertificate.StoreName": "My",
         "APPSETTING_ServerCertificate.FindType": "FindBySubjectName",
-        "APPSETTING_ServerCertificate.Name": "localhost",
+        "APPSETTING_ServerCertificate.Name": "localhost"
       },
       "applicationUrl": "https://localhost:9007;http://localhost:9006;net.tcp://localhost:9008"
     },
@@ -29,28 +30,6 @@
       "commandLineArgs": "/site:solidcp.server"
     }
   },
-  "configurations": [
-    {
-      "name": "IIS Express",
-      "type": "clr",
-      "request": "launch",
-      "preLaunchTask": "build",
-      "program": "C:\\Program Files\\IIS Express\\iisexpress.exe",
-      "args": [
-        "/path:${workspaceFolder}\\project\\Payroll.Timesheets.Web",
-        "/port:9024"
-      ],
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "cwd": "${workspaceFolder}/project/Payroll.Timesheets.Web",
-      "serverReadyAction": {
-        "pattern": "Successfully registered URL.* \"(https?://\\S+|[0-9]+)\"",
-        "uriFormat": "%s",
-        "action": "openExternally"
-      }
-    }
-  ],
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
