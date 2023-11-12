@@ -20,6 +20,7 @@ namespace SolidCP.Server.Utils
 		public static bool IsUnix => IsLinux || IsMac ||
 			RuntimeInformation.IsOSPlatform(OSPlatform.Create("FREEBSD")) ||
 			RuntimeInformation.IsOSPlatform(OSPlatform.Create("NETBSD"));
+        public static string Description => RuntimeInformation.OSDescription;
 
         static Providers.OS.IOperatingSystem os = null;
 		public static Providers.OS.IOperatingSystem Current {

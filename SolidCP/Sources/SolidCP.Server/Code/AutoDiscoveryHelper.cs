@@ -105,6 +105,7 @@ namespace SolidCP.Server.Code
             else
 			    return typeof(AutoDiscoveryHelper).Assembly.GetName().Version.ToString(3);
         }
-
-    }
+        public static string OS => Utils.OS.IsWindows ? "Windows" :
+				(Utils.OS.IsMac ? "Mac" : "Unix");
+	}
 }

@@ -69,6 +69,10 @@
 					<td><asp:Literal id="litVersion" runat="server"></asp:Literal></td>
 				</tr>
 				<tr>
+					<td class="FieldName">OS:</td>
+					<td><asp:Literal id="litOS" runat="server"/></td>
+				</tr>
+				<tr>
 					<td class="FieldName">URL:</td>
 					<td><asp:Literal id="litUrl" runat="server"/></td>
 				</tr>
