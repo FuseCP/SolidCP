@@ -34,6 +34,7 @@ using System;
 using System.Net;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Providers.Web
 {

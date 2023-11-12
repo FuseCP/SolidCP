@@ -24,11 +24,11 @@
       },
       "distributionName": ""
     },
-    "net48": {
+    /* "net48": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\IIS Express\\iisexpress.exe",
       "commandLineArgs": "/site:solidcp.server"
-    }
+    } */
   },
   "iisSettings": {
     "windowsAuthentication": false,
