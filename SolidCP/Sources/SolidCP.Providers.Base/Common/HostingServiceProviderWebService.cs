@@ -42,7 +42,7 @@ namespace SolidCP.Providers
         private ServiceProviderSettings providerSettings;
 
         private IHostingServiceProvider provider;
-        protected IHostingServiceProvider Provider
+        protected virtual IHostingServiceProvider Provider
         {
             get
             {
