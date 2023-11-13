@@ -47,7 +47,7 @@ namespace SolidCP.Web.Services
 					{
 						var msg = $"Loaded assembly {p.Name}";
 						Console.WriteLine(msg);
-						if (Debugger.IsAttached) Debugger.Log(1, "info", msg);
+						if (Debugger.IsAttached) Debugger.Log(1, "info", $"{msg}\r\n");
 					}
 					return a;
 				})
