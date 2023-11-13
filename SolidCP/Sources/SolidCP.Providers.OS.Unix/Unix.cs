@@ -15,7 +15,6 @@ using System.Text.RegularExpressions;
 using System.IO.Compression;
 using SolidCP.Providers.Virtualization;
 using System.Diagnostics;
-using System.ServiceProcess;
 
 namespace SolidCP.Providers.OS
 {
@@ -506,42 +505,7 @@ namespace SolidCP.Providers.OS
 
         public OSService[] GetOSServices()
         {
-            try
-            {
-                List<OSService> winServices = new List<OSService>();
-
-                ServiceController[] services = ServiceController.GetServices();
-                foreach (ServiceController service in services)
-                {
-                    OSService winService = new OSService();
-                    winService.Id = service.ServiceName;
-                    winService.Name = service.DisplayName;
-                    winService.CanStop = service.CanStop;
-                    winService.CanPauseAndContinue = service.CanPauseAndContinue;
-
-                    OSServiceStatus status = OSServiceStatus.ContinuePending;
-                    switch (service.Status)
-                    {
-                        case ServiceControllerStatus.ContinuePending: status = OSServiceStatus.ContinuePending; break;
-                        case ServiceControllerStatus.Paused: status = OSServiceStatus.Paused; break;
-                        case ServiceControllerStatus.PausePending: status = OSServiceStatus.PausePending; break;
-                        case ServiceControllerStatus.Running: status = OSServiceStatus.Running; break;
-                        case ServiceControllerStatus.StartPending: status = OSServiceStatus.StartPending; break;
-                        case ServiceControllerStatus.Stopped: status = OSServiceStatus.Stopped; break;
-                        case ServiceControllerStatus.StopPending: status = OSServiceStatus.StopPending; break;
-                    }
-                    winService.Status = status;
-
-                    winServices.Add(winService);
-                }
-
-                return winServices.ToArray();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void ChangeOSServiceStatus(string id, OSServiceStatus status)

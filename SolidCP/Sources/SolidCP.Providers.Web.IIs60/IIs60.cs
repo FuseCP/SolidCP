@@ -4387,12 +4387,12 @@ namespace SolidCP.Providers.Web
 
         #region SSL
 
-        public virtual SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+        public virtual SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
         {
             throw new NotSupportedException();
         }
 
-        public virtual String LEinstallCertificate(WebSite website, string email)
+        public virtual String LEInstallCertificate(WebSite website, string email)
         {
             throw new NotSupportedException();
         }
@@ -4402,17 +4402,17 @@ namespace SolidCP.Providers.Web
             throw new NotSupportedException();
         }
 
-        public virtual SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public virtual SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
         {
             throw new NotSupportedException();
         }
 
-        public virtual byte[] exportCertificate(string serialNumber, string password)
+        public virtual byte[] ExportCertificate(string serialNumber, string password)
         {
             throw new NotSupportedException();
         }
 
-        public virtual SSLCertificate generateCSR(SSLCertificate certificate)
+        public virtual SSLCertificate GenerateCSR(SSLCertificate certificate)
         {
             throw new NotSupportedException();
         }
@@ -4420,7 +4420,7 @@ namespace SolidCP.Providers.Web
         {
             throw new NotSupportedException();
         }
-        public virtual List<SSLCertificate> getServerCertificates()
+        public virtual List<SSLCertificate> GetServerCertificates()
         {
             throw new NotSupportedException();
         }

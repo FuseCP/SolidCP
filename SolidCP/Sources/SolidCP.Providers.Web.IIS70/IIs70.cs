@@ -4748,7 +4748,7 @@ namespace SolidCP.Providers.Web
 		#endregion
 
 		#region SSL
-		public override SSLCertificate generateCSR(SSLCertificate certificate)
+		public override SSLCertificate GenerateCSR(SSLCertificate certificate)
 		{
 			var sslObjectService = new SSLModuleService();
 			//
@@ -4758,7 +4758,7 @@ namespace SolidCP.Providers.Web
 
 		}
 
-		public override SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+		public override SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
 		{
 			var sslObjectService = new SSLModuleService();
             //
@@ -4766,28 +4766,28 @@ namespace SolidCP.Providers.Web
 			return sslObjectService.InstallCertificate(certificate, website);
 		}
 
-        public override String LEinstallCertificate(WebSite website, string email)
+        public override String LEInstallCertificate(WebSite website, string email)
         {
             var sslObjectService = new SSLModuleService();
             //
             return sslObjectService.LEInstallCertificate(website, email);
         }
 
-        public override List<SSLCertificate> getServerCertificates()
+        public override List<SSLCertificate> GetServerCertificates()
 		{
 			var sslObjectService = new SSLModuleService();
 			//
 			return sslObjectService.GetServerCertificates();
 		}
 
-        public override SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
         {
             var sslObjectService = new SSLModuleService();
             //
             return sslObjectService.InstallPfx(certificate, password, website);
         }
 
-        public override byte[] exportCertificate(string serialNumber, string password)
+        public override byte[] ExportCertificate(string serialNumber, string password)
 		{
 			var sslObjectService = new SSLModuleService();
 			//
