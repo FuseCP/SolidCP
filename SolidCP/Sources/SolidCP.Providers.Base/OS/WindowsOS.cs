@@ -307,8 +307,12 @@ namespace SolidCP.Server.Utils
 		/// Determine OS version
 		/// </summary>
 		/// <returns></returns>
+		static WindowsVersion? version;
 		public static WindowsVersion GetVersion()
 		{
+
+			if (version.HasValue) return version.Value;
+			
 			WindowsVersion ret = WindowsVersion.Unknown;
 
 			OSVERSIONINFOEX info = new OSVERSIONINFOEX();
@@ -440,6 +444,7 @@ namespace SolidCP.Server.Utils
 					}
 					break;
 			}
+			version = ret;
 			return ret;
 		}
 

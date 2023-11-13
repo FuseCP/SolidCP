@@ -43,7 +43,7 @@ namespace SolidCP.Web.Services
 				Regex.IsMatch(host, "^192\\.168\\.[0-9]+\\.[0-9]+$") || // local network ip
 				IsPipe(adr);
 		}
-
+		const bool AllowInsecureHttp = PolicyAttribute.AllowInsecureHttp;
 
 		void AddEndpoint(Type contract, Binding binding, string address)
 		{
@@ -80,28 +80,28 @@ namespace SolidCP.Web.Services
 
 					if (HasApi(adr, "basic"))
 					{
-						if (!isEncrypted || IsLocal(adr))
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
 							AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "basic.none" }, adr);
 						}
 					}
 					else if (HasApi(adr, "net"))
 					{
-						if (!isEncrypted || IsLocal(adr))
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
 							AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 						}
 					}
 					else if (HasApi(adr, "ws"))
 					{
-						if (!isEncrypted || IsLocal(adr))
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
 							AddEndpoint(contract, new WSHttpBinding(SecurityMode.None) { Name = "ws.none" }, adr);
 						}
 					}
 					else
 					{
-						if (!isEncrypted || IsLocal(adr))
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
 							AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 						}

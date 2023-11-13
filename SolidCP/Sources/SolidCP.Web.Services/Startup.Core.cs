@@ -65,7 +65,7 @@ namespace SolidCP.Web.Services
 		public static void Init(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-			var ProbingPaths = builder.Configuration["probingPaths"];
+			ProbingPaths = builder.Configuration["probingPaths"];
 			AssemblyLoaderNetCore.Init();
 			var urls = builder.Configuration["applicationUrls"];
 			foreach (var url in urls.Split(';'))
@@ -230,7 +230,7 @@ namespace SolidCP.Web.Services
 
 					if (isEncrypted)
 					{
-						if (HttpPort.HasValue && isLocal)
+						if (HttpPort.HasValue && (isLocal || PolicyAttribute.AllowInsecureHttp))
 						{
 							basicHttpBinding = new BasicHttpBinding(BasicHttpSecurityMode.None);
 							basicUri = new Uri($"http://{HttpHost}:{HttpPort}/basic/{ws.Service.Name}");

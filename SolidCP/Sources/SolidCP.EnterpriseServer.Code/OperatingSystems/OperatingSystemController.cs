@@ -302,7 +302,7 @@ namespace SolidCP.EnterpriseServer
         private static Server.Client.OperatingSystem GetServerService(int serverId)
         {
             Server.Client.OperatingSystem server = new Server.Client.OperatingSystem();
-            ServiceProviderProxy.ServerInit(server, serverId, );
+            ServiceProviderProxy.ServerInit(server, serverId);
             return server;
         }
 

@@ -66,7 +66,7 @@ namespace SolidCP.Server
 				return (IHostingServiceProvider)OS.Current;
 			}
 		}
-		private IOperatingSystem OsProvider
+		private IOperatingSystem OSProvider
 		{
 			get { return (IOperatingSystem)Provider; }
 		}
@@ -116,7 +116,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' CreatePackageFolder", ProviderSettings.ProviderName);
-				string result = OsProvider.CreatePackageFolder(initialPath);
+				string result = OSProvider.CreatePackageFolder(initialPath);
 				Log.WriteEnd("'{0}' CreatePackageFolder", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -133,7 +133,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' FileExists", ProviderSettings.ProviderName);
-				bool result = OsProvider.FileExists(path);
+				bool result = OSProvider.FileExists(path);
 				Log.WriteEnd("'{0}' FileExists", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -150,7 +150,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' DirectoryExists", ProviderSettings.ProviderName);
-				bool result = OsProvider.DirectoryExists(path);
+				bool result = OSProvider.DirectoryExists(path);
 				Log.WriteEnd("'{0}' DirectoryExists", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -167,7 +167,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFile", ProviderSettings.ProviderName);
-				SystemFile result = OsProvider.GetFile(path);
+				SystemFile result = OSProvider.GetFile(path);
 				Log.WriteEnd("'{0}' GetFile", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -184,7 +184,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFiles", ProviderSettings.ProviderName);
-				SystemFile[] result = OsProvider.GetFiles(path);
+				SystemFile[] result = OSProvider.GetFiles(path);
 				Log.WriteEnd("'{0}' GetFiles", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -201,7 +201,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetDirectoriesRecursive", ProviderSettings.ProviderName);
-				SystemFile[] result = OsProvider.GetDirectoriesRecursive(rootFolder, path);
+				SystemFile[] result = OSProvider.GetDirectoriesRecursive(rootFolder, path);
 				Log.WriteEnd("'{0}' GetDirectoriesRecursive", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -218,7 +218,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFilesRecursive", ProviderSettings.ProviderName);
-				SystemFile[] result = OsProvider.GetFilesRecursive(rootFolder, path);
+				SystemFile[] result = OSProvider.GetFilesRecursive(rootFolder, path);
 				Log.WriteEnd("'{0}' GetFilesRecursive", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -235,7 +235,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFilesRecursiveByPattern", ProviderSettings.ProviderName);
-				SystemFile[] result = OsProvider.GetFilesRecursiveByPattern(rootFolder, path, pattern);
+				SystemFile[] result = OSProvider.GetFilesRecursiveByPattern(rootFolder, path, pattern);
 				Log.WriteEnd("'{0}' GetFilesRecursiveByPattern", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -252,7 +252,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFileBinaryContent", ProviderSettings.ProviderName);
-				byte[] result = OsProvider.GetFileBinaryContent(path);
+				byte[] result = OSProvider.GetFileBinaryContent(path);
 				Log.WriteEnd("'{0}' GetFileBinaryContent", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -269,7 +269,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFileBinaryContentUsingEncoding", ProviderSettings.ProviderName);
-				byte[] result = OsProvider.GetFileBinaryContentUsingEncoding(path, encoding);
+				byte[] result = OSProvider.GetFileBinaryContentUsingEncoding(path, encoding);
 				Log.WriteEnd("'{0}' GetFileBinaryContentUsingEncoding", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -286,7 +286,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFileBinaryChunk", ProviderSettings.ProviderName);
-				byte[] result = OsProvider.GetFileBinaryChunk(path, offset, length);
+				byte[] result = OSProvider.GetFileBinaryChunk(path, offset, length);
 				Log.WriteEnd("'{0}' GetFileBinaryChunk", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -303,7 +303,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFileTextContent", ProviderSettings.ProviderName);
-				string result = OsProvider.GetFileTextContent(path);
+				string result = OSProvider.GetFileTextContent(path);
 				Log.WriteEnd("'{0}' GetFileTextContent", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -320,7 +320,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' CreateFile", ProviderSettings.ProviderName);
-				OsProvider.CreateFile(path);
+				OSProvider.CreateFile(path);
 				Log.WriteEnd("'{0}' CreateFile", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -336,7 +336,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' CreateDirectory", ProviderSettings.ProviderName);
-				OsProvider.CreateDirectory(path);
+				OSProvider.CreateDirectory(path);
 				Log.WriteEnd("'{0}' CreateDirectory", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -352,7 +352,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ChangeFileAttributes", ProviderSettings.ProviderName);
-				OsProvider.ChangeFileAttributes(path, createdTime, changedTime);
+				OSProvider.ChangeFileAttributes(path, createdTime, changedTime);
 				Log.WriteEnd("'{0}' ChangeFileAttributes", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -368,7 +368,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' DeleteFile", ProviderSettings.ProviderName);
-				OsProvider.DeleteFile(path);
+				OSProvider.DeleteFile(path);
 				Log.WriteEnd("'{0}' DeleteFile", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -384,7 +384,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' DeleteFiles", ProviderSettings.ProviderName);
-				OsProvider.DeleteFiles(files);
+				OSProvider.DeleteFiles(files);
 				Log.WriteEnd("'{0}' DeleteFiles", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -400,7 +400,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' DeleteEmptyDirectories", ProviderSettings.ProviderName);
-				OsProvider.DeleteEmptyDirectories(directories);
+				OSProvider.DeleteEmptyDirectories(directories);
 				Log.WriteEnd("'{0}' DeleteEmptyDirectories", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -416,7 +416,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' UpdateFileBinaryContent", ProviderSettings.ProviderName);
-				OsProvider.UpdateFileBinaryContent(path, content);
+				OSProvider.UpdateFileBinaryContent(path, content);
 				Log.WriteEnd("'{0}' UpdateFileBinaryContent", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -432,7 +432,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' UpdateFileBinaryContentUsingEncoding", ProviderSettings.ProviderName);
-				OsProvider.UpdateFileBinaryContentUsingEncoding(path, content, encoding);
+				OSProvider.UpdateFileBinaryContentUsingEncoding(path, content, encoding);
 				Log.WriteEnd("'{0}' UpdateFileBinaryContentUsingEncoding", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -448,7 +448,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' AppendFileBinaryContent", ProviderSettings.ProviderName);
-				OsProvider.AppendFileBinaryContent(path, chunk);
+				OSProvider.AppendFileBinaryContent(path, chunk);
 				Log.WriteEnd("'{0}' AppendFileBinaryContent", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -464,7 +464,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' UpdateFileTextContent", ProviderSettings.ProviderName);
-				OsProvider.UpdateFileTextContent(path, content);
+				OSProvider.UpdateFileTextContent(path, content);
 				Log.WriteEnd("'{0}' UpdateFileTextContent", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -480,7 +480,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' MoveFile", ProviderSettings.ProviderName);
-				OsProvider.MoveFile(sourcePath, destinationPath);
+				OSProvider.MoveFile(sourcePath, destinationPath);
 				Log.WriteEnd("'{0}' MoveFile", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -496,7 +496,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' CopyFile", ProviderSettings.ProviderName);
-				OsProvider.CopyFile(sourcePath, destinationPath);
+				OSProvider.CopyFile(sourcePath, destinationPath);
 				Log.WriteEnd("'{0}' CopyFile", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -512,7 +512,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ZipFiles", ProviderSettings.ProviderName);
-				OsProvider.ZipFiles(zipFile, rootPath, files);
+				OSProvider.ZipFiles(zipFile, rootPath, files);
 				Log.WriteEnd("'{0}' ZipFiles", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -528,7 +528,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' UnzipFiles", ProviderSettings.ProviderName);
-				string[] result = OsProvider.UnzipFiles(zipFile, destFolder);
+				string[] result = OSProvider.UnzipFiles(zipFile, destFolder);
 				Log.WriteEnd("'{0}' UnzipFiles", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -545,7 +545,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ZipFiles", ProviderSettings.ProviderName);
-				OsProvider.CreateBackupZip(zipFile, rootPath);
+				OSProvider.CreateBackupZip(zipFile, rootPath);
 				Log.WriteEnd("'{0}' ZipFiles", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -611,7 +611,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' SetQuotaLimitOnFolder", ProviderSettings.ProviderName);
-				OsProvider.SetQuotaLimitOnFolder(folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
+				OSProvider.SetQuotaLimitOnFolder(folderPath, shareNameDrive, quotaType, quotaLimit, mode, wmiUserName, wmiPassword);
 				Log.WriteEnd("'{0}' SetQuotaLimitOnFolder", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -627,7 +627,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetQuotaOnFolder", ProviderSettings.ProviderName);
-				var result = OsProvider.GetQuotaOnFolder(folderPath, wmiUserName, wmiPassword);
+				var result = OSProvider.GetQuotaOnFolder(folderPath, wmiUserName, wmiPassword);
 				Log.WriteEnd("'{0}' GetQuotaOnFolder", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -644,7 +644,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' DeleteDirectoryRecursive", ProviderSettings.ProviderName);
-				OsProvider.DeleteDirectoryRecursive(rootPath);
+				OSProvider.DeleteDirectoryRecursive(rootPath);
 				Log.WriteEnd("'{0}' DeleteDirectoryRecursive", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -697,7 +697,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetFolderGraph", ProviderSettings.ProviderName);
-				FolderGraph result = OsProvider.GetFolderGraph(path);
+				FolderGraph result = OSProvider.GetFolderGraph(path);
 				Log.WriteEnd("'{0}' GetFolderGraph", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -714,7 +714,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ExecuteSyncActions", ProviderSettings.ProviderName);
-				OsProvider.ExecuteSyncActions(actions);
+				OSProvider.ExecuteSyncActions(actions);
 				Log.WriteEnd("'{0}' ExecuteSyncActions", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -897,7 +897,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetLogNames", ProviderSettings.ProviderName);
-				var result = OsProvider.GetLogNames();
+				var result = OSProvider.GetLogNames();
 				Log.WriteEnd("'{0}' GetLogNames", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -915,7 +915,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetLogEntries", ProviderSettings.ProviderName);
-				var result = OsProvider.GetLogEntries(logName);
+				var result = OSProvider.GetLogEntries(logName);
 				Log.WriteEnd("'{0}' GetLogEntries", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -932,7 +932,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetLogEntriesPaged", ProviderSettings.ProviderName);
-				var result = OsProvider.GetLogEntriesPaged(logName, startRow, maximumRows);
+				var result = OSProvider.GetLogEntriesPaged(logName, startRow, maximumRows);
 				Log.WriteEnd("'{0}' GetLogEntriesPaged", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -949,7 +949,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ClearLog", ProviderSettings.ProviderName);
-				OsProvider.ClearLog(logName);
+				OSProvider.ClearLog(logName);
 				Log.WriteEnd("'{0}' ClearLog", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -965,7 +965,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetOSProcesses", ProviderSettings.ProviderName);
-				var result = OsProvider.GetOSProcesses();
+				var result = OSProvider.GetOSProcesses();
 				Log.WriteEnd("'{0}' GetOSProcesses", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -982,7 +982,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' TerminateOSProcess", ProviderSettings.ProviderName);
-				OsProvider.TerminateOSProcess(pid);
+				OSProvider.TerminateOSProcess(pid);
 				Log.WriteEnd("'{0}' TerminateOSProcess", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -998,7 +998,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetOSServices", ProviderSettings.ProviderName);
-				var result = OsProvider.GetOSServices();
+				var result = OSProvider.GetOSServices();
 				Log.WriteEnd("'{0}' GetOSServices", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -1015,7 +1015,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ChangeOSServiceStatus", ProviderSettings.ProviderName);
-				OsProvider.ChangeOSServiceStatus(id, status);
+				OSProvider.ChangeOSServiceStatus(id, status);
 				Log.WriteEnd("'{0}' ChangeOSServiceStatus", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -1031,7 +1031,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' RebootSystem", ProviderSettings.ProviderName);
-				OsProvider.RebootSystem();
+				OSProvider.RebootSystem();
 				Log.WriteEnd("'{0}' RebootSystem", ProviderSettings.ProviderName);
 			}
 			catch (Exception ex)
@@ -1047,7 +1047,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' GetMemory", ProviderSettings.ProviderName);
-				var result = OsProvider.GetMemory();
+				var result = OSProvider.GetMemory();
 				Log.WriteEnd("'{0}' GetMemory", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -1064,7 +1064,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName);
-				var result = OsProvider.ExecuteSystemCommand(path, args);
+				var result = OSProvider.ExecuteSystemCommand(path, args);
 				Log.WriteEnd("'{0}' ExecuteSystemCommand", ProviderSettings.ProviderName);
 				return result;
 			}
@@ -1283,7 +1283,7 @@ namespace SolidCP.Server
 			try
 			{
 				Log.WriteStart("'{0}' IsUnix", ProviderSettings.ProviderName);
-				var result = OsProvider.IsUnix();
+				var result = OSProvider.IsUnix();
 				Log.WriteEnd("'{0}' IsUnix", ProviderSettings.ProviderName);
 				return result;
 			}
