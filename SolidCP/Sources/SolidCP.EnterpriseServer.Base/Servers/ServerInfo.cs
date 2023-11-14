@@ -31,6 +31,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -55,9 +58,27 @@ namespace SolidCP.EnterpriseServer
         private int primaryGroupId;
         private string adParentDomain;
         private string adParentDomainController;
+        private OSPlatform osPlatform = OSPlatform.Windows;
 
         public ServerInfo()
         {
+        }
+
+        private string OSPlatformName
+        {
+            get
+            {
+                return osPlatform.ToString();
+            }
+            set {
+                osPlatform = OSPlatform.Create(value);
+            }
+        }
+
+        [IgnoreDataMember, XmlIgnore]
+        public OSPlatform OSPlatform {
+            get { return osPlatform; }
+            set { osPlatform = value; }
         }
 
         public int PrimaryGroupId

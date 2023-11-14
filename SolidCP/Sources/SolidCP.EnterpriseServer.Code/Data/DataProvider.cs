@@ -45,6 +45,7 @@ using SolidCP.Providers.RemoteDesktopServices;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
+using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -555,7 +556,7 @@ namespace SolidCP.EnterpriseServer
         public static int AddServer(string serverName, string serverUrl,
             string password, string comments, bool virtualServer, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType)
+            string adAuthenticationType, OSPlatform osPlatform)
         {
             SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
             prmServerId.Direction = ParameterDirection.Output;
@@ -574,7 +575,8 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdRootDomain", adRootDomain),
                 new SqlParameter("@AdUsername", adUsername),
                 new SqlParameter("@AdPassword", adPassword),
-                new SqlParameter("@AdAuthenticationType", adAuthenticationType));
+                new SqlParameter("@AdAuthenticationType", adAuthenticationType),
+                new SqlParameter("@OSPlatform", osPlatform));
 
             return Convert.ToInt32(prmServerId.Value);
         }
@@ -582,7 +584,8 @@ namespace SolidCP.EnterpriseServer
         public static void UpdateServer(int serverId, string serverName, string serverUrl,
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, string adParentDomain, String adParentDomainController)
+            string adAuthenticationType, string adParentDomain, string adParentDomainController,
+            OSPlatform osPlatform)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "UpdateServer",
@@ -599,7 +602,8 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdPassword", adPassword),
                 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
                 new SqlParameter("@AdParentDomain", adParentDomain),
-                new SqlParameter("@AdParentDomainController", adParentDomainController));
+                new SqlParameter("@AdParentDomainController", adParentDomainController),
+                new SqlParameter("@OSPlatform", osPlatform));
 
         }
 

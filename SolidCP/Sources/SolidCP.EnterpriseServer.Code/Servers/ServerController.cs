@@ -292,7 +292,7 @@ namespace SolidCP.EnterpriseServer
 			int serverId = DataProvider.AddServer(server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType);
+				server.ADAuthenticationType, server.OSPlatform);
 
 			if (autoDiscovery)
 			{
@@ -341,7 +341,8 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
+				server.OSPlatform);
 
 			TaskManager.CompleteTask();
 
@@ -367,7 +368,8 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
+				server.OSPlatform);
 
 			TaskManager.CompleteTask();
 
@@ -393,7 +395,8 @@ namespace SolidCP.EnterpriseServer
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
+				server.OSPlatform);
 
 			TaskManager.CompleteTask();
 
@@ -444,7 +447,9 @@ namespace SolidCP.EnterpriseServer
 			OS.OperatingSystem os = new OS.OperatingSystem();
 			ServiceProviderProxy.Init(os, serviceId);
 			Dictionary<int, string> res = new Dictionary<int, string>();
-			string downloadPath = @"C:\SolidCPDownloads\".Replace(@"\\", @"\");
+			string downloadPath = Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+				"SolidCP", "Downloads");
 			string unpackedZipDirectory = downloadPath + zipFileName.Replace(".zip", "");
 			string ipAddress = os.Url.Split('/')[2].Split(':')[0];
 

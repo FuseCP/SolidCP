@@ -19829,3 +19829,198 @@ BEGIN
 	UPDATE [dbo].[Quotas] SET [QuotaName] = N'OS.NotAllowTenantCreateDomains', [QuotaDescription] = N'Not allow Tenants to Create Top Level Domains' WHERE [QuotaID] = 410
 END
 GO
+
+-- Add Platform column to Servers
+DECLARE @NoPlatform INT
+
+SET @NoPlatform = 0
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'OSPlatform'
+)
+BEGIN
+	SET @NoPlatform = 1
+END
+
+IF @NoPlatform = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] NVARCHAR(64) NULL
+END
+
+IF @NoPlatform = 1
+EXEC ('
+	ALTER PROCEDURE AddServer
+	(
+		@ServerID int OUTPUT,
+		@ServerName nvarchar(100),
+		@ServerUrl nvarchar(100),
+		@Password nvarchar(100),
+		@Comments ntext,
+		@VirtualServer bit,
+		@InstantDomainAlias nvarchar(200),
+		@PrimaryGroupID int,
+		@ADEnabled bit,
+		@ADRootDomain nvarchar(200),
+		@ADUsername nvarchar(100),
+		@ADPassword nvarchar(100),
+		@ADAuthenticationType varchar(50),
+		@OSPlatform nvarchar(64)
+	)
+	AS
+
+	IF @PrimaryGroupID = 0
+
+	SET @PrimaryGroupID = NULL
+
+	INSERT INTO Servers
+	(
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADEnabled,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		OSPlatform
+	)
+	VALUES
+	(
+		@ServerName,
+		@ServerUrl,
+		@Password,
+		@Comments,
+		@VirtualServer,
+		@InstantDomainAlias,
+		@PrimaryGroupID,
+		@ADEnabled,
+		@ADRootDomain,
+		@ADUsername,
+		@ADPassword,
+		@ADAuthenticationType,
+		@OSPlatform
+	)
+
+	SET @ServerID = SCOPE_IDENTITY()
+
+	RETURN
+	')
+
+IF @NoPlatform = 1
+EXEC('
+	ALTER PROCEDURE GetServerInternal
+	(
+		@ServerID int
+	)
+	AS
+	SELECT
+		ServerID,
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADEnabled,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		ADParentDomain,
+		ADParentDomainController,
+		OSPlatform
+	FROM Servers
+	WHERE
+		ServerID = @ServerID
+
+	RETURN
+	')
+	
+IF @NoPlatform = 1
+EXEC('
+	ALTER PROCEDURE GetServerByName
+	(
+		@ActorID int,
+		@ServerName nvarchar(100)
+	)
+	AS
+-- check rights
+	DECLARE @IsAdmin bit
+	SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+	SELECT
+		ServerID,
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		ADParentDomain,
+		ADParentDomainController
+		OSPlatform
+	FROM Servers
+	WHERE
+		ServerName = @ServerName
+		AND @IsAdmin = 1
+
+	RETURN
+	')
+
+IF @NoPlatform = 1
+EXEC('
+	ALTER PROCEDURE UpdateServer
+	(
+		@ServerID int,
+		@ServerName nvarchar(100),
+		@ServerUrl nvarchar(100),
+		@Password nvarchar(100),
+		@Comments ntext,
+		@InstantDomainAlias nvarchar(200),
+		@PrimaryGroupID int,
+		@ADEnabled bit,
+		@ADRootDomain nvarchar(200),
+		@ADUsername nvarchar(100),
+		@ADPassword nvarchar(100),
+		@ADAuthenticationType varchar(50),
+		@ADParentDomain nvarchar(200),
+		@ADParentDomainController nvarchar(200),
+		@OSPlatform nvarchar(64)
+	)
+	AS
+
+	IF @PrimaryGroupID = 0
+	SET @PrimaryGroupID = NULL
+
+	UPDATE Servers SET
+		ServerName = @ServerName,
+		ServerUrl = @ServerUrl,
+		Password = @Password,
+		Comments = @Comments,
+		InstantDomainAlias = @InstantDomainAlias,
+		PrimaryGroupID = @PrimaryGroupID,
+		ADEnabled = @ADEnabled,
+		ADRootDomain = @ADRootDomain,
+		ADUsername = @ADUsername,
+		ADPassword = @ADPassword,
+		ADAuthenticationType = @ADAuthenticationType,
+		ADParentDomain = @ADParentDomain,
+		ADParentDomainController = @ADParentDomainController,
+		OSPlatform = @OSPlatform
+	WHERE ServerID = @ServerID
+	RETURN
+	')
+
+GO
