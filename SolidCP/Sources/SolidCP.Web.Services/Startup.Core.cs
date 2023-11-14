@@ -100,6 +100,8 @@ namespace SolidCP.Web.Services
 			TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
 			if (TraceLevel != TraceLevel.Off)
 			{
+				Console.WriteLine($"Trace level set to {TraceLevel}");
+
 				TraceListener syslog = (TraceListener)Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.SyslogTraceListener, SolidCP.Providers.OS.Unix"));
 				var level = syslog.GetType().GetProperty("Level");
 				level.SetValue(syslog, TraceLevel);
