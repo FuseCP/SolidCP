@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+    <PackageReference Include="SyslogNet.ClientStandard" Version="0.3.4" />
   </ItemGroup>
 
   <ItemGroup>

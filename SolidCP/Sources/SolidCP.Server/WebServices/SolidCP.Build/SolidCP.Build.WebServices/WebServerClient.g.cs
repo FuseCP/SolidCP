@@ -375,10 +375,10 @@ namespace SolidCP.Server.Client
         void ChangeWebManagementAccessPassword(string accountName, string accountPassword);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ChangeWebManagementAccessPassword", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ChangeWebManagementAccessPasswordResponse")]
         System.Threading.Tasks.Task ChangeWebManagementAccessPasswordAsync(string accountName, string accountPassword);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateCSRResponse")]
-        SolidCP.Providers.Web.SSLCertificate generateCSR(SolidCP.Providers.Web.SSLCertificate certificate);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateCSRResponse")]
-        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GenerateCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GenerateCSRResponse")]
+        SolidCP.Providers.Web.SSLCertificate GenerateCSR(SolidCP.Providers.Web.SSLCertificate certificate);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GenerateCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GenerateCSRResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> GenerateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSRResponse")]
         SolidCP.Providers.Web.SSLCertificate generateRenewalCSR(SolidCP.Providers.Web.SSLCertificate certificate);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSR", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/generateRenewalCSRResponse")]
@@ -387,26 +387,26 @@ namespace SolidCP.Server.Client
         SolidCP.Providers.Web.SSLCertificate getCertificate(SolidCP.Providers.Web.WebSite site);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getCertificateResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> getCertificateAsync(SolidCP.Providers.Web.WebSite site);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installCertificateResponse")]
-        SolidCP.Providers.Web.SSLCertificate installCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installCertificateResponse")]
-        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificateResponse")]
-        System.String LEinstallCertificate(SolidCP.Providers.Web.WebSite website, string email);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/LEinstallCertificateResponse")]
-        System.Threading.Tasks.Task<System.String> LEinstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installPFX", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installPFXResponse")]
-        SolidCP.Providers.Web.SSLCertificate installPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/installPFX", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/installPFXResponse")]
-        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/exportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/exportCertificateResponse")]
-        byte[] exportCertificate(string serialNumber, string password);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/exportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/exportCertificateResponse")]
-        System.Threading.Tasks.Task<byte[]> exportCertificateAsync(string serialNumber, string password);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getServerCertificates", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getServerCertificatesResponse")]
-        SolidCP.Providers.Web.SSLCertificate[] /*List*/ getServerCertificates();
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/getServerCertificates", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/getServerCertificatesResponse")]
-        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate[]> getServerCertificatesAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallCertificateResponse")]
+        SolidCP.Providers.Web.SSLCertificate InstallCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallCertificateResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> InstallCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/LEInstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/LEInstallCertificateResponse")]
+        System.String LEInstallCertificate(SolidCP.Providers.Web.WebSite website, string email);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/LEInstallCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/LEInstallCertificateResponse")]
+        System.Threading.Tasks.Task<System.String> LEInstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallPFX", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallPFXResponse")]
+        SolidCP.Providers.Web.SSLCertificate InstallPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/InstallPFX", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/InstallPFXResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> InstallPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ExportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ExportCertificateResponse")]
+        byte[] ExportCertificate(string serialNumber, string password);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/ExportCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/ExportCertificateResponse")]
+        System.Threading.Tasks.Task<byte[]> ExportCertificateAsync(string serialNumber, string password);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetServerCertificates", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetServerCertificatesResponse")]
+        SolidCP.Providers.Web.SSLCertificate[] /*List*/ GetServerCertificates();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/GetServerCertificates", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/GetServerCertificatesResponse")]
+        System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate[]> GetServerCertificatesAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificateResponse")]
         SolidCP.Providers.Common.ResultObject DeleteCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificate", ReplyAction = "http://smbsaas/solidcp/server/IWebServer/DeleteCertificateResponse")]
@@ -1343,14 +1343,14 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.WebServer", "ChangeWebManagementAccessPassword", accountName, accountPassword);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate generateCSR(SolidCP.Providers.Web.SSLCertificate certificate)
+        public SolidCP.Providers.Web.SSLCertificate GenerateCSR(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return Invoke<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "generateCSR", certificate);
+            return Invoke<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "GenerateCSR", certificate);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> GenerateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "generateCSR", certificate);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "GenerateCSR", certificate);
         }
 
         public SolidCP.Providers.Web.SSLCertificate generateRenewalCSR(SolidCP.Providers.Web.SSLCertificate certificate)
@@ -1373,54 +1373,54 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "getCertificate", site);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate installCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate InstallCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return Invoke<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "installCertificate", certificate, website);
+            return Invoke<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "InstallCertificate", certificate, website);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> InstallCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "installCertificate", certificate, website);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "InstallCertificate", certificate, website);
         }
 
-        public System.String LEinstallCertificate(SolidCP.Providers.Web.WebSite website, string email)
+        public System.String LEInstallCertificate(SolidCP.Providers.Web.WebSite website, string email)
         {
-            return Invoke<System.String>("SolidCP.Server.WebServer", "LEinstallCertificate", website, email);
+            return Invoke<System.String>("SolidCP.Server.WebServer", "LEInstallCertificate", website, email);
         }
 
-        public async System.Threading.Tasks.Task<System.String> LEinstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email)
+        public async System.Threading.Tasks.Task<System.String> LEInstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email)
         {
-            return await InvokeAsync<System.String>("SolidCP.Server.WebServer", "LEinstallCertificate", website, email);
+            return await InvokeAsync<System.String>("SolidCP.Server.WebServer", "LEInstallCertificate", website, email);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate installPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate InstallPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
-            return Invoke<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "installPFX", certificate, password, website);
+            return Invoke<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "InstallPFX", certificate, password, website);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> InstallPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
-            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "installPFX", certificate, password, website);
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "InstallPFX", certificate, password, website);
         }
 
-        public byte[] exportCertificate(string serialNumber, string password)
+        public byte[] ExportCertificate(string serialNumber, string password)
         {
-            return Invoke<byte[]>("SolidCP.Server.WebServer", "exportCertificate", serialNumber, password);
+            return Invoke<byte[]>("SolidCP.Server.WebServer", "ExportCertificate", serialNumber, password);
         }
 
-        public async System.Threading.Tasks.Task<byte[]> exportCertificateAsync(string serialNumber, string password)
+        public async System.Threading.Tasks.Task<byte[]> ExportCertificateAsync(string serialNumber, string password)
         {
-            return await InvokeAsync<byte[]>("SolidCP.Server.WebServer", "exportCertificate", serialNumber, password);
+            return await InvokeAsync<byte[]>("SolidCP.Server.WebServer", "ExportCertificate", serialNumber, password);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate[] /*List*/ getServerCertificates()
+        public SolidCP.Providers.Web.SSLCertificate[] /*List*/ GetServerCertificates()
         {
-            return Invoke<SolidCP.Providers.Web.SSLCertificate[], SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "getServerCertificates");
+            return Invoke<SolidCP.Providers.Web.SSLCertificate[], SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "GetServerCertificates");
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate[]> getServerCertificatesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate[]> GetServerCertificatesAsync()
         {
-            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate[], SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "getServerCertificates");
+            return await InvokeAsync<SolidCP.Providers.Web.SSLCertificate[], SolidCP.Providers.Web.SSLCertificate>("SolidCP.Server.WebServer", "GetServerCertificates");
         }
 
         public SolidCP.Providers.Common.ResultObject DeleteCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
@@ -2388,14 +2388,14 @@ namespace SolidCP.Server.Client
             await base.Client.ChangeWebManagementAccessPasswordAsync(accountName, accountPassword);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate generateCSR(SolidCP.Providers.Web.SSLCertificate certificate)
+        public SolidCP.Providers.Web.SSLCertificate GenerateCSR(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return base.Client.generateCSR(certificate);
+            return base.Client.GenerateCSR(certificate);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> generateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> GenerateCSRAsync(SolidCP.Providers.Web.SSLCertificate certificate)
         {
-            return await base.Client.generateCSRAsync(certificate);
+            return await base.Client.GenerateCSRAsync(certificate);
         }
 
         public SolidCP.Providers.Web.SSLCertificate generateRenewalCSR(SolidCP.Providers.Web.SSLCertificate certificate)
@@ -2418,54 +2418,54 @@ namespace SolidCP.Server.Client
             return await base.Client.getCertificateAsync(site);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate installCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate InstallCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return base.Client.installCertificate(certificate, website);
+            return base.Client.InstallCertificate(certificate, website);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> InstallCertificateAsync(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)
         {
-            return await base.Client.installCertificateAsync(certificate, website);
+            return await base.Client.InstallCertificateAsync(certificate, website);
         }
 
-        public System.String LEinstallCertificate(SolidCP.Providers.Web.WebSite website, string email)
+        public System.String LEInstallCertificate(SolidCP.Providers.Web.WebSite website, string email)
         {
-            return base.Client.LEinstallCertificate(website, email);
+            return base.Client.LEInstallCertificate(website, email);
         }
 
-        public async System.Threading.Tasks.Task<System.String> LEinstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email)
+        public async System.Threading.Tasks.Task<System.String> LEInstallCertificateAsync(SolidCP.Providers.Web.WebSite website, string email)
         {
-            return await base.Client.LEinstallCertificateAsync(website, email);
+            return await base.Client.LEInstallCertificateAsync(website, email);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate installPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
+        public SolidCP.Providers.Web.SSLCertificate InstallPFX(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
-            return base.Client.installPFX(certificate, password, website);
+            return base.Client.InstallPFX(certificate, password, website);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> installPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate> InstallPFXAsync(byte[] certificate, string password, SolidCP.Providers.Web.WebSite website)
         {
-            return await base.Client.installPFXAsync(certificate, password, website);
+            return await base.Client.InstallPFXAsync(certificate, password, website);
         }
 
-        public byte[] exportCertificate(string serialNumber, string password)
+        public byte[] ExportCertificate(string serialNumber, string password)
         {
-            return base.Client.exportCertificate(serialNumber, password);
+            return base.Client.ExportCertificate(serialNumber, password);
         }
 
-        public async System.Threading.Tasks.Task<byte[]> exportCertificateAsync(string serialNumber, string password)
+        public async System.Threading.Tasks.Task<byte[]> ExportCertificateAsync(string serialNumber, string password)
         {
-            return await base.Client.exportCertificateAsync(serialNumber, password);
+            return await base.Client.ExportCertificateAsync(serialNumber, password);
         }
 
-        public SolidCP.Providers.Web.SSLCertificate[] /*List*/ getServerCertificates()
+        public SolidCP.Providers.Web.SSLCertificate[] /*List*/ GetServerCertificates()
         {
-            return base.Client.getServerCertificates();
+            return base.Client.GetServerCertificates();
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate[]> getServerCertificatesAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.Web.SSLCertificate[]> GetServerCertificatesAsync()
         {
-            return await base.Client.getServerCertificatesAsync();
+            return await base.Client.GetServerCertificatesAsync();
         }
 
         public SolidCP.Providers.Common.ResultObject DeleteCertificate(SolidCP.Providers.Web.SSLCertificate certificate, SolidCP.Providers.Web.WebSite website)

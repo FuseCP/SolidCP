@@ -304,7 +304,7 @@ namespace SolidCP.Server.Services
         void ChangeWebManagementAccessPassword(string accountName, string accountPassword);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        SSLCertificate generateCSR(SSLCertificate certificate);
+        SSLCertificate GenerateCSR(SSLCertificate certificate);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         SSLCertificate generateRenewalCSR(SSLCertificate certificate);
@@ -313,19 +313,19 @@ namespace SolidCP.Server.Services
         SSLCertificate getCertificate(WebSite site);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        SSLCertificate installCertificate(SSLCertificate certificate, WebSite website);
+        SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        String LEinstallCertificate(WebSite website, string email);
+        String LEInstallCertificate(WebSite website, string email);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        SSLCertificate installPFX(byte[] certificate, string password, WebSite website);
+        SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        byte[] exportCertificate(string serialNumber, string password);
+        byte[] ExportCertificate(string serialNumber, string password);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        List<SSLCertificate> getServerCertificates();
+        List<SSLCertificate> GetServerCertificates();
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website);

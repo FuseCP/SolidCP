@@ -24,6 +24,7 @@ using System.Diagnostics.Eventing.Reader;
 using Microsoft.Extensions.Configuration;
 using System.Runtime.Intrinsics.X86;
 using System.IO;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Web.Services
 {
@@ -60,6 +61,7 @@ namespace SolidCP.Web.Services
 		public static string ProbingPaths = "";
 		public static string AllowedHosts = "0.0.0.0";
 		public static bool IsLocalService = false;
+		public static TraceLevel TraceLevel = TraceLevel.Off; 
 		public static X509Certificate2 Certificate = null;
 
 		public static void Init(string[] args)
@@ -90,12 +92,19 @@ namespace SolidCP.Web.Services
 			StoreLocation = builder.Configuration.GetValue<StoreLocation?>("ServerCertificate:StoreLocation") ?? StoreLocation.LocalMachine;
 			StoreName = builder.Configuration.GetValue<StoreName?>("ServerCertificate:StoreName") ?? StoreName.My;
 			FindType = builder.Configuration.GetValue<X509FindType?>("ServerCertificate:FindType") ?? X509FindType.FindBySubjectName;
-			Name = builder.Configuration.GetValue<string?>("ServerCertificate:Name") ?? null;
-			CertificateFile = builder.Configuration.GetValue<string?>("ServerCertificate:File");
-			CertificatePassword = builder.Configuration.GetValue<string?>("ServerCertificate:Password");
-			Password = builder.Configuration.GetValue<string?>("Server:Password") ?? String.Empty;
-			AllowedHosts = builder.Configuration.GetValue<string?>("AllowedHosts") ?? "0.0.0.0";
-
+			Name = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
+			CertificateFile = builder.Configuration.GetValue<string>("ServerCertificate:File");
+			CertificatePassword = builder.Configuration.GetValue<string>("ServerCertificate:Password");
+			Password = builder.Configuration.GetValue<string>("Server:Password") ?? String.Empty;
+			AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "0.0.0.0";
+			TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
+			if (TraceLevel != TraceLevel.Off)
+			{
+				TraceListener syslog = (TraceListener)Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.SyslogTraceListener, SolidCP.Providers.OS.Unix"));
+				var level = syslog.GetType().GetProperty("Level");
+				level.SetValue(syslog, TraceLevel);
+				Trace.Listeners.Add(syslog);
+			}
 			IsLocalService = AllowedHosts.Split(';')
 				.All(host => host == "localhost" || host == "127.0.0.1" || host == "::1" ||
 					Regex.IsMatch(host, "^192\\.168\\.[0-9]+\\.[0-9]+$")); // local network ip
