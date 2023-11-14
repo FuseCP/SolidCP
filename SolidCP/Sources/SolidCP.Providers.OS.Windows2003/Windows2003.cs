@@ -54,6 +54,7 @@ using System.Security;
 using System.Web;
 using System.Management;
 using System.ServiceProcess;
+using System.Runtime.InteropServices;
 using Microsoft.Web.PlatformInstaller;
 
 namespace SolidCP.Providers.OS
@@ -1827,5 +1828,7 @@ namespace SolidCP.Providers.OS
 		public Shell DefaultShell => Cmd;
 
 		public Installer DefaultInstaller => WinGet;
-	}
+
+        public OSPlatform OSPlatform() => Server.Utils.OS.OSPlatform;
+    }
 }

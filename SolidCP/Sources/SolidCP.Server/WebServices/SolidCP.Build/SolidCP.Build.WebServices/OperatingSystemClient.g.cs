@@ -107,6 +107,10 @@ namespace SolidCP.Server.Client
         void CopyFile(string sourcePath, string destinationPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CopyFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CopyFileResponse")]
         System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath);
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatform", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatformResponse")]
+        System.Runtime.InteropServices.OSPlatform OSPlatform();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatform", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatformResponse")]
+        System.Threading.Tasks.Task<System.Runtime.InteropServices.OSPlatform> OSPlatformAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFilesResponse")]
         void ZipFiles(string zipFile, string rootPath, string[] files);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFilesResponse")]
@@ -291,10 +295,6 @@ namespace SolidCP.Server.Client
         SolidCP.Providers.SettingPair[] WpiGetLogsInDirectory(string Path);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectory", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/WpiGetLogsInDirectoryResponse")]
         System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnix", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnixResponse")]
-        bool IsUnix();
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnix", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/IsUnixResponse")]
-        System.Threading.Tasks.Task<bool> IsUnixAsync();
     }
 
     // wcf client assembly proxy class
@@ -539,6 +539,16 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath)
         {
             await InvokeAsync("SolidCP.Server.OperatingSystem", "CopyFile", sourcePath, destinationPath);
+        }
+
+        public System.Runtime.InteropServices.OSPlatform OSPlatform()
+        {
+            return Invoke<System.Runtime.InteropServices.OSPlatform>("SolidCP.Server.OperatingSystem", "OSPlatform");
+        }
+
+        public async System.Threading.Tasks.Task<System.Runtime.InteropServices.OSPlatform> OSPlatformAsync()
+        {
+            return await InvokeAsync<System.Runtime.InteropServices.OSPlatform>("SolidCP.Server.OperatingSystem", "OSPlatform");
         }
 
         public void ZipFiles(string zipFile, string rootPath, string[] files)
@@ -1000,16 +1010,6 @@ namespace SolidCP.Server.Client
         {
             return await InvokeAsync<SolidCP.Providers.SettingPair[]>("SolidCP.Server.OperatingSystem", "WpiGetLogsInDirectory", Path);
         }
-
-        public bool IsUnix()
-        {
-            return Invoke<bool>("SolidCP.Server.OperatingSystem", "IsUnix");
-        }
-
-        public async System.Threading.Tasks.Task<bool> IsUnixAsync()
-        {
-            return await InvokeAsync<bool>("SolidCP.Server.OperatingSystem", "IsUnix");
-        }
     }
 
     // wcf client proxy class
@@ -1254,6 +1254,16 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath)
         {
             await base.Client.CopyFileAsync(sourcePath, destinationPath);
+        }
+
+        public System.Runtime.InteropServices.OSPlatform OSPlatform()
+        {
+            return base.Client.OSPlatform();
+        }
+
+        public async System.Threading.Tasks.Task<System.Runtime.InteropServices.OSPlatform> OSPlatformAsync()
+        {
+            return await base.Client.OSPlatformAsync();
         }
 
         public void ZipFiles(string zipFile, string rootPath, string[] files)
@@ -1714,16 +1724,6 @@ namespace SolidCP.Server.Client
         public async System.Threading.Tasks.Task<SolidCP.Providers.SettingPair[]> WpiGetLogsInDirectoryAsync(string Path)
         {
             return await base.Client.WpiGetLogsInDirectoryAsync(Path);
-        }
-
-        public bool IsUnix()
-        {
-            return base.Client.IsUnix();
-        }
-
-        public async System.Threading.Tasks.Task<bool> IsUnixAsync()
-        {
-            return await base.Client.IsUnixAsync();
         }
     }
 }

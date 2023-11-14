@@ -547,11 +547,30 @@ namespace SolidCP.Providers.OS
 
         public Shell Bash => bash != null ? bash : bash = new Bash();
         public Shell Sh => sh != null ? sh : sh = new Sh();
-        public Installer Apt => new Apt();
-        public Installer Yum => new Yum();
-        public Installer Brew => new Brew();
+        public Installer Apt => apt != null ? apt : apt = new Apt();
+        public Installer Yum => yum != null ? yum : yum = new Yum();
+        public Installer Brew => brew != null ? brew : brew = new Brew();
 
         public virtual Shell DefaultShell => Bash;
-        public virtual Installer DefaultInstaller => Apt;
+        public virtual Installer DefaultInstaller
+        {
+            get
+            {
+                switch (Server.Utils.OS.OSFlavor)
+                {
+                    case OSFlavor.Debian:
+                    case OSFlavor.Mint:
+                    case OSFlavor.Ubuntu: return Apt;
+                    case OSFlavor.Mac: return Brew;
+                    case OSFlavor.Fedora:
+                    case OSFlavor.RedHat:
+                    case OSFlavor.CentOS: return Yum;
+                    default: throw new NotSupportedException("No installer defined for this operating system.");
+                }
+            }
+        }
+        public OSPlatform OSPlatform() => Server.Utils.OS.OSPlatform;
+
+
     }
 }

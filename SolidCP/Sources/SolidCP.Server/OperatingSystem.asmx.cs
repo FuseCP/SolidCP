@@ -34,6 +34,7 @@ using System;
 using System.Data;
 using System.Web;
 using System.Collections;
+using System.Runtime.InteropServices;
 using SolidCP.Web.Services;
 using System.ComponentModel;
 using SolidCP.Providers;
@@ -507,6 +508,23 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
+		public OSPlatform OSPlatform()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' OSPlatform", ProviderSettings.ProviderName);
+				var platform = OSProvider.OSPlatform();
+				Log.WriteEnd("'{0}' OSPlatform", ProviderSettings.ProviderName);
+				return platform;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' OSPlatform", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
 		public void ZipFiles(string zipFile, string rootPath, string[] files)
 		{
 			try
@@ -670,7 +688,6 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
-
 
 		[WebMethod, SoapHeader("settings")]
 		public bool InstallFsrmService()
@@ -1275,25 +1292,7 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
-		#endregion
+        #endregion
 
-		[WebMethod, SoapHeader("settings")]
-		public bool IsUnix()
-		{
-			try
-			{
-				Log.WriteStart("'{0}' IsUnix", ProviderSettings.ProviderName);
-				var result = OSProvider.IsUnix();
-				Log.WriteEnd("'{0}' IsUnix", ProviderSettings.ProviderName);
-				return result;
-			}
-			catch (Exception ex)
-			{
-				Log.WriteError(String.Format("'{0}' IsUnix", ProviderSettings.ProviderName), ex);
-				throw;
-			}
-		}
-
-
-	}
+    }
 }

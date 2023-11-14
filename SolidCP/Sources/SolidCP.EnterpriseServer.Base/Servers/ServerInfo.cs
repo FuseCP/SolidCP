@@ -58,7 +58,7 @@ namespace SolidCP.EnterpriseServer
         private int primaryGroupId;
         private string adParentDomain;
         private string adParentDomainController;
-        private OSPlatform osPlatform = OSPlatform.Windows;
+        private OSPlatform? osPlatform = null;
 
         public ServerInfo()
         {
@@ -68,15 +68,15 @@ namespace SolidCP.EnterpriseServer
         {
             get
             {
-                return osPlatform.ToString();
+                return osPlatform?.ToString();
             }
             set {
-                osPlatform = OSPlatform.Create(value);
+                osPlatform = value == null ? null : (OSPlatform?)(System.Runtime.InteropServices.OSPlatform.Create(value));
             }
         }
 
         [IgnoreDataMember, XmlIgnore]
-        public OSPlatform OSPlatform {
+        public OSPlatform? OSPlatform {
             get { return osPlatform; }
             set { osPlatform = value; }
         }

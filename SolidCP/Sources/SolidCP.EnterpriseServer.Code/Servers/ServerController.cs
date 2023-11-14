@@ -51,7 +51,7 @@ using System.Xml;
 using Whois.NET;
 using OS = SolidCP.Server.Client;
 using SolidCP.Server.Client;
-
+using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -155,6 +155,7 @@ namespace SolidCP.EnterpriseServer
 				DataProvider.GetServerByName(SecurityContext.User.UserId, serverName));
 		}
 
+
 		public static int CheckServerAvailable(string serverUrl, string password)
 		{
 			// check account
@@ -209,7 +210,65 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		private static void FindServices(ServerInfo server)
+        public static OSPlatform? GetServerPlatform(string serverUrl, string password)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
+                | DemandAccount.IsAdmin);
+            if (accountCheck < 0) return null;
+
+            TaskManager.StartTask("SERVER", "GET_SERVER_PLATFORM", serverUrl);
+
+            try
+            {
+				var os = new Server.Client.OperatingSystem();
+				var config = new ServerProxyConfigurator();
+				config.ServerUrl = serverUrl;
+				config.ServerPassword = password;
+				config.Configure(os);
+                return os.OSPlatform();
+            }
+            catch (WebException ex)
+            {
+                HttpWebResponse response = (HttpWebResponse)ex.Response;
+				if (response != null && response.StatusCode == HttpStatusCode.NotFound)
+					return null;
+				else if (response != null && response.StatusCode == HttpStatusCode.BadRequest)
+					return null;
+				else if (response != null && response.StatusCode == HttpStatusCode.InternalServerError)
+					return null;
+				else if (response != null && response.StatusCode == HttpStatusCode.ServiceUnavailable)
+					return null;
+				else if (response != null && response.StatusCode == HttpStatusCode.Unauthorized)
+					return null;
+                if (ex.Message.Contains("The remote name could not be resolved") || ex.Message.Contains("Unable to connect"))
+                {
+                    TaskManager.WriteError("The remote server could not ne resolved");
+                    return null;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("The signature or decryption was invalid"))
+                {
+                    TaskManager.WriteWarning("Wrong server access credentials");
+                    return null;
+                }
+                else
+                {
+                    TaskManager.WriteError("General Server Error");
+                    TaskManager.WriteError(ex);
+                    return null;
+                }
+            }
+            finally
+            {
+                TaskManager.CompleteTask();
+            }
+        }
+
+        private static void FindServices(ServerInfo server)
 		{
 			try
 			{
@@ -283,8 +342,11 @@ namespace SolidCP.EnterpriseServer
 			if (!server.VirtualServer)
 			{
 				int availResult = CheckServerAvailable(server.ServerUrl, server.Password);
-				if (availResult < 0)
-					return availResult;
+                if (availResult < 0)
+                    return availResult;
+
+                var platform = GetServerPlatform(server.ServerUrl, server.Password);
+				if (platform.HasValue) server.OSPlatform = platform.Value;
 			}
 
 			TaskManager.StartTask("SERVER", "ADD", server.ServerName);
@@ -336,6 +398,9 @@ namespace SolidCP.EnterpriseServer
 				int availResult = CheckServerAvailable(server.ServerUrl, server.Password);
 				if (availResult < 0)
 					return availResult;
+
+				var platform = GetServerPlatform(server.ServerUrl, server.Password);
+				if (platform.HasValue) server.OSPlatform = platform.Value; 
 			}
 
 			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,

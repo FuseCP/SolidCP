@@ -556,7 +556,7 @@ namespace SolidCP.EnterpriseServer
         public static int AddServer(string serverName, string serverUrl,
             string password, string comments, bool virtualServer, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, OSPlatform osPlatform)
+            string adAuthenticationType, OSPlatform? osPlatform)
         {
             SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
             prmServerId.Direction = ParameterDirection.Output;
@@ -585,7 +585,7 @@ namespace SolidCP.EnterpriseServer
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
             string adAuthenticationType, string adParentDomain, string adParentDomainController,
-            OSPlatform osPlatform)
+            OSPlatform? osPlatform)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "UpdateServer",

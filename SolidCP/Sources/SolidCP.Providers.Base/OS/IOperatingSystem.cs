@@ -33,7 +33,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
 using System.Security;
@@ -43,6 +42,8 @@ using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Server;
 using SolidCP.Server.Utils;
+using System.Runtime.InteropServices;
+
 
 namespace SolidCP.Providers.OS
 {
@@ -109,10 +110,10 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string path, string args);
 
-		bool IsUnix();
-
 		Shell DefaultShell { get; }
 		Installer DefaultInstaller { get; }
+
+		OSPlatform OSPlatform();
 	}
 
 }

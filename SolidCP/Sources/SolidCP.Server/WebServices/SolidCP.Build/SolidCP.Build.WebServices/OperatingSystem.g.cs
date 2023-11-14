@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Web;
 using System.Collections;
+using System.Runtime.InteropServices;
 using SolidCP.Web.Services;
 using System.ComponentModel;
 using SolidCP.Providers;
@@ -101,6 +102,9 @@ namespace SolidCP.Server.Services
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         void CopyFile(string sourcePath, string destinationPath);
+        [WebMethod, SoapHeader("settings")]
+        [OperationContract]
+        OSPlatform OSPlatform();
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         void ZipFiles(string zipFile, string rootPath, string[] files);
@@ -239,9 +243,6 @@ namespace SolidCP.Server.Services
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         SettingPair[] WpiGetLogsInDirectory(string Path);
-        [WebMethod, SoapHeader("settings")]
-        [OperationContract]
-        bool IsUnix();
     }
 
     // wcf service
