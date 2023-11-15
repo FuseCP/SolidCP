@@ -569,9 +569,20 @@ namespace SolidCP.Providers.OS
                 }
             }
         }
-        public OSPlatform OSPlatform() => Server.Utils.OS.OSPlatform;
+        public void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore) {
+            platform = Server.Utils.OS.OSPlatform;
+            IsCore = Server.Utils.OS.IsCore;
+        }
 
-        public IWebServer WebServer => throw new NotImplementedException();
-
+        public Web.IWebServer WebServer => throw new NotImplementedException();
+ 
+        ServiceManager serviceManager = null;
+        public ServiceManager ServiceManager {
+            get {
+                serviceManager = serviceManager != null ? serviceManager :  new SystemdServiceManager();
+                if (!serviceManager.IsInstalled) return null;
+                return serviceManager;
+            }
+        }
     }
 }

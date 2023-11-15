@@ -18,7 +18,7 @@ using Grpc.Net.Client;
 namespace SolidCP.Web.Client
 {
 
-	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
 	public class UserNamePasswordCredentials
 	{
@@ -50,7 +50,7 @@ namespace SolidCP.Web.Client
 
 					SetProtocol(url, ref value);
 
-					AssertScheme(url, value);
+					url.AssertScheme(value);
 
 					if (value == Protocols.NetTcp && IsEncrypted && !IsLocal) value = Protocols.NetTcpSsl;
 
@@ -74,23 +74,23 @@ namespace SolidCP.Web.Client
 			}
 		}
 
-		public void SetProtocol(string url, ref Protocol protocol) {
+		public void SetProtocol(string url, ref Protocols protocol) {
 			 if (url.StartsWith("https://")) {
 				switch (protocol) {
-					case Protocol.BasicHttp: protocol = Protocol.BasicHttps; break;
-					case Protocol.NetHttp: protocol = Protocol.NetHttps; break;
-					case Protocol.WSHttp: protocol = Protocol.WSHttps; break;
-					case Protocol.gRPC: protocol = Protocol.gRPCSsl; break;
-					case Protocol.gRPCWeb: protocol = Protocol.gRPCWebSsl; break;
+					case Protocols.BasicHttp: protocol = Protocols.BasicHttps; break;
+					case Protocols.NetHttp: protocol = Protocols.NetHttps; break;
+					case Protocols.WSHttp: protocol = Protocols.WSHttps; break;
+					case Protocols.gRPC: protocol = Protocols.gRPCSsl; break;
+					case Protocols.gRPCWeb: protocol = Protocols.gRPCWebSsl; break;
 					default: break;
 				}
 			} else if (url.StartsWith("http://")) {
 				switch (protocol) {
-					case Protocol.BasicHttps: protocol = Protocol.BasicHttp; break;
-					case Protocol.NetHttps: protocol = Protocol.NetHttp; break;
-					case Protocol.WSHttps: protocol = Protocol.WSHttp; break;
-					case Protocol.gRPCSsl: protocol = Protocol.gRPC; break;
-					case Protocol.gRPCWebSsl: protocol = Protocol.gRPCWeb; break;
+					case Protocols.BasicHttps: protocol = Protocols.BasicHttp; break;
+					case Protocols.NetHttps: protocol = Protocols.NetHttp; break;
+					case Protocols.WSHttps: protocol = Protocols.WSHttp; break;
+					case Protocols.gRPCSsl: protocol = Protocols.gRPC; break;
+					case Protocols.gRPCWebSsl: protocol = Protocols.gRPCWeb; break;
 					default: break;
 				}
 			}
@@ -117,7 +117,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
-					else Protocol = Protocols.BasicHttp;
+					else protocol = Protocols.BasicHttp;
 				}
 				else if (url.StartsWith("https://"))
 				{
@@ -126,7 +126,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttps;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPCSsl;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWebSsl;
-					else Protocol = Protocols.BasicHttps;
+					else protocol = Protocols.BasicHttps;
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
@@ -162,6 +162,8 @@ namespace SolidCP.Web.Client
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 		public bool IsSecureProtocol => IsSsl;
 
+		public bool IsHttp => Protocol <= Protocols.WSHttp;
+		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
 		public bool IsEncrypted => this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
 					?.GetCustomAttribute<HasPolicyAttribute>() != null;
@@ -177,6 +179,7 @@ namespace SolidCP.Web.Client
 			}
 		}
 
+		public bool IsDefaultApi => !Regex.IsMatch(url, "(?:basic|net|ws|grpc|grpc/ssl|tcp|tcp/ssl|pipe|pipe/ssl)(?:/[A-Za-z0-9_¨]+)?/?(?:\\?|$)");
 
 		public bool IsAuthenticated
 		{
@@ -209,17 +212,18 @@ namespace SolidCP.Web.Client
 		}
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
 		
-		public static string AssertScheme(this string url, Protocol protocol) {
-			if (url.StartsWith("http://") && 
-				!(protocol == Protocol.BasicHttp || protocol == Protocol.NetHttp || protocol == Protocol.WSHttp ||
-				protocol == Protocol.gRPC || protocol == Protocol.gRPCWeb) ||
+		public static string AssertScheme(this string url, Protocols protocol) {
+			if (url.StartsWith("http://") &&
+				!(protocol == Protocols.BasicHttp || protocol == Protocols.NetHttp || protocol == Protocols.WSHttp ||
+				protocol == Protocols.gRPC || protocol == Protocols.gRPCWeb) ||
 				url.StartsWith("https://") &&
-				!(protocol == Protocol.BasicHttps || protocol == Protocol.NetHttps || protocol == Protocol.WSHttps ||
-				protocol == Protocol.gRPCSsl || protocol == Protocol.gRPCWebSsl) ||
-				url.StartsWith("net.tcp://") && !(protocol == Protocol.NetTcp || protocol == Protocol.NetTcpSsl) ||
-				url.StartsWith("net.pipe://") && !(protocol == Protocol.NetPipe || protocol == Protocol.NetPipeSsl) ||
-				url.StartsWith("assembly://") && protocol != Protocol.Assembly)
-				throw new NotSupportedException("This protocol is not valid for this connection.")
+				!(protocol == Protocols.BasicHttps || protocol == Protocols.NetHttps || protocol == Protocols.WSHttps ||
+				protocol == Protocols.gRPCSsl || protocol == Protocols.gRPCWebSsl) ||
+				url.StartsWith("net.tcp://") && !(protocol == Protocols.NetTcp || protocol == Protocols.NetTcpSsl) ||
+				url.StartsWith("net.pipe://") && !(protocol == Protocols.NetPipe || protocol == Protocols.NetPipeSsl) ||
+				url.StartsWith("assembly://") && protocol != Protocols.Assembly)
+				throw new NotSupportedException("This protocol is not valid for this connection.");
+			return url;
 		}
 
 		public static string SetApi(this string url, string api)

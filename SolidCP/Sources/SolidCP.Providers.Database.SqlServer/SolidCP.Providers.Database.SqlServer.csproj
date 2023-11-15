@@ -6,7 +6,7 @@
     <PublishUrl>publish\</PublishUrl>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <WarningsAsErrors>618</WarningsAsErrors>
-    <OutputPath>..\SolidCP.Server\bin\Database\</OutputPath>
+    <OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

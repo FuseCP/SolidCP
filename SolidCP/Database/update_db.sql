@@ -19846,7 +19846,7 @@ END
 
 IF @NoPlatform = 1
 BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] NVARCHAR(64) NULL, [IsCore] BIT NULL
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL, [IsCore] BIT NULL
 END
 
 IF @NoPlatform = 1
@@ -19866,7 +19866,7 @@ EXEC ('
 		@ADUsername nvarchar(100),
 		@ADPassword nvarchar(100),
 		@ADAuthenticationType varchar(50),
-		@OSPlatform nvarchar(64),
+		@OSPlatform int,
 		@IsCore bit
 	)
 	AS
@@ -20002,7 +20002,7 @@ EXEC('
 		@ADAuthenticationType varchar(50),
 		@ADParentDomain nvarchar(200),
 		@ADParentDomainController nvarchar(200),
-		@OSPlatform nvarchar(64),
+		@OSPlatform int,
 		@IsCore bit
 	)
 	AS

@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!--<SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
     <PackageReference Include="CoreWCF.Http" Version="1.5.1" />
     <PackageReference Include="CoreWCF.NetTcp" Version="1.5.1" />
     <PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />

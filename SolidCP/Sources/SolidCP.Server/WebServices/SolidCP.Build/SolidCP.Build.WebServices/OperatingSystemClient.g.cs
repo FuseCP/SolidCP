@@ -107,10 +107,9 @@ namespace SolidCP.Server.Client
         void CopyFile(string sourcePath, string destinationPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CopyFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CopyFileResponse")]
         System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath);
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatform", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatformResponse")]
-        System.Runtime.InteropServices.OSPlatform OSPlatform();
-        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatform", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/OSPlatformResponse")]
-        System.Threading.Tasks.Task<System.Runtime.InteropServices.OSPlatform> OSPlatformAsync();
+        [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSPlatform", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSPlatformResponse")]
+        void GetOSPlatform(out SolidCP.Server.Utils.OSPlatform platform, out bool IsCore);
+        // No async method, because method has ref, in or out parameters.
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFilesResponse")]
         void ZipFiles(string zipFile, string rootPath, string[] files);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFilesResponse")]
@@ -541,16 +540,19 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.OperatingSystem", "CopyFile", sourcePath, destinationPath);
         }
 
-        public System.Runtime.InteropServices.OSPlatform OSPlatform()
+        public void GetOSPlatform(out SolidCP.Server.Utils.OSPlatform platform, out bool IsCore)
         {
-            return Invoke<System.Runtime.InteropServices.OSPlatform>("SolidCP.Server.OperatingSystem", "OSPlatform");
+            var _params = new object[]
+            {
+                null,
+                null
+            };
+            Invoke("SolidCP.Server.OperatingSystem", "GetOSPlatform", _params);
+            platform = (SolidCP.Server.Utils.OSPlatform)_params[0];
+            IsCore = (bool)_params[1];
         }
 
-        public async System.Threading.Tasks.Task<System.Runtime.InteropServices.OSPlatform> OSPlatformAsync()
-        {
-            return await InvokeAsync<System.Runtime.InteropServices.OSPlatform>("SolidCP.Server.OperatingSystem", "OSPlatform");
-        }
-
+        // No async method since asnyc methods cannot contain ref, in or out parameters.
         public void ZipFiles(string zipFile, string rootPath, string[] files)
         {
             Invoke("SolidCP.Server.OperatingSystem", "ZipFiles", zipFile, rootPath, files);
@@ -1256,16 +1258,12 @@ namespace SolidCP.Server.Client
             await base.Client.CopyFileAsync(sourcePath, destinationPath);
         }
 
-        public System.Runtime.InteropServices.OSPlatform OSPlatform()
+        public void GetOSPlatform(out SolidCP.Server.Utils.OSPlatform platform, out bool IsCore)
         {
-            return base.Client.OSPlatform();
+            base.Client.GetOSPlatform(out platform, out IsCore);
         }
 
-        public async System.Threading.Tasks.Task<System.Runtime.InteropServices.OSPlatform> OSPlatformAsync()
-        {
-            return await base.Client.OSPlatformAsync();
-        }
-
+        //No async method, because the method has ref, in or out parameters.
         public void ZipFiles(string zipFile, string rootPath, string[] files)
         {
             base.Client.ZipFiles(zipFile, rootPath, files);

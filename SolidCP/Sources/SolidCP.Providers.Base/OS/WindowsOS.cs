@@ -280,6 +280,7 @@ namespace SolidCP.Server.Utils
 		public enum WindowsVersion
 		{
 			Unknown = 0,
+			NonWindows,
 			Windows95,
 			Windows98,
 			WindowsMe,
@@ -312,7 +313,13 @@ namespace SolidCP.Server.Utils
 		{
 
 			if (version.HasValue) return version.Value;
-			
+
+			if (!OS.IsWindows)
+			{
+				version = WindowsVersion.NonWindows;
+				return WindowsVersion.NonWindows;
+			}
+
 			WindowsVersion ret = WindowsVersion.Unknown;
 
 			OSVERSIONINFOEX info = new OSVERSIONINFOEX();

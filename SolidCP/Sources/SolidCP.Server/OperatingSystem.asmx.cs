@@ -508,14 +508,13 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
-		public OSPlatform OSPlatform()
+		public void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore)
 		{
 			try
 			{
 				Log.WriteStart("'{0}' OSPlatform", ProviderSettings.ProviderName);
-				var platform = OSProvider.OSPlatform();
+				OSProvider.GetOSPlatform(out platform, out IsCore);
 				Log.WriteEnd("'{0}' OSPlatform", ProviderSettings.ProviderName);
-				return platform;
 			}
 			catch (Exception ex)
 			{
@@ -843,7 +842,7 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
-		public UnixFileMode GetUnixPermissions(string path)
+		public Providers.OS.UnixFileMode GetUnixPermissions(string path)
 		{
 			try
 			{
@@ -860,7 +859,7 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
-		public void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false)
+		public void GrantUnixPermissions(string path, Providers.OS.UnixFileMode mode, bool resetChildPermissions = false)
 		{
 			try
 			{
@@ -1294,7 +1293,8 @@ namespace SolidCP.Server
 		}
         #endregion
 
-        public IWebServer WebServer => throw new NotSupportedException();
+        public Providers.Web.IWebServer WebServer => throw new NotSupportedException();
+		public ServiceManager ServiceManager => throw new NotSupportedException();
 
     }
 }

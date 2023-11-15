@@ -110,11 +110,12 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string path, string args);
 
+		void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore);
+
 		Shell DefaultShell { get; }
 		Installer DefaultInstaller { get; }
-		IWebServer WebServer { get; }
-
-		OSPlatform OSPlatform();
+		Web.IWebServer WebServer { get; }
+		ServiceManager ServiceManager { get; }
 	}
 
 }

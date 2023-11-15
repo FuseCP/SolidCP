@@ -48,68 +48,62 @@ namespace SolidCP.EnterpriseServer
 		private string serverUrl;
 		private String password;
 		private string comments;
-        private bool virtualServer;
-        private string instantDomainAlias;
-        private bool adEnabled;
-        private string adRootDomain;
-        private string adAuthenticationType;
-        private string adUsername;
-        private string adPassword;
-        private int primaryGroupId;
-        private string adParentDomain;
-        private string adParentDomainController;
-        private OSPlatform? osPlatform = null;
+		private bool virtualServer;
+		private string instantDomainAlias;
+		private bool adEnabled;
+		private string adRootDomain;
+		private string adAuthenticationType;
+		private string adUsername;
+		private string adPassword;
+		private int primaryGroupId;
+		private string adParentDomain;
+		private string adParentDomainController;
+		private Server.Utils.OSPlatform osPlatform = Server.Utils.OSPlatform.Unknown;
+		private bool? isCore = null;
 
-        public ServerInfo()
-        {
-        }
+		public ServerInfo()
+		{
+		}
+		public Server.Utils.OSPlatform OSPlatform
+		{
+			get { return osPlatform; }
+			set { osPlatform = value; }
+		}
 
-        private string OSPlatformName
-        {
-            get
-            {
-                return osPlatform?.ToString();
-            }
-            set {
-                osPlatform = value == null ? null : (OSPlatform?)(System.Runtime.InteropServices.OSPlatform.Create(value));
-            }
-        }
+		public bool? IsCore
+		{
+			get { return isCore; }
+			set { isCore = value; }
+		}
+		public int PrimaryGroupId
+		{
+			get { return primaryGroupId; }
+			set { primaryGroupId = value; }
+		}
 
-        [IgnoreDataMember, XmlIgnore]
-        public OSPlatform? OSPlatform {
-            get { return osPlatform; }
-            set { osPlatform = value; }
-        }
+		public string ADRootDomain
+		{
+			get { return adRootDomain; }
+			set { adRootDomain = value; }
+		}
 
-        public int PrimaryGroupId
-        {
-            get { return primaryGroupId; }
-            set { primaryGroupId = value; }
-        }
+		public string ADAuthenticationType
+		{
+			get { return this.adAuthenticationType; }
+			set { this.adAuthenticationType = value; }
+		}
 
-        public string ADRootDomain
-        {
-            get { return adRootDomain; }
-            set { adRootDomain = value; }
-        }
+		public string ADUsername
+		{
+			get { return adUsername; }
+			set { adUsername = value; }
+		}
 
-        public string ADAuthenticationType
-        {
-            get { return this.adAuthenticationType; }
-            set { this.adAuthenticationType = value; }
-        }
-
-        public string ADUsername
-        {
-            get { return adUsername; }
-            set { adUsername = value; }
-        }
-
-        public string ADPassword
-        {
-            get { return adPassword; }
-            set { adPassword = value; }
-        }
+		public string ADPassword
+		{
+			get { return adPassword; }
+			set { adPassword = value; }
+		}
 
 		public int ServerId
 		{
@@ -134,41 +128,41 @@ namespace SolidCP.EnterpriseServer
 			get { return comments; }
 			set { comments = value; }
 		}
-		
+
 		public String Password
 		{
-			get{ return password; }
-			set{ password = value; }
+			get { return password; }
+			set { password = value; }
 		}
 
-        public bool VirtualServer
-        {
-            get { return virtualServer; }
-            set { virtualServer = value; }
-        }
+		public bool VirtualServer
+		{
+			get { return virtualServer; }
+			set { virtualServer = value; }
+		}
 
-        public string InstantDomainAlias
-        {
-            get { return instantDomainAlias; }
-            set { instantDomainAlias = value; }
-        }
+		public string InstantDomainAlias
+		{
+			get { return instantDomainAlias; }
+			set { instantDomainAlias = value; }
+		}
 
-        public bool ADEnabled
-        {
-            get { return this.adEnabled; }
-            set { this.adEnabled = value; }
-        }
+		public bool ADEnabled
+		{
+			get { return this.adEnabled; }
+			set { this.adEnabled = value; }
+		}
 
-        public string ADParentDomain
-        {
-            get { return adParentDomain; }
-            set { adParentDomain = value; }
-        }
+		public string ADParentDomain
+		{
+			get { return adParentDomain; }
+			set { adParentDomain = value; }
+		}
 
-        public string ADParentDomainController
-        {
-            get { return adParentDomainController; }
-            set { adParentDomainController = value; }
-        }
+		public string ADParentDomainController
+		{
+			get { return adParentDomainController; }
+			set { adParentDomainController = value; }
+		}
 	}
 }

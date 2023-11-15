@@ -556,7 +556,7 @@ namespace SolidCP.EnterpriseServer
         public static int AddServer(string serverName, string serverUrl,
             string password, string comments, bool virtualServer, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, OSPlatform? osPlatform)
+            string adAuthenticationType, Server.Utils.OSPlatform osPlatform, bool? isCore)
         {
             SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
             prmServerId.Direction = ParameterDirection.Output;
@@ -576,7 +576,8 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdUsername", adUsername),
                 new SqlParameter("@AdPassword", adPassword),
                 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
-                new SqlParameter("@OSPlatform", osPlatform));
+                new SqlParameter("@OSPlatform", osPlatform),
+                new SqlParameter("@IsCore", isCore));
 
             return Convert.ToInt32(prmServerId.Value);
         }
@@ -585,7 +586,7 @@ namespace SolidCP.EnterpriseServer
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
             string adAuthenticationType, string adParentDomain, string adParentDomainController,
-            OSPlatform? osPlatform)
+            Server.Utils.OSPlatform osPlatform, bool? isCore)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "UpdateServer",
@@ -603,7 +604,8 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
                 new SqlParameter("@AdParentDomain", adParentDomain),
                 new SqlParameter("@AdParentDomainController", adParentDomainController),
-                new SqlParameter("@OSPlatform", osPlatform));
+                new SqlParameter("@OSPlatform", osPlatform),
+                new SqlParameter("@IsCore", isCore));
 
         }
 

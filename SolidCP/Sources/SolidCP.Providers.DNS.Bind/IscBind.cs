@@ -156,7 +156,7 @@ namespace SolidCP.Providers.DNS
 			soa.PrimaryNsServer = System.Net.Dns.GetHostEntry("LocalHost").HostName;
 			soa.PrimaryPerson = "hostmaster";//"hostmaster." + zoneName;
 			records.Add(soa);
-            ReloadBIND("reconfig", "");
+			ReloadBIND("reconfig", "");
 			// add DNS zone
 			UpdateZone(zoneName, records);
 		}
@@ -189,7 +189,7 @@ namespace SolidCP.Providers.DNS
 			File.Create(GetZoneFilePath(zoneName)).Close();
 
 			// reload config
-            ReloadBIND("reconfig", "");
+			ReloadBIND("reconfig", "");
 		}
 
 		public virtual DnsRecord[] GetZoneRecords(string zoneName)
@@ -260,8 +260,8 @@ namespace SolidCP.Providers.DNS
 				File.Delete(zonePath);
 
 			// reload named.conf
-            ReloadBIND("reconfig", "");
-        }
+			ReloadBIND("reconfig", "");
+		}
 		#endregion
 
 		#region Resource records
@@ -330,16 +330,16 @@ namespace SolidCP.Providers.DNS
 			// delete A record
 			//DeleteARecordInternal(records, zoneName, host);
 
-            //check if user tries to add existent zone record
-            foreach (DnsRecord dnsRecord in records)
-            {
-                if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
-                    && (String.Compare(dnsRecord.RecordData, ip, StringComparison.OrdinalIgnoreCase) == 0)
-                    )
+			//check if user tries to add existent zone record
+			foreach (DnsRecord dnsRecord in records)
+			{
+				if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
+					 && (String.Compare(dnsRecord.RecordData, ip, StringComparison.OrdinalIgnoreCase) == 0)
+					 )
 
 
-                    return;
-            }
+					return;
+			}
 
 			// add new A record
 			DnsRecord record = new DnsRecord();
@@ -386,7 +386,8 @@ namespace SolidCP.Providers.DNS
 		#endregion
 
 		#region AAAA records
-		private void AddAAAARecord(string zoneName, string host, string ip) {
+		private void AddAAAARecord(string zoneName, string host, string ip)
+		{
 			// get all zone records
 			List<DnsRecord> records = GetZoneRecordsArrayList(zoneName);
 
@@ -394,7 +395,8 @@ namespace SolidCP.Providers.DNS
 			//DeleteARecordInternal(records, zoneName, host);
 
 			//check if user tries to add existent zone record
-			foreach (DnsRecord dnsRecord in records) {
+			foreach (DnsRecord dnsRecord in records)
+			{
 				if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
 					 && (String.Compare(dnsRecord.RecordData, ip, StringComparison.OrdinalIgnoreCase) == 0)
 					 )
@@ -424,13 +426,13 @@ namespace SolidCP.Providers.DNS
 			// delete NS record
 			//DeleteNsRecordInternal(records, zoneName, nameServer);
 
-            //check if user tries to add existent zone record
-            foreach (DnsRecord dnsRecord in records)
-            {
-                if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
-                    && (String.Compare(dnsRecord.RecordData, nameServer, StringComparison.OrdinalIgnoreCase) == 0))
-                    return;
-            }
+			//check if user tries to add existent zone record
+			foreach (DnsRecord dnsRecord in records)
+			{
+				if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
+					 && (String.Compare(dnsRecord.RecordData, nameServer, StringComparison.OrdinalIgnoreCase) == 0))
+					return;
+			}
 
 			// add new NS record
 			DnsRecord record = new DnsRecord();
@@ -454,15 +456,15 @@ namespace SolidCP.Providers.DNS
 			// delete MX record
 			//DeleteMXRecordInternal(records, zoneName, mailServer);
 
-            //check if user tries to add existent zone record
-            foreach (DnsRecord dnsRecord in records)
-            {
-                if ((dnsRecord.RecordType == DnsRecordType.MX) &&
-                    (String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0) &&
-                    (String.Compare(dnsRecord.RecordData, mailServer, StringComparison.OrdinalIgnoreCase) == 0)
-                    && dnsRecord.MxPriority == mailServerPriority)
-                    return;
-            }
+			//check if user tries to add existent zone record
+			foreach (DnsRecord dnsRecord in records)
+			{
+				if ((dnsRecord.RecordType == DnsRecordType.MX) &&
+					 (String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0) &&
+					 (String.Compare(dnsRecord.RecordData, mailServer, StringComparison.OrdinalIgnoreCase) == 0)
+					 && dnsRecord.MxPriority == mailServerPriority)
+					return;
+			}
 
 			// add new MX record
 			DnsRecord record = new DnsRecord();
@@ -487,26 +489,26 @@ namespace SolidCP.Providers.DNS
 			// delete CNAME record
 			//DeleteCNameRecordInternal(records, zoneName, alias);
 
-            DnsRecord record = records.Find(
-                    delegate(DnsRecord r)
-                    {
-                        bool isSameRecord = (r.RecordType == DnsRecordType.CNAME) && (String.Compare(r.RecordName, alias, StringComparison.OrdinalIgnoreCase) == 0);
-                        if (isSameRecord)
-                        {
-                            return true;
-                        }
+			DnsRecord record = records.Find(
+					  delegate (DnsRecord r)
+					  {
+						  bool isSameRecord = (r.RecordType == DnsRecordType.CNAME) && (String.Compare(r.RecordName, alias, StringComparison.OrdinalIgnoreCase) == 0);
+						  if (isSameRecord)
+						  {
+							  return true;
+						  }
 
-                        return false;
-                    }
-                );
+						  return false;
+					  }
+				 );
 
 			// add new CNAME record
-            if (record == null)
-            {
-                record = new DnsRecord {RecordType = DnsRecordType.CNAME, RecordName = alias, RecordData = targetHost};
-                records.Add(record);
-            }
-		    // update zone
+			if (record == null)
+			{
+				record = new DnsRecord { RecordType = DnsRecordType.CNAME, RecordName = alias, RecordData = targetHost };
+				records.Add(record);
+			}
+			// update zone
 			UpdateZone(zoneName, records);
 		}
 
@@ -521,13 +523,13 @@ namespace SolidCP.Providers.DNS
 			// delete TXT record
 			//DeleteTxtRecordInternal(records, zoneName, text);
 
-            //check if user tries to add existent zone record
-            foreach (DnsRecord dnsRecord in records)
-            {
-                if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
-                    && (String.Compare(dnsRecord.RecordData, text, StringComparison.OrdinalIgnoreCase) == 0))
-                    return;
-            }
+			//check if user tries to add existent zone record
+			foreach (DnsRecord dnsRecord in records)
+			{
+				if ((String.Compare(dnsRecord.RecordName, host, StringComparison.OrdinalIgnoreCase) == 0)
+					 && (String.Compare(dnsRecord.RecordData, text, StringComparison.OrdinalIgnoreCase) == 0))
+					return;
+			}
 
 			// add new TXT record
 			DnsRecord record = new DnsRecord();
@@ -865,7 +867,7 @@ namespace SolidCP.Providers.DNS
 						new object[] { rr.SrvPriority,
 						rr.SrvWeight,
 						rr.SrvPort,
-						BuildRecordData(zoneName, rr.RecordData) } );
+						BuildRecordData(zoneName, rr.RecordData) });
 				}
 
 				// add line to the zone file
@@ -885,7 +887,7 @@ namespace SolidCP.Providers.DNS
 
 			// update zone file
 			UpdateZoneFile(zoneName, sb.ToString());
-            ReloadBIND("reload", zoneName);
+			ReloadBIND("reload", zoneName);
 		}
 
 		private string CorrectRecordName(string zoneName, string host)
@@ -979,7 +981,7 @@ namespace SolidCP.Providers.DNS
 		{
 			string path = GetZoneFilePath(zoneName);
 			File.WriteAllText(path, zoneContent);
-        }
+		}
 
 		private string GetZoneFilePath(string zoneName)
 		{
@@ -994,60 +996,66 @@ namespace SolidCP.Providers.DNS
 		private void ReloadBIND(string Args, string zoneName)
 		{
 
-            // Do we have a rndc.exe? if so use it - improves handling
-            if (BindReloadBatch.IndexOf("rndc.exe") > 0)
-            {
-                Process rndc = new Process();
-                rndc.StartInfo.FileName = BindReloadBatch;
-                string rndcArguments = Args;
-                if (zoneName.Length > 0)
-                {
-                    rndcArguments += " " + zoneName;
-                }
-                rndc.StartInfo.Arguments = rndcArguments;
-                rndc.StartInfo.CreateNoWindow = true;
-                rndc.Start();
+			// Do we have a rndc.exe? if so use it - improves handling
+			if (BindReloadBatch.IndexOf("rndc.exe") > 0)
+			{
+				Process rndc = new Process();
+				rndc.StartInfo.FileName = BindReloadBatch;
+				string rndcArguments = Args;
+				if (zoneName.Length > 0)
+				{
+					rndcArguments += " " + zoneName;
+				}
+				rndc.StartInfo.Arguments = rndcArguments;
+				rndc.StartInfo.CreateNoWindow = true;
+				rndc.Start();
 
-                /*
-                 * Can't figure out how to log the output of the process to auditlog. If someone could be of assistans and fix this.
-                 * it's rndcOutput var that should be written to audit log.s
-                 * 
-                string rndcOutput = "";
-                while (!rndc.StandardOutput.EndOfStream)
-                {
-                    rndcOutput += rndc.StandardOutput.ReadLine();
-                } 
-                */
+				/*
+				 * Can't figure out how to log the output of the process to auditlog. If someone could be of assistans and fix this.
+				 * it's rndcOutput var that should be written to audit log.s
+				 * 
+				string rndcOutput = "";
+				while (!rndc.StandardOutput.EndOfStream)
+				{
+					 rndcOutput += rndc.StandardOutput.ReadLine();
+				} 
+				*/
 
-            }
-            else
-            {
+			}
+			else
+			{
 				string arguments = Args;
 				if (zoneName.Length > 0)
 				{
 					arguments += " " + zoneName;
 				}
 				FileUtils.ExecuteSystemCommand(BindReloadBatch, arguments);
-            }
+			}
 		}
 
 		#endregion
 
-        public override bool IsInstalled()
-        {
+		public bool IsInstalledWindows()
+		{
 			if (Server.Utils.OS.IsWindows)
 			{
 				var services = ServiceController.GetServices();
 				return services.Any(s => s.DisplayName.Contains("ISC BIND"));
 				// TODO check if version is 9
+			}
+			return false;
+		}
 
-			} else if (Server.Utils.OS.IsUnix)
+		public override bool IsInstalled()
+		{
+			if (IsInstalledWindows()) return true;
+			else if (Server.Utils.OS.IsUnix)
 			{
 				return Shell.Default.Find("named") != null &&
 					Shell.Default.ExecAsync("named -version").Output().Result.Contains("BIND 9.");
 			}
-            return false;
-        }
+			return false;
+		}
 
 	}
 }

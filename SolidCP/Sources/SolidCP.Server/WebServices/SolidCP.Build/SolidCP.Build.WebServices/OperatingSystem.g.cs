@@ -104,7 +104,7 @@ namespace SolidCP.Server.Services
         void CopyFile(string sourcePath, string destinationPath);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        OSPlatform OSPlatform();
+        void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         void ZipFiles(string zipFile, string rootPath, string[] files);
@@ -164,10 +164,10 @@ namespace SolidCP.Server.Services
         void DeleteDSN(string dsnName);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        UnixFileMode GetUnixPermissions(string path);
+        Providers.OS.UnixFileMode GetUnixPermissions(string path);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false);
+        void GrantUnixPermissions(string path, Providers.OS.UnixFileMode mode, bool resetChildPermissions = false);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         TerminalSession[] GetTerminalServicesSessions();
