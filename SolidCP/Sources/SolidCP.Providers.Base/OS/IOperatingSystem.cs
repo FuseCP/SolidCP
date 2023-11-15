@@ -112,6 +112,7 @@ namespace SolidCP.Providers.OS
 
 		Shell DefaultShell { get; }
 		Installer DefaultInstaller { get; }
+		IWebServer WebServer { get; }
 
 		OSPlatform OSPlatform();
 	}

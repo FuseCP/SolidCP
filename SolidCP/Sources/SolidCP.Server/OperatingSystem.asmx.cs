@@ -1294,5 +1294,7 @@ namespace SolidCP.Server
 		}
         #endregion
 
+        public IWebServer WebServer => throw new NotSupportedException();
+
     }
 }

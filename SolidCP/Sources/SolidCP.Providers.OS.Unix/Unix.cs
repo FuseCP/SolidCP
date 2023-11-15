@@ -571,6 +571,7 @@ namespace SolidCP.Providers.OS
         }
         public OSPlatform OSPlatform() => Server.Utils.OS.OSPlatform;
 
+        public IWebServer WebServer => throw new NotImplementedException();
 
     }
 }

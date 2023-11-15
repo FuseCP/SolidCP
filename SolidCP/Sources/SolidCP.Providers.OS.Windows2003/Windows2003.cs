@@ -1830,5 +1830,8 @@ namespace SolidCP.Providers.OS
 		public Installer DefaultInstaller => WinGet;
 
         public OSPlatform OSPlatform() => Server.Utils.OS.OSPlatform;
+
+		public IWebServer WebServer => throw new NotImplementedException();
+
     }
 }

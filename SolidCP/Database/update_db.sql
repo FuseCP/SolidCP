@@ -19846,7 +19846,7 @@ END
 
 IF @NoPlatform = 1
 BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] NVARCHAR(64) NULL
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] NVARCHAR(64) NULL, [IsCore] BIT NULL
 END
 
 IF @NoPlatform = 1
@@ -19866,7 +19866,8 @@ EXEC ('
 		@ADUsername nvarchar(100),
 		@ADPassword nvarchar(100),
 		@ADAuthenticationType varchar(50),
-		@OSPlatform nvarchar(64)
+		@OSPlatform nvarchar(64),
+		@IsCore bit
 	)
 	AS
 
@@ -19888,7 +19889,8 @@ EXEC ('
 		ADUsername,
 		ADPassword,
 		ADAuthenticationType,
-		OSPlatform
+		OSPlatform,
+		IsCore
 	)
 	VALUES
 	(
@@ -19904,7 +19906,8 @@ EXEC ('
 		@ADUsername,
 		@ADPassword,
 		@ADAuthenticationType,
-		@OSPlatform
+		@OSPlatform,
+		@IsCore
 	)
 
 	SET @ServerID = SCOPE_IDENTITY()
@@ -19935,7 +19938,8 @@ EXEC('
 		ADAuthenticationType,
 		ADParentDomain,
 		ADParentDomainController,
-		OSPlatform
+		OSPlatform,
+		IsCore
 	FROM Servers
 	WHERE
 		ServerID = @ServerID
@@ -19971,6 +19975,7 @@ EXEC('
 		ADParentDomain,
 		ADParentDomainController
 		OSPlatform
+		IsCore
 	FROM Servers
 	WHERE
 		ServerName = @ServerName
@@ -19997,7 +20002,8 @@ EXEC('
 		@ADAuthenticationType varchar(50),
 		@ADParentDomain nvarchar(200),
 		@ADParentDomainController nvarchar(200),
-		@OSPlatform nvarchar(64)
+		@OSPlatform nvarchar(64),
+		@IsCore bit
 	)
 	AS
 
@@ -20018,7 +20024,8 @@ EXEC('
 		ADAuthenticationType = @ADAuthenticationType,
 		ADParentDomain = @ADParentDomain,
 		ADParentDomainController = @ADParentDomainController,
-		OSPlatform = @OSPlatform
+		OSPlatform = @OSPlatform,
+		IsCore = @IsCore
 	WHERE ServerID = @ServerID
 	RETURN
 	')
