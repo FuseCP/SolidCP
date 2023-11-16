@@ -13,4 +13,4 @@ In order to debug SolidCP.Server please:
 - For net6 & WSL set the correct certificate settings in launchSettings.json or appsettings.json to configure the
    server certificate WCF should use, or run the server only over http.
 
-The net6 version of the SolidCP.Server resides in the directory bin\net.core.
+The net6 version of the SolidCP.Server resides in the directory bin_net.

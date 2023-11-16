@@ -17,4 +17,4 @@ In order to debug SolidCP.EnterpriseServer please:
 - For net6 & WSL set the correct certificate settings in launchSettings.json or appsettings.json to configure the
    server certificate WCF should use, or run the server only over http.
 
-The net 6 version of SolidCP.EnterpriseServer resides in the directory bin\net.core.
+The net 6 version of SolidCP.EnterpriseServer resides in the directory bin_net.
