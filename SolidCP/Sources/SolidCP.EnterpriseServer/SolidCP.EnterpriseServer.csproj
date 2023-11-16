@@ -130,8 +130,6 @@
     <Reference Include="System.Web" />
   </ItemGroup>
 
-  <Target Name="IncrementalClean" />
-
   <Target Name="DeleteUnusedDlls" AfterTargets="Build">
      <Message Text="Delete unused dll files" Importance="high"/>
     <ItemGroup>
