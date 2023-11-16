@@ -45,7 +45,6 @@ using SolidCP.Providers.RemoteDesktopServices;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
-using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -556,7 +555,7 @@ namespace SolidCP.EnterpriseServer
         public static int AddServer(string serverName, string serverUrl,
             string password, string comments, bool virtualServer, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, Server.Utils.OSPlatform osPlatform, bool? isCore)
+            string adAuthenticationType, OSPlatform osPlatform, bool? isCore)
         {
             SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
             prmServerId.Direction = ParameterDirection.Output;
@@ -586,7 +585,7 @@ namespace SolidCP.EnterpriseServer
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
             string adAuthenticationType, string adParentDomain, string adParentDomainController,
-            Server.Utils.OSPlatform osPlatform, bool? isCore)
+            OSPlatform osPlatform, bool? isCore)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "UpdateServer",

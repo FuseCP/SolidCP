@@ -42,10 +42,9 @@ using SolidCP.EnterpriseServer.Base.Common;
 using SolidCP.Providers.Common;
 
 using SolidCP.Providers.DNS;
-using SolidCP.Server;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers;
-using SolidCP.Providers.OS;
 using SolidCP.Providers.DomainLookup;
 
 namespace SolidCP.EnterpriseServer

@@ -32,6 +32,7 @@
 
 using SolidCP.EnterpriseServer.Extensions;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
@@ -51,7 +52,7 @@ using System.Xml;
 using Whois.NET;
 using OS = SolidCP.Server.Client;
 using SolidCP.Server.Client;
-using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -210,9 +211,9 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		public static void GetServerPlatform(string serverUrl, string password, out Server.Utils.OSPlatform platform, out bool? isCore)
+		public static void GetServerPlatform(string serverUrl, string password, out OSPlatform platform, out bool? isCore)
 		{
-			platform = Server.Utils.OSPlatform.Unknown;
+			platform = OSPlatform.Unknown;
 			isCore = null;
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
@@ -228,7 +229,7 @@ namespace SolidCP.EnterpriseServer
 				config.ServerUrl = serverUrl;
 				config.ServerPassword = password;
 				config.Configure(os);
-				Server.Utils.OSPlatform p = Server.Utils.OSPlatform.Unknown;
+				var p = OSPlatform.Unknown;
 				bool iscore = false;
 				os.GetOSPlatform(out p, out iscore);
 				platform = p;
@@ -351,7 +352,7 @@ namespace SolidCP.EnterpriseServer
 				if (availResult < 0)
 					return availResult;
 
-				Server.Utils.OSPlatform osPlatform;
+				OSPlatform osPlatform;
 				bool? isCore;
 				GetServerPlatform(server.ServerUrl, server.Password,
 					out osPlatform, out isCore);
@@ -409,7 +410,7 @@ namespace SolidCP.EnterpriseServer
 				if (availResult < 0)
 					return availResult;
 
-				Server.Utils.OSPlatform osPlatform = Server.Utils.OSPlatform.Unknown;
+				OSPlatform osPlatform = OSPlatform.Unknown;
 				bool? isCore = null;
 				GetServerPlatform(server.ServerUrl, server.Password, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
