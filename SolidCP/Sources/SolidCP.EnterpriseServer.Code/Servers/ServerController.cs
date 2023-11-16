@@ -168,8 +168,11 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				// TO-DO: Check connectivity
-				return 0;
+				var test = new Server.Client.Test();
+				test.Url = serverUrl;
+				var msg = "Hello SolidCP!";
+				if (test.Echo(msg) != msg) return BusinessErrorCodes.ERROR_ADD_SERVER_INTERNAL_SERVER_ERROR;
+				else return 0;
 			}
 			catch (WebException ex)
 			{
@@ -328,7 +331,7 @@ namespace SolidCP.EnterpriseServer
 			}
 			catch (Exception ex)
 			{
-				throw new ApplicationException("Could not find services. General error was occued.", ex);
+				throw new ApplicationException("Could not find services. General error has occurred.", ex);
 			}
 		}
 
