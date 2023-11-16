@@ -33,7 +33,6 @@
 using System;
 using System.Data;
 
-using SolidCP.Server;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.Portal

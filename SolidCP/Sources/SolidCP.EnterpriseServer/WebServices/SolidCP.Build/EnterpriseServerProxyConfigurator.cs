@@ -72,6 +72,13 @@ namespace SolidCP.EnterpriseServer
             // set timeout
             proxy.Timeout = TimeSpan.FromMinutes(15); //15 minutes // System.Threading.Timeout.Infinite;
 
+            // use NetHttp protocol
+            if (proxy.IsDefaultApi)
+            {
+                if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
+                else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
+            }
+
             if (!String.IsNullOrEmpty(username) && proxy.IsAuthenticated)
             {
                 proxy.Credentials.UserName = username;
@@ -79,4 +86,4 @@ namespace SolidCP.EnterpriseServer
             }
         }
     }
-}
+}     
