@@ -38,6 +38,7 @@ using System.Data;
 using System.Configuration;
 using System.Collections;
 using System.Web.UI;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Server
 {
@@ -56,9 +57,9 @@ namespace SolidCP.Server
 
             // asp.net mode
             litAspNetMode.Text = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
-            litOS.Text = Utils.OS.IsWindows ? "Windows" :
-                (Utils.OS.IsMac ? "Mac" :
-                (Utils.OS.IsLinux ? "Linux" : "Unix"));
+            litOS.Text = OSInfo.IsWindows ? "Windows" :
+                (OSInfo.IsMac ? "Mac" :
+                (OSInfo.IsLinux ? "Linux" : "Unix"));
         }
     }
 }

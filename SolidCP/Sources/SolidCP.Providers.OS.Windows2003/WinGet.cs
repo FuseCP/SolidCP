@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SolidCP.Providers.OS
 {
-	public class WinGet : Installer
+    public class WinGet : Installer
 	{
 		public override bool IsInstalled => Shell.Find("winget") != null;
 

@@ -104,7 +104,7 @@ namespace SolidCP.Server.Services
         void CopyFile(string sourcePath, string destinationPath);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
-        void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore);
+        void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore);
         [WebMethod, SoapHeader("settings")]
         [OperationContract]
         void ZipFiles(string zipFile, string rootPath, string[] files);

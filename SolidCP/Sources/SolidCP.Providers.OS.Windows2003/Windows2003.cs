@@ -59,7 +59,7 @@ using Microsoft.Web.PlatformInstaller;
 
 namespace SolidCP.Providers.OS
 {
-	public class Windows2003 : HostingServiceProviderBase, IWindowsOperatingSystem
+    public class Windows2003 : HostingServiceProviderBase, IWindowsOperatingSystem
 	{
 		#region Constants
 		private const string ODBC_SOURCES_KEY = @"SOFTWARE\ODBC\ODBC.INI";
@@ -895,14 +895,12 @@ namespace SolidCP.Providers.OS
 
 		public override bool IsInstalled()
 		{
-			if (!Server.Utils.OS.IsWindows) return false;
-
-			return SolidCP.Server.Utils.WindowsOS.GetVersion() == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2003;
+			return OSInfo.WindowsVersion == WindowsVersion.WindowsServer2003;
 		}
 
 		public virtual bool CheckFileServicesInstallation()
 		{
-			return SolidCP.Server.Utils.WindowsOS.CheckFileServicesInstallation();
+			return SolidCP.Providers.OS.WindowsOSInfo.CheckFileServicesInstallation();
 
 		}
 
@@ -1707,8 +1705,8 @@ namespace SolidCP.Providers.OS
 			{
 				List<OSService> winServices = new List<OSService>();
 
-				ServiceController[] services = ServiceController.GetServices();
-				foreach (ServiceController service in services)
+				System.ServiceProcess.ServiceController[] services = System.ServiceProcess.ServiceController.GetServices();
+				foreach (var service in services)
 				{
 					OSService winService = new OSService();
 					winService.Id = service.ServiceName;
@@ -1745,10 +1743,10 @@ namespace SolidCP.Providers.OS
 			try
 			{
 				// get all services
-				ServiceController[] services = ServiceController.GetServices();
+				System.ServiceProcess.ServiceController[] services = System.ServiceProcess.ServiceController.GetServices();
 
 				// find required service
-				foreach (ServiceController service in services)
+				foreach (var service in services)
 				{
 					if (String.Compare(service.ServiceName, id, true) == 0)
 					{
@@ -1831,17 +1829,17 @@ namespace SolidCP.Providers.OS
 
 		public Installer DefaultInstaller => WinGet;
 
-		public void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore)
+		public void GetOSPlatform(out OSPlatform platform, out bool IsCore)
 		{
-			platform = Server.Utils.OS.OSPlatform;
-			IsCore = Server.Utils.OS.IsCore;
+			platform = OSInfo.OSPlatform;
+			IsCore = OSInfo.IsCore;
 		}
 
 		protected Web.IWebServer webServer = null;
 		public virtual Web.IWebServer WebServer =>
 			webServer != null ? webServer :
 			webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60"));
-		public virtual ServiceManager ServiceManager => throw new NotImplementedException();
+		public virtual ServiceController ServiceController => throw new NotImplementedException();
 
 	}
 }

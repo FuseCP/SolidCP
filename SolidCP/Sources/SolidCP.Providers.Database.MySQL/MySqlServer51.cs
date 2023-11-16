@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using Microsoft.Win32;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Database
 {
@@ -42,9 +43,9 @@ namespace SolidCP.Providers.Database
 
 		}
 
-		public override bool IsInstalled()
+		public bool IsInstalledWindows()
 		{
-			if (Server.Utils.OS.IsWindows)
+			if (OSInfo.IsWindows)
 			{
 				string versionNumber = null;
 
@@ -73,7 +74,13 @@ namespace SolidCP.Providers.Database
 
 				return split[0].Equals("5") & split[1].Equals("1");
 			}
-			else if (Server.Utils.OS.IsUnix)
+			else return false;
+		}
+
+		public override bool IsInstalled()
+		{
+			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
+			else if (OSInfo.IsUnix)
 			{
 				if (Shell.Default.Find("mysql") == null) return false;
 

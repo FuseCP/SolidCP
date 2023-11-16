@@ -39,58 +39,66 @@ using Microsoft.Win32;
 //using MySql.Data.MySqlClient;
 using System.IO;
 
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
-namespace SolidCP.Providers.Database {
-    public class MySqlServer57 : MySqlServer {
+namespace SolidCP.Providers.Database
+{
+	public class MySqlServer57 : MySqlServer
+	{
 
-        public MySqlServer57() {
+		public MySqlServer57()
+		{
 
-        }
+		}
 
-        public override bool IsInstalled() {
-            if (Server.Utils.OS.IsWindows)
-            {
+		public bool IsInstalledWindows()
+		{
+			if (OSInfo.IsWindows)
+			{
 
-                string versionNumber = null;
+				string versionNumber = null;
 
-                RegistryKey HKLM = Registry.LocalMachine;
+				RegistryKey HKLM = Registry.LocalMachine;
 
-                RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.7");
+				RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.7");
 
-                if (key != null)
-                {
-                    versionNumber = (string)key.GetValue("Version");
-                }
-                else
-                {
-                    key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.7");
-                    if (key != null)
-                    {
-                        versionNumber = (string)key.GetValue("Version");
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+				if (key != null)
+				{
+					versionNumber = (string)key.GetValue("Version");
+				}
+				else
+				{
+					key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.7");
+					if (key != null)
+					{
+						versionNumber = (string)key.GetValue("Version");
+					}
+					else
+					{
+						return false;
+					}
+				}
 
-                string[] split = versionNumber.Split(new char[] { '.' });
+				string[] split = versionNumber.Split(new char[] { '.' });
 
-                return split[0].Equals("5") & split[1].Equals("7");
-            }
-            else if (Server.Utils.OS.IsUnix)
-            {
-                if (Shell.Default.Find("mysql") == null) return false;
+				return split[0].Equals("5") & split[1].Equals("7");
+			}
+			return false;
+		}
 
-                var version = Shell.Default.ExecAsync("mysql -version").Output().Result;
+		public override bool IsInstalled()
+		{
+			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
+			else if (OSInfo.IsUnix)
+			{
+				if (Shell.Default.Find("mysql") == null) return false;
 
-                return version.Contains("Ver 5.7.");
-            }
-            else return false;
+				var version = Shell.Default.ExecAsync("mysql -version").Output().Result;
+
+				return version.Contains("Ver 5.7.");
+			}
+			else return false;
 		}
 	}
 }

@@ -38,9 +38,36 @@ using System.Management;
 using System.Security.Principal;
 using Microsoft.Win32;
 
-namespace SolidCP.Server.Utils
+namespace SolidCP.Providers.OS
 {
-	public sealed class WindowsOS
+	public enum WindowsVersion
+	{
+		Unknown = 0,
+		NonWindows,
+		Windows95,
+		Windows98,
+		WindowsMe,
+		WindowsNT351,
+		WindowsNT4,
+		Windows2000,
+		WindowsXP,
+		WindowsServer2003,
+		Vista,
+		WindowsServer2008,
+		Windows7,
+		WindowsServer2008R2,
+		Windows8,
+		WindowsServer2012,
+		Windows81,
+		WindowsServer2012R2,
+		WindowsServer2016,
+		Windows10,
+		WindowsServer2019,
+		Windows11,
+		WindowsServer2022
+	}
+
+	public sealed class WindowsOSInfo
 	{
 		[StructLayout(LayoutKind.Sequential)]
 		public struct OSVERSIONINFO
@@ -277,33 +304,6 @@ namespace SolidCP.Server.Utils
 			}
 		}*/
 
-		public enum WindowsVersion
-		{
-			Unknown = 0,
-			NonWindows,
-			Windows95,
-			Windows98,
-			WindowsMe,
-			WindowsNT351,
-			WindowsNT4,
-			Windows2000,
-			WindowsXP,
-			WindowsServer2003,
-			Vista,
-			WindowsServer2008,
-            Windows7,
-            WindowsServer2008R2,
-            Windows8,
-            WindowsServer2012,
-            Windows81,
-            WindowsServer2012R2,
-            WindowsServer2016,
-            Windows10,
-            WindowsServer2019,
-			Windows11,
-			WindowsServer2022
-        }
-
 		/// <summary>
 		/// Determine OS version
 		/// </summary>
@@ -314,7 +314,7 @@ namespace SolidCP.Server.Utils
 
 			if (version.HasValue) return version.Value;
 
-			if (!OS.IsWindows)
+			if (!OSInfo.IsWindows)
 			{
 				version = WindowsVersion.NonWindows;
 				return WindowsVersion.NonWindows;

@@ -40,17 +40,15 @@ using System.Text.RegularExpressions;
 using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
-using SolidCP.Server;
-using SolidCP.Server.Utils;
 using System.Runtime.InteropServices;
 
 
 namespace SolidCP.Providers.OS
 {
-	/// <summary>
-	/// Summary description for IOperationSystem.
-	/// </summary>
-	public interface IOperatingSystem
+    /// <summary>
+    /// Summary description for IOperationSystem.
+    /// </summary>
+    public interface IOperatingSystem
 	{
 		// files
 		string CreatePackageFolder(string initialPath);
@@ -110,12 +108,12 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string path, string args);
 
-		void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore);
+		void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore);
 
 		Shell DefaultShell { get; }
 		Installer DefaultInstaller { get; }
 		Web.IWebServer WebServer { get; }
-		ServiceManager ServiceManager { get; }
+		ServiceController ServiceController { get; }
 	}
 
 }

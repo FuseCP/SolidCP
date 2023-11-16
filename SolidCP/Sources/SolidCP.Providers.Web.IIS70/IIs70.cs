@@ -4180,7 +4180,7 @@ namespace SolidCP.Providers.Web
 
 		public override bool IsInstalled()
 		{
-			return IsIISInstalled();
+			return OSInfo.IsWindows && IsIISInstalled();
 		}
 
 		#region Remote Management Access

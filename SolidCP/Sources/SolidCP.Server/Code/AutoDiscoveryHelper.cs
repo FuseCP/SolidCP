@@ -35,6 +35,7 @@ using System.IO;
 //using System.Configuration;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
 using SolidCP.Server.Utils;
 using System.Reflection;
 
@@ -105,7 +106,7 @@ namespace SolidCP.Server.Code
             else
 			    return typeof(AutoDiscoveryHelper).Assembly.GetName().Version.ToString(3);
         }
-        public static string OS => Utils.OS.IsWindows ? "Windows" :
-				(Utils.OS.IsMac ? "Mac" : "Unix");
+        public static string OS => OSInfo.IsWindows ? "Windows" :
+				(OSInfo.IsMac ? "Mac" : "Unix");
 	}
 }

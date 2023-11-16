@@ -132,7 +132,7 @@ namespace SolidCP.Providers.Web
 
         public override bool IsInstalled()
         {
-            return IsIISInstalled();
+            return OS.OSInfo.IsWindows && IsIISInstalled();
         }
 
         public override bool CheckCertificate(WebSite webSite)

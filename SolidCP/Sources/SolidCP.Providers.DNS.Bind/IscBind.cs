@@ -37,6 +37,7 @@ using System.Text;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceProcess;
+using SolidCP.Providers.OS;
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
 
@@ -1037,19 +1038,15 @@ namespace SolidCP.Providers.DNS
 
 		public bool IsInstalledWindows()
 		{
-			if (Server.Utils.OS.IsWindows)
-			{
-				var services = ServiceController.GetServices();
-				return services.Any(s => s.DisplayName.Contains("ISC BIND"));
-				// TODO check if version is 9
-			}
-			return false;
+			var services = System.ServiceProcess.ServiceController.GetServices();
+			return services.Any(s => s.DisplayName.Contains("ISC BIND"));
+			// TODO check if version is 9
 		}
 
 		public override bool IsInstalled()
 		{
-			if (IsInstalledWindows()) return true;
-			else if (Server.Utils.OS.IsUnix)
+			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
+			else if (OSInfo.IsUnix)
 			{
 				return Shell.Default.Find("named") != null &&
 					Shell.Default.ExecAsync("named -version").Output().Result.Contains("BIND 9.");

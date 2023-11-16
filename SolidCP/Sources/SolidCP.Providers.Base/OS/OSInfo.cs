@@ -8,12 +8,13 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace SolidCP.Server.Utils
+namespace SolidCP.Providers.OS
 {
 
-	public enum OSPlatform { Unknown, Windows, Mac, Linux, Unix, Other };
+    public enum OSPlatform { Unknown, Windows, Mac, Linux, Unix, Other };
 	public enum OSFlavor { Unknown, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, CentOS, SUSE, Alpine, FreeBSD, NetBSD, Other }
-	public class OS
+
+	public class OSInfo
 	{
 		public static bool IsMono => Type.GetType("Mono.Runtime") != null;
 		public static bool IsCore => !(IsNetFX || IsNetNative);
@@ -76,7 +77,15 @@ namespace SolidCP.Server.Utils
 				return flavor == OSFlavor.Unknown ?  OSFlavor.Other : flavor;
 			}
 		}
-		public static Version OSVersion => version;
+		public static Version OSVersion
+		{
+			get
+			{
+				var flavor = OSFlavor;
+				return version;
+			}
+		}
+		public static WindowsVersion WindowsVersion => IsWindows ? WindowsOSInfo.GetVersion() : WindowsVersion.NonWindows;
 		public static string Description => RuntimeInformation.OSDescription;
 
 		static Providers.OS.IOperatingSystem os = null;
@@ -88,36 +97,36 @@ namespace SolidCP.Server.Utils
 				{
 					if (IsWindows)
 					{
-						var version = WindowsOS.GetVersion();
+						var version = WindowsOSInfo.GetVersion();
 						switch (version)
 						{
-							case WindowsOS.WindowsVersion.WindowsServer2022:
-							case WindowsOS.WindowsVersion.Windows11:
+							case WindowsVersion.WindowsServer2022:
+							case WindowsVersion.Windows11:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022")) as Providers.OS.IOperatingSystem;
 								break;
-							case WindowsOS.WindowsVersion.WindowsServer2019:
+							case WindowsVersion.WindowsServer2019:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019")) as Providers.OS.IOperatingSystem;
 								break;
-							case WindowsOS.WindowsVersion.Windows10:
-							case WindowsOS.WindowsVersion.WindowsServer2016:
+							case WindowsVersion.Windows10:
+							case WindowsVersion.WindowsServer2016:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2016, SolidCP.Providers.OS.Windows2016")) as Providers.OS.IOperatingSystem;
 								break;
-							case WindowsOS.WindowsVersion.WindowsServer2012:
-							case WindowsOS.WindowsVersion.Windows8:
-							case WindowsOS.WindowsVersion.WindowsServer2012R2:
-							case WindowsOS.WindowsVersion.Windows81:
+							case WindowsVersion.WindowsServer2012:
+							case WindowsVersion.Windows8:
+							case WindowsVersion.WindowsServer2012R2:
+							case WindowsVersion.Windows81:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2012, SolidCP.Providers.OS.Windows2012")) as Providers.OS.IOperatingSystem;
 								break;
-							case WindowsOS.WindowsVersion.WindowsServer2008:
-							case WindowsOS.WindowsVersion.WindowsServer2008R2:
-							case WindowsOS.WindowsVersion.Vista:
-							case WindowsOS.WindowsVersion.Windows7:
+							case WindowsVersion.WindowsServer2008:
+							case WindowsVersion.WindowsServer2008R2:
+							case WindowsVersion.Vista:
+							case WindowsVersion.Windows7:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2008m SolidCP.Providers.OS.Windows2008")) as Providers.OS.IOperatingSystem;
 								break;
 
-							case WindowsOS.WindowsVersion.WindowsServer2003:
-							case WindowsOS.WindowsVersion.WindowsXP:
-							case WindowsOS.WindowsVersion.WindowsNT4:
+							case WindowsVersion.WindowsServer2003:
+							case WindowsVersion.WindowsXP:
+							case WindowsVersion.WindowsNT4:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2003")) as Providers.OS.IOperatingSystem;
 								break;
 						}
@@ -130,7 +139,7 @@ namespace SolidCP.Server.Utils
 				return os;
 			}
 		}
-		public static Providers.Shell Shell => Current.DefaultShell;
-		public static Providers.Installer Installer => Current.DefaultInstaller;
+		public static Shell Shell => Current.DefaultShell;
+		public static Installer Installer => Current.DefaultInstaller;
 	}
 }

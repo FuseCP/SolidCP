@@ -35,7 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SolidCP.Server
+namespace SolidCP.Providers.OS
 {
     [Serializable]
     public class WPIProduct

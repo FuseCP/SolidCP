@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SolidCP.Providers.OS
 {
-	public class Chocolatey: Installer
+    public class Chocolatey: Installer
 	{
 		public override bool IsInstalled => Shell.Find("choco") != null;
 

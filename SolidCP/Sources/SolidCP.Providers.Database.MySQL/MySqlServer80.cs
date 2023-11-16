@@ -39,15 +39,13 @@ using Microsoft.Win32;
 //using MySql.Data.MySqlClient;
 using System.IO;
 
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
 using MySql.Data.MySqlClient;
 
 namespace SolidCP.Providers.Database
 {
-	public class MySqlServer80 : MySqlServer
+    public class MySqlServer80 : MySqlServer
 	{
 
 		public MySqlServer80()
@@ -55,10 +53,10 @@ namespace SolidCP.Providers.Database
 
 		}
 
-		public override bool IsInstalled()
+		public bool IsInstalledWindows()
 		{
 
-			if (Server.Utils.OS.IsWindows)
+			if (OSInfo.IsWindows)
 			{
 				string versionNumber = null;
 
@@ -87,7 +85,13 @@ namespace SolidCP.Providers.Database
 
 				return split[0].Equals("8") & split[1].Equals("0");
 			}
-			else if (Server.Utils.OS.IsUnix)
+			return false;
+		}
+
+		public override bool IsInstalled()
+		{
+			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
+			else if (OSInfo.IsUnix)
 			{
 				var version = Shell.Default.ExecAsync("mysql -V").Output().Result;
 

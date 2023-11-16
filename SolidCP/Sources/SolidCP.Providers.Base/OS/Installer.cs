@@ -1,13 +1,12 @@
 using System;
 using System.Linq;
 using System.Diagnostics;
-using SolidCP.Server.Utils;
 
-namespace SolidCP.Providers
+namespace SolidCP.Providers.OS
 {
     public abstract class Installer
     {
-        public virtual Shell Shell { get; set; } = SolidCP.Server.Utils.OS.Shell;
+        public virtual Shell Shell { get; set; } = OSInfo.Shell;
         public abstract Shell InstallAsync(string apps);
         public abstract void AddSources(string sources);
        	public abstract bool IsInstalled { get; }
@@ -15,7 +14,7 @@ namespace SolidCP.Providers
             if (!IsInstalled) throw new NotSupportedException($"The installer type {this.GetType().Name} is not installed on this system.");
         }
 
-        public static Installer Default => Server.Utils.OS.Current.DefaultInstaller;
+        public static Installer Default => OSInfo.Current.DefaultInstaller;
 
     }
 

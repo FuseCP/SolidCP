@@ -24,7 +24,7 @@ namespace SolidCP.Providers.OS
         {
             if (Level == TraceLevel.Off) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 Severity sev = Severity.Informational;
                 if (severity.HasValue) sev = severity.Value;
@@ -51,14 +51,14 @@ namespace SolidCP.Providers.OS
         {
             if (Level == TraceLevel.Off) return;
 
-            if (!Server.Utils.OS.IsWindows) Write($"{message}\n");
+            if (OSInfo.IsWindows) Write($"{message}\n");
             else WindowsListener.Write(message);
         }
         public override void Fail(string message)
         {
             if (Level == TraceLevel.Off) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -73,7 +73,7 @@ namespace SolidCP.Providers.OS
         {
             if (Level == TraceLevel.Off) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -114,7 +114,7 @@ namespace SolidCP.Providers.OS
         {
             if (!CheckLevel(eventType)) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -129,7 +129,7 @@ namespace SolidCP.Providers.OS
         {
             if (!CheckLevel(eventType)) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -143,7 +143,7 @@ namespace SolidCP.Providers.OS
         {
             if (!CheckLevel(eventType)) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -158,7 +158,7 @@ namespace SolidCP.Providers.OS
         {
             if (CheckLevel(eventType)) return;
 
-            if (Server.Utils.OS.IsWindows)
+            if (OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -173,7 +173,7 @@ namespace SolidCP.Providers.OS
         {
             if (!CheckLevel(eventType)) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (!OSInfo.IsWindows)
             {
                 lock (this)
                 {
@@ -188,7 +188,7 @@ namespace SolidCP.Providers.OS
         {
             if (CheckLevel(TraceEventType.Transfer)) return;
 
-            if (!Server.Utils.OS.IsWindows)
+            if (OSInfo.IsWindows)
             {
                 lock (this)
                 {

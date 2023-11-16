@@ -1,14 +1,12 @@
-﻿using SolidCP.Providers.RemoteDesktopServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
+
 
 namespace SolidCP.Providers.OS
 {
-	public class Apt: Installer
+    public class Apt: Installer
 	{
 		public override bool IsInstalled => Shell.Find("apt-get") != null;
 		public override Shell InstallAsync(string apps)

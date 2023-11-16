@@ -41,6 +41,7 @@ using System.IO;
 
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
+using SolidCP.Providers.OS;
 using SolidCP.Providers;
 using System.Reflection;
 using System.Data.Common;
@@ -929,39 +930,40 @@ namespace SolidCP.Providers.Database
 		}
 		#endregion
 
-		public override bool IsInstalled()
+		public bool IsInstalledWindows()
 		{
-			if (Server.Utils.OS.IsWindows)
+			string versionNumber = null;
+
+			RegistryKey HKLM = Registry.LocalMachine;
+
+			RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 4.1");
+
+			if (key != null)
 			{
-
-				string versionNumber = null;
-
-				RegistryKey HKLM = Registry.LocalMachine;
-
-				RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 4.1");
-
+				versionNumber = (string)key.GetValue("Version");
+			}
+			else
+			{
+				key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 4.1");
 				if (key != null)
 				{
 					versionNumber = (string)key.GetValue("Version");
 				}
 				else
 				{
-					key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 4.1");
-					if (key != null)
-					{
-						versionNumber = (string)key.GetValue("Version");
-					}
-					else
-					{
-						return false;
-					}
+					return false;
 				}
-
-				string[] split = versionNumber.Split(new char[] { '.' });
-
-				return split[0].Equals("4");
 			}
-			else if (Server.Utils.OS.IsUnix)
+
+			string[] split = versionNumber.Split(new char[] { '.' });
+
+			return split[0].Equals("4");
+		}
+
+		public override bool IsInstalled()
+		{
+			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
+			else if (OSInfo.IsUnix)
 			{
 				if (Shell.Default.Find("mysql") == null) return false;
 

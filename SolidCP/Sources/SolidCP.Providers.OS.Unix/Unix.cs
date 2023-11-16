@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Linq;
-using SolidCP.Providers;
-using SolidCP.Providers.OS;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Mono.Unix;
 using System.Threading;
-using SolidCP.Server;
 using System.Text.RegularExpressions;
 using System.IO.Compression;
-using SolidCP.Providers.Virtualization;
+using SolidCP.Server.Utils;
+using SolidCP.Providers.Utils;
 using System.Diagnostics;
 
 namespace SolidCP.Providers.OS
@@ -341,7 +337,7 @@ namespace SolidCP.Providers.OS
 
         public override bool IsInstalled()
         {
-            return !Server.Utils.OS.IsWindows;
+            return !OSInfo.IsWindows;
         }
 
         protected string LogName(string fullpath)
@@ -556,7 +552,7 @@ namespace SolidCP.Providers.OS
         {
             get
             {
-                switch (Server.Utils.OS.OSFlavor)
+                switch (OSInfo.OSFlavor)
                 {
                     case OSFlavor.Debian:
                     case OSFlavor.Mint:
@@ -569,19 +565,19 @@ namespace SolidCP.Providers.OS
                 }
             }
         }
-        public void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore) {
-            platform = Server.Utils.OS.OSPlatform;
-            IsCore = Server.Utils.OS.IsCore;
+        public void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore) {
+            platform = OSInfo.OSPlatform;
+            IsCore = OSInfo.IsCore;
         }
 
         public Web.IWebServer WebServer => throw new NotImplementedException();
  
-        ServiceManager serviceManager = null;
-        public ServiceManager ServiceManager {
+        ServiceController serviceController = null;
+        public ServiceController ServiceController {
             get {
-                serviceManager = serviceManager != null ? serviceManager :  new SystemdServiceManager();
-                if (!serviceManager.IsInstalled) return null;
-                return serviceManager;
+                serviceController = serviceController != null ? serviceController :  new SystemdServiceController();
+                if (!serviceController.IsInstalled) return null;
+                return serviceController;
             }
         }
     }

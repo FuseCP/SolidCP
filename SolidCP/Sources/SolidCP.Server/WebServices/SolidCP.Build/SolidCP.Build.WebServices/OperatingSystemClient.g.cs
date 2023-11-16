@@ -108,7 +108,7 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/CopyFile", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/CopyFileResponse")]
         System.Threading.Tasks.Task CopyFileAsync(string sourcePath, string destinationPath);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSPlatform", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetOSPlatformResponse")]
-        void GetOSPlatform(out SolidCP.Server.Utils.OSPlatform platform, out bool IsCore);
+        void GetOSPlatform(out SolidCP.Providers.OS.OSPlatform platform, out bool IsCore);
         // No async method, because method has ref, in or out parameters.
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFiles", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ZipFilesResponse")]
         void ZipFiles(string zipFile, string rootPath, string[] files);
@@ -247,33 +247,33 @@ namespace SolidCP.Server.Client
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSystemCommand", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/ExecuteSystemCommandResponse")]
         System.Threading.Tasks.Task<string> ExecuteSystemCommandAsync(string path, string args);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsResponse")]
-        SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId);
+        SolidCP.Providers.OS.WPIProduct[] GetWPIProducts(string tabId, string keywordId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsResponse")]
-        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFiltered", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFilteredResponse")]
-        SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter);
+        SolidCP.Providers.OS.WPIProduct[] GetWPIProductsFiltered(string filter);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFiltered", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsFilteredResponse")]
-        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsFilteredAsync(string filter);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductById", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductByIdResponse")]
-        SolidCP.Server.WPIProduct GetWPIProductById(string productdId);
+        SolidCP.Providers.OS.WPIProduct GetWPIProductById(string productdId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductById", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductByIdResponse")]
-        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct> GetWPIProductByIdAsync(string productdId);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabs", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabsResponse")]
-        SolidCP.Server.WPITab[] GetWPITabs();
+        SolidCP.Providers.OS.WPITab[] GetWPITabs();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabs", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPITabsResponse")]
-        System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.WPITab[]> GetWPITabsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeeds", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeedsResponse")]
         void InitWPIFeeds(string feedUrls);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeeds", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InitWPIFeedsResponse")]
         System.Threading.Tasks.Task InitWPIFeedsAsync(string feedUrls);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywords", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywordsResponse")]
-        SolidCP.Server.WPIKeyword[] GetWPIKeywords();
+        SolidCP.Providers.OS.WPIKeyword[] GetWPIKeywords();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywords", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIKeywordsResponse")]
-        System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync();
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIKeyword[]> GetWPIKeywordsAsync();
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependencies", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependenciesResponse")]
-        SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products);
+        SolidCP.Providers.OS.WPIProduct[] GetWPIProductsWithDependencies(string[] products);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependencies", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/GetWPIProductsWithDependenciesResponse")]
-        System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products);
+        System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProductsResponse")]
         void InstallWPIProducts(string[] products);
         [OperationContract(Action = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProducts", ReplyAction = "http://smbsaas/solidcp/server/IOperatingSystem/InstallWPIProductsResponse")]
@@ -540,7 +540,7 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.OperatingSystem", "CopyFile", sourcePath, destinationPath);
         }
 
-        public void GetOSPlatform(out SolidCP.Server.Utils.OSPlatform platform, out bool IsCore)
+        public void GetOSPlatform(out SolidCP.Providers.OS.OSPlatform platform, out bool IsCore)
         {
             var _params = new object[]
             {
@@ -548,7 +548,7 @@ namespace SolidCP.Server.Client
                 null
             };
             Invoke("SolidCP.Server.OperatingSystem", "GetOSPlatform", _params);
-            platform = (SolidCP.Server.Utils.OSPlatform)_params[0];
+            platform = (SolidCP.Providers.OS.OSPlatform)_params[0];
             IsCore = (bool)_params[1];
         }
 
@@ -893,44 +893,44 @@ namespace SolidCP.Server.Client
             return await InvokeAsync<string>("SolidCP.Server.OperatingSystem", "ExecuteSystemCommand", path, args);
         }
 
-        public SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
+        public SolidCP.Providers.OS.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
         {
-            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProducts", tabId, keywordId);
+            return Invoke<SolidCP.Providers.OS.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProducts", tabId, keywordId);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
         {
-            return await InvokeAsync<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProducts", tabId, keywordId);
+            return await InvokeAsync<SolidCP.Providers.OS.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProducts", tabId, keywordId);
         }
 
-        public SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter)
+        public SolidCP.Providers.OS.WPIProduct[] GetWPIProductsFiltered(string filter)
         {
-            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsFiltered", filter);
+            return Invoke<SolidCP.Providers.OS.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsFiltered", filter);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
         {
-            return await InvokeAsync<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsFiltered", filter);
+            return await InvokeAsync<SolidCP.Providers.OS.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsFiltered", filter);
         }
 
-        public SolidCP.Server.WPIProduct GetWPIProductById(string productdId)
+        public SolidCP.Providers.OS.WPIProduct GetWPIProductById(string productdId)
         {
-            return Invoke<SolidCP.Server.WPIProduct>("SolidCP.Server.OperatingSystem", "GetWPIProductById", productdId);
+            return Invoke<SolidCP.Providers.OS.WPIProduct>("SolidCP.Server.OperatingSystem", "GetWPIProductById", productdId);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct> GetWPIProductByIdAsync(string productdId)
         {
-            return await InvokeAsync<SolidCP.Server.WPIProduct>("SolidCP.Server.OperatingSystem", "GetWPIProductById", productdId);
+            return await InvokeAsync<SolidCP.Providers.OS.WPIProduct>("SolidCP.Server.OperatingSystem", "GetWPIProductById", productdId);
         }
 
-        public SolidCP.Server.WPITab[] GetWPITabs()
+        public SolidCP.Providers.OS.WPITab[] GetWPITabs()
         {
-            return Invoke<SolidCP.Server.WPITab[]>("SolidCP.Server.OperatingSystem", "GetWPITabs");
+            return Invoke<SolidCP.Providers.OS.WPITab[]>("SolidCP.Server.OperatingSystem", "GetWPITabs");
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPITab[]> GetWPITabsAsync()
         {
-            return await InvokeAsync<SolidCP.Server.WPITab[]>("SolidCP.Server.OperatingSystem", "GetWPITabs");
+            return await InvokeAsync<SolidCP.Providers.OS.WPITab[]>("SolidCP.Server.OperatingSystem", "GetWPITabs");
         }
 
         public void InitWPIFeeds(string feedUrls)
@@ -943,24 +943,24 @@ namespace SolidCP.Server.Client
             await InvokeAsync("SolidCP.Server.OperatingSystem", "InitWPIFeeds", feedUrls);
         }
 
-        public SolidCP.Server.WPIKeyword[] GetWPIKeywords()
+        public SolidCP.Providers.OS.WPIKeyword[] GetWPIKeywords()
         {
-            return Invoke<SolidCP.Server.WPIKeyword[]>("SolidCP.Server.OperatingSystem", "GetWPIKeywords");
+            return Invoke<SolidCP.Providers.OS.WPIKeyword[]>("SolidCP.Server.OperatingSystem", "GetWPIKeywords");
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIKeyword[]> GetWPIKeywordsAsync()
         {
-            return await InvokeAsync<SolidCP.Server.WPIKeyword[]>("SolidCP.Server.OperatingSystem", "GetWPIKeywords");
+            return await InvokeAsync<SolidCP.Providers.OS.WPIKeyword[]>("SolidCP.Server.OperatingSystem", "GetWPIKeywords");
         }
 
-        public SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
+        public SolidCP.Providers.OS.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
         {
-            return Invoke<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsWithDependencies", products);
+            return Invoke<SolidCP.Providers.OS.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsWithDependencies", products);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
         {
-            return await InvokeAsync<SolidCP.Server.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsWithDependencies", products);
+            return await InvokeAsync<SolidCP.Providers.OS.WPIProduct[]>("SolidCP.Server.OperatingSystem", "GetWPIProductsWithDependencies", products);
         }
 
         public void InstallWPIProducts(string[] products)
@@ -1258,7 +1258,7 @@ namespace SolidCP.Server.Client
             await base.Client.CopyFileAsync(sourcePath, destinationPath);
         }
 
-        public void GetOSPlatform(out SolidCP.Server.Utils.OSPlatform platform, out bool IsCore)
+        public void GetOSPlatform(out SolidCP.Providers.OS.OSPlatform platform, out bool IsCore)
         {
             base.Client.GetOSPlatform(out platform, out IsCore);
         }
@@ -1604,42 +1604,42 @@ namespace SolidCP.Server.Client
             return await base.Client.ExecuteSystemCommandAsync(path, args);
         }
 
-        public SolidCP.Server.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
+        public SolidCP.Providers.OS.WPIProduct[] GetWPIProducts(string tabId, string keywordId)
         {
             return base.Client.GetWPIProducts(tabId, keywordId);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsAsync(string tabId, string keywordId)
         {
             return await base.Client.GetWPIProductsAsync(tabId, keywordId);
         }
 
-        public SolidCP.Server.WPIProduct[] GetWPIProductsFiltered(string filter)
+        public SolidCP.Providers.OS.WPIProduct[] GetWPIProductsFiltered(string filter)
         {
             return base.Client.GetWPIProductsFiltered(filter);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsFilteredAsync(string filter)
         {
             return await base.Client.GetWPIProductsFilteredAsync(filter);
         }
 
-        public SolidCP.Server.WPIProduct GetWPIProductById(string productdId)
+        public SolidCP.Providers.OS.WPIProduct GetWPIProductById(string productdId)
         {
             return base.Client.GetWPIProductById(productdId);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct> GetWPIProductByIdAsync(string productdId)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct> GetWPIProductByIdAsync(string productdId)
         {
             return await base.Client.GetWPIProductByIdAsync(productdId);
         }
 
-        public SolidCP.Server.WPITab[] GetWPITabs()
+        public SolidCP.Providers.OS.WPITab[] GetWPITabs()
         {
             return base.Client.GetWPITabs();
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPITab[]> GetWPITabsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPITab[]> GetWPITabsAsync()
         {
             return await base.Client.GetWPITabsAsync();
         }
@@ -1654,22 +1654,22 @@ namespace SolidCP.Server.Client
             await base.Client.InitWPIFeedsAsync(feedUrls);
         }
 
-        public SolidCP.Server.WPIKeyword[] GetWPIKeywords()
+        public SolidCP.Providers.OS.WPIKeyword[] GetWPIKeywords()
         {
             return base.Client.GetWPIKeywords();
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIKeyword[]> GetWPIKeywordsAsync()
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIKeyword[]> GetWPIKeywordsAsync()
         {
             return await base.Client.GetWPIKeywordsAsync();
         }
 
-        public SolidCP.Server.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
+        public SolidCP.Providers.OS.WPIProduct[] GetWPIProductsWithDependencies(string[] products)
         {
             return base.Client.GetWPIProductsWithDependencies(products);
         }
 
-        public async System.Threading.Tasks.Task<SolidCP.Server.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
+        public async System.Threading.Tasks.Task<SolidCP.Providers.OS.WPIProduct[]> GetWPIProductsWithDependenciesAsync(string[] products)
         {
             return await base.Client.GetWPIProductsWithDependenciesAsync(products);
         }

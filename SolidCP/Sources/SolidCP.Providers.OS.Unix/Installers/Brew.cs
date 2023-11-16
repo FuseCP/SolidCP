@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SolidCP.Providers.OS
 {
-	public class Brew : Installer
+    public class Brew : Installer
 	{
 		public override bool IsInstalled => Shell.Find("brew") != null;
 

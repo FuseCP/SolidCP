@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using System.Reflection
-@using SolidCP.Server.Utils
+@using SolidCP.Providers.OS
 
 @functions {
     string Version {get; set; }
@@ -17,9 +17,9 @@
 
     // asp.net mode
     Bitness = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
-    OS = SolidCP.Server.Utils.OS.IsWindows ? "Windows" :
-			    (SolidCP.Server.Utils.OS.IsMac ? "Mac" : 
-                (SolidCP.Server.Utils.OS.IsLinux ? "Linux" :"Unix"));
+    OS = OSInfo.IsWindows ? "Windows" :
+	    (OSInfo.IsMac ? "Mac" : 
+        (OSInfo.IsLinux ? "Linux" :"Unix"));
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace SolidCP.Providers.OS {
+namespace SolidCP.Providers.OS
+{
 
-    public class SystemdServiceManager: ServiceManager {
+    public class SystemdServiceController: ServiceController {
 
         public override IEnumerable<OSService> All() {
             var text = Shell.ExecAsync("systemctl").Output().Result;
@@ -21,7 +22,7 @@ namespace SolidCP.Providers.OS {
             Shell.ExecAsync("systemctl reboot");
         }
 
-        public override void Install(string serviceId, string description, string exe) {
+        public override void Install(ServiceDescription description) {
 
         }
 
@@ -31,6 +32,6 @@ namespace SolidCP.Providers.OS {
 
         public override bool IsInstalled => Shell.Find("systemctl") != null;
 
-        public Shell Shell => Server.Utils.OS.Shell;
+        public Shell Shell => Providers.OS.OSInfo.Shell;
     }
 }

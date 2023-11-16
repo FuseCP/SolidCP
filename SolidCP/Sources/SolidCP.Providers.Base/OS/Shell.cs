@@ -9,37 +9,37 @@ using System.DirectoryServices;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 
-namespace SolidCP.Providers
+namespace SolidCP.Providers.OS
 {
-
-	internal class LogReader : StreamReader
-	{
-		public LogReader(Shell shell, StreamReader r, Action<string> log) : base(r.BaseStream)
-		{
-			Shell = shell;
-			Log = log;
-			Reader = r;
-		}
-
-
-		public Shell Shell { get; set; }
-		public StreamReader Reader { get; set; }
-
-		public Action<string> Log { get; set; }
-		public async Task Run()
-		{
-			string text;
-			while (!Reader.EndOfStream)
-			{
-				text = await Reader.ReadLineAsync();
-				Log(text);
-			}
-		}
-	}
 
 
 	public abstract class Shell : INotifyCompletion
 	{
+
+		class LogReader : StreamReader
+		{
+			public LogReader(Shell shell, StreamReader r, Action<string> log) : base(r.BaseStream)
+			{
+				Shell = shell;
+				Log = log;
+				Reader = r;
+			}
+
+
+			public Shell Shell { get; set; }
+			public StreamReader Reader { get; set; }
+
+			public Action<string> Log { get; set; }
+			public async Task Run()
+			{
+				string text;
+				while (!Reader.EndOfStream)
+				{
+					text = await Reader.ReadLineAsync();
+					Log(text);
+				}
+			}
+		}
 
 		public Shell() : base()
 		{
@@ -88,14 +88,14 @@ namespace SolidCP.Providers
 			}
 		}
 		public virtual string Find(string cmd) =>
-			Environment.GetEnvironmentVariable("PATH")
-				.Split(new char[] { PathSeparator })
-				.SelectMany(p =>
-				{
-					var p1 = Path.Combine(p, cmd);
-					return new string[] { p1, Path.ChangeExtension(p1, "exe") };
-				})
-				.FirstOrDefault(p => File.Exists(p));
+			 Environment.GetEnvironmentVariable("PATH")
+				  .Split(new char[] { PathSeparator })
+				  .SelectMany(p =>
+				  {
+					  var p1 = Path.Combine(p, cmd);
+					  return new string[] { p1, Path.ChangeExtension(p1, "exe") };
+				  })
+				  .FirstOrDefault(p => File.Exists(p));
 
 		protected virtual string ToTempFile(string script)
 		{
@@ -186,6 +186,6 @@ namespace SolidCP.Providers
 			OnLog(text);
 		}
 
-		public static Shell Default => Server.Utils.OS.Current.DefaultShell;
+		public static Shell Default => OSInfo.Current.DefaultShell;
 	}
 }

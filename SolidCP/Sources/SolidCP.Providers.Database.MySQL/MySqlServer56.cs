@@ -39,9 +39,7 @@ using Microsoft.Win32;
 //using MySql.Data.MySqlClient;
 using System.IO;
 
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
 namespace SolidCP.Providers.Database
@@ -54,9 +52,9 @@ namespace SolidCP.Providers.Database
 
 		}
 
-		public override bool IsInstalled()
+		public bool IsInstalledWindows()
 		{
-			if (Server.Utils.OS.IsWindows)
+			if (OSInfo.IsWindows)
 			{
 				string versionNumber = null;
 
@@ -85,7 +83,13 @@ namespace SolidCP.Providers.Database
 
 				return split[0].Equals("5") & split[1].Equals("6");
 			}
-			else if (Server.Utils.OS.IsUnix)
+			return false;
+		}
+
+		public override bool IsInstalled()
+		{
+			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
+			else if (OSInfo.IsUnix)
 			{
 				if (Shell.Default.Find("mysql") == null) return false;
 

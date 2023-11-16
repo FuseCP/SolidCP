@@ -38,11 +38,11 @@ namespace SolidCP.Providers.OS
     {
         public override bool IsInstalled()
         {            
-            Server.Utils.WindowsOS.WindowsVersion version = SolidCP.Server.Utils.WindowsOS.GetVersion();
-            return version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2008
-                || version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2008R2
-                || version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.Vista
-                || version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.Windows7;
+            var version = OSInfo.WindowsVersion;
+            return version == WindowsVersion.WindowsServer2008
+                || version == WindowsVersion.WindowsServer2008R2
+                || version == WindowsVersion.Vista
+                || version == WindowsVersion.Windows7;
         }
 
         public override Web.IWebServer WebServer
@@ -51,9 +51,9 @@ namespace SolidCP.Providers.OS
             {
                 if (webServer != null) return webServer;
 
-                var ver = Server.Utils.WindowsOS.GetVersion();
-                if (ver == Server.Utils.WindowsOS.WindowsVersion.WindowsServer2008 ||
-                    ver == Server.Utils.WindowsOS.WindowsVersion.Vista)
+                var ver = OSInfo.WindowsVersion;
+                if (ver == WindowsVersion.WindowsServer2008 ||
+                    ver == WindowsVersion.Vista)
                 {
                     return webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs70, SolidCP.Providers.Web.IIs70"));
                 } else

@@ -41,15 +41,13 @@ using System.Text.RegularExpressions;
 using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
-using SolidCP.Server;
-using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.OS
 {
-	/// <summary>
-	/// Summary description for IOperationSystem.
-	/// </summary>
-	public interface IWindowsOperatingSystem: IOperatingSystem
+    /// <summary>
+    /// Summary description for IOperationSystem.
+    /// </summary>
+    public interface IWindowsOperatingSystem: IOperatingSystem
 	{
 		UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU);
 		void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions);

@@ -64,7 +64,7 @@ namespace SolidCP.Server
 					return base.Provider;
 				}
 				catch { }
-				return (IHostingServiceProvider)OS.Current;
+				return (IHostingServiceProvider)OSInfo.Current;
 			}
 		}
 		private IOperatingSystem OSProvider
@@ -508,7 +508,7 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
-		public void GetOSPlatform(out Server.Utils.OSPlatform platform, out bool IsCore)
+		public void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore)
 		{
 			try
 			{
@@ -1294,7 +1294,7 @@ namespace SolidCP.Server
         #endregion
 
         public Providers.Web.IWebServer WebServer => throw new NotSupportedException();
-		public ServiceManager ServiceManager => throw new NotSupportedException();
+		public ServiceController ServiceController => throw new NotSupportedException();
 
     }
 }
