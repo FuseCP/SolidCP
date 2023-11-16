@@ -1829,13 +1829,13 @@ namespace SolidCP.Providers.OS
 
 		public Installer DefaultInstaller => WinGet;
 
-		public void GetOSPlatform(out OSPlatform platform, out bool IsCore)
-		{
-			platform = OSInfo.OSPlatform;
-			IsCore = OSInfo.IsCore;
-		}
+        public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
+        {
+            OSPlatform = OSInfo.OSPlatform,
+            IsCore = OSInfo.IsCore
+        };
 
-		protected Web.IWebServer webServer = null;
+        protected Web.IWebServer webServer = null;
 		public virtual Web.IWebServer WebServer =>
 			webServer != null ? webServer :
 			webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60"));

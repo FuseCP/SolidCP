@@ -19831,9 +19831,10 @@ END
 GO
 
 -- Add Platform column to Servers
-DECLARE @NoPlatform INT
+DECLARE @NoPlatform bit, @NoIsCore bit
 
 SET @NoPlatform = 0
+SET @NoIsCore = 0
 
 IF NOT EXISTS (
   SELECT * FROM sys.columns 
@@ -19844,12 +19845,26 @@ BEGIN
 	SET @NoPlatform = 1
 END
 
-IF @NoPlatform = 1
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'IsCore'
+)
 BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL, [IsCore] BIT NULL
+	SET @NoIsCore = 1
 END
 
 IF @NoPlatform = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL
+END
+
+IF @NoIsCore = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [IsCore] BIT NULL
+END
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
 EXEC ('
 	ALTER PROCEDURE AddServer
 	(
@@ -19915,7 +19930,7 @@ EXEC ('
 	RETURN
 	')
 
-IF @NoPlatform = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1
 EXEC('
 	ALTER PROCEDURE GetServerInternal
 	(
@@ -19947,7 +19962,7 @@ EXEC('
 	RETURN
 	')
 	
-IF @NoPlatform = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1
 EXEC('
 	ALTER PROCEDURE GetServerByName
 	(
@@ -19984,7 +19999,7 @@ EXEC('
 	RETURN
 	')
 
-IF @NoPlatform = 1
+IF @NoPlatform = 1 OR @NoIsCore = 1
 EXEC('
 	ALTER PROCEDURE UpdateServer
 	(

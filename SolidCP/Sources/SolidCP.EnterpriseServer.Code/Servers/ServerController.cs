@@ -232,11 +232,9 @@ namespace SolidCP.EnterpriseServer
 				config.ServerUrl = serverUrl;
 				config.ServerPassword = password;
 				config.Configure(os);
-				var p = OSPlatform.Unknown;
-				bool iscore = false;
-				os.GetOSPlatform(out p, out iscore);
-				platform = p;
-				isCore = iscore;
+				var p = os.GetOSPlatform();
+				platform = p.OSPlatform;
+				isCore = p.IsCore;
 			}
 			catch (WebException ex)
 			{

@@ -108,7 +108,7 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string path, string args);
 
-		void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore);
+		OSPlatformInfo GetOSPlatform();
 
 		Shell DefaultShell { get; }
 		Installer DefaultInstaller { get; }

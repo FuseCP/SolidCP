@@ -11,7 +11,7 @@
         "APPSETTING_ServerCertificate.StoreLocation": "LocalMachine",
         "APPSETTING_ServerCertificate.StoreName": "My",
         "APPSETTING_ServerCertificate.FindType": "FindBySubjectName",
-        "APPSETTING_ServerCertificate.Name": "localhost"
+        "APPSETTING_ServerCertificate.Name": "localhost
       },
       "applicationUrl": "https://localhost:9007;http://localhost:9006;net.tcp://localhost:9008"
     },
@@ -20,7 +20,7 @@
       "launchUrl": "https://localhost:9007/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:9007;http://localhost:9006;net.tcp://localhost:9008"
+        "APPSETTING_appliationUrls": "https://localhost:9011;http://localhost:9012;net.tcp://localhost:9013"
       },
       "distributionName": ""
     },

@@ -565,10 +565,11 @@ namespace SolidCP.Providers.OS
                 }
             }
         }
-        public void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore) {
-            platform = OSInfo.OSPlatform;
-            IsCore = OSInfo.IsCore;
-        }
+        public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
+        {
+            OSPlatform = OSInfo.OSPlatform,
+            IsCore = OSInfo.IsCore
+        };
 
         public Web.IWebServer WebServer => throw new NotImplementedException();
  

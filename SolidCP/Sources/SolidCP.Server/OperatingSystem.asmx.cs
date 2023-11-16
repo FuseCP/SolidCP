@@ -508,13 +508,14 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
-		public void GetOSPlatform(out Providers.OS.OSPlatform platform, out bool IsCore)
+		public OSPlatformInfo GetOSPlatform()
 		{
 			try
 			{
 				Log.WriteStart("'{0}' OSPlatform", ProviderSettings.ProviderName);
-				OSProvider.GetOSPlatform(out platform, out IsCore);
+				var res = OSProvider.GetOSPlatform();
 				Log.WriteEnd("'{0}' OSPlatform", ProviderSettings.ProviderName);
+				return res;
 			}
 			catch (Exception ex)
 			{

@@ -132,7 +132,7 @@
     </Content>
   </ItemGroup>
 
-  <!-- disable IncrementalClean, as it deletes all the output in bin\net.core -->
+  <!-- disable IncrementalClean, as it deletes all the output in bin\net -->
   <Target Name="IncrementalClean" />
   
   <Target Name="DeleteUnusedDlls" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net48'">
@@ -145,6 +145,7 @@
       <FilesToDelete Include="bin\Microsoft.Win32.Registry.*" />
       <FilesToDelete Include="bin\Microsoft.Web.*" />
       <FilesToDelete Include="bin\System.*" />
+      <FilesToDelete Include="bin\WebServices\**\*.*" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>

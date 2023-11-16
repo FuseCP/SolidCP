@@ -35,16 +35,19 @@ namespace SolidCP.Web.Services
 		{
 			Console.WriteLine(msg);
 			if (Debugger.IsAttached) Debugger.Log(1, "SolidCP", msg);
+			//Trace.TraceInformation(msg);
 		}
 		public static void Error(string msg)
 		{
 			var col = Console.ForegroundColor;
 			Console.ForegroundColor = ConsoleColor.Red;
-			Log(msg);
-			Console.ForegroundColor = col;
-		}
+            Console.WriteLine(msg);
+            Console.ForegroundColor = col;
+            if (Debugger.IsAttached) Debugger.Log(1, "SolidCP", msg);
+			//Trace.TraceError(msg);
+        }
 
-		public static int? HttpPort = null;
+        public static int? HttpPort = null;
 		public static int? HttpsPort = null;
 		public static int? NetTcpPort = null;
 		// Only used on case that UseRequestHeadersForMetadataAddressBehavior is not used
@@ -100,12 +103,11 @@ namespace SolidCP.Web.Services
 			TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
 			if (TraceLevel != TraceLevel.Off)
 			{
-				Console.WriteLine($"Trace level set to {TraceLevel}");
-
 				TraceListener syslog = (TraceListener)Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.SyslogTraceListener, SolidCP.Providers.OS.Unix"));
 				var level = syslog.GetType().GetProperty("Level");
 				level.SetValue(syslog, TraceLevel);
 				Trace.Listeners.Add(syslog);
+				Log($"Trace level set to {TraceLevel}");
 			}
 			IsLocalService = AllowedHosts.Split(';')
 				.All(host => host == "localhost" || host == "127.0.0.1" || host == "::1" ||
@@ -115,7 +117,11 @@ namespace SolidCP.Web.Services
 			//builder.Services.AddHttpContextAccessor();
 			ConfigureServices(builder.Services);
 
-			if (NetTcpPort.HasValue) builder.WebHost.UseNetTcp(NetTcpPort.Value);
+			if (NetTcpPort.HasValue)
+			{
+				builder.WebHost.UseNetTcp(NetTcpPort.Value);
+				Log($"Listen on net.tcp port {NetTcpPort.Value}");
+			}
 
 			builder.WebHost.UseKestrel(options =>
 			{
@@ -337,7 +343,8 @@ namespace SolidCP.Web.Services
 
 				// Configure WSDL to be available
 				var serviceMetadataBehavior = app.ApplicationServices.GetRequiredService<ServiceMetadataBehavior>();
-				serviceMetadataBehavior.HttpGetEnabled = serviceMetadataBehavior.HttpsGetEnabled = true;
+				serviceMetadataBehavior.HttpGetEnabled = HttpPort.HasValue;
+				serviceMetadataBehavior.HttpsGetEnabled = HttpsPort.HasValue;
 			});
 
 		}
