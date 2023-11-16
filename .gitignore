@@ -54,6 +54,7 @@ bin
 *.pdb
 *.vs10x
 *.user
+*.g.cs
 
 /SolidCP/Sources/packages
 /SolidCP/msbuild.log
