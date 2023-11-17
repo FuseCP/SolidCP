@@ -19856,7 +19856,7 @@ END
 
 IF @NoPlatform = 1
 BEGIN
-	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL DEFAULT 0
 END
 
 IF @NoIsCore = 1
