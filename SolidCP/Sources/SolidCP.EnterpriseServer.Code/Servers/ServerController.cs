@@ -228,10 +228,7 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
 				var os = new Server.Client.OperatingSystem();
-				var config = new ServerProxyConfigurator();
-				config.ServerUrl = serverUrl;
-				config.ServerPassword = password;
-				config.Configure(os);
+				ServiceProviderProxy.ServerInit(os, serverUrl, password);
 				var p = os.GetOSPlatform();
 				platform = p.OSPlatform;
 				isCore = p.IsCore;

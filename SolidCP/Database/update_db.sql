@@ -19962,7 +19962,8 @@ EXEC('
 	RETURN
 	')
 	
-IF @NoPlatform = 1 OR @NoIsCore = 1
+IF @NoPlatform =
+1 OR @NoIsCore = 1
 EXEC('
 	ALTER PROCEDURE GetServerByName
 	(
@@ -19988,8 +19989,8 @@ EXEC('
 		ADPassword,
 		ADAuthenticationType,
 		ADParentDomain,
-		ADParentDomainController
-		OSPlatform
+		ADParentDomainController,
+		OSPlatform,
 		IsCore
 	FROM Servers
 	WHERE
@@ -20044,5 +20045,45 @@ EXEC('
 	WHERE ServerID = @ServerID
 	RETURN
 	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+ALTER PROCEDURE [dbo].[GetServer]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore
+
+FROM Servers
+WHERE
+	ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+')
 
 GO
