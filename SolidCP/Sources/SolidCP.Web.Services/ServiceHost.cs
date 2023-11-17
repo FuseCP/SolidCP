@@ -149,7 +149,7 @@ namespace SolidCP.Web.Services
 					}
 					else if (HasApi(adr, "tcp"))
 					{
-						if (!isEncrypted || IsLocal(adr))
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
 							AddEndpoint(contract, new NetTcpBinding(SecurityMode.None) { Name = "nettcp.none" }, adr);
 						}

@@ -48,6 +48,10 @@ namespace SolidCP.Portal
 {
     public partial class ServersEditServer : SolidCPModuleBase
     {
+
+        ServerInfo serverInfo = null;
+        ServerInfo ServerInfo => serverInfo != null ? serverInfo : serverInfo = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -107,7 +111,13 @@ namespace SolidCP.Portal
         //}
         private void BindTools()
         {
+            //var serverInfo = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
+
             lnkTerminalSessions.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_termservices");
+        
+            // TODO use localization here
+            lnkWindowsServices.Text = ServerInfo.OSPlatform == OSPlatform.Windows ? "Windows Services" : "System Services";
+            
             lnkWindowsServices.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_winservices");
             lnkWindowsProcesses.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_processes");
             lnkEventViewer.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_eventviewer");
@@ -122,7 +132,7 @@ namespace SolidCP.Portal
 
         private void BindServer()
         {
-            ServerInfo server = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
+            ServerInfo server = ServerInfo;
 
 			if (server == null)
 				RedirectToBrowsePage();
@@ -154,12 +164,12 @@ namespace SolidCP.Portal
 		private void BindServerVersion()
 		{
 			try
-			{
+            {
 				scpVersion.Text = ES.Services.Servers.GetServerVersion(PanelRequest.ServerId);
 			}
-			catch
+			catch (Exception ex)
 			{
-				ShowErrorMessage("SERVER_GET_SERVER");
+				ShowErrorMessage("SERVER_GET_SERVER", ex);
 			}
 		}
 
@@ -185,8 +195,8 @@ namespace SolidCP.Portal
                 // scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
 
                 scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
-            } catch {
-                ShowErrorMessage("SERVER_GET_SERVER");
+            } catch (Exception ex) {
+                ShowErrorMessage("SERVER_GET_SERVER", ex);
             }
         }
 
@@ -214,6 +224,10 @@ namespace SolidCP.Portal
 
             // Preview Domain
             server.InstantDomainAlias = txtPreviewDomain.Text;
+
+            // Platform
+            server.OSPlatform = ServerInfo.OSPlatform;
+            server.IsCore = ServerInfo.IsCore;
 
             try
             {

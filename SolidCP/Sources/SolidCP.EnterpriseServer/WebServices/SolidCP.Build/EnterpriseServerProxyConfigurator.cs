@@ -38,6 +38,8 @@ namespace SolidCP.EnterpriseServer
 {
     public class EnterpriseServerProxyConfigurator
     {
+        public const bool UseNetHttpAsDefaultProtocol = true;
+
         private string enterpriseServerUrl;
         private string username;
         private string password;
@@ -72,8 +74,9 @@ namespace SolidCP.EnterpriseServer
             // set timeout
             proxy.Timeout = TimeSpan.FromMinutes(15); //15 minutes // System.Threading.Timeout.Infinite;
 
-            // use NetHttp protocol
-            if (proxy.IsDefaultApi)
+            // use NetHttp protocol (EnterpriseServer is always running on Net Framework. CoreWCF does not support NetHttp yet.
+            // When running EnterpriseServer on Net Core, set UseNetHttpAsDefaultProtocol to false.
+            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi)
             {
                 if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
                 else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;

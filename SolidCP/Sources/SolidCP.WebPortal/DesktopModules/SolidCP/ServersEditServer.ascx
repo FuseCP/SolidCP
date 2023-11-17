@@ -214,7 +214,7 @@
                <asp:HyperLink ID="lnkTerminalSessions" runat="server"
                             meta:resourcekey="lnkTerminalConnections" Text="Remote Desktop Sessions"></asp:HyperLink>          </li>
               <li class="list-group-item"><asp:HyperLink ID="lnkWindowsServices" runat="server"
-                            meta:resourcekey="lnkWindowsServices" Text="Windows Services"></asp:HyperLink>
+                            meta:resourcekey="lnkWindowsServices" Text="System Services"></asp:HyperLink>
                          </li>
               <li class="list-group-item"><asp:HyperLink ID="lnkWindowsProcesses" runat="server"
                             meta:resourcekey="lnkWindowsProcesses" Text="System Processes"></asp:HyperLink>

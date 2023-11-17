@@ -46,6 +46,8 @@ namespace SolidCP.Server.Client
 {
     public class ServerProxyConfigurator
     {
+        public const bool UseNetHttpAsDefaultProtocol = true;
+
         private int timeout = -1;
         private string serverUrl = string.Empty;
         private string serverPassword = string.Empty;
@@ -81,6 +83,8 @@ namespace SolidCP.Server.Client
             get { return this.timeout; }
             set { this.timeout = value; }
         }
+
+        public bool? IsCore { get; set; } = null;
 
         public void Configure(SolidCP.Web.Client.ClientBase proxy)
         {
@@ -150,6 +154,13 @@ namespace SolidCP.Server.Client
             //FieldInfo field = proxy.GetType().GetField("ServiceProviderSettingsSoapHeaderValue");
             //if (field != null)
             //    field.SetValue(proxy, settingsHeader);
+
+            // Use NetHttp as default protocol on servers running Net Framework. CoreWCF does not support NetHttp yet.
+            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi && IsCore.HasValue && IsCore.Value == false)
+            {
+                if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
+                else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
+            } 
         }
     }
 }

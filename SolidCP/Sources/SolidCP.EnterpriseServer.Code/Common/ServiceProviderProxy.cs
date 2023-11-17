@@ -87,11 +87,11 @@ namespace SolidCP.EnterpriseServer
 			// set AD integration settings
 			cnfg.ServerSettings.ADEnabled = server.ADEnabled;
 			cnfg.ServerSettings.ADAuthenticationType = AuthenticationTypes.Secure;
-			try
-			{
-				cnfg.ServerSettings.ADAuthenticationType = (AuthenticationTypes)Enum.Parse(typeof(AuthenticationTypes), server.ADAuthenticationType, true);
-			}
-			catch { /* ignore */ }
+
+			AuthenticationTypes adAuthenticationType;
+			if (Enum.TryParse<AuthenticationTypes>(server.ADAuthenticationType, true, out adAuthenticationType))
+				cnfg.ServerSettings.ADAuthenticationType = adAuthenticationType;
+
 			cnfg.ServerSettings.ADRootDomain = server.ADRootDomain;
 			cnfg.ServerSettings.ADUsername = server.ADUsername;
 			cnfg.ServerSettings.ADPassword = server.ADPassword;
@@ -100,14 +100,9 @@ namespace SolidCP.EnterpriseServer
 
 			// set timeout
 			cnfg.Timeout = ConfigSettings.ServerRequestTimeout;
-
-			// use NetHttpBinding protocol if available and no specific protocol has been set in the url
-			var isNetFX = server.IsCore.HasValue && server.IsCore.Value == false;
-			if (proxy.IsDefaultApi && isNetFX)
-			{
-				if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
-				if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
-			}
+			
+			// set if server is running on net core
+			cnfg.IsCore = server.IsCore;
 
 			return ServerInit(proxy, cnfg, server.ServerUrl, server.Password);
 		}

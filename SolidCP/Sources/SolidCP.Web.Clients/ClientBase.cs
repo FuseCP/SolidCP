@@ -101,7 +101,7 @@ namespace SolidCP.Web.Client
 		public V Header<V>() => (V)SoapHeader;
 		public TimeSpan? Timeout { get; set; } = null;
 
-		protected string url;
+		protected string url = null;
 		public string Url
 		{
 			get { return url; }
