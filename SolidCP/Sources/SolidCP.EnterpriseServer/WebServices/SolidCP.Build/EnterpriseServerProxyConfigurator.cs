@@ -74,8 +74,7 @@ namespace SolidCP.EnterpriseServer
             // set timeout
             proxy.Timeout = TimeSpan.FromMinutes(15); //15 minutes // System.Threading.Timeout.Infinite;
 
-            // use NetHttp protocol (EnterpriseServer is always running on Net Framework. CoreWCF does not support NetHttp yet.
-            // When running EnterpriseServer on Net Core, set UseNetHttpAsDefaultProtocol to false.
+            // use NetHttp protocol as default
             if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi)
             {
                 if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;

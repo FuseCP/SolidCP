@@ -253,6 +253,7 @@ namespace SolidCP.Web.Services
                             wsHttpBinding = new WSHttpBinding(CoreWCF.SecurityMode.None);
                             wsHttpUri = new Uri($"http://{HttpHost}:{HttpPort}/ws/{ws.Service.Name}");
                             netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.None);
+                            netHttpBinding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
                             netHttpUri = new Uri($"http://{HttpHost}:{HttpPort}/net/{ws.Service.Name}");
                             defaultUri = new Uri($"http://{HttpHost}:{HttpPort}/{ws.Service.Name}");
                             builder.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, defaultUri)
@@ -270,6 +271,7 @@ namespace SolidCP.Web.Services
                             wsHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/ws/{ws.Service.Name}");
                             netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
                             netHttpBinding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+                            netHttpBinding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
                             netHttpUri = new Uri($"https://{HttpsHost}:{HttpsPort}/net/{ws.Service.Name}");
                             defaultUri = new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}");
                             builder.AddServiceEndpoint(ws.Service, ws.Contract, basicHttpBinding, defaultUri)

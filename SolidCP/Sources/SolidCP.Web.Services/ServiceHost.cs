@@ -89,7 +89,9 @@ namespace SolidCP.Web.Services
 					{
 						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-							AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
+							var netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" };
+							netHttpBinding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
+                            AddEndpoint(contract, netHttpBinding, adr);
 						}
 					}
 					else if (HasApi(adr, "ws"))
@@ -127,6 +129,7 @@ namespace SolidCP.Web.Services
 					{
 						var binding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
 						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						binding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
 						binding.Name = "net.transport";
 						AddEndpoint(contract, binding, adr);
 					}

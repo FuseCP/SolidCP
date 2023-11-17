@@ -155,8 +155,8 @@ namespace SolidCP.Server.Client
             //if (field != null)
             //    field.SetValue(proxy, settingsHeader);
 
-            // Use NetHttp as default protocol on servers running Net Framework. CoreWCF does not support NetHttp yet.
-            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi && IsCore.HasValue && IsCore.Value == false)
+            // Use NetHttp as default protocol on servers running Net Framework.
+            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi)
             {
                 if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
                 else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
