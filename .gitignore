@@ -68,3 +68,5 @@ bin
 /SolidCP/CleanRelease_marc.ps1
 /SolidCP/CleanRelease2.ps1
 /SolidCP/CleanDebug.ps1
+/SolidCP/Sources/SolidCP.EnterpriseServer/WCF.log
+/SolidCP/Sources/SolidCP.EnterpriseServer/WCF.log
