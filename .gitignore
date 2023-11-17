@@ -50,6 +50,7 @@ msbuild.log
 bin/Debug
 bin/Release
 bin
+bin_net
 *.vshost.*
 *.pdb
 *.vs10x

@@ -38,8 +38,6 @@
     <OutputPath>bin</OutputPath>
     <OutputType>Library</OutputType>
     <ImplicitUsings>disable</ImplicitUsings>
-    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
-    <RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9900</RunArguments>
   </PropertyGroup>
 
   <ItemGroup>
