@@ -511,7 +511,7 @@ namespace SolidCP.Providers.OS
 
         public void RebootSystem()
         {
-            throw new NotImplementedException();
+            ServiceController.RebootSystem();
         }
 
         public Memory GetMemory()
@@ -541,11 +541,11 @@ namespace SolidCP.Providers.OS
 
         Installer apt, yum, brew;
 
-        public Shell Bash => bash != null ? bash : bash = new Bash();
-        public Shell Sh => sh != null ? sh : sh = new Sh();
-        public Installer Apt => apt != null ? apt : apt = new Apt();
-        public Installer Yum => yum != null ? yum : yum = new Yum();
-        public Installer Brew => brew != null ? brew : brew = new Brew();
+        public Shell Bash => bash ?? bash = new Bash();
+        public Shell Sh => sh ?? sh = new Sh();
+        public Installer Apt => apt ?? apt = new Apt();
+        public Installer Yum => yum ?? yum = new Yum();
+        public Installer Brew => brew ?? brew = new Brew();
 
         public virtual Shell DefaultShell => Bash;
         public virtual Installer DefaultInstaller
@@ -576,7 +576,7 @@ namespace SolidCP.Providers.OS
         ServiceController serviceController = null;
         public ServiceController ServiceController {
             get {
-                serviceController = serviceController != null ? serviceController :  new SystemdServiceController();
+                serviceController = serviceController ?? serviceConroller = new SystemdServiceController();
                 if (!serviceController.IsInstalled) return null;
                 return serviceController;
             }

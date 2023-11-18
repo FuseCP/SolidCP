@@ -316,8 +316,7 @@ namespace SolidCP.Providers.OS
 
 			if (!OSInfo.IsWindows)
 			{
-				version = WindowsVersion.NonWindows;
-				return WindowsVersion.NonWindows;
+				return version = WindowsVersion.NonWindows;
 			}
 
 			WindowsVersion ret = WindowsVersion.Unknown;
@@ -506,7 +505,7 @@ namespace SolidCP.Providers.OS
                 if (id.Contains("72") || id.Contains("104"))
                     return true;
                 else if (name.Contains("file server resource manager")
-                    || name.Contains("ressourcen-manager für dateiserver"))
+                    || name.Contains("ressourcen-manager fï¿½r dateiserver"))
                     return true;
             }
 
