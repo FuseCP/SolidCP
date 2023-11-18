@@ -29,5 +29,7 @@ namespace SolidCP.Server
             return settings.Settings.FirstOrDefault() ?? string.Empty;
         }
 
+        [WebMethod]
+        public void Touch() { }
     }
 }

@@ -56,5 +56,8 @@ namespace SolidCP.EnterpriseServer
 		[WebMethod]
 		public string Echo(string msg) => msg;
 
+		[WebMethod]
+		public void Touch() { }
+
 	}
 }

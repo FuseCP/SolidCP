@@ -170,9 +170,8 @@ namespace SolidCP.EnterpriseServer
 			{
 				var test = new Server.Client.Test();
 				test.Url = serverUrl;
-				var msg = "Hello SolidCP!";
-				if (test.Echo(msg) != msg) return BusinessErrorCodes.ERROR_ADD_SERVER_INTERNAL_SERVER_ERROR;
-				else return 0;
+				test.Touch();
+				return 0;
 			}
 			catch (WebException ex)
 			{
