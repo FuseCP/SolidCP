@@ -47,6 +47,7 @@ namespace SolidCP.Server.Client
     public class ServerProxyConfigurator
     {
         public const bool UseNetHttpAsDefaultProtocol = true;
+        public const bool UseNetHttpOnCore = false;
 
         private int timeout = -1;
         private string serverUrl = string.Empty;
@@ -156,7 +157,8 @@ namespace SolidCP.Server.Client
             //    field.SetValue(proxy, settingsHeader);
 
             // Use NetHttp as default protocol on servers running Net Framework.
-            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi)
+            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi &&
+                (UseNetHttpOnCore || IsCore.HasValue && IsCore.Value == false))
             {
                 if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
                 else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;

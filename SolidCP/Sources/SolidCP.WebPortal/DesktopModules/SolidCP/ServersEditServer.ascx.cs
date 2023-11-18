@@ -40,6 +40,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using System.Threading.Tasks;
 
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.OS;
@@ -49,8 +50,8 @@ namespace SolidCP.Portal
     public partial class ServersEditServer : SolidCPModuleBase
     {
 
-        ServerInfo serverInfo = null;
-        ServerInfo ServerInfo => serverInfo != null ? serverInfo : serverInfo = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
+        Task<ServerInfo> serverInfo = null;
+        Task<ServerInfo> ServerInfo => serverInfo ?? (serverInfo = ES.Services.Servers.GetServerByIdAsync(PanelRequest.ServerId));
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -58,11 +59,12 @@ namespace SolidCP.Portal
             {
                 try
                 {
-                    BindTools();
-                    BindServer();
-                    BindServerMemory();
-                    BindServerVersion();
-                    BindServerFilepath();
+                    Task.WaitAll(
+                        BindTools(),
+                        BindServer(),
+                        BindServerMemory(),
+                        BindServerVersion(),
+                        BindServerFilepath());
                 }
                 catch (Exception ex)
                 {
@@ -109,16 +111,14 @@ namespace SolidCP.Portal
         //        this.trAdButton.Visible = false;
         //    }
         //}
-        private void BindTools()
+        private async Task BindTools()
         {
             //var serverInfo = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
 
             lnkTerminalSessions.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_termservices");
-        
-            // TODO use localization here
-            lnkWindowsServices.Text = ServerInfo.OSPlatform == OSPlatform.Windows ? "Windows Services" : "System Services";
-            
+
             lnkWindowsServices.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_winservices");
+            lnkUnixServices.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_winservices");
             lnkWindowsProcesses.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_processes");
             lnkEventViewer.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_eventviewer");
             lnkPlatformInstaller.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_platforminstaller");
@@ -128,24 +128,27 @@ namespace SolidCP.Portal
             lnkRestore.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "restore");
 
             lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
+
+            pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = (await ServerInfo).OSPlatform == OSPlatform.Windows;
+            pnUnixServices.Visible = (await ServerInfo).OSPlatform != OSPlatform.Windows;
         }
 
-        private void BindServer()
+        private async Task BindServer()
         {
-            ServerInfo server = ServerInfo;
+            ServerInfo server = await ServerInfo;
 
-			if (server == null)
-				RedirectToBrowsePage();
+            if (server == null)
+                RedirectToBrowsePage();
 
             // header
             txtName.Text = PortalAntiXSS.DecodeOld(server.ServerName);
             txtComments.Text = PortalAntiXSS.DecodeOld(server.Comments);
 
-            
+
             // connection
             txtUrl.Text = server.ServerUrl;
 
-			// AD
+            // AD
             rbUsersCreationMode.SelectedIndex = server.ADEnabled ? 1 : 0;
             Utils.SelectListItem(ddlAdAuthType, server.ADAuthenticationType);
             txtDomainName.Text = server.ADRootDomain;
@@ -161,23 +164,23 @@ namespace SolidCP.Portal
             txtPreviewDomain.Text = server.InstantDomainAlias;
         }
 
-		private void BindServerVersion()
-		{
-			try
-            {
-				scpVersion.Text = ES.Services.Servers.GetServerVersion(PanelRequest.ServerId);
-			}
-			catch (Exception ex)
-			{
-				ShowErrorMessage("SERVER_GET_SERVER", ex);
-			}
-		}
-
-        private void BindServerMemory()
+        private async Task BindServerVersion()
         {
             try
             {
-                Memory memory = ES.Services.Servers.GetMemory(PanelRequest.ServerId);
+                scpVersion.Text = await ES.Services.Servers.GetServerVersionAsync(PanelRequest.ServerId);
+            }
+            catch (Exception ex)
+            {
+                ShowErrorMessage("SERVER_GET_SERVER", ex);
+            }
+        }
+
+        private async Task BindServerMemory()
+        {
+            try
+            {
+                Memory memory = await ES.Services.Servers.GetMemoryAsync(PanelRequest.ServerId);
                 freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
                 totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
                 ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
@@ -190,12 +193,16 @@ namespace SolidCP.Portal
             }
         }
 
-        private void BindServerFilepath() {
-            try {
+        private async Task BindServerFilepath()
+        {
+            try
+            {
                 // scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
 
-                scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
-            } catch (Exception ex) {
+                scpFilepath.Text = await ES.Services.Servers.GetServerFilePathAsync(PanelRequest.ServerId);
+            }
+            catch (Exception ex)
+            {
                 ShowErrorMessage("SERVER_GET_SERVER", ex);
             }
         }
@@ -226,8 +233,8 @@ namespace SolidCP.Portal
             server.InstantDomainAlias = txtPreviewDomain.Text;
 
             // Platform
-            server.OSPlatform = ServerInfo.OSPlatform;
-            server.IsCore = ServerInfo.IsCore;
+            server.OSPlatform = ServerInfo.Result.OSPlatform;
+            server.IsCore = ServerInfo.Result.IsCore;
 
             try
             {

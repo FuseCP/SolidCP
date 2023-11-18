@@ -225,6 +225,9 @@
   <data name="lnkWindowsServices.Text" xml:space="preserve">
     <value>Windows-Dienste</value>
   </data>
+  <data name="lnkUnixServices.Text" xml:space="preserve">
+    <value>System-Dienste</value>
+  </data>
   <data name="rbUsersCreationModeItem.ADAccounts" xml:space="preserve">
     <value>Active Directory-Konten erstellen</value>
   </data>
