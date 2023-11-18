@@ -265,11 +265,19 @@ namespace SolidCP.Portal
             get { return GetCachedProxy<esSpamExperts>(); }
         }
 
+        public esTest Test
+        {
+            get { return GetCachedProxy<esTest>(); }
+        }
 
         protected ES()
         {
         }
 
+        public static void Start()
+        {
+            Services.Test.TouchAsync();
+        }
         protected virtual T GetCachedProxy<T>()
         {
             return GetCachedProxy<T>(true);
