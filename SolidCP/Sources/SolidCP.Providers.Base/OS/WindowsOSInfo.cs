@@ -316,7 +316,8 @@ namespace SolidCP.Providers.OS
 
 			if (!OSInfo.IsWindows)
 			{
-				return version = WindowsVersion.NonWindows;
+				version = WindowsVersion.NonWindows;
+				return WindowsVersion.NonWindows;
 			}
 
 			WindowsVersion ret = WindowsVersion.Unknown;

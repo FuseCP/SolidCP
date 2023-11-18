@@ -242,6 +242,7 @@ namespace SolidCP.Web.Services
                         //if (HttpPort.HasValue) options.BaseAddresses.Add(new Uri($"http://{HttpHost}:{HttpPort}/{ws.Service.Name}"));
                         //if (HttpsPort.HasValue) options.BaseAddresses.Add(new Uri($"https://{HttpsHost}:{HttpsPort}/{ws.Service.Name}"));
                         //if (NetTcpPort.HasValue) options.BaseAddresses.Add(new Uri($"tcp.net://{NetTcpHost}:{NetTcpPort}/{ws.Service.Name}"));
+                        options.DebugBehavior.IncludeExceptionDetailInFaults = true;
                     });
 
                     if (isEncrypted)
