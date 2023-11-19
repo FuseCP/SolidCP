@@ -47,7 +47,7 @@ namespace SolidCP.Server.Client
     public class ServerProxyConfigurator
     {
         public const bool UseNetHttpAsDefaultProtocol = true;
-        public const bool UseNetHttpOnCore = false;
+        public const bool UseNetHttpOnCore = true;
 
         private int timeout = -1;
         private string serverUrl = string.Empty;
