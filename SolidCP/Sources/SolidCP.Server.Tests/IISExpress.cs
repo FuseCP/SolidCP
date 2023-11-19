@@ -20,8 +20,8 @@ namespace SolidCP.Server.Tests
             var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
             var server = new DirectoryInfo(@"..\..\..\..\SolidCP.Server").FullName;
             // setup iis express
-            Process.Start(appcmd, "delete site corewcf.tests").WaitForExit();
-            Process.Start(appcmd, $"add site /name:corewcf.tests /physicalPath:\"{server}\" /bindings:http/*:9022:localhost,https/*:44301:localhost").WaitForExit();
+            Process.Start(appcmd, "delete site solidcp.server.tests").WaitForExit();
+            Process.Start(appcmd, $"add site /name:solidcp.server.tests /physicalPath:\"{server}\" /bindings:http/*:9022:localhost,https/*:44301:localhost").WaitForExit();
             
             // start iis express
             var startInfo = new ProcessStartInfo(iisexpress)
@@ -30,7 +30,7 @@ namespace SolidCP.Server.Tests
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Normal,
                 WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.Server\bin\net.core").FullName,
-                Arguments = "/site:corewcf.tests"
+                Arguments = "/site:solidcp.server.tests"
             };
             process = Process.Start(startInfo);
 

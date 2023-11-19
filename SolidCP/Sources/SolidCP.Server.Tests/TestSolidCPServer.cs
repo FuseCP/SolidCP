@@ -44,7 +44,7 @@ namespace SolidCP.Server.Tests
 
         public void AnonymousNet6(Protocols protocol)
         {
-            using (var client = new Test() { Url = "https://localhost:9007" })
+            using (var client = new Test() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
@@ -71,7 +71,7 @@ namespace SolidCP.Server.Tests
 
         public void AnonymousWithSoapHeaderNet6(Protocols protocol)
         {
-            using (var client = new Test() { Url = "https://localhost:9007" })
+            using (var client = new Test() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
@@ -121,7 +121,7 @@ namespace SolidCP.Server.Tests
         [TestMethod]
         public async Task AnonymousNet6Async()
         {
-            using (var client = new Test() { Url = "https://localhost:9007" })
+            using (var client = new Test() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
@@ -142,7 +142,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.NetHttps)]
         public void AuthenticatedNet6(Protocols protocol)
         {
-            using (var client = new TestWithAuthentication() { Url = "https://localhost:9007" })
+            using (var client = new TestWithAuthentication() { Url = Kestrel.HttpsUrl })
             {
                 try
                 {
