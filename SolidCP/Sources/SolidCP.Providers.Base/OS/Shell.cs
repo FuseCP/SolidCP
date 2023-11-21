@@ -12,35 +12,12 @@ using System.ComponentModel;
 namespace SolidCP.Providers.OS
 {
 
-
 	public abstract class Shell : INotifyCompletion
 	{
 
-		class LogReader : StreamReader
-		{
-			public LogReader(Shell shell, StreamReader r, Action<string> log) : base(r.BaseStream)
-			{
-				Shell = shell;
-				Log = log;
-				Reader = r;
-			}
+		static int N = 0;
 
-
-			public Shell Shell { get; set; }
-			public StreamReader Reader { get; set; }
-
-			public Action<string> Log { get; set; }
-			public async Task Run()
-			{
-				string text;
-				while (!Reader.EndOfStream)
-				{
-					text = await Reader.ReadLineAsync();
-					Log(text);
-				}
-			}
-		}
-
+		public int ShellId = N++;
 		public Shell() : base()
 		{
 			output = new StringBuilder();
@@ -51,16 +28,21 @@ namespace SolidCP.Providers.OS
 
 		//methods to support await on Shell type
 		public Shell GetAwaiter() => this;
-		public void OnCompleted(Action continuation) => continuation();
-		public bool IsCompleted => Process == null || Process.HasExited;
+
+		Action Continuation = null;
+		public void OnCompleted(Action continuation) => Continuation = continuation;
+
+		bool errorEOF = false, outputEOF = false;
+
+		bool hasWaitedForExit = false;
+		public bool IsCompleted => Process == null || (Process.HasExited && errorEOF && outputEOF);
+
 		public Shell GetResult() => this;
 
 		public virtual char PathSeparator => Path.PathSeparator;
 		public abstract string ShellExe { get; }
 
 		Process process;
-		LogReader LogOutputReader, LogErrorReader;
-
 		public virtual Process Process
 		{
 			get { return process; }
@@ -68,27 +50,16 @@ namespace SolidCP.Providers.OS
 			{
 				if (process != value)
 				{
+					outputEOF = errorEOF = false;
 					process = value;
-					if (process != null)
-					{
-						LogOutputReader = new LogReader(this, process.StandardOutput, text =>
-						{
-							Log(text);
-							LogOutput(text);
-						});
-						LogErrorReader = new LogReader(this, process.StandardError, text =>
-						{
-							Log(text);
-							LogError(text);
-						});
-						Task.Run(LogOutputReader.Run);
-						Task.Run(LogErrorReader.Run);
-					}
 				}
 			}
 		}
-		public virtual string Find(string cmd) =>
-			 Environment.GetEnvironmentVariable("PATH")
+
+		public bool NotFound { get; set; }
+		public virtual string Find(string cmd)
+		{
+			var file = Environment.GetEnvironmentVariable("PATH")
 				  .Split(new char[] { PathSeparator })
 				  .SelectMany(p =>
 				  {
@@ -96,6 +67,9 @@ namespace SolidCP.Providers.OS
 					  return new string[] { p1, Path.ChangeExtension(p1, "exe") };
 				  })
 				  .FirstOrDefault(p => File.Exists(p));
+			NotFound = file == null;
+			return file;
+		}
 
 		protected virtual string ToTempFile(string script)
 		{
@@ -104,15 +78,88 @@ namespace SolidCP.Providers.OS
 			return file;
 		}
 
-		public virtual Shell ExecAsync(string cmd)
+		void CheckCompleted()
+		{
+			Action cnt = null;
+			lock (this)
+			{
+				if (IsCompleted && Continuation != null)
+				{
+					cnt = Continuation;
+					Continuation = null;
+				}
+			}
+			cnt?.Invoke();
+		}
+		public virtual Shell Exec(string cmd)
 		{
 			var pos = cmd.IndexOf(' ');
 			var arguments = cmd.Substring(pos, cmd.Length - pos);
 			cmd = cmd.Substring(0, pos);
-			cmd = Find(cmd);
-			var child = Clone;
-			child.Process = Process.Start(cmd, arguments);
-			return child;
+			var cmdWithPath = Find(cmd);
+			if (cmdWithPath != null)
+			{
+				var child = Clone;
+				var process = new Process();
+				Process = child.Process = process;
+				process.StartInfo.FileName = cmdWithPath;
+				process.StartInfo.Arguments = arguments;
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.Exited += (obj, args) =>
+				{
+					child.CheckCompleted();
+					CheckCompleted();
+				};
+				process.ErrorDataReceived += (p, data) =>
+				{
+					if (data.Data == null)
+					{
+						lock(this)
+							lock(child)
+							{
+								child.errorEOF = errorEOF = true;
+							}
+						child.CheckCompleted();
+						CheckCompleted();
+					}
+					else if (data.Data != string.Empty)
+					{
+						child.Log(data.Data);
+						child.LogError(data.Data);
+					}
+				};
+				process.OutputDataReceived += (p, data) =>
+				{
+					if (data.Data == null)
+					{
+						lock (this)
+							lock (child)
+							{
+								child.outputEOF = outputEOF = true;
+							}
+						child.CheckCompleted();
+						CheckCompleted();
+					}
+					else if (data.Data != string.Empty)
+					{
+						child.Log(data.Data);
+						child.LogOutput(data.Data);
+					}
+				};
+				process.Start();
+				process.BeginOutputReadLine();
+				process.BeginErrorReadLine();
+				return child;
+			} else
+			{
+				LogError($"Error {cmd} not found.");
+				var child = Clone;
+				child.Process = null;
+				child.NotFound = true;
+				return child;
+			}
 		}
 
 		protected virtual Shell Clone
@@ -134,33 +181,44 @@ namespace SolidCP.Providers.OS
 		public virtual Shell Run(string script)
 		{
 			var file = ToTempFile(script);
-			return ExecAsync($"{ShellExe} {file}");
+			return Exec($"{ShellExe} {file}");
 		}
 
-		public virtual Shell Wait(int milliseconds = 0)
+
+		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)
 		{
-			if (milliseconds == 0) Process.WaitForExit();
+			if (milliseconds == Timeout.Infinite) Process.WaitForExit();
 			else Process.WaitForExit(milliseconds);
-			return this;
-		}
+			return await this;
+		} */
 
 		public Action<string> Log { get; set; }
 		public Action<string> LogOutput { get; set; }
 		public Action<string> LogError { get; set; }
 
 		StringBuilder output, error, outputAndError;
+
+		public async Task<Shell> Task()
+		{
+			return await this;
+		}
+
 		public async Task<string> Output()
 		{
+			if (Process == null && NotFound) return null;
 			await this;
 			lock (output) return output.ToString();
 		}
+
 		public async Task<string> Error()
 		{
+			if (Process == null && NotFound) return null;
 			await this;
 			lock (error) return error.ToString();
 		}
 		public async Task<string> OutputAndError()
 		{
+			if (Process == null && NotFound) return null;
 			await this;
 			lock (outputAndError) return outputAndError.ToString();
 		}
@@ -170,19 +228,20 @@ namespace SolidCP.Providers.OS
 		{
 			lock (outputAndError)
 			{
-				outputAndError.Append(text);
-				if (LogFile != null) File.AppendAllText(LogFile, text);
+				outputAndError.AppendLine(text);
+				if (LogFile != null) File.AppendAllText(LogFile, $"{text}{Environment.NewLine}");
 			}
 		}
 
 		protected virtual void OnLogOutput(string text)
 		{
-			lock (output) output.Append(text);
+			var id = ShellId;
+			lock (output) output.AppendLine(text);
 			OnLog(text);
 		}
 		protected virtual void OnLogError(string text)
 		{
-			lock (error) error.Append(text);
+			lock (error) error.AppendLine(text);
 			OnLog(text);
 		}
 

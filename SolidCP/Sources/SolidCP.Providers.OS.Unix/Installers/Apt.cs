@@ -11,7 +11,7 @@ namespace SolidCP.Providers.OS
 		public override bool IsInstalled => Shell.Find("apt-get") != null;
 		public override Shell InstallAsync(string apps)
 		{
-			return Shell.ExecAsync($"apt-get install -y {apps}");
+			return Shell.Exec($"apt-get install -y {apps}");
 		}
 
 		public override void AddSources(string sources)

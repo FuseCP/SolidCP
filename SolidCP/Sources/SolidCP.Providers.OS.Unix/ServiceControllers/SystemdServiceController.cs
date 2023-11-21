@@ -7,7 +7,7 @@ namespace SolidCP.Providers.OS
     public class SystemdServiceController: ServiceController {
 
         public override IEnumerable<OSService> All() {
-            var text = Shell.ExecAsync("systemctl").Output().Result;
+            var text = Shell.Exec("systemctl").Output().Result;
             throw new NotImplementedException();
         }
         public override OSService Info(string serviceId) {
@@ -19,7 +19,7 @@ namespace SolidCP.Providers.OS
 
 
         public override void SystemReboot() {
-            Shell.ExecAsync("systemctl reboot");
+            Shell.Exec("systemctl reboot");
         }
 
         public override void Install(ServiceDescription description) {

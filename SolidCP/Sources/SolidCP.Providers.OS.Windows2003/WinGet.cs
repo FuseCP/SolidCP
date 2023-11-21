@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 
 		public override Shell InstallAsync(string apps)
 		{
-			return Shell.ExecAsync($"winget install {apps}");
+			return Shell.Exec($"winget install {apps}");
 		}
 	}
 }

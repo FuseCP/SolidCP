@@ -27,9 +27,15 @@
             DataKeyNames="Pid" OnRowDeleting="gvProcesses_RowDeleting">
             <Columns>
                 <asp:BoundField DataField="Pid" HeaderText="gvProcessesPID" />
-                <asp:BoundField DataField="Name" HeaderText="gvProcessesImageName" ItemStyle-Wrap="false" ItemStyle-Width="100%"/>
-                <asp:BoundField DataField="Username" HeaderText="gvProcessesUserName" ItemStyle-Wrap="false" />
-                <asp:TemplateField HeaderText="gvProcessesMemoryUsage" HeaderStyle-Wrap="false">
+                <asp:BoundField DataField="Name" HeaderText="gvProcessesImageName" ItemStyle-Wrap="false" />
+                <asp:BoundField DataField="Arguments" HeaderText="gvProcessesArguments" ItemStyle-Wrap="false" HeaderStyle-Wrap="false" ItemStyle-Width="100%"/>
+                <asp:BoundField DataField="Username" HeaderText="gvProcessesUserName" ItemStyle-Wrap="false" HeaderStyle-Wrap="false" />
+                <asp:TemplateField HeaderText="gvProcessesCpuUsage" HeaderStyle-Wrap="false" ItemStyle-Wrap="false">
+                    <ItemTemplate>
+                        <%# string.Format("{0:P1}", (float)Eval("CpuUsage")) %>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                <asp:TemplateField HeaderText="gvProcessesMemoryUsage" HeaderStyle-Wrap="false" ItemStyle-Wrap="false">
                     <ItemTemplate>
                         <%# PanelFormatter.GetDisplaySizeInBytes((long)Eval("MemUsage")) %>
                     </ItemTemplate>

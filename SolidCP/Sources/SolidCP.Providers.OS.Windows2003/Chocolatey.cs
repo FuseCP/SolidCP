@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 
 		public override Shell InstallAsync(string apps)
 		{
-			return Shell.ExecAsync($"choco install {apps}");
+			return Shell.Exec($"choco install {apps}");
 		}
 	}
 }

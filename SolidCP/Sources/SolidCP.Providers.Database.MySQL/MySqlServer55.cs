@@ -91,7 +91,7 @@ namespace SolidCP.Providers.Database
 			{
 				if (Shell.Default.Find("mysql") == null) return false;
 
-				var version = Shell.Default.ExecAsync("mysql -version").Output().Result;
+				var version = Shell.Default.Exec("mysql -version").Output().Result;
 
 				return version.Contains("Ver 5.5.");
 			}

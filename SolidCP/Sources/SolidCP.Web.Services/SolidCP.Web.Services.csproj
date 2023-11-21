@@ -4,6 +4,7 @@
     <TargetFrameworks>net48;net8.0</TargetFrameworks>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!--<ProduceReferenceAssembly>true</ProduceReferenceAssembly>-->
     <!--<SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>

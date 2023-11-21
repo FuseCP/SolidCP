@@ -1049,7 +1049,7 @@ namespace SolidCP.Providers.DNS
 			else if (OSInfo.IsUnix)
 			{
 				return Shell.Default.Find("named") != null &&
-					Shell.Default.ExecAsync("named -version").Output().Result.Contains("BIND 9.");
+					Shell.Default.Exec("named -version").Output().Result.Contains("BIND 9.");
 			}
 			return false;
 		}

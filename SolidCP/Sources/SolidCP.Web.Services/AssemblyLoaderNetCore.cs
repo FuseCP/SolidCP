@@ -18,7 +18,7 @@ namespace SolidCP.Web.Services
 		public static void Init()
 		{
 			AssemblyLoadContext.Default.Resolving += Resolve;
-		}	
+		}
 
 		static readonly string exepath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 		static string[] paths = null;
@@ -47,7 +47,7 @@ namespace SolidCP.Web.Services
 					{
 						var msg = $"Loaded assembly {p.Name}";
 						Console.WriteLine(msg);
-						if (Debugger.IsAttached) Debugger.Log(1, "info", $"{msg}\r\n");
+						//if (Debugger.IsAttached) Debugger.Log(1, "info", $"{msg}\r\n");
 					}
 					return a;
 				})

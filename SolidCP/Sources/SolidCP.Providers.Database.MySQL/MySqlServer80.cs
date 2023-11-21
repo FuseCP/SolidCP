@@ -93,7 +93,7 @@ namespace SolidCP.Providers.Database
 			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
 			else if (OSInfo.IsUnix)
 			{
-				var version = Shell.Default.ExecAsync("mysql -V").Output().Result;
+				var version = Shell.Default.Exec("mysql -V").Output().Result;
 
 				return version.Contains("Ver 8.0.");
 			}
