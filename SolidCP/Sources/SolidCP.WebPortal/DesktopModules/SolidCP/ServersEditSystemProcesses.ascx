@@ -1,5 +1,6 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ServersEditSystemProcesses.ascx.cs" Inherits="SolidCP.Portal.ServersEditSystemProcesses" %>
 <%@ Import Namespace="SolidCP.Portal" %>
+<%@ Import Namespace="System.Text.RegularExpressions" %>
 <%@ Register Src="ServerHeaderControl.ascx" TagName="ServerHeaderControl" TagPrefix="uc1" %>
 <uc1:ServerHeaderControl id="ServerHeaderControl1" runat="server">
 </uc1:ServerHeaderControl>
@@ -24,12 +25,16 @@
         <asp:GridView ID="gvProcesses" runat="server" AutoGenerateColumns="False"
             EmptyDataText="gvProcesses" EnableViewState="false"
             CssSelectorClass="NormalGridView"
-            DataKeyNames="Pid" OnRowDeleting="gvProcesses_RowDeleting">
+            DataKeyNames="Pid" OnRowDeleting="gvProcesses_RowDeleting"
+            Style="overflow-x:auto;">
             <Columns>
                 <asp:BoundField DataField="Pid" HeaderText="gvProcessesPID" />
                 <asp:BoundField DataField="Name" HeaderText="gvProcessesImageName" ItemStyle-Wrap="false" />
-                <asp:BoundField DataField="Arguments" HeaderText="gvProcessesArguments" ItemStyle-Wrap="false" HeaderStyle-Wrap="false" ItemStyle-Width="100%"/>
-                <asp:BoundField DataField="Username" HeaderText="gvProcessesUserName" ItemStyle-Wrap="false" HeaderStyle-Wrap="false" />
+                <asp:TemplateField HeaderText="gvProcessesArguments" HeaderStyle-Wrap="false" ItemStyle-Wrap="false" ItemStyle-Width="100%">
+                    <ItemTemplate>
+                        <%# Regex.Replace((string)Eval("Arguments") ?? "", "(?<=^.{48}).+$", "...") %>
+                    </ItemTemplate>
+                </asp:TemplateField>
                 <asp:TemplateField HeaderText="gvProcessesCpuUsage" HeaderStyle-Wrap="false" ItemStyle-Wrap="false">
                     <ItemTemplate>
                         <%# string.Format("{0:P1}", (float)Eval("CpuUsage")) %>

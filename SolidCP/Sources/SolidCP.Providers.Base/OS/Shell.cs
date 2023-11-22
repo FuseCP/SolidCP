@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.DirectoryServices;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 
 namespace SolidCP.Providers.OS
 {
@@ -30,9 +31,13 @@ namespace SolidCP.Providers.OS
 		public Shell GetAwaiter() => this;
 
 		Action Continuation = null;
-		public void OnCompleted(Action continuation) => Continuation = continuation;
+		public void OnCompleted(Action continuation)
+		{
+			lock (this) Continuation += continuation;
+			CheckCompleted();
+		}
 
-		bool errorEOF = false, outputEOF = false;
+		bool errorEOF = true, outputEOF = true;
 
 		bool hasWaitedForExit = false;
 		public bool IsCompleted => Process == null || (Process.HasExited && errorEOF && outputEOF);
@@ -50,7 +55,7 @@ namespace SolidCP.Providers.OS
 			{
 				if (process != value)
 				{
-					outputEOF = errorEOF = false;
+					outputEOF = errorEOF = value != null;
 					process = value;
 				}
 			}
@@ -59,14 +64,22 @@ namespace SolidCP.Providers.OS
 		public bool NotFound { get; set; }
 		public virtual string Find(string cmd)
 		{
-			var file = Environment.GetEnvironmentVariable("PATH")
-				  .Split(new char[] { PathSeparator })
-				  .SelectMany(p =>
-				  {
-					  var p1 = Path.Combine(p, cmd);
-					  return new string[] { p1, Path.ChangeExtension(p1, "exe") };
-				  })
-				  .FirstOrDefault(p => File.Exists(p));
+			string file = null;
+			if (cmd.IndexOf(Path.DirectorySeparatorChar) >= 0)
+			{
+				if (File.Exists(cmd)) file = cmd;
+			}
+			else
+			{
+				file = Environment.GetEnvironmentVariable("PATH")
+					  .Split(new char[] { PathSeparator })
+					  .SelectMany(p =>
+					  {
+						  var p1 = Path.Combine(p, cmd);
+						  return new string[] { p1, Path.ChangeExtension(p1, "exe") };
+					  })
+					  .FirstOrDefault(p => File.Exists(p));
+			}
 			NotFound = file == null;
 			return file;
 		}
@@ -91,11 +104,44 @@ namespace SolidCP.Providers.OS
 			}
 			cnt?.Invoke();
 		}
+
 		public virtual Shell Exec(string cmd)
 		{
-			var pos = cmd.IndexOf(' ');
-			var arguments = cmd.Substring(pos, cmd.Length - pos);
-			cmd = cmd.Substring(0, pos);
+			// separate command from arguments
+			string arguments;
+			if (cmd.Length > 0 && cmd[0] == '"') // command is a " delimited string
+			{
+				var pos = cmd.IndexOf('"', 1);
+				if (pos >= 1)
+				{
+					if (pos < cmd.Length - 1)
+					{
+						cmd = cmd.Substring(1, pos - 1);
+						arguments = cmd.Substring(pos + 1).Trim();
+					}
+					else
+					{
+						cmd = cmd.Substring(1, pos - 1);
+						arguments = "";
+					}
+				}
+				else
+				{
+					cmd = cmd.Substring(1);
+					arguments = "";
+				}
+			}
+			else // command is the first token of space separated tokens
+			{
+				var pos = cmd.IndexOf(' ');
+				if (pos >= 0 && pos < cmd.Length - 1)
+				{
+					arguments = cmd.Substring(pos + 1);
+					cmd = cmd.Substring(0, pos);
+				}
+				else arguments = "";
+			}
+
 			var cmdWithPath = Find(cmd);
 			if (cmdWithPath != null)
 			{
@@ -116,8 +162,8 @@ namespace SolidCP.Providers.OS
 				{
 					if (data.Data == null)
 					{
-						lock(this)
-							lock(child)
+						lock (this)
+							lock (child)
 							{
 								child.errorEOF = errorEOF = true;
 							}
@@ -152,7 +198,8 @@ namespace SolidCP.Providers.OS
 				process.BeginOutputReadLine();
 				process.BeginErrorReadLine();
 				return child;
-			} else
+			}
+			else
 			{
 				LogError($"Error {cmd} not found.");
 				var child = Clone;

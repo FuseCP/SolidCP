@@ -482,7 +482,7 @@ namespace SolidCP.Providers.OS
 		{
 			var output = Shell.Default.Exec("top cwbn 1").Output().Result;
 			if (output == null) throw new PlatformNotSupportedException("top command not found on this system.");
-			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+-?[0-9]+\s+-?[0-9]+\s+[0-9.GgTt]+\s+(?<mem>[0-9.GgTt]+)\s+[0-9.GgTt]+\s+[^\s]+\s+(?<cpu>[0-9.]+)\s+(?<relmem>[0-9.]+)\s+[0-9:.]+\s+(?<cmd>[^\s$]+)[ \t]*(?<args>.*?)$", RegexOptions.Multiline);
+			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+-?[0-9]+\s+-?[0-9]+\s+[0-9.GgTt]+\s+(?<mem>[0-9.GgTt]+)\s+[0-9.GgTt]+\s+[^\s]+\s+(?<cpu>[0-9.]+)\s+(?<relmem>[0-9.]+)\s+[0-9:.]+\s+(?<cmd>(?:(?:[^""][^\s$]*)|""[^""]*""))[ \t]*(?<args>.*?)$", RegexOptions.Multiline);
 
 			//TODO username & cpu usage
 			return matches
@@ -490,8 +490,10 @@ namespace SolidCP.Providers.OS
 				.Select(m =>
 				{
 					var pid = int.Parse(m.Groups["pid"].Value);
-					string name = Regex.Replace(Path.GetFileName(m.Groups["cmd"].Value), "^-", "");
+					string name = Path.GetFileName(m.Groups["cmd"].Value);
 					var memtxt = m.Groups["mem"].Value;
+					var cmd = m.Groups["cmd"].Value;
+					cmd = cmd.Trim('"');
 					long mem;
 					if (memtxt.EndsWith("t", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024 * 1024;
 					else if (memtxt.EndsWith("g", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024;
@@ -502,18 +504,25 @@ namespace SolidCP.Providers.OS
 						Pid = pid,
 						Name = name,
 						MemUsage = mem,
-						CpuUsage = float.Parse(m.Groups["cpu"].Value) / 100,
+						Command = cmd,
+						CpuUsage = float.Parse(m.Groups["cpu"].Value) / 100 / Environment.ProcessorCount,
 						Arguments = m.Groups["args"].Value,
 						Username = m.Groups["user"].Value
 					};
 				})
+				.OrderBy(p => p.Name)
 				.ToArray();
 		}
 
 		public void TerminateOSProcess(int pid)
 		{
-			var process = System.Diagnostics.Process.GetProcessById(pid);
-			process.Kill();
+			try
+			{
+				var process = Process.GetProcessById(pid);
+				if (process != null) process.Kill();
+			}
+			catch (Exception ex) {
+			}
 		}
 
 		public OSService[] GetOSServices()
@@ -535,7 +544,7 @@ namespace SolidCP.Providers.OS
 		{
 			var output = Shell.Default.Exec("free --kilo -w").Output().Result;
 			if (output == null) throw new PlatformNotSupportedException("free command not found on this system.");
-			var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2,2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2,2})(?<freeswap>[0-9]+))");
+			var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2})(?<freeswap>[0-9]+))");
 			ulong free, total, freeswap, totalswap;
 			if (matches.Count == 4 &&
 				ulong.TryParse(matches[0].Value, out total) &&

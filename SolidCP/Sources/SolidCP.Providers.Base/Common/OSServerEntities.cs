@@ -82,6 +82,7 @@ namespace SolidCP.Providers.OS
         }
 
         public string Arguments { get; set; }
+        public string Command { get; set; }
         public string Username
         {
             get { return this.username; }

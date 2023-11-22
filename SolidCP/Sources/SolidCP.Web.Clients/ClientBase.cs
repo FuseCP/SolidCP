@@ -28,6 +28,11 @@ namespace SolidCP.Web.Client
 
 	public class ClientBase : IDisposable
 	{
+
+		public const long MaximumMessageSize = 10*1024*1024; // 10 MB
+		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
+		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
+
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
 		{
@@ -294,7 +299,9 @@ namespace SolidCP.Web.Client
 						case Protocols.BasicHttp:
 							if (!isEncrypted || IsLocal)
 							{
-								binding = new BasicHttpBinding(BasicHttpSecurityMode.None);
+								var basic = new BasicHttpBinding(BasicHttpSecurityMode.None);
+								basic.MaxReceivedMessageSize = MaximumMessageSize;
+								binding = basic;
 							}
 							else
 							{
@@ -303,12 +310,15 @@ namespace SolidCP.Web.Client
 							break;
 						case Protocols.BasicHttps:
 							var basics = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+							basics.MaxReceivedMessageSize = MaximumMessageSize;
 							binding = basics;
 							break;
 						case Protocols.NetHttp:
 							if (!isEncrypted || IsLocal)
 							{
-								binding = new NetHttpBinding(BasicHttpSecurityMode.None);
+								var nethttp = new NetHttpBinding(BasicHttpSecurityMode.None);
+								nethttp.MaxReceivedMessageSize = MaximumMessageSize;
+								binding = nethttp;
 							}
 							else
 							{
@@ -316,13 +326,16 @@ namespace SolidCP.Web.Client
 							}
 							break;
 						case Protocols.NetHttps:
-							var nets = new NetHttpBinding(BasicHttpSecurityMode.Transport);
-							binding = nets;
+							var nethttps = new NetHttpBinding(BasicHttpSecurityMode.Transport);
+							nethttps.MaxReceivedMessageSize = MaximumMessageSize;
+							binding = nethttps;
 							break;
 						case Protocols.WSHttp:
 							if (!isEncrypted || IsLocal)
 							{
-								binding = new WSHttpBinding(SecurityMode.None);
+								var ws = new WSHttpBinding(SecurityMode.None);
+								ws.MaxReceivedMessageSize = MaximumMessageSize;
+								binding = ws;
 							}
 							else
 							{
@@ -331,12 +344,15 @@ namespace SolidCP.Web.Client
 							break;
 						case Protocols.WSHttps:
 							var wss = new WSHttpBinding(SecurityMode.Transport);
+							wss.MaxReceivedMessageSize = MaximumMessageSize;
 							binding = wss;
 							break;
 						case Protocols.NetTcp:
 							if (!isEncrypted || IsLocal)
 							{
-								binding = new NetTcpBinding(SecurityMode.None);
+								var tcp = new NetTcpBinding(SecurityMode.None);
+								tcp.MaxReceivedMessageSize = MaximumMessageSize;
+								binding = tcp;
 							}
 							else
 							{
@@ -344,19 +360,25 @@ namespace SolidCP.Web.Client
 							}
 							break;
 						case Protocols.NetTcpSsl:
-							binding = new NetTcpBinding(SecurityMode.Transport);
+							var tcps = new NetTcpBinding(SecurityMode.Transport);
+							tcps.MaxReceivedMessageSize = MaximumMessageSize;
+							binding = tcps;
 							break;
 						//#if NETFRAMEWOR
 						case Protocols.NetPipe:
-							binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+							var pipe = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+							pipe.MaxReceivedMessageSize = MaximumMessageSize;
+							binding = pipe;
 							break;
 						case Protocols.NetPipeSsl:
-							binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+							var pipes = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+							pipes.MaxReceivedMessageSize = MaximumMessageSize;
+							binding = pipes;
 							break;
 							//#endif
 					}
-					binding.ReceiveTimeout = Timeout ?? TimeSpan.FromSeconds(120);
-					binding.SendTimeout = Timeout ?? TimeSpan.FromSeconds(120);
+					binding.ReceiveTimeout = Timeout ?? ReceiveTimeout;
+					binding.SendTimeout = Timeout ?? SendTimeout;
 
 					var endpoint = new EndpointAddress(serviceurl);
 

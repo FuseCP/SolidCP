@@ -59,7 +59,7 @@ using Microsoft.Web.PlatformInstaller;
 
 namespace SolidCP.Providers.OS
 {
-    public class Windows2003 : HostingServiceProviderBase, IWindowsOperatingSystem
+	public class Windows2003 : HostingServiceProviderBase, IWindowsOperatingSystem
 	{
 		#region Constants
 		private const string ODBC_SOURCES_KEY = @"SOFTWARE\ODBC\ODBC.INI";
@@ -1647,32 +1647,103 @@ namespace SolidCP.Providers.OS
 		{
 			try
 			{
-				List<OSProcess> winProcesses = new List<OSProcess>();
-
 				WmiHelper wmi = new WmiHelper("root\\cimv2");
 				ManagementObjectCollection objProcesses = wmi.ExecuteQuery(
 					"SELECT * FROM Win32_Process");
 
-				foreach (ManagementObject objProcess in objProcesses)
-				{
-					int pid = Int32.Parse(objProcess["ProcessID"].ToString());
-					string name = objProcess["Name"].ToString();
+				// get processes
+				var processes = objProcesses
+					.OfType<ManagementObject>()
+					.Select(m =>
+					{
+						int pid = int.Parse(m["ProcessID"].ToString());
+						string name = m["Name"].ToString();
 
-					// get user info
-					string[] methodParams = new String[2];
-					objProcess.InvokeMethod("GetOwner", (object[])methodParams);
-					string username = methodParams[0];
+						// get user info
+						string username = "";
+						try
+						{
+							string[] methodParams = new string[2];
+							m.InvokeMethod("GetOwner", (object[])methodParams);
+							username = methodParams[0];
+						}
+						catch { }
 
-					OSProcess winProcess = new OSProcess();
-					winProcess.Pid = pid;
-					winProcess.Name = name;
-					winProcess.Username = username;
-					winProcess.MemUsage = Int64.Parse(objProcess["WorkingSetSize"].ToString());
+						var args = m["CommandLine"] as string ?? "";
+						string cmd = "";
+						if (args.Length > 0 && args[0] == '"')
+						{
+							var pos = args.IndexOf('"', 1);
+							if (pos > 0)
+							{
+								cmd = args.Substring(1, pos);
+								args = args.Substring(pos + 1);
+							}
+							else
+							{
+								cmd = args;
+								args = "";
+							}
+						}
+						else
+						{
+							var pos = args.IndexOf(' ');
+							if (pos > 0)
+							{
+								cmd = args.Substring(0, pos);
+								args = args.Substring(pos + 1);
+							}
+							else
+							{
+								cmd = args;
+								args = "";
+							}
+						}
+						args = args.Trim();
 
-					winProcesses.Add(winProcess);
-				}
+						return new OSProcess()
+						{
+							Pid = pid,
+							Name = name,
+							Username = username,
+							MemUsage = long.Parse(m["WorkingSetSize"].ToString()),
+							Arguments = args,
+							Command = cmd
+						};
+					});
 
-				return winProcesses.ToArray();
+				var cpuUsageCollection = wmi.ExecuteQuery("SELECT * FROM Win32_PerfFormattedData_PerfProc_Process");
+				var cpuUsages = cpuUsageCollection
+					.OfType<ManagementObject>()
+					.Select(m =>
+					{
+						var pid = int.Parse(m["IDProcess"].ToString());
+						var cpuUsage = float.Parse(m["PercentProcessorTime"].ToString()) / 100 / Environment.ProcessorCount;
+						return new
+						{
+							Pid = pid,
+							CpuUsage = cpuUsage
+						};
+					});
+
+				return processes
+					// outer join processes with cpuUsages
+					.GroupJoin(cpuUsages, p => p.Pid, u => u.Pid, (p, u) =>
+					new
+					{
+						CpuUsages = u,
+						OSProcess = p
+					})
+					.SelectMany(
+						c => c.CpuUsages.DefaultIfEmpty().Take(1),
+						(p, cpu) =>
+						{
+							p.OSProcess.CpuUsage = cpu?.CpuUsage ?? 0;
+							return p.OSProcess;
+						}
+					)
+					.OrderBy(p => p.Name)
+					.ToArray();
 			}
 			catch (Exception ex)
 			{
@@ -1829,13 +1900,13 @@ namespace SolidCP.Providers.OS
 
 		public Installer DefaultInstaller => WinGet;
 
-        public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
-        {
-            OSPlatform = OSInfo.OSPlatform,
-            IsCore = OSInfo.IsCore
-        };
+		public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
+		{
+			OSPlatform = OSInfo.OSPlatform,
+			IsCore = OSInfo.IsCore
+		};
 
-        protected Web.IWebServer webServer = null;
+		protected Web.IWebServer webServer = null;
 		public virtual Web.IWebServer WebServer =>
 			webServer != null ? webServer :
 			webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60"));
