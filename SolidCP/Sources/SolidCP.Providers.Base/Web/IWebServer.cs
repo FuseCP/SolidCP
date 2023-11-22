@@ -170,17 +170,17 @@ namespace SolidCP.Providers.Web
 		void RevokeWebDeployPublishingAccess(string siteId, string accountName);
 
         //SSL
-        SSLCertificate generateCSR(SSLCertificate certificate);
+        SSLCertificate GenerateCSR(SSLCertificate certificate);
         SSLCertificate generateRenewalCSR(SSLCertificate certificate);
-        SSLCertificate installCertificate(SSLCertificate certificate, WebSite website);
+        SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website);
         SSLCertificate getCertificate(WebSite site);
-        SSLCertificate installPFX(byte[] certificate, string password, WebSite website);
-        byte[] exportCertificate(string serialNumber, string password);
-        List<SSLCertificate> getServerCertificates();
+        SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website);
+        byte[] ExportCertificate(string serialNumber, string password);
+        List<SSLCertificate> GetServerCertificates();
         ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website);
         SSLCertificate ImportCertificate(WebSite website);
         bool CheckCertificate(WebSite webSite);
-        string LEinstallCertificate(WebSite website, string email);
+        string LEInstallCertificate(WebSite website, string email);
 
         //Directory Browseing
         bool GetDirectoryBrowseEnabled(string siteId);

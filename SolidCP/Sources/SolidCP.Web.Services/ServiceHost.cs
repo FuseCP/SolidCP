@@ -34,11 +34,18 @@ namespace SolidCP.Web.Services
 		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"{api}/[a-zA-Z0-9_]+(?:\\?|$)");
 		bool IsHttp(string adr) => adr.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
 		bool IsHttps(string adr) => adr.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
-        bool IsNetTcp(string adr) => adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase);
+		bool IsNetTcp(string adr) => adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase);
 		bool IsPipe(string adr) => adr.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase);
+		bool IsLocal(string adr)
+		{
+			var host = new Uri(adr).Host;
+			return host == "localhost" || host == "127.0.0.1" || host == "::1" ||
+				Regex.IsMatch(host, "^192\\.168\\.[0-9]+\\.[0-9]+$") || // local network ip
+				IsPipe(adr);
+		}
+		const bool AllowInsecureHttp = PolicyAttribute.AllowInsecureHttp;
 
-
-        void AddEndpoint(Type contract, Binding binding, string address)
+		void AddEndpoint(Type contract, Binding binding, string address)
 		{
 			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
 			var endpoint = AddServiceEndpoint(contract, binding, address);
@@ -55,165 +62,111 @@ namespace SolidCP.Web.Services
 
 
 			var policy = contract.GetCustomAttributes(false).OfType<PolicyAttribute>().FirstOrDefault();
-			var isAuthenticated = policy != null;
-
+			var isEncrypted = policy != null;
 
 			Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
 			Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new UserNamePasswordValidator() { Policy = policy };
 			var behavior = Description.Behaviors.Find<ServiceDebugBehavior>();
 			if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
+			else Description.Behaviors.Add(new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
 
 			//Credentials.ServiceCertificate.SetCertificate(
 			//	StoreLocation.LocalMachine, StoreName.My, X509FindType.FindBySubjectName, "localhost");
 
-			foreach (var adr in baseAdresses.Select(uri => uri.AbsoluteUri)) {
+			foreach (var adr in baseAdresses.Select(uri => uri.AbsoluteUri))
+			{
 				if (IsHttp(adr))
 				{
 
 					if (HasApi(adr, "basic"))
 					{
-						if (isAuthenticated)
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-#if NETFRAMEWORK
-							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Message);
-							AddEndpoint(contract, binding, adr);
-#endif
+							AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "basic.none" }, adr);
 						}
-						else AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "basic.none" }, adr);
 					}
 					else if (HasApi(adr, "net"))
 					{
-						if (isAuthenticated)
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-#if NETFRAMEWORK
-							var binding = new NetHttpBinding(BasicHttpSecurityMode.Message);
-							AddEndpoint(contract, binding, adr);
-#endif
+							var netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" };
+							netHttpBinding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
+                            AddEndpoint(contract, netHttpBinding, adr);
 						}
-						else AddEndpoint(contract, new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 					}
 					else if (HasApi(adr, "ws"))
 					{
-						if (isAuthenticated)
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-#if NETFRAMEWORK
-							var binding = new WSHttpBinding(SecurityMode.Message);
-							binding.Security.Message.ClientCredentialType = MessageCredentialType.None;
-							binding.Security.Message.NegotiateServiceCredential = true;
-							binding.Security.Message.EstablishSecurityContext = true;
-							binding.Name = "ws.message";
-							AddEndpoint(contract, binding, adr);
-#endif
+							AddEndpoint(contract, new WSHttpBinding(SecurityMode.None) { Name = "ws.none" }, adr);
 						}
-						else AddEndpoint(contract, new WSHttpBinding(SecurityMode.None) { Name = "ws.none" }, adr);
 					}
 					else
 					{
-						if (isAuthenticated)
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-#if NETFRAMEWORK
-							var binding = new WSHttpBinding(SecurityMode.Message);
-							binding.Security.Message.NegotiateServiceCredential = true;
-							binding.Security.Message.ClientCredentialType = MessageCredentialType.None;
-							binding.Security.Message.EstablishSecurityContext = true;
-							binding.Name = "ws.message";
-							AddEndpoint(contract, binding, adr);
-#endif
+							AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 						}
-						else AddEndpoint(contract, new BasicHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" }, adr);
 					}
 				}
 				else if (IsHttps(adr))
 				{
 					if (HasApi(adr, "basic"))
 					{
-						if (isAuthenticated)
-						{
-							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "basic.transportwithmessage";
-							AddEndpoint(contract, binding, adr);
-						}
-						else
-						{
-							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "basic.transport";
-							AddEndpoint(contract, binding, adr);
-						}
+						var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						binding.Name = "basic.transport";
+						AddEndpoint(contract, binding, adr);
 					}
 					else if (HasApi(adr, "ws"))
 					{
-						if (isAuthenticated)
-						{
-							var binding = new WSHttpBinding(SecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "ws.transportwithmessage";
-							AddEndpoint(contract, binding, adr);
-						}
-						else
-						{
-							var binding = new WSHttpBinding(SecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "ws.transportwithmessage";
-							AddEndpoint(contract, binding, adr);
-						}
+						var binding = new WSHttpBinding(SecurityMode.Transport);
+						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						binding.Name = "ws.transportwithmessage";
+						AddEndpoint(contract, binding, adr);
 					}
 					else if (HasApi(adr, "net"))
 					{
-						if (isAuthenticated)
-						{
-							var binding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "net.transportwithmessage";
-							AddEndpoint(contract, binding, adr);
-						}
-						else
-						{
-							var binding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "net.transport";
-							AddEndpoint(contract, binding, adr);
-						}
+						var binding = new NetHttpBinding(BasicHttpSecurityMode.Transport);
+						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						binding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
+						binding.Name = "net.transport";
+						AddEndpoint(contract, binding, adr);
 					}
 					else
 					{
-						if (isAuthenticated)
-						{
-							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "basic.transport";
-							AddEndpoint(contract, binding, adr);
-						}
-						else
-						{
-							var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-							binding.Name = "basic.transport";
-							AddEndpoint(contract, binding, adr);
-						}
+						var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
+						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						binding.Name = "basic.transport";
+						AddEndpoint(contract, binding, adr);
 					}
 				}
-
-                else if (adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase))
+				else if (adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase))
 				{
-					if (HasApi(adr, "nettcp"))
+					if (HasApi(adr, "tcp/ssl"))
 					{
-						if (isAuthenticated)
+						var binding = new NetTcpBinding(SecurityMode.Transport);
+						binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
+						binding.Name = "nettcp.transport";
+						AddEndpoint(contract, binding, adr);
+					}
+					else if (HasApi(adr, "tcp"))
+					{
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-							var binding = new NetTcpBinding(SecurityMode.Transport);
-							binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
-							binding.Name = "nettcp.transportwithmessage";
-							AddEndpoint(contract, binding, adr);
-						} else AddEndpoint(contract, new NetTcpBinding(SecurityMode.None) {  Name="nettcp.none" }, adr);
+							AddEndpoint(contract, new NetTcpBinding(SecurityMode.None) { Name = "nettcp.none" }, adr);
+						}
 					}
 				}
 				else if (adr.StartsWith("net.pipe://", StringComparison.OrdinalIgnoreCase))
 				{
-					if (HasApi(adr, "pipe"))
+					if (HasApi(adr, "pipe/ssl"))
 					{
-						if (isAuthenticated) AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport) { Name="pipe.transport" }, adr);
-						else AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.None) { Name="pipe.none" }, adr);
+						AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport) { Name = "pipe.transport" }, adr);
+					}
+					else if (HasApi(adr, "pipe"))
+					{
+						AddEndpoint(contract, new NetNamedPipeBinding(NetNamedPipeSecurityMode.None) { Name = "pipe.none" }, adr);
 					}
 				}
 
@@ -233,7 +186,7 @@ namespace SolidCP.Web.Services
 				if (IsNetTcp(adr)) AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexTcpBinding(), $"{adr}/mex");
 				if (IsPipe(adr)) AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexNamedPipeBinding(), $"{adr}/mex");
 				*/
-            }
+			}
 		}
 
 	}

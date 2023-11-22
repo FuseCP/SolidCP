@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Loader;
+using System.Diagnostics;
 using System.Reflection;
 using System.Security.Policy;
 using System.IO;
@@ -17,25 +18,38 @@ namespace SolidCP.Web.Services
 		public static void Init()
 		{
 			AssemblyLoadContext.Default.Resolving += Resolve;
-		}	
+		}
+
+		static readonly string exepath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+		static string[] paths = null;
+		static string[] Paths => paths != null ? paths : paths =
+			StartupCore.ProbingPaths
+				.Replace('\\', Path.DirectorySeparatorChar)
+				.Split(';');
+
 		public static Assembly Resolve(AssemblyLoadContext context, AssemblyName name)
 		{
-			var exepath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			string[] paths = StartupCore.ProbingPaths.Split(';');
-			return paths
-				.Select(p => {
-					var file = Path.Combine(new DirectoryInfo(Path.Combine(exepath, p)).FullName, $"{name.Name}.dll");
-					return new {
-						File = file,
-						CodeBase = new Uri(file).AbsoluteUri
-					};
-				})
-				.Where(p => File.Exists(p.File))
+			return Paths
 				.Select(p =>
 				{
-					var namewithfile = new AssemblyName(name.FullName);
-					namewithfile.CodeBase = p.CodeBase;
-					return context.LoadFromAssemblyName(namewithfile);
+					var relativename = Path.Combine(p, $"{name.Name}.dll");
+					return new
+					{
+						FullName = new DirectoryInfo(Path.Combine(exepath, relativename)).FullName,
+						Name = relativename
+					};
+				})
+				.Where(p => File.Exists(p.FullName))
+				.Select(p =>
+				{
+					var a = context.LoadFromAssemblyPath(p.FullName);
+					if (a != null)
+					{
+						var msg = $"Loaded assembly {p.Name}";
+						Console.WriteLine(msg);
+						//if (Debugger.IsAttached) Debugger.Log(1, "info", $"{msg}\r\n");
+					}
+					return a;
 				})
 				.FirstOrDefault();
 		}

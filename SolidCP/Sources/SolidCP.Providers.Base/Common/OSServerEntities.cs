@@ -66,7 +66,7 @@ namespace SolidCP.Providers.OS
         private int pid;
         private string name;
         private string username;
-        private long cpuUsage;
+        private float cpuUsage;
         private long memUsage;
 
         public int Pid
@@ -81,13 +81,15 @@ namespace SolidCP.Providers.OS
             set { this.name = value; }
         }
 
+        public string Arguments { get; set; }
+        public string Command { get; set; }
         public string Username
         {
             get { return this.username; }
             set { this.username = value; }
         }
 
-        public long CpuUsage
+        public float CpuUsage
         {
             get { return this.cpuUsage; }
             set { this.cpuUsage = value; }

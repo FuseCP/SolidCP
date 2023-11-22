@@ -34,6 +34,7 @@ using System;
 using System.Net;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Providers.Web
 {
@@ -153,7 +154,7 @@ namespace SolidCP.Providers.Web
 		/// <summary>
 		/// Gets fully qualified name which consists of parent website name if present and virtual directory name.
 		/// </summary>
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
     	public string VirtualPath
     	{
             get
@@ -165,7 +166,7 @@ namespace SolidCP.Providers.Web
         /// <summary>
         /// Gets fully qualified name which consists of parent website name if present and virtual directory name.
         /// </summary>
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public string FullQualifiedPath
         {
             get

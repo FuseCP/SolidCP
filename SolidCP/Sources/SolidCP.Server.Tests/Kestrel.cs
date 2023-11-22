@@ -11,15 +11,18 @@ namespace SolidCP.Server.Tests
     public class Kestrel: IDisposable
     {
         Process? process = null;
-        public Kestrel()
+
+		public const string HttpUrl = "http://localhost:9016";
+		public const string HttpsUrl = "https://localhost:9015";
+		public Kestrel()
         {
-            var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin\net.core\SolidCP.Server.exe").FullName;
+            var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin_net\SolidCP.Server.exe").FullName;
             var startInfo = new ProcessStartInfo(exe)
             {
                 CreateNoWindow = false,
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.Server\bin\net.core").FullName
+                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.Server\bin_net").FullName
             };
             process = Process.Start(startInfo);
             
@@ -30,7 +33,7 @@ namespace SolidCP.Server.Tests
                 try
                 {
                     var client = new HttpClient();
-                    var response = client.GetAsync("https://localhost:9007").Result;
+                    var response = client.GetAsync(HttpsUrl).Result;
                     done = true;
                 }
                 catch (Exception ex) { }

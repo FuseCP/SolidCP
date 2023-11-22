@@ -351,6 +351,15 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] =
 END
 GO
 
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Unix System')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(500, 1, N'UnixSystem', N'Unix System', N'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix', N'Unix',	NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'Unix System'
+END
+GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2007.AllowLitigationHold')
 BEGIN
@@ -19646,7 +19655,7 @@ INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [Pro
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1800')
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1802')
 BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1802, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
 END
@@ -19819,4 +19828,262 @@ BEGIN
 	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota]) VALUES (409, 1, 13, N'OS.NotAllowTenantDeleteDomains', N'Not allow Tenants to Delete Top Level Domains', 1, 0, NULL, NULL)
 	UPDATE [dbo].[Quotas] SET [QuotaName] = N'OS.NotAllowTenantCreateDomains', [QuotaDescription] = N'Not allow Tenants to Create Top Level Domains' WHERE [QuotaID] = 410
 END
+GO
+
+-- Add Platform column to Servers
+DECLARE @NoPlatform bit, @NoIsCore bit
+
+SET @NoPlatform = 0
+SET @NoIsCore = 0
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'OSPlatform'
+)
+BEGIN
+	SET @NoPlatform = 1
+END
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'IsCore'
+)
+BEGIN
+	SET @NoIsCore = 1
+END
+
+IF @NoPlatform = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL DEFAULT 0
+END
+
+IF @NoIsCore = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [IsCore] BIT NULL
+END
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC ('
+	ALTER PROCEDURE AddServer
+	(
+		@ServerID int OUTPUT,
+		@ServerName nvarchar(100),
+		@ServerUrl nvarchar(100),
+		@Password nvarchar(100),
+		@Comments ntext,
+		@VirtualServer bit,
+		@InstantDomainAlias nvarchar(200),
+		@PrimaryGroupID int,
+		@ADEnabled bit,
+		@ADRootDomain nvarchar(200),
+		@ADUsername nvarchar(100),
+		@ADPassword nvarchar(100),
+		@ADAuthenticationType varchar(50),
+		@OSPlatform int,
+		@IsCore bit
+	)
+	AS
+
+	IF @PrimaryGroupID = 0
+
+	SET @PrimaryGroupID = NULL
+
+	INSERT INTO Servers
+	(
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADEnabled,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		OSPlatform,
+		IsCore
+	)
+	VALUES
+	(
+		@ServerName,
+		@ServerUrl,
+		@Password,
+		@Comments,
+		@VirtualServer,
+		@InstantDomainAlias,
+		@PrimaryGroupID,
+		@ADEnabled,
+		@ADRootDomain,
+		@ADUsername,
+		@ADPassword,
+		@ADAuthenticationType,
+		@OSPlatform,
+		@IsCore
+	)
+
+	SET @ServerID = SCOPE_IDENTITY()
+
+	RETURN
+	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+	ALTER PROCEDURE GetServerInternal
+	(
+		@ServerID int
+	)
+	AS
+	SELECT
+		ServerID,
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADEnabled,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		ADParentDomain,
+		ADParentDomainController,
+		OSPlatform,
+		IsCore
+	FROM Servers
+	WHERE
+		ServerID = @ServerID
+
+	RETURN
+	')
+	
+IF @NoPlatform =
+1 OR @NoIsCore = 1
+EXEC('
+	ALTER PROCEDURE GetServerByName
+	(
+		@ActorID int,
+		@ServerName nvarchar(100)
+	)
+	AS
+-- check rights
+	DECLARE @IsAdmin bit
+	SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+	SELECT
+		ServerID,
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		ADParentDomain,
+		ADParentDomainController,
+		OSPlatform,
+		IsCore
+	FROM Servers
+	WHERE
+		ServerName = @ServerName
+		AND @IsAdmin = 1
+
+	RETURN
+	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+	ALTER PROCEDURE UpdateServer
+	(
+		@ServerID int,
+		@ServerName nvarchar(100),
+		@ServerUrl nvarchar(100),
+		@Password nvarchar(100),
+		@Comments ntext,
+		@InstantDomainAlias nvarchar(200),
+		@PrimaryGroupID int,
+		@ADEnabled bit,
+		@ADRootDomain nvarchar(200),
+		@ADUsername nvarchar(100),
+		@ADPassword nvarchar(100),
+		@ADAuthenticationType varchar(50),
+		@ADParentDomain nvarchar(200),
+		@ADParentDomainController nvarchar(200),
+		@OSPlatform int,
+		@IsCore bit
+	)
+	AS
+
+	IF @PrimaryGroupID = 0
+	SET @PrimaryGroupID = NULL
+
+	UPDATE Servers SET
+		ServerName = @ServerName,
+		ServerUrl = @ServerUrl,
+		Password = @Password,
+		Comments = @Comments,
+		InstantDomainAlias = @InstantDomainAlias,
+		PrimaryGroupID = @PrimaryGroupID,
+		ADEnabled = @ADEnabled,
+		ADRootDomain = @ADRootDomain,
+		ADUsername = @ADUsername,
+		ADPassword = @ADPassword,
+		ADAuthenticationType = @ADAuthenticationType,
+		ADParentDomain = @ADParentDomain,
+		ADParentDomainController = @ADParentDomainController,
+		OSPlatform = @OSPlatform,
+		IsCore = @IsCore
+	WHERE ServerID = @ServerID
+	RETURN
+	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+ALTER PROCEDURE [dbo].[GetServer]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore
+
+FROM Servers
+WHERE
+	ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+')
+
 GO

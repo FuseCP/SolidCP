@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SolidCP.Providers.OS
 {
-	public class Chocolatey: Installer
+    public class Chocolatey: Installer
 	{
 		public override bool IsInstalled => Shell.Find("choco") != null;
 
@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 
 		public override Shell InstallAsync(string apps)
 		{
-			return Shell.ExecAsync($"choco install {apps}");
+			return Shell.Exec($"choco install {apps}");
 		}
 	}
 }

@@ -41,94 +41,105 @@ using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class ServiceProviderProxy
-    {
-        public static SolidCP.Web.Client.ClientBase Init(SolidCP.Web.Client.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
-        {
-            ServerProxyConfigurator cnfg = new ServerProxyConfigurator();
+	public class ServiceProviderProxy
+	{
+		public static SolidCP.Web.Client.ClientBase Init(SolidCP.Web.Client.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
+		{
+			ServerProxyConfigurator cnfg = new ServerProxyConfigurator();
 
-            // get service
-            ServiceInfo service = ServerController.GetServiceInfo(serviceId);
+			// get service
+			ServiceInfo service = ServerController.GetServiceInfo(serviceId);
 
-            if (service == null)
-                throw new Exception(String.Format("Service with ID {0} was not found", serviceId));
+			if (service == null)
+				throw new Exception(String.Format("Service with ID {0} was not found", serviceId));
 
-            // set service settings
-            StringDictionary serviceSettings = ServerController.GetServiceSettings(serviceId);
-            foreach (string key in serviceSettings.Keys)
-                cnfg.ProviderSettings.Settings[key] = serviceSettings[key];
-            // RB ADDED EMAIL SECURITY SE
-            if (additionalSettings != null)
-            {
-                foreach (string str in additionalSettings.Keys)
-                {
-                    cnfg.ProviderSettings.Settings[str] = additionalSettings[str];
-                }
-            }
-            // get provider
-            ProviderInfo provider = ServerController.GetProvider(service.ProviderId);
-            cnfg.ProviderSettings.ProviderGroupID = provider.GroupId;
-            cnfg.ProviderSettings.ProviderCode = provider.ProviderName;
-            cnfg.ProviderSettings.ProviderName = provider.DisplayName;
-            cnfg.ProviderSettings.ProviderType = provider.ProviderType;
+			// set service settings
+			StringDictionary serviceSettings = ServerController.GetServiceSettings(serviceId);
+			foreach (string key in serviceSettings.Keys)
+				cnfg.ProviderSettings.Settings[key] = serviceSettings[key];
+			// RB ADDED EMAIL SECURITY SE
+			if (additionalSettings != null)
+			{
+				foreach (string str in additionalSettings.Keys)
+				{
+					cnfg.ProviderSettings.Settings[str] = additionalSettings[str];
+				}
+			}
+			// get provider
+			ProviderInfo provider = ServerController.GetProvider(service.ProviderId);
+			cnfg.ProviderSettings.ProviderGroupID = provider.GroupId;
+			cnfg.ProviderSettings.ProviderCode = provider.ProviderName;
+			cnfg.ProviderSettings.ProviderName = provider.DisplayName;
+			cnfg.ProviderSettings.ProviderType = provider.ProviderType;
 
-            // init service on the server level
-            return ServerInit(proxy, cnfg, service.ServerId);
-        }
+			// init service on the server level
+			return ServerInit(proxy, cnfg, service.ServerId);
+		}
 
-        public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
-        {
-            // get server info
-            ServerInfo server = ServerController.GetServerByIdInternal(serverId);
+		public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
+		{
+			// get server info
+			ServerInfo server = ServerController.GetServerByIdInternal(serverId);
 
-            if (server == null)
-                throw new Exception(String.Format("Server with ID {0} was not found", serverId));
+			if (server == null)
+				throw new Exception(String.Format("Server with ID {0} was not found", serverId));
 
-            // set AD integration settings
-            cnfg.ServerSettings.ADEnabled = server.ADEnabled;
-            cnfg.ServerSettings.ADAuthenticationType = AuthenticationTypes.Secure;
-            try
-            {
-                cnfg.ServerSettings.ADAuthenticationType = (AuthenticationTypes)Enum.Parse(typeof(AuthenticationTypes), server.ADAuthenticationType, true);
-            }
-            catch { /* ignore */ }
-            cnfg.ServerSettings.ADRootDomain = server.ADRootDomain;
-            cnfg.ServerSettings.ADUsername = server.ADUsername;
-            cnfg.ServerSettings.ADPassword = server.ADPassword;
-            cnfg.ServerSettings.ADParentDomain = server.ADParentDomain;
-            cnfg.ServerSettings.ADParentDomainController = server.ADParentDomainController;
+			// set AD integration settings
+			cnfg.ServerSettings.ADEnabled = server.ADEnabled;
+			cnfg.ServerSettings.ADAuthenticationType = AuthenticationTypes.Secure;
 
-            // set timeout
-            cnfg.Timeout = ConfigSettings.ServerRequestTimeout;
+			AuthenticationTypes adAuthenticationType;
+			if (Enum.TryParse<AuthenticationTypes>(server.ADAuthenticationType, true, out adAuthenticationType))
+				cnfg.ServerSettings.ADAuthenticationType = adAuthenticationType;
 
-            return ServerInit(proxy, cnfg, server.ServerUrl, server.Password);
-        }
+			cnfg.ServerSettings.ADRootDomain = server.ADRootDomain;
+			cnfg.ServerSettings.ADUsername = server.ADUsername;
+			cnfg.ServerSettings.ADPassword = server.ADPassword;
+			cnfg.ServerSettings.ADParentDomain = server.ADParentDomain;
+			cnfg.ServerSettings.ADParentDomainController = server.ADParentDomainController;
 
-        private static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
-            ServerProxyConfigurator cnfg, string serverUrl, string serverPassword)
-        {
-            // set URL & password
-            proxy.Url = serverUrl;
-            proxy.Credentials.Password = serverPassword;
+			// set timeout
+			cnfg.Timeout = ConfigSettings.ServerRequestTimeout;
+			
+			// set if server is running on net core
+			cnfg.IsCore = server.IsCore;
 
-            //cnfg.ServerUrl = serverUrl;
-            //cnfg.ServerPassword = serverPassword;
+			return ServerInit(proxy, cnfg, server.ServerUrl, server.Password);
+		}
 
-            // configure proxy!
-            cnfg.Configure(proxy);
+		private static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
+			 ServerProxyConfigurator cnfg, string serverUrl, string serverPassword)
+		{
+			// set URL & password
+			proxy.Url = serverUrl;
+			if (proxy.IsAuthenticated)
+			{
+				proxy.Credentials.Password = CryptoUtils.Encrypt(serverPassword);
+				proxy.Credentials.UserName = "";
+			}
+			else
+			{
+				proxy.Credentials.Password = "";
+				proxy.Credentials.UserName = "";
+			}
+			//cnfg.ServerUrl = serverUrl;
+			//cnfg.ServerPassword = serverPassword;
 
-            return proxy;
-        }
+			// configure proxy!
+			cnfg.Configure(proxy);
 
-        public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
-            string serverUrl, string serverPassword)
-        {
-            return ServerInit(proxy, new ServerProxyConfigurator(), serverUrl, serverPassword);
-        }
+			return proxy;
+		}
 
-        public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, int serverId)
-        {
-            return ServerInit(proxy, new ServerProxyConfigurator(), serverId);
-        }
-    }
+		public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
+			 string serverUrl, string serverPassword)
+		{
+			return ServerInit(proxy, new ServerProxyConfigurator(), serverUrl, serverPassword);
+		}
+
+		public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, int serverId)
+		{
+			return ServerInit(proxy, new ServerProxyConfigurator(), serverId);
+		}
+	}
 }

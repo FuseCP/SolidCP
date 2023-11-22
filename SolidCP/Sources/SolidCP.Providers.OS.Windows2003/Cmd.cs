@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
 {
-	public class Cmd : Shell
+    public class Cmd : Shell
 	{
 		public override string ShellExe => "cmd";
 	}

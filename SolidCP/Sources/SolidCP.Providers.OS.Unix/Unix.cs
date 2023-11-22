@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Linq;
-using SolidCP.Providers;
-using SolidCP.Providers.OS;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Mono.Unix;
-using SolidCP.Server;
+using System.Threading;
+using System.Text.RegularExpressions;
 using System.IO.Compression;
-using SolidCP.Providers.Virtualization;
+using SolidCP.Server.Utils;
+using SolidCP.Providers.Utils;
+using System.Diagnostics;
 
-namespace SolidCP.Providers.OS { 
+namespace SolidCP.Providers.OS
+{
 
-	public class Unix: HostingServiceProviderBase, IUnixOperatingSystem
+	public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 	{
 
 		#region Properties
-		protected string UsersHome
+		protected virtual string UsersHome
 		{
-			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["UsersHome"]); }
+			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["UsersHome"] ?? "%HOME%"); }
 		}
 
-		protected string LogDir
+		protected virtual string LogDir
 		{
-			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["LogDir"] ?? "/var/log"); }
+			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["LogDir"]) ?? "/var/log"; }
 		}
 
 		#endregion
@@ -295,7 +295,8 @@ namespace SolidCP.Providers.OS {
 
 		public void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false)
 		{
-			if (!resetChildPermissions) {
+			if (!resetChildPermissions)
+			{
 				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(path);
 				if (info != null && info.Exists)
 				{
@@ -303,17 +304,20 @@ namespace SolidCP.Providers.OS {
 					info.Refresh();
 				}
 				else throw new FileNotFoundException(path);
-			} else
+			}
+			else
 			{
 				foreach (var e in Directory.EnumerateFileSystemEntries(path))
 				{
 					var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
-					if (info != null && info.Exists) { 
+					if (info != null && info.Exists)
+					{
 						info.FileAccessPermissions = (FileAccessPermissions)mode;
 						info.Refresh();
-					} else throw new FileNotFoundException(e);
+					}
+					else throw new FileNotFoundException(e);
 				}
-			} 
+			}
 		}
 
 		public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
@@ -333,34 +337,118 @@ namespace SolidCP.Providers.OS {
 
 		public override bool IsInstalled()
 		{
-			return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+			return !OSInfo.IsWindows;
+		}
+
+		protected string LogName(string fullpath)
+		{
+			if (!(fullpath.EndsWith(".log") || fullpath.EndsWith(".log.gz"))) return null;
+
+			var logDir = LogDir;
+			if (logDir.EndsWith($"{Path.DirectorySeparatorChar}")) logDir = logDir.Substring(0, logDir.Length - 1);
+
+			return Regex.Replace(fullpath.Substring(logDir.Length), "(?:\\.?[0-9]+)?(?:\\.log(?:\\.gz)?$)", "");
+		}
+
+		public IEnumerable<string> EnumerateLogFiles(string path)
+		{
+			string[] files = null;
+			try
+			{
+				files = Directory.EnumerateFiles(path, "*.*").ToArray();
+			}
+			catch
+			{
+				files = new string[0];
+			}
+
+			foreach (var file in files)
+			{
+				if (file.EndsWith("log") || file.EndsWith(".log.gz"))
+				{
+					yield return file;
+				}
+			}
+
+			string[] dirs = null;
+			try
+			{
+				dirs = Directory.EnumerateDirectories(path, "*.*", SearchOption.TopDirectoryOnly).ToArray();
+			}
+			catch
+			{
+				dirs = new string[0];
+			}
+
+			foreach (var dir in dirs)
+			{
+				foreach (var file in EnumerateLogFiles(dir))
+				{
+					yield return file;
+				}
+			}
 		}
 
 		public List<string> GetLogNames()
 		{
-			var logs = Directory.EnumerateFiles(LogDir, "*.*", SearchOption.AllDirectories);
+			var logs = EnumerateLogFiles(LogDir);
+
 			return logs
-				.Select(log => Path.GetFileName(log))
+				.Select(log => LogName(log))
+				.Where(log => log != null)
+				.Distinct()
 				.ToList();
 		}
 
 		private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerable(string logName)
 		{
-			var logs = Directory.EnumerateFiles(LogDir, "*.*", SearchOption.AllDirectories);
-			var log = logs.FirstOrDefault(l => Path.GetFileName(l) == logName);
-			if (log != null)
+			var logs = EnumerateLogFiles(LogDir);
+			logs = logs.Where(l => LogName(l) == logName);
+			foreach (var log in logs)
 			{
-				Stream file;
-				file = new FileStream(log, FileMode.Open, FileAccess.Read);
-				if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
-				var text = new StreamReader(file, Encoding.UTF8, true).ReadToEnd();
+				if (log != null)
+				{
+					Stream file = null;
+					try
+					{
+						file = new FileStream(log, FileMode.Open, FileAccess.Read);
+					}
+					catch
+					{
+						yield break;
+					}
+					if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
+					var reader = new StreamReader(file, Encoding.UTF8, true);
 
-				//TODO: parse log file
-				throw new NotImplementedException();
+					//TODO: parse log file
+					string line;
+					while ((line = reader.ReadLine()) != null)
+					{
+						var timePos = line.IndexOf(' ');
+						if (timePos < 0) yield break;
+						var timeToken = line.Substring(0, timePos);
+						DateTime time;
+						if (!DateTime.TryParse(timeToken, out time)) yield break;
+						var msg = line.Substring(timePos + 1);
+						var entry = new SystemLogEntry()
+						{
+							Created = time,
+							Category = logName,
+							EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+								SystemLogEntryType.Error :
+								(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+								SystemLogEntryType.Warning : SystemLogEntryType.Information),
+							MachineName = Environment.MachineName,
+							EventID = 0,
+							Message = msg,
+							Source = logName,
+							UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
+						};
+						yield return entry;
+					}
+				}
 			}
-			else yield break;
 		}
-
 		public List<SystemLogEntry> GetLogEntries(string logName)
 		{
 			return GetLogEntriesAsEnumerable(logName).ToList();
@@ -383,30 +471,58 @@ namespace SolidCP.Providers.OS {
 		public void ClearLog(string logName)
 		{
 			var logs = Directory.EnumerateFiles(LogDir, "*.*", SearchOption.AllDirectories);
-			var log = logs.FirstOrDefault(l => Path.GetFileName(l) == logName);
-			File.WriteAllText(log, "");
+			logs = logs.Where(l => LogName(l) == logName);
+			foreach (var log in logs)
+			{
+				File.WriteAllText(log, "");
+			}
 		}
 
 		public OSProcess[] GetOSProcesses()
 		{
-			var processes = System.Diagnostics.Process.GetProcesses();
+			var output = Shell.Default.Exec("top cwbn 1").Output().Result;
+			if (output == null) throw new PlatformNotSupportedException("top command not found on this system.");
+			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+-?[0-9]+\s+-?[0-9]+\s+[0-9.GgTt]+\s+(?<mem>[0-9.GgTt]+)\s+[0-9.GgTt]+\s+[^\s]+\s+(?<cpu>[0-9.]+)\s+(?<relmem>[0-9.]+)\s+[0-9:.]+\s+(?<cmd>(?:(?:[^""][^\s$]*)|""[^""]*""))[ \t]*(?<args>.*?)$", RegexOptions.Multiline);
+
 			//TODO username & cpu usage
-			return processes
-				.Select(p => new OSProcess()
+			return matches
+				.OfType<Match>()
+				.Select(m =>
 				{
-					Pid = p.Id,
-					Name = p.ProcessName,
-					Username = "",
-					MemUsage = p.WorkingSet64,
-					CpuUsage = 0
+					var pid = int.Parse(m.Groups["pid"].Value);
+					string name = Path.GetFileName(m.Groups["cmd"].Value);
+					var memtxt = m.Groups["mem"].Value;
+					var cmd = m.Groups["cmd"].Value;
+					cmd = cmd.Trim('"');
+					long mem;
+					if (memtxt.EndsWith("t", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024 * 1024;
+					else if (memtxt.EndsWith("g", StringComparison.OrdinalIgnoreCase)) mem = (long)double.Parse(memtxt.Substring(0, memtxt.Length - 1)) * 1024 * 1024;
+					else mem = long.Parse(memtxt) * 1024;
+
+					return new OSProcess()
+					{
+						Pid = pid,
+						Name = name,
+						MemUsage = mem,
+						Command = cmd,
+						CpuUsage = float.Parse(m.Groups["cpu"].Value) / 100 / Environment.ProcessorCount,
+						Arguments = m.Groups["args"].Value,
+						Username = m.Groups["user"].Value
+					};
 				})
+				.OrderBy(p => p.Name)
 				.ToArray();
 		}
 
 		public void TerminateOSProcess(int pid)
 		{
-			var process = System.Diagnostics.Process.GetProcessById(pid);
-			process.Kill();
+			try
+			{
+				var process = Process.GetProcessById(pid);
+				if (process != null) process.Kill();
+			}
+			catch (Exception ex) {
+			}
 		}
 
 		public OSService[] GetOSServices()
@@ -421,14 +537,31 @@ namespace SolidCP.Providers.OS {
 
 		public void RebootSystem()
 		{
-			throw new NotImplementedException();
+			ServiceController.SystemReboot();
 		}
 
 		public Memory GetMemory()
 		{
-			throw new NotImplementedException();
+			var output = Shell.Default.Exec("free --kilo -w").Output().Result;
+			if (output == null) throw new PlatformNotSupportedException("free command not found on this system.");
+			var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2})(?<freeswap>[0-9]+))");
+			ulong free, total, freeswap, totalswap;
+			if (matches.Count == 4 &&
+				ulong.TryParse(matches[0].Value, out total) &&
+				ulong.TryParse(matches[1].Value, out free) &&
+				ulong.TryParse(matches[2].Value, out totalswap) &&
+				ulong.TryParse(matches[3].Value, out freeswap))
+			{
+				return new Memory()
+				{
+					TotalVisibleMemorySizeKB = total,
+					FreePhysicalMemoryKB = free,
+					TotalVirtualMemorySizeKB = totalswap,
+					FreeVirtualMemoryKB = freeswap
+				};
+			}
+			else return new Memory();
 		}
-
 		public string ExecuteSystemCommand(string path, string args)
 		{
 			try
@@ -445,15 +578,50 @@ namespace SolidCP.Providers.OS {
 		public bool IsUnix() => true;
 
 		Shell bash, sh;
-		
+
 		Installer apt, yum, brew;
-		public Shell Bash => bash != null ? bash : bash = new Bash();
-		public Shell Sh => sh != null ? sh : sh = new Sh();
-		public Installer Apt => new Apt();
-		public Installer Yum => new Yum();
-		public Installer Brew => new Brew();
+
+		public Shell Bash => bash ?? (bash = new Bash());
+		public Shell Sh => sh ?? (sh = new Sh());
+		public Installer Apt => apt ?? (apt = new Apt());
+		public Installer Yum => yum ?? (yum = new Yum());
+		public Installer Brew => brew ?? (brew = new Brew());
 
 		public virtual Shell DefaultShell => Bash;
-		public virtual Installer DefaultInstaller => Apt;
+		public virtual Installer DefaultInstaller
+		{
+			get
+			{
+				switch (OSInfo.OSFlavor)
+				{
+					case OSFlavor.Debian:
+					case OSFlavor.Mint:
+					case OSFlavor.Ubuntu: return Apt;
+					case OSFlavor.Mac: return Brew;
+					case OSFlavor.Fedora:
+					case OSFlavor.RedHat:
+					case OSFlavor.CentOS: return Yum;
+					default: throw new NotSupportedException("No installer defined for this operating system.");
+				}
+			}
+		}
+		public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
+		{
+			OSPlatform = OSInfo.OSPlatform,
+			IsCore = OSInfo.IsCore
+		};
+
+		public Web.IWebServer WebServer => throw new NotImplementedException();
+
+		ServiceController serviceController = null;
+		public ServiceController ServiceController
+		{
+			get
+			{
+				serviceController = serviceController ?? (serviceController = new SystemdServiceController());
+				if (!serviceController.IsInstalled) return null;
+				return serviceController;
+			}
+		}
 	}
 }

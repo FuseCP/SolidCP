@@ -134,41 +134,53 @@ namespace SolidCP.Providers.WebAppGallery
 	}
 
 	[XmlRoot("entry", Namespace = "http://www.w3.org/2005/Atom")]
+	[DataContract(Namespace = "http://www.w3.org/2005/Atom", Name ="entry")]
     public class GalleryApplication
     {
 		[XmlElement(ElementName = "productId", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name ="productId")]
 		public string Id { get; set; }
 
 		[XmlElement(ElementName = "title", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name ="title")]
         public string Title { get; set; }
 
 		[XmlElement(ElementName = "version", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name ="version")]
         public string Version { get; set; }
 
 		[XmlElement(ElementName = "summary", Namespace = "http://www.w3.org/2005/Atom")]
-        public string Summary { get; set; }
+        [DataMember(Name = "summary")]
+		public string Summary { get; set; }
 
 		[XmlElement(ElementName = "longSummary", Namespace = "http://www.w3.org/2005/Atom")]
-        public string Description { get; set; }
+        [DataMember(Name = "longSummary")]
+		public string Description { get; set; }
 
 		public string Link { get; set; }
 
 		[XmlElement(ElementName = "author", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name ="author")]
 		public Author Author { get; set; }
 
 		[XmlElement(ElementName = "productFamily", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name = "productFamily")]
 		public string ProductFamily { get; set; }
 
 		[XmlArray(ElementName="keywords"), XmlArrayItem(ElementName="item")]
+		[DataMember(Name = "keywords")]
 		public List<string> Keywords { get; set; }
 
 		[XmlArray(ElementName = "installerItems"), XmlArrayItem(ElementName = "installerItem")]
+		[DataMember(Name = "installerItems")]
 		public List<InstallerItem> InstallerItems { get; set; }
 
 		[XmlArray(ElementName = "installers"), XmlArrayItem(ElementName = "installer")]
+		[DataMember(Name = "installers")]
 		public List<Installer> Installers { get; set; }
 
 		[XmlElement(ElementName = "dependency", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name = "dependency")]
 		public Dependency Dependency { get; set; }
 
         public GalleryApplicationWellKnownDependency WellKnownDependencies { get; set; }
@@ -177,7 +189,7 @@ namespace SolidCP.Providers.WebAppGallery
 
 		public DateTime Published { get; set; }
 
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
         public string DownloadUrl
 		{
 			get
@@ -193,7 +205,7 @@ namespace SolidCP.Providers.WebAppGallery
 
         public string IconUrl { get; set; }
 
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
 		public string StartPage
 		{
 			get
@@ -207,7 +219,7 @@ namespace SolidCP.Providers.WebAppGallery
 			}
 		}
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public string Size
 		{
 			get
@@ -222,7 +234,8 @@ namespace SolidCP.Providers.WebAppGallery
 		}
 
         [XmlElement(ElementName = "installerFileSize", Namespace = "http://www.w3.org/2005/Atom")]
-        public int InstallerFileSize { get; set; }
+        [DataMember(Name = "installerFileSize")]
+		public int InstallerFileSize { get; set; }
 
 
 		public string AuthorName {
@@ -234,6 +247,7 @@ namespace SolidCP.Providers.WebAppGallery
 		}
 
 		[XmlElement("pageName", Namespace = "http://www.w3.org/2005/Atom")]
+		[DataMember(Name = "pageName")]
 		public string PageName { get; set; }
     }
 

@@ -1,21 +1,34 @@
 {
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "Kestrel": {
+    "net6": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "https://localhost:9007",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APPSETTING_ServerCertificate.File": "",
+        "APPSETTING_ServerCertificate.Password": "",
+        "APPSETTING_ServerCertificate.StoreLocation": "LocalMachine",
+        "APPSETTING_ServerCertificate.StoreName": "My",
+        "APPSETTING_ServerCertificate.FindType": "FindBySubjectName",
+        "APPSETTING_ServerCertificate.Name": "localhost"
       },
       "applicationUrl": "https://localhost:9007;http://localhost:9006;net.tcp://localhost:9008"
     },
-    "IISExpress": {
-      "commandName": "IISExpress",
-      "launchBrowser": false,
-      "launchUrl": "https://localhost:9007",
-      "use64Bit": true,
-      "ancmHostingModel": "OutOfProcess"
-    }
+    "WSL": {
+      "commandName": "WSL2",
+      "launchUrl": "https://localhost:9007/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APPSETTING_appliationUrls": "https://localhost:9011;http://localhost:9012;net.tcp://localhost:9013"
+      },
+      "distributionName": ""
+    },
+    /* "net48": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\IIS Express\\iisexpress.exe",
+      "commandLineArgs": "/site:solidcp.server"
+    } */
   },
   "iisSettings": {
     "windowsAuthentication": false,

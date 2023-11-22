@@ -144,7 +144,6 @@ namespace SolidCP.Providers
         }
 
         [XmlIgnore]
-        [IgnoreDataMember]
         public string this[string propertyName]
         {
             get

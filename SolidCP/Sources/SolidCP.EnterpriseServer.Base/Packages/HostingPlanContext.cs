@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -63,13 +64,13 @@ namespace SolidCP.EnterpriseServer
             set { this.quotasArray = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public Dictionary<string, HostingPlanGroupInfo> Groups
         {
             get { return groups; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public Dictionary<string, QuotaValueInfo> Quotas
         {
             get { return quotas; }

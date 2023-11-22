@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <OutputPath>bin/net.core</OutputPath>
+    <OutputPath>bin_net</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <OutputPath>bin/net.core</OutputPath>
+    <OutputPath>bin_net</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <OutputPath>bin/net.core</OutputPath>
+    <OutputPath>bin_net</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
@@ -84,7 +84,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bin\Code\Ionic.Zip.Reduced.dll" />
+    <Content Include="bin\Code\DotNetZip.dll" />
     <Content Include="bin\Code\IPAddressRange.dll" />
     <Content Include="bin\SolidCP.EnterpriseServer.Base.dll" />
     <Content Include="bin\SolidCP.EnterpriseServer.Base.pdb" />
@@ -133,14 +133,23 @@
   <Target Name="DeleteUnusedDlls" AfterTargets="Build">
      <Message Text="Delete unused dll files" Importance="high"/>
     <ItemGroup>
-      <FilesToDelete Include="bin\Google.Authenticator.dll" />
-      <FilesToDelete Include="bin\Microsoft.Bcl.AsyncInterfaces.dll" />
-      <FilesToDelete Include="bin\Microsoft.Win32.Registry.dll" />
-      <FilesToDelete Include="bin\Newtonsoft.Json.dll" />
-      <FilesToDelete Include="bin\QRCoder.dll" />
-      <FilesToDelete Include="bin\RestSharp.dll" />
-      <FilesToDelete Include="bin\Google.Authenticator.dll" />
-      <FilesToDelete Include="bin\Google.Authenticator.dll" />
+      <FilesToDelete Include="bin\Google.Authenticator.*" />
+      <FilesToDelete Include="bin\Microsoft.Bcl.AsyncInterfaces.*" />
+      <FilesToDelete Include="bin\Microsoft.Win32.Registry.*" />
+      <FilesToDelete Include="bin\Newtonsoft.Json.*" />
+      <FilesToDelete Include="bin\QRCoder.*" />
+      <FilesToDelete Include="bin\RestSharp.*" />
+      <FilesToDelete Include="bin\IPAddressRange.*" />
+      <FilesToDelete Include="bin\DotNetZip.*" />
+      <FilesToDelete Include="bin\Microsoft.IdentityModel.Logging.*" />
+      <FilesToDelete Include="bin\Microsoft.IdentityModel.Tokens.*" />
+      <FilesToDelete Include="bin\SolidCP.Server.Client.*" />
+      <FilesToDelete Include="bin\SolidCP.Web.Clients.*" />
+      <FilesToDelete Include="bin\WhoisClient.*" />
+      <FilesToDelete Include="bin\Twilio.*" />
+      <FilesToDelete Include="bin\SolidCP.Templates.*" />
+      <FilesToDelete Include="bin\System.*" />
+
     </ItemGroup>
     <Delete Files="@(FilesToDelete)" />
   </Target>

@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProductVersion>9.0.21022</ProductVersion>
     <ProjectGuid>{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}</ProjectGuid>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PublishUrl>publish\</PublishUrl>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <OutputPath>..\SolidCP.EnterpriseServer\bin\</OutputPath>
@@ -12,6 +11,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly> 
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -21,9 +21,7 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System.configuration" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.EnterpriseServices" />
     <Reference Include="SolidCP.Providers.Base">
       <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
     </Reference>
@@ -55,5 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
 </Project>

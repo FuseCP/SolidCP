@@ -9,6 +9,7 @@ namespace SolidCP.Web.Services
 	public class PolicyAttribute : Attribute
 	{
 
+		public const bool AllowInsecureHttp = true;
 		public string Policy { get; set; }
 		public PolicyAttribute(string policy) { Policy = policy; }
 	}

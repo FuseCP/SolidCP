@@ -1,27 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
+    <TargetFrameworks>net48;net8.0</TargetFrameworks>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!--<ProduceReferenceAssembly>true</ProduceReferenceAssembly>-->
     <!--<SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
-    <PackageReference Include="CoreWCF.Http" Version="1.4.1" />
-    <PackageReference Include="CoreWCF.NetTcp" Version="1.4.1" />
-    <PackageReference Include="CoreWCF.Primitives" Version="1.4.1" />
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+    <PackageReference Include="CoreWCF.Http" Version="1.5.1" />
+    <PackageReference Include="CoreWCF.NetTcp" Version="1.5.1" />
+    <PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />
+    <PackageReference Include="CoreWCF.NetFramingBase" Version="1.5.1" />
+    <PackageReference Include="CoreWCF.WebHttp" Version="1.5.1" />
     <!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Primitives\src\CoreWCF.Primitives.csproj" />
     -->
-</ItemGroup>
-
-<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
     <FrameworkReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
-    <!--<Reference Include="System.Web.Services.Description" />-->
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
@@ -37,6 +36,9 @@
 
   <ItemGroup>
     <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
   </ItemGroup>
 
   <ItemGroup>

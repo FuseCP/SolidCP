@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup>
+        <MSBuildCopyContentTransitively>true</MSBuildCopyContentTransitively>
+    </PropertyGroup>
+  <Target 
+        Name="ForceAssignProjectConfigurationBeforeSplitProjectReferencesByFileExistence_KLUDGE" 
+        BeforeTargets="_SplitProjectReferencesByFileExistence" 
+        DependsOnTargets="AssignProjectConfiguration" />
+</Project>

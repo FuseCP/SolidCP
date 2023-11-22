@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Providers.OS
 {
@@ -52,7 +53,7 @@ namespace SolidCP.Providers.OS
             set { filesArray = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public List<FileHash> Files
         {
             get { return files; }

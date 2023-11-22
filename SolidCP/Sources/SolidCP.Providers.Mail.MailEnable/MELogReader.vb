@@ -42,8 +42,7 @@ Imports SolidCP.Providers.Utils.LogParser
 Imports SolidCP.Server.Utils
 
 Public Class MELogReader
-	Inherits LogReader
-
+	Inherits Utils.LogParser.LogReader
 
 	Protected Overrides Sub ParseFieldValues()
 

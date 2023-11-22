@@ -34,6 +34,7 @@ using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -61,7 +62,7 @@ namespace SolidCP.EnterpriseServer
 		{
 		}
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         NameValueCollection Properties
         {
             get
@@ -82,7 +83,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public string this[string propertyName]
         {
             get

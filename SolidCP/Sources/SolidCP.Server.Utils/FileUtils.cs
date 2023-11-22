@@ -185,7 +185,7 @@ namespace SolidCP.Providers.Utils
             if (String.IsNullOrEmpty(str))
                 return str;
 
-            Regex re = new Regex("%([^\\s\\%]+)%", RegexOptions.IgnoreCase);
+            var re = new Regex("%([^\\s\\%]+)%", RegexOptions.IgnoreCase);
             return re.Replace(str, new MatchEvaluator(EvaluateSystemVariable));
         }
 
@@ -237,7 +237,10 @@ namespace SolidCP.Providers.Utils
             string EnvVar = Environment.GetEnvironmentVariable(match.Groups[1].Value);
             if (string.IsNullOrEmpty(EnvVar))
             {
-                return @"%" + match.Groups[1].Value + @"%";
+                // bugfix: The % characters should be replaced by the content of the environment
+                // variable
+                //return @"%" + match.Groups[1].Value + @"%";
+                return match.Groups[1].Value;
             }
             else
             {

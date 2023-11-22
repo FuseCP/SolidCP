@@ -301,9 +301,9 @@ namespace SolidCP.EnterpriseServer
 
         private static Server.Client.OperatingSystem GetServerService(int serverId)
         {
-            Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
-            ServiceProviderProxy.ServerInit(winServer, serverId);
-            return winServer;
+            Server.Client.OperatingSystem server = new Server.Client.OperatingSystem();
+            ServiceProviderProxy.ServerInit(server, serverId);
+            return server;
         }
 
         #region Terminal Services Sessions
@@ -341,7 +341,7 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Windows Processes
+        #region OS Processes
         public static OSProcess[] GetOSProcesses(int serverId)
         {
             return GetServerService(serverId).GetOSProcesses();

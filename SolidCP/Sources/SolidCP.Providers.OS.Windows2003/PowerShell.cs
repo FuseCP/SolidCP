@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS
 {
-	public class PowerShell: Shell
+    public class PowerShell: Shell
 	{
 		public override string ShellExe => "powershell";
 	}

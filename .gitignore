@@ -50,10 +50,12 @@ msbuild.log
 bin/Debug
 bin/Release
 bin
+bin_net
 *.vshost.*
 *.pdb
 *.vs10x
 *.user
+*.g.cs
 
 /SolidCP/Sources/packages
 /SolidCP/msbuild.log
@@ -67,3 +69,5 @@ bin
 /SolidCP/CleanRelease_marc.ps1
 /SolidCP/CleanRelease2.ps1
 /SolidCP/CleanDebug.ps1
+/SolidCP/Sources/SolidCP.EnterpriseServer/WCF.log
+/SolidCP/Sources/SolidCP.EnterpriseServer/WCF.log

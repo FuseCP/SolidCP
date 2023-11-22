@@ -33,7 +33,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
 using System.Security;
@@ -41,15 +40,15 @@ using System.Text.RegularExpressions;
 using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
-using SolidCP.Server;
-using SolidCP.Server.Utils;
+using System.Runtime.InteropServices;
+
 
 namespace SolidCP.Providers.OS
 {
-	/// <summary>
-	/// Summary description for IOperationSystem.
-	/// </summary>
-	public interface IOperatingSystem
+    /// <summary>
+    /// Summary description for IOperationSystem.
+    /// </summary>
+    public interface IOperatingSystem
 	{
 		// files
 		string CreatePackageFolder(string initialPath);
@@ -109,10 +108,12 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string path, string args);
 
-		bool IsUnix();
+		OSPlatformInfo GetOSPlatform();
 
 		Shell DefaultShell { get; }
 		Installer DefaultInstaller { get; }
+		Web.IWebServer WebServer { get; }
+		ServiceController ServiceController { get; }
 	}
 
 }

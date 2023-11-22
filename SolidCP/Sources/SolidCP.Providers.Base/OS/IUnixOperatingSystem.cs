@@ -41,12 +41,10 @@ using System.Text.RegularExpressions;
 using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
-using SolidCP.Server;
-using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.OS
 {
-	[System.FlagsAttribute]
+    [System.FlagsAttribute]
 	public enum UnixFileMode
 	{
 		None = 0,
@@ -77,6 +75,5 @@ namespace SolidCP.Providers.OS
 		Installer Apt { get; }
 		Installer Yum { get; }
 		Installer Brew { get; }
-
 	}
 }

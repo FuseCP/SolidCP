@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -45,7 +46,7 @@ namespace SolidCP.EnterpriseServer
         /// </summary>
         /// <param name="settingName"></param>
         /// <returns></returns>
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         string this[string settingName] { get; set; }
         /// <summary>
         /// 
@@ -62,19 +63,19 @@ namespace SolidCP.EnterpriseServer
 
         public string[][] KeyValueArray;
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public bool IsEmpty
         {
             get { return (KeyValueArray == null || KeyValueArray.Length == 0); }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public bool HasPendingChanges
         {
             get { return hasPendingChanges; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         NameValueCollection Settings
         {
             get

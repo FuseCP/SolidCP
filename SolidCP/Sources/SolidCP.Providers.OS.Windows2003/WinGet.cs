@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SolidCP.Providers.OS
 {
-	public class WinGet : Installer
+    public class WinGet : Installer
 	{
 		public override bool IsInstalled => Shell.Find("winget") != null;
 
@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 
 		public override Shell InstallAsync(string apps)
 		{
-			return Shell.ExecAsync($"winget install {apps}");
+			return Shell.Exec($"winget install {apps}");
 		}
 	}
 }

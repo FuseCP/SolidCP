@@ -1,4 +1,3 @@
-#if NETFRAMEWORK
 // Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
@@ -31,12 +30,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if NETFRAMEWORK
+
 using System;
 using System.Reflection;
 using System.Data;
 using System.Configuration;
 using System.Collections;
 using System.Web.UI;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Server
 {
@@ -55,6 +57,9 @@ namespace SolidCP.Server
 
             // asp.net mode
             litAspNetMode.Text = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
+            litOS.Text = OSInfo.IsWindows ? "Windows" :
+                (OSInfo.IsMac ? "Mac" :
+                (OSInfo.IsLinux ? "Linux" : "Unix"));
         }
     }
 }

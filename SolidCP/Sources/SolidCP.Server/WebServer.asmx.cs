@@ -1636,12 +1636,12 @@ namespace SolidCP.Server
 
         #region SSL Management
         [WebMethod, SoapHeader("settings")]
-        public SSLCertificate generateCSR(SSLCertificate certificate)
+        public SSLCertificate GenerateCSR(SSLCertificate certificate)
         {
             try
             {
                 Log.WriteStart("'{0}' generateCSR", ProviderSettings.ProviderName);
-                certificate = WebProvider.generateCSR(certificate);
+                certificate = WebProvider.GenerateCSR(certificate);
                 Log.WriteEnd("'{0}' generateCSR", ProviderSettings.ProviderName);
                 return certificate;
 
@@ -1658,7 +1658,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' generateCSR", ProviderSettings.ProviderName);
-                certificate = WebProvider.generateCSR(certificate);
+                certificate = WebProvider.GenerateCSR(certificate);
                 Log.WriteEnd("'{0}' generateCSR", ProviderSettings.ProviderName);
                 return certificate;
 
@@ -1677,12 +1677,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+        public SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
         {
             try
             {
                 Log.WriteStart("'{0}' installCertificate", ProviderSettings.ProviderName);
-                SSLCertificate result = WebProvider.installCertificate(certificate, website);
+                SSLCertificate result = WebProvider.InstallCertificate(certificate, website);
                 Log.WriteEnd("'{0}' installCertificate", ProviderSettings.ProviderName);
                 return result;
 
@@ -1695,12 +1695,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public String LEinstallCertificate(WebSite website, string email)
+        public String LEInstallCertificate(WebSite website, string email)
         {
             try
             {
                 Log.WriteStart("'{0}' LEinstallCertificate", ProviderSettings.ProviderName);
-                string result = WebProvider.LEinstallCertificate(website, email);
+                string result = WebProvider.LEInstallCertificate(website, email);
                 Log.WriteEnd("'{0}' LEinstallCertificate", ProviderSettings.ProviderName);
                 return result;
 
@@ -1713,12 +1713,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
         {
             try
             {
                 Log.WriteStart("'{0}' installPFX", ProviderSettings.ProviderName);
-                SSLCertificate response = WebProvider.installPFX(certificate, password, website);
+                SSLCertificate response = WebProvider.InstallPFX(certificate, password, website);
 
                 if (response.Hash == null)
                 {
@@ -1738,14 +1738,14 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public byte[] exportCertificate(string serialNumber, string password)
+        public byte[] ExportCertificate(string serialNumber, string password)
         {
-            return WebProvider.exportCertificate(serialNumber, password);
+            return WebProvider.ExportCertificate(serialNumber, password);
         }
         [WebMethod, SoapHeader("settings")]
-        public List<SSLCertificate> getServerCertificates()
+        public List<SSLCertificate> GetServerCertificates()
         {
-            return WebProvider.getServerCertificates();
+            return WebProvider.GetServerCertificates();
         }
         [WebMethod, SoapHeader("settings")]
         public ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)

@@ -66,8 +66,8 @@ namespace SolidCP.Providers.RemoteDesktopServices
     {
         public override bool IsInstalled()
         {
-            Server.Utils.WindowsOS.WindowsVersion version = SolidCP.Server.Utils.WindowsOS.GetVersion();
-            return version == SolidCP.Server.Utils.WindowsOS.WindowsVersion.WindowsServer2019;
+            var version = OSInfo.WindowsVersion;
+            return version == WindowsVersion.WindowsServer2019;
         }
     }
 }

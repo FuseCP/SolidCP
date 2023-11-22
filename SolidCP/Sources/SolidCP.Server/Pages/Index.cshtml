@@ -1,9 +1,11 @@
 ﻿@page "/"
 @using System.Reflection
+@using SolidCP.Providers.OS
 
 @functions {
     string Version {get; set; }
     string Bitness { get; set; }
+    string OS { get; set; }
     //string Url { get; set; }
 }
 
@@ -15,6 +17,9 @@
 
     // asp.net mode
     Bitness = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
+    OS = OSInfo.IsWindows ? "Windows" :
+	    (OSInfo.IsMac ? "Mac" : 
+        (OSInfo.IsLinux ? "Linux" :"Unix"));
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -79,6 +84,10 @@
                 <tr>
                     <td class="FieldName">Version:</td>
                     <td>@Version</td>
+                </tr>
+                <tr>
+                    <td class="FieldName">OS:</td>
+                    <td>@OS</td>
                 </tr>
                 <tr>
                     <td class="FieldName">URL:</td>

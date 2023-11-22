@@ -91,7 +91,7 @@ namespace SolidCP.Providers.Web
             var allSettings = new List<SettingPair>();
             allSettings.AddRange(base.GetProviderDefaultSettings());
 
-            // Add these to get som default values in. These are also used a marker in the IIS70_Settings.ascx.cs to know that it is the IIS80 provider that is used
+            // Add these to get some default values in. These are also used a marker in the IIS70_Settings.ascx.cs to know that it is the IIS80 provider that is used
             allSettings.Add(new SettingPair("SSLUseCCS", false.ToString()));
             allSettings.Add(new SettingPair("SSLUseSNI", false.ToString()));
             allSettings.Add(new SettingPair("SSLCCSUNCPath", ""));
@@ -127,7 +127,7 @@ namespace SolidCP.Providers.Web
 
         public override bool IsInstalled()
         {
-            return IsIISInstalled();
+            return OS.OSInfo.IsWindows && IsIISInstalled();
         }
 
         public override bool CheckCertificate(WebSite webSite)
@@ -144,7 +144,7 @@ namespace SolidCP.Providers.Web
             return sslObjectService.DeleteCertificate(certificate, website);
         }
 
-        public override SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
         {
             var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
 
@@ -158,14 +158,14 @@ namespace SolidCP.Providers.Web
             return sslObjectService.ImportCertificate(website);
         }
 
-        public override byte[] exportCertificate(string serialNumber, string password)
+        public override byte[] ExportCertificate(string serialNumber, string password)
         {
             var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
 
             return sslObjectService.ExportPfx(serialNumber, password);
         }
 
-        public override SSLCertificate generateCSR(SSLCertificate certificate)
+        public override SSLCertificate GenerateCSR(SSLCertificate certificate)
         {
             var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
 
@@ -174,21 +174,21 @@ namespace SolidCP.Providers.Web
             return certificate;
         }
 
-        public override List<SSLCertificate> getServerCertificates()
+        public override List<SSLCertificate> GetServerCertificates()
         {
             var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
 
             return sslObjectService.GetServerCertificates();
         }
 
-        public override SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+        public override SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
         {
             var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
 
             return sslObjectService.InstallCertificate(certificate, website);
         }
 
-        public override String LEinstallCertificate(WebSite website, string email)
+        public override String LEInstallCertificate(WebSite website, string email)
         {
             var sslObjectService = new SSLModuleService100(SSLFlags, CCSUncPath, CCSCommonPassword);
 
