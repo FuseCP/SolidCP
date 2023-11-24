@@ -6,49 +6,41 @@ using System.Runtime.InteropServices;
 
 namespace SolidCP.UniversalInstaller
 {
-    public class UbuntuInstaller : DebianInstaller
-    {
+	public class UbuntuInstaller : DebianInstaller
+	{
 
-        public override void InstallNet8Runtime()
-        {
-            if (Shell.Find("dotnet") != null)
-            {
-                var output = Shell.Exec("dotnet --info").Output().Result;
-                if (output.Contains("Microsoft.AspNetCore.App 8.") &&
-                    output.Contains("Microsoft.NETCore.App 8."))
-                    // NET 8 runtime allready installed
-                    Net8RuntimeAllreadyInstalled = true;
-                    return;
-            }
-            if (OSInfo.OSVersion.Major < 20) throw PlatformNotSupportedException("Cannot install NET 8 on Ubuntu below version 20.4. Please install NET 8 runtime manually.");
+		public override void InstallNet8Runtime()
+		{
+			if (CheckNet8RuntimeInstalled()) return;
 
-            //await Shell.Exec("apt update");
+			if (OSInfo.OSVersion.Major < 20) throw new PlatformNotSupportedException("Cannot install NET 8 on Ubuntu below version 20.4. Please install NET 8 runtime manually.");
 
-            bool installFromMicrosoftFeed = false;
+			bool installFromMicrosoftFeed = false;
 
-            if (Shell.Find("dotnet") == null)
-            {
-                if (OSInfo.Architecture == Architecture.Arm64)
-                {
-                    if (OSInfo.OSVersion.Major < 23) throw new PlatformNotSupportedException("NET 8 not supported on this platform. Arm64 is only supported on Ubuntu 23 and above. Please install NET 8 runtime manually.");
-                    // install from ubuntu
-                    installFromMicrosoftFeed = false;
-                }
-                else if (OSInfo.Architecture == Architecture.Arm) throw new PlatformNotSupportedException("NET 8 not supported on Arm platform. Please install NET 8 runtime manually.");
-                else if (OSInfo.Architecture == Architecture.X86) throw new PlatformNotSupportedException("NET 8 not supported on this platform. Please install NET 8 runtime manually.");
+			if (!HasDotnet)
+			{
+				if (OSInfo.Architecture == Architecture.Arm64)
+				{
+					if (OSInfo.OSVersion.Major < 23) throw new PlatformNotSupportedException("NET 8 not supported on this platform. Arm64 is only supported on Ubuntu 23 and above. Please install NET 8 runtime manually.");
+					// install from ubuntu
+					installFromMicrosoftFeed = false;
+				}
+				else if (OSInfo.Architecture == Architecture.Arm) throw new PlatformNotSupportedException("NET 8 not supported on Arm platform. Please install NET 8 runtime manually.");
+				else if (OSInfo.Architecture == Architecture.X86) throw new PlatformNotSupportedException("NET 8 not supported on this platform. Please install NET 8 runtime manually.");
 
-                else
-                {
-                    installFromMicrosoftFeed = true;
-                }
-            }
-            else installFromMicrosoftFeed = false;
+				else
+				{
+					installFromMicrosoftFeed = true;
 
-            if (installFromMicrosoftFeed)
-            {
-                // install dotnet from microsoft
-                Apt.Install("wget");
-                Shell.Run(@"
+				}
+			}
+			else installFromMicrosoftFeed = false;
+
+			if (installFromMicrosoftFeed)
+			{
+				// install dotnet from microsoft
+				Apt.Install("wget");
+				Shell.Run(@"
 # Get Ubuntu version
 declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '""'; fi)
 
@@ -60,26 +52,17 @@ dpkg -i packages-microsoft-prod.deb
 
 # Clean up
 rm packages-microsoft-prod.deb
-
-# Update packages
-sudo apt update
 ");
-            }
+				Apt.Update();
+			}
 
-            Apt.Install("aspnetcore-runtime-8.0 ");
-        }
+			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
+		}
 
-        public override RemoveNet8Runtime()
-        {
-            if (!Net8AllreadyInstalled)
-            {
-                Apt.Remove("aspnetcore-runtime-8.0");
-            }
-        }
-
-        public override void InstallServerPrerequisites()
-        {
-            InstallNet8Runtime();
-        }
-    }
+		public override void RemoveNet8Runtime()
+		{
+			if (!Net8AspRuntimeAllreadyInstalled) Apt.Remove("aspnetcore-runtime-8.0");
+			if (!Net8RuntimeAllreadyInstalled) Apt.Remove("netcore-runtime-8.0");
+		}
+	}
 }

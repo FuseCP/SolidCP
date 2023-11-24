@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SolidCP.UniversalInstaller
 {
-    public class DebianInstaller : Installer.Installer
+    public class DebianInstaller : UnixInstaller
     {
 
         Providers.OS.Installer apt;
@@ -22,19 +22,19 @@ namespace SolidCP.UniversalInstaller
             }
         }
 
-        public override async void InstallNet8Runtime()
+        public override void InstallNet8Runtime()
         {
-            if (OSInfo.OSVersion.Major < 11) throw PlatformNotSupportedException("Cannot install NET 8 on Debian below version 11.");
+            if (OSInfo.OSVersion.Major < 11) throw new PlatformNotSupportedException("Cannot install NET 8 on Debian below version 11.");
 
-            if (Shell.Find("dotnet") == null)
+            CheckNet8RuntimeInstalled();
+
+			if (!HasDotnet)
             {
                 // install dotnet from microsoft
-                await Shell.Exec("apt update");
-                Apt.Install("wget");
-                await Shell.Exec($"wget https://packages.microsoft.com/config/debian/{OSInfo.OSVersion.Major}/packages-microsoft-prod.deb -O packages-microsoft-prod.deb");
-                await Shell.Exec("dpkg -i packages-microsoft-prod.deb");
-                await Shell.Exec("rm packages-microsoft-prod.deb");
-                await Shell.Exec("apt update");
+                var tmp = DownloadFile($"https://packages.microsoft.com/config/debian/{OSInfo.OSVersion.Major}/packages-microsoft-prod.deb");
+                Shell.Exec($"dpkg -i \"{tmp}\"");
+                File.Delete(tmp);
+                Apt.Update();
                 Apt.Install("aspnetcore-runtime-8.0 ");
             }
             else
@@ -43,9 +43,14 @@ namespace SolidCP.UniversalInstaller
             }
         }
 
-        public override void InstallGlobalPrerequisites()
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public override void RemoveNet8Runtime()
+		{
+			if (!Net8RuntimeAllreadyInstalled) Apt.Remove("aspnetcore-runtime-8.0")
+		}
+		public override void InstallGlobalPrerequisites() { }
+		public override void InstallServerPrerequisites()
+		{
+            InstallNet8Runtime();
+		}
+	}
 }

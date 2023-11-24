@@ -6,179 +6,241 @@ using SolidCP.Providers.OS;
 using Ionic.Zip;
 using System.Globalization;
 using System.Security.Policy;
+using System.Diagnostics.Contracts;
+using System.Net.Http;
 
 namespace SolidCP.UniversalInstaller
 {
 
 
-    public class ServerSettings
-    {
-        public string Urls { get; set; }
-        public string ServerUser { get; set; }
-        public string ServerUserPassword { get; set; }
-        public string ServerPassword { get; set; }
+	public abstract class Installer
+	{
+		public virtual string ServerFolder => "Server";
+		public virtual string EnterpriseServerFolder => "EnterpriseServer";
+		public virtual string PortalFolder => "Portal";
+		public virtual string ServerUser => "SolidCPServer";
+		public virtual string EnterpriseServerUser => "SolidCPEnterpriseServer";
+		public virtual string WebPortalUser => "SolidCPPortal";
+		public virtual bool CanInstallServer => true;
+		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
+		public virtual bool CanInstallPortal => OSInfo.IsWindows;
 
-    }
-
-    public class EnterpriseServerSettings
-    {
-
-    }
-
-    public class WebPortalSettings
-    {
-
-    }
-
-    public abstract class Installer
-    {
-        public virtual string ServerFolder => "Server";
-        public virtual string EnterpriseServerFolder => "EnterpriseServer";
-        public virtual string WebPortalFolder => "Portal";
-        public virtual string ServerUser => "Server";
-        public virtual string EnterpriseServerUser => "EnterpriseServer";
-        public virtual string WebPortalUser => "Portal";
-
-        public bool Net8RuntimeAllreadyInstalled = false;
+		public bool HasDotnet = false;
+		public bool Net8RuntimeAllreadyInstalled = true;
+		public bool Net8AspRuntimeAllreadyInstalled = true;
 		public virtual string InstallWebRootPath { get; set; }
-        public virtual string InstallExeRootPath { get; set; }
+		public virtual string InstallExeRootPath { get; set; }
+		public abstract string WebsiteLogsPath { get; }
 
-        public ServerSettings ServerSettings { get; set; }
-        public EnterpriseServerSettings EnterpriseServerSettings { get; set; }
-        public WebPortalSettings WebPortalSettings { get; set; }
+		public ServerSettings ServerSettings { get; set; }
+		public EnterpriseServerSettings EnterpriseServerSettings { get; set; }
+		public WebPortalSettings WebPortalSettings { get; set; }
 
-        public Shell Shell { get; set; } = OSInfo.Current.DefaultShell.Clone;
-        public Providers.OS.Installer OSInstaller => OSInfo.Current.DefaultInstaller;
-        public IWebServer WebServer => OSInfo.Current.WebServer;
-        public ServiceController ServiceController => OSInfo.Current.ServiceController;
+		public Shell Shell { get; set; } = OSInfo.Current.DefaultShell.Clone;
+		public Providers.OS.Installer OSInstaller => OSInfo.Current.DefaultInstaller;
+		public IWebServer WebServer => OSInfo.Current.WebServer;
+		public ServiceController ServiceController => OSInfo.Current.ServiceController;
 
-        public abstract void InstallGlobalPrerequisites();
-        public abstract bool IsGlobalPrerequisitesInstalled();
-        public virtual bool GlobalPrerequisitesWereInstalled { get; set; }
-        public abstract void InstallNet8Runtime();
-        public abstract void RemoveNet8Runtime();
-        void InstallGlobalPrerequisitesConditionally()
-        {
-            GlobalPrerequisitesWereInstalled = IsGlobalPrerequisitesInstalled();
-            if (!GlobalPrerequisitesWereInstalled) InstallGlobalPrerequisites();
-        }
+		public bool CheckNet8RuntimeInstalled()
+		{
+			HasDotnet = Shell.Find("dotnet") != null;
 
-        public virtual void InstallServerPrerequisites() { }
+			if (HasDotnet)
+			{
+				var output = Shell.Exec("dotnet --info").Output().Result ?? "";
+				Net8AspRuntimeAllreadyInstalled = output.Contains("Microsoft.AspNetCore.App 8.");
+				Net8RuntimeAllreadyInstalled = output.Contains("Microsoft.NETCore.App 8.");
+				return Net8RuntimeAllreadyInstalled && Net8AspRuntimeAllreadyInstalled;
+			}
+			else return Net8RuntimeAllreadyInstalled = Net8AspRuntimeAllreadyInstalled = false;
+		}
 
-        public virtual void InstallServer()
-        {
-            InstallGlobalPrerequisitesConditionally();
-            InstallServerPrerequisitesConditionally();
-            UnzipServer();
-            InstallServerWebsite();
-            InstallServerUser();
-            InstallSetServerFilePermissions();
-            ConfigureServer();
-        }
+		public abstract void InstallNet8Runtime();
+		public abstract void RemoveNet8Runtime();
 
-        public abstract string WebsiteLogsPath { get; }
-        public virtual void InstallServerUser()
-        {
-        }
-        public virtual void InstallServerWebsite()
-        {
-            if (OSInfo.IsWindows)
-            {
-                var site = new WebSite()
-                {
-                    ContentPath = Path.Combine(InstallWebRootPath, ServerFolder),
-                    AspNetInstalled = "",
-                    ApplicationPool = "",
-                    DedicatedApplicationPool = true,
-                    EnableAnonymousAccess = true,
-                    EnableBasicAuthentication = true,
-                    EnableDynamicCompression = false,
-                    EnableWritePermissions = false,
-                    Name = "SolidCP.Server",
-                    LogsPath = WebsiteLogsPath,
-                };
-                site.Bindings = ServerSettings.Urls
-                    .Split(';')
-                    .Select(url =>
-                    {
-                        var uri = new Uri(url);
-                        string ip = uri.Host;
-
-                        return new ServerBinding(uri.Scheme, "0.0.0.0", uri.Port.ToString(), uri.Host);
-                    })
-                    .ToArray();
-                WebServer.CreateSite(site);
-            }
-            else
-            {
-                // run SolidCP.Server as a service on Unix
-                var service = new ServiceDescription()
-                {
-                    ServiceId = "SolidCP.Server",
-                    Description = "SolidCP.Server service",
-                    Executable = "dotnet SolidCP.Server.dll"
-                };
-                ServiceController.Install(service);
-                ServiceController.Enable(service.ServiceId);
-                ServiceController.Start(service.ServiceId);
-            }
-        }
-        public virtual void InstallEnterpriseServer()
-        {
-            InstallGlobalPrerequisitesConditionally();
-            InstallEnterpriseServerPrerequisites();
-            InstallEnterpriseServerWebsite();
-        }
-        public virtual void InstallWebPortal();
-
-        public ServerSettings ReadServerConfiguration();
-        public EnterpriseServerSettings ReadEnterpriseServerConfiguration();
-        public WebPortalServerSettings ReadWebPortalConfiguration();
-
-        public void ConfigureServer(ServerSettings settings)
-        {
-        }
-        public void ConfigureEnterpriseServer(EnterpriseServerSettings settings)
-        {
-
-        }
-        public void ConfigureWebPortal(WebPortalSettings settings)
-        {
-
-        }
-
-        public virtual void InstallAll()
-        {
-
-        }
+		public virtual void InstallServerPrerequisites() { }
+		public virtual void InstallEnterpriseServerPrerequisites() { }
+		public virtual void InstallPortalPrerequisites() { }
+		public virtual void RemoveServerPrerequisites() { }
+		public virtual void RemoveEnterpriseServerPrerequisites() { }
+		public virtual void RemovePortalPrerequisites() { }
 
 
-        public virtual void UnzipServer()
-        {
-            UnzipFromResource("SolidCP.Server.zip", Path.Combine(InstallWebRootPath, ServerFolder));
-        }
+		public virtual void SetFilePermissions(string folder)
+		{
+			if (!Path.IsPathRooted(folder)) folder = Path.Combine(InstallWebRootPath, folder);
+			
+			throw new CultureNotFoundException();
+		}
+		public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
+		public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
+		public virtual void SetPortalFilePermissions() => SetFilePermissions(PortalFolder);
 
-        public virtual void UnzipEnterpriseServer()
-        {
-            UnzipFromResource("SolidCP.EnterpriseServer.zip", Path.Combine(InstallWebRootPath, EnterpriseServerFolder));
-        }
+		public virtual void ConfigureServer()
+		{
+		}
 
-        public virtual void UnzipPortal()
-        {
-            UnzipFromResource("SolidCP.WebPortal.zip", Path.Combine(InstallWebRootPath, WebPortalFolder));
-        }
+		public virtual void InstallServer()
+		{
+			InstallServerPrerequisites();
+			var settings = ReadServerConfiguration();
+			UnzipServer();
+			InstallServerWebsite();
+			SetServerFilePermissions();
+			ConfigureServer(settings);
+		}
 
-        public void UnzipFromResource(string resourcePath, string destinationPath)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            using (var resource = assembly.GetManifestResourceStream(resourcePath))
-            using (var zip = ZipFile.Read(resource))
-            {
-                foreach (var zipEntry in zip)
-                {
-                    zipEntry.Extract(destinationPath);
-                }
-            }
-        }
-    }
-}
+
+		public virtual void InstallWebsite(string name, string path, string urls)
+		{
+			var site = new WebSite()
+			{
+				ContentPath = path,
+				AspNetInstalled = "",
+				ApplicationPool = "",
+				DedicatedApplicationPool = true,
+				EnableAnonymousAccess = true,
+				EnableBasicAuthentication = true,
+				EnableDynamicCompression = false,
+				EnableWritePermissions = false,
+				Name = name,
+				LogsPath = WebsiteLogsPath,
+			};
+			site.Bindings = urls
+				.Split(';')
+				.Select(url =>
+				{
+					url = url.Trim();
+					var uri = new Uri(url);
+					string ip = uri.Host;
+
+					return new ServerBinding(uri.Scheme, "0.0.0.0", uri.Port.ToString(), uri.Host);
+				})
+				.ToArray();
+
+			WebServer.CreateSite(site);
+		}
+		public virtual void InstallServerUser() { }
+		public virtual void InstallServerApplicationPool() { }
+		public virtual void InstallServerWebsite() { }
+		public virtual void InstallEnterpriseServer()
+		{
+			InstallEnterpriseServerPrerequisites();
+			InstallEnterpriseServerWebsite();
+		}
+		public virtual void InstallWebPortal();
+
+		public ServerSettings ReadServerConfiguration() {
+			return new ServerSettings();
+		}
+		public EnterpriseServerSettings ReadEnterpriseServerConfiguration() {
+			return new EnterpriseServerSettings();
+		}
+		public WebPortalSettings ReadWebPortalConfiguration() {
+			return new WebPortalSettings();
+		}
+
+		public void ConfigureServer(ServerSettings settings)
+		{
+		}
+		public void ConfigureEnterpriseServer(EnterpriseServerSettings settings)
+		{
+
+		}
+		public void ConfigureWebPortal(WebPortalSettings settings)
+		{
+
+		}
+
+		public virtual void InstallAll()
+		{
+
+		}
+
+
+		public virtual void UnzipServer()
+		{
+			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
+			if (!Directory.Exists(websitePath)) Directory.CreateDirectory(websitePath);
+			UnzipFromResource("SolidCP.Server.zip", websitePath);
+		}
+
+		public virtual void UnzipEnterpriseServer()
+		{
+			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+			if (!Directory.Exists(websitePath)) Directory.CreateDirectory(websitePath);
+			UnzipFromResource("SolidCP.EnterpriseServer.zip", websitePath);
+		}
+
+		public virtual void UnzipPortal()
+		{
+			var websitePath = Path.Combine(InstallWebRootPath, PortalFolder);
+			if (!Directory.Exists(websitePath)) Directory.CreateDirectory(websitePath);
+			UnzipFromResource("SolidCP.WebPortal.zip", websitePath);
+		}
+
+		public async Task<string> DownloadFileAsync(string url)
+		{
+			var web = new HttpClient();
+			var tmp = Path.GetTempFileName();
+			tmp = Path.ChangeExtension(tmp, Path.GetExtension(url));
+			using (HttpResponseMessage response = await web.GetAsync(url))
+			{
+				if (response.StatusCode != System.Net.HttpStatusCode.OK) throw new Exception($"Could not download file {url}. Status code: {response.StatusCode}");
+
+				using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+				using (var file = new FileStream(tmp, FileMode.Create, FileAccess.Write))
+				{
+					await responseStream.CopyToAsync(file);
+				}
+			}
+			return tmp;
+		}
+		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
+
+		public void UnzipFromResource(string resourcePath, string destinationPath)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var resourceName = assembly.GetManifestResourceNames()
+				.FirstOrDefault(res => res.EndsWith(resourcePath));
+
+			if (resourceName == null) throw new NotSupportedException($"Cannot find {resourcePath} in resources.");
+
+			using (var resource = assembly.GetManifestResourceStream(resourceName))
+			using (var zip = ZipFile.Read(resource))
+			{
+				foreach (var zipEntry in zip)
+				{
+					zipEntry.Extract(destinationPath);
+				}
+			}
+		}
+
+		static Installer current;
+		public static Installer Current
+		{
+			get
+			{
+				if (current == null)
+				{
+					switch (OSInfo.OSFlavor)
+					{
+						case OSFlavor.Debian: current = new DebianInstaller(); break;
+						case OSFlavor.Mint:
+						case OSFlavor.Ubuntu: current = new UbuntuInstaller(); break;
+						case OSFlavor.RedHat: current = new RedHatInstaller(); break;
+						case OSFlavor.CentOS: current = new CentOSInstaller(); break;
+						case OSFlavor.Fedora: current = new FedoraInstaller(); break;
+						case OSFlavor.Mac: current = new MacInstaller(); break;
+						case OSFlavor.Windows: current = new WindowsInstaller(); break;
+						case OSFlavor.Alpine: current = new AlpineInstaller(); break;
+						case OSFlavor.SUSE: current = new SuseInstaller(); break;
+						case OSFlavor.FreeBSD:
+						case OSFlavor.NetBSD:
+						default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
+					}
+				}
+				return current;
+			}
+		}
+	}
