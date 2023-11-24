@@ -209,7 +209,7 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		protected virtual Shell Clone
+		public virtual Shell Clone
 		{
 			get
 			{

@@ -8,10 +8,10 @@ namespace SolidCP.Providers.OS
 {
     public class Apt: Installer
 	{
-		public override bool IsInstalled => Shell.Find("apt-get") != null;
-		public override Shell InstallAsync(string apps)
+		public override bool IsInstallerInstalled => Shell.Find("apt-get") != null;
+		public override Shell Install(string apps)
 		{
-			return Shell.Exec($"apt-get install -y {apps}");
+			return Shell.Exec($"apt-get install -y {apps.Replace(",", " ").Replace(";", " ")}");
 		}
 
 		public override void AddSources(string sources)
@@ -34,6 +34,10 @@ namespace SolidCP.Providers.OS
 				.Except(store);
 
 			File.AppendAllLines(list, lines);
+		}
+		public override bool IsInstalled(string apps)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

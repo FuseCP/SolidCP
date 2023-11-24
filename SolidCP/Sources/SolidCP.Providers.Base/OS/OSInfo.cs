@@ -23,6 +23,10 @@ namespace SolidCP.Providers.OS
 		public static bool IsWindows => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
 		public static bool IsLinux => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
 		public static bool IsMac => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
+		public static bool IsArm => Architecture == Architecture.Arm64 || Architecture == Architecture.Arm;
+		public static bool IsInter => Architecture == Architecture.X64 || Architecture == Architecture.X86;
+		public static bool Is64 => Environment.Is64BitOperatingSystem;
+		public static bool Is32 => !Is64;
 
 		public static readonly System.Runtime.InteropServices.OSPlatform FreeBSD = System.Runtime.InteropServices.OSPlatform.Create("FREEBSD");
 		public static readonly System.Runtime.InteropServices.OSPlatform NetBSD = System.Runtime.InteropServices.OSPlatform.Create("NETBSD");
@@ -39,6 +43,7 @@ namespace SolidCP.Providers.OS
 			 (IsLinux ? OSPlatform.Linux :
 			 (IsNetBSD || IsFreeBSD ? OSPlatform.Unix : OSPlatform.Other)));
 
+		public static Architecture Architecture => RuntimeInformation.ProcessArchitecture;
 		public static OSFlavor OSFlavor
 		{
 			get
