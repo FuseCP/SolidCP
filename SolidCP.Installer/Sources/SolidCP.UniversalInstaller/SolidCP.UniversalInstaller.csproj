@@ -12,6 +12,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2003.dll" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2003.pdb" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2008.dll" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2008.pdb" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2012.dll" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2012.pdb" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2016.dll" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2016.pdb" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2019.dll" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2019.pdb" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2022.dll" />
+	  <None Remove="Resources\SolidCP.Providers.OS.Windows2022.pdb" />
+	  <None Remove="Resources\SolidCP.Server.Utils.dll" />
+	  <None Remove="Resources\SolidCP.Server.Utils.pdb" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
 		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
 	</ItemGroup>
@@ -29,11 +46,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Resources\" />
+		<Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2003.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2003.pdb" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2008.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2008.pdb" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2012.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2012.pdb" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2016.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2016.pdb" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2019.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2019.pdb" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2022.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2022.pdb" />
+	  <EmbeddedResource Include="Resources\SolidCP.Server.Utils.dll" />
+	  <EmbeddedResource Include="Resources\SolidCP.Server.Utils.pdb" />
 	</ItemGroup>
 
 	<Target Name="CopyResources" BeforeTargets="Build">
