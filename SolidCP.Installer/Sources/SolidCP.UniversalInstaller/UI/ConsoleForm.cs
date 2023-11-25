@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
@@ -62,8 +63,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual bool Editable => false;
 		public virtual string Text { get; set; } = "";
 		public Action Click;
-		public ConsoleColor BackgroundColor { get; set; }
-		public ConsoleColor ForegroundColor { get; set; }
+		public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
+		public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
 		public virtual ConsoleForm Parent { get; set; }
 
 		public virtual bool Edit(ConsoleKeyInfo key) => false;
@@ -71,30 +72,31 @@ namespace SolidCP.UniversalInstaller
 		public virtual void Show()
 		{
 			// add space fillers to lines so Console.Write will cover the whole window
-			var displayText = Regex.Replace(Text, "^(.*)$", match =>
+			var displayText = Regex.Replace(Text, "(?<=^|\r?\n)([^\r\n$]*)(?=\r?\n|$)", match =>
 			{
 				var text = match.Groups[1].Value;
 				int len = text.Length;
-				var addSpaceLen = Width - len - WindowX;
 				int addLeft, addRight;
 				if (!Centered)
 				{
 					addLeft = 0;
-					addRight = Width - len - WindowX;
+					addRight = Math.Max(0, Width - len + WindowX);
 				}
 				else
 				{
-					var w = Width - len;
+					var w = Math.Max(0, Width - len);
 					addLeft = w / 2;
 					addRight = w - addLeft;
 				}
 				char[] spacesLeft = Enumerable.Repeat(' ', addLeft).ToArray();
 				char[] spacesRight = Enumerable.Repeat(' ', addRight).ToArray();
-				return $"{new string(spacesLeft)}{text}{new string(spacesRight)}";
-			}, RegexOptions.Multiline);
+				text = $"{new string(spacesLeft)}{text}{new string(spacesRight)}";
+				if (WindowX > 0 || text.Length > Width - WindowX) text = text.Substring(WindowX, Width);
+				return text;
+			}, RegexOptions.Singleline);
 
 			// save settings
-			var con = ConsoleSettings.Set(X, Y, false, BackgroundColor, ForegroundColor);
+			var con = ConsoleSettings.Set(X, Parent.Y + Y, false, BackgroundColor, ForegroundColor);
 
 			Console.Write(displayText);
 
@@ -105,7 +107,11 @@ namespace SolidCP.UniversalInstaller
 
 	public class PercentField : ConsoleField
 	{
-		public override bool CanFocus => false;
+
+		public PercentField() : base()
+		{
+			BackgroundColor = ConsoleColor.DarkGray;
+		}
 
 		float _value = 0;
 		public float Value
@@ -153,12 +159,12 @@ namespace SolidCP.UniversalInstaller
 			Text = $"{spaces}{Value * 100} %";
 			pos = Math.Min(Width, Math.Max(0, (int)(Value * (Width - 1) + 0.5)));
 			var width = Width;
-			var background = Console.BackgroundColor;
+			var background = BackgroundColor;
 			var x = X;
 			Width = pos;
-			Console.BackgroundColor = ConsoleColor.Green;
+			BackgroundColor = ConsoleColor.Green;
 			base.Show();
-			Console.BackgroundColor = background;
+			BackgroundColor = background;
 			Width = width - pos;
 			WindowX = pos;
 			X = pos;
@@ -170,14 +176,24 @@ namespace SolidCP.UniversalInstaller
 	}
 	public class TextField : ConsoleField
 	{
+		public TextField() : base()
+		{
+			BackgroundColor = ConsoleColor.DarkGray;
+			ForegroundColor = ConsoleColor.Black;
+		}
+		public override bool CanFocus => true;
 		public override bool Editable => true;
 		public override bool Edit(ConsoleKeyInfo key)
 		{
+			int pos;
+			string text;
 			switch (key.Key)
 			{
 				case ConsoleKey.UpArrow:
 				case ConsoleKey.DownArrow:
-					Parent.EditNavigate(key); break;
+				case ConsoleKey.Tab:
+					Parent.EditNavigate(key);
+					break;
 				case ConsoleKey.LeftArrow:
 					CursorX = CursorX - 1;
 					if (CursorX < 0)
@@ -189,13 +205,12 @@ namespace SolidCP.UniversalInstaller
 					break;
 				case ConsoleKey.RightArrow:
 					CursorX++;
-					if (WindowX + CursorX > Text.Length) CursorX--; 
+					if (WindowX + CursorX > Text.Length) CursorX--;
 					if (CursorX >= Width)
 					{
 						CursorX = Width - 1;
-						if (WindowX < Text.Length - Width) WindowX++;
+						if (WindowX <= Text.Length - Width) WindowX++;
 					}
-					CursorX = Math.Min(Width - 1, CursorX + 1);
 					Show();
 					break;
 				case ConsoleKey.Enter:
@@ -205,15 +220,37 @@ namespace SolidCP.UniversalInstaller
 						return true;
 					}
 					break;
+				case ConsoleKey.Delete:
+					pos = WindowX + CursorX;
+					text = Text;
+					if (pos < text.Length)
+					{
+						text = $"{text.Substring(0, pos)}{text.Substring(pos + 1)}";
+						Text = text;
+					}
+					Show();
+					break;
+				case ConsoleKey.Backspace:
+					pos = WindowX + CursorX;
+					if (pos > 0)
+					{
+						text = Text;
+						text = $"{text.Substring(0, pos - 1)}{text.Substring(pos)}";
+						Text = text;
+					}
+					if (CursorX > 0) CursorX--;
+					else if (WindowX > 0) WindowX--;
+					Show();
+					break;
 				default:
-					var text = Text;
-					var pos = CursorX + WindowX;
+					text = Text;
+					pos = CursorX + WindowX;
 					Text = $"{text.Substring(0, pos)}{key.KeyChar}{text.Substring(pos)}";
 					CursorX++;
 					if (CursorX >= Width)
 					{
 						CursorX = Width - 1;
-						WindowX++;
+						if (WindowX <= Text.Length - Width) WindowX++;
 					}
 					Show();
 					break;
@@ -223,16 +260,17 @@ namespace SolidCP.UniversalInstaller
 
 		public override void Show()
 		{
-			var text = Text;
-			Text = new string(Enumerable.Repeat('*', text.Length).ToArray());
 			base.Show();
-			Text = text;
+			if (HasFocus)
+			{
+				Console.SetCursorPosition(X + CursorX, Parent.Y + Y);
+				Console.CursorVisible = true;
+			}
 		}
 	}
 
-	public class PasswordField: TextField
+	public class PasswordField : TextField
 	{
-
 		public override void Show()
 		{
 			var text = Text;
@@ -245,15 +283,36 @@ namespace SolidCP.UniversalInstaller
 	public class Button : ConsoleField
 	{
 		public bool Default { get; set; } = false;
+		public override bool CanFocus => true;
+		public override bool Centered => true;
+		public override void Show()
+		{
+			var text = Text;
+			text = text.Trim();
+			int len = text.Length;
+			int addLeft, addRight;
+			var w = Width - len - 2;
+			addLeft = w / 2;
+			addRight = w - addLeft;
+			char[] spacesLeft = Enumerable.Repeat(' ', addLeft).ToArray();
+			char[] spacesRight = Enumerable.Repeat(' ', addRight).ToArray();
+			Text = $"[{new string(spacesLeft)}{text}{new string(spacesRight)}]";
+			var background = BackgroundColor;
+			if (HasFocus) BackgroundColor = ConsoleColor.DarkGray;
+			base.Show();
+			BackgroundColor = background;
+			Text = text;
+		}
 	}
 
-	public class FieldList: KeyedCollection<string, ConsoleField>
+	public class FieldList : KeyedCollection<string, ConsoleField>
 	{
 		protected override string GetKeyForItem(ConsoleField item) => item.Name;
 	}
 
 	public class ConsoleForm
 	{
+		public int Y = 0;
 		public FieldList Fields = new FieldList();
 		public Installer Installer { get; set; }
 		public Shell Shell => Installer.Shell;
@@ -263,7 +322,7 @@ namespace SolidCP.UniversalInstaller
 			.FirstOrDefault();
 
 		public ConsoleField Focus = null;
-		
+
 		public Button DefaultButton => Fields
 			.OfType<Button>()
 			.FirstOrDefault(f => f.Default);
@@ -290,13 +349,16 @@ namespace SolidCP.UniversalInstaller
 				nlines++;
 				nl = Template.IndexOf("\n", nl + 1);
 			}
-			var y = (Console.WindowHeight - nlines) / 2;
+			Y = (Console.WindowHeight - nlines) / 2;
 			var con = ConsoleSettings.Save();
 			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, y);
+			Console.SetCursorPosition(0, Y);
 			Console.Write(Template);
-			foreach (var field in Fields) field.Show();
-			SetFocus(Fields.FirstOrDefault());
+			SetFocus(Fields.FirstOrDefault(f => f.CanFocus));
+			
+			foreach (var field in Fields)
+				field.Show();
+
 			return this;
 		}
 		public ConsoleForm ShowDialog()
@@ -314,7 +376,11 @@ namespace SolidCP.UniversalInstaller
 		public void SetFocus(ConsoleField field)
 		{
 			Console.CursorVisible = false;
-			if (Focus != null) Focus.HasFocus = false;
+			if (Focus != null)
+			{
+				Focus.HasFocus = false;
+				Focus.Show();
+			}
 			if (field != null)
 			{
 				field.HasFocus = true;
@@ -329,8 +395,10 @@ namespace SolidCP.UniversalInstaller
 			do
 			{
 				var key = Console.ReadKey();
-				if (Focus.Editable && Focus.Edit(key)) return this;
-				if (EditNavigate(key)) return this;
+				if (Focus.Editable)
+				{
+					if (Focus.Edit(key)) return this;
+				} else if (EditNavigate(key)) return this;
 			} while (true);
 			//return this;
 		}
@@ -343,6 +411,7 @@ namespace SolidCP.UniversalInstaller
 				case ConsoleKey.DownArrow:
 				case ConsoleKey.LeftArrow:
 				case ConsoleKey.RightArrow:
+				case ConsoleKey.Tab:
 					EditChangeFocus(key); break;
 				case ConsoleKey.Enter:
 					if (Focus is Button)
@@ -369,31 +438,37 @@ namespace SolidCP.UniversalInstaller
 			{
 				case ConsoleKey.UpArrow:
 					var fieldUpwards = Fields
-						.Where(f => f.Y < Focus.Y)
+						.Where(f => f.CanFocus && f.Y < Focus.Y)
 						.OrderByDescending(f => f.Y)
 						.FirstOrDefault();
 					if (fieldUpwards != null) SetFocus(fieldUpwards);
 					break;
 				case ConsoleKey.DownArrow:
 					var fieldDownwards = Fields
-						.Where(f => f.Y > Focus.Y)
+						.Where(f => f.CanFocus && f.Y > Focus.Y)
 						.OrderBy(f => f.Y)
 						.FirstOrDefault();
 					if (fieldDownwards != null) SetFocus(fieldDownwards);
 					break;
 				case ConsoleKey.LeftArrow:
 					var fieldLeftwards = Fields
-						.Where(f => f.X < Focus.X)
+						.Where(f => f.CanFocus && f.X < Focus.X)
 						.OrderByDescending(f => f.X)
 						.FirstOrDefault();
 					if (fieldLeftwards != null) SetFocus(fieldLeftwards);
 					break;
 				case ConsoleKey.RightArrow:
 					var fieldRightwards = Fields
-						.Where(f => f.X > Focus.X)
+						.Where(f => f.CanFocus && f.X > Focus.X)
 						.OrderBy(f => f.X)
 						.FirstOrDefault();
 					if (fieldRightwards != null) SetFocus(fieldRightwards);
+					break;
+				case ConsoleKey.Tab:
+					var index = Fields.IndexOf(Focus);
+					index = (index + 1) % Fields.Count;
+					while (!Fields[index].CanFocus) index = (index + 1) % Fields.Count;
+					SetFocus(Fields[index]);
 					break;
 				default: break;
 			}
@@ -481,7 +556,7 @@ namespace SolidCP.UniversalInstaller
 				if (Fields.Contains(p.Name))
 				{
 					var field = Fields[p.Name];
-					field.Text = p.GetValue(source).ToString();
+					field.Text = p.GetValue(source)?.ToString() ?? "";
 				}
 			}
 			foreach (var f in type.GetFields())
@@ -489,14 +564,14 @@ namespace SolidCP.UniversalInstaller
 				if (Fields.Contains(f.Name))
 				{
 					var field = Fields[f.Name];
-					field.Text = f.GetValue(source).ToString();
+					field.Text = f.GetValue(source)?.ToString() ?? "";
 				}
 			}
 			return this;
 		}
 
 		public ConsoleForm() { }
-		public ConsoleForm(string template): this()
+		public ConsoleForm(string template) : this()
 		{
 			Parse(template);
 		}
@@ -504,13 +579,14 @@ namespace SolidCP.UniversalInstaller
 		public ConsoleForm Parse(string template)
 		{
 			template = template.Trim();
-			var fieldMatches = Regex.Matches(template, @"^(?<prefix>.*?)\[(<?option>\*|%|\?|\!|)\s*(?<name>[A-Za-z_][A-Za-z_0-9]*))(?<text>[^\]]*?)\]", RegexOptions.Singleline);
+			var fieldMatches = Regex.Matches(template, @"(?<=^(?<prefix>.*?))\[(?<option>\*|%|\?|\!|)(?:(?<!\[|\[\*)\s*(?<name>[A-Za-z_][A-Za-z_0-9]*))?(?<text>[^\]]*?)\]", RegexOptions.Singleline);
 			var fields = fieldMatches
 				.OfType<Match>()
 				.Select<Match, ConsoleField>(m =>
 				{
 					int y = 0, x = 0;
-					var prefix = m.Groups["prefix"].Value;
+					string prefix = "";
+					if (m.Groups["prefix"].Success) prefix = m.Groups["prefix"].Value;
 					int nl = prefix.IndexOf('\n');
 					int lastnl = 0;
 					while (nl > 0)
@@ -522,29 +598,41 @@ namespace SolidCP.UniversalInstaller
 					x = prefix.Length - lastnl - 1;
 
 					var text = m.Groups["text"].Value;
+					string name = "";
+					if (m.Groups["name"].Success) name = m.Groups["name"].Value;
+					else name = text.Trim();
 					var option = m.Groups["option"].Value;
 					switch (option)
 					{
 						case "*":
-							return new Button() { Default = true, X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
+							return new Button() { Parent = this, Name = name, Default = true, X = x, Y = y, Width = text.Length, Height = 1, Text = name };
 						case "":
 						default:
-							return new Button() { X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
+							return new Button() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Text = name };
 						case "?":
-							return new TextField() { X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
+							return new TextField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
 						case "!":
-							return new PasswordField() { X = x, Y = y, Width = text.Length, Height = 1, Text = "" };
+							return new PasswordField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
 						case "%":
-							return new PercentField() { X = x, Y = y, Width = text.Length, Height = 1 };
+							return new PercentField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1 };
 					}
 				});
 
 			Fields.Clear();
-			foreach (var field in fields) {
+			foreach (var field in fields)
+			{
 				Fields.Add(field);
 			}
 
-			Template = Regex.Replace(template, @"(?:\[\?|(?<=\[)\*)|\[%)\s*[A-Za-z_][A-Za-z_0-9]*)|(?:(?<=\[(?:\?|%)\s*[A-Za-z_][A-Za-z_0-9]*[^\]]*?)\])", "", RegexOptions.Singleline)
+			if (DefaultButton == null)
+			{
+				var first = Fields.OfType<Button>().FirstOrDefault();
+				if (first != null) first.Default = true;
+			}
+
+			Focus = Fields.FirstOrDefault(f => f.CanFocus);
+
+			Template = Regex.Replace(template, @"(?:(?:\[\?|(?<=\[)\*|\[%|\[!|(?<=\[))\s*[A-Za-z_][A-Za-z_0-9]*(?!\s+[^ \t\]]+))|(?:(?<=\[(?:\?|%|!)(?:\s*[A-Za-z_][A-Za-z_0-9]*\s*)?[^\]]*?)\])", "", RegexOptions.Singleline)
 				.Trim();
 			return this;
 		}

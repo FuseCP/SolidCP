@@ -30,16 +30,13 @@ namespace SolidCP.UniversalInstaller
             Shell.Exec($"installer -pkg \"{tmp}\" -target /");
         }
 
-        public override void RemoveNet8Runtime()
-        {
-			if (!Net8RuntimeAllreadyInstalled)
-			{
-				// TODO remove dotnet
-			}
-			if (!Net8AspRuntimeAllreadyInstalled)
-			{
-				// TODO remove dotnet
-			}
+		public override void RemoveNet8AspRuntime()
+		{
+			throw new NotImplementedException();
+		}
+		public override void RemoveNet8NetRuntime()
+		{
+			throw new NotImplementedException();
 		}
 
 		public override void InstallServerPrerequisites()

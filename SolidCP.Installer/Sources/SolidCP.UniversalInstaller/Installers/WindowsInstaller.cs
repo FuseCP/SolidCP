@@ -18,7 +18,7 @@ namespace SolidCP.UniversalInstaller
 		public override string InstallExeRootPath
 		{
 			get => base.InstallExeRootPath ??
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles), SolidCP);
+				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), SolidCP);
             set => base.InstallExeRootPath = value;
 		}
 		public override string InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }
@@ -29,15 +29,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			if (Net8RuntimeNeeded)
 			{
-				if (Shell.Find("dotnet") != null)
-				{
-					var output = Shell.Exec("dotnet --info").Output().Result;
-					if (output.Contains("Microsoft.AspNetCore.App 8.") &&
-						output.Contains("Microsoft.NETCore.App 8."))
-						// NET 8 runtime allready installed
-						Net8RuntimeAllreadyInstalled = true;
-					return;
-				}
+				if (CheckNet8RuntimeInstalled()) return;
 
 				var ver = OSInfo.WindowsVersion;
 				if (!(OSInfo.IsWindowsServer && ver >= WindowsVersion.WindowsServer2012 ||
@@ -48,17 +40,21 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		public override void RemoveNet8Runtime()
+		public override void RemoveNet8AspRuntime()
 		{
-			if (!Net8RuntimeAllreadyInstalled)
-			{
-				WinGet.Remove("Microsoft.DotNet.AspNetCore.8;Microsoft.DotNet.Runtime.8");
-			}
+			WinGet.Remove("Microsoft.DotNet.AspNetCore.8");
+		}
+		public override void RemoveNet8NetRuntime()
+		{
+			WinGet.Remove("Microsoft.DotNet.Runtime.8");
 		}
 
 		public void InstallNet48()
 		{
 			if (!OSInfo.IsNet48) {
+
+				Log("Installing NET Framework 4.8");
+
 				var file = DownloadFile("https://download.visualstudio.microsoft.com/ndp48-web.exe");
 				if (file != null)
 				{

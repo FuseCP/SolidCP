@@ -29,6 +29,11 @@ namespace SolidCP.UniversalInstaller {
 			throw new NotImplementedException();
 		}
 
+		public override void ShowError(Exception ex)
+		{
+			throw new NotImplementedException();
+		}
+
 		public override string GetRootPassword()
 		{
 			throw new NotImplementedException();

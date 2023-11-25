@@ -58,11 +58,5 @@ rm packages-microsoft-prod.deb
 
 			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
 		}
-
-		public override void RemoveNet8Runtime()
-		{
-			if (!Net8AspRuntimeAllreadyInstalled) Apt.Remove("aspnetcore-runtime-8.0");
-			if (!Net8RuntimeAllreadyInstalled) Apt.Remove("netcore-runtime-8.0");
-		}
 	}
 }

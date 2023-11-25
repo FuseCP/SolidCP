@@ -35,17 +35,21 @@ namespace SolidCP.UniversalInstaller
                 Shell.Exec($"dpkg -i \"{tmp}\"");
                 File.Delete(tmp);
                 Apt.Update();
-                Apt.Install("aspnetcore-runtime-8.0 ");
+                Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
             }
             else
             {
-                Apt.Install("aspnetcore-runtime-8.0");
+                Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
             }
         }
 
-		public override void RemoveNet8Runtime()
+		public override void RemoveNet8NetRuntime()
 		{
-            if (!Net8RuntimeAllreadyInstalled) Apt.Remove("aspnetcore-runtime-8.0");
+            Apt.Remove("netcore-runtime-8.0");
+		}
+		public override void RemoveNet8AspRuntime()
+		{
+			Apt.Remove("aspnetcore-runtime-8.0");
 		}
 		public override void InstallServerPrerequisites()
 		{

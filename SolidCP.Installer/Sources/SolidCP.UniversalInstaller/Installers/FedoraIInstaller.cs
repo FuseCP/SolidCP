@@ -16,15 +16,13 @@ namespace SolidCP.UniversalInstaller
 			throw new NotSupportedException();
 		}
 
-		public override void RemoveNet8Runtime()
+		public override void RemoveNet8NetRuntime()
 		{
-			if (!Net8RuntimeAllreadyInstalled)
-			{
-			}
-			if (!Net8AspRuntimeAllreadyInstalled)
-			{
-
-			}
+			throw new NotSupportedException();
+		}
+		public override void RemoveNet8AspRuntime()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

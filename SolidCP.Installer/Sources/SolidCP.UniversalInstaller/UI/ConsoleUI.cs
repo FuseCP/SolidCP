@@ -9,6 +9,9 @@ namespace SolidCP.UniversalInstaller
 		{
 			var rootUser = OSInfo.IsWindows ? "administartor" : "root";
 			var form = new ConsoleForm(@$"
+SolidCP Installer
+=================
+
 SolidCP Installer must run as {rootUser}.
 Please enter {rootUser} password:
 
@@ -27,10 +30,11 @@ Please enter {rootUser} password:
 
 			var form = new ConsoleForm(@"
 Server Settings:
+================
 
 Server Urls: [?Urls http:\\localhost:9003                                                   ]
 
-Server Password: [!ServerPassword                                           ]
+Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
 [*    Ok    ]
@@ -43,11 +47,11 @@ Repeat Password: [!RepeatPassword                                         ]
 			{
 				form.Parse(@"
 Server Settings:
-===========
+================
 
 Server Urls: [?Urls http:\\localhost:9003                                                   ]
 
-Server Password: [!ServerPassword                                           ]
+Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
 Passwords don't match!
@@ -72,16 +76,23 @@ Passwords don't match!
 		{
 			return Packages.Server;
 		}
+		public override void ShowError(Exception ex)
+		{
+			Console.Clear();
+			Console.WriteLine("Error:");
+			Console.WriteLine(ex.ToString());
+		}
+
 		ConsoleForm InstallationProgress = null;
 		public override void ShowInstallationProgress()
 		{
 			InstallationProgress = new ConsoleForm(@"
-Installation Progress
-===============
+Installation Progress:
+======================
 
 [%Progress                                                                      ]
 ")
-			.ShowProgress(Installer.Shell, 1000)
+			.ShowProgress(Installer.Shell, Installer.EstimatedOutputLines)
 			.Show();
 		}
 

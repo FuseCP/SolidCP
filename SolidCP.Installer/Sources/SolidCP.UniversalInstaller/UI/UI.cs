@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace SolidCP.UniversalInstaller {
 
     [Flags]
@@ -22,7 +24,7 @@ namespace SolidCP.UniversalInstaller {
             }
         }
 
-        public static Installer Installer { get; }
+        public static Installer Installer => Installer.Current;
         public abstract string GetRootPassword();
         public abstract ServerSettings GetServerSettings();
         public abstract EnterpriseServerSettings GetEnterpriseServerSettings();
@@ -30,6 +32,13 @@ namespace SolidCP.UniversalInstaller {
         public abstract Packages GetPackagesToInstall();
         public abstract void ShowInstallationProgress();
         public abstract void CloseInstallationProgress();
+        public abstract void ShowError(Exception ex);
+        public virtual void PrintInstallerVersion()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var version = assembly.GetName().Version;
+            Installer.Log($"SolidCP Installer {version}");
+        }
 
     }
 }

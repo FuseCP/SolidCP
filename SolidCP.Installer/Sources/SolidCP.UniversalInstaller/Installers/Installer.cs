@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Security.Policy;
 using System.Diagnostics.Contracts;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -25,10 +26,14 @@ namespace SolidCP.UniversalInstaller
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 		public virtual bool CanInstallPortal => OSInfo.IsWindows;
-		static bool? hasDotnet = false;
-		public virtual bool HasDotnet => hasDotnet ?? (hasDotnet = Shell.Find("dotnet") != null).Value;
-		public bool Net8RuntimeAllreadyInstalled = true;
-		public bool Net8AspRuntimeAllreadyInstalled = true;
+		static bool? hasDotnet = null;
+		public virtual bool HasDotnet
+		{
+			get => hasDotnet ?? (hasDotnet = Shell.Find("dotnet") != null).Value;
+			set => hasDotnet = value;
+		}
+		public bool NeedRemoveNet8Runtime = false;
+		public bool NeedRemoveNet8AspRuntime = false;
 		public virtual string? InstallWebRootPath { get; set; } = null;
 		public virtual string? InstallExeRootPath { get; set; } = null;
 		public abstract string WebsiteLogsPath { get; }
@@ -36,6 +41,7 @@ namespace SolidCP.UniversalInstaller
 		public ServerSettings? ServerSettings { get; set; } = null;
 		public EnterpriseServerSettings? EnterpriseServerSettings { get; set; } = null;
 		public WebPortalSettings? WebPortalSettings { get; set; } = null;
+		public int EstimatedOutputLines = 0;
 
 		public Shell Shell { get; set; } = OSInfo.Current.DefaultShell.Clone;
 		public Providers.OS.Installer OSInstaller => OSInfo.Current.DefaultInstaller;
@@ -43,20 +49,39 @@ namespace SolidCP.UniversalInstaller
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
 		public UI UI => UI.Current;
 
+		public void Log(string msg)
+		{
+			Console.WriteLine(msg);
+			Shell.Log?.Invoke(msg);
+		}
+
+		bool firstCheck = true;
 		public bool CheckNet8RuntimeInstalled()
 		{
+			if (!firstCheck) return true;
+			firstCheck = false;
+
 			if (HasDotnet)
 			{
 				var output = Shell.Exec("dotnet --info").Output().Result ?? "";
-				Net8AspRuntimeAllreadyInstalled = output.Contains("Microsoft.AspNetCore.App 8.");
-				Net8RuntimeAllreadyInstalled = output.Contains("Microsoft.NETCore.App 8.");
-				return Net8RuntimeAllreadyInstalled && Net8AspRuntimeAllreadyInstalled;
+				NeedRemoveNet8AspRuntime = !output.Contains("Microsoft.AspNetCore.App 8.");
+				NeedRemoveNet8Runtime = !output.Contains("Microsoft.NETCore.App 8.");
+				return !NeedRemoveNet8Runtime && !NeedRemoveNet8AspRuntime;
 			}
-			else return Net8RuntimeAllreadyInstalled = Net8AspRuntimeAllreadyInstalled = false;
+			else {
+				NeedRemoveNet8Runtime = NeedRemoveNet8AspRuntime = true;
+				return false;
+			}
 		}
 
 		public abstract void InstallNet8Runtime();
-		public abstract void RemoveNet8Runtime();
+		public abstract void RemoveNet8AspRuntime();
+		public abstract void RemoveNet8NetRuntime();
+		public virtual void RemoveNet8Runtime()
+		{
+			if (NeedRemoveNet8Runtime) RemoveNet8NetRuntime();
+			if (NeedRemoveNet8AspRuntime) RemoveNet8AspRuntime();
+		}
 
 		public virtual void InstallServerPrerequisites() { }
 		public virtual void InstallEnterpriseServerPrerequisites() { }
@@ -83,13 +108,18 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallServer()
 		{
 			InstallServerPrerequisites();
-			var settings = ReadServerConfiguration();
 			UnzipServer();
 			InstallServerWebsite();
 			SetServerFilePermissions();
-			ConfigureServer(settings);
+			ConfigureServer();
 		}
 
+		public virtual void RemoveServer()
+		{
+			RemoveServerPrerequisites();
+			RemoveServerFolder();
+			RemoveServerWebsite();
+		}
 
 		public virtual void InstallWebsite(string name, string path, string urls)
 		{
@@ -123,19 +153,33 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallServerUser() { }
 		public virtual void InstallServerApplicationPool() { }
 		public virtual void InstallServerWebsite() { }
+		public virtual void RemoveServerWebsite() { }
+		public virtual void RemoveServerFolder() { }
+		public virtual void RemoveServerUser() { }
+		public virtual void RemoveServerApplicationPool() { }
 		public virtual void InstallEnterpriseServer()
 		{
 			InstallEnterpriseServerPrerequisites();
-			var settings = ReadEnterpriseServerConfiguration();
+			ReadEnterpriseServerConfiguration();
 			UnzipEnterpriseServer();
 			InstallEnterpriseServerWebsite();
 			SetEnterpriseServerFilePermissions();
 		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{
-			InstallWebsite($"{SolidCP}EnterpriseServer", Path.Combine(InstallWebRootPath, "EnterpriseServer"), EnterpriseServerSettings.Urls);
+			InstallWebsite($"{SolidCP}EnterpriseServer", Path.Combine(InstallWebRootPath, EnterpriseServerFolder), EnterpriseServerSettings.Urls);
 		}
-		public virtual void InstallWebPortal() { }
+		public virtual void InstallPortalWebsite()
+		{
+			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), WebPortalSettings.Urls);
+		}
+		public virtual void InstallWebPortal() {
+			InstallPortalPrerequisites();
+			ReadWebPortalConfiguration();
+			UnzipPortal();
+			InstallPortalWebsite();
+			SetPortalFilePermissions();
+		}
 		public ServerSettings ReadServerConfiguration()
 		{
 			return new ServerSettings();
@@ -160,24 +204,31 @@ namespace SolidCP.UniversalInstaller
 		{
 
 		}
+
+		public void CreatePath(string path)
+		{
+			if (Directory.Exists(path)) return;
+			var dir = Path.GetDirectoryName(path);
+			if (dir != "" && dir != path) CreatePath(dir);
+		}
 		public virtual void UnzipServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-			if (!Directory.Exists(websitePath)) Directory.CreateDirectory(websitePath);
+			CreatePath(websitePath);
 			UnzipFromResource("SolidCP.Server.zip", websitePath);
 		}
 
 		public virtual void UnzipEnterpriseServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
-			if (!Directory.Exists(websitePath)) Directory.CreateDirectory(websitePath);
+			CreatePath(websitePath);
 			UnzipFromResource("SolidCP.EnterpriseServer.zip", websitePath);
 		}
 
 		public virtual void UnzipPortal()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, PortalFolder);
-			if (!Directory.Exists(websitePath)) Directory.CreateDirectory(websitePath);
+			CreatePath(websitePath);
 			UnzipFromResource("SolidCP.WebPortal.zip", websitePath);
 		}
 
@@ -196,6 +247,8 @@ namespace SolidCP.UniversalInstaller
 					await responseStream.CopyToAsync(file);
 				}
 			}
+			var name = Regex.Replace(url, @"(.*?/)|(?:\?.*$)", "", RegexOptions.Singleline);
+			Log($"Downloaded file {name}{Environment.NewLine}");
 			return tmp;
 		}
 		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
@@ -224,7 +277,9 @@ namespace SolidCP.UniversalInstaller
 
 		public void InstallAll()
 		{
-			Shell.Log += msg => File.AppendAllText("SolidCP.Installer.log", msg);
+			const int EstimatedOutputLinesPerSite = 500;
+
+			Shell.LogFile = "SolidCP.Installer.log";
 
 			if (!CheckIsRoot())
 			{
@@ -235,32 +290,45 @@ namespace SolidCP.UniversalInstaller
 
 			var packages = UI.GetPackagesToInstall();
 
+			bool installServer = false, installEnterpriseServer = false, installPortal = false;
+
 			try
 			{
-				if (CanInstallServer && (packages & Packages.Server) != 0)
+				if (CanInstallServer && packages.HasFlag(Packages.Server))
 				{
 					ServerSettings = ReadServerConfiguration();
 					ServerSettings = UI.GetServerSettings();
-					InstallServer();
+					EstimatedOutputLines += EstimatedOutputLinesPerSite;
+					installServer = true;
 				}
 
-				if (CanInstallEnterpriseServer && (packages & Packages.EnterpriseServer) != 0)
+				if (CanInstallEnterpriseServer && packages.HasFlag(Packages.EnterpriseServer))
 				{
 					EnterpriseServerSettings = ReadEnterpriseServerConfiguration();
 					EnterpriseServerSettings = UI.GetEnterpriseServerSettings();
-					UI.ShowInstallationProgress();
-					InstallEnterpriseServer();
-					UI.CloseInstallationProgress();
+					EstimatedOutputLines += EstimatedOutputLinesPerSite;
+					installEnterpriseServer = true;
 				}
-
-				if (CanInstallPortal && (packages & Packages.WebPortal) != 0)
+				if (CanInstallPortal && packages.HasFlag(Packages.WebPortal))
 				{
 					WebPortalSettings = ReadWebPortalConfiguration();
 					WebPortalSettings = UI.GetWebPortalSettings();
-					InstallWebPortal();
+					EstimatedOutputLines += EstimatedOutputLinesPerSite;
+					installPortal = true;
 				}
-			} catch (Exception ex)
+
+				if (installServer || installPortal || installEnterpriseServer) UI.ShowInstallationProgress();
+
+				if (installServer) InstallServer();
+				if (installEnterpriseServer) InstallEnterpriseServer();
+				if (installPortal) InstallWebPortal();
+
+				if (installServer || installPortal || installEnterpriseServer) UI.CloseInstallationProgress();
+			}
+			catch (Exception ex)
 			{
+				UI.ShowError(ex);
+
 				Shell.Log($"Exception: {ex}");
 			}
 		}
