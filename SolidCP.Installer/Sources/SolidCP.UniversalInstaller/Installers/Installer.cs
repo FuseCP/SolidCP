@@ -15,36 +15,36 @@ namespace SolidCP.UniversalInstaller
 
 	public abstract class Installer
 	{
+		public virtual string SolidCP => "SolidCP";
 		public virtual string ServerFolder => "Server";
 		public virtual string EnterpriseServerFolder => "EnterpriseServer";
 		public virtual string PortalFolder => "Portal";
-		public virtual string ServerUser => "SolidCPServer";
-		public virtual string EnterpriseServerUser => "SolidCPEnterpriseServer";
-		public virtual string WebPortalUser => "SolidCPPortal";
+		public virtual string ServerUser => $"{SolidCP}Server";
+		public virtual string EnterpriseServerUser => $"{SolidCP}EnterpriseServer";
+		public virtual string WebPortalUser => $"{SolidCP}Portal";
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 		public virtual bool CanInstallPortal => OSInfo.IsWindows;
-
-		public bool HasDotnet = false;
+		static bool? hasDotnet = false;
+		public virtual bool HasDotnet => hasDotnet ?? (hasDotnet = Shell.Find("dotnet") != null).Value;
 		public bool Net8RuntimeAllreadyInstalled = true;
 		public bool Net8AspRuntimeAllreadyInstalled = true;
-		public virtual string InstallWebRootPath { get; set; }
-		public virtual string InstallExeRootPath { get; set; }
+		public virtual string? InstallWebRootPath { get; set; } = null;
+		public virtual string? InstallExeRootPath { get; set; } = null;
 		public abstract string WebsiteLogsPath { get; }
 
-		public ServerSettings ServerSettings { get; set; }
-		public EnterpriseServerSettings EnterpriseServerSettings { get; set; }
-		public WebPortalSettings WebPortalSettings { get; set; }
+		public ServerSettings? ServerSettings { get; set; } = null;
+		public EnterpriseServerSettings? EnterpriseServerSettings { get; set; } = null;
+		public WebPortalSettings? WebPortalSettings { get; set; } = null;
 
 		public Shell Shell { get; set; } = OSInfo.Current.DefaultShell.Clone;
 		public Providers.OS.Installer OSInstaller => OSInfo.Current.DefaultInstaller;
 		public IWebServer WebServer => OSInfo.Current.WebServer;
 		public ServiceController ServiceController => OSInfo.Current.ServiceController;
+		public UI UI => UI.Current;
 
 		public bool CheckNet8RuntimeInstalled()
 		{
-			HasDotnet = Shell.Find("dotnet") != null;
-
 			if (HasDotnet)
 			{
 				var output = Shell.Exec("dotnet --info").Output().Result ?? "";
@@ -69,7 +69,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void SetFilePermissions(string folder)
 		{
 			if (!Path.IsPathRooted(folder)) folder = Path.Combine(InstallWebRootPath, folder);
-			
+
 			throw new CultureNotFoundException();
 		}
 		public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
@@ -126,17 +126,26 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallEnterpriseServer()
 		{
 			InstallEnterpriseServerPrerequisites();
+			var settings = ReadEnterpriseServerConfiguration();
+			UnzipEnterpriseServer();
 			InstallEnterpriseServerWebsite();
+			SetEnterpriseServerFilePermissions();
 		}
-		public virtual void InstallWebPortal();
-
-		public ServerSettings ReadServerConfiguration() {
+		public virtual void InstallEnterpriseServerWebsite()
+		{
+			InstallWebsite($"{SolidCP}EnterpriseServer", Path.Combine(InstallWebRootPath, "EnterpriseServer"), EnterpriseServerSettings.Urls);
+		}
+		public virtual void InstallWebPortal() { }
+		public ServerSettings ReadServerConfiguration()
+		{
 			return new ServerSettings();
 		}
-		public EnterpriseServerSettings ReadEnterpriseServerConfiguration() {
+		public EnterpriseServerSettings ReadEnterpriseServerConfiguration()
+		{
 			return new EnterpriseServerSettings();
 		}
-		public WebPortalSettings ReadWebPortalConfiguration() {
+		public WebPortalSettings ReadWebPortalConfiguration()
+		{
 			return new WebPortalSettings();
 		}
 
@@ -151,13 +160,6 @@ namespace SolidCP.UniversalInstaller
 		{
 
 		}
-
-		public virtual void InstallAll()
-		{
-
-		}
-
-
 		public virtual void UnzipServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
@@ -211,8 +213,55 @@ namespace SolidCP.UniversalInstaller
 			{
 				foreach (var zipEntry in zip)
 				{
+					Shell.Log?.Invoke($"Exracting {zipEntry.FileName}{Environment.NewLine}");
 					zipEntry.Extract(destinationPath);
 				}
+			}
+		}
+
+		public virtual bool CheckIsRoot() => true;
+		public virtual void RestartAsRoot(string password) { }
+
+		public void InstallAll()
+		{
+			Shell.Log += msg => File.AppendAllText("SolidCP.Installer.log", msg);
+
+			if (!CheckIsRoot())
+			{
+				var password = UI.GetRootPassword();
+				RestartAsRoot(password);
+				return;
+			}
+
+			var packages = UI.GetPackagesToInstall();
+
+			try
+			{
+				if (CanInstallServer && (packages & Packages.Server) != 0)
+				{
+					ServerSettings = ReadServerConfiguration();
+					ServerSettings = UI.GetServerSettings();
+					InstallServer();
+				}
+
+				if (CanInstallEnterpriseServer && (packages & Packages.EnterpriseServer) != 0)
+				{
+					EnterpriseServerSettings = ReadEnterpriseServerConfiguration();
+					EnterpriseServerSettings = UI.GetEnterpriseServerSettings();
+					UI.ShowInstallationProgress();
+					InstallEnterpriseServer();
+					UI.CloseInstallationProgress();
+				}
+
+				if (CanInstallPortal && (packages & Packages.WebPortal) != 0)
+				{
+					WebPortalSettings = ReadWebPortalConfiguration();
+					WebPortalSettings = UI.GetWebPortalSettings();
+					InstallWebPortal();
+				}
+			} catch (Exception ex)
+			{
+				Shell.Log($"Exception: {ex}");
 			}
 		}
 
@@ -226,7 +275,8 @@ namespace SolidCP.UniversalInstaller
 					switch (OSInfo.OSFlavor)
 					{
 						case OSFlavor.Debian: current = new DebianInstaller(); break;
-						case OSFlavor.Mint:
+						// TODO support for Ubuntu variants
+						// case OSFlavor.Mint:
 						case OSFlavor.Ubuntu: current = new UbuntuInstaller(); break;
 						case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 						case OSFlavor.CentOS: current = new CentOSInstaller(); break;
@@ -235,8 +285,6 @@ namespace SolidCP.UniversalInstaller
 						case OSFlavor.Windows: current = new WindowsInstaller(); break;
 						case OSFlavor.Alpine: current = new AlpineInstaller(); break;
 						case OSFlavor.SUSE: current = new SuseInstaller(); break;
-						case OSFlavor.FreeBSD:
-						case OSFlavor.NetBSD:
 						default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
 					}
 				}
@@ -244,3 +292,4 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 	}
+}

@@ -18,7 +18,7 @@ namespace SolidCP.UniversalInstaller
 		public override string InstallExeRootPath
 		{
 			get => base.InstallExeRootPath ??
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles), "SolidCP"):
+				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles), SolidCP);
             set => base.InstallExeRootPath = value;
 		}
 		public override string InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }

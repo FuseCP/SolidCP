@@ -1,9 +1,9 @@
-namespace SolidCP.Installer {
+namespace SolidCP.UniversalInstaller {
 
     [Flags]
     public enum Packages { Server, EnterpriseServer, WebPortal }
 
-    public class UI {
+    public abstract class UI {
 
         static UI current;
         public static UI Current
@@ -12,7 +12,7 @@ namespace SolidCP.Installer {
             {
                 if (current == null)
                 {
-                    current = new WinFormsUI();
+                    current = new ConsoleUI();
                 }
                 return current;
             }
@@ -23,12 +23,13 @@ namespace SolidCP.Installer {
         }
 
         public static Installer Installer { get; }
-
+        public abstract string GetRootPassword();
         public abstract ServerSettings GetServerSettings();
         public abstract EnterpriseServerSettings GetEnterpriseServerSettings();
         public abstract WebPortalSettings GetWebPortalSettings();
         public abstract Packages GetPackagesToInstall();
         public abstract void ShowInstallationProgress();
+        public abstract void CloseInstallationProgress();
 
     }
 }

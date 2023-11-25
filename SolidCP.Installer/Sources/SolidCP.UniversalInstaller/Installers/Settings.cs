@@ -7,8 +7,6 @@ namespace SolidCP.UniversalInstaller
 	public class ServerSettings
 	{
 		public string Urls { get; set; }
-		public string ServerUser { get; set; }
-		public string ServerUserPassword { get; set; }
 		public string ServerPassword { get; set; }
 
 	}

@@ -1,26 +1,94 @@
-namespace SolidCP.Installer {
+using SolidCP.Providers.OS;
 
-    public class ConsoleUI: UI {
+namespace SolidCP.UniversalInstaller
+{
 
-        public override ServerSettings GetServerSettings() {
-            throw new NotImplementedException();
-        }
-        public override EnterpriseServerSettings GetEnterpriseServerSettings()
-        {
-            throw new NotImplementedException();
-        }
-        public override WebPortalSettings GetWebPortalSettings()
-        {
-            throw new NotImplementedException();
-        }
-        public override Packages GetPackagesToInstall()
-        {
-            throw new NotImplementedException();
-        }
-        public override void ShowInstallationProgress()
-        {
-            throw new NotImplementedException();
-        }
+	public class ConsoleUI : UI
+	{
+		public override string GetRootPassword()
+		{
+			var rootUser = OSInfo.IsWindows ? "administartor" : "root";
+			var form = new ConsoleForm(@$"
+SolidCP Installer must run as {rootUser}.
+Please enter {rootUser} password:
 
-    }
+[?Password                                      ]
+
+[*    Ok    ]
+")
+				.ShowDialog();
+			return form["Password"].Text;
+		}
+
+		public override ServerSettings GetServerSettings()
+		{
+
+			var settings = Installer.ReadServerConfiguration();
+
+			var form = new ConsoleForm(@"
+Server Settings:
+
+Server Urls: [?Urls http:\\localhost:9003                                                   ]
+
+Server Password: [!ServerPassword                                           ]
+Repeat Password: [!RepeatPassword                                         ]
+
+[*    Ok    ]
+")
+				.Load(settings)
+				.ShowDialog()
+				.Save(settings);
+
+			while (form["ServerPassword"].Text != form["RepeatPassword"].Text)
+			{
+				form.Parse(@"
+Server Settings:
+===========
+
+Server Urls: [?Urls http:\\localhost:9003                                                   ]
+
+Server Password: [!ServerPassword                                           ]
+Repeat Password: [!RepeatPassword                                         ]
+
+Passwords don't match!
+
+[*    Ok    ]
+")
+					.Load(settings)
+					.ShowDialog()
+					.Save(settings);
+			}
+			return settings;
+		}
+		public override EnterpriseServerSettings GetEnterpriseServerSettings()
+		{
+			throw new NotImplementedException();
+		}
+		public override WebPortalSettings GetWebPortalSettings()
+		{
+			throw new NotImplementedException();
+		}
+		public override Packages GetPackagesToInstall()
+		{
+			return Packages.Server;
+		}
+		ConsoleForm InstallationProgress = null;
+		public override void ShowInstallationProgress()
+		{
+			InstallationProgress = new ConsoleForm(@"
+Installation Progress
+===============
+
+[%Progress                                                                      ]
+")
+			.ShowProgress(Installer.Shell, 1000)
+			.Show();
+		}
+
+		public override void CloseInstallationProgress()
+		{
+			if (InstallationProgress != null) InstallationProgress.Close();
+		}
+
+	}
 }

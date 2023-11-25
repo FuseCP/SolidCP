@@ -1,6 +1,6 @@
-namespace SolidCP.Installer {
+namespace SolidCP.UniversalInstaller {
 
-    public class WinFormsUI {
+    public class WinFormsUI: UI {
 
         public override ServerSettings GetServerSettings()
         {
@@ -24,5 +24,15 @@ namespace SolidCP.Installer {
             throw new NotImplementedException();
         }
 
-    }
+		public override void CloseInstallationProgress()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override string GetRootPassword()
+		{
+			throw new NotImplementedException();
+		}
+
+	}
 }

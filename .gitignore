@@ -7,6 +7,7 @@
 TestResults/
 **/[Bb]uild/
 **/[Dd]eploy/
+**/SolidCP.UniversalInstaller/Resources/
 
 
 # globs

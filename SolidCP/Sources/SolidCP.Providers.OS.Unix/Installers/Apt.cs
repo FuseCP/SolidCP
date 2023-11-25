@@ -49,7 +49,7 @@ namespace SolidCP.Providers.OS
 
 		public override Shell RemoveAsync(string apps)
 		{
-			return Shell.ExecAsync(¨$"apt-get remove {apps.Replace(';', ' ').Replace(',', ' ')}");
+			return Shell.ExecAsync($"apt-get remove {apps.Replace(';', ' ').Replace(',', ' ')}");
 		}
 
 		public override Shell UpdateAsync()

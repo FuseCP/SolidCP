@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Runtime.InteropServices;
+using System.Reflection;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -36,6 +36,19 @@ namespace SolidCP.UniversalInstaller
 		public override void InstallServerPrerequisites()
 		{
 			InstallNet8Runtime();
+		}
+
+		public override bool CheckIsRoot()
+		{
+			//var uid = Mono.Posix.Syscall.getuid();
+			var euid = Mono.Posix.Syscall.geteuid();
+			return euid == 0;
+		}
+
+		public override void RestartAsRoot(string password)
+		{
+			var assembly = Assembly.GetEntryAssembly().Location;
+			Shell.RunAsync($"echo {password} | sudo -S mono {assembly}");
 		}
 	}
 }

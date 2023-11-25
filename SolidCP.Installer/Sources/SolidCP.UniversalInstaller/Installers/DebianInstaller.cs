@@ -45,9 +45,8 @@ namespace SolidCP.UniversalInstaller
 
 		public override void RemoveNet8Runtime()
 		{
-			if (!Net8RuntimeAllreadyInstalled) Apt.Remove("aspnetcore-runtime-8.0")
+            if (!Net8RuntimeAllreadyInstalled) Apt.Remove("aspnetcore-runtime-8.0");
 		}
-		public override void InstallGlobalPrerequisites() { }
 		public override void InstallServerPrerequisites()
 		{
             InstallNet8Runtime();

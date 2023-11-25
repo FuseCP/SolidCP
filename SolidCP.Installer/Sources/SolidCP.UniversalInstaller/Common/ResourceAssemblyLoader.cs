@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Diagnostics;
 
 namespace SolidCP.UniversalInstaller
@@ -20,18 +19,17 @@ namespace SolidCP.UniversalInstaller
 		}
 		public static Assembly Resolve(object sender, ResolveEventArgs args)
 		{
-			Assembly assembly = null;
 			var host = Assembly.GetExecutingAssembly();
 			var resources = host.GetManifestResourceNames();
-			var assName = resources.FirstOrDefault(res => res.EndsWith(Path.ChangeExtension(args.Name, "dll")));
-			string pdbName = null;
+			var assName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.dll"));
+			string? pdbName = null;
 			if (assName != null)
 			{
 				using (var assStream = host.GetManifestResourceStream(assName))
 				{
 					if (Debugger.IsAttached)
 					{
-						pdbName = resources.FirstOrDefault(res => res.EndsWith(Path.ChangeExtension(args.Name, "pdb")));
+						pdbName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.pdb"));
 						if (pdbName != null)
 						{
 							using (var pdbStream = host.GetManifestResourceStream(pdbName))
