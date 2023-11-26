@@ -25,6 +25,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Server.Utils", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Server.WPIServiceContract", "..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\SolidCP.Server.WPIServiceContract.csproj", "{736FA0F0-ECA3-416E-B299-85CC425FFF44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs60", "..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj", "{9BE0317D-E42E-4FF6-9A87-8C801F046EA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs70", "..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj", "{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs80", "..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj", "{6E348968-461D-45A1-B235-4F552947B9F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Web.IIs100", "..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj", "{9B99F215-5029-4779-BC2F-6D83CBB42205}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +83,22 @@ Global
 		{736FA0F0-ECA3-416E-B299-85CC425FFF44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{736FA0F0-ECA3-416E-B299-85CC425FFF44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{736FA0F0-ECA3-416E-B299-85CC425FFF44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BE0317D-E42E-4FF6-9A87-8C801F046EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BE0317D-E42E-4FF6-9A87-8C801F046EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BE0317D-E42E-4FF6-9A87-8C801F046EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BE0317D-E42E-4FF6-9A87-8C801F046EA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B9DCE85-C664-49FC-B6E1-86C63CAB88D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E348968-461D-45A1-B235-4F552947B9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E348968-461D-45A1-B235-4F552947B9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E348968-461D-45A1-B235-4F552947B9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E348968-461D-45A1-B235-4F552947B9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B99F215-5029-4779-BC2F-6D83CBB42205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B99F215-5029-4779-BC2F-6D83CBB42205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B99F215-5029-4779-BC2F-6D83CBB42205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B99F215-5029-4779-BC2F-6D83CBB42205}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

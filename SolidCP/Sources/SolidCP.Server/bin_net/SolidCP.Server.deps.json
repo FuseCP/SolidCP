@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "SolidCP.Server/1.0.0": {
+      "SolidCP.Server/1.4.5": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.3",
           "SolidCP.Providers.Base": "1.0.0",
@@ -994,7 +994,7 @@
     }
   },
   "libraries": {
-    "SolidCP.Server/1.0.0": {
+    "SolidCP.Server/1.4.5": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
