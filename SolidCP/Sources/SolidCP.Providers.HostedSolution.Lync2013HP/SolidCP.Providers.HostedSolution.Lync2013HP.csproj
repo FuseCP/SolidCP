@@ -15,7 +15,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\SolidCP.Server\bin\Lync2013\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -52,10 +52,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="SolidCP.Providers.HostedSolution">
-      <HintPath>..\SolidCP.Server\bin\Providers\SolidCP.Providers.HostedSolution.dll</HintPath>
+    <ProjectReference Include="..\SolidCP.Providers.HostedSolution\SolidCP.Providers.HostedSolution.csproj">
+      <Project>{A06DE5E4-4331-47E1-8F46-7B846146B559}</Project>
       <Name>SolidCP.Providers.HostedSolution</Name>
-    </Reference>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684C932A-6C75-46AC-A327-F3689D89EB42}</Project>
       <Name>SolidCP.Providers.Base</Name>
