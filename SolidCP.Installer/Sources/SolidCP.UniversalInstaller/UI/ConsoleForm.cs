@@ -61,8 +61,26 @@ namespace SolidCP.UniversalInstaller
 		public bool HasFocus;
 		public virtual bool CanFocus => false;
 		public virtual bool Editable => false;
-		public virtual string Text { get; set; } = "";
-		public Action Click;
+		string text;
+		public virtual string Text
+		{
+			get => text;
+			set
+			{
+				if (text != value)
+				{
+					text = value;
+					Validate?.Invoke(this);
+				}
+				else text = value;
+			}
+		}
+
+		public ConsoleField() { Text = ""; }
+		public Action<ConsoleField> Validate = null;
+		public Action Click = null;
+		public bool Clicked { get; set; } = false;
+		public bool Checked { get; set; } = false;
 		public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
 		public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
 		public virtual ConsoleForm Parent { get; set; }
@@ -192,6 +210,7 @@ namespace SolidCP.UniversalInstaller
 				case ConsoleKey.UpArrow:
 				case ConsoleKey.DownArrow:
 				case ConsoleKey.Tab:
+				case ConsoleKey.Enter:
 					Parent.EditNavigate(key);
 					break;
 				case ConsoleKey.LeftArrow:
@@ -212,13 +231,6 @@ namespace SolidCP.UniversalInstaller
 						if (WindowX <= Text.Length - Width) WindowX++;
 					}
 					Show();
-					break;
-				case ConsoleKey.Enter:
-					if (Parent.DefaultButton != null)
-					{
-						Parent.DefaultButton?.Click?.Invoke();
-						return true;
-					}
 					break;
 				case ConsoleKey.Delete:
 					pos = WindowX + CursorX;
@@ -271,6 +283,7 @@ namespace SolidCP.UniversalInstaller
 
 	public class PasswordField : TextField
 	{
+		public PasswordField() : base() { }
 		public override void Show()
 		{
 			var text = Text;
@@ -285,13 +298,14 @@ namespace SolidCP.UniversalInstaller
 		public bool Default { get; set; } = false;
 		public override bool CanFocus => true;
 		public override bool Centered => true;
+		public Button(): base() { }
 		public override void Show()
 		{
 			var text = Text;
-			text = text.Trim();
+			text = text.Trim(' ', '[', ']');
 			int len = text.Length;
 			int addLeft, addRight;
-			var w = Width - len - 2;
+			var w = Math.Max(0, Width - len - 2);
 			addLeft = w / 2;
 			addRight = w - addLeft;
 			char[] spacesLeft = Enumerable.Repeat(' ', addLeft).ToArray();
@@ -305,6 +319,23 @@ namespace SolidCP.UniversalInstaller
 		}
 	}
 
+	public class Choice: Button {
+
+		public Choice() : base() { }
+		public override bool Editable => true;
+
+		public override bool Edit(ConsoleKeyInfo key)
+		{
+			if (key.Key == ConsoleKey.Spacebar)
+			{
+				Checked = !Checked;
+				Text = Checked ? "x" : " ";
+				Show();
+				return false;
+			}
+			else return Parent.EditNavigate(key);
+		}
+	}
 	public class FieldList : KeyedCollection<string, ConsoleField>
 	{
 		protected override string GetKeyForItem(ConsoleField item) => item.Name;
@@ -338,6 +369,7 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public ConsoleField this[string name] => Fields[name];
+		public ConsoleField this[int index] => Fields[index];
 		public ConsoleForm Show()
 		{
 			Console.Clear();
@@ -412,19 +444,26 @@ namespace SolidCP.UniversalInstaller
 				case ConsoleKey.LeftArrow:
 				case ConsoleKey.RightArrow:
 				case ConsoleKey.Tab:
-					EditChangeFocus(key); break;
+					EditChangeFocus(key);
+					break;
 				case ConsoleKey.Enter:
 					if (Focus is Button)
 					{
+						Focus.Clicked = true;
 						Focus.Click?.Invoke();
 						return true;
 					}
 					else
 					{
 						var defaultButton = DefaultButton;
-						if (defaultButton != null) defaultButton.Click?.Invoke();
-						return true;
+						if (defaultButton != null)
+						{
+							defaultButton.Clicked = true;
+							defaultButton.Click?.Invoke();
+							return true;
+						}
 					}
+					break;
 				default: break;
 			}
 			return false;
@@ -556,7 +595,8 @@ namespace SolidCP.UniversalInstaller
 				if (Fields.Contains(p.Name))
 				{
 					var field = Fields[p.Name];
-					field.Text = p.GetValue(source)?.ToString() ?? "";
+					var text = p.GetValue(source)?.ToString();
+					if (!string.IsNullOrEmpty(text)) field.Text = text;
 				}
 			}
 			foreach (var f in type.GetFields())
@@ -564,7 +604,8 @@ namespace SolidCP.UniversalInstaller
 				if (Fields.Contains(f.Name))
 				{
 					var field = Fields[f.Name];
-					field.Text = f.GetValue(source)?.ToString() ?? "";
+					var text = f.GetValue(source)?.ToString();
+					if (!string.IsNullOrEmpty(text)) field.Text = text;
 				}
 			}
 			return this;
@@ -579,7 +620,8 @@ namespace SolidCP.UniversalInstaller
 		public ConsoleForm Parse(string template)
 		{
 			template = template.Trim();
-			var fieldMatches = Regex.Matches(template, @"(?<=^(?<prefix>.*?))\[(?<option>\*|%|\?|\!|)(?:(?<!\[|\[\*)\s*(?<name>[A-Za-z_][A-Za-z_0-9]*))?(?<text>[^\]]*?)\]", RegexOptions.Singleline);
+			int n = 0;
+			var fieldMatches = Regex.Matches(template, @"(?<=^(?<prefix>.*?))\[(?<option>\*|%|\?|\!|x|)(?:(?<!\[|\[\*)\s*(?<name>[A-Za-z_][A-Za-z_0-9]*))?(?<text>[^\]]*?)\]", RegexOptions.Singleline);
 			var fields = fieldMatches
 				.OfType<Match>()
 				.Select<Match, ConsoleField>(m =>
@@ -601,20 +643,23 @@ namespace SolidCP.UniversalInstaller
 					string name = "";
 					if (m.Groups["name"].Success) name = m.Groups["name"].Value;
 					else name = text.Trim();
+					if (string.IsNullOrEmpty(name)) name = $"_noname{n++}";
 					var option = m.Groups["option"].Value;
 					switch (option)
 					{
 						case "*":
-							return new Button() { Parent = this, Name = name, Default = true, X = x, Y = y, Width = text.Length, Height = 1, Text = name };
+							return new Button() { Parent = this, Name = name, Default = true, X = x, Y = y, Width = text.Length+2, Height = 1, Text = text.Trim() };
 						case "":
 						default:
-							return new Button() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Text = name };
+							return new Button() { Parent = this, Name = name, X = x, Y = y, Width = text.Length+2, Height = 1, Text = text.Trim() };
 						case "?":
 							return new TextField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
 						case "!":
 							return new PasswordField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Text = text.Trim() };
 						case "%":
-							return new PercentField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1 };
+							return new PercentField() { Parent = this, Name = name, X = x, Y = y, Width = text.Length, Height = 1, Value = 0 };
+						case "x":
+							return new Choice() { Parent = this, Name = name, X = x, Y = y, Width = 3, Height = 1, Text = " " };
 					}
 				});
 
@@ -630,10 +675,11 @@ namespace SolidCP.UniversalInstaller
 				if (first != null) first.Default = true;
 			}
 
-			Focus = Fields.FirstOrDefault(f => f.CanFocus);
+			Focus = null;
+			SetFocus(Fields.FirstOrDefault(f => f.CanFocus));
 
-			Template = Regex.Replace(template, @"(?:(?:\[\?|(?<=\[)\*|\[%|\[!|(?<=\[))\s*[A-Za-z_][A-Za-z_0-9]*(?!\s+[^ \t\]]+))|(?:(?<=\[(?:\?|%|!)(?:\s*[A-Za-z_][A-Za-z_0-9]*\s*)?[^\]]*?)\])", "", RegexOptions.Singleline)
-				.Trim();
+			template = Regex.Replace(template.Trim(), @"(?:\[(?:\?|!|%)\s*[a-zA-Z_][a-zA-Z0-9_]*)|(?:(?<=\[)\*)(?=[^\n\]]*\])|(?<=\[(?:\?|!|%)[^\]]*)\]", "", RegexOptions.Singleline);
+			Template = Regex.Replace(template, @"\[x\s*[A-Za-z_][A-Za-z_0-9]*\]", "[ ]");
 			return this;
 		}
 	}

@@ -77,6 +77,7 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2022.*" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Unix.*" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Server.Utils.*" />
+			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Server.Utils.*" />
 		</ItemGroup>
 		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" />
 	</Target>

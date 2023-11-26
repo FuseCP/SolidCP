@@ -180,17 +180,17 @@ namespace SolidCP.UniversalInstaller
 			InstallPortalWebsite();
 			SetPortalFilePermissions();
 		}
-		public ServerSettings ReadServerConfiguration()
+		public virtual void ReadServerConfiguration()
 		{
-			return new ServerSettings();
+			ServerSettings = new ServerSettings();
 		}
-		public EnterpriseServerSettings ReadEnterpriseServerConfiguration()
+		public virtual void ReadEnterpriseServerConfiguration()
 		{
-			return new EnterpriseServerSettings();
+			EnterpriseServerSettings = new EnterpriseServerSettings();
 		}
-		public WebPortalSettings ReadWebPortalConfiguration()
+		public virtual void ReadWebPortalConfiguration()
 		{
-			return new WebPortalSettings();
+			WebPortalSettings = new WebPortalSettings();
 		}
 
 		public void ConfigureServer(ServerSettings settings)
@@ -296,7 +296,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				if (CanInstallServer && packages.HasFlag(Packages.Server))
 				{
-					ServerSettings = ReadServerConfiguration();
+					ReadServerConfiguration();
 					ServerSettings = UI.GetServerSettings();
 					EstimatedOutputLines += EstimatedOutputLinesPerSite;
 					installServer = true;
@@ -304,14 +304,14 @@ namespace SolidCP.UniversalInstaller
 
 				if (CanInstallEnterpriseServer && packages.HasFlag(Packages.EnterpriseServer))
 				{
-					EnterpriseServerSettings = ReadEnterpriseServerConfiguration();
+					ReadEnterpriseServerConfiguration();
 					EnterpriseServerSettings = UI.GetEnterpriseServerSettings();
 					EstimatedOutputLines += EstimatedOutputLinesPerSite;
 					installEnterpriseServer = true;
 				}
 				if (CanInstallPortal && packages.HasFlag(Packages.WebPortal))
 				{
-					WebPortalSettings = ReadWebPortalConfiguration();
+					ReadWebPortalConfiguration();
 					WebPortalSettings = UI.GetWebPortalSettings();
 					EstimatedOutputLines += EstimatedOutputLinesPerSite;
 					installPortal = true;

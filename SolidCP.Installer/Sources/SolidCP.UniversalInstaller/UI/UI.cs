@@ -24,11 +24,15 @@ namespace SolidCP.UniversalInstaller {
             }
         }
 
-        public static Installer Installer => Installer.Current;
+        public Installer Installer => Installer.Current;
+        public ServerSettings ServerSettings => Installer.ServerSettings;
+        public EnterpriseServerSettings EnterpriseServerSettings => Installer.EnterpriseServerSettings;
+        public WebPortalSettings WebPortalSettings => Installer.WebPortalSettings;
         public abstract string GetRootPassword();
         public abstract ServerSettings GetServerSettings();
         public abstract EnterpriseServerSettings GetEnterpriseServerSettings();
         public abstract WebPortalSettings GetWebPortalSettings();
+        public abstract void GetCommonSettings(CommonSettings settings);
         public abstract Packages GetPackagesToInstall();
         public abstract void ShowInstallationProgress();
         public abstract void CloseInstallationProgress();

@@ -16,7 +16,12 @@ namespace SolidCP.UniversalInstaller {
             throw new NotImplementedException();
         }
 
-        public override Packages GetPackagesToInstall() {
+		public override void GetCommonSettings(CommonSettings settings)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override Packages GetPackagesToInstall() {
             throw new NotImplementedException();
         }
         
