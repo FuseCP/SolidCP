@@ -34,9 +34,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
-using SolidCP.EnterpriseServer.HostedSolution;
+using SolidCP.EnterpriseServer.Client;
+using SolidCP.Web.Client;
 
 namespace SolidCP.Setup
 {
@@ -230,6 +230,11 @@ namespace SolidCP.Setup
 			get { return GetCachedProxy<esOrganizations>(); }
 		}
 
+		public esTest Test
+		{
+			get { return GetCachedProxy<esTest>(); }
+		}
+
 		protected ES()
 		{
 		}
@@ -250,7 +255,7 @@ namespace SolidCP.Setup
 			string key = t.FullName + ".ServiceProxy";
 			T proxy = (T)Activator.CreateInstance(t);
 
-			object p = proxy;
+			ClientBase p = proxy as ClientBase;
 
 			// configure proxy
 			EnterpriseServerProxyConfigurator cnfg = new EnterpriseServerProxyConfigurator();
@@ -261,7 +266,7 @@ namespace SolidCP.Setup
 				cnfg.Password = serverContext.Password;
 			}
 
-			cnfg.Configure((WebServicesClientProtocol)p);
+			cnfg.Configure(p);
 
 			return proxy;
 		}
