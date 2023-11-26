@@ -18747,6 +18747,11 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
+    <Key>lnkUnixServices.Text</Key>
+    <DefaultValue>System Services</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
     <Key>rbUsersCreationModeItem.ADAccounts</Key>
     <DefaultValue>Use Active Directory Accounts</DefaultValue>
   </Resource>
@@ -18924,6 +18929,16 @@
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
     <Key>gvProcesses.Empty</Key>
     <DefaultValue>No active system processes found.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
+    <Key>gvProcessesArguments.Header</Key>
+    <DefaultValue>Arguments</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
+    <Key>gvProcessesCpuUsage.Header</Key>
+    <DefaultValue>CPU Usage</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
