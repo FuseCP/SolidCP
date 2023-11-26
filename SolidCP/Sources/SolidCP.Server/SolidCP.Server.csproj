@@ -115,7 +115,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Analyzer Include="..\SolidCP.Build\bin\Debug\netstandard2.0\RazorBlade.dll" />
+    <Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
   </ItemGroup>
 
   <ItemGroup>

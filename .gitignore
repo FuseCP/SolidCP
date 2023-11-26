@@ -7,6 +7,7 @@
 TestResults/
 **/[Bb]uild/
 **/[Dd]eploy/
+**/SolidCP.UniversalInstaller/Resources/
 
 
 # globs
@@ -49,13 +50,14 @@ msbuild.log
 
 bin/Debug
 bin/Release
-bin
-bin_net
+**/bin/
+**/bin_net/
 *.vshost.*
 *.pdb
 *.vs10x
 *.user
 *.g.cs
+*.log
 
 /SolidCP/Sources/packages
 /SolidCP/msbuild.log
@@ -69,5 +71,3 @@ bin_net
 /SolidCP/CleanRelease_marc.ps1
 /SolidCP/CleanRelease2.ps1
 /SolidCP/CleanDebug.ps1
-/SolidCP/Sources/SolidCP.EnterpriseServer/WCF.log
-/SolidCP/Sources/SolidCP.EnterpriseServer/WCF.log

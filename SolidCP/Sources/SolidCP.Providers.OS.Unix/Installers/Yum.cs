@@ -6,9 +6,9 @@ namespace SolidCP.Providers.OS
 {
     public class Yum : Installer
     {
-        public override bool IsInstalled => Shell.Find("yum") != null;
+        public override bool IsInstallerInstalled => Shell.Find("yum") != null;
 
-        public override void AddSources(string sources)
+        public override Shell AddSourcesAsync(string sources)
         {
             throw new NotImplementedException();
         }
@@ -17,5 +17,19 @@ namespace SolidCP.Providers.OS
         {
             throw new NotImplementedException();
         }
-    }
+
+		public override bool IsInstalled(string apps)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override Shell RemoveAsync(string apps)
+		{
+			throw new NotImplementedException();
+		}
+		public override Shell UpdateAsync()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

@@ -28,7 +28,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>    <Optimize>true</Optimize>
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -164,16 +165,6 @@
     </Reference>
     <Reference Include="WebGrease">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Base">
-      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.Providers.Base">
-      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.Server.Utils, Version=2.1.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\SolidCP.Server.Utils.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -698,16 +689,28 @@
       <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
       <Name>CPCC</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
+      <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
+      <Name>SolidCP.EnterpriseServer.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
       <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
       <Name>SolidCP.EnterpriseServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj">
+      <Project>{e91e52f3-9555-4d00-b577-2b1dbdd87ca7}</Project>
+      <Name>SolidCP.Server.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
       <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
       <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.WebDav.Core\SolidCP.WebDav.Core.csproj">
-      <Project>{BA147805-9EF1-45F2-BF32-A5825D4E950D}</Project>
+      <Project>{ba147805-9ef1-45f2-bf32-a5825d4e950d}</Project>
       <Name>SolidCP.WebDav.Core</Name>
     </ProjectReference>
   </ItemGroup>

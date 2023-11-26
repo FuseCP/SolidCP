@@ -30,6 +30,7 @@ using System;
 using System.Configuration;
 
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Client;
 using SolidCP.Providers.Statistics;
 
 namespace SolidCP.AWStats.Viewer
@@ -86,12 +87,12 @@ namespace SolidCP.AWStats.Viewer
             return AuthenticationResult.DomainNotFound;
 		}
 
-        private void SetupProxy(Microsoft.Web.Services3.WebServicesClientProtocol proxy)
+        private void SetupProxy(Web.Client.ClientBase proxy)
         {
             SetupProxy(proxy, null, null);
         }
 
-        private void SetupProxy(Microsoft.Web.Services3.WebServicesClientProtocol proxy,
+        private void SetupProxy(Web.Client.ClientBase proxy,
             string username, string password)
         {
             // create ES configurator

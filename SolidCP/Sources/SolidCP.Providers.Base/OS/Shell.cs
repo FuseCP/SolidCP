@@ -105,7 +105,7 @@ namespace SolidCP.Providers.OS
 			cnt?.Invoke();
 		}
 
-		public virtual Shell Exec(string cmd)
+		public virtual Shell ExecAsync(string cmd)
 		{
 			// separate command from arguments
 			string arguments;
@@ -208,8 +208,8 @@ namespace SolidCP.Providers.OS
 				return child;
 			}
 		}
-
-		protected virtual Shell Clone
+		public virtual Shell Exec(string command) => ExecAsync(command).Task().Result;
+		public virtual Shell Clone
 		{
 			get
 			{
@@ -225,11 +225,12 @@ namespace SolidCP.Providers.OS
 			clone.LogOutput += OnLogOutput;
 			clone.LogError += OnLogError;
 		}
-		public virtual Shell Run(string script)
+		public virtual Shell RunAsync(string script)
 		{
 			var file = ToTempFile(script);
 			return Exec($"{ShellExe} {file}");
 		}
+		public virtual Shell Run(string script) => RunAsync(script).Task().Result;
 
 
 		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)
