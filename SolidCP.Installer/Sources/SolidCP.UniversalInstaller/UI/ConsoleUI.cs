@@ -245,7 +245,7 @@ Server Certificate From Let's Encrypt
 =====================================
 
 Domains:   [?LetsEncryptCertificateDomains                                                                ]
-Email:  [?LetsEncryptCertificateEmail                                                                ]
+Email:     [?LetsEncryptCertificateEmail                                                                ]
 
 [    Ok    ]
 ")
