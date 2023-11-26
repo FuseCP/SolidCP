@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.Web.Clients
+namespace SolidCP.Web.Client
 {
 	public class CertificateValidator
 	{

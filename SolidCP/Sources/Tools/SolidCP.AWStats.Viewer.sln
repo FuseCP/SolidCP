@@ -1,6 +1,16 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.AWStats.Viewer", "SolidCP.AWStats.Viewer\SolidCP.AWStats.Viewer.csproj", "{5F8C0079-C339-4590-BF10-DBA470329293}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Base", "..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj", "{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Base", "..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{C10283DC-51FE-419C-AB40-B3F613C30FA7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj", "{CEC75173-EA76-4988-A654-8100E33CC2E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,6 +22,22 @@ Global
 		{5F8C0079-C339-4590-BF10-DBA470329293}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F8C0079-C339-4590-BF10-DBA470329293}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F8C0079-C339-4590-BF10-DBA470329293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10283DC-51FE-419C-AB40-B3F613C30FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10283DC-51FE-419C-AB40-B3F613C30FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10283DC-51FE-419C-AB40-B3F613C30FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10283DC-51FE-419C-AB40-B3F613C30FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEC75173-EA76-4988-A654-8100E33CC2E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEC75173-EA76-4988-A654-8100E33CC2E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEC75173-EA76-4988-A654-8100E33CC2E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEC75173-EA76-4988-A654-8100E33CC2E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

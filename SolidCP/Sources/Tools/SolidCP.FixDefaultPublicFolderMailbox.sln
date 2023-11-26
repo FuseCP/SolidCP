@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.FixDefaultPublicFolderMailbox", "SolidCP.FixDefaultPublicFolderMailbox\SolidCP.FixDefaultPublicFolderMailbox.csproj", "{07678C66-5671-4836-B8C4-5F214105E189}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Base", "..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj", "{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{1FB20698-F99E-4CF6-B83B-CC7E1C01612D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Base", "..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj", "{EF3F5A7F-BC8A-492E-AB3B-B049667597CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{07678C66-5671-4836-B8C4-5F214105E189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07678C66-5671-4836-B8C4-5F214105E189}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07678C66-5671-4836-B8C4-5F214105E189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FB20698-F99E-4CF6-B83B-CC7E1C01612D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FB20698-F99E-4CF6-B83B-CC7E1C01612D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FB20698-F99E-4CF6-B83B-CC7E1C01612D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FB20698-F99E-4CF6-B83B-CC7E1C01612D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF3F5A7F-BC8A-492E-AB3B-B049667597CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF3F5A7F-BC8A-492E-AB3B-B049667597CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF3F5A7F-BC8A-492E-AB3B-B049667597CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF3F5A7F-BC8A-492E-AB3B-B049667597CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
