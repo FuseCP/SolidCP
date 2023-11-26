@@ -12,8 +12,8 @@ namespace SolidCP.Server.Tests
     {
         Process? process = null;
 
-		public const string HttpUrl = "http://localhost:9016";
-		public const string HttpsUrl = "https://localhost:9015";
+		public const string HttpUrl = "http://localhost:9015";
+		public const string HttpsUrl = "https://localhost:9016";
 		public Kestrel()
         {
             var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin_dotnet\SolidCP.Server.exe").FullName;
