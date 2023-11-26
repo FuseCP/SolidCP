@@ -211,8 +211,7 @@ namespace SolidCP.UniversalInstaller
 				case ConsoleKey.DownArrow:
 				case ConsoleKey.Tab:
 				case ConsoleKey.Enter:
-					Parent.EditNavigate(key);
-					break;
+					return Parent.EditNavigate(key);
 				case ConsoleKey.LeftArrow:
 					CursorX = CursorX - 1;
 					if (CursorX < 0)
@@ -671,8 +670,8 @@ namespace SolidCP.UniversalInstaller
 
 			if (DefaultButton == null)
 			{
-				var first = Fields.OfType<Button>().FirstOrDefault();
-				if (first != null) first.Default = true;
+				var last = Fields.OfType<Button>().LastOrDefault();
+				if (last != null) last.Default = true;
 			}
 
 			Focus = null;
