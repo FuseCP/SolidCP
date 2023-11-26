@@ -27,7 +27,7 @@ namespace SolidCP.UniversalInstaller
 		public string EnterpriseUser { get; set; }
 		public string EnterpriseUserPassword { get; set; }
 		public string DatabaseServer { get; set; }
-		public string DatabaseUser { get;}
+		public string DatabaseUser { get; set; }
 		public string DatabasePassword { get; set; }
 	}
 
@@ -35,6 +35,6 @@ namespace SolidCP.UniversalInstaller
 	{
 		public string EnterpriseServerUrl { get; set; }
 		public string PortalUser { get; set; }
-		public string PortalUserPassword { get;}
+		public string PortalUserPassword { get; set; }
 	}
 }

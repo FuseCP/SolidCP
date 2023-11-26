@@ -337,7 +337,7 @@ namespace SolidCP.UniversalInstaller
 	}
 	public class FieldList : KeyedCollection<string, ConsoleField>
 	{
-		protected override string GetKeyForItem(ConsoleField item) => item.Name;
+		protected override string GetKeyForItem(ConsoleField item) => item.Name.Trim();
 	}
 
 	public class ConsoleForm

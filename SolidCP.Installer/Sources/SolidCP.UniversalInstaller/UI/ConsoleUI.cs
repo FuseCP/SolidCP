@@ -16,9 +16,9 @@ SolidCP Installer
 SolidCP Installer must run as {rootUser}.
 Please enter {rootUser} password:
 
-[?Password                                      ]
+[!Password                                      ]
 
-[*    Ok    ]
+[    Ok    ]
 ")
 				.ShowDialog();
 			return form["Password"].Text;
@@ -35,7 +35,7 @@ Server Urls: [?Urls http://localhost:9003                                       
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
-[*    Ok    ]
+[    Ok    ]
 ")
 				.Load(ServerSettings)
 				.ShowDialog()
@@ -54,7 +54,7 @@ Repeat Password: [!RepeatPassword                                         ]
 
 Passwords don't match!
 
-[*    Ok    ]
+[    Ok    ]
 ")
 					.Load(ServerSettings)
 					.ShowDialog()
@@ -73,8 +73,8 @@ Enterprise Server Settings
 
 Urls:              [?Urls http://localhost:9002                                               ]
 Database Server:   [?DatabaseServer localhost                                                           ]
-Database User:     [?DatabaseUser                                                                     ]
-Database Password: [?DatabasePassword                                                                     ]
+Database User:     [?DatabaseUser sa                                                                  ]
+Database Password: [!DatabasePassword                                                                     ]
 
 [    Ok    ]
 ")
@@ -85,19 +85,19 @@ Database Password: [?DatabasePassword                                           
 			GetCommonSettings(EnterpriseServerSettings);
 			return EnterpriseServerSettings;
 		}
-		public bool IsLocalHttp(string url)
+		bool IsLocalHttp(string url)
 		{
 			var uri = new Uri(url);
 			var host = uri.Host;
 
 			return uri.Scheme == "http" && (host == "localhost" || host == "127.0.0.1" || host == "::1" || Regex.IsMatch(host, @"^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$"));
 		}
-		public bool IsLocalHttps(string url)
+		bool IsLocalHttps(string url)
 		{
 			var uri = new Uri(url);
 			var host = uri.Host;
 
-			return uri.Scheme == "http" && (host == "localhost" || host == "127.0.0.1" || host == "::1" || Regex.IsMatch(host, @"^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$"));
+			return uri.Scheme == "https" && (host == "localhost" || host == "127.0.0.1" || host == "::1" || Regex.IsMatch(host, @"^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$"));
 		}
 		public override WebPortalSettings GetWebPortalSettings()
 		{
