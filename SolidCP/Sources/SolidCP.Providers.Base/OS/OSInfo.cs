@@ -11,8 +11,8 @@ using System.IO;
 namespace SolidCP.Providers.OS
 {
 
-    public enum OSPlatform { Unknown, Windows, Mac, Linux, Unix, Other };
-	public enum OSFlavor { Unknown, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, CentOS, SUSE, Alpine, FreeBSD, NetBSD, Other }
+    public enum OSPlatform { Unknown = 0, Windows, Mac, Linux, Unix, Other };
+	public enum OSFlavor { Unknown = 0, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, CentOS, SUSE, Alpine, FreeBSD, NetBSD, Other }
 
 	public class OSInfo
 	{
