@@ -225,12 +225,20 @@ namespace SolidCP.Providers.OS
 			clone.LogOutput += OnLogOutput;
 			clone.LogError += OnLogError;
 		}
-		public virtual Shell RunAsync(string script)
+		public virtual Shell ExecScriptAsync(string script)
 		{
-			var file = ToTempFile(script);
-			return Exec($"{ShellExe} {file}");
+			var file = ToTempFile(script.Trim());
+			var shell = ExecAsync($"{ShellExe} {file}");
+			if (shell.Process != null)
+			{
+				shell.Process.Exited += (sender, args) =>
+				{
+					File.Delete(file);
+				};
+			}
+			return shell;
 		}
-		public virtual Shell Run(string script) => RunAsync(script).Task().Result;
+		public virtual Shell ExecScript(string script) => ExecScriptAsync(script).Task().Result;
 
 
 		/* public virtual async Task<Shell> Wait(int milliseconds = Timeout.Infinite)

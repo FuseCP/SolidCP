@@ -19,19 +19,19 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <OutputPath>bin_net</OutputPath>
+    <OutputPath>bin_dotnet</OutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <OutputPath>bin_net</OutputPath>
+    <OutputPath>bin_dotnet</OutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <OutputPath>bin_net</OutputPath>
+    <OutputPath>bin_dotnet</OutputPath>
     <StartupObject>SolidCP.Server.Program</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>

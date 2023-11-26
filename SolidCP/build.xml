@@ -44,6 +44,7 @@
 		<SolidCP-dSHeuristicsSrc>$(TrunkFolder)\Sources\Tools\SolidCP-dSHeuristics</SolidCP-dSHeuristicsSrc>
 		<FixDefaultPublicFolderMailboxSrc>$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox\bin\$(BuildConfiguration)</FixDefaultPublicFolderMailboxSrc>
 
+		<WIX>$(RootFolder)\tools\WIX\</WIX>
 		<ServerBuild>$(BuildFolder)\Server</ServerBuild>
 		<EnterpriseServerBuild>$(BuildFolder)\EnterpriseServer</EnterpriseServerBuild>
 		<SchedulerServiceBuild>$(BuildFolder)\SchedulerService</SchedulerServiceBuild>
@@ -379,10 +380,10 @@
     <Target Name="WiXCreateRedistFileListBuild" DependsOnTargets="CreateFixDefaultPublicFolderMailboxBuild" >
         <RemoveDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
         <MakeDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(EnterpriseServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\EnterpriseServerFiles.wxs -gg -sreg -srd -var wix.BUILDESPATH -cg EnterpriseServerFiles -dr PI_ESERVER_INSTALL_DIR' />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(ServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\ServerFiles.wxs -gg -sreg -srd -var wix.BUILDSPATH -cg ServerFiles -dr PI_SERVER_INSTALL_DIR' />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(PortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\PortalFiles.wxs -gg -sreg -srd -var wix.BUILDPPATH -cg PortalFiles -dr PI_PORTAL_INSTALL_DIR' />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(WebDavPortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\WebDavPortalFiles.wxs -gg -sreg -srd -var wix.BUILDWDPPATH -cg WebDavPortalFiles -dr PI_WEBDAVPORTAL_INSTALL_DIR' />
+        <Exec Command='"$(WIX)heat.exe" dir $(EnterpriseServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\EnterpriseServerFiles.wxs -gg -sreg -srd -var wix.BUILDESPATH -cg EnterpriseServerFiles -dr PI_ESERVER_INSTALL_DIR' />
+        <Exec Command='"$(WIX)heat.exe" dir $(ServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\ServerFiles.wxs -gg -sreg -srd -var wix.BUILDSPATH -cg ServerFiles -dr PI_SERVER_INSTALL_DIR' />
+        <Exec Command='"$(WIX)heat.exe" dir $(PortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\PortalFiles.wxs -gg -sreg -srd -var wix.BUILDPPATH -cg PortalFiles -dr PI_PORTAL_INSTALL_DIR' />
+        <Exec Command='"$(WIX)heat.exe" dir $(WebDavPortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\WebDavPortalFiles.wxs -gg -sreg -srd -var wix.BUILDWDPPATH -cg WebDavPortalFiles -dr PI_WEBDAVPORTAL_INSTALL_DIR' />
 
 		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\Setup.WIX\Setup.Wix.wixproj" Properties="Configuration=$(BuildConfiguration);DefineSolutionProperties=false">
 			<Output

@@ -51,7 +51,7 @@ msbuild.log
 bin/Debug
 bin/Release
 **/bin/
-**/bin_net/
+**/bin_dotnet/
 *.vshost.*
 *.pdb
 *.vs10x

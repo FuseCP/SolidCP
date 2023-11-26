@@ -16,13 +16,13 @@ namespace SolidCP.Server.Tests
 		public const string HttpsUrl = "https://localhost:9015";
 		public Kestrel()
         {
-            var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin_net\SolidCP.Server.exe").FullName;
+            var exe = new FileInfo(@"..\..\..\..\SolidCP.Server\bin_dotnet\SolidCP.Server.exe").FullName;
             var startInfo = new ProcessStartInfo(exe)
             {
                 CreateNoWindow = false,
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.Server\bin_net").FullName
+                WorkingDirectory = new DirectoryInfo(@"..\..\..\..\SolidCP.Server\bin_dotnet").FullName
             };
             process = Process.Start(startInfo);
             

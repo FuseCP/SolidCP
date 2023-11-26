@@ -40,7 +40,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				// install dotnet from microsoft
 				Apt.Install("wget");
-				Shell.Run(@"
+				Shell.ExecScript(@"
 # Get Ubuntu version
 declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '""'; fi)
 
