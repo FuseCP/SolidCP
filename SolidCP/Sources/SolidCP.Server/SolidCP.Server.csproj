@@ -127,7 +127,7 @@
     <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
     <Content Update="wwwroot\img\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
