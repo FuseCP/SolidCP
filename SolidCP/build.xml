@@ -186,6 +186,10 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.asmx" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.md" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.old" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.log" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\WsePolicyCache.Config" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\Properties\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\refs\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.csproj" />
