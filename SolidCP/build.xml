@@ -148,6 +148,12 @@
 			<ServerBuildExclude Include="$(ServerSrc)\App_Cache\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\Images\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\LogParser\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\WebServices\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\Properties\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\wwwroot\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin_dotnet\WebServices\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin\wwwroot\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\Pages\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.user" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.suo" />
@@ -180,6 +186,8 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.asmx" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\Properties\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\refs\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.csproj" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.metacsproj" />
 			<EnterpriseServerBuildFiles Include="$(EnterpriseServerSrc)\**\*.*" Exclude="@(EnterpriseServerBuildExclude)"/>

@@ -478,6 +478,7 @@ namespace SolidCP.UniversalInstaller
 					var fieldUpwards = Fields
 						.Where(f => f.CanFocus && f.Y < Focus.Y)
 						.OrderByDescending(f => f.Y)
+						.ThenBy(f => Math.Abs(f.X - Focus.X))
 						.FirstOrDefault();
 					if (fieldUpwards != null) SetFocus(fieldUpwards);
 					break;
@@ -485,6 +486,7 @@ namespace SolidCP.UniversalInstaller
 					var fieldDownwards = Fields
 						.Where(f => f.CanFocus && f.Y > Focus.Y)
 						.OrderBy(f => f.Y)
+						.ThenBy(f => Math.Abs(f.X - Focus.X))
 						.FirstOrDefault();
 					if (fieldDownwards != null) SetFocus(fieldDownwards);
 					break;
@@ -492,6 +494,7 @@ namespace SolidCP.UniversalInstaller
 					var fieldLeftwards = Fields
 						.Where(f => f.CanFocus && f.X < Focus.X)
 						.OrderByDescending(f => f.X)
+						.ThenBy(f => Math.Abs(f.Y - Focus.Y))
 						.FirstOrDefault();
 					if (fieldLeftwards != null) SetFocus(fieldLeftwards);
 					break;
@@ -499,6 +502,7 @@ namespace SolidCP.UniversalInstaller
 					var fieldRightwards = Fields
 						.Where(f => f.CanFocus && f.X > Focus.X)
 						.OrderBy(f => f.X)
+						.ThenBy(f => Math.Abs(f.Y - Focus.Y))
 						.FirstOrDefault();
 					if (fieldRightwards != null) SetFocus(fieldRightwards);
 					break;
