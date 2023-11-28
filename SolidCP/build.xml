@@ -155,6 +155,7 @@
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.csproj" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vb" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vbproj" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.asmx" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Administration.*"/>
 			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Management.*"/>
 			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Exchange.*"/>
@@ -178,6 +179,7 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.user" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.asmx" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.csproj" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.metacsproj" />
 			<EnterpriseServerBuildFiles Include="$(EnterpriseServerSrc)\**\*.*" Exclude="@(EnterpriseServerBuildExclude)"/>
