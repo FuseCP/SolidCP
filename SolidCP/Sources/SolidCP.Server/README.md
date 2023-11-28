@@ -10,7 +10,7 @@ In order to debug SolidCP.Server please:
 
   Unfortunately it's not possible to debug NET Framework projects directly in Visual Studio for SDK style projects. In order to debug, you have to start iisexpress via the command shell and attach to the process within Visual Studio.
 
-- For net6 & WSL set the correct certificate settings in launchSettings.json or appsettings.json to configure the
+- For net8 & WSL set the correct certificate settings in launchSettings.json or appsettings.json to configure the
    server certificate WCF should use, or run the server only over http.
 
-The net6 version of the SolidCP.Server resides in the directory bin_dotnet.
+The net8 version of the SolidCP.Server resides in the directory bin_dotnet.

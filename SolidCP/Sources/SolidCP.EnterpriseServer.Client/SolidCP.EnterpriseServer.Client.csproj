@@ -1,0 +1,3 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
+</Project>
