@@ -21,7 +21,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			var host = Assembly.GetExecutingAssembly();
 			var resources = host.GetManifestResourceNames();
-			var assName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.dll"));
+			var assName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.dll", StringComparison.OrdinalIgnoreCase));
 			string? pdbName = null;
 			if (assName != null)
 			{
@@ -29,7 +29,7 @@ namespace SolidCP.UniversalInstaller
 				{
 					if (Debugger.IsAttached)
 					{
-						pdbName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.pdb"));
+						pdbName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.pdb", StringComparison.OrdinalIgnoreCase));
 						if (pdbName != null)
 						{
 							using (var pdbStream = host.GetManifestResourceStream(pdbName))

@@ -86,6 +86,10 @@ namespace SolidCP.UniversalInstaller
 		public virtual ConsoleForm Parent { get; set; }
 
 		public virtual bool Edit(ConsoleKeyInfo key) => false;
+		public virtual void ReceiveFocus()
+		{
+			HasFocus = true;
+		}
 
 		public virtual void Show()
 		{
@@ -201,6 +205,11 @@ namespace SolidCP.UniversalInstaller
 		}
 		public override bool CanFocus => true;
 		public override bool Editable => true;
+		public override void ReceiveFocus()
+		{
+			base.ReceiveFocus();
+			CursorX = Text.Length;
+		}
 		public override bool Edit(ConsoleKeyInfo key)
 		{
 			int pos;
@@ -323,6 +332,11 @@ namespace SolidCP.UniversalInstaller
 		public Choice() : base() { }
 		public override bool Editable => true;
 
+		public override void ReceiveFocus()
+		{
+			HasFocus = true;
+		}
+
 		public override bool Edit(ConsoleKeyInfo key)
 		{
 			if (key.Key == ConsoleKey.Spacebar)
@@ -414,7 +428,7 @@ namespace SolidCP.UniversalInstaller
 			}
 			if (field != null)
 			{
-				field.HasFocus = true;
+				field.ReceiveFocus();
 				Focus = field;
 				field.Show();
 			}

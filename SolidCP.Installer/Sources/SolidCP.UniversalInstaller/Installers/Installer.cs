@@ -215,21 +215,21 @@ namespace SolidCP.UniversalInstaller
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
 			CreatePath(websitePath);
-			UnzipFromResource("SolidCP.Server.zip", websitePath);
+			UnzipFromResource("SolidCP-Server.zip", websitePath);
 		}
 
 		public virtual void UnzipEnterpriseServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
 			CreatePath(websitePath);
-			UnzipFromResource("SolidCP.EnterpriseServer.zip", websitePath);
+			UnzipFromResource("SolidCP-EnterpriseServer.zip", websitePath);
 		}
 
 		public virtual void UnzipPortal()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, PortalFolder);
 			CreatePath(websitePath);
-			UnzipFromResource("SolidCP.WebPortal.zip", websitePath);
+			UnzipFromResource("SolidCP-Portal.zip", websitePath);
 		}
 
 		public async Task<string> DownloadFileAsync(string url)
@@ -257,9 +257,11 @@ namespace SolidCP.UniversalInstaller
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var resourceName = assembly.GetManifestResourceNames()
-				.FirstOrDefault(res => res.EndsWith(resourcePath));
+				.FirstOrDefault(res => res.EndsWith(resourcePath, StringComparison.OrdinalIgnoreCase));
 
 			if (resourceName == null) throw new NotSupportedException($"Cannot find {resourcePath} in resources.");
+
+			CreatePath(destinationPath);
 
 			using (var resource = assembly.GetManifestResourceStream(resourceName))
 			using (var zip = ZipFile.Read(resource))
