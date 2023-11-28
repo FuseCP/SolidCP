@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller
 		public override void RestartAsRoot(string password)
 		{
 			var assembly = Assembly.GetEntryAssembly().Location;
-			Shell.RunAsync($"echo {password} | sudo -S mono {assembly}");
+			Shell.ExecScriptAsync($"echo {password} | sudo -S mono {assembly}");
 		}
 	}
 }
