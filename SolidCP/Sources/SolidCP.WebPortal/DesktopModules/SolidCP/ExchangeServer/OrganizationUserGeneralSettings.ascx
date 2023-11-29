@@ -274,7 +274,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading panel-heading-link">
                         <a data-toggle="collapse" data-parent="#accordion" href="#secContactInfo2" aria-expanded="false" class="collapsed">
-                            <asp:Localize runat="server" meta:resourcekey="secContactInfo" Text="Contact Information" />Contact Information<span class='fa fa-plus pull-right' aria-hidden='true'> </span>
+                            <asp:Localize runat="server" meta:resourcekey="secContactInfo" Text="Contact Information" /><span class='fa fa-plus pull-right' aria-hidden='true'> </span>
                         </a>
                     </div>
                     <div id="secContactInfo2" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">

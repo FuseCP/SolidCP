@@ -223,7 +223,7 @@
     <value>Company Information</value>
   </data>
   <data name="secContactInfo.Text" xml:space="preserve">
-    <value />
+    <value>Contact Information</value>
   </data>
   <data name="Text.PageName" xml:space="preserve">
     <value>User</value>
