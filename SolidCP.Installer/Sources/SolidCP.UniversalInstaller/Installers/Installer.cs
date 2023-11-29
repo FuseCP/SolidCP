@@ -16,6 +16,7 @@ namespace SolidCP.UniversalInstaller
 
 	public abstract class Installer
 	{
+		public const bool RunAsAdmin = true;
 		public virtual string SolidCP => "SolidCP";
 		public virtual string ServerFolder => "Server";
 		public virtual string EnterpriseServerFolder => "EnterpriseServer";
@@ -38,9 +39,9 @@ namespace SolidCP.UniversalInstaller
 		public virtual string? InstallExeRootPath { get; set; } = null;
 		public abstract string WebsiteLogsPath { get; }
 
-		public ServerSettings? ServerSettings { get; set; } = null;
-		public EnterpriseServerSettings? EnterpriseServerSettings { get; set; } = null;
-		public WebPortalSettings? WebPortalSettings { get; set; } = null;
+		public ServerSettings ServerSettings { get; set; } = new ServerSettings();
+		public EnterpriseServerSettings EnterpriseServerSettings { get; set; } = new EnterpriseServerSettings();
+		public WebPortalSettings WebPortalSettings { get; set; } = new WebPortalSettings();
 		public int EstimatedOutputLines = 0;
 
 		public Shell Shell { get; set; } = OSInfo.Current.DefaultShell.Clone;
@@ -73,7 +74,6 @@ namespace SolidCP.UniversalInstaller
 				return false;
 			}
 		}
-
 		public abstract void InstallNet8Runtime();
 		public abstract void RemoveNet8AspRuntime();
 		public abstract void RemoveNet8NetRuntime();
@@ -121,13 +121,15 @@ namespace SolidCP.UniversalInstaller
 			RemoveServerWebsite();
 		}
 
-		public virtual void InstallWebsite(string name, string path, string urls)
+		public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
 		{
 			var site = new WebSite()
 			{
 				ContentPath = path,
 				AspNetInstalled = "",
-				ApplicationPool = "",
+				AnonymousUsername = username,
+				AnonymousUserPassword = password,
+				ApplicationPool = name,
 				DedicatedApplicationPool = true,
 				EnableAnonymousAccess = true,
 				EnableBasicAuthentication = true,
@@ -167,11 +169,11 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{
-			InstallWebsite($"{SolidCP}EnterpriseServer", Path.Combine(InstallWebRootPath, EnterpriseServerFolder), EnterpriseServerSettings.Urls);
+			InstallWebsite($"{SolidCP}EnterpriseServer", Path.Combine(InstallWebRootPath, EnterpriseServerFolder), EnterpriseServerSettings.Urls ?? "");
 		}
 		public virtual void InstallPortalWebsite()
 		{
-			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), WebPortalSettings.Urls);
+			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), WebPortalSettings.Urls ?? "");
 		}
 		public virtual void InstallWebPortal() {
 			InstallPortalPrerequisites();
@@ -204,32 +206,21 @@ namespace SolidCP.UniversalInstaller
 		{
 
 		}
-
-		public void CreatePath(string path)
-		{
-			if (Directory.Exists(path)) return;
-			var dir = Path.GetDirectoryName(path);
-			if (dir != "" && dir != path) CreatePath(dir);
-		}
+		public virtual Func<string, string?>? UnzipFilter => null;
 		public virtual void UnzipServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-			CreatePath(websitePath);
-			UnzipFromResource("SolidCP-Server.zip", websitePath);
+			UnzipFromResource("SolidCP-Server.zip", websitePath, UnzipFilter);
 		}
-
 		public virtual void UnzipEnterpriseServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
-			CreatePath(websitePath);
-			UnzipFromResource("SolidCP-EnterpriseServer.zip", websitePath);
+			UnzipFromResource("SolidCP-EnterpriseServer.zip", websitePath, UnzipFilter);
 		}
-
 		public virtual void UnzipPortal()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, PortalFolder);
-			CreatePath(websitePath);
-			UnzipFromResource("SolidCP-Portal.zip", websitePath);
+			UnzipFromResource("SolidCP-Portal.zip", websitePath, Net48UnzipFilter);
 		}
 
 		public async Task<string> DownloadFileAsync(string url)
@@ -252,8 +243,16 @@ namespace SolidCP.UniversalInstaller
 			return tmp;
 		}
 		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
-
-		public void UnzipFromResource(string resourcePath, string destinationPath)
+		public string? Net48UnzipFilter(string file)
+		{
+			return (!file.StartsWith("Setup/") && !file.StartsWith("bin_dotnet/") && !file.EndsWith(".json")) ? file : null;
+		}
+		public string? Net8UnzipFilter(string file)
+		{
+			return (!file.StartsWith("Setup/") && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
+				!file.EndsWith(".config") && file != "appsettings.json") ? file : null;
+		}
+		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string?>? filter = null)
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var resourceName = assembly.GetManifestResourceNames()
@@ -261,21 +260,35 @@ namespace SolidCP.UniversalInstaller
 
 			if (resourceName == null) throw new NotSupportedException($"Cannot find {resourcePath} in resources.");
 
-			CreatePath(destinationPath);
+			Directory.CreateDirectory(destinationPath);
 
 			using (var resource = assembly.GetManifestResourceStream(resourceName))
 			using (var zip = ZipFile.Read(resource))
 			{
 				foreach (var zipEntry in zip)
 				{
-					Shell.Log?.Invoke($"Exracting {zipEntry.FileName}{Environment.NewLine}");
-					zipEntry.Extract(destinationPath);
+					var name = filter?.Invoke(zipEntry.FileName) ?? null;
+
+					if (name != null)
+					{
+						var fullName = Path.Combine(destinationPath, name.Replace('/', Path.DirectorySeparatorChar));
+
+						if (zipEntry.IsDirectory) Directory.CreateDirectory(fullName);
+						else
+						{
+							using (var file = new FileStream(fullName, FileMode.Create, FileAccess.Write))
+							{
+								zipEntry.Extract(file);
+							}
+							Shell.Log?.Invoke($"Exracted {name}{Environment.NewLine}");
+						}
+					}
 				}
 			}
 		}
 
-		public virtual bool CheckIsRoot() => true;
-		public virtual void RestartAsRoot(string password) { }
+		public virtual bool IsRunningAsAdmin() => true;
+		public virtual void RestartAsAdmin() { }
 
 		public void InstallAll()
 		{
@@ -283,12 +296,7 @@ namespace SolidCP.UniversalInstaller
 
 			Shell.LogFile = "SolidCP.Installer.log";
 
-			if (!CheckIsRoot())
-			{
-				var password = UI.GetRootPassword();
-				RestartAsRoot(password);
-				return;
-			}
+			if (!IsRunningAsAdmin()) RestartAsAdmin();
 
 			var packages = UI.GetPackagesToInstall();
 
@@ -332,10 +340,13 @@ namespace SolidCP.UniversalInstaller
 				UI.ShowError(ex);
 
 				Shell.Log($"Exception: {ex}");
+
+				Console.WriteLine("Press any key to exit...");
+				Console.Read();
 			}
 		}
 
-		static Installer current;
+		static Installer? current;
 		public static Installer Current
 		{
 			get

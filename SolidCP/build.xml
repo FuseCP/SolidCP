@@ -158,6 +158,8 @@
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.user" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.suo" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.cs" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.md" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.snk" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.csproj" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vb" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vbproj" />
@@ -185,6 +187,7 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.user" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.snk" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.asmx" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.md" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.old" />
@@ -210,6 +213,7 @@
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.user" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.suo" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.cs" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.snk" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.csproj" />
 			<PortalBuildExclude Include="$(PortalSrc)\Code\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\bin\**" />
@@ -230,6 +234,7 @@
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.user" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.suo" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.snk" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.cs" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.csproj" />
 			<SchedulerServiceBuildFiles Include="$(SchedulerServiceSrc)\**\*.*" Exclude="@(SchBuildExclude)" />
@@ -251,6 +256,7 @@
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.user" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.snk" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.csproj" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.sln" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\web.release.config" />

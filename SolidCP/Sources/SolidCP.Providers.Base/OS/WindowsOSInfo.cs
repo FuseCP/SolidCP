@@ -329,6 +329,8 @@ namespace SolidCP.Providers.OS
 			// Get OperatingSystem information from the system namespace.
 			System.OperatingSystem osInfo = System.Environment.OSVersion;
 
+			var ver = new Version(Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment.OperatingSystemVersion);
+
 			// Determine the platform.
 			switch (osInfo.Platform)
 			{
@@ -350,7 +352,7 @@ namespace SolidCP.Providers.OS
 
 				// Platform is Windows NT 3.51, Windows NT 4.0, Windows 2000, or Windows XP.
 				case System.PlatformID.Win32NT:
-					switch (osInfo.Version.Major)
+					switch (ver.Major)
 					{
 						case 3:
 							ret = WindowsVersion.WindowsNT351;
@@ -359,7 +361,7 @@ namespace SolidCP.Providers.OS
 							ret = WindowsVersion.WindowsNT4;
 							break;
 						case 5:
-							switch (osInfo.Version.Minor)
+							switch (ver.Minor)
 							{
 								case 0:
 									ret = WindowsVersion.Windows2000;
@@ -391,7 +393,7 @@ namespace SolidCP.Providers.OS
 							}
 							break;
 						case 6:
-							switch (osInfo.Version.Minor)
+							switch (ver.Minor)
 							{
 								case 0:
 									if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION)

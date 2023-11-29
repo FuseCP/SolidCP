@@ -1908,8 +1908,8 @@ namespace SolidCP.Providers.OS
 
 		protected Web.IWebServer webServer = null;
 		public virtual Web.IWebServer WebServer =>
-			webServer != null ? webServer :
-			webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60"));
+			webServer ??
+			(webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60")));
 		public virtual ServiceController ServiceController => throw new NotImplementedException();
 
 	}

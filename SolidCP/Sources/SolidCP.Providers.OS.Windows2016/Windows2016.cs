@@ -518,7 +518,7 @@ namespace SolidCP.Providers.OS
 
         #endregion
 
-        public override Web.IWebServer WebServer => webServer != null ? webServer : webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs100, SolidCP.Providers.Web.IIs100"));
+        public override Web.IWebServer WebServer => webServer ?? (webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs100, SolidCP.Providers.Web.IIs100")));
 
     }
 }

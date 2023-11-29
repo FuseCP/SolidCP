@@ -17,7 +17,7 @@ namespace SolidCP.UniversalInstaller
 				return m.ToArray();
 			}
 		}
-		public static Assembly Resolve(object sender, ResolveEventArgs args)
+		public static Assembly? Resolve(object sender, ResolveEventArgs args)
 		{
 			var host = Assembly.GetExecutingAssembly();
 			var resources = host.GetManifestResourceNames();

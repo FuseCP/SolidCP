@@ -8,9 +8,9 @@ namespace SolidCP.UniversalInstaller
 {
     public abstract class UnixInstaller : Installer
     {
-		public override string InstallExeRootPath { get => base.InstallExeRootPath ?? "/user/local/SolidCP/bin"; set => base.InstallExeRootPath = value; }
-		public override string InstallWebRootPath { get => base.InstallWebRootPath ?? "/var/www/SolidCP"; set => base.InstallWebRootPath = value; }
-		public override string WebsiteLogsPath => "/var/log/SolidCP";
+		public override string? InstallExeRootPath { get => base.InstallExeRootPath ?? $"/user/local/{SolidCP}/bin"; set => base.InstallExeRootPath = value; }
+		public override string? InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
+		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
 		public UnixInstaller(): base() { }
 
 		public override void InstallServerWebsite()
@@ -37,17 +37,18 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallNet8Runtime();
 		}
-
-		public override bool CheckIsRoot()
+		public override Func<string, string?>? UnzipFilter => Net8UnzipFilter;
+		public override bool IsRunningAsAdmin()
 		{
 			//var uid = Mono.Posix.Syscall.getuid();
-			var euid = Mono.Posix.Syscall.geteuid();
+			var euid = Mono.Unix.Native.Syscall.geteuid();
 			return euid == 0;
 		}
 
-		public override void RestartAsRoot(string password)
+		public override void RestartAsAdmin()
 		{
 			var assembly = Assembly.GetEntryAssembly().Location;
+			var password = UI.GetRootPassword();
 			Shell.ExecScriptAsync($"echo {password} | sudo -S mono {assembly}");
 		}
 	}

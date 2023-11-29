@@ -104,7 +104,7 @@ Database Password: [!DatabasePassword                                           
 			var esurls = EnterpriseServerSettings.Urls;
 			if (!string.IsNullOrEmpty(esurls))
 			{
-				var urls = esurls.Split(';', ',');
+				var urls = esurls!.Split(';', ',');
 				var esurl = urls.FirstOrDefault(url => IsLocalHttp(url));
 				if (esurl == null) esurl = urls.FirstOrDefault(url => IsLocalHttps(url));
 				if (esurl != null)
@@ -158,7 +158,7 @@ Components to Install
 			Console.WriteLine(ex.ToString());
 		}
 
-		ConsoleForm InstallationProgress = null;
+		ConsoleForm? InstallationProgress = null;
 		public override void ShowInstallationProgress()
 		{
 			InstallationProgress = new ConsoleForm(@"
@@ -178,7 +178,7 @@ Installation Progress:
 
 		public override void GetCommonSettings(CommonSettings settings)
 		{
-			if (settings.Urls.Split(';', ',').Any(url => url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
+			if (settings.Urls!.Split(';', ',').Any(url => url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
 			{
 				var template = OSInfo.IsWindows ? @"
 Server Certificate Settings
@@ -236,7 +236,7 @@ Password:     [?CertificatePassword                                             
 					.Load(settings)
 					.ShowDialog()
 					.Save(settings);
-					settings.CertificateFile = new DirectoryInfo(settings.CertificateFile.Replace("~", Environment.GetEnvironmentVariable("HOME"))).FullName;
+					settings.CertificateFile = new DirectoryInfo(settings.CertificateFile!.Replace("~", Environment.GetEnvironmentVariable("HOME"))).FullName;
 				}
 				else if (form[2].Clicked)
 				{

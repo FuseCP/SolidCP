@@ -63,7 +63,7 @@ namespace SolidCP.Providers.OS
 					const string OsReleaseFile = "/etc/os-release";
 					if (File.Exists(OsReleaseFile))
 					{
-						var osRelease = File.ReadAllText("/etc/os-release");
+						var osRelease = File.ReadAllText(OsReleaseFile);
 						var match = Regex.Match(osRelease, "(?<=^NAME\\s*=\\s*\")[^\"]+(?=\")", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 						if (match.Success) name = match.Value;
 						match = Regex.Match(osRelease, @"(?<=^VERSION\s*=\s*""[^""0-9]*?)[0-9]+\.[0-9]+(\.[0-9]+)?(\.[0-9]+)?", RegexOptions.IgnoreCase | RegexOptions.Multiline);

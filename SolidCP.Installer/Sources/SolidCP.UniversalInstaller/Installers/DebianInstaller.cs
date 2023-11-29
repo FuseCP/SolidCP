@@ -8,7 +8,7 @@ namespace SolidCP.UniversalInstaller
     public class DebianInstaller : UnixInstaller
     {
 
-        Providers.OS.Installer apt;
+        Providers.OS.Installer? apt;
         public Providers.OS.Installer Apt
         {
             get
