@@ -14,7 +14,7 @@ namespace SolidCP.Providers.OS
 		public override IEnumerable<OSService> All()
 		{
 			var text = Shell.Exec("systemctl --full --type=service --no-pager --all").Output().Result;
-			var matches = Regex.Matches(text, @"^??\s*(?<name>.*?).service\s+(?<loaded>[^\s$]+)\s+(?<active>[^\s$]+)\s+(?<state>[^\s$]+)\s+(?<desc>.*?)$", RegexOptions.Multiline);
+			var matches = Regex.Matches(text, @"^\u25CF?\s*(?<name>.*?).service\s+(?<loaded>[^\s$]+)\s+(?<active>[^\s$]+)\s+(?<state>[^\s$]+)\s+(?<desc>.*?)$", RegexOptions.Multiline);
 			foreach (Match match in matches)
 			{
 				var name = Path.GetFileNameWithoutExtension(match.Groups["name"].Value);
