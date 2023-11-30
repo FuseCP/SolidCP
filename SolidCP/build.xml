@@ -160,6 +160,10 @@
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.cs" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.md" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.snk" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.log" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.old" />	
+			<ServerBuildExclude Include="$(ServerSrc)\appsettings.json" />					
+			<ServerBuildExclude Include="$(ServerSrc)\**\WsePolicyCache.Config" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.csproj" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vb" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vbproj" />
@@ -188,11 +192,12 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.snk" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\appsettings.json" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\WsePolicyCache.Config" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.asmx" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.md" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.old" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.log" />
-			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\WsePolicyCache.Config" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\Properties\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\refs\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.csproj" />

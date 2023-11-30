@@ -69,6 +69,7 @@ namespace SolidCP.Providers.OS
 	{
 		UnixFileMode GetUnixPermissions(string path);
 		void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false);
+		void ChangeFileOwner(string path, string owner, string group, bool setChildren = false);
 
 		Shell Sh { get; }
 		Shell Bash { get; }

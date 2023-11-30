@@ -320,6 +320,30 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
+		public void ChangeFileOwner(string path, string owner, string group, bool setChildren = false)
+		{
+			if (!setChildren)
+			{
+				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(path);
+				if (info != null && info.Exists)
+				{
+					info.SetOwner(owner, group);
+					info.Refresh();
+				}
+			}
+			else
+			{
+				foreach (var e in Directory.EnumerateFileSystemEntries(path))
+				{
+					var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
+					if (info != null && info.Exists)
+					{
+						info.SetOwner(owner, group);
+						info.Refresh();
+					}
+				}
+			}
+		}
 		public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
 		{
 			throw new NotImplementedException();

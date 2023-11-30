@@ -83,7 +83,7 @@ namespace SolidCP.UniversalInstaller
 			InstallWebsite($"{SolidCP}Server", websitePath,
 				ServerSettings.Urls ?? "",
 				ServerSettings.Username ?? $"{SolidCP}Server",
-				ServerSettings.Password ?? new Random().Next().ToString());
+				ServerSettings.Password ?? "");
 		}
 
 		public override bool IsRunningAsAdmin()
@@ -98,7 +98,10 @@ namespace SolidCP.UniversalInstaller
 				var currentp = Process.GetCurrentProcess();
 				ProcessStartInfo procInfo = new ProcessStartInfo();
 				procInfo.UseShellExecute = true;
-				procInfo.FileName = Assembly.GetExecutingAssembly().Location;
+				var assemblyFile = Assembly.GetExecutingAssembly().Location;
+				if (assemblyFile.EndsWith(".exe")) procInfo.FileName = assemblyFile;
+				else if (OSInfo.IsMono) procInfo.FileName = "mono";
+				else if (OSInfo.IsCore) procInfo.FileName = "dotnet";
 				procInfo.WorkingDirectory = Environment.CurrentDirectory;
 				procInfo.Arguments = currentp.StartInfo.Arguments;
 				procInfo.Verb = "runas";

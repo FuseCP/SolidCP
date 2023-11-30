@@ -555,10 +555,15 @@ namespace SolidCP.Providers.Web
 		{
 			// anonymous user groups
 			List<string> webGroups = new List<string>();
-			webGroups.Add(WebGroupName);
+			if (!string.IsNullOrEmpty(WebGroupName)) webGroups.Add(WebGroupName);
+
+			SystemUser user = new SystemUser();
+			if (string.IsNullOrEmpty(site.AnonymousUsername))
+			{
+				site.AnonymousUsername = "";
+			}
 
 			// create web site anonymous account
-			SystemUser user = new SystemUser();
 			user.Name = GetNonQualifiedAccountName(site.AnonymousUsername);
 			user.FullName = GetNonQualifiedAccountName(site.AnonymousUsername);
 

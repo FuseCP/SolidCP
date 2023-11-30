@@ -3,6 +3,7 @@ using System.Reflection;
 using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Utils;
 using Ionic.Zip;
 using System.Globalization;
 using System.Security.Policy;
@@ -24,6 +25,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual string ServerUser => $"{SolidCP}Server";
 		public virtual string EnterpriseServerUser => $"{SolidCP}EnterpriseServer";
 		public virtual string WebPortalUser => $"{SolidCP}Portal";
+		public virtual string SolidCPWebUsersGroup => "SCP_IUSRS";
 		public virtual bool CanInstallServer => true;
 		public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 		public virtual bool CanInstallPortal => OSInfo.IsWindows;
@@ -95,7 +97,13 @@ namespace SolidCP.UniversalInstaller
 		{
 			if (!Path.IsPathRooted(folder)) folder = Path.Combine(InstallWebRootPath, folder);
 
-			throw new CultureNotFoundException();
+			if (!OSInfo.IsWindows)
+			{
+				((IUnixOperatingSystem)OSInfo.Current).GrantUnixPermissions(folder,
+					Providers.OS.UnixFileMode.UserWrite | Providers.OS.UnixFileMode.GroupWrite |
+					Providers.OS.UnixFileMode.UserRead | Providers.OS.UnixFileMode.GroupRead |
+					Providers.OS.UnixFileMode.UserExecute | Providers.OS.UnixFileMode.GroupExecute, true);
+			}
 		}
 		public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
 		public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
@@ -123,10 +131,19 @@ namespace SolidCP.UniversalInstaller
 
 		public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
 		{
+
+			// Create web users group
+			if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, null, ""))
+			{
+				var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup };
+				SecurityUtils.CreateGroup(group, null, "", "");
+			}
+
 			var site = new WebSite()
 			{
 				ContentPath = path,
-				AspNetInstalled = "",
+				GroupName = SolidCPWebUsersGroup,
+				AspNetInstalled = "v4.0",
 				AnonymousUsername = username,
 				AnonymousUserPassword = password,
 				ApplicationPool = name,
@@ -134,7 +151,7 @@ namespace SolidCP.UniversalInstaller
 				EnableAnonymousAccess = true,
 				EnableBasicAuthentication = true,
 				EnableDynamicCompression = false,
-				EnableWritePermissions = false,
+				EnableWritePermissions = true,
 				Name = name,
 				LogsPath = WebsiteLogsPath,
 			};
@@ -149,6 +166,8 @@ namespace SolidCP.UniversalInstaller
 					return new ServerBinding(uri.Scheme, "0.0.0.0", uri.Port.ToString(), uri.Host);
 				})
 				.ToArray();
+
+			((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
 
 			WebServer.CreateSite(site);
 		}
@@ -169,11 +188,15 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{
-			InstallWebsite($"{SolidCP}EnterpriseServer", Path.Combine(InstallWebRootPath, EnterpriseServerFolder), EnterpriseServerSettings.Urls ?? "");
+			InstallWebsite($"{SolidCP}EnterpriseServer", 
+				Path.Combine(InstallWebRootPath, EnterpriseServerFolder),
+				EnterpriseServerSettings.Urls ?? "",
+				"", "");
+
 		}
 		public virtual void InstallPortalWebsite()
 		{
-			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), WebPortalSettings.Urls ?? "");
+			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), WebPortalSettings.Urls ?? "", "", "");
 		}
 		public virtual void InstallWebPortal() {
 			InstallPortalPrerequisites();
@@ -250,7 +273,8 @@ namespace SolidCP.UniversalInstaller
 		public string? Net8UnzipFilter(string file)
 		{
 			return (!file.StartsWith("Setup/") && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-				!file.EndsWith(".config") && file != "appsettings.json") ? file : null;
+				!file.EndsWith(".config", StringComparison.OrdinalIgnoreCase) && file != "appsettings.json" &&
+				!file.EndsWith(".aspx") && !file.EndsWith(".asax")) ? file : null;
 		}
 		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string?>? filter = null)
 		{
@@ -276,6 +300,9 @@ namespace SolidCP.UniversalInstaller
 						if (zipEntry.IsDirectory) Directory.CreateDirectory(fullName);
 						else
 						{
+							var dir = Path.GetDirectoryName(fullName);
+							if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
 							using (var file = new FileStream(fullName, FileMode.Create, FileAccess.Write))
 							{
 								zipEntry.Extract(file);

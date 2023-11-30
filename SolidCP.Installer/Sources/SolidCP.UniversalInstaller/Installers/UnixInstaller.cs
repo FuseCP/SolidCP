@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -47,9 +48,19 @@ namespace SolidCP.UniversalInstaller
 
 		public override void RestartAsAdmin()
 		{
-			var assembly = Assembly.GetEntryAssembly().Location;
 			var password = UI.GetRootPassword();
-			Shell.ExecScriptAsync($"echo {password} | sudo -S mono {assembly}");
+			var assembly = Assembly.GetEntryAssembly()?.Location;
+			string? arguments = null;
+			try
+			{
+				arguments = Process.GetCurrentProcess().StartInfo.Arguments;
+			}
+			catch { }
+			arguments = arguments ?? assembly;
+			if (OSInfo.IsMono) Shell.ExecScript($"echo {password} | sudo -S mono {arguments}");
+			if (OSInfo.IsCore) Shell.ExecScript($"echo {password} | sudo -S dotnet {arguments}");
+
+			Environment.Exit(Shell.Process?.ExitCode ?? -1);
 		}
 	}
 }

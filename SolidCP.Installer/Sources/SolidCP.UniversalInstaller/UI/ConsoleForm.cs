@@ -21,7 +21,7 @@ namespace SolidCP.UniversalInstaller
 		public static ConsoleSettings Save()
 		{
 			ConsoleSettings settings = new ConsoleSettings();
-			settings.CursorVisible = Console.CursorVisible;
+			if (OSInfo.IsWindows || OSInfo.IsMono) settings.CursorVisible = Console.CursorVisible;
 			settings.CursorX = Console.CursorLeft;
 			settings.CursorY = Console.CursorTop;
 			settings.BackgroundColor = Console.BackgroundColor;
@@ -41,7 +41,7 @@ namespace SolidCP.UniversalInstaller
 			Console.CursorTop = Y;
 			Console.BackgroundColor = backgroundColor;
 			Console.ForegroundColor = foregroundColor;
-			Console.CursorVisible = visible;
+			if (OSInfo.IsWindows || OSInfo.IsMono) Console.CursorVisible = visible;
 			return con;
 		}
 	}
@@ -119,11 +119,15 @@ namespace SolidCP.UniversalInstaller
 
 			// save settings
 			var con = ConsoleSettings.Set(X, Parent!.Y + Y, false, BackgroundColor, ForegroundColor);
-
 			Console.Write(displayText);
 
 			// restore settings
 			con.Restore();
+			if (HasFocus)
+			{
+				Console.CursorTop = Y + CursorY - WindowY;
+				Console.CursorLeft = X + CursorX - WindowX;
+			}
 		}
 	}
 
