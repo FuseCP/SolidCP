@@ -320,7 +320,7 @@ namespace SolidCP.Providers.OS
 			}
 		}
 
-		public void ChangeFileOwner(string path, string owner, string group, bool setChildren = false)
+		public void ChangeUnixFileOwner(string path, string owner, string group, bool setChildren = false)
 		{
 			if (!setChildren)
 			{
@@ -551,12 +551,12 @@ namespace SolidCP.Providers.OS
 
 		public OSService[] GetOSServices()
 		{
-			throw new NotImplementedException();
+			return ServiceController.All().ToArray();
 		}
 
 		public void ChangeOSServiceStatus(string id, OSServiceStatus status)
 		{
-			throw new NotImplementedException();
+			ServiceController.ChangeStatus(id, status);
 		}
 
 		public void RebootSystem()
@@ -566,25 +566,28 @@ namespace SolidCP.Providers.OS
 
 		public Memory GetMemory()
 		{
-			var output = Shell.Default.Exec("free --kilo -w").Output().Result;
-			if (output == null) throw new PlatformNotSupportedException("free command not found on this system.");
-			var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2})(?<freeswap>[0-9]+))");
-			ulong free, total, freeswap, totalswap;
-			if (matches.Count == 4 &&
-				ulong.TryParse(matches[0].Value, out total) &&
-				ulong.TryParse(matches[1].Value, out free) &&
-				ulong.TryParse(matches[2].Value, out totalswap) &&
-				ulong.TryParse(matches[3].Value, out freeswap))
+			if (Shell.Default.Find("free") != null)
 			{
-				return new Memory()
+				var output = Shell.Default.Exec("free --kilo -w").Output().Result;
+				if (output == null) throw new PlatformNotSupportedException("free command not found on this system.");
+				var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2})(?<freeswap>[0-9]+))");
+				ulong free, total, freeswap, totalswap;
+				if (matches.Count == 4 &&
+					ulong.TryParse(matches[0].Value, out total) &&
+					ulong.TryParse(matches[1].Value, out free) &&
+					ulong.TryParse(matches[2].Value, out totalswap) &&
+					ulong.TryParse(matches[3].Value, out freeswap))
 				{
-					TotalVisibleMemorySizeKB = total,
-					FreePhysicalMemoryKB = free,
-					TotalVirtualMemorySizeKB = totalswap,
-					FreeVirtualMemoryKB = freeswap
-				};
+					return new Memory()
+					{
+						TotalVisibleMemorySizeKB = total,
+						FreePhysicalMemoryKB = free,
+						TotalVirtualMemorySizeKB = totalswap,
+						FreeVirtualMemoryKB = freeswap
+					};
+				}
 			}
-			else return new Memory();
+			return new Memory();
 		}
 		public string ExecuteSystemCommand(string path, string args)
 		{

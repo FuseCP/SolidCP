@@ -143,6 +143,8 @@ namespace SolidCP.Providers.OS
             get { return this.id; }
             set { this.id = value; }
         }
+
+        public string Description { get; set; }
     }
 
     public enum OSServiceStatus

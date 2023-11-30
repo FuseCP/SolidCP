@@ -178,7 +178,9 @@ Installation Progress:
 
 		public override void GetCommonSettings(CommonSettings settings)
 		{
-			if (settings.Urls!.Split(';', ',').Any(url => url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)))
+			if (settings.Urls!.Split(';', ',').Any(url =>
+				url.StartsWith("https:", StringComparison.OrdinalIgnoreCase) ||
+				url.StartsWith("net.tcp:", StringComparison.OrdinalIgnoreCase)))
 			{
 				var template = OSInfo.IsWindows ? @"
 Server Certificate Settings
@@ -250,6 +252,18 @@ Email:     [?LetsEncryptCertificateEmail                                        
 [    Ok    ]
 ")
 					.Load(settings)
+					.Apply(f =>
+					{
+						if (string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
+						{
+							var hosts = string.Join(',', settings.Urls.Split(',', ';')
+								.Select(url => new Uri(url))
+								.Where(url => url.Scheme == "https" || url.Scheme == "net.tcp")
+								.Select(url => url.Host)
+								.ToArray());
+							settings.LetsEncryptCertificateDomains = hosts;
+						}
+					})
 					.ShowDialog()
 					.Save(settings);
 				}

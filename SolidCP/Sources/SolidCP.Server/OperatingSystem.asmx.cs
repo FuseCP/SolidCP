@@ -876,6 +876,22 @@ namespace SolidCP.Server
 		}
 
 		[WebMethod, SoapHeader("settings")]
+		public void ChangeUnixFileOwner(string path, string owner, string group, bool applyToChildren = false)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' ChangeUnixFileOwner", ProviderSettings.ProviderName);
+				UnixProvider.ChangeUnixFileOwner(path, owner, group, applyToChildren);
+				Log.WriteEnd("'{0}' ChangeUnixFileOwner", ProviderSettings.ProviderName);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' ChangeUnixFileOwner", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+
+		[WebMethod, SoapHeader("settings")]
 		public TerminalSession[] GetTerminalServicesSessions()
 		{
 			try

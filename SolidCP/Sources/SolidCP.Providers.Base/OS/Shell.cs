@@ -38,12 +38,8 @@ namespace SolidCP.Providers.OS
 		}
 
 		bool errorEOF = true, outputEOF = true;
-
-		bool hasWaitedForExit = false;
 		public bool IsCompleted => Process == null || (Process.HasExited && errorEOF && outputEOF);
-
 		public Shell GetResult() => this;
-
 		public virtual char PathSeparator => Path.PathSeparator;
 		public abstract string ShellExe { get; }
 
@@ -162,11 +158,8 @@ namespace SolidCP.Providers.OS
 				{
 					if (data.Data == null)
 					{
-						lock (this)
-							lock (child)
-							{
-								child.errorEOF = errorEOF = true;
-							}
+						lock (this) errorEOF = true;
+						lock (child) child.errorEOF = true;
 						child.CheckCompleted();
 						CheckCompleted();
 					}
@@ -180,11 +173,8 @@ namespace SolidCP.Providers.OS
 				{
 					if (data.Data == null)
 					{
-						lock (this)
-							lock (child)
-							{
-								child.outputEOF = outputEOF = true;
-							}
+						lock (this) outputEOF = true;
+						lock (child) child.outputEOF = true;
 						child.CheckCompleted();
 						CheckCompleted();
 					}
