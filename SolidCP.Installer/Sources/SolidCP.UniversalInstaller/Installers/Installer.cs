@@ -10,6 +10,7 @@ using System.Security.Policy;
 using System.Diagnostics.Contracts;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -301,7 +302,7 @@ namespace SolidCP.UniversalInstaller
 						else
 						{
 							var dir = Path.GetDirectoryName(fullName);
-							if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+							if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
 							using (var file = new FileStream(fullName, FileMode.Create, FileAccess.Write))
 							{
@@ -319,7 +320,7 @@ namespace SolidCP.UniversalInstaller
 
 		public void InstallAll()
 		{
-			const int EstimatedOutputLinesPerSite = 500;
+			const int EstimatedOutputLinesPerSite = 200;
 
 			Shell.LogFile = "SolidCP.Installer.log";
 

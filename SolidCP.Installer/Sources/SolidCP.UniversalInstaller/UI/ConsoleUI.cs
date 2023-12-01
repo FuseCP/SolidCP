@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
 
@@ -61,6 +62,19 @@ Passwords don't match!
 					.Save(ServerSettings);
 			}
 
+			if (!ServerSettings.Urls.Split(',', ';').Select(url => url.Trim()).Any(url => url.StartsWith("https://") || url.StartsWith("net.tcp://")))
+			{
+				form = new ConsoleForm(@"
+You did not specify a secure protocol as url.
+That way, you will only be able to access
+the server via localhost or a LAN ip.
+Do you want to proceed?
+
+[    Back    ]  [*    Continue    ]")
+					.ShowDialog();
+				if (form["Back"].Clicked) GetServerSettings();
+			}
+
 			GetCommonSettings(ServerSettings);
 
 			return ServerSettings;
@@ -87,14 +101,14 @@ Database Password: [!DatabasePassword                                           
 		}
 		bool IsLocalHttp(string url)
 		{
-			var uri = new Uri(url);
+			var uri = new Uri(url.Trim());
 			var host = uri.Host;
 
 			return uri.Scheme == "http" && (host == "localhost" || host == "127.0.0.1" || host == "::1" || Regex.IsMatch(host, @"^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$"));
 		}
 		bool IsLocalHttps(string url)
 		{
-			var uri = new Uri(url);
+			var uri = new Uri(url.Trim());
 			var host = uri.Host;
 
 			return uri.Scheme == "https" && (host == "localhost" || host == "127.0.0.1" || host == "::1" || Regex.IsMatch(host, @"^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$"));
@@ -104,7 +118,7 @@ Database Password: [!DatabasePassword                                           
 			var esurls = EnterpriseServerSettings.Urls;
 			if (!string.IsNullOrEmpty(esurls))
 			{
-				var urls = esurls!.Split(';', ',');
+				var urls = esurls!.Split(';', ',').Select(url => url.Trim());
 				var esurl = urls.FirstOrDefault(url => IsLocalHttp(url));
 				if (esurl == null) esurl = urls.FirstOrDefault(url => IsLocalHttps(url));
 				if (esurl != null)
@@ -146,7 +160,9 @@ Components to Install
 				if (form[0].Checked) packages |= Packages.Server;
 				if (form[1].Checked) packages |= Packages.EnterpriseServer;
 				if (form[2].Checked) packages |= Packages.WebPortal;
-			} else {
+			}
+			else
+			{
 				packages |= Packages.Server;
 			}
 			return packages;
@@ -209,7 +225,10 @@ Choose how to provide a certificate:
 				var form = new ConsoleForm(template).ShowDialog();
 				if (form[0].Clicked)
 				{
-					var certStore = new ConsoleForm(@"
+					bool repeat = false;
+					do
+					{
+						var certStore = new ConsoleForm(@"
 Server Certificate From Certificate Store
 =========================================
 
@@ -220,13 +239,44 @@ Find Type:      [?CertificateFindType Subject                                ]
 
 [    Ok    ]
 ")
-					.Load(settings)
-					.ShowDialog()
-					.Save(settings);
+						.Load(settings)
+						.ShowDialog()
+						.Save(settings);
+
+						StoreName storeName;
+						StoreLocation storeLocation;
+						X509FindType findType;
+
+						repeat = !Enum.TryParse<StoreName>(settings.CertificateStoreName, out storeName);
+						repeat |= !Enum.TryParse<StoreLocation>(settings.CertificateStoreLocation, out storeLocation);
+						repeat |= !Enum.TryParse<X509FindType>(settings.CertificateFindType, out findType);
+
+						if (!repeat)
+						{
+
+							var certificateStore = new X509Store(storeName, storeLocation);
+							certificateStore.Open(OpenFlags.ReadOnly);
+							var certificate = certificateStore.Certificates.Find(findType, settings.CertificateFindValue, true);
+							repeat |= certificate == null;
+						}
+						if (repeat)
+						{
+							var goBack = new ConsoleForm(@"
+The specified certificate was not found.
+
+[*    Back    ] [    Continue    ]
+")
+								.ShowDialog();
+							repeat = goBack["Back"].Clicked;
+						}
+					} while (repeat);
 				}
 				else if (form[1].Clicked)
 				{
-					var certFile = new ConsoleForm(@"
+					bool goBack = false;
+					do
+					{
+						var certFile = new ConsoleForm(@"
 Server Certificate From pfx File
 ================================
 
@@ -235,10 +285,22 @@ Password:     [?CertificatePassword                                             
 
 [    Ok    ]
 ")
-					.Load(settings)
-					.ShowDialog()
-					.Save(settings);
-					settings.CertificateFile = new DirectoryInfo(settings.CertificateFile!.Replace("~", Environment.GetEnvironmentVariable("HOME"))).FullName;
+						.Load(settings)
+						.ShowDialog()
+						.Save(settings);
+						settings.CertificateFile = new DirectoryInfo(settings.CertificateFile!.Replace("~", Environment.GetEnvironmentVariable("HOME"))).FullName;
+
+						if (!File.Exists(settings.CertificateFile))
+						{
+							var fileNotFoundForm = new ConsoleForm(@$"
+The specified file {settings.CertificateFile} was not found.
+
+[*    Back    ]  [     Continue    ]
+")
+								.ShowDialog();
+							goBack = fileNotFoundForm["Back"].Clicked;
+						}
+					} while (goBack);
 				}
 				else if (form[2].Clicked)
 				{
@@ -257,7 +319,7 @@ Email:     [?LetsEncryptCertificateEmail                                        
 						if (string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
 						{
 							var hosts = string.Join(',', settings.Urls.Split(',', ';')
-								.Select(url => new Uri(url))
+								.Select(url => new Uri(url.Trim()))
 								.Where(url => url.Scheme == "https" || url.Scheme == "net.tcp")
 								.Select(url => url.Host)
 								.ToArray());

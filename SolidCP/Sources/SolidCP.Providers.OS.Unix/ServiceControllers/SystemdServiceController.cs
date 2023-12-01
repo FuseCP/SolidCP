@@ -106,7 +106,7 @@ Description=@description
 Type=simple
 ExecStart=@exec
 WorkingDirectory=@workdir
-@envirnonment
+@environment
 Restart=on-failure
 
 [Install]
@@ -162,6 +162,6 @@ WantedBy=multi-user.target
 			}
 		}
 
-		public Shell Shell => Providers.OS.OSInfo.Shell;
+		public Shell Shell => Shell.Default;
 	}
 }

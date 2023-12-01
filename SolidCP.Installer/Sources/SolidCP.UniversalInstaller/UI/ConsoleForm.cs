@@ -369,13 +369,13 @@ namespace SolidCP.UniversalInstaller
 		public Installer Installer { get; set; } = Installer.Current;
 		public Shell Shell => Installer.Shell;
 		public string Template = "";
-		public PercentField Progress => Fields
+		public PercentField? Progress => Fields
 			.OfType<PercentField>()
 			.FirstOrDefault();
 
 		public ConsoleField? Focus = null;
 
-		public Button DefaultButton => Fields
+		public Button? DefaultButton => Fields
 			.OfType<Button>()
 			.FirstOrDefault(f => f.Default);
 

@@ -34,13 +34,19 @@ namespace SolidCP.UniversalInstaller
 						{
 							using (var pdbStream = host.GetManifestResourceStream(pdbName))
 							{
-								return Assembly.Load(BytesFromStream(assStream), BytesFromStream(pdbStream));
+								if (assStream != null && pdbStream != null)
+								{
+									return Assembly.Load(BytesFromStream(assStream), BytesFromStream(pdbStream));
+								}
 							}
 						}
 					}
 					else
 					{
-						return Assembly.Load(BytesFromStream(assStream));
+						if (assStream != null)
+						{
+							return Assembly.Load(BytesFromStream(assStream));
+						}
 					}
 				}
 			}

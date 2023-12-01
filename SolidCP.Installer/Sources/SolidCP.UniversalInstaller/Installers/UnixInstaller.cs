@@ -18,14 +18,17 @@ namespace SolidCP.UniversalInstaller
 		{
 			// Run SolidCP.Server as a service on Unix
 
-			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
+			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet");
+			var dll = Path.Combine(websitePath, "SolidCP.Server.dll");
 
 			var service = new ServiceDescription()
 			{
 				ServiceId = "SolidCPServer",
 				Directory = websitePath,
 				Description = "SolidCP.Server service, the server management service for the SolidCP control panel.",
-				Executable = $"dotnet {websitePath}/SolidCP.Server.dll"
+				Executable = $"dotnet {dll}",
+				DependsOn = new List<string>() { "network-online.target" },
+				EnvironmentVariables = new Dictionary<string, string>()
 			};
 			service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 
