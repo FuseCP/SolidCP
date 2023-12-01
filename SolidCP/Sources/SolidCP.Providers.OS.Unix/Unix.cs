@@ -444,16 +444,16 @@ namespace SolidCP.Providers.OS
 					if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
 					var reader = new StreamReader(file, Encoding.UTF8, true);
 
-					//TODO: parse log file
-					string line;
-					while ((line = reader.ReadLine()) != null)
+					var text = reader.ReadToEnd();
+
+					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2}(?:(?:T| )[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)\s*(?<text>.*?)\s*(?=$|(?<=^|\n)[0-9]{4}-[0-9]{2}-[0-9]{2}(?:(?:T| )[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)", RegexOptions.Singleline);
+
+					foreach (Match match in matches)
 					{
-						var timePos = line.IndexOf(' ');
-						if (timePos < 0) yield break;
-						var timeToken = line.Substring(0, timePos);
 						DateTime time;
-						if (!DateTime.TryParse(timeToken, out time)) yield break;
-						var msg = line.Substring(timePos + 1);
+						if (!DateTime.TryParse(match.Groups["date"].Value, out time)) yield break;
+						var msg = match.Groups["text"].Value;
+						
 						var entry = new SystemLogEntry()
 						{
 							Created = time,
@@ -641,12 +641,17 @@ namespace SolidCP.Providers.OS
 		public Web.IWebServer WebServer => throw new NotImplementedException();
 
 		ServiceController serviceController = null;
+		bool isInstalledChecked = false;
 		public ServiceController ServiceController
 		{
 			get
 			{
-				serviceController = serviceController ?? (serviceController = new SystemdServiceController());
-				if (!serviceController.IsInstalled) return null;
+				if (!isInstalledChecked)
+				{
+					isInstalledChecked = true;
+					serviceController = serviceController ?? (serviceController = new SystemdServiceController());
+					if (!serviceController.IsInstalled) serviceController = null;
+				}
 				return serviceController;
 			}
 		}

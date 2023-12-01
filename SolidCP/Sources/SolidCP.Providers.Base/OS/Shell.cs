@@ -15,6 +15,7 @@ namespace SolidCP.Providers.OS
 
 	public abstract class Shell : INotifyCompletion
 	{
+		const bool DoNotWaitForProcessExit = false;
 
 		static int N = 0;
 
@@ -37,8 +38,8 @@ namespace SolidCP.Providers.OS
 			CheckCompleted();
 		}
 
-		bool errorEOF = true, outputEOF = true;
-		public bool IsCompleted => Process == null || (Process.HasExited && errorEOF && outputEOF);
+		bool errorEOF = true, outputEOF = true, hasProcessExited = true;
+		public bool IsCompleted => Process == null || ((DoNotWaitForProcessExit || hasProcessExited || Process.HasExited) && errorEOF && outputEOF);
 		public Shell GetResult() => this;
 		public virtual char PathSeparator => Path.PathSeparator;
 		public abstract string ShellExe { get; }
@@ -51,8 +52,11 @@ namespace SolidCP.Providers.OS
 			{
 				if (process != value)
 				{
-					outputEOF = errorEOF = value != null;
-					process = value;
+					lock (this)
+					{
+						hasProcessExited = outputEOF = errorEOF = value == null;
+						process = value;
+					}
 				}
 			}
 		}
@@ -151,9 +155,12 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.RedirectStandardError = true;
 				process.Exited += (obj, args) =>
 				{
+					lock (this) hasProcessExited = true;
+					lock (child) child.hasProcessExited = true;
 					child.CheckCompleted();
 					CheckCompleted();
 				};
+				process.EnableRaisingEvents = true;
 				process.ErrorDataReceived += (p, data) =>
 				{
 					if (data.Data == null)
