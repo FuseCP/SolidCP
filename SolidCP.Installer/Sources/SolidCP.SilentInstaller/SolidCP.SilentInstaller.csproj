@@ -74,9 +74,9 @@
       <Project>{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}</Project>
       <Name>SolidCP.Installer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SolidCP.UniversalInstaller\SolidCP.UniversalInstaller.csproj">
-      <Project>{1e43ffc8-a82a-42ea-8772-fc4838850fd7}</Project>
-      <Name>SolidCP.UniversalInstaller</Name>
+    <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj">
+      <Project>{b6d067c1-e5af-4e37-8d58-92ca53445400}</Project>
+      <Name>SolidCP.UniversalInstaller.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

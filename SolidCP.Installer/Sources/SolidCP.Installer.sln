@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "..\..\SolidCP\Sources\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj", "{16E7E997-1E0F-4F24-8F0A-961FAFA93F72}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.UniversalInstaller", "SolidCP.UniversalInstaller\SolidCP.UniversalInstaller.csproj", "{1E43FFC8-A82A-42EA-8772-FC4838850FD7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.UniversalInstaller.Core", "SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj", "{B6D067C1-E5AF-4E37-8D58-92CA53445400}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,18 +166,18 @@ Global
 		{16E7E997-1E0F-4F24-8F0A-961FAFA93F72}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{16E7E997-1E0F-4F24-8F0A-961FAFA93F72}.Release|x86.ActiveCfg = Release|Any CPU
 		{16E7E997-1E0F-4F24-8F0A-961FAFA93F72}.Release|x86.Build.0 = Release|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Debug|x86.Build.0 = Debug|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Release|x86.ActiveCfg = Release|Any CPU
-		{1E43FFC8-A82A-42EA-8772-FC4838850FD7}.Release|x86.Build.0 = Release|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Debug|x86.Build.0 = Debug|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Release|x86.ActiveCfg = Release|Any CPU
+		{B6D067C1-E5AF-4E37-8D58-92CA53445400}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

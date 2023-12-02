@@ -293,6 +293,10 @@
       <Project>{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}</Project>
       <Name>SolidCP.Installer.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj">
+      <Project>{b6d067c1-e5af-4e37-8d58-92ca53445400}</Project>
+      <Name>SolidCP.UniversalInstaller.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
