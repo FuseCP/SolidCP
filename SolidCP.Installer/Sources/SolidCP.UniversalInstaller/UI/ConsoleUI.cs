@@ -304,6 +304,16 @@ The specified file {settings.CertificateFile} was not found.
 				}
 				else if (form[2].Clicked)
 				{
+
+					if (string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
+					{
+						var hosts = string.Join(",", settings.Urls.Split(',', ';')
+							.Select(url => new Uri(url.Trim()))
+							.Where(url => url.Scheme == "https" || url.Scheme == "net.tcp")
+							.Select(url => url.Host)
+							.ToArray());
+						settings.LetsEncryptCertificateDomains = hosts;
+					}
 					var leCert = new ConsoleForm(@"
 Server Certificate From Let's Encrypt
 =====================================
@@ -314,18 +324,6 @@ Email:     [?LetsEncryptCertificateEmail                                        
 [    Ok    ]
 ")
 					.Load(settings)
-					.Apply(f =>
-					{
-						if (string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
-						{
-							var hosts = string.Join(",", settings.Urls.Split(',', ';')
-								.Select(url => new Uri(url.Trim()))
-								.Where(url => url.Scheme == "https" || url.Scheme == "net.tcp")
-								.Select(url => url.Host)
-								.ToArray());
-							settings.LetsEncryptCertificateDomains = hosts;
-						}
-					})
 					.ShowDialog()
 					.Save(settings);
 				}
