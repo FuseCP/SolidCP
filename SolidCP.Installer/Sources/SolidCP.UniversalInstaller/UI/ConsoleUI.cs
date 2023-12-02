@@ -318,7 +318,7 @@ Email:     [?LetsEncryptCertificateEmail                                        
 					{
 						if (string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
 						{
-							var hosts = string.Join(',', settings.Urls.Split(',', ';')
+							var hosts = string.Join(",", settings.Urls.Split(',', ';')
 								.Select(url => new Uri(url.Trim()))
 								.Where(url => url.Scheme == "https" || url.Scheme == "net.tcp")
 								.Select(url => url.Host)
