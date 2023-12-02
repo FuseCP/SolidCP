@@ -129,6 +129,16 @@
   <ItemGroup>
     <None Include="Web References\InstallerService\InstallerService.disco" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.UniversalInstaller\SolidCP.UniversalInstaller.csproj">
+      <Project>{1e43ffc8-a82a-42ea-8772-fc4838850fd7}</Project>
+      <Name>SolidCP.UniversalInstaller</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

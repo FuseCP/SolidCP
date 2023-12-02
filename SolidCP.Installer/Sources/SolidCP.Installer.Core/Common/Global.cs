@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.EnterpriseServices;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Installer.Common
 {
@@ -239,17 +240,19 @@ namespace SolidCP.Installer.Common
 		{
 			get
 			{
-				if (iisVersion == null)
-				{
-					iisVersion = RegistryUtils.GetIISVersion();
-				}
+				if (OSInfo.IsWindows) {
+					if (iisVersion == null)
+					{
+						iisVersion = RegistryUtils.GetIISVersion();
+					} 
+				} else iisVersion = new Version();
 				//
 				return iisVersion;
 			}
 		}
 
 		//
-		private static OS.WindowsVersion osVersion = OS.WindowsVersion.Unknown;
+		private static Providers.OS.WindowsVersion osVersion = Providers.OS.WindowsVersion.Unknown;
 
 		/// <summary>
 		/// Represents Setup Control Panel Accounts system settings set (SCPA)
@@ -259,18 +262,24 @@ namespace SolidCP.Installer.Common
 			public const string SettingsKeyName = "EnabledSCPA";
 		}
 
-		public static OS.WindowsVersion OSVersion
+		public static Providers.OS.WindowsVersion OSVersionWindows
 		{
 			get
 			{
-				if (osVersion == OS.WindowsVersion.Unknown)
+				if (OSInfo.IsWindows)
 				{
-					osVersion = OS.GetVersion();
+					if (osVersion == Providers.OS.WindowsVersion.Unknown)
+					{
+						osVersion = OSInfo.WindowsVersion;
+					}
+					//
+					return osVersion;
 				}
-				//
-				return osVersion;
+				else return Providers.OS.WindowsVersion.NonWindows;
 			}
 		}
+
+		public static Providers.OS.OSFlavor OSFlavor => OSInfo.OSFlavor;
 
 		public static XmlDocument SetupXmlDocument { get; set; }
 	}

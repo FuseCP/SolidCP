@@ -285,6 +285,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj">
       <Project>{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}</Project>
       <Name>SolidCP.Installer.Core</Name>

@@ -48,6 +48,7 @@ using System.Runtime.Remoting.Lifetime;
 using System.Security.Principal;
 using SolidCP.Installer.Core;
 using SolidCP.Installer.Configuration;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
 namespace SolidCP.Installer
@@ -97,7 +98,7 @@ namespace SolidCP.Installer
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			//check OS version
-			Log.WriteInfo("{0} detected", Global.OSVersion);
+			Log.WriteInfo("{0} detected", Global.OSVersionWindows != WindowsVersion.NonWindows ? Global.OSVersionWindows.ToString() : Global.OSFlavor.ToString());
 
 			//check IIS version
 			if (Global.IISVersion.Major == 0)

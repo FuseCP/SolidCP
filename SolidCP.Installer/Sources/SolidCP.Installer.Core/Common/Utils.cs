@@ -39,7 +39,6 @@ using System.Text;
 using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
-
 using System.Security.Principal;
 using System.Security;
 using System.Security.Permissions;
@@ -48,6 +47,8 @@ using System.Threading;
 
 using SolidCP.Installer.Core;
 using SolidCP.Installer.Configuration;
+using SolidCP.Providers.OS;
+using SolidCP.UniversalInstaller;
 using System.Xml;
 using System.Data;
 
@@ -361,7 +362,7 @@ namespace SolidCP.Installer.Common
 		/// <summary>
 		/// Check security permissions
 		/// </summary>
-		public static bool CheckSecurity()
+		public static bool CheckSecurityWindows()
 		{
 			try
 			{
@@ -375,11 +376,27 @@ namespace SolidCP.Installer.Common
 			return true;
 		}
 
-		public static bool IsAdministrator()
+		public static bool CheckSecurityUnix() => true;
+		public static bool CheckSecurity()
+		{
+			if (OSInfo.IsWindows) return CheckSecurityWindows();
+			else return CheckSecurityUnix();
+		}
+
+		public static bool IsAdministratorWindows()
 		{
 			WindowsIdentity user = WindowsIdentity.GetCurrent();
 			WindowsPrincipal principal = new WindowsPrincipal(user);
 			return principal.IsInRole(WindowsBuiltInRole.Administrator);
+		}
+		public static bool IsAdministratorUnix()
+		{
+			return UniversalInstaller.Installer.Current.IsRunningAsAdmin();
+		}
+		public static bool IsAdministrator()
+		{
+			if (OSInfo.IsWindows) return IsAdministratorWindows();
+			else return IsAdministratorUnix();
 		}
 
 		private static Mutex mutex = null;

@@ -230,6 +230,7 @@ namespace SolidCP.Installer.Controls
                 //load components via web service
                 var webService = ServiceProviderProxy.GetInstallerWebService();
                 DataSet dsComponents = webService.GetAvailableComponents();
+
                 //remove already installed components
                 foreach (DataRow row in dsComponents.Tables[0].Rows)
                 {

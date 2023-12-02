@@ -398,14 +398,14 @@
 	<Target Name="CreateUniversalSetupBuild" DependsOnTargets="ZipDeploy">
 
 		<PropertyGroup>
-			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller</InstallerProjectRoot>
-			<InstallerProjectBin>$(InstallerProjectRoot)\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
 		</PropertyGroup>
 
-	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)\SolidCP.UniversalInstaller.sln" />
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
 
 		<!-- compile Installer -->
-		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
