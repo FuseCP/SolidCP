@@ -426,7 +426,7 @@ namespace SolidCP.UniversalInstaller
 			action?.Invoke(this);
 			return this;
 		}
-		public void SetFocus(ConsoleField field)
+		public void SetFocus(ConsoleField? field)
 		{
 			Console.CursorVisible = false;
 			if (Focus != null)

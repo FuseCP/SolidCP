@@ -57,6 +57,7 @@
 		<SCPTransportAgentBuild>$(BuildFolder)\SCPTransportAgent</SCPTransportAgentBuild>
 		<LocalizationToolkitBuild>$(BuildFolder)\LocalizationToolkit</LocalizationToolkitBuild>
 		<InstallerBuild>$(BuildFolder)\Installer</InstallerBuild>
+		<UniversalInstallerBuild>$(BuildFolder)\UniversalInstaller</UniversalInstallerBuild>
 		<FixDefaultPublicFolderMailboxBuild>$(BuildFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxBuild>
         <WiXInstallerBuild>$(BuildFolder)\WiXInstaller</WiXInstallerBuild>
 
@@ -116,6 +117,7 @@
 		<RemoveDir Directories="$(SCPTransportAgentBuild)"/>
 		<RemoveDir Directories="$(LocalizationToolkitBuild)"/>
 		<RemoveDir Directories="$(InstallerBuild)"/>
+		<RemoveDir Directories="$(UniversalInstallerBuild)"/>		
 		<RemoveDir Directories="$(BuildFolder)"/>
     <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
 
@@ -133,6 +135,7 @@
 		<MakeDir Directories="$(SCPTransportAgentBuild)"/>
 		<MakeDir Directories="$(LocalizationToolkitBuild)"/>
 		<MakeDir Directories="$(InstallerBuild)"/>
+		<MakeDir Directories="$(UniversalInstallerBuild)"/>
     <MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
   </Target>
 
@@ -390,6 +393,30 @@
 
 		<!-- build MSI package -->
 
+	</Target>
+
+	<Target Name="CreateUniversalSetupBuild" DependsOnTargets="ZipDeploy">
+
+		<PropertyGroup>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
+		</PropertyGroup>
+
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)\SolidCP.UniversalInstaller.sln" />
+
+		<!-- compile Installer -->
+		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!-- copy installer binaries for upgrade -->
+		<ItemGroup>
+			<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\*.exe" />
+		</ItemGroup>
+		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(UniversalInstallerBuild)\%(RecursiveDir)" />
+
+		<!-- Compile updater.exe -->
+
+		<!-- build MSI package -->
 	</Target>
 
   <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
@@ -796,10 +823,10 @@
 	</Target>
 
 	<!-- Deploy -->
-	<Target Name="Deploy" DependsOnTargets="CreateStandaloneBootstrapper" >
+	<Target Name="ZipDeploy" DependsOnTargets="CreateStandaloneBootstrapper" >
 		<ItemGroup>
 			<PortalInstallFiles Include="$(PortalInstall)\**\*.*" />
-      <WebDavPortalInstallFiles Include="$(WebDavPortalInstall)\**\*.*" />
+			<WebDavPortalInstallFiles Include="$(WebDavPortalInstall)\**\*.*" />
 			<EnterpriseServerInstallFiles Include="$(EnterpriseServerInstall)\**\*.*" />
 			<ServerInstallFiles Include="$(ServerInstall)\**\*.*" />
 
@@ -889,6 +916,8 @@
 
   </Target>
 
+  <Target Name="Deploy" DependsOnTargets="CreateUniversalSetupBuild" />
+	
   <Target Name="uploadwebpi" DependsOnTargets="BuildWebPlatformInstallerFeed">
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPFeed-$(Version).xml" LocalFile="$(DeployFolder)\SolidCPFeed.xml" />
   </Target>

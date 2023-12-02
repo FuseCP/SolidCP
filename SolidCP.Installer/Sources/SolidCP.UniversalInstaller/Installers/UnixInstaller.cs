@@ -28,7 +28,12 @@ namespace SolidCP.UniversalInstaller
 				Description = "SolidCP.Server service, the server management service for the SolidCP control panel.",
 				Executable = $"dotnet {dll}",
 				DependsOn = new List<string>() { "network-online.target" },
-				EnvironmentVariables = new Dictionary<string, string>()
+				EnvironmentVariables = new Dictionary<string, string>(),
+				Restart="on-failure",
+				RestartSec="1s",
+				StartLimitBurst="5",
+				StartLimitIntervalSec="500",
+				SyslogIdentifier="SolidCPServer"
 			};
 			service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 

@@ -25,23 +25,24 @@
   </Target>
   <ItemGroup>
     <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
-    <PackageReference Include="GoogleAuthenticator" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="GoogleAuthenticator" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="RestSharp" Version="108.0.3" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="System.Diagnostics.EventLog" Version="7.0.0" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="7.0.1" />
-    <PackageReference Include="System.Text.Encodings.Web" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Twilio" Version="6.15.0" />
+    <PackageReference Include="Twilio" Version="6.15.1" />
     <PackageReference Include="WhoisClient.NET" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
@@ -57,11 +58,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Common\RestrictedTraceAssertion.cs" />
-    <None Include="Common\ServiceUsernameTokenManager.cs" />
-    <None Include="Common\UsernameAssertion.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
@@ -72,5 +68,8 @@
     <Compile Remove="Common\RestrictedTraceAssertion.cs" />
     <Compile Remove="Common\ServiceUsernameTokenManager.cs" />
     <Compile Remove="Common\UsernameAssertion.cs" />
+    <None Include="Common\RestrictedTraceAssertion.cs" />
+    <None Include="Common\ServiceUsernameTokenManager.cs" />
+    <None Include="Common\UsernameAssertion.cs" />
   </ItemGroup>
 </Project>

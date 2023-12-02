@@ -424,7 +424,7 @@ namespace SolidCP.Providers.OS
 				.ToList();
 		}
 
-		private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerable(string logName)
+		private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerableRaw(string logName)
 		{
 			var logs = EnumerateLogFiles(LogDir);
 			logs = logs.Where(l => LogName(l) == logName);
@@ -446,7 +446,7 @@ namespace SolidCP.Providers.OS
 
 					var text = reader.ReadToEnd();
 
-					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>[0-9]{4}-[0-9]{2}-[0-9]{2}(?:(?:T| )[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)\s*(?<text>.*?)\s*(?=$|(?<=^|\n)[0-9]{4}-[0-9]{2}-[0-9]{2}(?:(?:T| )[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)", RegexOptions.Singleline);
+					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+)(?:(?:T|\s+)[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:,[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?)?)", RegexOptions.Singleline);
 
 					foreach (Match match in matches)
 					{
@@ -472,6 +472,28 @@ namespace SolidCP.Providers.OS
 					}
 				}
 			}
+		}
+		public IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerable(string logName)
+		{
+			return GetLogEntriesAsEnumerableRaw(logName)
+				.GroupBy(log => log.Created)
+				.Select(log =>
+				{
+					if (log.Count() > 1)
+					{
+
+						var entry = log.FirstOrDefault();
+						var str = new StringBuilder();
+
+						foreach (var e in log)
+						{
+							str.AppendLine(e.Message);
+						}
+						entry.Message = str.ToString();
+						return entry;
+					}
+					return log.FirstOrDefault();
+				});
 		}
 		public List<SystemLogEntry> GetLogEntries(string logName)
 		{

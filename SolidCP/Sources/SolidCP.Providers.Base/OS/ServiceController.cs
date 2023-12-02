@@ -9,8 +9,13 @@ namespace SolidCP.Providers.OS
 	{
 		public string Executable { get; set; }
 		public string ServiceId { get; set; }
-		public string Description { get; set; }
-		public string Directory { get; set; }
+		public string? Description { get; set; }
+		public string? Directory { get; set; }
+		public string? StartLimitIntervalSec { get; set; }
+		public string? StartLimitBurst { get; set; }
+		public string? Restart { get; set; }
+		public string? RestartSec { get; set; }
+		public string? SyslogIdentifier { get; set; }
 		public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
 		public List<string> DependsOn { get; set; } = new List<string>();
 	}

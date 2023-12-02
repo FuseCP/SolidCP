@@ -9,7 +9,7 @@ namespace SolidCP.Providers.OS
 
 	public class SystemdServiceController : ServiceController
 	{
-		public virtual string ServicesDirectory => " /lib/systemd/system";
+		public virtual string ServicesDirectory => "/lib/systemd/system";
 
 		public override IEnumerable<OSService> All()
 		{
@@ -39,7 +39,7 @@ namespace SolidCP.Providers.OS
 		public override OSService Info(string serviceId)
 		{
 			var output = Shell.Exec($"systemctl status {serviceId}.service --no-pager --full").Output().Result;
-			var match = Regex.Match(output, $@"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$^\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+\)", RegexOptions.Multiline);
+			var match = Regex.Match(output, $@"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$^\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+)\)", RegexOptions.Multiline);
 
 			if (match.Success)
 			{
@@ -101,13 +101,17 @@ namespace SolidCP.Providers.OS
 [Unit]
 Description=@description
 @dependsOn
+@StartLimitIntervalSec
+@StartLimitBurst
 
 [Service]
 Type=simple
 ExecStart=@exec
 WorkingDirectory=@workdir
 @environment
-Restart=on-failure
+@Restart_
+@RestartSec
+@Syslog
 
 [Install]
 WantedBy=multi-user.target
@@ -121,15 +125,57 @@ WantedBy=multi-user.target
 				.Select(dep => $"Requires={dep}{Environment.NewLine}After={dep}")
 			.ToArray());
 
+			var exe = description.Executable;
+			string cmd = "";
+			if (!string.IsNullOrEmpty(exe) && exe[0] == '"')
+			{
+				var indexOfQuote = exe.IndexOf('"', 1);
+				if (indexOfQuote > 0)
+				{
+					cmd = exe.Substring(1, indexOfQuote-1);
+					if (!cmd.Contains(Path.DirectorySeparatorChar))
+					{
+						cmd = Shell.Find(cmd);
+						if (cmd != null)
+						{
+							if (cmd.Contains(' ')) exe = @$"""{cmd}"" {exe.Substring(indexOfQuote + 1)}";
+							else exe = $@"{cmd} {exe.Substring(indexOfQuote + 1)}";
+						}
+					}
+				}
+			} else
+			{
+				var indexOfSpace = exe.IndexOf(' ');
+				if (indexOfSpace > 0) {
+					cmd = exe.Substring(0, indexOfSpace);
+					if (!cmd.Contains(Path.DirectorySeparatorChar))
+					{
+						cmd = Shell.Find(cmd);
+						if (cmd != null)
+						{
+							if (cmd.Contains(' ')) exe = $@"""{cmd}"" {exe.Substring(indexOfSpace+1)}";
+							else exe = $@"{cmd} {exe.Substring(indexOfSpace+1)}";
+						}
+					}
+				}
+			}
+
 			srvcFile = srvcFile.Replace("@description", description.Description)
 				.Replace("@dependsOn", deps)
-				.Replace("@exec", description.Executable)
+				.Replace("@exec", exe)
 				.Replace("@workdir", description.Directory)
-				.Replace("@environment", env);
+				.Replace("@environment", env)
+				.Replace("@Restart_", !string.IsNullOrEmpty(description.Restart) ? $"Restart={description.Restart}" : "")
+				.Replace("@RestartSec", !string.IsNullOrEmpty(description.RestartSec) ? $"RestartSec={description.RestartSec}" : "")
+				.Replace("@StartLimitIntervalSec", !string.IsNullOrEmpty(description.StartLimitIntervalSec) ? $"StartLimitIntervalSec={description.StartLimitIntervalSec}" : "")
+				.Replace("@StartLimitBurst", !string.IsNullOrEmpty(description.StartLimitBurst) ? $"StartLimitBurst={description.StartLimitBurst}" : "")
+				.Replace("@Syslog", !string.IsNullOrEmpty(description.SyslogIdentifier) ?
+					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={description.SyslogIdentifier}" : "");
+			srvcFile = Regex.Replace(srvcFile, @"^\s*$(?!^\[.*?\])", "", RegexOptions.Multiline); // remove empty lines
 
 			File.WriteAllText(Path.Combine(ServicesDirectory, $"{description.ServiceId}.service"), srvcFile);
 
-			Shell.Exec($"systemctl reload {description.ServiceId}.service");
+			Shell.Exec($"systemctl daemon-reload");
 		}
 
 		public override void Remove(string serviceId)
