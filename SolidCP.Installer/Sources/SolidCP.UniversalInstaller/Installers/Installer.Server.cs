@@ -10,7 +10,8 @@ using System.Security.Policy;
 using System.Diagnostics.Contracts;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Data;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -55,6 +56,12 @@ namespace SolidCP.UniversalInstaller
 		public virtual void ReadServerConfiguration()
 		{
 			ServerSettings = new ServerSettings();
+			var webConfigPath = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
+			if (File.Exists(webConfigPath))
+			{
+				var webConfig = XDocument.Load(webConfigPath);
+				ServerSettings.ServerPassword =
+			}
 		}
 		public void ConfigureServer(ServerSettings settings)
 		{

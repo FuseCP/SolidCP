@@ -409,12 +409,10 @@
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
-			<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />
+			<!--<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />-->
 			<InstallerBinaries Include="$(InstallerProjectBin)\*.exe" />
 		</ItemGroup>
-		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(UniversalInstallerBuild)\%(RecursiveDir)" />
-
-		<!-- Compile updater.exe -->
+		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(DeployFolder)" />
 
 		<!-- build MSI package -->
 	</Target>
@@ -1004,6 +1002,7 @@
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPUniversalInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.UniversalInstaller.exe" />
           <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />
