@@ -60,7 +60,7 @@ namespace SolidCP.UniversalInstaller
 			if (File.Exists(webConfigPath))
 			{
 				var webConfig = XDocument.Load(webConfigPath);
-				ServerSettings.ServerPassword =
+				// ServerSettings.ServerPassword =
 			}
 		}
 		public void ConfigureServer(ServerSettings settings)
