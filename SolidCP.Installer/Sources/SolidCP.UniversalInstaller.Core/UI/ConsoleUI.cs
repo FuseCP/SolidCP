@@ -36,9 +36,12 @@ Server Urls: [?Urls http://localhost:9003                                       
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
+Enterprise Server Crypto Key: [?CryptoKey                                                             ]
+
 [    Ok    ]
 ")
 				.Load(ServerSettings)
+				.Apply(f => f["RepeatPassword"].Text = f["ServerPassword"].Text)
 				.ShowDialog()
 				.Save(ServerSettings);
 
@@ -53,11 +56,14 @@ Server Urls: [?Urls http://localhost:9003                                       
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
+Enterprise Server Crypto Key: [?CryptoKey                                                             ]
+
 Passwords don't match!
 
 [    Ok    ]
 ")
 					.Load(ServerSettings)
+					.Apply(f => f["RepeatPassword"].Text = f["ServerPassword"].Text)
 					.ShowDialog()
 					.Save(ServerSettings);
 			}
@@ -89,6 +95,7 @@ Urls:              [?Urls http://localhost:9002                                 
 Database Server:   [?DatabaseServer localhost                                                           ]
 Database User:     [?DatabaseUser sa                                                                  ]
 Database Password: [!DatabasePassword                                                                     ]
+CryptoKey:      [?CryptoKey                                                                              ]
 
 [    Ok    ]
 ")
@@ -264,7 +271,7 @@ Find Type:      [?CertificateFindType Subject                                ]
 							var goBack = new ConsoleForm(@"
 The specified certificate was not found.
 
-[*    Back    ] [    Continue    ]
+[*    Back    ]  [    Continue    ]
 ")
 								.ShowDialog();
 							repeat = goBack["Back"].Clicked;

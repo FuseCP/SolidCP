@@ -14,8 +14,6 @@ using System.Data;
 
 namespace SolidCP.UniversalInstaller
 {
-
-
 	public abstract partial class Installer
 	{
 		public EnterpriseServerSettings EnterpriseServerSettings { get; set; } = new EnterpriseServerSettings();

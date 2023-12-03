@@ -15,7 +15,6 @@ using System.Data;
 namespace SolidCP.UniversalInstaller
 {
 
-
 	public abstract partial class Installer
 	{
 		public const bool RunAsAdmin = true;
@@ -171,7 +170,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string?>? filter = null)
 		{
-			var assembly = Assembly.GetExecutingAssembly();
+			var assembly = Assembly.GetEntryAssembly();
 			var resourceName = assembly.GetManifestResourceNames()
 				.FirstOrDefault(res => res.EndsWith(resourcePath, StringComparison.OrdinalIgnoreCase));
 
@@ -200,13 +199,13 @@ namespace SolidCP.UniversalInstaller
 							{
 								zipEntry.Extract(file);
 							}
-							Shell.Log?.Invoke($"Exracted {name}{Environment.NewLine}");
+							Shell.Log?.Invoke($"Extracted {name}{Environment.NewLine}");
 						}
 					}
 				}
 			}
 		}
-
+		public virtual void InstallWinAcme() => Shell.Exec("dotnet tool install win-acme --global");
 		public virtual bool IsRunningAsAdmin() => true;
 		public virtual void RestartAsAdmin() { }
 

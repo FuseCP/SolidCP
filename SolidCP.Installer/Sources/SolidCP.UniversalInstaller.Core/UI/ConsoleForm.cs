@@ -215,7 +215,7 @@ namespace SolidCP.UniversalInstaller
 		public override void ReceiveFocus()
 		{
 			base.ReceiveFocus();
-			CursorX = Text.Length;
+			CursorX = Math.Min(Width + WindowX - 1, Text.Length);
 		}
 		public override bool Edit(ConsoleKeyInfo key)
 		{
@@ -533,8 +533,15 @@ namespace SolidCP.UniversalInstaller
 					break;
 				case ConsoleKey.Tab:
 					var index = Fields.IndexOf(Focus);
-					index = (index + 1) % Fields.Count;
-					while (!Fields[index].CanFocus) index = (index + 1) % Fields.Count;
+					if (key.Modifiers.HasFlag(ConsoleModifiers.Shift))
+					{
+						index = (index - 1 + Fields.Count) % Fields.Count;
+						while (!Fields[index].CanFocus) index = (index - 1 + Fields.Count) % Fields.Count;
+					} else
+					{
+						index = (index + 1) % Fields.Count;
+						while (!Fields[index].CanFocus) index = (index + 1) % Fields.Count;
+					}
 					SetFocus(Fields[index]);
 					break;
 				default: break;
@@ -649,6 +656,11 @@ namespace SolidCP.UniversalInstaller
 			Parse(template);
 		}
 
+		public string Trim(string template)
+		{
+			template = Regex.Replace(template, @"(?:\[(?:\?|!|%)\s*[a-zA-Z_][a-zA-Z0-9_]*)|(?:(?<=\[)\*)(?=[^\n\]]*\])|(?<=\[(?:\?|!|%)[^\]]*)\]", "", RegexOptions.Singleline);
+			return Regex.Replace(template, @"\[x\s*[A-Za-z_][A-Za-z_0-9]*\]", "[ ]");
+		}
 		public ConsoleForm Parse(string template)
 		{
 			template = template.Trim();
@@ -660,7 +672,7 @@ namespace SolidCP.UniversalInstaller
 				{
 					int y = 0, x = 0;
 					string prefix = "";
-					if (m.Groups["prefix"].Success) prefix = m.Groups["prefix"].Value;
+					if (m.Groups["prefix"].Success) prefix = Trim(m.Groups["prefix"].Value);
 					int nl = prefix.IndexOf('\n');
 					int lastnl = 0;
 					while (nl > 0)
@@ -710,8 +722,7 @@ namespace SolidCP.UniversalInstaller
 			Focus = null;
 			SetFocus(Fields.FirstOrDefault(f => f.CanFocus));
 
-			template = Regex.Replace(template.Trim(), @"(?:\[(?:\?|!|%)\s*[a-zA-Z_][a-zA-Z0-9_]*)|(?:(?<=\[)\*)(?=[^\n\]]*\])|(?<=\[(?:\?|!|%)[^\]]*)\]", "", RegexOptions.Singleline);
-			Template = Regex.Replace(template, @"\[x\s*[A-Za-z_][A-Za-z_0-9]*\]", "[ ]");
+			Template = Trim(template);
 			return this;
 		}
 	}

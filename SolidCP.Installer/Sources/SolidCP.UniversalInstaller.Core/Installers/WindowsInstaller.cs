@@ -98,9 +98,9 @@ namespace SolidCP.UniversalInstaller
 				var currentp = Process.GetCurrentProcess();
 				ProcessStartInfo procInfo = new ProcessStartInfo();
 				procInfo.UseShellExecute = true;
-				var assemblyFile = Assembly.GetExecutingAssembly().Location;
-				if (assemblyFile.EndsWith(".exe")) procInfo.FileName = assemblyFile;
-				else if (OSInfo.IsMono) procInfo.FileName = "mono";
+				var assemblyFile = Assembly.GetEntryAssembly().Location;
+				 if (OSInfo.IsMono) procInfo.FileName = "mono";
+				else if (assemblyFile.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) procInfo.FileName = assemblyFile;
 				else if (OSInfo.IsCore) procInfo.FileName = "dotnet";
 				procInfo.WorkingDirectory = Environment.CurrentDirectory;
 				procInfo.Arguments = currentp.StartInfo.Arguments;

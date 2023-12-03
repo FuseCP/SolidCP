@@ -22,6 +22,7 @@ namespace SolidCP.UniversalInstaller
 	public class ServerSettings: CommonSettings
 	{
 		public string? ServerPassword { get; set; }
+		public string? CryptoKey { get; set; }
 	}
 
 	public class EnterpriseServerSettings: CommonSettings
@@ -31,6 +32,7 @@ namespace SolidCP.UniversalInstaller
 		public string? DatabaseServer { get; set; }
 		public string? DatabaseUser { get; set; }
 		public string? DatabasePassword { get; set; }
+		public string? CryptoKey { get; set; }
 	}
 
 	public class WebPortalSettings: CommonSettings

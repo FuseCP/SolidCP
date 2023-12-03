@@ -53,19 +53,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemoveServerFolder() { }
 		public virtual void RemoveServerUser() { }
 		public virtual void RemoveServerApplicationPool() { }
-		public virtual void ReadServerConfiguration()
-		{
-			ServerSettings = new ServerSettings();
-			var webConfigPath = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
-			if (File.Exists(webConfigPath))
-			{
-				var webConfig = XDocument.Load(webConfigPath);
-				// ServerSettings.ServerPassword =
-			}
-		}
-		public void ConfigureServer(ServerSettings settings)
-		{
-		}
+		public virtual void ReadServerConfiguration() { }
+		public void ConfigureServer(ServerSettings settings) { }
 		public virtual void UnzipServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);

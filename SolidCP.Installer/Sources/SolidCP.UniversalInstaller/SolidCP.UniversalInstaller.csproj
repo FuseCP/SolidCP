@@ -112,11 +112,12 @@
 		<EmbeddedResource Include="Resources\SolidCP.Server.Utils.pdb" />
 		<EmbeddedResource Include="Resources\WpiServiceContract.dll" />
 		<EmbeddedResource Include="Resources\WpiServiceContract.pdb" />
-		<!--<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Server.zip" Link="Resources\SolidCP-Server.zip" />
+		
+		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Server.zip" Link="Resources\SolidCP-Server.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-EnterpriseServer.zip" Link="Resources\SolidCP-EnterpriseServer.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Portal.zip" Link="Resources\SolidCP-Portal.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Web-Dav-Portal.zip" Link="Resources\SolidCP-Web-Dav-Portal.zip" />
-		-->
+		
 	</ItemGroup>
 
 	<Target Name="CopyResources" BeforeTargets="Build">
