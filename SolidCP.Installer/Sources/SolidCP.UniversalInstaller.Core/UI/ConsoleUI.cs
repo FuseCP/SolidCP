@@ -1,5 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Text;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller
@@ -336,6 +337,26 @@ Email:     [?LetsEncryptCertificateEmail                                        
 				}
 				else throw new NotSupportedException("Internal error");
 			}
+		}
+		public override void ShowInstallationSuccess(Packages packages)
+		{
+			var pckgStr = new StringBuilder();
+			if (packages.HasFlag(Packages.Server)) pckgStr.AppendLine("SolidCP Server");
+			if (packages.HasFlag(Packages.EnterpriseServer)) pckgStr.AppendLine("SolidCP Enterprise Server");
+			if (packages.HasFlag(Packages.WebPortal)) pckgStr.AppendLine("SolidCP Web Portal");
+			var template = @"
+Installation Successful
+=======================
+
+You have successfully installed the following components:
+
+@
+
+[    Ok    ]
+";
+			template = template.Replace("@", pckgStr.ToString());
+			var form = new ConsoleForm(template)
+				.ShowDialog();
 		}
 	}
 }

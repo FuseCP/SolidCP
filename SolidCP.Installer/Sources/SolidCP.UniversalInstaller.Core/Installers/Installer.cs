@@ -253,6 +253,8 @@ namespace SolidCP.UniversalInstaller
 				if (installPortal) InstallWebPortal();
 
 				if (installServer || installPortal || installEnterpriseServer) UI.CloseInstallationProgress();
+
+				UI.ShowInstallationSuccess(packages);
 			}
 			catch (Exception ex)
 			{

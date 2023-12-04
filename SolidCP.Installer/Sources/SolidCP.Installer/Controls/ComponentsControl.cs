@@ -96,8 +96,8 @@ namespace SolidCP.Installer.Controls
             string componentDescription = Utils.GetDbString(row[Global.Parameters.ComponentDescription]);
             string component = Utils.GetDbString(row[Global.Parameters.Component]);
             string version = Utils.GetDbString(row[Global.Parameters.Version]);
-            string fileName = row[Global.Parameters.FullFilePath].ToString();
-            string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]);
+            string fileName = row[Global.Parameters.FullFilePath].ToString().Replace('\\', Path.DirectorySeparatorChar);
+            string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]).Replace('\\', Path.DirectorySeparatorChar);
             string installerType = Utils.GetDbString(row[Global.Parameters.InstallerType]);
 
             if (CheckForInstalledComponent(componentCode))

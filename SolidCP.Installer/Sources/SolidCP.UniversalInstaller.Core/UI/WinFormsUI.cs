@@ -44,5 +44,9 @@ namespace SolidCP.UniversalInstaller {
 			throw new NotImplementedException();
 		}
 
+		public override void ShowInstallationSuccess(Packages packages)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

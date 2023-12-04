@@ -37,6 +37,7 @@ namespace SolidCP.UniversalInstaller {
         public abstract void ShowInstallationProgress();
         public abstract void CloseInstallationProgress();
         public abstract void ShowError(Exception ex);
+        public abstract void ShowInstallationSuccess(Packages packages);
         public virtual void PrintInstallerVersion()
         {
             var assembly = Assembly.GetExecutingAssembly();
