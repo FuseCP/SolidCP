@@ -110,6 +110,7 @@
     <Compile Include="Actions\IPrepareDefaultsAction.cs" />
     <Compile Include="Actions\IPrerequisiteAction.cs" />
     <Compile Include="Actions\IUninstallAction.cs" />
+    <Compile Include="Actions\ServerUnixActionManager.cs" />
     <Compile Include="Actions\ServerActionManager.cs" />
     <Compile Include="Actions\StandaloneServerActionManager.cs" />
     <Compile Include="Actions\WebDavPortalActionManager.cs" />
@@ -446,6 +447,9 @@
       <Project>{b6d067c1-e5af-4e37-8d58-92ca53445400}</Project>
       <Name>SolidCP.UniversalInstaller.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EULA.Unix.rtf" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

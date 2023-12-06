@@ -68,7 +68,11 @@ namespace SolidCP.Setup
 			//Unattended setup
 			LoadSetupVariablesFromSetupXml(setupVariables.SetupXml, setupVariables);
 			//
-			var sam = new ServerActionManager(setupVariables);
+			BaseActionManager sam = null;
+			
+			if (OSInfo.IsWindows) sam =	new ServerActionManager(setupVariables);
+			else sam = new ServerUnixActionManager(setupVariables);
+
 			// Prepare installation defaults
 			sam.PrepareDistributiveDefaults();
 			// Silent Installer Mode
@@ -144,15 +148,20 @@ namespace SolidCP.Setup
 					new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
 					});
 				}
-				//
+				
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
-				var page4 = new UserAccountPage();
+				UserAccountPage page4 = null;
+				if (OSInfo.IsWindows) page4 = new UserAccountPage();
 				var page5 = new ServerPasswordPage();
 				var page6 = new ExpressInstallPage2();
 				var page7 = new FinishPage();
-				//
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7 });
+				
+				if (OSInfo.IsWindows)
+					wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7 });
+				else
+					wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page5, page6, page7 });
+
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 
