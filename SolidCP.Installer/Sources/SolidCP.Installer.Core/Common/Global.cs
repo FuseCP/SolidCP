@@ -191,6 +191,7 @@ namespace SolidCP.Installer.Common
 			public const string ServiceAccount = "SCPEnterprise";
 			public const string DefaultPort = "9002";
 			public const string DefaultIP = "127.0.0.1";
+			public const string DefaultDomain = "";
 			public const string DefaultDbServer = @"localhost\sqlexpress";
 			public const string DefaultDatabase = "SolidCP";
 			public const string AspNetConnectionStringFormat = "server={0};database={1};uid={2};pwd={3};";

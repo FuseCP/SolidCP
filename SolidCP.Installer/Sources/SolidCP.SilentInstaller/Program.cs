@@ -243,7 +243,7 @@ namespace SolidCP.SilentInstaller
 					output: new Hashtable
 						{
 							{ Global.Parameters.WebSiteIP, Global.EntServer.DefaultIP },
-							{ Global.Parameters.WebSiteDomain, String.Empty },
+							{ Global.Parameters.WebSiteDomain, Global.EntServer.DefaultDomain },
 							{ Global.Parameters.WebSitePort, Global.EntServer.DefaultPort },
 							{ Global.Parameters.UserAccount, Global.EntServer.ServiceAccount },
 							{ Global.Parameters.UserDomain, String.Empty },

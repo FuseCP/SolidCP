@@ -7,11 +7,14 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Runtime.CompilerServices;
+using SolidCP.Providers.OS;
+using System.Xml.Linq;
 
 namespace SolidCP.Providers.OS
 {
 
-    public enum OSPlatform { Unknown = 0, Windows, Mac, Linux, Unix, Other };
+	public enum OSPlatform { Unknown = 0, Windows, Mac, Linux, Unix, Other };
 	public enum OSFlavor { Unknown = 0, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, CentOS, SUSE, Alpine, FreeBSD, NetBSD, Other }
 
 	public class OSInfo
@@ -82,7 +85,7 @@ namespace SolidCP.Providers.OS
 					if (name == null) flavor = OSFlavor.Other;
 					else if (Enum.TryParse<OSFlavor>(name, out f)) flavor = f;
 				}
-				return flavor == OSFlavor.Unknown ?  OSFlavor.Other : flavor;
+				return flavor == OSFlavor.Unknown ? OSFlavor.Other : flavor;
 			}
 		}
 		public static Version OSVersion
@@ -94,8 +97,39 @@ namespace SolidCP.Providers.OS
 			}
 		}
 		public static WindowsVersion WindowsVersion => IsWindows ? WindowsOSInfo.GetVersion() : WindowsVersion.NonWindows;
-		public static string Description => RuntimeInformation.OSDescription;
+		public static string Description
+		{
+			get
+			{
+				if (IsLinux)
+				{
+					string name = null;
+					const string OsReleaseFile = "/etc/os-release";
+					if (File.Exists(OsReleaseFile))
+					{
+						var osRelease = File.ReadAllText(OsReleaseFile);
+						var match = Regex.Match(osRelease, "(?<=^PRETTY_NAME\\s*=\\s*\")[^\"]+(?=\")", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+						if (match.Success) name = match.Value;
+					}
+					if (name == null)
+					{
+						var osRelease = Shell.Default.Exec("lsb_release -a").Output().Result;
+						var match = Regex.Match(osRelease, "(?<=^Description\\s*:\\s*)[^\\s$]+(?=\\s|$)", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+						if (match.Success) name = match.Value;
+					}
+					if (name == null)
+					{
+						name = Shell.Default.Exec("uname").Output().Result;
+					}
+					return name;
 
+				}
+				else
+				{
+					return RuntimeInformation.OSDescription;
+				}
+			}
+		}
 		static Providers.OS.IOperatingSystem os = null;
 		public static Providers.OS.IOperatingSystem Current
 		{
@@ -147,7 +181,5 @@ namespace SolidCP.Providers.OS
 				return os;
 			}
 		}
-		public static Shell Shell => Current.DefaultShell;
-		public static Installer Installer => Current.DefaultInstaller;
 	}
 }

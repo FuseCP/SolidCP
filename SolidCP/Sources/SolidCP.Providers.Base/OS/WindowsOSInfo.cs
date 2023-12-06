@@ -37,6 +37,7 @@ using System.Runtime.InteropServices;
 using System.Management;
 using System.Security.Principal;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.Providers.OS
 {
@@ -329,7 +330,10 @@ namespace SolidCP.Providers.OS
 			// Get OperatingSystem information from the system namespace.
 			System.OperatingSystem osInfo = System.Environment.OSVersion;
 
-			var ver = new Version(Microsoft.DotNet.PlatformAbstractions.RuntimeEnvironment.OperatingSystemVersion);
+			Version ver = osInfo.Version;
+			string osDesc = RuntimeInformation.OSDescription;
+			var match = Regex.Match(osDesc, @"[0-9]+(?:\.[0-9]+){0,3}");
+			if (match.Success) ver = new Version(match.Value);
 
 			// Determine the platform.
 			switch (osInfo.Platform)

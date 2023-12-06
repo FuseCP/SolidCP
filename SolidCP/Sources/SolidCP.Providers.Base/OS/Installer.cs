@@ -6,7 +6,7 @@ namespace SolidCP.Providers.OS
 {
 	public abstract class Installer
 	{
-		public virtual Shell Shell { get; set; } = OSInfo.Shell;
+		public virtual Shell Shell { get; set; } = OSInfo.Current.DefaultShell;
 		public virtual Shell Install(string apps) => InstallAsync(apps).Task().Result;
 		public abstract Shell InstallAsync(string apps);
 		public virtual Shell AddSources(string sources) => AddSourcesAsync(sources).Task().Result;

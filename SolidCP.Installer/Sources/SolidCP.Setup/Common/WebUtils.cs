@@ -40,6 +40,7 @@ using Microsoft.Web.Management;
 using Microsoft.Web.Administration;
 using System.DirectoryServices;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace SolidCP.Setup
 {
@@ -222,7 +223,8 @@ namespace SolidCP.Setup
 					site.Bindings[i] = new ServerBinding(
 						(string)objBindings[i].Properties["IP"].Value,
 						(string)objBindings[i].Properties["Port"].Value,
-						(string)objBindings[i].Properties["Hostname"].Value);
+						(string)objBindings[i].Properties["Hostname"].Value,
+						Uri.UriSchemeHttp);
 
 				}
 			}
@@ -318,16 +320,19 @@ namespace SolidCP.Setup
             	
 			ManagementBaseObject methodParams = objService.GetMethodParameters("CreateNewSite");
 
+			var httpBindings = site.Bindings.Where(b => b.Scheme == Uri.UriSchemeHttp).ToArray();
+			var httpsBindings = site.Bindings.Where(b => b.Scheme == Uri.UriSchemeHttps).ToArray();
+
 			// create server bindings
 			ManagementClass clsBinding = wmi.GetClass("ServerBinding");
-			ManagementObject[] objBindings = new ManagementObject[site.Bindings.Length];
+			ManagementObject[] objBindings = new ManagementObject[httpBindings.Length];
 	
 			for(int i = 0; i < objBindings.Length; i++)
 			{
 				objBindings[i] = clsBinding.CreateInstance();
-				objBindings[i]["Hostname"] = site.Bindings[i].Host;
-				objBindings[i]["IP"] = site.Bindings[i].IP;
-				objBindings[i]["Port"] = site.Bindings[i].Port;
+				objBindings[i]["Hostname"] = httpBindings[i].Host;
+				objBindings[i]["IP"] = httpBindings[i].IP;
+				objBindings[i]["Port"] = httpBindings[i].Port;
 			}
 	
 			methodParams["ServerBindings"] = objBindings;
@@ -388,8 +393,7 @@ namespace SolidCP.Setup
 			foreach (ServerBinding binding in site.Bindings)
 			{
 				//
-				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host,
-					Uri.UriSchemeHttp);
+				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host, binding.Scheme);
 			}
 			//
 			webSite.Applications[0].ApplicationPoolName = site.ApplicationPool;
@@ -747,7 +751,7 @@ namespace SolidCP.Setup
 			{
 				foreach (Binding binding in webSite.Bindings)
 				{
-                    if (binding.Protocol != Uri.UriSchemeHttp)
+                    if (binding.Protocol != Uri.UriSchemeHttp || binding.Protocol != Uri.UriSchemeHttps || binding.Protocol != Uri.UriSchemeNetTcp)
                         continue;
 
                     string bi = binding.BindingInformation;
@@ -1075,8 +1079,7 @@ namespace SolidCP.Setup
 			foreach (ServerBinding binding in bindings)
 			{
 				//
-				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host,
-					Uri.UriSchemeHttp);
+				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host, binding.Scheme);
 			}
 			//
 			serverManager.CommitChanges();

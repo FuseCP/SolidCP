@@ -39,8 +39,12 @@ namespace SolidCP.Setup
 	public enum CheckTypes
 	{
 		None,
-		OperationSystem,
+		OperatingSystem,
+		WindowsOperatingSystem,
 		IISVersion,
+		Systemd,
+		ApacheVersion,
+		Net8Runtime,
 		ASPNET,
 		SCPServer,
 		SCPEnterpriseServer,

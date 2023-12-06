@@ -144,7 +144,8 @@ namespace SolidCP.Setup
 				this.txtAddress.StatusMessage = string.Empty;
 				return;
 			}*/
-			string address = "http://";
+			//se changed address from http to https.
+			string address = "https://";
 			string server = string.Empty;
 			string port = string.Empty;
 			string virtualDir = string.Empty;

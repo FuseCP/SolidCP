@@ -128,7 +128,7 @@ namespace SolidCP.Setup
                 var page1 = new ConfigurationCheckPage();
                 page1.Checks.AddRange(new ConfigurationCheck[]
 				{ 
-					new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement"){ SetupVariables = setupVariables }, 
+					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables }, 
 					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables }, 
 					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
 				});

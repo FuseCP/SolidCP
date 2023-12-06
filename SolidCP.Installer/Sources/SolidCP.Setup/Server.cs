@@ -38,6 +38,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Text;
 using SolidCP.Setup.Actions;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -48,107 +49,118 @@ namespace SolidCP.Setup
 			return InstallBase(obj, "1.0.1");
 		}
 
-        internal static object InstallBase(object obj, string minimalInstallerVersion)
-        {
-            Hashtable args = Utils.GetSetupParameters(obj);
+		internal static object InstallBase(object obj, string minimalInstallerVersion)
+		{
+			Hashtable args = Utils.GetSetupParameters(obj);
 
-            //check CS version
-            string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
-            var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
-            Version version = new Version(shellVersion);
-            //
-            var setupVariables = new SetupVariables
-            {
-                SetupAction = SetupActions.Install,
-                IISVersion = Global.IISVersion
-            };
-            //
-            InitInstall(args, setupVariables);
-            //Unattended setup
-            LoadSetupVariablesFromSetupXml(setupVariables.SetupXml, setupVariables);
-            //
-            var sam = new ServerActionManager(setupVariables);
-            // Prepare installation defaults
-            sam.PrepareDistributiveDefaults();
-            // Silent Installer Mode
-            if (shellMode.Equals(Global.SilentInstallerShell, StringComparison.OrdinalIgnoreCase))
-            {
-                if (version < new Version(minimalInstallerVersion))
-                {
-                    Utils.ShowConsoleErrorMessage(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion);
-                    //
-                    return false;
-                }
+			//check CS version
+			string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
+			var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
+			Version version = new Version(shellVersion);
+			//
+			var setupVariables = new SetupVariables
+			{
+				SetupAction = SetupActions.Install,
+				IISVersion = Global.IISVersion
+			};
+			//
+			InitInstall(args, setupVariables);
+			//Unattended setup
+			LoadSetupVariablesFromSetupXml(setupVariables.SetupXml, setupVariables);
+			//
+			var sam = new ServerActionManager(setupVariables);
+			// Prepare installation defaults
+			sam.PrepareDistributiveDefaults();
+			// Silent Installer Mode
+			if (shellMode.Equals(Global.SilentInstallerShell, StringComparison.OrdinalIgnoreCase))
+			{
+				if (version < new Version(minimalInstallerVersion))
+				{
+					Utils.ShowConsoleErrorMessage(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion);
+					//
+					return false;
+				}
 
-                try
-                {
-                    var success = true;
-                    //
-                    setupVariables.ServerPassword = Utils.GetStringSetupParameter(args, Global.Parameters.ServerPassword);
-                    //
-                    sam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
-                    {
-                        Utils.ShowConsoleErrorMessage(e.ErrorMessage);
-                        //
-                        Log.WriteError(e.ErrorMessage);
-                        //
-                        success = false;
-                    });
-                    //
-                    sam.Start();
-                    //
-                    return success;
-                }
-                catch (Exception ex)
-                {
-                    Log.WriteError("Failed to install the component", ex);
-                    //
-                    return false;
-                }
-            }
-            else
-            {
-                if (version < new Version(minimalInstallerVersion))
-                {
-                    MessageBox.Show(String.Format(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion), "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    //
-                    return DialogResult.Cancel;
-                }
+				try
+				{
+					var success = true;
+					//
+					setupVariables.ServerPassword = Utils.GetStringSetupParameter(args, Global.Parameters.ServerPassword);
+					//
+					sam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
+					{
+						Utils.ShowConsoleErrorMessage(e.ErrorMessage);
+						//
+						Log.WriteError(e.ErrorMessage);
+						//
+						success = false;
+					});
+					//
+					sam.Start();
+					//
+					return success;
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError("Failed to install the component", ex);
+					//
+					return false;
+				}
+			}
+			else
+			{
+				if (version < new Version(minimalInstallerVersion))
+				{
+					MessageBox.Show(String.Format(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion), "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					//
+					return DialogResult.Cancel;
+				}
 
-                var form = new InstallerForm();
-                var wizard = form.Wizard;
-                wizard.SetupVariables = setupVariables;
-                //
-                wizard.ActionManager = sam;
+				var form = new InstallerForm();
+				var wizard = form.Wizard;
+				wizard.SetupVariables = setupVariables;
+				//
+				wizard.ActionManager = sam;
 
-                //create wizard pages
-                var introPage = new IntroductionPage();
-                var licPage = new LicenseAgreementPage();
-                //
-                var page1 = new ConfigurationCheckPage();
-                page1.Checks.AddRange(new ConfigurationCheck[]
-				{ 
-					new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement"){ SetupVariables = setupVariables }, 
-					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables }, 
+				//create wizard pages
+				var introPage = new IntroductionPage();
+				var licPage = new LicenseAgreementPage();
+				//
+				var page1 = new ConfigurationCheckPage();
+				if (OSInfo.IsWindows)
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables },
 					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
-				});
-                //
-                var page2 = new InstallFolderPage();
-                var page3 = new WebPage();
-                var page4 = new UserAccountPage();
-                var page5 = new ServerPasswordPage();
-                var page6 = new ExpressInstallPage2();
-                var page7 = new FinishPage();
-                //
-                wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7 });
-                wizard.LinkPages();
-                wizard.SelectedPage = introPage;
+					});
+				} else
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+					new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.Net8Runtime, "NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
+					});
+				}
+				//
+				var page2 = new InstallFolderPage();
+				var page3 = new WebPage();
+				var page4 = new UserAccountPage();
+				var page5 = new ServerPasswordPage();
+				var page6 = new ExpressInstallPage2();
+				var page7 = new FinishPage();
+				//
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7 });
+				wizard.LinkPages();
+				wizard.SelectedPage = introPage;
 
-                //show wizard
-                IWin32Window owner = args["ParentForm"] as IWin32Window;
-                return form.ShowModal(owner);
-            }
-        }
+				//show wizard
+				IWin32Window owner = args["ParentForm"] as IWin32Window;
+				return form.ShowModal(owner);
+			}
+		}
 
 		public static object Uninstall(object obj)
 		{

@@ -45,6 +45,8 @@ using Microsoft.Win32;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using SolidCP.Providers.OS;
+using System.Runtime.Remoting.Contexts;
 
 namespace SolidCP.Setup.Actions
 {
@@ -599,7 +601,7 @@ namespace SolidCP.Setup.Actions
 			string[] urls = Utils.GetApplicationUrls(ip, domain, port, null);
 			foreach (string url in urls)
 			{
-				InstallLog.AppendLine("  http://" + url);
+				InstallLog.AppendLine(Utils.IsLocal(ip, domain) ? "  http://" + url : "  https://" + url);
 			}
 		}
 
@@ -641,6 +643,31 @@ namespace SolidCP.Setup.Actions
 		}
 	}
 
+	public class InstallLetsEncryptCertificateAction : Action, IInstallAction, IUninstallAction
+	{
+		void IInstallAction.Run(SetupVariables vars)
+		{
+
+			string ip = vars.WebSiteIP;
+			string siteId = vars.WebSiteId;
+			string domain = vars.WebSiteDomain;
+			string email = vars.LetsEncryptEmail;
+
+			if (domain != "localhost" && ip != "127.0.0.1" && ip != "::1")
+			{
+				if (OSInfo.IsWindows)
+				{
+					Providers.Web.WebSite site = new Providers.Web.WebSite()
+					{
+						SiteId = siteId
+					};
+					OSInfo.Current.WebServer.LEInstallCertificate(site, email);
+				}
+			}
+		}
+
+		void IUninstallAction.Run(SetupVariables vars) { }
+	}
 	public class CopyFilesAction : Action, IInstallAction, IUninstallAction
 	{
 		public const string LogStartInstallMessage = "Copying files...";
@@ -1368,6 +1395,7 @@ namespace SolidCP.Setup.Actions
 			new SetNtfsPermissionsAction(),
 			new CreateWebApplicationPoolAction(),
 			new CreateWebSiteAction(),
+			new InstallLetsEncryptCertificateAction(),
 			new SwitchAppPoolAspNetVersion(),
 			new SaveComponentConfigSettingsAction()
 		};

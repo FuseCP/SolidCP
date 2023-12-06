@@ -44,7 +44,9 @@ using SolidCP.Setup.Web;
 using System.IO;
 using System.Management;
 using SolidCP.Setup.Actions;
+using SolidCP.UniversalInstaller;
 using Microsoft.Win32;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -130,8 +132,11 @@ namespace SolidCP.Setup
 					#region Previous Prereq Verification
 					switch (check.CheckType)
 					{
-						case CheckTypes.OperationSystem:
+						case CheckTypes.OperatingSystem:
 							status = CheckOS(check.SetupVariables, out details);
+							break;
+						case CheckTypes.WindowsOperatingSystem:
+							status = CheckWindowsOS(check.SetupVariables, out details);
 							break;
 						case CheckTypes.IISVersion:
 							status = CheckIISVersion(check.SetupVariables, out details);
@@ -151,7 +156,16 @@ namespace SolidCP.Setup
                         case CheckTypes.SCPWebDavPortal:
                             status = CheckSCPWebDavPortal(check.SetupVariables, out details);
                             break;
-                        default:
+						case CheckTypes.Net8Runtime:
+							status = CheckNet8Runtime(check.SetupVariables, out details);
+							break;
+						case CheckTypes.ApacheVersion:
+							status = CheckApacheVersion(check.SetupVariables, out details);
+							break;
+						case CheckTypes.Systemd:
+							status = CheckSystemd(check.SetupVariables, out details);
+							break;
+						default:
 							status = CheckStatuses.Warning;
 							break;
 					}
@@ -234,24 +248,28 @@ namespace SolidCP.Setup
 			try
 			{
 				//check OS version
-				OS.WindowsVersion version = OS.GetVersion();
-				details = OS.GetName(version);
+				WindowsVersion version = OSInfo.WindowsVersion;
+				details = OSInfo.Description;
 				if (Utils.IsWin64())
 					details += " x64";
 				Log.WriteInfo(string.Format("OS check: {0}", details));
 
-				if (!(version == OS.WindowsVersion.WindowsServer2003 ||
-                    version == OS.WindowsVersion.WindowsServer2008 ||
-                    version == OS.WindowsVersion.WindowsServer2008R2 ||
-                    version == OS.WindowsVersion.WindowsServer2012 ||
-                    version == OS.WindowsVersion.WindowsServer2012R2 ||
-                    version == OS.WindowsVersion.WindowsServer2016 ||
-                    version == OS.WindowsVersion.WindowsVista ||
-                    version == OS.WindowsVersion.Windows7 ||
-                    version == OS.WindowsVersion.Windows8 ||
-                    version == OS.WindowsVersion.Windows10))
+				if (!(version == WindowsVersion.WindowsServer2008 ||
+					version == WindowsVersion.WindowsServer2008R2 ||
+					version == WindowsVersion.WindowsServer2012 ||
+					version == WindowsVersion.WindowsServer2012R2 ||
+					version == WindowsVersion.WindowsServer2016 ||
+					version == WindowsVersion.WindowsServer2019 ||
+					version == WindowsVersion.WindowsServer2022 ||
+					version == WindowsVersion.Vista ||
+					version == WindowsVersion.Windows7 ||
+					version == WindowsVersion.Windows8 ||
+					version == WindowsVersion.Windows81 ||
+					version == WindowsVersion.Windows10 ||
+					version == WindowsVersion.Windows11 ||
+					version == WindowsVersion.NonWindows))
 				{
-					details = "OS required: Windows Server 2008/2008 R2/2012 or Windows Vista/7/8.";
+					details = "OS required: Windows Server 2008/2008 R2/2012/2016/2019/2022 or Windows Vista/7/8/10/11.";
 					Log.WriteError(string.Format("OS check: {0}", details), null);
 #if DEBUG
 					return CheckStatuses.Warning;
@@ -270,7 +288,52 @@ namespace SolidCP.Setup
 				return CheckStatuses.Error;
 			}
 		}
-        internal static CheckStatuses CheckIISVersion(SetupVariables setupVariables, out string details)
+		internal static CheckStatuses CheckWindowsOS(SetupVariables setupVariables, out string details)
+		{
+			details = string.Empty;
+			try
+			{
+				//check OS version
+				WindowsVersion version = OSInfo.WindowsVersion;
+				details = OSInfo.Description;
+				if (Utils.IsWin64())
+					details += " x64";
+				Log.WriteInfo(string.Format("OS check: {0}", details));
+
+				if (!(version == WindowsVersion.WindowsServer2008 ||
+					version == WindowsVersion.WindowsServer2008R2 ||
+					version == WindowsVersion.WindowsServer2012 ||
+					version == WindowsVersion.WindowsServer2012R2 ||
+					version == WindowsVersion.WindowsServer2016 ||
+					version == WindowsVersion.WindowsServer2019 ||
+					version == WindowsVersion.WindowsServer2022 ||
+					version == WindowsVersion.Vista ||
+					version == WindowsVersion.Windows7 ||
+					version == WindowsVersion.Windows8 ||
+					version == WindowsVersion.Windows81 ||
+					version == WindowsVersion.Windows10 ||
+					version == WindowsVersion.Windows11))
+				{
+					details = "OS required: Windows Server 2008/2008 R2/2012/2016/2019/2022 or Windows Vista/7/8/10/11.";
+					Log.WriteError(string.Format("OS check: {0}", details), null);
+#if DEBUG
+					return CheckStatuses.Warning;
+#endif
+#if !DEBUG
+					return CheckStatuses.Error;
+#endif
+				}
+				return CheckStatuses.Success;
+			}
+			catch (Exception ex)
+			{
+				if (!Utils.IsThreadAbortException(ex))
+					Log.WriteError("Check error", ex);
+				details = "Unexpected error";
+				return CheckStatuses.Error;
+			}
+		}
+		internal static CheckStatuses CheckIISVersion(SetupVariables setupVariables, out string details)
 		{
 			details = string.Empty;
 			try
@@ -283,9 +346,10 @@ namespace SolidCP.Setup
 				}
 
 				Log.WriteInfo(string.Format("IIS check: {0}", details));
-                if (setupVariables.IISVersion.Major < 6)
+				// require IIS 7
+                if (setupVariables.IISVersion.Major < 7)
 				{
-					details = "IIS 6.0 or greater required.";
+					details = "IIS 7.0 or greater required.";
 					Log.WriteError(string.Format("IIS check: {0}", details), null);
 					return CheckStatuses.Error;
 				}
@@ -301,6 +365,42 @@ namespace SolidCP.Setup
 			}
 		}
 
+		internal static CheckStatuses CheckApacheVersion(SetupVariables setupVariables, out string details)
+		{
+			details = "Apache 2.4 is installed.";
+			// TODO check for Apache 2.4
+
+			return CheckStatuses.Success;
+		}
+		internal static CheckStatuses CheckSystemd(SetupVariables setupVariables, out string details)
+		{
+			details = "Systemd is installed.";
+
+			if (OSInfo.Current.ServiceController != null &&
+				OSInfo.Current.ServiceController.IsInstalled) return CheckStatuses.Success;
+
+			details = "Systemd not found.";
+			return CheckStatuses.Error;
+		}
+		internal static CheckStatuses CheckNet8Runtime(SetupVariables setupVariables, out string details)
+		{
+			details = "NET 8 Runtime is installed.";
+			CheckStatuses ret = CheckStatuses.Success;
+			if (!UniversalInstaller.Installer.Current.CheckNet8RuntimeInstalled())
+			{
+				try
+				{
+					UniversalInstaller.Installer.Current.InstallNet8Runtime();
+					details = "NET 8 Runtime has been installed.";
+					ret = CheckStatuses.Warning;
+				} catch (Exception ex)
+				{
+					details = ex.Message;
+					ret = CheckStatuses.Error;
+				}
+			}
+			return ret;
+		}
 		internal static CheckStatuses CheckASPNET(SetupVariables setupVariables, out string details)
 		{
 			details = "ASP.NET 4.0 is installed.";
@@ -428,38 +528,46 @@ namespace SolidCP.Setup
 		private CheckStatuses CheckSCPServer(SetupVariables setupVariables, out string details)
 		{
 			details = "";
-			try
+
+			if (OSInfo.IsWindows)
 			{
-				if (SiteBindingsExist(setupVariables))
+				try
 				{
-					details = string.Format("Site with specified bindings already exists (ip: {0}, port: {1}, domain: {2})",
-							setupVariables.WebSiteIP, setupVariables.WebSitePort, setupVariables.WebSiteDomain);
-					Log.WriteError(string.Format("Site bindings check: {0}", details), null);
+					if (SiteBindingsExist(setupVariables))
+					{
+						details = string.Format("Site with specified bindings already exists (ip: {0}, port: {1}, domain: {2})",
+								setupVariables.WebSiteIP, setupVariables.WebSitePort, setupVariables.WebSiteDomain);
+						Log.WriteError(string.Format("Site bindings check: {0}", details), null);
+						return CheckStatuses.Error;
+					}
+
+					if (AccountExists(setupVariables))
+					{
+						details = string.Format("Windows account already exists: {0}\\{1}",
+								   setupVariables.UserDomain, setupVariables.UserAccount);
+						Log.WriteError(string.Format("Account check: {0}", details), null);
+						return CheckStatuses.Error;
+					}
+
+					if (!CheckDiskSpace(setupVariables, out details))
+					{
+						Log.WriteError(string.Format("Disk space check: {0}", details), null);
+						return CheckStatuses.Error;
+					}
+
+					return CheckStatuses.Success;
+				}
+				catch (Exception ex)
+				{
+					if (!Utils.IsThreadAbortException(ex))
+						Log.WriteError("Check error", ex);
+					details = "Unexpected error";
 					return CheckStatuses.Error;
 				}
-
-				if (AccountExists(setupVariables))
-				{
-					details = string.Format("Windows account already exists: {0}\\{1}",
-							   setupVariables.UserDomain, setupVariables.UserAccount);
-					Log.WriteError(string.Format("Account check: {0}", details), null);
-					return CheckStatuses.Error;
-				}
-
-				if (!CheckDiskSpace(setupVariables, out details))
-				{
-					Log.WriteError(string.Format("Disk space check: {0}", details), null);
-					return CheckStatuses.Error;
-				}
-
-				return CheckStatuses.Success;
 			}
-			catch (Exception ex)
+			else
 			{
-				if (!Utils.IsThreadAbortException(ex))
-					Log.WriteError("Check error", ex);
-				details = "Unexpected error";
-				return CheckStatuses.Error;
+				return CheckStatuses.Success;
 			}
 		}
 
@@ -506,6 +614,11 @@ namespace SolidCP.Setup
 
 		private CheckStatuses CheckSCPEnterpriseServer(SetupVariables setupVariables, out string details)
 		{
+			if (!OSInfo.IsWindows)
+			{
+				details = "Enterprise Server can only be installed on Windows";
+				return CheckStatuses.Error;
+			}
 			details = "";
 			try
 			{
@@ -544,6 +657,11 @@ namespace SolidCP.Setup
 
 		private CheckStatuses CheckSCPPortal(SetupVariables setupVariables, out string details)
 		{
+			if (!OSInfo.IsWindows)
+			{
+				details = "Portal can only be installed on Windows";
+				return CheckStatuses.Error;
+			}
 			details = "";
 			try
 			{
@@ -575,7 +693,12 @@ namespace SolidCP.Setup
 
         private CheckStatuses CheckSCPWebDavPortal(SetupVariables setupVariables, out string details)
         {
-            details = "";
+			if (!OSInfo.IsWindows)
+			{
+				details = "Portal can only be installed on Windows";
+				return CheckStatuses.Error;
+			}
+			details = "";
             try
             {
                 if (AccountExists(setupVariables))

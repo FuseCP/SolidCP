@@ -168,6 +168,9 @@ namespace SolidCP.Setup
 						case ActionTypes.CreateWebSite:
 							CreateWebSite();
 							break;
+						case ActionTypes.ConfigureLetsEncrypt:
+							ConfigureLetsEncrypt();
+							break;
 						case ActionTypes.CryptoKey:
 							SetCryptoKey();
 							break;
@@ -1835,7 +1838,7 @@ namespace SolidCP.Setup
 				string[] urls = GetApplicationUrls(ip, domain, port, null);
 				string url = null;
 				if (urls.Length > 0)
-					url = "http://" + urls[0];
+					url = Utils.IsLocal(ip, domain) ? "http://" + url[0] : "https://" + url[0];
 				else
 				{
 					Log.WriteInfo("Application url not found");
@@ -2416,7 +2419,7 @@ namespace SolidCP.Setup
 				//
 				foreach (string url in urls)
 				{
-					InstallLog.AppendLine("  http://" + url);
+					InstallLog.AppendLine(Utils.IsLocal(ip, domain) ? "  http://" + url : "  https://" + url);
 				}
 			}
 			catch (Exception ex)
@@ -2885,7 +2888,25 @@ namespace SolidCP.Setup
 			}
 
 		}
+		private void ConfigureLetsEncrypt()
+		{
+			string ip = Wizard.SetupVariables.WebSiteIP;
+			string siteId = Wizard.SetupVariables.WebSiteId;
+			string domain = Wizard.SetupVariables.WebSiteDomain;
+			string email = Wizard.SetupVariables.LetsEncryptEmail;
 
+			if (domain != "localhost" && ip != "127.0.0.1" && ip != "::1")
+			{
+				if (Providers.OS.OSInfo.IsWindows)
+				{
+					Providers.Web.WebSite site = new Providers.Web.WebSite()
+					{
+						SiteId = siteId
+					};
+					Providers.OS.OSInfo.Current.WebServer.LEInstallCertificate(site, email);
+				}
+			}
+		}
 		private void ConfigureFolderPermissions()
 		{
 			try
@@ -3047,7 +3068,7 @@ namespace SolidCP.Setup
 			string[] urls = GetApplicationUrls(ip, domain, port, null);
 			foreach (string url in urls)
 			{
-				InstallLog.AppendLine("  http://" + url);
+				InstallLog.AppendLine(Utils.IsLocal(ip, domain) ? "  http://" + url : "  https://" + url);
 			}
 		}
 

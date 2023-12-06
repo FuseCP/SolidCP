@@ -187,6 +187,8 @@ namespace SolidCP.Setup
 		/// </summary>
 		public string WebSiteDomain { get; set; }
 
+		public string LetsEncryptEmail { get; set; }
+
 		/// <summary>
 		/// User account
 		/// </summary>
@@ -305,7 +307,7 @@ namespace SolidCP.Setup
 		{
 			get
 			{
-				string address = "http://";
+				string address = "https://";
 				string server = String.Empty;
 				string ipPort = String.Empty;
 				//server 

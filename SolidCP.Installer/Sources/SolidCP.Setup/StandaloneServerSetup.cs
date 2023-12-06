@@ -254,7 +254,7 @@ namespace SolidCP.Setup
 				var page2 = new ConfigurationCheckPage();			
 				// Setup prerequisites validation
 				page2.Checks.AddRange(new ConfigurationCheck[] { 
-					new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement"){ SetupVariables = serverSetup }, 
+					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = serverSetup }, 
 					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = serverSetup }, 
 					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = serverSetup }, 
 					// Validate Server installation prerequisites
@@ -336,7 +336,7 @@ namespace SolidCP.Setup
 
 		private static string GetUrl(string domain, string ip, string port)
 		{
-			string address = "http://";
+			string address = "https://";
 			string server = string.Empty;
 			string ipPort = string.Empty;
 			//server 
