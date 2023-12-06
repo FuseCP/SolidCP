@@ -217,23 +217,29 @@ namespace SolidCP.Setup
             AppConfig.LoadComponentSettings(wizard.SetupVariables);
 
             WebPage page1 = new WebPage();
-            UrlPage page2 = new UrlPage();
-            ExpressInstallPage page3 = new ExpressInstallPage();
+            var page2 = new InsecureHttpWarningPage();
+            LetsEncryptPage page3 = new LetsEncryptPage();
+            UrlPage page4 = new UrlPage();
+            ExpressInstallPage page5 = new ExpressInstallPage();
             //create install currentScenario
             InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
             action.Description = "Updating web site...";
-            page3.Actions.Add(action);
+            page5.Actions.Add(action);
 
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configuring Let's Encrypt...";
+			page5.Actions.Add(action);
+			
             action = new InstallAction(ActionTypes.UpdateEnterpriseServerUrl);
             action.Description = "Updating site settings...";
-            page3.Actions.Add(action);
+            page5.Actions.Add(action);
 
             action = new InstallAction(ActionTypes.UpdateConfig);
             action.Description = "Updating system configuration...";
-            page3.Actions.Add(action);
+            page5.Actions.Add(action);
 
-            FinishPage page4 = new FinishPage();
-            wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
+            FinishPage page6 = new FinishPage();
+            wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4, page5, page6 });
             wizard.LinkPages();
             wizard.SelectedPage = page1;
 

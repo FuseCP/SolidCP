@@ -134,12 +134,14 @@ namespace SolidCP.Setup
 				page1.Checks.AddRange(new ConfigurationCheck[] { check1, check2, check3 });
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
-				var page4 = new UserAccountPage();
-				var page5 = new UrlPage();
-				var page6 = new ExpressInstallPage2();
+				var page4 = new InsecureHttpWarningPage();
+				var page5 = new LetsEncryptPage();
+				var page6 = new UserAccountPage();
+				var page7 = new UrlPage();
+				var page8 = new ExpressInstallPage2();
 
-				var page7 = new FinishPage();
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7 });
+				var page9 = new FinishPage();
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7, page8, page9 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 				//show wizard
@@ -210,23 +212,29 @@ namespace SolidCP.Setup
 			AppConfig.LoadComponentSettings(wizard.SetupVariables);
 			
 			WebPage page1 = new WebPage();
-			UrlPage page2 = new UrlPage();
-			ExpressInstallPage page3 = new ExpressInstallPage();
+			var page2 = new InsecureHttpWarningPage();
+			LetsEncryptPage page3 = new LetsEncryptPage();
+			UrlPage page4 = new UrlPage();
+			ExpressInstallPage page5 = new ExpressInstallPage();
 			//create install currentScenario
 			InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
 			action.Description = "Updating web site...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configure Let's Encrypt...";
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateEnterpriseServerUrl);
 			action.Description = "Updating site settings...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateConfig);
 			action.Description = "Updating system configuration...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
-			FinishPage page4 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
+			FinishPage page6 = new FinishPage();
+			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4, page5, page6 });
 			wizard.LinkPages();
 			wizard.SelectedPage = page1;
 

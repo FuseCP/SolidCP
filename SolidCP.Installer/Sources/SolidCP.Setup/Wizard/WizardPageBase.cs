@@ -56,6 +56,7 @@ namespace SolidCP.Setup
 		private bool allowCancel;
 		private bool customCancelHandler;
 		private bool initialized = false;
+        public virtual bool Hidden => false;
 
         protected WizardPageBase()
         {

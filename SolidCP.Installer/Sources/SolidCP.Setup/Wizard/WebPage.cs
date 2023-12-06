@@ -147,20 +147,22 @@ namespace SolidCP.Setup
 			//se changed address from http to https.
 			string address = "https://";
 			string server = string.Empty;
+			string domain = txtWebSiteDomain.Text.Trim();
 			string port = string.Empty;
+			string ip = cbWebSiteIP.Text.Trim();
 			string virtualDir = string.Empty;
 			//server 
-			if (txtWebSiteDomain.Text.Trim().Length > 0)
+			if (domain.Length > 0)
 			{
 				//domain 
-				server = txtWebSiteDomain.Text.Trim();
+				server = domain;
 			}
 			else
 			{
 				//ip
-				if (cbWebSiteIP.Text.Trim().Length > 0)
+				if (ip.Length > 0)
 				{
-					server = cbWebSiteIP.Text.Trim();
+					server = ip;
 				}
 			}
 			//port
@@ -178,7 +180,7 @@ namespace SolidCP.Setup
 				virtualDir = "/" + SetupVariables.VirtualDirectory;
 			}
 			//address string
-			address += server + port + virtualDir;
+			address = (Utils.IsLocal(ip, domain) ? "http://" : "https://") + server + port + virtualDir;
 			txtAddress.Text = address;
 
 		}

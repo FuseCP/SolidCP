@@ -41,6 +41,7 @@ using Microsoft.Web.Administration;
 using System.DirectoryServices;
 using System.Text.RegularExpressions;
 using System.Linq;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -1161,6 +1162,63 @@ namespace SolidCP.Setup
 				}
 			}
 			return status;
+		}
+		private static string GetSiteID(string website)
+		{
+			using (ServerManager srvman = new ServerManager())
+			{
+				//var iis = new ServerManager();
+				var site = srvman.Sites[website];
+				string siteid = site.Id.ToString();
+
+				return siteid;
+			}
+		}
+		public static void LEInstallCertificate(string site, string email)
+		{
+
+			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
+
+			//SSLCertificate cert = null;
+			string result = null;
+			object[] errors = null;
+
+			Log.WriteStart("Ler's Encrypt InstallCertificate");
+
+			try
+			{
+				Log.Write($"Website: {site}");
+
+				// Get the WebsiteID
+				var siteId = GetSiteID(site);
+				Log.Write($"Found Website ID: SiteName {site}  ID: {siteId}");
+
+				// This sets the correct path for the Exe file.
+				var path = AppDomain.CurrentDomain.BaseDirectory;
+				string command = Path.Combine(path, "bin", "LetsEncrypt", "wacs.exe");
+
+				if (!File.Exists(command)) {
+					command = Shell.Default.Find("wacs.exe");
+					if (command == null)
+					{
+						// install win-acme
+						Shell.Default.Exec("dotnet tool install win-acme --global");
+						command = "wacs.exe";
+					}
+				}
+
+				command = $"'{command}' --target iissite  --installation iis --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser";
+
+				Log.WriteInfo($"LE Command String: {command}");
+
+				var results = Shell.Default.Exec(command);
+
+				Log.WriteInfo(result);
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
 		}
 	}
 }

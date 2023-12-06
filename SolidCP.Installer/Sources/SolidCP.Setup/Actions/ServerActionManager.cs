@@ -47,6 +47,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using SolidCP.Providers.OS;
 using System.Runtime.Remoting.Contexts;
+using System.Web.Services.Description;
 
 namespace SolidCP.Setup.Actions
 {
@@ -645,6 +646,7 @@ namespace SolidCP.Setup.Actions
 
 	public class InstallLetsEncryptCertificateAction : Action, IInstallAction, IUninstallAction
 	{
+		public const string LogStartMessage = "Configuring Let's Encrypt...";
 		void IInstallAction.Run(SetupVariables vars)
 		{
 
@@ -653,17 +655,22 @@ namespace SolidCP.Setup.Actions
 			string domain = vars.WebSiteDomain;
 			string email = vars.LetsEncryptEmail;
 
-			if (domain != "localhost" && ip != "127.0.0.1" && ip != "::1")
+			Begin(LogStartMessage);
+			//
+			Log.WriteStart(LogStartMessage);
+
+			//
+			if (!Utils.IsLocal(ip, domain))
 			{
 				if (OSInfo.IsWindows)
 				{
-					Providers.Web.WebSite site = new Providers.Web.WebSite()
-					{
-						SiteId = siteId
-					};
-					OSInfo.Current.WebServer.LEInstallCertificate(site, email);
+					Log.WriteInfo(String.Format("Configuring Let's Encrypt for domain {0} with email {1})", domain, email));
+	
+					WebUtils.LEInstallCertificate(siteId, email);
 				}
 			}
+
+			Finish(LogStartMessage);
 		}
 
 		void IUninstallAction.Run(SetupVariables vars) { }

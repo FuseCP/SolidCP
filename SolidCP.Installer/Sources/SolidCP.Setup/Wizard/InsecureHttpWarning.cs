@@ -47,9 +47,9 @@ using SolidCP.Setup.Web;
 
 namespace SolidCP.Setup
 {
-	public partial class LetsEncryptPage : BannerWizardPage
+	public partial class InsecureHttpWarningPage : BannerWizardPage
 	{
-		public LetsEncryptPage()
+		public InsecureHttpWarningPage()
 		{
 			InitializeComponent();
 		}
@@ -58,15 +58,9 @@ namespace SolidCP.Setup
 		{
 			base.InitializePageInternal();
 
-			string component = SetupVariables.ComponentFullName;
-			this.Description = string.Format("Specify {0} Let's Encrypt settings.", component);
-
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
-
-			// init fields
-			this.txtLetsEncryptEmail.Text = SetupVariables.LetsEncryptEmail;
 			Update();
 		}
 
@@ -75,37 +69,14 @@ namespace SolidCP.Setup
 	SetupVariables.WebSiteIP == "127.0.0.1" ||
 	SetupVariables.WebSiteIP == "::1";
 
-		public override bool Hidden => IsHttp;
+		public override bool Hidden => !IsHttp;
+
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{
 			base.OnAfterDisplay(e);
 			//unattended setup
-			if ((!string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml) || IsHttp) && AllowMoveNext)
+			if ((!string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml) || !IsHttp) && AllowMoveNext)
 				Wizard.GoNext();
-		}
-
-		private bool CheckEmail()
-		{
-			string email = txtLetsEncryptEmail.Text?.Trim() ?? "";
-
-			if (!Regex.IsMatch(email, "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"))
-			{
-				ShowWarning(String.Format("'{0}' is not a valid email address.", email));
-				return false;
-			}
-			return true;
-		}
-		protected internal override void OnBeforeMoveNext(CancelEventArgs e)
-		{
-			if (!IsHttp && !CheckEmail())
-			{
-				e.Cancel = true;
-				return;
-			}
-
-			if (!IsHttp) SetupVariables.LetsEncryptEmail = this.txtLetsEncryptEmail.Text;
-
-			base.OnBeforeMoveNext(e);
 		}
 	}
 }

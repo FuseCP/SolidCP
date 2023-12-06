@@ -266,20 +266,22 @@ namespace SolidCP.Setup
 				});
 				// Assign WebPortal setup variables set to acquire corresponding settings
 				var page3 = new WebPage { SetupVariables = portalSetup };
+				var page4 = new InsecureHttpWarningPage() { SetupVariables = portalSetup };
+				var page5 = new LetsEncryptPage { SetupVariables = portalSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
-				var page4 = new DatabasePage { SetupVariables = esServerSetup };
+				var page6 = new DatabasePage { SetupVariables = esServerSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
-				var page5 = new ServerAdminPasswordPage
+				var page7 = new ServerAdminPasswordPage
 				{
 					SetupVariables = esServerSetup,
 					NoteText = "Note: Both serveradmin and admin accounts will use this password. You can always change password for serveradmin or admin accounts through control panel."
 				};
 				//
-				var page6 = new ExpressInstallPage2();
+				var page8 = new ExpressInstallPage2();
 				// Assign WebPortal setup variables set to acquire corresponding settings
-				var page7 = new SetupCompletePage { SetupVariables = portalSetup };
+				var page9 = new SetupCompletePage { SetupVariables = portalSetup };
 				//
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5, page6, page7 });
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5, page6, page7, page8, page9 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 				// Run wizard

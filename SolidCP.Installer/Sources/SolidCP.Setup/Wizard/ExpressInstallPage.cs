@@ -51,7 +51,7 @@ using System.Data.SqlClient;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
-
+using SolidCP.Providers.OS;
 using System.Reflection;
 using System.Collections.Specialized;
 using SolidCP.Setup.Actions;
@@ -2895,15 +2895,11 @@ namespace SolidCP.Setup
 			string domain = Wizard.SetupVariables.WebSiteDomain;
 			string email = Wizard.SetupVariables.LetsEncryptEmail;
 
-			if (domain != "localhost" && ip != "127.0.0.1" && ip != "::1")
+			if (!Utils.IsLocal(ip, domain))
 			{
-				if (Providers.OS.OSInfo.IsWindows)
+				if (OSInfo.IsWindows)
 				{
-					Providers.Web.WebSite site = new Providers.Web.WebSite()
-					{
-						SiteId = siteId
-					};
-					Providers.OS.OSInfo.Current.WebServer.LEInstallCertificate(site, email);
+					WebUtils.LEInstallCertificate(siteId, email);
 				}
 			}
 		}

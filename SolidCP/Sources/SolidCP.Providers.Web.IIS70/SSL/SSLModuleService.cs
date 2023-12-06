@@ -205,7 +205,7 @@ namespace SolidCP.Providers.Web.Iis
                     string.Format("& '{0}' --target iissite  --installation iis --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser", command, email, siteid)
                 };
 
-                Log.WriteInfo("LE Command Strïng: {0}", scripts);
+                Log.WriteInfo("LE Command String: {0}", scripts);
 
                 results = ExecuteLocalScript(runSpace, scripts, out errors);
 

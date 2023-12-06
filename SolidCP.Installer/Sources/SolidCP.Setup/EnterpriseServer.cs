@@ -150,14 +150,16 @@ namespace SolidCP.Setup
 				//
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
-				var page4 = new UserAccountPage();
-				var page5 = new DatabasePage();
+				var page4 = new InsecureHttpWarningPage();
+				var page5 = new LetsEncryptPage();
+				var page6 = new UserAccountPage();
+				var page7 = new DatabasePage();
 				var passwordPage = new ServerAdminPasswordPage();
 				//
-				var page6 = new ExpressInstallPage2();
+				var page8 = new ExpressInstallPage2();
 				//
-				var page7 = new FinishPage();
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, passwordPage, page6, page7 });
+				var page9 = new FinishPage();
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7, passwordPage, page8, page9 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 
@@ -195,24 +197,30 @@ namespace SolidCP.Setup
 
 			//IntroductionPage page1 = new IntroductionPage();
 			WebPage page1 = new WebPage();
-			ServerAdminPasswordPage page2 = new ServerAdminPasswordPage();
-			ExpressInstallPage page3 = new ExpressInstallPage();
+			var page2 = new InsecureHttpWarningPage();
+			LetsEncryptPage page3 = new LetsEncryptPage();
+			ServerAdminPasswordPage page4 = new ServerAdminPasswordPage();
+			ExpressInstallPage page5 = new ExpressInstallPage();
 			//create install currentScenario
 			InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
 			action.Description = "Updating web site...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configure Let's Encrypt...";
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateServerAdminPassword);
 			action.Description = "Updating serveradmin password...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateConfig);
 			action.Description = "Updating system configuration...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
 
-            FinishPage page4 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
+            FinishPage page6 = new FinishPage();
+			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4, page5, page6 });
 			wizard.LinkPages();
 			wizard.SelectedPage = page1;
 

@@ -32,7 +32,7 @@
 
 namespace SolidCP.Setup
 {
-	partial class LetsEncryptPage
+	partial class InsecureHttpWarningPage
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -61,37 +61,20 @@ namespace SolidCP.Setup
 		private void InitializeComponent()
 		{
 			this.grpWebSiteSettings = new System.Windows.Forms.GroupBox();
-			this.lblWebSiteDomain = new System.Windows.Forms.Label();
-			this.txtLetsEncryptEmail = new System.Windows.Forms.TextBox();
 			this.txtAddress = new System.Windows.Forms.TextBox();
+			this.lblWebSiteDomain = new System.Windows.Forms.Label();
 			this.grpWebSiteSettings.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// grpWebSiteSettings
 			// 
 			this.grpWebSiteSettings.Controls.Add(this.lblWebSiteDomain);
-			this.grpWebSiteSettings.Controls.Add(this.txtLetsEncryptEmail);
 			this.grpWebSiteSettings.Location = new System.Drawing.Point(30, 27);
 			this.grpWebSiteSettings.Name = "grpWebSiteSettings";
 			this.grpWebSiteSettings.Size = new System.Drawing.Size(396, 141);
 			this.grpWebSiteSettings.TabIndex = 0;
 			this.grpWebSiteSettings.TabStop = false;
-			this.grpWebSiteSettings.Text = "Let\'s Encrypt Settings";
-			// 
-			// lblWebSiteDomain
-			// 
-			this.lblWebSiteDomain.Location = new System.Drawing.Point(30, 53);
-			this.lblWebSiteDomain.Name = "lblWebSiteDomain";
-			this.lblWebSiteDomain.Size = new System.Drawing.Size(84, 16);
-			this.lblWebSiteDomain.TabIndex = 4;
-			this.lblWebSiteDomain.Text = "Email address:";
-			// 
-			// txtLetsEncryptEmail
-			// 
-			this.txtLetsEncryptEmail.Location = new System.Drawing.Point(33, 72);
-			this.txtLetsEncryptEmail.Name = "txtLetsEncryptEmail";
-			this.txtLetsEncryptEmail.Size = new System.Drawing.Size(327, 20);
-			this.txtLetsEncryptEmail.TabIndex = 5;
+			this.grpWebSiteSettings.Text = "Insecure Http Warning";
 			// 
 			// txtAddress
 			// 
@@ -103,16 +86,24 @@ namespace SolidCP.Setup
 			this.txtAddress.Size = new System.Drawing.Size(396, 13);
 			this.txtAddress.TabIndex = 2;
 			// 
-			// LetsEncryptPage
+			// lblWebSiteDomain
+			// 
+			this.lblWebSiteDomain.Location = new System.Drawing.Point(30, 53);
+			this.lblWebSiteDomain.Name = "lblWebSiteDomain";
+			this.lblWebSiteDomain.Size = new System.Drawing.Size(340, 62);
+			this.lblWebSiteDomain.TabIndex = 4;
+			this.lblWebSiteDomain.Text = "You\'ve choosen an insecure http protocol for the server. That way you will only b" +
+    "e able to access the server from localhost or a LAN IP.";
+			// 
+			// InsecureHttpWarningPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.grpWebSiteSettings);
 			this.Controls.Add(this.txtAddress);
-			this.Name = "LetsEncryptPage";
+			this.Name = "InsecureHttpWarningPage";
 			this.Size = new System.Drawing.Size(457, 228);
 			this.grpWebSiteSettings.ResumeLayout(false);
-			this.grpWebSiteSettings.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -121,11 +112,7 @@ namespace SolidCP.Setup
 		#endregion
 
 		private System.Windows.Forms.GroupBox grpWebSiteSettings;
-		private System.Windows.Forms.Label lblWebSiteDomain;
-		private System.Windows.Forms.TextBox txtLetsEncryptEmail;
 		private System.Windows.Forms.TextBox txtAddress;
-
-
-
+		private System.Windows.Forms.Label lblWebSiteDomain;
 	}
 }

@@ -37,6 +37,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Remoting.Lifetime;
+using System.IO;
 
 namespace SolidCP.Installer.Common
 {
@@ -45,7 +46,17 @@ namespace SolidCP.Installer.Common
 	{
 		public object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
 		{
-			Assembly assembly = Assembly.LoadFrom(fileName);
+			Assembly assembly = null;
+#if DEBUG
+			if (fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && Debugger.IsAttached)
+			{
+				var exe = Assembly.GetExecutingAssembly();
+				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");
+				assembly = Assembly.LoadFrom(path);
+			} else assembly = Assembly.LoadFrom(fileName);
+#else
+			assembly = Assembly.LoadFrom(fileName);
+#endif
 			Type type = assembly.GetType(typeName);
 			MethodInfo method = type.GetMethod(methodName);
 			return method.Invoke(Activator.CreateInstance(type), parameters);

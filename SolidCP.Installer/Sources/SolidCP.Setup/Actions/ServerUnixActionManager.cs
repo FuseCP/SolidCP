@@ -78,29 +78,30 @@ namespace SolidCP.Setup.Actions
 			var newSiteId = String.Empty;
 			var urls = Utils.GetApplicationUrls(ip, domain, port, null)
 				.Select(url => Utils.IsLocal(ip, domain) ? "http://" + url : "https://" + url);
-			
+			var installer = UniversalInstaller.Installer.Current;
+
 			Begin(LogStartMessage);
 			
 			Log.WriteStart(LogStartMessage);
-			UniversalInstaller.Installer.Current.Shell.Log += (msg) =>
+			installer.Shell.Log += (msg) =>
 			{
 				Log.Write(msg);
 				InstallLog.Append(msg);
 			};
 
-			UniversalInstaller.Installer.Current.ReadServerConfiguration();
+			installer.ReadServerConfiguration();
 
-			var settings = UniversalInstaller.Installer.Current.ServerSettings;
+			var settings = installer.ServerSettings;
 			settings.Urls = string.Join(";", urls.ToArray());
 			settings.LetsEncryptCertificateDomains = domain;
 			settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
 			settings.CryptoKey = vars.CryptoKey;
 			settings.ServerPassword = vars.ServerPassword;
 
-			UniversalInstaller.Installer.Current.InstallServerPrerequisites();
-			UniversalInstaller.Installer.Current.InstallServerWebsite();
-			UniversalInstaller.Installer.Current.SetServerFilePermissions();
-			UniversalInstaller.Installer.Current.ConfigureServer();
+			installer.InstallServerPrerequisites();
+			installer.InstallServerWebsite();
+			installer.SetServerFilePermissions();
+			installer.ConfigureServer();
 
 			Finish(LogStartMessage);
 

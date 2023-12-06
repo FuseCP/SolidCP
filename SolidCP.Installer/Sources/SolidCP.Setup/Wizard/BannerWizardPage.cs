@@ -128,7 +128,6 @@ namespace SolidCP.Setup
             }
         }
 
-
         private string description;
         private string proceedText;
         private Color textColor;

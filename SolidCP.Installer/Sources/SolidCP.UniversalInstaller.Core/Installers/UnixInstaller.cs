@@ -74,7 +74,7 @@ namespace SolidCP.UniversalInstaller
 				protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
 				{
 					JsonProperty property = base.CreateProperty(member, memberSerialization);
-					if (property.PropertyName == "AllowedHosts")
+					if (property.PropertyName == "AllowedHosts" || property.PropertyName == "Certificates")
 					{
 						property.NullValueHandling = NullValueHandling.Ignore;
 					}

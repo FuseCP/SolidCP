@@ -3075,15 +3075,11 @@ namespace SolidCP.Setup.Internal
 			string domain = Context.WebSiteDomain;
 			string email = Context.LetsEncryptEmail;
 
-			if (domain != "localhost" && ip != "127.0.0.1" && ip != "::1")
+			if (!Utils.IsLocal(ip, domain))
 			{
 				if (OSInfo.IsWindows)
 				{
-					Providers.Web.WebSite site = new Providers.Web.WebSite()
-					{
-						SiteId = siteId
-					};
-					OSInfo.Current.WebServer.LEInstallCertificate(site, email);
+					WebUtils.LEInstallCertificate(siteId, email);
 				}
 			}
 		}

@@ -36,7 +36,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>..\..\Build\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -205,6 +205,12 @@
     <Compile Include="Wizard\ExpressInstallPage2.Designer.cs">
       <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Wizard\InsecureHttpWarning.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\InsecureHttpWarning.Designer.cs">
+      <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
+    </Compile>
     <Compile Include="Wizard\SetupCompletePage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -331,6 +337,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\ExpressInstallPage2.resx">
       <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\InsecureHttpWarning.resx">
+      <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\LicenseAgreementPage.resx">
