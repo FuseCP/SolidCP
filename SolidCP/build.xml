@@ -374,17 +374,17 @@
 	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
 
 		<PropertyGroup>
-			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Installer</InstallerProjectRoot>
-			<InstallerProjectBin>$(InstallerProjectRoot)\bin\$(BuildConfiguration)</InstallerProjectBin>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.Installer\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
 		<!-- compile Installer -->
-		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.csproj" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
-			<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />
-			<InstallerBinaries Include="$(InstallerProjectBin)\*.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
 

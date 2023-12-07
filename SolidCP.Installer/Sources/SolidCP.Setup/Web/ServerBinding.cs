@@ -63,7 +63,7 @@ namespace SolidCP.Setup.Web
 			this.ip = ip;
 			this.port = port;
 			this.host = host;
-			this.scheme = scheme ?? (Utils.IsLocal(ip, host) ? Uri.UriSchemeHttp : Uri.UriSchemeHttps);
+			this.scheme = scheme ?? (Utils.IsHttps(ip, host) ? Uri.UriSchemeHttps : Uri.UriSchemeHttp);
 		}
 
 		/// <summary>

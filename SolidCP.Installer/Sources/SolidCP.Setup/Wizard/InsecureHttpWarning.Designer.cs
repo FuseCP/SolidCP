@@ -61,7 +61,6 @@ namespace SolidCP.Setup
 		private void InitializeComponent()
 		{
 			this.grpWebSiteSettings = new System.Windows.Forms.GroupBox();
-			this.txtAddress = new System.Windows.Forms.TextBox();
 			this.lblWebSiteDomain = new System.Windows.Forms.Label();
 			this.grpWebSiteSettings.SuspendLayout();
 			this.SuspendLayout();
@@ -75,16 +74,6 @@ namespace SolidCP.Setup
 			this.grpWebSiteSettings.TabIndex = 0;
 			this.grpWebSiteSettings.TabStop = false;
 			this.grpWebSiteSettings.Text = "Insecure Http Warning";
-			// 
-			// txtAddress
-			// 
-			this.txtAddress.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.txtAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.txtAddress.Location = new System.Drawing.Point(30, 8);
-			this.txtAddress.Name = "txtAddress";
-			this.txtAddress.ReadOnly = true;
-			this.txtAddress.Size = new System.Drawing.Size(396, 13);
-			this.txtAddress.TabIndex = 2;
 			// 
 			// lblWebSiteDomain
 			// 
@@ -100,19 +89,16 @@ namespace SolidCP.Setup
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.grpWebSiteSettings);
-			this.Controls.Add(this.txtAddress);
 			this.Name = "InsecureHttpWarningPage";
 			this.Size = new System.Drawing.Size(457, 228);
 			this.grpWebSiteSettings.ResumeLayout(false);
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
 		#endregion
 
 		private System.Windows.Forms.GroupBox grpWebSiteSettings;
-		private System.Windows.Forms.TextBox txtAddress;
 		private System.Windows.Forms.Label lblWebSiteDomain;
 	}
 }

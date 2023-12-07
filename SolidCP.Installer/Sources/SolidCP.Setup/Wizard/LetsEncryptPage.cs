@@ -64,23 +64,24 @@ namespace SolidCP.Setup
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
+			manualCert.CheckedChanged += (sender, args) =>
+			{
+				txtLetsEncryptEmail.Enabled = !manualCert.Checked;
+			};
 
 			// init fields
 			this.txtLetsEncryptEmail.Text = SetupVariables.LetsEncryptEmail;
 			Update();
 		}
 
-		bool IsHttp => SetupVariables.WebSiteDomain == "localhost" ||
-	SetupVariables.WebSiteDomain == "" ||
-	SetupVariables.WebSiteIP == "127.0.0.1" ||
-	SetupVariables.WebSiteIP == "::1";
+		bool IsHttps => Utils.IsHttps(SetupVariables.WebSiteIP, SetupVariables.WebSiteDomain);
 
-		public override bool Hidden => IsHttp;
+		public override bool Hidden => !IsHttps;
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{
 			base.OnAfterDisplay(e);
 			//unattended setup
-			if ((!string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml) || IsHttp) && AllowMoveNext)
+			if ((!string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml) || !IsHttps) && AllowMoveNext)
 				Wizard.GoNext();
 		}
 
@@ -97,13 +98,24 @@ namespace SolidCP.Setup
 		}
 		protected internal override void OnBeforeMoveNext(CancelEventArgs e)
 		{
-			if (!IsHttp && !CheckEmail())
+			if (IsHttps && !manualCert.Checked && !CheckEmail())
 			{
 				e.Cancel = true;
 				return;
 			}
 
-			if (!IsHttp) SetupVariables.LetsEncryptEmail = this.txtLetsEncryptEmail.Text;
+			if (IsHttps)
+			{
+				if (manualCert.Checked)
+				{
+					SetupVariables.LetsEncryptEmail = "";
+				}
+				else
+				{
+					SetupVariables.LetsEncryptEmail = this.txtLetsEncryptEmail.Text;
+				}
+			}
+			else SetupVariables.LetsEncryptEmail = "";
 
 			base.OnBeforeMoveNext(e);
 		}

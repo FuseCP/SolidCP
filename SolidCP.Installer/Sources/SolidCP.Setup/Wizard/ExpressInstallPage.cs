@@ -1838,7 +1838,7 @@ namespace SolidCP.Setup
 				string[] urls = GetApplicationUrls(ip, domain, port, null);
 				string url = null;
 				if (urls.Length > 0)
-					url = Utils.IsLocal(ip, domain) ? "http://" + url[0] : "https://" + url[0];
+					url = Utils.IsHttps(ip, domain) ? "https://" + url[0] : "http://" + url[0];
 				else
 				{
 					Log.WriteInfo("Application url not found");
@@ -2419,7 +2419,7 @@ namespace SolidCP.Setup
 				//
 				foreach (string url in urls)
 				{
-					InstallLog.AppendLine(Utils.IsLocal(ip, domain) ? "  http://" + url : "  https://" + url);
+					InstallLog.AppendLine(Utils.IsHttps(ip, domain) ? "  https://" + url : "  http://" + url);
 				}
 			}
 			catch (Exception ex)
@@ -2894,12 +2894,14 @@ namespace SolidCP.Setup
 			string siteId = Wizard.SetupVariables.WebSiteId;
 			string domain = Wizard.SetupVariables.WebSiteDomain;
 			string email = Wizard.SetupVariables.LetsEncryptEmail;
+			var componentId = Wizard.SetupVariables.ComponentId;
+			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
 
-			if (!Utils.IsLocal(ip, domain))
+			if (Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 				if (OSInfo.IsWindows)
 				{
-					WebUtils.LEInstallCertificate(siteId, email);
+					WebUtils.LEInstallCertificate(siteId, email, updateWCF);
 				}
 			}
 		}
@@ -3064,7 +3066,7 @@ namespace SolidCP.Setup
 			string[] urls = GetApplicationUrls(ip, domain, port, null);
 			foreach (string url in urls)
 			{
-				InstallLog.AppendLine(Utils.IsLocal(ip, domain) ? "  http://" + url : "  https://" + url);
+				InstallLog.AppendLine(Utils.IsHttps(ip, domain) ? "  https://" + url : "  http://" + url);
 			}
 		}
 

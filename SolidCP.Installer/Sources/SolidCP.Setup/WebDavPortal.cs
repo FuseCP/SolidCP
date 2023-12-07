@@ -50,7 +50,9 @@ namespace SolidCP.Setup
 
         internal static object InstallBase(object obj, string minimalInstallerVersion)
         {
-            Hashtable args = Utils.GetSetupParameters(obj);
+			ResourceAssemblyLoader.Init();
+
+			Hashtable args = Utils.GetSetupParameters(obj);
             //check CS version
             var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
             var version = new Version(Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion));

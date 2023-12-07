@@ -61,14 +61,17 @@ namespace SolidCP.Setup
 		private void InitializeComponent()
 		{
 			this.grpWebSiteSettings = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.manualCert = new System.Windows.Forms.CheckBox();
 			this.lblWebSiteDomain = new System.Windows.Forms.Label();
 			this.txtLetsEncryptEmail = new System.Windows.Forms.TextBox();
-			this.txtAddress = new System.Windows.Forms.TextBox();
 			this.grpWebSiteSettings.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// grpWebSiteSettings
 			// 
+			this.grpWebSiteSettings.Controls.Add(this.label1);
+			this.grpWebSiteSettings.Controls.Add(this.manualCert);
 			this.grpWebSiteSettings.Controls.Add(this.lblWebSiteDomain);
 			this.grpWebSiteSettings.Controls.Add(this.txtLetsEncryptEmail);
 			this.grpWebSiteSettings.Location = new System.Drawing.Point(30, 27);
@@ -78,9 +81,28 @@ namespace SolidCP.Setup
 			this.grpWebSiteSettings.TabStop = false;
 			this.grpWebSiteSettings.Text = "Let\'s Encrypt Settings";
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(30, 32);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(261, 13);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "Provide a Certificate for your server with Let\'s Encrypt:";
+			// 
+			// manualCert
+			// 
+			this.manualCert.AutoSize = true;
+			this.manualCert.Location = new System.Drawing.Point(33, 109);
+			this.manualCert.Name = "manualCert";
+			this.manualCert.Size = new System.Drawing.Size(193, 17);
+			this.manualCert.TabIndex = 6;
+			this.manualCert.Text = "I\'ll configure the certificate manually";
+			this.manualCert.UseVisualStyleBackColor = true;
+			// 
 			// lblWebSiteDomain
 			// 
-			this.lblWebSiteDomain.Location = new System.Drawing.Point(30, 53);
+			this.lblWebSiteDomain.Location = new System.Drawing.Point(30, 64);
 			this.lblWebSiteDomain.Name = "lblWebSiteDomain";
 			this.lblWebSiteDomain.Size = new System.Drawing.Size(84, 16);
 			this.lblWebSiteDomain.TabIndex = 4;
@@ -88,33 +110,21 @@ namespace SolidCP.Setup
 			// 
 			// txtLetsEncryptEmail
 			// 
-			this.txtLetsEncryptEmail.Location = new System.Drawing.Point(33, 72);
+			this.txtLetsEncryptEmail.Location = new System.Drawing.Point(33, 83);
 			this.txtLetsEncryptEmail.Name = "txtLetsEncryptEmail";
 			this.txtLetsEncryptEmail.Size = new System.Drawing.Size(327, 20);
 			this.txtLetsEncryptEmail.TabIndex = 5;
-			// 
-			// txtAddress
-			// 
-			this.txtAddress.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.txtAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.txtAddress.Location = new System.Drawing.Point(30, 8);
-			this.txtAddress.Name = "txtAddress";
-			this.txtAddress.ReadOnly = true;
-			this.txtAddress.Size = new System.Drawing.Size(396, 13);
-			this.txtAddress.TabIndex = 2;
 			// 
 			// LetsEncryptPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.grpWebSiteSettings);
-			this.Controls.Add(this.txtAddress);
 			this.Name = "LetsEncryptPage";
 			this.Size = new System.Drawing.Size(457, 228);
 			this.grpWebSiteSettings.ResumeLayout(false);
 			this.grpWebSiteSettings.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -123,9 +133,7 @@ namespace SolidCP.Setup
 		private System.Windows.Forms.GroupBox grpWebSiteSettings;
 		private System.Windows.Forms.Label lblWebSiteDomain;
 		private System.Windows.Forms.TextBox txtLetsEncryptEmail;
-		private System.Windows.Forms.TextBox txtAddress;
-
-
-
+		private System.Windows.Forms.CheckBox manualCert;
+		private System.Windows.Forms.Label label1;
 	}
 }

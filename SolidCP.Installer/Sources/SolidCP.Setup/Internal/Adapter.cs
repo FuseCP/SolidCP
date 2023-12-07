@@ -3074,12 +3074,14 @@ namespace SolidCP.Setup.Internal
 			string siteId = Context.WebSiteId;
 			string domain = Context.WebSiteDomain;
 			string email = Context.LetsEncryptEmail;
+			var componentId = Context.ComponentId;
+			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
 
-			if (!Utils.IsLocal(ip, domain))
+			if (Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 				if (OSInfo.IsWindows)
 				{
-					WebUtils.LEInstallCertificate(siteId, email);
+					WebUtils.LEInstallCertificate(siteId, email, updateWCF);
 				}
 			}
 		}

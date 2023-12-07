@@ -4,8 +4,9 @@ using System.Text;
 using System.Reflection;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
-namespace SolidCP.UniversalInstaller
+namespace SolidCP.Setup
 {
 	public class ResourceAssemblyLoader
 	{
@@ -18,12 +19,12 @@ namespace SolidCP.UniversalInstaller
 				return m.ToArray();
 			}
 		}
-		public static Assembly? Resolve(object sender, ResolveEventArgs args)
+		public static Assembly Resolve(object sender, ResolveEventArgs args)
 		{
 			var host = Assembly.GetExecutingAssembly();
 			var resources = host.GetManifestResourceNames();
 			var assName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.dll", StringComparison.OrdinalIgnoreCase));
-			string? pdbName = null;
+			string pdbName = null;
 			if (assName != null)
 			{
 				using (var assStream = host.GetManifestResourceStream(assName))

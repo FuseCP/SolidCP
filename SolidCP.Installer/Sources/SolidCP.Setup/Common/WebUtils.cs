@@ -1174,29 +1174,35 @@ namespace SolidCP.Setup
 				return siteid;
 			}
 		}
-		public static void LEInstallCertificate(string site, string email)
+		public static void LEInstallCertificate(string site, string email, bool updateWcf = true)
 		{
+
+			if (string.IsNullOrEmpty(email)) return;
 
 			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
 
-			//SSLCertificate cert = null;
-			string result = null;
-			object[] errors = null;
-
-			Log.WriteStart("Ler's Encrypt InstallCertificate");
+			Log.WriteStart("Lët's Encrypt InstallCertificate");
 
 			try
 			{
 				Log.Write($"Website: {site}");
 
+				string siteId = null, webpath = null;
 				// Get the WebsiteID
-				var siteId = GetSiteID(site);
+				using (var sm = new ServerManager())
+				{
+					var s = sm.Sites[site];
+					siteId = s.Id.ToString();
+					webpath = s.Applications["/"].VirtualDirectories["/"].PhysicalPath;
+				}
+
 				Log.Write($"Found Website ID: SiteName {site}  ID: {siteId}");
 
 				// This sets the correct path for the Exe file.
 				var path = AppDomain.CurrentDomain.BaseDirectory;
-				string command = Path.Combine(path, "bin", "LetsEncrypt", "wacs.exe");
+				string command = Path.Combine(path, "wacs.exe");
 
+				if (!File.Exists(command)) command = Path.Combine(webpath, "bin", "LetsEncrypt", "wacs.exe");
 				if (!File.Exists(command)) {
 					command = Shell.Default.Find("wacs.exe");
 					if (command == null)
@@ -1207,13 +1213,30 @@ namespace SolidCP.Setup
 					}
 				}
 
-				command = $"'{command}' --target iissite  --installation iis --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser";
+				var script = Path.Combine(webpath, "bin", "LetsEncrypt", "wcfcert.exe");
+
+				if (updateWcf)
+				{
+					command = $"\"{command}\" --target iissite  --installation iis,script --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My --script \"{script}\" --scriptparameters \"{{StorePath}} {{CertThumbprint}}\" --verbose";
+				} else
+				{
+					command = $"\"{command}\" --target iissite  --installation iis --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser";
+				}
 
 				Log.WriteInfo($"LE Command String: {command}");
 
-				var results = Shell.Default.Exec(command);
+				Action<string> logger = (msg) =>
+				{
+					Log.Write(msg);
+				};
 
-				Log.WriteInfo(result);
+				Shell.Default.Log += logger;
+				var results = Shell.Default.Exec(command);
+				Shell.Default.Log -= logger;
+
+				Log.WriteInfo(results.OutputAndError().Result);
+
+				Log.WriteEnd("Lët's Encrypt InstallCertificate");
 			}
 			catch (Exception ex)
 			{

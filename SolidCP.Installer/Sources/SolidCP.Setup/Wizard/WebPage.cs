@@ -180,7 +180,7 @@ namespace SolidCP.Setup
 				virtualDir = "/" + SetupVariables.VirtualDirectory;
 			}
 			//address string
-			address = (Utils.IsLocal(ip, domain) ? "http://" : "https://") + server + port + virtualDir;
+			address = (Utils.IsHttps(ip, domain) ? "https://" : "http://") + server + port + virtualDir;
 			txtAddress.Text = address;
 
 		}

@@ -348,7 +348,7 @@ namespace SolidCP.Setup.Actions
 			var netbiosDomain = userDomain;
 			var userName = vars.UserAccount;
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			//
 			if (!String.IsNullOrEmpty(userDomain))
 			{
@@ -384,7 +384,7 @@ namespace SolidCP.Setup.Actions
 			var identity = GetWebIdentity(vars);
 			var componentId = vars.ComponentId;
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			var poolExists = false;
 
 			//
@@ -454,7 +454,7 @@ namespace SolidCP.Setup.Actions
 			{
 				var appPoolName = String.Format(AppPoolNameFormatString, vars.ComponentFullName);
 				var iisVersion = vars.IISVersion;
-                var iis7 = (iisVersion.Major >= 7);
+				var iis7 = (iisVersion.Major >= 7);
 				var poolExists = false;
 				//
 				Log.WriteStart(LogStartUninstallMessage);
@@ -508,13 +508,13 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            var siteName = vars.ComponentFullName;
+			var siteName = vars.ComponentFullName;
 			var ip = vars.WebSiteIP;
 			var port = vars.WebSitePort;
 			var domain = vars.WebSiteDomain;
 			var contentPath = vars.InstallationFolder;
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			var userName = CreateWebApplicationPoolAction.GetWebIdentity(vars);
 			var userPassword = vars.UserPassword;
 			var appPool = vars.WebApplicationPoolName;
@@ -575,14 +575,14 @@ namespace SolidCP.Setup.Actions
 				newSiteId = WebUtils.CreateSite(site);
 			}
 
-            try
-            {
-                Utils.OpenFirewallPort(vars.ComponentFullName, vars.WebSitePort, vars.IISVersion);
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError("Open windows firewall port error", ex);
-            }
+			try
+			{
+				Utils.OpenFirewallPort(vars.ComponentFullName, vars.WebSitePort, vars.IISVersion);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Open windows firewall port error", ex);
+			}
 
 			vars.VirtualDirectory = String.Empty;
 			vars.NewWebSite = true;
@@ -602,14 +602,14 @@ namespace SolidCP.Setup.Actions
 			string[] urls = Utils.GetApplicationUrls(ip, domain, port, null);
 			foreach (string url in urls)
 			{
-				InstallLog.AppendLine(Utils.IsLocal(ip, domain) ? "  http://" + url : "  https://" + url);
+				InstallLog.AppendLine(Utils.IsHttps(ip, domain) ? "  https://" + url : "  http://" + url);
 			}
 		}
 
 		void IUninstallAction.Run(SetupVariables vars)
 		{
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			var siteId = vars.WebSiteId;
 			//
 			try
@@ -654,27 +654,29 @@ namespace SolidCP.Setup.Actions
 			string siteId = vars.WebSiteId;
 			string domain = vars.WebSiteDomain;
 			string email = vars.LetsEncryptEmail;
+			var componentId = vars.ComponentId;
+			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
 
-			Begin(LogStartMessage);
-			//
-			Log.WriteStart(LogStartMessage);
-
-			//
-			if (!Utils.IsLocal(ip, domain))
+			if (Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
+
+				Begin(LogStartMessage);
+				//
+				Log.WriteStart(LogStartMessage);
+
 				if (OSInfo.IsWindows)
 				{
 					Log.WriteInfo(String.Format("Configuring Let's Encrypt for domain {0} with email {1})", domain, email));
-	
-					WebUtils.LEInstallCertificate(siteId, email);
+
+					WebUtils.LEInstallCertificate(siteId, email, updateWCF);
 				}
+
+				Finish(LogStartMessage);
 			}
-
-			Finish(LogStartMessage);
 		}
-
 		void IUninstallAction.Run(SetupVariables vars) { }
 	}
+
 	public class CopyFilesAction : Action, IInstallAction, IUninstallAction
 	{
 		public const string LogStartInstallMessage = "Copying files...";
@@ -821,21 +823,21 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            try
+			try
 			{
 				Begin(LogStartInstallMessage);
 				Log.WriteStart("Updating configuration file (server password)");
 				Log.WriteInfo("Single quotes are added for clarity purposes");
 				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
 				string hash = Utils.ComputeSHA1(vars.ServerPassword);
-                var XmlDoc = new XmlDocument();
-                XmlDoc.Load(file);
-                var Node = XmlDoc.SelectSingleNode("configuration/SolidCP.server/security/password") as XmlElement;
-                if (Node == null)
-                    throw new Exception("Unable to set a server access password. Check structure of configuration file.");
-                else
-                    Node.SetAttribute("value", hash);
-                XmlDoc.Save(file);			
+				var XmlDoc = new XmlDocument();
+				XmlDoc.Load(file);
+				var Node = XmlDoc.SelectSingleNode("configuration/SolidCP.server/security/password") as XmlElement;
+				if (Node == null)
+					throw new Exception("Unable to set a server access password. Check structure of configuration file.");
+				else
+					Node.SetAttribute("value", hash);
+				XmlDoc.Save(file);
 			}
 			catch (Exception ex)
 			{
@@ -1000,7 +1002,7 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            if (vars.IISVersion.Major >= 7)
+			if (vars.IISVersion.Major >= 7)
 			{
 				ChangeAspNetVersionOnIis7(vars);
 			}

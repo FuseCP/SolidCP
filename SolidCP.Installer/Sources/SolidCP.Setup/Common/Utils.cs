@@ -800,7 +800,7 @@ namespace SolidCP.Setup
 			}
 		}
 
-		public static bool IsLocal(string ip, string domain) => ip == "127.0.0.1" || ip == "::1" || domain == "localhost" || domain == "";
+		public static bool IsHttps(string ip, string domain) => ip != "127.0.0.1" && ip != "::1" && domain != "localhost" && !string.IsNullOrEmpty(domain);
 		public static string[] GetApplicationUrls(string ip, string domain, string port, string virtualDir)
 		{
 			List<string> urls = new List<string>();

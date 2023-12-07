@@ -49,8 +49,12 @@ namespace SolidCP.Setup
 			return InstallBase(obj, "1.0.1");
 		}
 
+		static bool IsWindows => OSInfo.IsWindows;
+
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
 		{
+			ResourceAssemblyLoader.Init();
+
 			Hashtable args = Utils.GetSetupParameters(obj);
 
 			//check CS version
@@ -70,7 +74,7 @@ namespace SolidCP.Setup
 			//
 			BaseActionManager sam = null;
 			
-			if (OSInfo.IsWindows) sam =	new ServerActionManager(setupVariables);
+			if (IsWindows) sam =	new ServerActionManager(setupVariables);
 			else sam = new ServerUnixActionManager(setupVariables);
 
 			// Prepare installation defaults

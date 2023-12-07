@@ -77,7 +77,7 @@ namespace SolidCP.Setup.Actions
 			var componentId = vars.ComponentId;
 			var newSiteId = String.Empty;
 			var urls = Utils.GetApplicationUrls(ip, domain, port, null)
-				.Select(url => Utils.IsLocal(ip, domain) ? "http://" + url : "https://" + url);
+				.Select(url => Utils.IsHttps(ip, domain) ? "https://" + url : "http://" + url);
 			var installer = UniversalInstaller.Installer.Current;
 
 			Begin(LogStartMessage);
@@ -86,7 +86,6 @@ namespace SolidCP.Setup.Actions
 			installer.Shell.Log += (msg) =>
 			{
 				Log.Write(msg);
-				InstallLog.Append(msg);
 			};
 
 			installer.ReadServerConfiguration();
@@ -102,6 +101,8 @@ namespace SolidCP.Setup.Actions
 			installer.InstallServerWebsite();
 			installer.SetServerFilePermissions();
 			installer.ConfigureServer();
+
+			//TODO update InstallLog
 
 			Finish(LogStartMessage);
 

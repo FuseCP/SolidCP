@@ -67,6 +67,103 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
+      <Project>{1273d02f-6c5c-4752-86ce-99d504f6cffa}</Project>
+      <Name>SolidCP.Providers.OS.Unix</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj">
+      <Project>{899b3048-46be-4c4d-9d41-0043c8b0d11e}</Project>
+      <Name>SolidCP.Providers.OS.Windows2003</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2008\SolidCP.Providers.OS.Windows2008.csproj">
+      <Project>{bed2f43f-2dd8-45cf-ad7c-86799897c575}</Project>
+      <Name>SolidCP.Providers.OS.Windows2008</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj">
+      <Project>{27130bbb-76fa-411e-8b4d-51cd4dc821af}</Project>
+      <Name>SolidCP.Providers.OS.Windows2012</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj">
+      <Project>{4396082e-ec55-4741-a183-d0e374adc2fd}</Project>
+      <Name>SolidCP.Providers.OS.Windows2016</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj">
+      <Project>{c4b1ea53-1417-473f-bb8e-e71be84db3a5}</Project>
+      <Name>SolidCP.Providers.OS.Windows2019</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj">
+      <Project>{05b23c2b-15ce-48ef-995c-c5e517a04011}</Project>
+      <Name>SolidCP.Providers.OS.Windows2022</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj">
+      <Project>{9b99f215-5029-4779-bc2f-6d83cbb42205}</Project>
+      <Name>SolidCP.Providers.Web.IIs100</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj">
+      <Project>{9be0317d-e42e-4ff6-9a87-8c801f046ea1}</Project>
+      <Name>SolidCP.Providers.Web.IIs60</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj">
+      <Project>{1b9dce85-c664-49fc-b6e1-86c63cab88d1}</Project>
+      <Name>SolidCP.Providers.Web.IIs70</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj">
+      <Project>{6e348968-461d-45a1-b235-4f552947b9f1}</Project>
+      <Name>SolidCP.Providers.Web.IIs80</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.wxi" />

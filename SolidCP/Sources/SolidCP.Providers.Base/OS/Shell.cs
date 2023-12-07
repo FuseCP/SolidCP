@@ -107,6 +107,7 @@ namespace SolidCP.Providers.OS
 
 		public virtual Shell ExecAsync(string cmd)
 		{
+			Log(cmd);
 			// separate command from arguments
 			string arguments;
 			if (cmd.Length > 0 && cmd[0] == '"') // command is a " delimited string
@@ -116,8 +117,8 @@ namespace SolidCP.Providers.OS
 				{
 					if (pos < cmd.Length - 1)
 					{
-						cmd = cmd.Substring(1, pos - 1);
 						arguments = cmd.Substring(pos + 1).Trim();
+						cmd = cmd.Substring(1, pos - 1);
 					}
 					else
 					{

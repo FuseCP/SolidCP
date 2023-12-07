@@ -11,12 +11,12 @@ using SolidCP.EnterpriseServer;
 
 namespace SolidCP.UniversalInstaller
 {
-    public abstract class UnixInstaller : Installer
-    {
+	public abstract class UnixInstaller : Installer
+	{
 		public override string? InstallExeRootPath { get => base.InstallExeRootPath ?? $"/user/local/{SolidCP}/bin"; set => base.InstallExeRootPath = value; }
 		public override string? InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
 		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
-		public UnixInstaller(): base() { }
+		public UnixInstaller() : base() { }
 
 		public override void InstallServerWebsite()
 		{
@@ -33,11 +33,11 @@ namespace SolidCP.UniversalInstaller
 				Executable = $"dotnet {dll}",
 				DependsOn = new List<string>() { "network-online.target" },
 				EnvironmentVariables = new Dictionary<string, string>(),
-				Restart="on-failure",
-				RestartSec="1s",
-				StartLimitBurst="5",
-				StartLimitIntervalSec="500",
-				SyslogIdentifier="SolidCPServer"
+				Restart = "on-failure",
+				RestartSec = "1s",
+				StartLimitBurst = "5",
+				StartLimitIntervalSec = "500",
+				SyslogIdentifier = "SolidCPServer"
 			};
 			service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 
@@ -74,7 +74,8 @@ namespace SolidCP.UniversalInstaller
 				protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
 				{
 					JsonProperty property = base.CreateProperty(member, memberSerialization);
-					if (property.PropertyName == "AllowedHosts" || property.PropertyName == "Certificates")
+					if (property.PropertyName == "AllowedHosts" || property.PropertyName == "Certificate" ||
+						property.PropertyName == "Server" || property.PropertyName == "LettuceEncrypt")
 					{
 						property.NullValueHandling = NullValueHandling.Ignore;
 					}
@@ -125,6 +126,7 @@ namespace SolidCP.UniversalInstaller
 				CryptoUtils.CryptoKey = ServerSettings.CryptoKey;
 				appsettings.Server = new AppSettings.ServerSetting() { Password = CryptoUtils.Encrypt(ServerSettings.ServerPassword ?? "") };
 			}
+
 			if (!string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateDomains))
 			{
 				appsettings.LettuceEncrypt = new AppSettings.LettuceEncryptSetting()
@@ -136,14 +138,16 @@ namespace SolidCP.UniversalInstaller
 						.Select(domain => domain.Trim())
 						.ToArray() ?? new string[0]
 				};
-			} else if (!string.IsNullOrEmpty(ServerSettings.CertificateFile) && !string.IsNullOrEmpty(ServerSettings.CertificatePassword))
+			}
+			else if (!string.IsNullOrEmpty(ServerSettings.CertificateFile) && !string.IsNullOrEmpty(ServerSettings.CertificatePassword))
 			{
 				appsettings.Certificate = new AppSettings.CertificateSetting()
 				{
 					File = ServerSettings.CertificateFile,
 					Password = ServerSettings.CertificatePassword
 				};
-			} else if (!string.IsNullOrEmpty(ServerSettings.CertificateStoreLocation) && !string.IsNullOrEmpty(ServerSettings.CertificateStoreName))
+			}
+			else if (!string.IsNullOrEmpty(ServerSettings.CertificateStoreLocation) && !string.IsNullOrEmpty(ServerSettings.CertificateStoreName))
 			{
 				appsettings.Certificate = new AppSettings.CertificateSetting()
 				{
@@ -157,7 +161,7 @@ namespace SolidCP.UniversalInstaller
 			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 			File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()
 			{
-				 ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
+				ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
 			}));
 		}
 		public override void InstallServerPrerequisites()
