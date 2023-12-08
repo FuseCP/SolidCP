@@ -77,14 +77,14 @@ namespace SolidCP.Setup.Actions
 					Directory.CreateDirectory(installerDir);
 
 					// install pkexec (sudo with GUI) 
-					UniversalInstaller.Installer.Current.InstallPKExec();
+					//UniversalInstaller.Installer.Current.InstallPKExec();
 
 					var exePath = Path.Combine(installerDir, Path.GetFileName(AppConfig.ConfigurationPath));
 
 					File.Copy(AppConfig.ConfigurationPath, exePath);
 					File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config");
 					var sh = Shell.Default.Find("sh");
-					File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\npkexec mono {exePath}");
+					File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nmono {exePath}");
 					OSInfo.Unix.GrantUnixPermissions("/usr/bin/solidcp", UnixFileMode.UserExecute | UnixFileMode.UserRead | UnixFileMode.UserWrite |
 						UnixFileMode.GroupRead | UnixFileMode.GroupExecute | UnixFileMode.GroupWrite |
 						UnixFileMode.OtherExecute | UnixFileMode.OtherRead);
