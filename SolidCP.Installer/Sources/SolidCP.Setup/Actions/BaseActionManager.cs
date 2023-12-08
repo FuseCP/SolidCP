@@ -182,6 +182,7 @@ namespace SolidCP.Setup.Actions
 			}
 		}
 
+		protected int CurrentScenatioIndex { get; set; }
 		protected List<Action> CurrentScenario
 		{
 			get { return currentScenario; }
@@ -322,6 +323,7 @@ namespace SolidCP.Setup.Actions
 			for (int i = 0, progress = 1; i < currentScenario.Count; i++, progress++)
 			{
 				var item = currentScenario[i];
+				CurrentScenatioIndex = i;
 				// Get the next action from the queue
 				var action = item as IInstallAction;
 				// Take the action's type to log as much information about it as possible
@@ -377,6 +379,7 @@ namespace SolidCP.Setup.Actions
 		{
 			// Action progress has been changed
 			UpdateActionProgress(e.StatusMessage, e.EventData, e.Indeterminate);
+			UpdateTotalProgress((e.EventData + CurrentScenatioIndex*100) / currentScenario.Count);
 		}
 
 		public virtual void Rollback()

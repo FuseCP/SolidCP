@@ -44,6 +44,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using SolidCP.Setup.Web;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -74,7 +75,9 @@ namespace SolidCP.Setup
 			Update();
 		}
 
-		bool IsHttps => Utils.IsHttps(SetupVariables.WebSiteIP, SetupVariables.WebSiteDomain);
+		bool iis7 => SetupVariables.IISVersion.Major >= 7;
+
+		bool IsHttps => (iis7 || !OSInfo.IsWindows) && Utils.IsHttps(SetupVariables.WebSiteIP, SetupVariables.WebSiteDomain);
 
 		public override bool Hidden => !IsHttps;
 		protected internal override void OnAfterDisplay(EventArgs e)

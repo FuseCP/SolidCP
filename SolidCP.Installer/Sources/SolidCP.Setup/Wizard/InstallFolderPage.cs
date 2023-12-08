@@ -39,6 +39,8 @@ using System.Data;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Diagnostics;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -142,6 +144,7 @@ namespace SolidCP.Setup
 		private void UpdateFreeSpaceInformation()
 		{
 			lblSpaceAvailableValue.Text = string.Empty;
+
 			this.AllowMoveNext = false;
 			try
 			{
@@ -150,7 +153,7 @@ namespace SolidCP.Setup
 				string path = Path.GetFullPath(txtFolder.Text);
 				string drive = Path.GetPathRoot(path);
 				ulong freeBytesAvailable, totalBytes, freeBytes;
-				if (FileUtils.GetDiskFreeSpaceEx(drive, out freeBytesAvailable, out totalBytes, out freeBytes))
+				if (FileUtils.GetDiskFreeSpace(drive, out freeBytesAvailable, out totalBytes, out freeBytes))
 				{
 					long freeSpace = Convert.ToInt64(freeBytesAvailable);
 					lblSpaceAvailableValue.Text = FileUtils.SizeToMB(freeSpace);

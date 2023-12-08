@@ -63,7 +63,8 @@ namespace SolidCP.Setup.Common
 			using (ZipFile zip = new ZipFile())
 			{
 				zip.AddProgress += ShowProgress;
-				zip.UseUnicodeAsNecessary = true;
+				zip.AlternateEncoding = Encoding.UTF8;
+				zip.AlternateEncodingUsage = ZipOption.AsNecessary;
 				zip.AddDirectory(sourcePath);
 				zip.Save(zipFile);
 			}

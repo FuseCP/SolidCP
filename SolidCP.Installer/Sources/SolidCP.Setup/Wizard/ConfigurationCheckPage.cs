@@ -347,9 +347,9 @@ namespace SolidCP.Setup
 
 				Log.WriteInfo(string.Format("IIS check: {0}", details));
 				// require IIS 7
-                if (setupVariables.IISVersion.Major < 7)
+                if (setupVariables.IISVersion.Major < 6)
 				{
-					details = "IIS 7.0 or greater required.";
+					details = "IIS 6.0 or greater required.";
 					Log.WriteError(string.Format("IIS check: {0}", details), null);
 					return CheckStatuses.Error;
 				}
@@ -377,7 +377,8 @@ namespace SolidCP.Setup
 			details = "Systemd is installed.";
 
 			if (OSInfo.Current.ServiceController != null &&
-				OSInfo.Current.ServiceController.IsInstalled) return CheckStatuses.Success;
+				OSInfo.Current.ServiceController.IsInstalled &&
+				OSInfo.Current.ServiceController is SystemdServiceController) return CheckStatuses.Success;
 
 			details = "Systemd not found.";
 			return CheckStatuses.Error;
@@ -388,16 +389,8 @@ namespace SolidCP.Setup
 			CheckStatuses ret = CheckStatuses.Success;
 			if (!UniversalInstaller.Installer.Current.CheckNet8RuntimeInstalled())
 			{
-				try
-				{
-					UniversalInstaller.Installer.Current.InstallNet8Runtime();
-					details = "NET 8 Runtime has been installed.";
-					ret = CheckStatuses.Warning;
-				} catch (Exception ex)
-				{
-					details = ex.Message;
-					ret = CheckStatuses.Error;
-				}
+				details = "NET 8 Runtime not installed.";
+				ret = CheckStatuses.Warning;
 			}
 			return ret;
 		}

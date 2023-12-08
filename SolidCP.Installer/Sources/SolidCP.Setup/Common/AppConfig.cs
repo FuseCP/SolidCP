@@ -32,10 +32,12 @@
 
 using System;
 using System.Xml;
+using System.Xml.Linq;
 using System.Configuration;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -112,10 +114,24 @@ namespace SolidCP.Setup
 		public static void SaveConfiguration()
 		{
 			if (appConfig != null && xmlConfig != null)
-			{
-				ConfigurationSection section = appConfig.Sections["installer"];
-				section.SectionInformation.SetRawXml(xmlConfig.OuterXml);
-				appConfig.Save();
+			{ 
+				if (OSInfo.IsMono) // Mono has a bug, cannot save with appConfig.Save, needs to manipulate the xml by hand.
+				{
+					var config = XElement.Load(appConfig.FilePath);
+					var installerNew = XElement.Parse(xmlConfig.OuterXml);
+					var installerOld = config.Element(installerNew.Name);
+					if (installerOld == null) config.Add(installerNew);
+					else {
+						installerOld.AddAfterSelf(installerNew);
+						installerOld.Remove();
+					}
+					config.Save(appConfig.FilePath);
+				} else
+				{
+					ConfigurationSection section = appConfig.Sections["installer"];
+					section.SectionInformation.SetRawXml(xmlConfig.OuterXml);
+					appConfig.Save();
+				}
 			}
 		}
 

@@ -39,6 +39,7 @@ using System.Collections;
 using System.Text;
 using SolidCP.Setup.Actions;
 using SolidCP.Providers.OS;
+using System.Diagnostics;
 
 namespace SolidCP.Setup
 {
@@ -235,23 +236,29 @@ namespace SolidCP.Setup
 			AppConfig.LoadComponentSettings(wizard.SetupVariables);
 
 			WebPage page1 = new WebPage();
-			ServerPasswordPage page2 = new ServerPasswordPage();
-			ExpressInstallPage page3 = new ExpressInstallPage();
+			var page2 = new InsecureHttpWarningPage();
+			var page3 = new LetsEncryptPage();
+			ServerPasswordPage page4 = new ServerPasswordPage();
+			ExpressInstallPage page5 = new ExpressInstallPage();
 			//create install actions
 			InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
 			action.Description = "Updating web site...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configuring Let's Encrypt...";
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateServerPassword);
 			action.Description = "Updating server password...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateConfig);
 			action.Description = "Updating system configuration...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
-			FinishPage page4 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
+			FinishPage page6 = new FinishPage();
+			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4, page5, page6 });
 			wizard.LinkPages();
 			wizard.SelectedPage = page1;
 
@@ -287,27 +294,38 @@ namespace SolidCP.Setup
 
 			IntroductionPage introPage = new IntroductionPage();
 			LicenseAgreementPage licPage = new LicenseAgreementPage();
-			ExpressInstallPage page2 = new ExpressInstallPage();
+			WebPage page1 = new WebPage();
+			var page2 = new InsecureHttpWarningPage();
+			var page3 = new LetsEncryptPage();
+			ExpressInstallPage page4 = new ExpressInstallPage();
 			//create install currentScenario
 			InstallAction action = new InstallAction(ActionTypes.Backup);
 			action.Description = "Backing up...";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.DeleteFiles);
 			action.Description = "Deleting files...";
 			action.Path = "setup\\delete.txt";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.CopyFiles);
 			action.Description = "Copying files...";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.UpdateWebSite);
+			action.Description = "Updating web site...";
+			page4.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configuring Let's Encrypt...";
+			page4.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateConfig);
 			action.Description = "Updating system configuration...";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
 
-			FinishPage page3 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3 });
+			FinishPage page5 = new FinishPage();
+			wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5 });
 			wizard.LinkPages();
 			wizard.SelectedPage = introPage;
 

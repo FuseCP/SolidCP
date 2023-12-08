@@ -75,6 +75,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract void InstallNet8Runtime();
 		public abstract void RemoveNet8AspRuntime();
 		public abstract void RemoveNet8NetRuntime();
+		public virtual void InstallPKExec() { }
 		public virtual void RemoveNet8Runtime()
 		{
 			if (NeedRemoveNet8Runtime) RemoveNet8NetRuntime();

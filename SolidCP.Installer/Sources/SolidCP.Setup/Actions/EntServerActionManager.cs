@@ -80,7 +80,7 @@ namespace SolidCP.Setup.Actions
                     CryptoNode.SetAttribute("value", vars.CryptoKey);
                 Xml.Save(file);
                 // SolidCP.SchedulerService.exe.config
-                var file1 = Path.Combine(vars.InstallationFolder, "Bin/SolidCP.SchedulerService.exe.config");
+                var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
                 var Xml1 = new XmlDocument();
                 Xml1.Load(file1);
                 var CryptoNode1 = Xml1.SelectSingleNode("configuration/appSettings/add[@key='SolidCP.CryptoKey']") as XmlElement;
@@ -412,7 +412,7 @@ namespace SolidCP.Setup.Actions
             Xml.Save(file);
 			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
             // Schedular
-            var file1 = Path.Combine(vars.InstallationFolder, "Bin/SolidCP.SchedulerService.exe.config");
+            var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
             var Xml1 = new XmlDocument();
             Xml1.Load(file);
             var ConnNode1 = Xml1.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;

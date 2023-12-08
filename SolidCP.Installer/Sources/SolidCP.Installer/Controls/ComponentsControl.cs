@@ -235,7 +235,7 @@ namespace SolidCP.Installer.Controls
             else
             {
                 row[Global.Parameters.ComponentName] = "Server";
-                row[Global.Parameters.Component] = "Server";
+                row[Global.Parameters.Component] = "SolidCP Server";
             }
         }
 
@@ -268,7 +268,11 @@ namespace SolidCP.Installer.Controls
                         CheckIsAvailableOnUnix(row);
 					}
 				}
-                dsComponents.AcceptChanges();
+
+				this.grdComponents.ClearSelection();
+				this.grdComponents.SelectionChanged += (sender, args) => this.grdComponents.ClearSelection();
+
+				dsComponents.AcceptChanges();
                 Log.WriteEnd("Available components loaded");
                 SetGridDataSource(dsComponents, dsComponents.Tables[0].TableName);
                 AppContext.AppForm.FinishProgress();

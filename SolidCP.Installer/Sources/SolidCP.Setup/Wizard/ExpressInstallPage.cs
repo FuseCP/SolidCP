@@ -2896,8 +2896,10 @@ namespace SolidCP.Setup
 			string email = Wizard.SetupVariables.LetsEncryptEmail;
 			var componentId = Wizard.SetupVariables.ComponentId;
 			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
+			var iisVersion = Wizard.SetupVariables.IISVersion;
+			var iis7 = (iisVersion.Major >= 7);
 
-			if (Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
+			if (iis7 && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 				if (OSInfo.IsWindows)
 				{

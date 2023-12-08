@@ -130,6 +130,10 @@ namespace SolidCP.Providers.OS
 				}
 			}
 		}
+
+		public static OS.IUnixOperatingSystem Unix => (IUnixOperatingSystem)Current;
+		public static IWindowsOperatingSystem Windows => (IWindowsOperatingSystem)Current;
+
 		static Providers.OS.IOperatingSystem os = null;
 		public static Providers.OS.IOperatingSystem Current
 		{

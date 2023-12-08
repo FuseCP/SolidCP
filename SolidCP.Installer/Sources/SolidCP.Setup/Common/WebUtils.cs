@@ -1108,6 +1108,18 @@ namespace SolidCP.Setup
 		
 		internal static string[] GetIPv4Addresses()
 		{
+			if (OSInfo.IsWindows) return GetIPv4AddressesWindows();
+			else
+			{
+				var ipout = Shell.Default.Exec("ip addr").Output().Result;
+				return Regex.Matches(ipout, @"^\s*inet\s+(?<ip>[0-9]{1,3}(?:\.[0-9]{1,3}){3})", RegexOptions.Multiline)
+					.OfType<Match>()
+					.Select(m => m.Groups["ip"].Value)
+					.ToArray();
+			}
+		}
+		internal static string[] GetIPv4AddressesWindows()
+		{
 			List<string> list = new List<string>();
 			WmiHelper wmi = new WmiHelper("root\\cimv2");
 			ManagementObjectCollection collection = wmi.ExecuteQuery("SELECT IPAddress FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'True'");

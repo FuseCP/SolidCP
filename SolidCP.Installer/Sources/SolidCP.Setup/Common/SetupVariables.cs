@@ -354,5 +354,6 @@ namespace SolidCP.Setup
 			return (SetupVariables)this.MemberwiseClone();
 		}
 
+		public string InstallerExe { get; set; }
 	}
 }

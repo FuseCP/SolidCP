@@ -48,10 +48,104 @@ using System.Xml.XPath;
 using SolidCP.Providers.OS;
 using System.Runtime.Remoting.Contexts;
 using System.Net.Configuration;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace SolidCP.Setup.Actions
 {
 	#region Actions
+
+	public class InstallUnixInstallerAction : Action, IInstallAction, IUninstallAction
+	{
+		public const string LogStartMessage = "Install SolidCP Installer...";
+		public const string LogEndMessage = "";
+
+		public override bool Indeterminate
+		{
+			get { return true; }
+		}
+
+		void IInstallAction.Run(SetupVariables vars)
+		{
+			Log.WriteStart("Installing installer");
+
+			try
+			{
+				var installerDir = Path.Combine(vars.InstallationFolder, "Installer");
+				if (!Directory.Exists(installerDir))
+				{
+					Directory.CreateDirectory(installerDir);
+
+					// install pkexec (sudo with GUI) 
+					UniversalInstaller.Installer.Current.InstallPKExec();
+
+					var exePath = Path.Combine(installerDir, Path.GetFileName(AppConfig.ConfigurationPath));
+
+					File.Copy(AppConfig.ConfigurationPath, exePath);
+					File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config");
+					var sh = Shell.Default.Find("sh");
+					File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\npkexec mono {exePath}");
+					OSInfo.Unix.GrantUnixPermissions("/usr/bin/solidcp", UnixFileMode.UserExecute | UnixFileMode.UserRead | UnixFileMode.UserWrite |
+						UnixFileMode.GroupRead | UnixFileMode.GroupExecute | UnixFileMode.GroupWrite |
+						UnixFileMode.OtherExecute | UnixFileMode.OtherRead);
+					OSInfo.Unix.GrantUnixPermissions(exePath, UnixFileMode.GroupExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite |
+						UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
+						UnixFileMode.OtherRead);
+					OSInfo.Unix.GrantUnixPermissions(exePath + ".config", UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.UserRead | UnixFileMode.UserWrite);
+
+					// create .desktop file
+					var appdir = Environment.GetEnvironmentVariable("XDG_DATA_DIRS") ?? "/usr/share";
+					appdir += "/applications";
+
+					var deskfile = appdir + "/com.solidcp.SolidCP.desktop";
+					File.WriteAllText(deskfile, $@"[Desktop Entry]
+Type=Application
+Name=SolidCP Installer
+Exec=/usr/bin/solidcp
+Icon={exePath}
+Version={vars.Version}".Replace("\r\n", Environment.NewLine));
+					OSInfo.Unix.GrantUnixPermissions(deskfile, UnixFileMode.OtherExecute | UnixFileMode.GroupExecute | UnixFileMode.UserExecute | 
+						UnixFileMode.OtherRead | UnixFileMode.GroupRead | UnixFileMode.UserRead | UnixFileMode.GroupWrite | UnixFileMode.UserWrite);
+				}
+
+				Log.WriteEnd("Installer installed");
+
+				InstallLog.AppendLine("- Installed SolidCP Installer. You can run the installer with the command \"solidcp\"");
+
+			} catch (Exception ex)
+			{
+				Log.WriteError("Installing Installer failed: ", ex);
+			}
+		}
+		void IUninstallAction.Run(SetupVariables vars)
+		{
+			Log.WriteStart("Deleting installer");
+
+			try
+			{
+				var appdir = Environment.GetEnvironmentVariable("XDG_DATA_DIRS") ?? "/usr/share";
+				appdir += "/applications";
+
+				var deskfile = appdir + "/com.solidcp.SolidCP.desktop";
+				if (File.Exists(deskfile)) File.Delete(deskfile);
+
+				if (File.Exists("/usr/bin/solidcp")) File.Delete("/usr/bin/solidcp");
+
+				var installerDir = Path.Combine(vars.InstallationFolder, "Installer");
+				if (Directory.Exists(installerDir))
+				{
+					FileUtils.DeleteDirectory(installerDir);
+				}
+				Log.WriteEnd("Installer deleted");
+
+				InstallLog.AppendLine("- Removed Installer");
+			} catch (Exception ex)
+			{
+				Log.WriteError("Error removing installer", ex);
+			}
+		}
+	}
+
 	public class InstallServerUnixAction : Action, IInstallAction, IUninstallAction
 	{
 		public const string LogStartMessage = "Install SolidCP Server...";
@@ -64,6 +158,13 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
+			if (String.IsNullOrEmpty(vars.InstallationFolder) || vars.InstallationFolder.Contains('\\'))
+				vars.InstallationFolder = Path.Combine("/var/www/SolidCP", vars.ComponentName);
+			//
+			if (String.IsNullOrEmpty(vars.WebSiteDomain))
+				vars.WebSiteDomain = String.Empty;
+
+
 			var siteName = vars.ComponentFullName;
 			var ip = vars.WebSiteIP;
 			var port = vars.WebSitePort;
@@ -107,12 +208,14 @@ namespace SolidCP.Setup.Actions
 			Finish(LogStartMessage);
 
 			//update install log
-			InstallLog.AppendLine(string.Format("- Created a new web site named \"{0}\" ({1})", siteName, newSiteId));
+			InstallLog.AppendLine("- Created a new system service SolidCPServer running the website.");
 			InstallLog.AppendLine("  You can access the application by the following URLs:");
 			foreach (string url in urls)
 			{
 				InstallLog.AppendLine("  " + url);
 			}
+			InstallLog.AppendLine("- Set file permissions on the website folder.");
+			InstallLog.AppendLine("- Configured the server.");
 		}
 
 		void IUninstallAction.Run(SetupVariables vars)
@@ -123,6 +226,9 @@ namespace SolidCP.Setup.Actions
 			//
 
 			Log.WriteStart("Deleting web site");
+
+			UniversalInstaller.Installer.Current.RemoveServer();
+
 			Log.WriteInfo(String.Format("Deleting web site \"{0}\"", siteId));
 		}
 	}
@@ -136,7 +242,7 @@ namespace SolidCP.Setup.Actions
 
 		void IPrepareDefaultsAction.Run(SetupVariables vars)
 		{
-			if (String.IsNullOrEmpty(vars.InstallationFolder))
+			if (String.IsNullOrEmpty(vars.InstallationFolder) || vars.InstallationFolder.Contains('\\'))
 				vars.InstallationFolder = String.Format(@"/var/www/SolidCP/{0}", vars.ComponentName);
 			
 			if (String.IsNullOrEmpty(vars.WebSiteDomain))
@@ -177,7 +283,8 @@ namespace SolidCP.Setup.Actions
 			new SetServerUnixDefaultInstallationSettingsAction(),
 			new CopyFilesAction(),
 			new InstallServerUnixAction(),
-			new SaveComponentConfigSettingsAction()
+			new SaveComponentConfigSettingsAction(),
+			new InstallUnixInstallerAction()
 		};
 
 		public ServerUnixActionManager(SetupVariables sessionVars)

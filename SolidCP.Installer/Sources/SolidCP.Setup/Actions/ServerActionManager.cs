@@ -48,6 +48,7 @@ using System.Xml.XPath;
 using SolidCP.Providers.OS;
 using System.Runtime.Remoting.Contexts;
 using System.Web.Services.Description;
+using System.Diagnostics;
 
 namespace SolidCP.Setup.Actions
 {
@@ -656,8 +657,10 @@ namespace SolidCP.Setup.Actions
 			string email = vars.LetsEncryptEmail;
 			var componentId = vars.ComponentId;
 			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
+			var iisVersion = vars.IISVersion;
+			var iis7 = (iisVersion.Major >= 7);
 
-			if (Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
+			if (iis7 && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 
 				Begin(LogStartMessage);

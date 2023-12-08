@@ -66,6 +66,9 @@ namespace SolidCP.Installer
 		[STAThread]
 		static void Main()
 		{
+			ResourceAssemblyLoader.Init();
+
+			ResourceUtils.CreateDefaultAppConfig();
 			//
 			Utils.FixConfigurationSectionDefinition();
 

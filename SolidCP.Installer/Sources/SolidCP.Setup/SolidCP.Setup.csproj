@@ -37,7 +37,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\debug\</OutputPath>
+    <OutputPath>..\..\Build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -48,7 +48,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build\release\</OutputPath>
+    <OutputPath>..\..\Build\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,9 +57,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.8.4.28, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Ionic.Zip.Reduced.dll</HintPath>
+    <Reference Include="DotNetZip, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.NetStandard.1.12.0\lib\netstandard2.0\DotNetZip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -102,10 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />
-    <EmbeddedResource Include="Resources\Microsoft.Web.Delegation.dll" />
-    <EmbeddedResource Include="Resources\Microsoft.Web.Deployment.dll" />
-    <EmbeddedResource Include="Resources\Microsoft.Web.Deployment.Tracing.dll" />
-    <EmbeddedResource Include="Resources\Microsoft.Web.PlatformInstaller.dll" />
+    <None Include="packages.config" />
+    <None Include="Resources\Microsoft.Web.Delegation.dll" />
+    <None Include="Resources\Microsoft.Web.Deployment.dll" />
+    <None Include="Resources\Microsoft.Web.Deployment.Tracing.dll" />
+    <None Include="Resources\Microsoft.Web.PlatformInstaller.dll" />
     <EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2003.dll" />
@@ -130,8 +130,8 @@
     <EmbeddedResource Include="Resources\SolidCP.Providers.Web.IIs80.pdb" />
     <EmbeddedResource Include="Resources\SolidCP.Server.Utils.dll" />
     <EmbeddedResource Include="Resources\SolidCP.Server.Utils.pdb" />
-    <EmbeddedResource Include="Resources\WpiServiceContract.dll" />
-    <EmbeddedResource Include="Resources\WpiServiceContract.pdb" />
+    <None Include="Resources\WpiServiceContract.dll" />
+    <None Include="Resources\WpiServiceContract.pdb" />
     <EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.dll" />
     <EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.pdb" />
   </ItemGroup>
@@ -531,6 +531,10 @@
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
       <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
+      <Project>{1273d02f-6c5c-4752-86ce-99d504f6cffa}</Project>
+      <Name>SolidCP.Providers.OS.Unix</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
       <Project>{16e7e997-1e0f-4f24-8f0a-961fafa93f72}</Project>

@@ -44,6 +44,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using SolidCP.Setup.Web;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -137,6 +138,8 @@ namespace SolidCP.Setup
 			UpdateApplicationAddress();
 		}
 
+		bool iis7 => SetupVariables.IISVersion.Major >= 7;
+
 		private void UpdateApplicationAddress()
 		{
 			/*if (SetupVariables.NewVirtualDirectory)
@@ -180,13 +183,15 @@ namespace SolidCP.Setup
 				virtualDir = "/" + SetupVariables.VirtualDirectory;
 			}
 			//address string
-			address = (Utils.IsHttps(ip, domain) ? "https://" : "http://") + server + port + virtualDir;
+			address = (((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain)) ? "https://" : "http://") + server + port + virtualDir;
 			txtAddress.Text = address;
 
 		}
 
 		private bool CheckWebExtensions()
 		{
+			if (!OSInfo.IsWindows) return true;
+
 			bool ret = true;
 			try
 			{
@@ -306,6 +311,8 @@ namespace SolidCP.Setup
 
 		private bool CheckServerBindings()
 		{
+
+			if (!OSInfo.IsWindows) return true;
 
 			try
 			{

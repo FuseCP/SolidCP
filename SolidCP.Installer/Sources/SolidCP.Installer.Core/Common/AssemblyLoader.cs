@@ -38,17 +38,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Remoting.Lifetime;
 using System.IO;
+using SolidCP.Providers.OS;
+using System.ServiceModel.Configuration;
 
 namespace SolidCP.Installer.Common
 {
 	[Serializable]
 	public class AssemblyLoader : MarshalByRefObject
 	{
+
+		const bool UseLocalSetupDllForDebugging = true;
+
 		public object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
 		{
 			Assembly assembly = null;
 #if DEBUG
-			if (fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && Debugger.IsAttached)
+			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && Debugger.IsAttached)
 			{
 				var exe = Assembly.GetExecutingAssembly();
 				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");
@@ -66,10 +71,10 @@ namespace SolidCP.Installer.Common
 		{
 			Trace.Listeners.Add(traceListener);
 		}
-
 		public static object Execute(string fileName, string typeName, string methodName, object[] parameters)
 		{
 			AppDomain domain = null;
+		
 			try
 			{
 				Evidence securityInfo = AppDomain.CurrentDomain.Evidence;
@@ -92,7 +97,7 @@ namespace SolidCP.Installer.Common
 				AppDomain.Unload(domain);
 				return ret;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				if (domain != null)
 				{

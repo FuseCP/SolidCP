@@ -42,6 +42,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -121,7 +122,7 @@ namespace SolidCP.Setup
 						switch (action.ActionType)
 						{
 							case ActionTypes.DeleteRegistryKey:
-								DeleteRegistryKey(action.Key, action.Empty);
+								if (OSInfo.IsWindows) DeleteRegistryKey(action.Key, action.Empty);
 								break;
 							case ActionTypes.DeleteDirectory:
 								DeleteDirectory(action.Path);
@@ -142,7 +143,10 @@ namespace SolidCP.Setup
 									action.UserName);
 								break;
 							case ActionTypes.DeleteWebSite:
-								if (iis7)
+								if (!OSInfo.IsWindows)
+								{
+									DeleteUnixWebSite();
+								} else if (iis7)
 									DeleteIIS7WebSite(action.SiteId);
 								else
 									DeleteWebSite(action.SiteId);
@@ -159,10 +163,13 @@ namespace SolidCP.Setup
 								DeleteUserAccount(action.Domain, action.Name);
 								break;
 							case ActionTypes.DeleteApplicationPool:
-								if (iis7)
-									DeleteIIS7ApplicationPool(action.Name);
-								else
-									DeleteApplicationPool(action.Name);
+								if (OSInfo.IsWindows)
+								{
+									if (iis7)
+										DeleteIIS7ApplicationPool(action.Name);
+									else
+										DeleteApplicationPool(action.Name);
+								}
 								break;
 							case ActionTypes.UpdateConfig:
 								UpdateSystemConfiguration(action.Key);
@@ -200,6 +207,8 @@ namespace SolidCP.Setup
 
 		private void UnregisterWindowsService(string path, string serviceName)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart(string.Format("Removing \"{0}\" Windows service", serviceName));
@@ -242,6 +251,8 @@ namespace SolidCP.Setup
 
 		private void DeleteShortcuts(string fileName)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Deleting menu shortcut");
@@ -294,7 +305,7 @@ namespace SolidCP.Setup
 				list.Add(action);
 			}
 
-            if (ServiceController.GetServices().Any(s => s.DisplayName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
+            if (System.ServiceProcess.ServiceController.GetServices().Any(s => s.DisplayName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
             {
                 action = new InstallAction(ActionTypes.UnregisterWindowsService) { Path = Path.Combine(installFolder, "bin", Global.Parameters.SchedulerServiceFileName), Name = Global.Parameters.SchedulerServiceName, Description = "Removing Windows service..." };
                 action.Log = string.Format("- Remove {0} Windows service", action.Name);
@@ -454,6 +465,7 @@ namespace SolidCP.Setup
 
 		private void DeleteRegistryKey(string subkey, bool deleteEmptyOnly)
 		{
+			if (!OSInfo.IsWindows) return;
 			try
 			{
 				Log.WriteStart("Deleting registry key");
@@ -584,6 +596,8 @@ namespace SolidCP.Setup
 
 		private void DeleteUserMembership(string domain, string username, string[] membership)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Removing user membership");
@@ -606,6 +620,7 @@ namespace SolidCP.Setup
 
 		private void DeleteUserAccount(string domain, string username)
 		{
+			if (!OSInfo.IsWindows) return;
 			try
 			{
 				Log.WriteStart("Deleting user account");
@@ -740,9 +755,32 @@ namespace SolidCP.Setup
 				throw;
 			}
 		}
+		private void DeleteUnixWebSite()
+		{
+			try
+			{
+				Log.WriteStart("Deleting web site");
+				Log.WriteInfo(string.Format("Deleting \"{0}\" web site", "SolidCP Server"));
+				UniversalInstaller.Installer.Current.RemoveServer();
+				Log.WriteEnd("Deleted web site");
+				InstallLog.AppendLine(string.Format("- Deleted \"{0}\" web site ", "SolidCP Server"));
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Web site delete error", ex);
+				InstallLog.AppendLine(string.Format("- Failed to delete \"{0}\" web site ", "SolidCP Server"));
+
+				throw;
+			}
+		}
 
 		private void DeleteVirtualDirectory(string siteId, string name)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Deleting virtual directory");

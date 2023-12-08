@@ -18,6 +18,10 @@ namespace SolidCP.UniversalInstaller
 		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
 		public UnixInstaller() : base() { }
 
+		public override void InstallPKExec()
+		{
+			if (Shell.Find("pkexec") == null) OSInstaller.Install("policykit-1");
+		}
 		public override void InstallServerWebsite()
 		{
 			// Run SolidCP.Server as a service on Unix
@@ -92,18 +96,21 @@ namespace SolidCP.UniversalInstaller
 		public override void ReadServerConfiguration()
 		{
 			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
-			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
-			CryptoUtils.CryptoKey = ServerSettings.CryptoKey;
-			ServerSettings.Urls = appsettings.applicationUrls;
-			ServerSettings.ServerPassword = CryptoUtils.Decrypt(appsettings.Server?.Password ?? "");
-			ServerSettings.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
-			ServerSettings.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
-			ServerSettings.CertificateFile = appsettings.Certificate?.File;
-			ServerSettings.CertificatePassword = appsettings.Certificate?.Password;
-			ServerSettings.CertificateStoreLocation = appsettings.Certificate?.StoreLocation.ToString();
-			ServerSettings.CertificateStoreName = appsettings.Certificate?.StoreName.ToString();
-			ServerSettings.CertificateFindType = appsettings.Certificate?.FindType.ToString();
-			ServerSettings.CertificateFindValue = appsettings.Certificate?.FindValue;
+			if (File.Exists(appsettingsfile))
+			{
+				var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
+				CryptoUtils.CryptoKey = ServerSettings.CryptoKey;
+				ServerSettings.Urls = appsettings.applicationUrls;
+				ServerSettings.ServerPassword = CryptoUtils.Decrypt(appsettings.Server?.Password ?? "");
+				ServerSettings.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
+				ServerSettings.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
+				ServerSettings.CertificateFile = appsettings.Certificate?.File;
+				ServerSettings.CertificatePassword = appsettings.Certificate?.Password;
+				ServerSettings.CertificateStoreLocation = appsettings.Certificate?.StoreLocation.ToString();
+				ServerSettings.CertificateStoreName = appsettings.Certificate?.StoreName.ToString();
+				ServerSettings.CertificateFindType = appsettings.Certificate?.FindType.ToString();
+				ServerSettings.CertificateFindValue = appsettings.Certificate?.FindValue;
+			}
 		}
 
 		public override void ConfigureServer()
@@ -159,6 +166,8 @@ namespace SolidCP.UniversalInstaller
 			}
 
 			var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+			var path = Path.GetDirectoryName(appsettingsfile);
+			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 			File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()
 			{
 				ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
