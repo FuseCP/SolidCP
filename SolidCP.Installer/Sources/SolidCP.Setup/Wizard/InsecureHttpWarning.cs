@@ -69,7 +69,7 @@ namespace SolidCP.Setup
 
 		bool IsHttps => (iis7 || !OSInfo.IsWindows) && Utils.IsHttps(SetupVariables.WebSiteIP, SetupVariables.WebSiteDomain);
 
-		public override bool Hidden => IsHttps;
+		public override bool Hidden => IsHttps || OSInfo.IsWindows;
 
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{

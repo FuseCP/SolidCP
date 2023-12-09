@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
 using System.CodeDom;
+using System.ServiceModel.Description;
+
 #if !NETFRAMEWORK
 using Grpc.Core;
 using Grpc.Core.Interceptors;
@@ -30,6 +32,7 @@ namespace SolidCP.Web.Client
 	{
 
 		public const long MaximumMessageSize = 10*1024*1024; // 10 MB
+		public const bool UseMessageSecurityOverHttp = true;
 		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
 		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
 
@@ -251,7 +254,7 @@ namespace SolidCP.Web.Client
 	{
 
 
-#if NETCOREAPP
+#if !NETFRAMEWORK
 		static Dictionary<string, GrpcChannel> GrpcPool = new Dictionary<string, GrpcChannel>();
 #endif
 		static readonly Dictionary<string, ChannelFactory<T>> FactoryPool = new Dictionary<string, ChannelFactory<T>>();
@@ -331,7 +334,13 @@ namespace SolidCP.Web.Client
 							binding = nethttps;
 							break;
 						case Protocols.WSHttp:
-							if (!isEncrypted || IsLocal)
+							if (isEncrypted && UseMessageSecurityOverHttp)
+							{
+								var ws = new WSHttpBinding(SecurityMode.Message);
+								ws.MaxReceivedMessageSize = MaximumMessageSize;
+								binding = ws;
+							}
+							else if (!isEncrypted || IsLocal)
 							{
 								var ws = new WSHttpBinding(SecurityMode.None);
 								ws.MaxReceivedMessageSize = MaximumMessageSize;
@@ -401,8 +410,18 @@ namespace SolidCP.Web.Client
 						}
 						factory.Endpoint.EndpointBehaviors.Add(new SoapHeaderClientBehavior() { Client = this });
 					}
+					// set certificate validation mode to PeerOrChainTrust
+					var clientCredentials = factory.Endpoint.EndpointBehaviors.OfType<ClientCredentials>().FirstOrDefault();
+					if (clientCredentials == null)
+					{
+						clientCredentials = new ClientCredentials();
+						factory.Endpoint.EndpointBehaviors.Add(clientCredentials);
+					}
+					clientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.PeerOrChainTrust;
+					
 					client = factory.CreateChannel();
 					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
+				
 				}
 #if !NETFRAMEWORK
 				else if (IsGRPC)

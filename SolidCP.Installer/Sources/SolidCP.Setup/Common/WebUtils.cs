@@ -1186,14 +1186,14 @@ namespace SolidCP.Setup
 				return siteid;
 			}
 		}
-		public static void LEInstallCertificate(string site, string email, bool updateWcf = true)
+		public static void LEInstallCertificate(string site, string email, bool updateWCF = true, bool updateIIS = true)
 		{
 
 			if (string.IsNullOrEmpty(email)) return;
 
 			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
 
-			Log.WriteStart("Lët's Encrypt InstallCertificate");
+			Log.WriteStart("Let's Encrypt InstallCertificate");
 
 			try
 			{
@@ -1227,13 +1227,7 @@ namespace SolidCP.Setup
 
 				var script = Path.Combine(webpath, "bin", "LetsEncrypt", "wcfcert.exe");
 
-				if (updateWcf)
-				{
-					command = $"\"{command}\" --target iissite  --installation iis,script --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My --script \"{script}\" --scriptparameters \"{{StorePath}} {{CertThumbprint}}\" --verbose";
-				} else
-				{
-					command = $"\"{command}\" --target iissite  --installation iis --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser";
-				}
+				command = $"\"{command}\" --source iis  --installation {(updateWCF && updateIIS ? "iis,script" : (updateWCF ? "script" : "iis"))} --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My {(updateWCF ? $"--script \"{script}\" --scriptparameters \"{{StorePath}} {{CertThumbprint}}\"" : "")} --verbose";
 
 				Log.WriteInfo($"LE Command String: {command}");
 
@@ -1247,7 +1241,9 @@ namespace SolidCP.Setup
 				Shell.Default.Log -= logger;
 
 				Log.WriteInfo(results.OutputAndError().Result);
-
+				var exitCode = results.ExitCode().Result;
+				if (exitCode != 0) Log.WriteError($"wacs exited with error code: {exitCode}");
+				
 				Log.WriteEnd("Lët's Encrypt InstallCertificate");
 			}
 			catch (Exception ex)

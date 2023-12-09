@@ -562,7 +562,7 @@ namespace SolidCP.Setup.Actions
 				ApplicationPool = appPool,
 				//
 				Bindings = new ServerBinding[] {
-					new ServerBinding(ip, port, domain)
+					new ServerBinding(ip, port, domain, null, componentId)
 				},
 			};
 
@@ -671,7 +671,7 @@ namespace SolidCP.Setup.Actions
 				{
 					Log.WriteInfo(String.Format("Configuring Let's Encrypt for domain {0} with email {1})", domain, email));
 
-					WebUtils.LEInstallCertificate(siteId, email, updateWCF);
+					WebUtils.LEInstallCertificate(siteId, email, updateWCF, false);
 				}
 
 				Finish(LogStartMessage);

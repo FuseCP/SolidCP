@@ -13,7 +13,7 @@ namespace SolidCP.UniversalInstaller
 {
 	public abstract class UnixInstaller : Installer
 	{
-		public override string? InstallExeRootPath { get => base.InstallExeRootPath ?? $"/user/local/{SolidCP}/bin"; set => base.InstallExeRootPath = value; }
+		public override string? InstallExeRootPath { get => base.InstallExeRootPath ?? $"/user/local/{SolidCP}"; set => base.InstallExeRootPath = value; }
 		public override string? InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
 		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
 		public UnixInstaller() : base() { }

@@ -58,12 +58,18 @@ namespace SolidCP.Setup.Web
 		/// <param name="ip">IP address.</param>
 		/// <param name="port">TCP port.</param>
 		/// <param name="host">Host header value.</param>
-		public ServerBinding(string ip, string port, string host, string scheme = null)
+		public ServerBinding(string ip, string port, string host, string scheme = null, string componentId = null)
 		{
 			this.ip = ip;
 			this.port = port;
 			this.host = host;
-			this.scheme = scheme ?? (Utils.IsHttps(ip, host) ? Uri.UriSchemeHttps : Uri.UriSchemeHttp);
+			this.scheme = scheme ?? 
+				((port != "80" && 
+				(((componentId == Global.WebPortal.ComponentCode || componentId == Global.WebDavPortal.ComponentCode) &&
+					Utils.IsHttps(ip, host)) ||
+				Utils.IsHttpsAndNotWindows(ip, host))) ?
+				Uri.UriSchemeHttps :
+				Uri.UriSchemeHttp);
 		}
 
 		/// <summary>

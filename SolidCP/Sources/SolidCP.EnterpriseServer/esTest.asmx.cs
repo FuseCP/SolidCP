@@ -36,6 +36,7 @@ using System.Web;
 using System.Collections;
 using SolidCP.Web.Services;
 using System.ComponentModel;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -58,6 +59,9 @@ namespace SolidCP.EnterpriseServer
 
 		[WebMethod]
 		public void Touch() { }
+
+		[WebMethod]
+		public OSPlatformInfo OSPlatform() => OSInfo.Current.GetOSPlatform();
 
 	}
 }

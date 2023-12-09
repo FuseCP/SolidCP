@@ -8,14 +8,7 @@ namespace SolidCP.UniversalInstaller
 {
     public class MacInstaller : UnixInstaller
     {
-
-        //TODO fix values for macOS to correct folders 
-		public override string? InstallExeRootPath { get => base.InstallExeRootPath ?? "/user/local/SolidCP/bin"; set => base.InstallExeRootPath = value; }
-		public override string? InstallWebRootPath { get => base.InstallWebRootPath ?? "/var/www/SolidCP"; set => base.InstallWebRootPath = value; }
-		public override string WebsiteLogsPath => "/var/log/SolidCP";
-
-
-		Brew Brew => (Brew)((IUnixOperatingSystem)OSInfo.Current).Brew;
+		Brew Brew => (Brew)OSInfo.Unix.Brew;
 
         public override void InstallNet8Runtime()
         {

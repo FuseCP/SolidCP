@@ -2363,6 +2363,7 @@ namespace SolidCP.Setup
 
 		private void UpdateWebSiteBindings()
 		{
+			string componentId = Wizard.SetupVariables.ComponentId;
 			string component = Wizard.SetupVariables.ComponentFullName;
 			string siteId = Wizard.SetupVariables.WebSiteId;
 			string ip = Wizard.SetupVariables.WebSiteIP;
@@ -2396,7 +2397,7 @@ namespace SolidCP.Setup
 				// Assign the binding only if is not defined
 				if (String.IsNullOrEmpty(oldSiteId))
 				{
-					ServerBinding newBinding = new ServerBinding(ip, port, domain);
+					ServerBinding newBinding = new ServerBinding(ip, port, domain, null, componentId);
 					if (iis7)
 						WebUtils.UpdateIIS7SiteBindings(siteId, new ServerBinding[] { newBinding });
 					else
@@ -2404,7 +2405,6 @@ namespace SolidCP.Setup
 				}
 
 				// update config setings
-				string componentId = Wizard.SetupVariables.ComponentId;
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSiteIP", ip);
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSitePort", port);
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSiteDomain", domain);
@@ -2992,6 +2992,7 @@ namespace SolidCP.Setup
 			Log.WriteStart("Creating web site");
 			Log.WriteInfo(string.Format("Creating web site \"{0}\" ( IP: {1}, Port: {2}, Domain: {3} )", siteName, ip, port, domain));
 			Version iisVersion = Wizard.SetupVariables.IISVersion;
+			var componentId = Wizard.SetupVariables.ComponentId;
             bool iis7 = (iisVersion.Major >= 7);
 
 			//check for existing site
@@ -3014,7 +3015,7 @@ namespace SolidCP.Setup
 			//site.LogFileDirectory = logsPath;
 
 			//set bindings
-			ServerBinding binding = new ServerBinding(ip, port, domain);
+			ServerBinding binding = new ServerBinding(ip, port, domain, null, componentId);
 			site.Bindings = new ServerBinding[] { binding };
 
 			// set other properties
@@ -3047,7 +3048,6 @@ namespace SolidCP.Setup
 			
 			
 			// update config setings
-			string componentId = Wizard.SetupVariables.ComponentId;
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSiteId", newSiteId);
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSiteIP", ip);
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSitePort", port);

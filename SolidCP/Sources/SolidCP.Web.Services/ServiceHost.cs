@@ -44,6 +44,7 @@ namespace SolidCP.Web.Services
 				IsPipe(adr);
 		}
 		const bool AllowInsecureHttp = PolicyAttribute.AllowInsecureHttp;
+		const bool UseMessageSecurityOverHttp = PolicyAttribute.UseMessageSecurityOverHttp;
 
 		void AddEndpoint(Type contract, Binding binding, string address)
 		{
@@ -91,12 +92,17 @@ namespace SolidCP.Web.Services
 						{
 							var netHttpBinding = new NetHttpBinding(BasicHttpSecurityMode.None) { Name = "net.none" };
 							netHttpBinding.WebSocketSettings.TransportUsage = WebSocketTransportUsage.Never;
-                            AddEndpoint(contract, netHttpBinding, adr);
+							AddEndpoint(contract, netHttpBinding, adr);
 						}
 					}
 					else if (HasApi(adr, "ws"))
 					{
-						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
+						if (isEncrypted && UseMessageSecurityOverHttp)
+						{
+							var wsHttpBinding = new WSHttpBinding(SecurityMode.Message) { Name = "ws.message" };
+							AddEndpoint(contract, wsHttpBinding, adr);
+						}
+						else if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
 							AddEndpoint(contract, new WSHttpBinding(SecurityMode.None) { Name = "ws.none" }, adr);
 						}

@@ -10,6 +10,7 @@ namespace SolidCP.Web.Services
 	{
 
 		public const bool AllowInsecureHttp = true;
+		public const bool UseMessageSecurityOverHttp = true;
 		public string Policy { get; set; }
 		public PolicyAttribute(string policy) { Policy = policy; }
 	}

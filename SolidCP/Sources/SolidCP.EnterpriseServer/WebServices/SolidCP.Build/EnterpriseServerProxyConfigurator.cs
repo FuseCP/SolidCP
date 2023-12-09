@@ -39,11 +39,30 @@ namespace SolidCP.EnterpriseServer
     public class EnterpriseServerProxyConfigurator
     {
         public const bool UseNetHttpAsDefaultProtocol = true;
+        public const bool UseMessageSecurityOverHttp = true;
 
         private string enterpriseServerUrl;
         private string username;
         private string password;
 
+        static bool? isCore = null;
+        public bool IsCore
+        {
+            get
+            {
+                if (isCore == null)
+                {
+                    if (!string.IsNullOrEmpty(enterpriseServerUrl))
+                    {
+                        var test = new Client.esTest();
+                        test.Url = enterpriseServerUrl;
+                        isCore = test.OSPlatform().IsCore;
+                    }
+                    else throw new ArgumentNullException("EnterpriseServerUrl not set.");
+                }
+                return isCore.Value;
+            }
+        }
         public string EnterpriseServerUrl
         {
             get { return this.enterpriseServerUrl; }
@@ -74,11 +93,18 @@ namespace SolidCP.EnterpriseServer
             // set timeout
             proxy.Timeout = TimeSpan.FromMinutes(15); //15 minutes // System.Threading.Timeout.Infinite;
 
-            // use NetHttp protocol as default
-            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi)
+            if (proxy.IsDefaultApi)
             {
-                if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
-                else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
+                if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !IsCore)
+                {
+                    proxy.Protocol = Web.Client.Protocols.WSHttp;
+                }
+                else if (UseNetHttpAsDefaultProtocol)
+                {
+                    // use NetHttp protocol as default
+                    if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
+                    else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
+                }
             }
 
             if (!String.IsNullOrEmpty(username) && proxy.IsAuthenticated)

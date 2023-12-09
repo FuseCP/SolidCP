@@ -39,6 +39,7 @@ namespace SolidCP.Providers.OS
 		}
 
 		bool errorEOF = true, outputEOF = true, hasProcessExited = true;
+		int exitCode = 0;
 		public bool IsCompleted => Process == null || ((DoNotWaitForProcessExit || hasProcessExited || Process.HasExited) && errorEOF && outputEOF);
 		public Shell GetResult() => this;
 		public virtual char PathSeparator => Path.PathSeparator;
@@ -156,6 +157,7 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.RedirectStandardError = true;
 				process.Exited += (obj, args) =>
 				{
+					exitCode = Process.ExitCode;
 					lock (this) hasProcessExited = true;
 					lock (child) child.hasProcessExited = true;
 					child.CheckCompleted();
@@ -277,6 +279,12 @@ namespace SolidCP.Providers.OS
 			lock (outputAndError) return outputAndError.ToString();
 		}
 
+		public async Task<int> ExitCode()
+		{
+			if (Process == null && NotFound) return -500;
+			await this;
+			return exitCode;
+		}
 		public string LogFile { get; set; } = null;
 		protected virtual void OnLog(string text)
 		{

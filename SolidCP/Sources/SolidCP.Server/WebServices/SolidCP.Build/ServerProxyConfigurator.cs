@@ -44,126 +44,136 @@ using SolidCP.Providers;
 
 namespace SolidCP.Server.Client
 {
-    public class ServerProxyConfigurator
-    {
-        public const bool UseNetHttpAsDefaultProtocol = true;
-        public const bool UseNetHttpOnCore = true;
+	public class ServerProxyConfigurator
+	{
+		public const bool UseNetHttpAsDefaultProtocol = true;
+		public const bool UseMessageSecurityOverHttp = true;
+		public const bool UseNetHttpOnCore = true;
+		public const bool UseMessageSecurityOnCore = false;
 
-        private int timeout = -1;
-        private string serverUrl = string.Empty;
-        private string serverPassword = string.Empty;
-        RemoteServerSettings serverSettings = new RemoteServerSettings();
-        ServiceProviderSettings providerSettings = new ServiceProviderSettings();
+		private int timeout = -1;
+		private string serverUrl = string.Empty;
+		private string serverPassword = string.Empty;
+		RemoteServerSettings serverSettings = new RemoteServerSettings();
+		ServiceProviderSettings providerSettings = new ServiceProviderSettings();
 
-        public SolidCP.Providers.RemoteServerSettings ServerSettings
-        {
-            get { return this.serverSettings; }
-            set { this.serverSettings = value; }
-        }
+		public SolidCP.Providers.RemoteServerSettings ServerSettings
+		{
+			get { return this.serverSettings; }
+			set { this.serverSettings = value; }
+		}
 
-        public SolidCP.Providers.ServiceProviderSettings ProviderSettings
-        {
-            get { return this.providerSettings; }
-            set { this.providerSettings = value; }
-        }
+		public SolidCP.Providers.ServiceProviderSettings ProviderSettings
+		{
+			get { return this.providerSettings; }
+			set { this.providerSettings = value; }
+		}
 
-        public string ServerUrl
-        {
-            get { return this.serverUrl; }
-            set { this.serverUrl = value; }
-        }
+		public string ServerUrl
+		{
+			get { return this.serverUrl; }
+			set { this.serverUrl = value; }
+		}
 
-        public string ServerPassword
-        {
-            get { return this.serverPassword; }
-            set { this.serverPassword = value; }
-        }
+		public string ServerPassword
+		{
+			get { return this.serverPassword; }
+			set { this.serverPassword = value; }
+		}
 
-        public int Timeout
-        {
-            get { return this.timeout; }
-            set { this.timeout = value; }
-        }
+		public int Timeout
+		{
+			get { return this.timeout; }
+			set { this.timeout = value; }
+		}
 
-        public bool? IsCore { get; set; } = null;
+		public bool? IsCore { get; set; } = null;
 
-        public void Configure(SolidCP.Web.Client.ClientBase proxy)
-        {
-            // configure proxy URL
-            if (!String.IsNullOrEmpty(serverUrl))
-            {
-                if (serverUrl.EndsWith("/"))
-                    serverUrl = serverUrl.Substring(0, serverUrl.Length - 1);
+		public void Configure(SolidCP.Web.Client.ClientBase proxy)
+		{
+			// configure proxy URL
+			if (!String.IsNullOrEmpty(serverUrl))
+			{
+				if (serverUrl.EndsWith("/"))
+					serverUrl = serverUrl.Substring(0, serverUrl.Length - 1);
 
-                proxy.Url = serverUrl; // + proxy.Url.Substring(proxy.Url.LastIndexOf('/'));
-            }
+				proxy.Url = serverUrl; // + proxy.Url.Substring(proxy.Url.LastIndexOf('/'));
+			}
 
-            // set proxy timeout
-            proxy.Timeout = (timeout == -1) ? null : TimeSpan.FromMilliseconds(timeout * 1000);
+			// set proxy timeout
+			proxy.Timeout = (timeout == -1) ? null : TimeSpan.FromMilliseconds(timeout * 1000);
 
-            // setup security assertion
-            if (!String.IsNullOrEmpty(serverPassword) && proxy.IsAuthenticated)
-            {
-                //ServerUsernameAssertion assert
-                //     = new ServerUsernameAssertion(ServerSettings.ServerId, serverPassword);
+			// setup security assertion
+			if (!String.IsNullOrEmpty(serverPassword) && proxy.IsAuthenticated)
+			{
+				//ServerUsernameAssertion assert
+				//     = new ServerUsernameAssertion(ServerSettings.ServerId, serverPassword);
 
-                // create policy
-                //Policy policy = new Policy();
-                //policy.Assertions.Add(assert);
+				// create policy
+				//Policy policy = new Policy();
+				//policy.Assertions.Add(assert);
 
-                //proxy.SetPolicy(policy);
-                proxy.Credentials.Password = serverPassword;
-                proxy.Credentials.UserName = string.Empty;
-            }
+				//proxy.SetPolicy(policy);
+				proxy.Credentials.Password = serverPassword;
+				proxy.Credentials.UserName = string.Empty;
+			}
 
-            // provider settings
-            ServiceProviderSettingsSoapHeader settingsHeader = new ServiceProviderSettingsSoapHeader();
-            List<string> settings = new List<string>();
-            
-            // AD Settings
-            settings.Add("AD:Enabled=" + ServerSettings.ADEnabled.ToString());
-            settings.Add("AD:AuthenticationType=" + ServerSettings.ADAuthenticationType.ToString());
-            settings.Add("AD:ParentDomain=" + ServerSettings.ADParentDomain);
-            settings.Add("AD:ParentDomainController=" + ServerSettings.ADParentDomainController);
-            settings.Add("AD:RootDomain=" + ServerSettings.ADRootDomain);
-            settings.Add("AD:Username=" + ServerSettings.ADUsername);
-            settings.Add("AD:Password=" + ServerSettings.ADPassword);
+			// provider settings
+			ServiceProviderSettingsSoapHeader settingsHeader = new ServiceProviderSettingsSoapHeader();
+			List<string> settings = new List<string>();
 
-            // Server Settings
-            settings.Add("Server:ServerId=" + ServerSettings.ServerId);
-            settings.Add("Server:ServerName=" + ServerSettings.ServerName);
+			// AD Settings
+			settings.Add("AD:Enabled=" + ServerSettings.ADEnabled.ToString());
+			settings.Add("AD:AuthenticationType=" + ServerSettings.ADAuthenticationType.ToString());
+			settings.Add("AD:ParentDomain=" + ServerSettings.ADParentDomain);
+			settings.Add("AD:ParentDomainController=" + ServerSettings.ADParentDomainController);
+			settings.Add("AD:RootDomain=" + ServerSettings.ADRootDomain);
+			settings.Add("AD:Username=" + ServerSettings.ADUsername);
+			settings.Add("AD:Password=" + ServerSettings.ADPassword);
 
-            // Provider Settings
-            settings.Add("Provider:ProviderGroupID=" + ProviderSettings.ProviderGroupID.ToString());
-            settings.Add("Provider:ProviderCode=" + ProviderSettings.ProviderCode);
-            settings.Add("Provider:ProviderName=" + ProviderSettings.ProviderName);
-            settings.Add("Provider:ProviderType=" + ProviderSettings.ProviderType);
+			// Server Settings
+			settings.Add("Server:ServerId=" + ServerSettings.ServerId);
+			settings.Add("Server:ServerName=" + ServerSettings.ServerName);
 
-            // Custom Provider Settings
-            foreach (string settingName in ProviderSettings.Settings.Keys)
-            {
-                settings.Add(settingName + "=" + ProviderSettings.Settings[settingName]);
-            }
+			// Provider Settings
+			settings.Add("Provider:ProviderGroupID=" + ProviderSettings.ProviderGroupID.ToString());
+			settings.Add("Provider:ProviderCode=" + ProviderSettings.ProviderCode);
+			settings.Add("Provider:ProviderName=" + ProviderSettings.ProviderName);
+			settings.Add("Provider:ProviderType=" + ProviderSettings.ProviderType);
 
-            // set header
-            settingsHeader.Settings = settings.ToArray();
+			// Custom Provider Settings
+			foreach (string settingName in ProviderSettings.Settings.Keys)
+			{
+				settings.Add(settingName + "=" + ProviderSettings.Settings[settingName]);
+			}
 
-            if (proxy.HasSoapHeaders && (proxy.IsEncrypted || proxy.IsLocal))
-            {
-                proxy.SoapHeader = settingsHeader;
-            }
-            //FieldInfo field = proxy.GetType().GetField("ServiceProviderSettingsSoapHeaderValue");
-            //if (field != null)
-            //    field.SetValue(proxy, settingsHeader);
+			// set header
+			settingsHeader.Settings = settings.ToArray();
 
-            // Use NetHttp as default protocol on servers running Net Framework.
-            if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi &&
-                (UseNetHttpOnCore || IsCore.HasValue && IsCore.Value == false))
-            {
-                if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
-                else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
-            } 
-        }
-    }
+			if (proxy.HasSoapHeaders && (proxy.IsEncrypted || proxy.IsLocal))
+			{
+				proxy.SoapHeader = settingsHeader;
+			}
+			//FieldInfo field = proxy.GetType().GetField("ServiceProviderSettingsSoapHeaderValue");
+			//if (field != null)
+			//    field.SetValue(proxy, settingsHeader);
+
+			// Use NetHttp as default protocol or WSHttp if UseMessageSecurityOverHttp is set
+			if (proxy.IsDefaultApi)
+			{
+				if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && 
+					(UseMessageSecurityOnCore || IsCore.HasValue && IsCore.Value == false))
+				{
+					proxy.Protocol = Web.Client.Protocols.WSHttp;
+				}
+				else if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi &&
+					(UseNetHttpOnCore || IsCore.HasValue && IsCore.Value == false))
+				{
+					if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
+					else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
+				}
+			}
+		}
+	}
 }
 #endif

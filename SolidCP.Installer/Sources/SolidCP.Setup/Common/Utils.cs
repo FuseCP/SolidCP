@@ -45,6 +45,7 @@ using System.DirectoryServices;
 using System.Linq;
 using SolidCP.Setup.Web;
 using Microsoft.Win32;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -492,7 +493,7 @@ namespace SolidCP.Setup
 
 		public static void StartService(string serviceName)
 		{
-			ServiceController sc = new ServiceController(serviceName);
+			var sc = new System.ServiceProcess.ServiceController(serviceName);
 			// Start the service if the current status is stopped.
 			if (sc.Status == ServiceControllerStatus.Stopped)
 			{
@@ -504,7 +505,7 @@ namespace SolidCP.Setup
 
 		public static void StopService(string serviceName)
 		{
-			ServiceController sc = new ServiceController(serviceName);
+			var sc = new System.ServiceProcess.ServiceController(serviceName);
 			// Stop the service if the current status is not stopped.
 			if (sc.Status != ServiceControllerStatus.Stopped &&
 				sc.Status != ServiceControllerStatus.StopPending)
@@ -800,7 +801,10 @@ namespace SolidCP.Setup
 			}
 		}
 
-		public static bool IsHttps(string ip, string domain) => ip != "127.0.0.1" && ip != "::1" && domain != "localhost" && !string.IsNullOrEmpty(domain);
+		public static bool IsGlobalDomain(string domain) => domain != "localhost" && !string.IsNullOrEmpty(domain) && domain.Contains('.');
+		public static bool IsHttps(string ip, string domain) => ip != "127.0.0.1" && ip != "::1" && IsGlobalDomain(domain);
+		public static bool IsHttpsAndNotWindows(string ip, string domain) => !OSInfo.IsWindows && IsHttps(ip, domain);
+
 		public static string[] GetApplicationUrls(string ip, string domain, string port, string virtualDir)
 		{
 			List<string> urls = new List<string>();

@@ -3089,6 +3089,7 @@ namespace SolidCP.Setup.Internal
 		}
 		private void UpdateWebSiteBindings()
 		{
+			string componentId = Context.ComponentId;
 			string component = Context.ComponentFullName;
 			string siteId = Context.WebSiteId;
 			string ip = Context.WebSiteIP;
@@ -3122,15 +3123,19 @@ namespace SolidCP.Setup.Internal
 				// Assign the binding only if is not defined
 				if (String.IsNullOrEmpty(oldSiteId))
 				{
-					ServerBinding newBinding = new ServerBinding(ip, port, domain);
+					ServerBinding newBinding = new ServerBinding(ip, port, domain, null, componentId);
 					if (iis7)
-						WebUtils.UpdateIIS7SiteBindings(siteId, new ServerBinding[] { newBinding });
+					{
+						var bindings = new ServerBinding[] { newBinding };
+						WebUtils.UpdateIIS7SiteBindings(siteId, bindings);
+					}
 					else
+					{
 						WebUtils.UpdateSiteBindings(siteId, new ServerBinding[] { newBinding });
+					}
 				}
 
 				// update config setings
-				string componentId = Context.ComponentId;
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSiteIP", ip);
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSitePort", port);
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSiteDomain", domain);
@@ -3703,6 +3708,7 @@ namespace SolidCP.Setup.Internal
 			Log.WriteStart("Creating web site");
 			Log.WriteInfo(string.Format("Creating web site \"{0}\" ( IP: {1}, Port: {2}, Domain: {3} )", siteName, ip, port, domain));
 			Version iisVersion = Context.IISVersion;
+			var componentId = Context.ComponentId;
 			bool iis7 = (iisVersion.Major >= 7);
 
 			//check for existing site
@@ -3725,7 +3731,7 @@ namespace SolidCP.Setup.Internal
 			//site.LogFileDirectory = logsPath;
 
 			//set bindings
-			ServerBinding binding = new ServerBinding(ip, port, domain);
+			ServerBinding binding = new ServerBinding(ip, port, domain, null, componentId);
 			site.Bindings = new ServerBinding[] { binding };
 
 			// set other properties
@@ -3758,7 +3764,6 @@ namespace SolidCP.Setup.Internal
 
 
 			// update config setings
-			string componentId = Context.ComponentId;
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSiteId", newSiteId);
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSiteIP", ip);
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSitePort", port);
