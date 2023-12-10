@@ -97,6 +97,7 @@ namespace SolidCP.SilentInstaller
 		[STAThread]
 		static int Main(string[] args)
 		{
+			ResourceAssemblyLoader.Init();
 			//
 			Utils.FixConfigurationSectionDefinition();
 			//

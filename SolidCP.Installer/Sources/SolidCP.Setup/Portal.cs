@@ -47,11 +47,13 @@ namespace SolidCP.Setup
 		{
 			return InstallBase(obj, "1.0.1");
 		}
-
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
 		{
 			ResourceAssemblyLoader.Init();
-
+			return InstallBaseRaw(obj, minimalInstallerVersion);
+		}
+		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
+		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 			//check CS version
 			var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
@@ -154,6 +156,11 @@ namespace SolidCP.Setup
 
 		public static DialogResult Uninstall(object obj)
 		{
+			ResourceAssemblyLoader.Init();
+			return UninstallRaw(obj);
+		}
+		static DialogResult UninstallRaw(object obj)
+		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 			string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
 			//
@@ -194,6 +201,11 @@ namespace SolidCP.Setup
 		}
 
 		public static DialogResult Setup(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return SetupRaw(obj);
+		}
+		static DialogResult SetupRaw(object obj)
 		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 			string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
@@ -246,6 +258,11 @@ namespace SolidCP.Setup
 		}
 
 		public static DialogResult Update(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return UpdateRaw(obj);
+		}
+		static DialogResult UpdateRaw(object obj)
 		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 

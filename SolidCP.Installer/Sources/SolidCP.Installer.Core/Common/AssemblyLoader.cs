@@ -84,6 +84,7 @@ namespace SolidCP.Installer.Common
 				domain = AppDomain.CreateDomain("Remote Domain", securityInfo, info);
 				domain.InitializeLifetimeService();
 				domain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
+
 				AssemblyLoader loader = (AssemblyLoader)domain.CreateInstanceAndUnwrap(
 					typeof(AssemblyLoader).Assembly.FullName,
 					typeof(AssemblyLoader).FullName);

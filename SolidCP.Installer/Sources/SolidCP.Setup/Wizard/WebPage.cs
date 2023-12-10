@@ -183,7 +183,7 @@ namespace SolidCP.Setup
 				virtualDir = "/" + SetupVariables.VirtualDirectory;
 			}
 			//address string
-			address = (((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain)) ? "https://" : "http://") + server + port + virtualDir;
+			address = (((iis7 || !OSInfo.IsWindows) && Utils.IsHttpsAndNotWindows(ip, domain)) ? "https://" : "http://") + server + port + virtualDir;
 			txtAddress.Text = address;
 
 		}

@@ -67,6 +67,10 @@ namespace SolidCP.Installer
 		static void Main()
 		{
 			ResourceAssemblyLoader.Init();
+			Start();
+		}
+
+		static void Start() {
 
 			ResourceUtils.CreateDefaultAppConfig();
 			//

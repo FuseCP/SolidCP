@@ -259,11 +259,7 @@ namespace SolidCP.Installer.Controls
                     if (CheckForInstalledComponent(componentCode))
                     {
                         row.Delete();
-                    }
-                }
-                if (!OSInfo.IsWindows)
-                {
-                    foreach (DataRow row in dsComponents.Tables[0].Rows)
+                    } else if (!OSInfo.IsWindows)
                     {
                         CheckIsAvailableOnUnix(row);
 					}

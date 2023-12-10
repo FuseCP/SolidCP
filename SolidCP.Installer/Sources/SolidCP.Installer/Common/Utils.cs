@@ -91,14 +91,5 @@ namespace SolidCP.Installer.Common
 				}
 			}
 		}
-
-		public static void InstallInstallerUnix()
-		{
-			if (OSInfo.IsLinux)
-			{
-				var exe = Assembly.GetEntryAssembly().Location;
-
-			}
-		}
 	}
 }

@@ -108,7 +108,7 @@ namespace SolidCP.Providers.OS
 
 		public virtual Shell ExecAsync(string cmd)
 		{
-			Log(cmd);
+			Log($"{cmd}{Environment.NewLine}");
 			// separate command from arguments
 			string arguments;
 			if (cmd.Length > 0 && cmd[0] == '"') // command is a " delimited string
@@ -153,6 +153,7 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.FileName = cmdWithPath;
 				process.StartInfo.Arguments = arguments;
 				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.CreateNoWindow = true;
 				process.StartInfo.RedirectStandardOutput = true;
 				process.StartInfo.RedirectStandardError = true;
 				process.Exited += (obj, args) =>
@@ -201,7 +202,7 @@ namespace SolidCP.Providers.OS
 			}
 			else
 			{
-				LogError($"Error {cmd} not found.");
+				LogError($"Error {cmd} not found.{Environment.NewLine}");
 				var child = Clone;
 				child.Process = null;
 				child.NotFound = true;

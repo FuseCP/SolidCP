@@ -71,7 +71,7 @@ namespace SolidCP.Setup.Actions
 
 			try
 			{
-				var installerDir = Path.Combine(vars.InstallationFolder, "Installer");
+				var installerDir = Path.Combine(Path.GetDirectoryName(vars.InstallationFolder), "Installer");
 				if (!Directory.Exists(installerDir))
 				{
 					Directory.CreateDirectory(installerDir);
@@ -101,9 +101,12 @@ namespace SolidCP.Setup.Actions
 					File.WriteAllText(deskfile, $@"[Desktop Entry]
 Type=Application
 Name=SolidCP Installer
+Comment=The Server component of the SolidCP server control panel
 Exec=/usr/bin/solidcp
 Icon={exePath}
-Version={vars.Version}".Replace("\r\n", Environment.NewLine));
+Version={vars.Version}
+Terminal=false
+Caregories=Network".Replace("\r\n", Environment.NewLine));
 					OSInfo.Unix.GrantUnixPermissions(deskfile, UnixFileMode.OtherExecute | UnixFileMode.GroupExecute | UnixFileMode.UserExecute | 
 						UnixFileMode.OtherRead | UnixFileMode.GroupRead | UnixFileMode.UserRead | UnixFileMode.GroupWrite | UnixFileMode.UserWrite);
 				}
@@ -203,7 +206,9 @@ Version={vars.Version}".Replace("\r\n", Environment.NewLine));
 			installer.SetServerFilePermissions();
 			installer.ConfigureServer();
 
-			//TODO update InstallLog
+			vars.VirtualDirectory = String.Empty;
+			vars.NewWebSite = true;
+			vars.NewVirtualDirectory = false;
 
 			Finish(LogStartMessage);
 

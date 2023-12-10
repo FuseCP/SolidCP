@@ -126,6 +126,9 @@
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.XML" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(WixCATargetsPath)" />
 </Project>

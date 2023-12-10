@@ -4,6 +4,8 @@
 #build
 [Oo]bj/
 [Bb]in/
+**/Resources/*.dll
+**/Resources/*.pdb
 TestResults/
 **/[Bb]uild/
 **/[Dd]eploy/

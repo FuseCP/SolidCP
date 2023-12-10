@@ -17,6 +17,7 @@
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -37,7 +38,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -48,7 +48,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\Build\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -74,10 +73,19 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.EventLog, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll</HintPath>
+    </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Security.Principal.Windows, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.4.7.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -101,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Resources\Microsoft.Web.Delegation.dll" />
     <None Include="Resources\Microsoft.Web.Deployment.dll" />
@@ -130,8 +139,6 @@
     <EmbeddedResource Include="Resources\SolidCP.Providers.Web.IIs80.pdb" />
     <EmbeddedResource Include="Resources\SolidCP.Server.Utils.dll" />
     <EmbeddedResource Include="Resources\SolidCP.Server.Utils.pdb" />
-    <None Include="Resources\WpiServiceContract.dll" />
-    <None Include="Resources\WpiServiceContract.pdb" />
     <EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.dll" />
     <EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.pdb" />
   </ItemGroup>
@@ -359,6 +366,24 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\BannerImage.GIF" />
+    <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
+    <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Installer.Core.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />
+    <EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
+    <Content Include="Resources\System.Runtime.CompilerServices.Unsafe.dll" />
+    <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
+    <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
+    <EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
+    <EmbeddedResource Include="Resources\Microsoft.Web.Management.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Web.Clients.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Web.Clients.pdb" />
+    <EmbeddedResource Include="Resources\SolidCP.EnterpriseServer.Base.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.EnterpriseServer.Base.pdb" />
+    <EmbeddedResource Include="Resources\SolidCP.EnterpriseServer.Client.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.EnterpriseServer.Client.pdb" />
+    <EmbeddedResource Include="Resources\SolidCP.Providers.Base.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Providers.Base.pdb" />
     <EmbeddedResource Include="Resources\DotNetZip.dll" />
     <Content Include="Resources\MarginImage.GIF" />
     <EmbeddedResource Include="Resources\SolidCP.Providers.OS.Unix.dll" />
@@ -462,6 +487,8 @@
   <Target Name="CopyResources">
     <Message Text="Copying Installer Resources" Importance="high" />
     <ItemGroup>
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2003.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2008.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2012.dll" />
@@ -469,6 +496,7 @@
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2019.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2022.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SolidCP.Providers.OS.Unix.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Lib\Mono.Posix.NETStandard.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Server.Utils.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs100\SolidCP.Providers.Web.IIs100.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs60.dll" />
@@ -497,10 +525,34 @@
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs60.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs70.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />
-      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.dll" />
-      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.pdb" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer\bin\SolidCP.EnterpriseServer.Base.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer\bin\SolidCP.EnterpriseServer.Base.pdb" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.EnterpriseServer.Client.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.EnterpriseServer.Client.pdb" />
+      <FilesToCopy Include="..\..\Lib\Microsoft.Web.Management.dll" />
+      <FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.pdb" />
+      <FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
+      <FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.dll" />
+      <FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />
+      <!--<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.pdb" />-->
     </ItemGroup>
     <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="DeleteDlls">
+    <Message Text="Deleting unused files" Importance="high" />
+    <ItemGroup>
+      <FilesToDelete Include="bin\$(Configuration)\**\*.*" />
+      <FilesToDelete Remove="bin\$(Configuration)\Setup.dll" />
+      <FilesToDelete Remove="bin\$(Configuration)\Setup.pdb" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
   </Target>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -523,26 +575,38 @@
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
       <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
       <Name>SolidCP.EnterpriseServer.Base</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
       <Project>{fd954985-a168-463a-9c29-4e97aea7ed0f}</Project>
       <Name>SolidCP.EnterpriseServer.Client</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
       <Name>SolidCP.Providers.Base</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
       <Project>{1273d02f-6c5c-4752-86ce-99d504f6cffa}</Project>
       <Name>SolidCP.Providers.OS.Unix</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
       <Project>{16e7e997-1e0f-4f24-8f0a-961fafa93f72}</Project>
       <Name>SolidCP.Web.Clients</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj">
       <Project>{b6d067c1-e5af-4e37-8d58-92ca53445400}</Project>
       <Name>SolidCP.UniversalInstaller.Core</Name>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -553,6 +617,6 @@
        Other similar extension points exist, see Microsoft.Common.targets. -->
   <Target Name="BeforeBuild" DependsOnTargets="CopyResources">
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" DependsOnTargets="DeleteDlls">
   </Target>
 </Project>

@@ -160,9 +160,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="App.Release.config">
-      <Link>Resources\App.Release.config</Link>
-    </EmbeddedResource>
+    <EmbeddedResource Include="App.Release.config" />
     <EmbeddedResource Include="ApplicationForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ApplicationForm.cs</DependentUpon>
@@ -291,6 +289,15 @@
     <EmbeddedResource Include="Resources\SyslogNet.Client.dll" />
     <EmbeddedResource Include="Resources\SolidCP.Providers.Base.dll" />
     <EmbeddedResource Include="Resources\SolidCP.Providers.Base.pdb" />
+    <EmbeddedResource Include="Resources\SolidCP.Installer.Core.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />
+    <EmbeddedResource Include="Resources\SolidCP.Web.Clients.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.Web.Clients.pdb" />
+    <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
+    <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
+    <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
+    <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
+    <EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
     <Content Include="SolidCP.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -323,14 +330,14 @@
     </ProjectReference>
   </ItemGroup>
   <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' ">
-    <Copy SourceFiles="..\..\Build\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="..\SolidCP.Setup\bin\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" />
   </Target>
   <ItemGroup>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
       <Name>SolidCP.Providers.Base</Name>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <!--
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
@@ -415,7 +422,7 @@
       <Name>SolidCP.Providers.Web.LetsEncrypt</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <OutputItemType>Content</OutputItemType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
     <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj">
       <Project>{0E4A3F5B-0BB1-4F63-863D-7B0182B378CF}</Project>
@@ -429,8 +436,8 @@
   <Target Name="CopyResources">
     <Message Text="Copying Installer Resources" Importance="high" />
     <ItemGroup>
-      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Base.dll" />
-      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Base.pdb" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2003.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2008.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2012.dll" />
@@ -452,6 +459,10 @@
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\DotNetZip.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SyslogNet.Client.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Newtonsoft.Json.dll" />
+      <FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.dll" />
+      <FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.pdb" />
       <FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.dll" />
       <FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2003.pdb" />
@@ -466,10 +477,30 @@
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs60.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs70.pdb" />
       <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />
-      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.dll" />
-      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.pdb" />
+      <FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.pdb" />
+      <FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
+      <!--<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.dll" />
+      <FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server.WPIServiceContract\bin\$(Configuration)\WpiServiceContract.pdb" />-->
     </ItemGroup>
     <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
+  </Target>
+  <Target Name="DeleteDlls">
+    <Message Text="Deleting unused files" Importance="high" />
+    <ItemGroup>
+      <FilesToDelete Include="bin\$(Configuration)\**\*.*" />
+      <FilesToDelete Remove="bin\$(Configuration)\SolidCP.Installer.exe" />
+      <FilesToDelete Remove="bin\$(Configuration)\Setup.dll" Condition=" '$(Configuration)' == 'Debug' " />
+      <FilesToDelete Remove="bin\$(Configuration)\Setup.pdb" Condition=" '$(Configuration)' == 'Debug' " />
+      <FilesToDelete Remove="bin\$(Configuration)\SolidCP.Installer.exe.config" />
+      <FilesToDelete Remove="bin\$(Configuration)\SolidCP.Installer.pdb" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
   </Target>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -483,6 +514,6 @@
        Other similar extension points exist, see Microsoft.Common.targets. -->
   <Target Name="BeforeBuild" DependsOnTargets="CopyResources">
   </Target>
-  <Target Name="AfterBuild" DependsOnTargets="CopySetupPDBFile">
+  <Target Name="AfterBuild" DependsOnTargets="CopySetupPDBFile;DeleteDlls">
   </Target>
 </Project>

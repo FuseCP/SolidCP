@@ -42,6 +42,7 @@ using System.DirectoryServices;
 using System.Text.RegularExpressions;
 using System.Linq;
 using SolidCP.Providers.OS;
+using System.Diagnostics;
 
 namespace SolidCP.Setup
 {
@@ -1186,10 +1187,17 @@ namespace SolidCP.Setup
 				return siteid;
 			}
 		}
-		public static void LEInstallCertificate(string site, string email, bool updateWCF = true, bool updateIIS = true)
+
+#if DEBUG
+		const bool Debug = true;
+#else
+		const bool Debug = false;
+#endif
+
+		public static int LEInstallCertificate(string site, string domain, string email, bool updateWCF = true, bool updateIIS = true)
 		{
 
-			if (string.IsNullOrEmpty(email)) return;
+			if (string.IsNullOrEmpty(email)) return 0;
 
 			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
 
@@ -1197,39 +1205,62 @@ namespace SolidCP.Setup
 
 			try
 			{
-				Log.Write($"Website: {site}");
+				Log.Write($"Website: {site}\n");
 
-				string siteId = null, webpath = null;
+				string siteId = null, webpath = null, port80path = null;
+				bool hasPort80site = false;
+				Site port80site = null;
 				// Get the WebsiteID
 				using (var sm = new ServerManager())
 				{
 					var s = sm.Sites[site];
 					siteId = s.Id.ToString();
 					webpath = s.Applications["/"].VirtualDirectories["/"].PhysicalPath;
+
+					port80site = sm.Sites.FirstOrDefault(st => st.Bindings.Any(b => b.EndPoint != null && b.EndPoint.Port == 80 && b.Host == domain));
+					hasPort80site = port80site != null;
+					if (hasPort80site)
+					{
+						port80path = port80site.Applications["/"].VirtualDirectories["/"].PhysicalPath;
+						Log.Write($"Warning: A site for host {domain} on port 80 already exists.\n");
+					}
 				}
 
-				Log.Write($"Found Website ID: SiteName {site}  ID: {siteId}");
+				Log.Write($"Found Website ID: SiteName {site}  ID: {siteId}\n");
 
 				// This sets the correct path for the Exe file.
 				var path = AppDomain.CurrentDomain.BaseDirectory;
 				string command = Path.Combine(path, "wacs.exe");
 
-				if (!File.Exists(command)) command = Path.Combine(webpath, "bin", "LetsEncrypt", "wacs.exe");
 				if (!File.Exists(command)) {
-					command = Shell.Default.Find("wacs.exe");
+					command = Shell.Default.Find("wacs");
 					if (command == null)
 					{
 						// install win-acme
+						if (Shell.Default.Find("dotnet") == null)
+						{
+							if (Shell.Default.Find("winget") != null)
+							{
+								Shell.Default.Exec("winget install Microsoft.DotNet.SDK.8");
+							}
+							else throw new NotSupportedException("Cannot install Win-Acme");
+						}
 						Shell.Default.Exec("dotnet tool install win-acme --global");
-						command = "wacs.exe";
+						command = Shell.Default.Find("wacs");
+						if (command == null) throw new NotSupportedException("Cannot install Win-Acme");
 					}
 				}
 
 				var script = Path.Combine(webpath, "bin", "LetsEncrypt", "wcfcert.exe");
 
-				command = $"\"{command}\" --source iis  --installation {(updateWCF && updateIIS ? "iis,script" : (updateWCF ? "script" : "iis"))} --siteid {siteId} --emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My {(updateWCF ? $"--script \"{script}\" --scriptparameters \"{{StorePath}} {{CertThumbprint}}\"" : "")} --verbose";
+				command = $"\"{command}\" --source {(!hasPort80site ? $"manual --host {domain}" : $"iis --siteid {port80site.Id} --validation filesystem --webroot \"{port80path}\" --manualtargetisiis")}" +
+					$" {(updateWCF && updateIIS ? $"--installation iis,script" : (updateWCF ? "--installation script" : (updateIIS ? "--installation iis" : "")))} " +
+					$"{(updateIIS ? $"iis --installationsiteid {siteId}" : "")} " +
+					$"--emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My " +
+					$"{(updateWCF ? $"--script \"{script}\" --scriptparameters \"{{StorePath}} {{CertThumbprint}}\"" : "")} " +
+					$"{(Debug || Debugger.IsAttached ? "--test --closeonfinish" : "")}";
 
-				Log.WriteInfo($"LE Command String: {command}");
+				Log.WriteInfo($"LE Command String: {command}\n");
 
 				Action<string> logger = (msg) =>
 				{
@@ -1245,6 +1276,8 @@ namespace SolidCP.Setup
 				if (exitCode != 0) Log.WriteError($"wacs exited with error code: {exitCode}");
 				
 				Log.WriteEnd("Lët's Encrypt InstallCertificate");
+			
+				return exitCode;
 			}
 			catch (Exception ex)
 			{

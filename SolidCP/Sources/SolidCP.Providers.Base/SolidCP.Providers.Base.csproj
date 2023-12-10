@@ -9,13 +9,16 @@
 		<MapFileExtensions>true</MapFileExtensions>
 		<Product>SolidCP.Providers.Base</Product>
 		<WarningsAsErrors>618</WarningsAsErrors>
-		<OutputPath>bin\</OutputPath>
+		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<LangVersion>12.0</LangVersion>
 		<!--<ProduceReferenceAssembly>true</ProduceReferenceAssembly>-->
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<OutputPath>..\..\Bin\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>portable</DebugType>

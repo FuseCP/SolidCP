@@ -2899,11 +2899,11 @@ namespace SolidCP.Setup
 			var iisVersion = Wizard.SetupVariables.IISVersion;
 			var iis7 = (iisVersion.Major >= 7);
 
-			if (iis7 && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
+			if ((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 				if (OSInfo.IsWindows)
 				{
-					WebUtils.LEInstallCertificate(siteId, email, updateWCF);
+					WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF);
 				}
 			}
 		}

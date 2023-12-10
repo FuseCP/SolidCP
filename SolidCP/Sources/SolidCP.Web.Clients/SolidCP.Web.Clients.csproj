@@ -8,6 +8,9 @@
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<!--<ProduceReferenceAssembly>true</ProduceReferenceAssembly>-->
+		<OutputPath>..\..\Bin\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">

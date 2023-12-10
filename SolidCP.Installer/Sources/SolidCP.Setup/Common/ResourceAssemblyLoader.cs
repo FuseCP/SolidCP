@@ -19,40 +19,57 @@ namespace SolidCP.Setup
 				return m.ToArray();
 			}
 		}
+
+		static Dictionary<string, Assembly> LoadedAssemblies = new Dictionary<string, Assembly>();
+
 		public static Assembly Resolve(object sender, ResolveEventArgs args)
 		{
 			var host = Assembly.GetExecutingAssembly();
 			var resources = host.GetManifestResourceNames();
-			var assName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.dll", StringComparison.OrdinalIgnoreCase));
-			string pdbName = null;
-			if (assName != null)
+			var name = new AssemblyName(args.Name).Name;
+
+			lock (LoadedAssemblies)
 			{
-				using (var assStream = host.GetManifestResourceStream(assName))
+				if (LoadedAssemblies.ContainsKey(name)) return LoadedAssemblies[name];
+
+				var assName = resources.FirstOrDefault(res => res.EndsWith($"{name}.dll", StringComparison.OrdinalIgnoreCase));
+				string pdbName = null;
+				if (assName != null)
 				{
-					if (Debugger.IsAttached)
+					using (var assStream = host.GetManifestResourceStream(assName))
 					{
-						pdbName = resources.FirstOrDefault(res => res.EndsWith($"{args.Name}.pdb", StringComparison.OrdinalIgnoreCase));
-						if (pdbName != null)
+						if (Debugger.IsAttached)
 						{
-							using (var pdbStream = host.GetManifestResourceStream(pdbName))
+							pdbName = resources.FirstOrDefault(res => res.EndsWith($"{name}.pdb", StringComparison.OrdinalIgnoreCase));
+							if (pdbName != null)
 							{
-								if (assStream != null && pdbStream != null)
+								using (var pdbStream = host.GetManifestResourceStream(pdbName))
 								{
-									return Assembly.Load(BytesFromStream(assStream), BytesFromStream(pdbStream));
+									if (assStream != null && pdbStream != null)
+									{
+										var assembly = Assembly.Load(BytesFromStream(assStream), BytesFromStream(pdbStream));
+										if (assembly != null) LoadedAssemblies.Add(name, assembly);
+										return assembly;
+									}
 								}
 							}
+							else
+							{
+								var assembly = Assembly.Load(BytesFromStream(assStream));
+								if (assembly != null) LoadedAssemblies.Add(name, assembly);
+								return assembly;
+							}
 						}
-					}
-					else
-					{
-						if (assStream != null)
+						else
 						{
-							return Assembly.Load(BytesFromStream(assStream));
+							var assembly = Assembly.Load(BytesFromStream(assStream));
+							if (assembly != null) LoadedAssemblies.Add(name, assembly);
+							return assembly;
 						}
 					}
 				}
+				return null;
 			}
-			return null;
 		}
 
 		public static void Init()

@@ -95,7 +95,7 @@ namespace SolidCP.EnterpriseServer
 
             if (proxy.IsDefaultApi)
             {
-                if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !IsCore)
+                if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !proxy.IsLocal && !IsCore)
                 {
                     proxy.Protocol = Web.Client.Protocols.WSHttp;
                 }

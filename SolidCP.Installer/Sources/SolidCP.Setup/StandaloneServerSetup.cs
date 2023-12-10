@@ -53,6 +53,11 @@ namespace SolidCP.Setup
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
 		{
 			ResourceAssemblyLoader.Init();
+			return InstallBaseRaw(obj, minimalInstallerVersion);
+		}
+		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
+		{
+			ResourceAssemblyLoader.Init();
 
 			Hashtable args = Utils.GetSetupParameters(obj);
 
@@ -294,18 +299,21 @@ namespace SolidCP.Setup
 
 		public static DialogResult Uninstall(object obj)
 		{
+			ResourceAssemblyLoader.Init();
 			MessageBox.Show("Functionality is not supported.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return DialogResult.Cancel;
 		}
 
 		public static DialogResult Setup(object obj)
 		{
+			ResourceAssemblyLoader.Init();
 			MessageBox.Show("Functionality is not supported.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return DialogResult.Cancel;
 		}
 
 		public static DialogResult Update(object obj)
 		{
+			ResourceAssemblyLoader.Init();
 			MessageBox.Show("Functionality is not supported.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return DialogResult.Cancel;
 		}
@@ -338,8 +346,9 @@ namespace SolidCP.Setup
 			}
 		}
 
-		private static string GetUrl(string domain, string ip, string port)
+		/*private static string GetUrl(string domain, string ip, string port)
 		{
+			// TODO https or http?
 			string address = "https://";
 			string server = string.Empty;
 			string ipPort = string.Empty;
@@ -368,7 +377,7 @@ namespace SolidCP.Setup
 			//address string
 			address += server + ipPort;
 			return address;
-		}
+		}*/
 
 		
 

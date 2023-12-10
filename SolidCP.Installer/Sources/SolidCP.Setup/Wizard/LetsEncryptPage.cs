@@ -92,7 +92,7 @@ namespace SolidCP.Setup
 		{
 			string email = txtLetsEncryptEmail.Text?.Trim() ?? "";
 
-			if (!Regex.IsMatch(email, "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"))
+			if (!Regex.IsMatch(email, "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,6})$"))
 			{
 				ShowWarning(String.Format("'{0}' is not a valid email address.", email));
 				return false;
