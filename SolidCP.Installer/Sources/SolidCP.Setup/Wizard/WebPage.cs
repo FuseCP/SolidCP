@@ -270,7 +270,7 @@ namespace SolidCP.Setup
 
 			if (domain.Trim().Length > 0)
 			{
-				if (!Regex.IsMatch(domain, @"^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"))
+				if (domain != "localhost" && !Regex.IsMatch(domain, @"^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"))
 				{
 					ShowWarning("Please enter valid domain name (for example, mydomain.com)");
 					return false;

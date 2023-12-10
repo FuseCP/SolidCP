@@ -9,11 +9,6 @@ namespace SolidCP.UniversalInstaller
 	public class FedoraInstaller : UnixInstaller
 	{
 
-		public override void InstallPKExec()
-		{
-			OSInstaller.Install("polkit");
-		}
-
 		public override void InstallNet8Runtime()
 		{
 			if (CheckNet8RuntimeInstalled()) return;

@@ -123,6 +123,11 @@ namespace SolidCP.Installer
 					return;
 				}
 			}
+
+			if (CheckCommandLineArgument("/uselocalsetupdll"))
+			{
+
+			}
 			// Load setup parameters from an XML file
 			LoadSetupXmlFile();
 			//start application

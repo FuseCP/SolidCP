@@ -39,6 +39,8 @@ namespace SolidCP.Providers.OS
 		public override OSService Info(string serviceId)
 		{
 			var output = Shell.Exec($"systemctl status {serviceId}.service --no-pager --full").Output().Result;
+			if (output == null) return null;
+
 			var match = Regex.Match(output, $@"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$^\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+)\)", RegexOptions.Multiline);
 
 			if (match.Success)

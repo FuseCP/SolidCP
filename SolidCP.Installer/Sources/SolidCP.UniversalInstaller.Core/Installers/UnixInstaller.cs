@@ -16,12 +16,9 @@ namespace SolidCP.UniversalInstaller
 		public override string? InstallExeRootPath { get => base.InstallExeRootPath ?? $"/user/local/{SolidCP}"; set => base.InstallExeRootPath = value; }
 		public override string? InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
 		public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
+		public virtual string UnixServiceId => "SolidCPServer";
 		public UnixInstaller() : base() { }
 
-		public override void InstallPKExec()
-		{
-			if (Shell.Find("pkexec") == null) OSInstaller.Install("policykit-1");
-		}
 		public override void InstallServerWebsite()
 		{
 			// Run SolidCP.Server as a service on Unix
@@ -29,9 +26,14 @@ namespace SolidCP.UniversalInstaller
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet");
 			var dll = Path.Combine(websitePath, "SolidCP.Server.dll");
 
+			if (!File.Exists(dll) && !Debugger.IsAttached)
+			{
+				throw new FileNotFoundException($"The service executable {dll} was not found.");
+			}
+
 			var service = new ServiceDescription()
 			{
-				ServiceId = "SolidCPServer",
+				ServiceId = UnixServiceId,
 				Directory = websitePath,
 				Description = "SolidCP.Server service, the server management service for the SolidCP control panel.",
 				Executable = $"dotnet {dll}",
@@ -41,13 +43,45 @@ namespace SolidCP.UniversalInstaller
 				RestartSec = "1s",
 				StartLimitBurst = "5",
 				StartLimitIntervalSec = "500",
-				SyslogIdentifier = "SolidCPServer"
+				SyslogIdentifier = UnixServiceId
 			};
 			service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 
 			ServiceController.Install(service);
 			ServiceController.Enable(service.ServiceId);
 			ServiceController.Start(service.ServiceId);
+
+			OpenFirewall(ServerSettings.Urls);
+		}
+
+		public override void RemoveServerWebsite()
+		{
+			var serviceId = UnixServiceId;
+
+			if (ServiceController.Info(serviceId) != null)
+			{
+				ServiceController.Stop(serviceId);
+				ServiceController.Disable(serviceId);
+				ServiceController.Remove(serviceId);
+
+				RemoveFirewallRule(ServerSettings.Urls);
+			}
+		}
+
+		public override void OpenFirewall(int port)
+		{
+			if (Shell.Default.Find("ufw") != null)
+			{
+				Shell.Default.Exec($"ufw allow {port}/tcp");
+			}
+		}
+
+		public override void RemoveFirewallRule(int port)
+		{
+			if (Shell.Default.Find("ufw") != null)
+			{
+				Shell.Default.Exec($"ufw delete allow {port}/tcp");
+			}
 		}
 
 		public class AppSettings

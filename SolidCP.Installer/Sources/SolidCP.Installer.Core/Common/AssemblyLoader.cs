@@ -48,12 +48,14 @@ namespace SolidCP.Installer.Common
 	{
 
 		const bool UseLocalSetupDllForDebugging = true;
+		public bool UseLocalSetupDll = false;
 
 		public object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
 		{
 			Assembly assembly = null;
 #if DEBUG
-			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && Debugger.IsAttached)
+			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && 
+				(Debugger.IsAttached || UseLocalSetupDll))
 			{
 				var exe = Assembly.GetExecutingAssembly();
 				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");

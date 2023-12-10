@@ -33,6 +33,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -69,6 +70,11 @@ namespace SolidCP.Setup
 				Trace.WriteLine(line);
 				if ( ex != null )
 					Trace.WriteLine(ex);
+
+				if (OSInfo.IsMono && Debugger.IsAttached) {
+					Debugger.Log(1, "", line);
+					if (ex != null) Debugger.Log(1, "", ex.ToString());
+				}
 			}
 			catch { }
 		}
@@ -93,6 +99,10 @@ namespace SolidCP.Setup
 			{
 				string line = string.Format("[{0:G}] {1}", DateTime.Now, message);
 				Trace.Write(line);
+				if (OSInfo.IsMono && Debugger.IsAttached)
+				{
+					Debugger.Log(1, "", line);
+				}
 			}
 			catch { }
 		}
@@ -108,6 +118,10 @@ namespace SolidCP.Setup
 			{
 				string line = string.Format("[{0:G}] {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
+				if (OSInfo.IsMono && Debugger.IsAttached)
+				{
+					Debugger.Log(1, "", line);
+				}
 			}
 			catch { }
 		}
@@ -122,6 +136,10 @@ namespace SolidCP.Setup
 			{
 				string line = string.Format("[{0:G}] INFO: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
+				if (OSInfo.IsMono && Debugger.IsAttached)
+				{
+					Debugger.Log(1, "", line);
+				}
 			}
 			catch { }
 		}
@@ -137,6 +155,10 @@ namespace SolidCP.Setup
 				string line = string.Format("[{0:G}] START: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 				Trace.Flush();
+				if (OSInfo.IsMono && Debugger.IsAttached)
+				{
+					Debugger.Log(1, "", line);
+				}
 			}
 			catch { }
 		}
@@ -152,6 +174,10 @@ namespace SolidCP.Setup
 				string line = string.Format("[{0:G}] END: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 				Trace.Flush();
+				if (OSInfo.IsMono && Debugger.IsAttached)
+				{
+					Debugger.Log(1, "", line);
+				}
 			}
 			catch { }
 		}
@@ -169,8 +195,20 @@ namespace SolidCP.Setup
 					path = "SolidCP.Installer.log";
 				}
 
-				path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-				Process.Start("notepad.exe", path);
+				if (OSInfo.IsWindows)
+				{
+					path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+					Process.Start("notepad.exe", path);
+				} else
+				{
+					path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+					if (Shell.Default.Find("gedit") != null) Process.Start("gedit", path);
+					else if (Shell.Default.Find("gnome-text-editor") != null) Process.Start("gnome-text-editor", path);
+					else if (Shell.Default.Find("kate") != null) Process.Start("kate", path);
+					else if (Shell.Default.Find("mousepad") != null) Process.Start("mousepad", path);
+					else if (Shell.Default.Find("leafpad") != null) Process.Start("leafpad", path);
+					else if (Shell.Default.Find("pluma") != null) Process.Start("pluma", path);
+				}
 			}
 			catch { }
 		}

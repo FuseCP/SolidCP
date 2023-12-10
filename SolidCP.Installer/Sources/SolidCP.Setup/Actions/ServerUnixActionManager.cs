@@ -72,50 +72,65 @@ namespace SolidCP.Setup.Actions
 			try
 			{
 				var installerDir = Path.Combine(Path.GetDirectoryName(vars.InstallationFolder), "Installer");
-				if (!Directory.Exists(installerDir))
+				if (!Directory.Exists(installerDir)) Directory.CreateDirectory(installerDir);
+
+				var exePath = Path.Combine(installerDir, Path.GetFileName(AppConfig.ConfigurationPath));
+
+				File.Copy(AppConfig.ConfigurationPath, exePath, true);
+				File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config", true);
+				var sh = Shell.Default.Find("sh");
+				File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nmono {exePath}");
+
+				OSInfo.Unix.GrantUnixPermissions("/usr/bin/solidcp", UnixFileMode.UserExecute | UnixFileMode.UserRead | UnixFileMode.UserWrite |
+					UnixFileMode.GroupRead | UnixFileMode.GroupExecute | UnixFileMode.GroupWrite |
+					UnixFileMode.OtherExecute | UnixFileMode.OtherRead);
+				OSInfo.Unix.GrantUnixPermissions(exePath, UnixFileMode.GroupExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite |
+					UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
+					UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
+				OSInfo.Unix.GrantUnixPermissions(exePath + ".config", UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.UserRead | UnixFileMode.UserWrite |
+					UnixFileMode.OtherRead | UnixFileMode.OtherWrite);
+
+				// creat icon
+				var rscAssembly = Assembly.GetExecutingAssembly();
+				var resources = rscAssembly.GetManifestResourceNames();
+				var iconFileName = Path.Combine(installerDir, "SolidCP.ico");
+				var iconResourceName = resources.FirstOrDefault(res => res.EndsWith("SolidCP.ico"));
+				if (iconResourceName != null)
 				{
-					Directory.CreateDirectory(installerDir);
+					using (var rscstream = rscAssembly.GetManifestResourceStream(iconResourceName))
+					using (var file = new FileStream(iconFileName, FileMode.Create, FileAccess.Write))
+					{
+						rscstream.CopyTo(file);
+					}
+				}
+				else iconFileName = exePath;
 
-					// install pkexec (sudo with GUI) 
-					//UniversalInstaller.Installer.Current.InstallPKExec();
+				// create .desktop file
+				var appdir = Environment.GetEnvironmentVariable("XDG_DATA_DIRS")?.Split(Path.PathSeparator)
+					.Select(dir => Path.Combine(dir, "applications"))
+					.FirstOrDefault(dir => Directory.Exists(dir)) ??
+					"/usr/share/applications";
 
-					var exePath = Path.Combine(installerDir, Path.GetFileName(AppConfig.ConfigurationPath));
-
-					File.Copy(AppConfig.ConfigurationPath, exePath);
-					File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config");
-					var sh = Shell.Default.Find("sh");
-					File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nmono {exePath}");
-					OSInfo.Unix.GrantUnixPermissions("/usr/bin/solidcp", UnixFileMode.UserExecute | UnixFileMode.UserRead | UnixFileMode.UserWrite |
-						UnixFileMode.GroupRead | UnixFileMode.GroupExecute | UnixFileMode.GroupWrite |
-						UnixFileMode.OtherExecute | UnixFileMode.OtherRead);
-					OSInfo.Unix.GrantUnixPermissions(exePath, UnixFileMode.GroupExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite |
-						UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
-						UnixFileMode.OtherRead);
-					OSInfo.Unix.GrantUnixPermissions(exePath + ".config", UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.UserRead | UnixFileMode.UserWrite);
-
-					// create .desktop file
-					var appdir = Environment.GetEnvironmentVariable("XDG_DATA_DIRS") ?? "/usr/share";
-					appdir += "/applications";
-
-					var deskfile = appdir + "/com.solidcp.SolidCP.desktop";
-					File.WriteAllText(deskfile, $@"[Desktop Entry]
+				var deskfile = appdir + "/com.solidcp.installer.desktop";
+				File.WriteAllText(deskfile, $@"[Desktop Entry]
 Type=Application
 Name=SolidCP Installer
 Comment=The Server component of the SolidCP server control panel
 Exec=/usr/bin/solidcp
-Icon={exePath}
+Icon={iconFileName}
 Version={vars.Version}
 Terminal=false
 Caregories=Network".Replace("\r\n", Environment.NewLine));
-					OSInfo.Unix.GrantUnixPermissions(deskfile, UnixFileMode.OtherExecute | UnixFileMode.GroupExecute | UnixFileMode.UserExecute | 
-						UnixFileMode.OtherRead | UnixFileMode.GroupRead | UnixFileMode.UserRead | UnixFileMode.GroupWrite | UnixFileMode.UserWrite);
-				}
+
+				OSInfo.Unix.GrantUnixPermissions(deskfile, UnixFileMode.OtherExecute | UnixFileMode.GroupExecute | UnixFileMode.UserExecute |
+					UnixFileMode.OtherRead | UnixFileMode.GroupRead | UnixFileMode.UserRead | UnixFileMode.GroupWrite | UnixFileMode.UserWrite);
 
 				Log.WriteEnd("Installer installed");
 
 				InstallLog.AppendLine("- Installed SolidCP Installer. You can run the installer with the command \"solidcp\"");
 
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Log.WriteError("Installing Installer failed: ", ex);
 			}
@@ -142,7 +157,8 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 				Log.WriteEnd("Installer deleted");
 
 				InstallLog.AppendLine("- Removed Installer");
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				Log.WriteError("Error removing installer", ex);
 			}
@@ -185,7 +201,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			var installer = UniversalInstaller.Installer.Current;
 
 			Begin(LogStartMessage);
-			
+
 			Log.WriteStart(LogStartMessage);
 			installer.Shell.Log += (msg) =>
 			{
@@ -219,6 +235,7 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			{
 				InstallLog.AppendLine("  " + url);
 			}
+			InstallLog.AppendLine($"- Opened the firewall for port {vars.WebSitePort}.");
 			InstallLog.AppendLine("- Set file permissions on the website folder.");
 			InstallLog.AppendLine("- Configured the server.");
 		}
@@ -249,10 +266,10 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 		{
 			if (String.IsNullOrEmpty(vars.InstallationFolder) || vars.InstallationFolder.Contains('\\'))
 				vars.InstallationFolder = String.Format(@"/var/www/SolidCP/{0}", vars.ComponentName);
-			
+
 			if (String.IsNullOrEmpty(vars.WebSiteDomain))
 				vars.WebSiteDomain = String.Empty;
-		
+
 			if (String.IsNullOrEmpty(vars.ConfigurationFile))
 				vars.ConfigurationFile = "bin_dotnet/appsettings.json";
 		}

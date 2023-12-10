@@ -11,6 +11,7 @@ using System.Diagnostics.Contracts;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Reflection.Emit;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -75,7 +76,6 @@ namespace SolidCP.UniversalInstaller
 		public abstract void InstallNet8Runtime();
 		public abstract void RemoveNet8AspRuntime();
 		public abstract void RemoveNet8NetRuntime();
-		public virtual void InstallPKExec() { }
 		public virtual void RemoveNet8Runtime()
 		{
 			if (NeedRemoveNet8Runtime) RemoveNet8NetRuntime();
@@ -88,13 +88,30 @@ namespace SolidCP.UniversalInstaller
 
 			if (!OSInfo.IsWindows)
 			{
-				((IUnixOperatingSystem)OSInfo.Current).GrantUnixPermissions(folder,
-					Providers.OS.UnixFileMode.UserWrite | Providers.OS.UnixFileMode.GroupWrite |
-					Providers.OS.UnixFileMode.UserRead | Providers.OS.UnixFileMode.GroupRead |
-					Providers.OS.UnixFileMode.UserExecute | Providers.OS.UnixFileMode.GroupExecute, true);
+				OSInfo.Unix.GrantUnixPermissions(folder,
+					UnixFileMode.UserWrite | UnixFileMode.GroupWrite |
+					UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead |
+					UnixFileMode.UserExecute | UnixFileMode.GroupExecute, true);
 			}
 		}
 
+		public IEnumerable<int> ExternalPortsFromUrls(string urls)
+		{
+			return urls.Split(',', ';')
+				.Select(url => new Uri(url))
+				.Where(uri => uri.Host != "localhost" && uri.Host != "127.0.0.1" && uri.Host != "::1")
+				.Select(uri => uri.Port);
+		}
+		public virtual void OpenFirewall(string urls)
+		{
+			foreach (var port in ExternalPortsFromUrls(urls)) OpenFirewall(port);
+		}
+		public virtual void RemoveFirewallRule(string urls)
+		{
+			foreach (var port in ExternalPortsFromUrls(urls)) RemoveFirewallRule(port);
+		}
+		public virtual void OpenFirewall(int port) { }
+		public virtual void RemoveFirewallRule(int port) { }
 		public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
 		{
 			// Create web users group
@@ -135,6 +152,14 @@ namespace SolidCP.UniversalInstaller
 			((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
 
 			WebServer.CreateSite(site);
+
+			foreach (var binding in site.Bindings)
+			{
+				if (binding.IP != "127.0.0.1" && binding.IP != "::1" && binding.Host != "localhost")
+				{
+					OpenFirewall(int.Parse(binding.Port));
+				}
+			}
 		}
 
 		public virtual Func<string, string?>? UnzipFilter => null;

@@ -145,7 +145,7 @@ namespace SolidCP.Setup
 							case ActionTypes.DeleteWebSite:
 								if (!OSInfo.IsWindows)
 								{
-									DeleteUnixWebSite();
+									DeleteUnixWebSite(action.Port, action.SiteId);
 								} else if (iis7)
 									DeleteIIS7WebSite(action.SiteId);
 								else
@@ -377,10 +377,13 @@ namespace SolidCP.Setup
 			if (deleteWebSite)
 			{
 				string siteId = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteId");
+				string port = AppConfig.GetComponentSettingStringValue(componentId, "WebSitePort");
+
 				action = new InstallAction(ActionTypes.DeleteWebSite);
+				action.Port = port;
 				action.SiteId = siteId;
 				action.Description = "Deleting web site...";
-				action.Log = string.Format("- Delete {0} web site", siteId);
+				action.Log = OSInfo.IsWindows ? $"- Delete {siteId} web site." : $"- Delete {siteId} web site.{Environment.NewLine}- Remove firewall rule for port {port}.";
 				list.Add(action);
 			}
 
@@ -766,7 +769,7 @@ namespace SolidCP.Setup
 				throw;
 			}
 		}
-		private void DeleteUnixWebSite()
+		private void DeleteUnixWebSite(string port, string siteId)
 		{
 			try
 			{
@@ -777,6 +780,7 @@ namespace SolidCP.Setup
 				installer.RemoveServerWebsite();
 				Log.WriteEnd("Deleted web site");
 				InstallLog.AppendLine(string.Format("- Deleted \"{0}\" web site ", "SolidCP Server"));
+				InstallLog.AppendLine($"- Removed firewall rules for port {port}");
 			}
 			catch (Exception ex)
 			{

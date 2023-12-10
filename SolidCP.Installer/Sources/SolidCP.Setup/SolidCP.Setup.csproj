@@ -368,9 +368,10 @@
     <Content Include="Resources\BannerImage.GIF" />
     <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
     <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
-    <EmbeddedResource Include="Resources\SolidCP.Installer.Core.dll" />
-    <EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />
+    <None Include="Resources\SolidCP.Installer.Core.dll" />
+    <None Include="Resources\SolidCP.Installer.Core.pdb" />
     <EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
+    <EmbeddedResource Include="Resources\SolidCP.ico" />
     <Content Include="Resources\System.Runtime.CompilerServices.Unsafe.dll" />
     <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
     <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
