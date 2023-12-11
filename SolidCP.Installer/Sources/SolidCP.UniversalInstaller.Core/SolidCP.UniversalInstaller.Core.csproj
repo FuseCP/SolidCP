@@ -48,13 +48,23 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0"  />	
+		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />	
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8' ">
 		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />	
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-		<PackageReference Include="Mono.Posix" Version="4.0.0"  ExcludeAssets="runtime" />	
+		<PackageReference Include="Mono.Posix" Version="4.0.0" ExcludeAssets="runtime" />	
 	</ItemGroup>
-
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+		<Reference Include="System.Windows.Forms" />
+		<EmbeddedResource Update="UI\RootPasswordForm.resx">
+			<SubType>Designer</SubType>
+		</EmbeddedResource>
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
+		<Compile Remove="UI\RootPasswordForm.Designer.cs" />
+		<Compile Remove="UI\RootPasswordForm.cs" />
+		<EmbeddedResource Remove="UI\RootPasswordForm.resx" />
+	</ItemGroup>	
 </Project>

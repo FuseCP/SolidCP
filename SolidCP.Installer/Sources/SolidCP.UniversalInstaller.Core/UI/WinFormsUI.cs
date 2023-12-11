@@ -1,3 +1,5 @@
+#if NETFRAMEWORK
+
 namespace SolidCP.UniversalInstaller {
 
     public class WinFormsUI: UI {
@@ -22,7 +24,8 @@ namespace SolidCP.UniversalInstaller {
 		}
 
 		public override Packages GetPackagesToInstall() {
-            throw new NotImplementedException();
+			UI.Current = new ConsoleUI();
+			return UI.Current.GetPackagesToInstall();
         }
         
         public override void ShowInstallationProgress() {
@@ -41,7 +44,16 @@ namespace SolidCP.UniversalInstaller {
 
 		public override string GetRootPassword()
 		{
-			throw new NotImplementedException();
+			try
+			{
+				var form = new RootPasswordForm();
+				form.ShowDialog();
+				return form.Password;
+			} catch (Exception ex)
+			{
+				UI.Current = new ConsoleUI();
+				return UI.Current.GetRootPassword();
+			}
 		}
 
 		public override void ShowInstallationSuccess(Packages packages)
@@ -50,3 +62,5 @@ namespace SolidCP.UniversalInstaller {
 		}
 	}
 }
+
+#endif

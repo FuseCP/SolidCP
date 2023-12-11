@@ -659,31 +659,29 @@ namespace SolidCP.Setup.Actions
 				string email = vars.LetsEncryptEmail;
 				var componentCode = vars.ComponentCode;
 				bool updateWCF = componentCode == Global.EntServer.ComponentCode || componentCode == Global.Server.ComponentCode;
+				bool updateIIS = !updateWCF;
 				var iisVersion = vars.IISVersion;
 				var iis7 = (iisVersion.Major >= 7);
 
-				if ((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
+				if (OSInfo.IsWindows && iis7 && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 				{
-
 					Begin(LogStartMessage);
 					//
 					Log.WriteStart(LogStartMessage);
 
-					if (OSInfo.IsWindows)
-					{
-						Log.WriteInfo(String.Format("Configuring Let's Encrypt for domain {0} with email {1})", domain, email));
+					Log.WriteInfo(String.Format("Configuring Let's Encrypt for domain {0} with email {1})", domain, email));
 
-						var ecode = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF, false);
+					var ecode = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF, updateIIS);
 
-						if (ecode != 0) throw new Exception($"Let's Encrype returned with error code {ecode}");
-					}
+					if (ecode != 0) throw new Exception($"Let's Encrype returned with error code {ecode}");
 
 					//update install log
 					InstallLog.AppendLine($"- Installed Let's Encrypt for domain \"{domain}\"");
 
 					Finish(LogStartMessage);
 				}
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				if (Utils.IsThreadAbortException(ex))
 					return;

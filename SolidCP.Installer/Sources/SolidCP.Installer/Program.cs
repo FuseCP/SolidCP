@@ -79,14 +79,16 @@ namespace SolidCP.Installer
 			//check security permissions
 			if (!Utils.CheckSecurity())
 			{
-				ShowSecurityError();
+				//ShowSecurityError();
+				UniversalInstaller.Installer.Current.RestartAsAdmin();
 				return;
 			}
 
 			//check administrator permissions
 			if (!Utils.IsAdministrator())
 			{
-				ShowSecurityError(); 
+				//ShowSecurityError();
+				UniversalInstaller.Installer.Current.RestartAsAdmin();
 				return;
 			}
 

@@ -371,7 +371,7 @@
     <None Include="Resources\SolidCP.Installer.Core.dll" />
     <None Include="Resources\SolidCP.Installer.Core.pdb" />
     <EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
-    <EmbeddedResource Include="Resources\SolidCP.ico" />
+    <EmbeddedResource Include="Resources\logo.png" />
     <Content Include="Resources\System.Runtime.CompilerServices.Unsafe.dll" />
     <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
     <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />

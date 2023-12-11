@@ -17,14 +17,11 @@ namespace SolidCP.Providers.Web.LetsEncrypt
 
 			Console.WriteLine("Update WCF Certificate v1.0");
 
-			if (args.Length == 0)
-			{
-				Console.WriteLine(@"Usage: wcfcert storename certthumb");
-			}
-
 			if (args.Length != 2)
 			{
-				Console.WriteLine("Error: Invalid number of arguments.");
+				Console.WriteLine("Error: Invalid number of arguments.\n" +
+					"Usage: wcfcert storename certthumb");
+				Console.ReadKey();
 				return;
 			}
 
@@ -84,6 +81,8 @@ namespace SolidCP.Providers.Web.LetsEncrypt
 			using (var webConfigFile = new FileStream(webConfigFileName, FileMode.Create, FileAccess.Write))
 			{
 				wdoc.Save(webConfigFile);
+
+				Console.WriteLine($"Set WCF certificate to LocalMachine, {storename} with Thumprint {certthumb}");
 			}
 		}
 	}

@@ -14,9 +14,13 @@ namespace SolidCP.UniversalInstaller {
             {
                 if (current == null)
                 {
+#if NETFRAMEWORK
+                    current = new WinFormsUI();
+#else
                     current = new ConsoleUI();
+#endif
                 }
-                return current;
+                    return current;
             }
             protected set
             {

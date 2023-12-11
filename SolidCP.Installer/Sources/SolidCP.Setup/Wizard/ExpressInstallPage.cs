@@ -2365,6 +2365,7 @@ namespace SolidCP.Setup
 		{
 			string componentId = Wizard.SetupVariables.ComponentId;
 			string component = Wizard.SetupVariables.ComponentFullName;
+			string componenCode = Wizard.SetupVariables.ComponentCode;
 			string siteId = Wizard.SetupVariables.WebSiteId;
 			string ip = Wizard.SetupVariables.WebSiteIP;
 			string port = Wizard.SetupVariables.WebSitePort;
@@ -2382,26 +2383,37 @@ namespace SolidCP.Setup
 				Log.WriteStart("Updating web site");
 				Log.WriteInfo(string.Format("Updating web site \"{0}\" ( IP: {1}, Port: {2}, Domain: {3} )", siteId, ip, port, domain));
 
-				//check for existing site
-				var oldSiteId = iis7 ? WebUtils.GetIIS7SiteIdByBinding(ip, port, domain) : WebUtils.GetSiteIdByBinding(ip, port, domain);
-				// We found out that other web site has this combination of {IP:Port:Host Header} already assigned
-				if (oldSiteId != null && !oldSiteId.Equals(Wizard.SetupVariables.WebSiteId))
+				if (OSInfo.IsWindows)
 				{
-					// get site name
-					string oldSiteName = iis7 ? oldSiteId : WebUtils.GetSite(oldSiteId).Name;
-					throw new Exception(
-						String.Format("'{0}' web site already has server binding ( IP: {1}, Port: {2}, Domain: {3} )",
-						oldSiteName, ip, port, domain));
-				}
+					//check for existing site
+					var oldSiteId = iis7 ? WebUtils.GetIIS7SiteIdByBinding(ip, port, domain) : WebUtils.GetSiteIdByBinding(ip, port, domain);
+					// We found out that other web site has this combination of {IP:Port:Host Header} already assigned
+					if (oldSiteId != null && !oldSiteId.Equals(Wizard.SetupVariables.WebSiteId))
+					{
+						// get site name
+						string oldSiteName = iis7 ? oldSiteId : WebUtils.GetSite(oldSiteId).Name;
+						throw new Exception(
+							String.Format("'{0}' web site already has server binding ( IP: {1}, Port: {2}, Domain: {3} )",
+							oldSiteName, ip, port, domain));
+					}
 
-				// Assign the binding only if is not defined
-				if (String.IsNullOrEmpty(oldSiteId))
+					// Assign the binding only if is not defined
+					if (String.IsNullOrEmpty(oldSiteId))
+					{
+						ServerBinding newBinding = new ServerBinding(ip, port, domain, null, componentId);
+						if (iis7)
+							WebUtils.UpdateIIS7SiteBindings(siteId, new ServerBinding[] { newBinding });
+						else
+							WebUtils.UpdateSiteBindings(siteId, new ServerBinding[] { newBinding });
+					}
+				} else if (componenCode == Global.Server.ComponentCode)
 				{
-					ServerBinding newBinding = new ServerBinding(ip, port, domain, null, componentId);
-					if (iis7)
-						WebUtils.UpdateIIS7SiteBindings(siteId, new ServerBinding[] { newBinding });
-					else
-						WebUtils.UpdateSiteBindings(siteId, new ServerBinding[] { newBinding });
+					var installer = UniversalInstaller.Installer.Current;
+					var isHttps = Utils.IsHttps(ip, domain);
+					port = (isHttps && port == "443" || !isHttps && port == "80") ? "" : $":{port}";
+					installer.ReadServerConfiguration();
+					installer.ServerSettings.Urls = $"{(isHttps ? "https" : "http")}://{(!string.IsNullOrWhiteSpace(domain) ? domain : "localhost")}{port}";
+					installer.ConfigureServer();
 				}
 
 				// update config setings
@@ -2419,7 +2431,7 @@ namespace SolidCP.Setup
 				//
 				foreach (string url in urls)
 				{
-					InstallLog.AppendLine(Utils.IsHttps(ip, domain) ? "  https://" + url : "  http://" + url);
+					InstallLog.AppendLine(Utils.IsHttpsAndNotWindows(ip, domain) ? "  https://" + url : "  http://" + url);
 				}
 			}
 			catch (Exception ex)

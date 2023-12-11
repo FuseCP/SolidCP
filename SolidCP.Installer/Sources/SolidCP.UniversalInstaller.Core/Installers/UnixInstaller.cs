@@ -223,17 +223,14 @@ namespace SolidCP.UniversalInstaller
 		{
 			var password = UI.GetRootPassword();
 			var assembly = Assembly.GetEntryAssembly()?.Location;
-			string? arguments = null;
-			try
-			{
-				arguments = Process.GetCurrentProcess().StartInfo.Arguments;
-			}
-			catch { }
-			arguments = arguments ?? assembly;
-			if (OSInfo.IsMono) Shell.ExecScript($"echo {password} | sudo -S mono {arguments}");
-			else if (OSInfo.IsCore) Shell.ExecScript($"echo {password} | sudo -S dotnet {arguments}");
-
-			Environment.Exit(Shell.Process?.ExitCode ?? -1);
+			string arguments = null;
+			arguments = Environment.CommandLine;
+			Shell shell = null;
+			arguments = string.IsNullOrEmpty(arguments) ? assembly : arguments;
+			if (OSInfo.IsMono) shell = Shell.ExecScript($"echo {password} | sudo -S mono {arguments}");
+			else if (OSInfo.IsCore) shell = Shell.ExecScript($"echo {password} | sudo -S dotnet {arguments}");
+			else throw new NotSupportedException();
+			Environment.Exit(shell.ExitCode().Result -1);
 		}
 	}
 }

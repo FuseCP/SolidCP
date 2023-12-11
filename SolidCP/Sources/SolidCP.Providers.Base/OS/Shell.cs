@@ -43,6 +43,8 @@ namespace SolidCP.Providers.OS
 		public bool IsCompleted => Process == null || ((DoNotWaitForProcessExit || hasProcessExited || Process.HasExited) && errorEOF && outputEOF);
 		public Shell GetResult() => this;
 		public virtual char PathSeparator => Path.PathSeparator;
+		public bool CreateNoWindow = true;
+		public ProcessWindowStyle WindowStyle = ProcessWindowStyle.Normal;
 		public abstract string ShellExe { get; }
 
 		Process process;
@@ -153,7 +155,8 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.FileName = cmdWithPath;
 				process.StartInfo.Arguments = arguments;
 				process.StartInfo.UseShellExecute = false;
-				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.CreateNoWindow = CreateNoWindow;
+				process.StartInfo.WindowStyle = WindowStyle;
 				process.StartInfo.RedirectStandardOutput = true;
 				process.StartInfo.RedirectStandardError = true;
 				process.Exited += (obj, args) =>

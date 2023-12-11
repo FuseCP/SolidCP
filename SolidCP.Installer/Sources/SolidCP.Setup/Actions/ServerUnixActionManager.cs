@@ -93,8 +93,8 @@ namespace SolidCP.Setup.Actions
 				// creat icon
 				var rscAssembly = Assembly.GetExecutingAssembly();
 				var resources = rscAssembly.GetManifestResourceNames();
-				var iconFileName = Path.Combine(installerDir, "SolidCP.ico");
-				var iconResourceName = resources.FirstOrDefault(res => res.EndsWith("SolidCP.ico"));
+				var iconFileName = Path.Combine(installerDir, "logo.png");
+				var iconResourceName = resources.FirstOrDefault(res => res.EndsWith("logo.png"));
 				if (iconResourceName != null)
 				{
 					using (var rscstream = rscAssembly.GetManifestResourceStream(iconResourceName))

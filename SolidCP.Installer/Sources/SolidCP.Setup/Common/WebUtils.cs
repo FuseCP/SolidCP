@@ -1268,7 +1268,9 @@ namespace SolidCP.Setup
 				};
 
 				Shell.Default.Log += logger;
+				Shell.Default.CreateNoWindow = false;
 				var results = Shell.Default.Exec(command);
+				Shell.Default.CreateNoWindow = true;
 				Shell.Default.Log -= logger;
 
 				Log.WriteInfo(results.OutputAndError().Result);
