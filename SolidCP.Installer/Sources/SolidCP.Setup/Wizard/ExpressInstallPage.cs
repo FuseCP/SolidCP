@@ -138,6 +138,7 @@ namespace SolidCP.Setup
 
 			string component = Wizard.SetupVariables.ComponentFullName;
 			string componentName = Wizard.SetupVariables.ComponentName;
+			bool isUnattended = !string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml);
 
 			try
 			{
@@ -169,7 +170,7 @@ namespace SolidCP.Setup
 							CreateWebSite();
 							break;
 						case ActionTypes.ConfigureLetsEncrypt:
-							ConfigureLetsEncrypt();
+							if (!ConfigureLetsEncrypt(isUnattended)) action.Log = "Failed to install Let's Encrypt certificate. Check the error log for details.";
 							break;
 						case ActionTypes.CryptoKey:
 							SetCryptoKey();
@@ -1827,6 +1828,10 @@ namespace SolidCP.Setup
 			}
 		}
 
+		public void InstallInstaller()
+		{
+
+		}
 		private void CreateShortcuts()
 		{
 			try
@@ -2900,7 +2905,7 @@ namespace SolidCP.Setup
 			}
 
 		}
-		private void ConfigureLetsEncrypt()
+		private bool ConfigureLetsEncrypt(bool isUnattended)
 		{
 			string ip = Wizard.SetupVariables.WebSiteIP;
 			string siteId = Wizard.SetupVariables.WebSiteId;
@@ -2910,14 +2915,21 @@ namespace SolidCP.Setup
 			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
 			var iisVersion = Wizard.SetupVariables.IISVersion;
 			var iis7 = (iisVersion.Major >= 7);
+			bool success = true;
 
 			if ((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 				if (OSInfo.IsWindows)
 				{
-					WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF);
+					success = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF);
 				}
 			}
+			if (!success)
+			{
+				Log.WriteError("Error creating Let's Encrypt certificate. Check the error log for details.");
+				if (!isUnattended) MessageBox.Show("Error creating Let's Encrypt certificate. Check the error log for details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			return success;
 		}
 		private void ConfigureFolderPermissions()
 		{

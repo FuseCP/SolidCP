@@ -49,6 +49,7 @@ using SolidCP.Providers.OS;
 using System.Runtime.Remoting.Contexts;
 using System.Web.Services.Description;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace SolidCP.Setup.Actions
 {
@@ -658,6 +659,7 @@ namespace SolidCP.Setup.Actions
 				string domain = vars.WebSiteDomain;
 				string email = vars.LetsEncryptEmail;
 				var componentCode = vars.ComponentCode;
+				var isUnattended = !string.IsNullOrEmpty(vars.SetupXml);
 				bool updateWCF = componentCode == Global.EntServer.ComponentCode || componentCode == Global.Server.ComponentCode;
 				bool updateIIS = !updateWCF;
 				var iisVersion = vars.IISVersion;
@@ -669,14 +671,17 @@ namespace SolidCP.Setup.Actions
 					//
 					Log.WriteStart(LogStartMessage);
 
-					Log.WriteInfo(String.Format("Configuring Let's Encrypt for domain {0} with email {1})", domain, email));
+					Log.WriteInfo($"Configuring Let's Encrypt for domain {domain} with email {email}");
 
-					var ecode = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF, updateIIS);
+					var success = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF, updateIIS);
 
-					if (ecode != 0) throw new Exception($"Let's Encrype returned with error code {ecode}");
-
-					//update install log
-					InstallLog.AppendLine($"- Installed Let's Encrypt for domain \"{domain}\"");
+					if (!success) {
+						if (!isUnattended) MessageBox.Show("Let's Encrypt certificate installation failed. Please check the log file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						InstallLog.AppendLine($"- Let's Encrypt certificate installation failed. Please check the log file.");
+					} else {
+						//update install log
+						InstallLog.AppendLine($"- Installed Let's Encrypt for domain \"{domain}\"");
+					}
 
 					Finish(LogStartMessage);
 				}

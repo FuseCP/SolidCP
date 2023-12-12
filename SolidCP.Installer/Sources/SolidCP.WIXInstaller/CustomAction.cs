@@ -276,9 +276,9 @@ namespace SolidCP.WIXInstaller
 
                 Log.WriteStart("PreFillSettings");
 
-                TryApllyNewPassword(Ctx, "PI_SERVER_PASSWORD");
-                TryApllyNewPassword(Ctx, "PI_ESERVER_PASSWORD");
-                TryApllyNewPassword(Ctx, "PI_PORTAL_PASSWORD");
+                TryApplyNewPassword(Ctx, "PI_SERVER_PASSWORD");
+                TryApplyNewPassword(Ctx, "PI_ESERVER_PASSWORD");
+                TryApplyNewPassword(Ctx, "PI_PORTAL_PASSWORD");
 
                 var SCP = Ctx["SCP_INSTALL_DIR"];
                 var DirList = new List<string>();
@@ -1182,7 +1182,7 @@ namespace SolidCP.WIXInstaller
         {
             Debugger.Launch();
         }
-        private static void TryApllyNewPassword(Session Ctx, string Id)
+        private static void TryApplyNewPassword(Session Ctx, string Id)
         {
             var Pass = Ctx[Id];
             if (string.IsNullOrWhiteSpace(Pass))

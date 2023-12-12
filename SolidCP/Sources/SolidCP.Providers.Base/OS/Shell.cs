@@ -25,7 +25,9 @@ namespace SolidCP.Providers.OS
 			output = new StringBuilder();
 			error = new StringBuilder();
 			outputAndError = new StringBuilder();
-			ReceiveLog(this);
+			Log += OnLog;
+			LogError += OnLogError;
+			LogOutput += OnLogOutput;
 		}
 
 		//methods to support await on Shell type
@@ -42,6 +44,7 @@ namespace SolidCP.Providers.OS
 		int exitCode = 0;
 		public bool IsCompleted => Process == null || ((DoNotWaitForProcessExit || hasProcessExited || Process.HasExited) && errorEOF && outputEOF);
 		public Shell GetResult() => this;
+		public Shell Parent { get; set; } = null;
 		public virtual char PathSeparator => Path.PathSeparator;
 		public bool CreateNoWindow = true;
 		public ProcessWindowStyle WindowStyle = ProcessWindowStyle.Normal;
@@ -151,7 +154,7 @@ namespace SolidCP.Providers.OS
 			{
 				var child = Clone;
 				var process = new Process();
-				Process = child.Process = process;
+				child.Process = process;
 				process.StartInfo.FileName = cmdWithPath;
 				process.StartInfo.Arguments = arguments;
 				process.StartInfo.UseShellExecute = false;
@@ -161,41 +164,47 @@ namespace SolidCP.Providers.OS
 				process.StartInfo.RedirectStandardError = true;
 				process.Exited += (obj, args) =>
 				{
-					exitCode = Process.ExitCode;
-					lock (this) hasProcessExited = true;
+					child.exitCode = child.Process.ExitCode;
 					lock (child) child.hasProcessExited = true;
 					child.CheckCompleted();
-					CheckCompleted();
 				};
 				process.EnableRaisingEvents = true;
 				process.ErrorDataReceived += (p, data) =>
 				{
 					if (data.Data == null)
 					{
-						lock (this) errorEOF = true;
 						lock (child) child.errorEOF = true;
 						child.CheckCompleted();
-						CheckCompleted();
 					}
-					else if (data.Data != string.Empty)
+					else
 					{
-						child.Log(data.Data);
-						child.LogError(data.Data);
+						var line = $"{data.Data}{Environment.NewLine}";
+						var shell = child;
+						while (shell != null)
+						{
+							shell.Log(line);
+							shell.LogError(line);
+							shell = shell.Parent;
+						}
 					}
 				};
 				process.OutputDataReceived += (p, data) =>
 				{
 					if (data.Data == null)
 					{
-						lock (this) outputEOF = true;
 						lock (child) child.outputEOF = true;
 						child.CheckCompleted();
-						CheckCompleted();
 					}
-					else if (data.Data != string.Empty)
+					else
 					{
-						child.Log(data.Data);
-						child.LogOutput(data.Data);
+						var line = $"{data.Data}{Environment.NewLine}";
+						var shell = child;
+						while (shell != null)
+						{
+							shell.Log(line);
+							shell.LogOutput(line);
+							shell = shell.Parent;
+						}
 					}
 				};
 				process.Start();
@@ -218,17 +227,11 @@ namespace SolidCP.Providers.OS
 			get
 			{
 				Shell clone = Activator.CreateInstance(GetType()) as Shell;
-				ReceiveLog(clone);
+				clone.Parent = this;
 				return clone;
 			}
 		}
 
-		protected virtual void ReceiveLog(Shell clone)
-		{
-			clone.Log += OnLog;
-			clone.LogOutput += OnLogOutput;
-			clone.LogError += OnLogError;
-		}
 		public virtual Shell ExecScriptAsync(string script)
 		{
 			var file = ToTempFile(script.Trim());
@@ -294,21 +297,18 @@ namespace SolidCP.Providers.OS
 		{
 			lock (outputAndError)
 			{
-				outputAndError.AppendLine(text);
-				if (LogFile != null) File.AppendAllText(LogFile, $"{text}{Environment.NewLine}");
+				outputAndError.Append(text);
+				if (LogFile != null) File.AppendAllText(LogFile, text);
 			}
 		}
 
 		protected virtual void OnLogOutput(string text)
 		{
-			var id = ShellId;
-			lock (output) output.AppendLine(text);
-			OnLog(text);
+			lock (output) output.Append(text);
 		}
 		protected virtual void OnLogError(string text)
 		{
-			lock (error) error.AppendLine(text);
-			OnLog(text);
+			lock (error) error.Append(text);
 		}
 
 		public static Shell Default => OSInfo.Current.DefaultShell;

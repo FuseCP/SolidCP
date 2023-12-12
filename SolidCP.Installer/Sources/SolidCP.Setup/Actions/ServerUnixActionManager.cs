@@ -91,19 +91,8 @@ namespace SolidCP.Setup.Actions
 					UnixFileMode.OtherRead | UnixFileMode.OtherWrite);
 
 				// creat icon
-				var rscAssembly = Assembly.GetExecutingAssembly();
-				var resources = rscAssembly.GetManifestResourceNames();
 				var iconFileName = Path.Combine(installerDir, "logo.png");
-				var iconResourceName = resources.FirstOrDefault(res => res.EndsWith("logo.png"));
-				if (iconResourceName != null)
-				{
-					using (var rscstream = rscAssembly.GetManifestResourceStream(iconResourceName))
-					using (var file = new FileStream(iconFileName, FileMode.Create, FileAccess.Write))
-					{
-						rscstream.CopyTo(file);
-					}
-				}
-				else iconFileName = exePath;
+				Utils.SaveResource("logo.png", iconFileName);
 
 				// create .desktop file
 				var appdir = Environment.GetEnvironmentVariable("XDG_DATA_DIRS")?.Split(Path.PathSeparator)

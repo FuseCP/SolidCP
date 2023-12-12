@@ -43,6 +43,8 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using SolidCP.Providers.OS;
 using System.Diagnostics;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace SolidCP.Setup
 {
@@ -1194,10 +1196,10 @@ namespace SolidCP.Setup
 		const bool Debug = false;
 #endif
 
-		public static int LEInstallCertificate(string site, string domain, string email, bool updateWCF = true, bool updateIIS = true)
+		public static bool LEInstallCertificate(string site, string domain, string email, bool updateWCF = true, bool updateIIS = true)
 		{
 
-			if (string.IsNullOrEmpty(email)) return 0;
+			if (string.IsNullOrEmpty(email)) return false;
 
 			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
 
@@ -1228,31 +1230,17 @@ namespace SolidCP.Setup
 
 				Log.Write($"Found Website ID: SiteName {site}  ID: {siteId}\n");
 
-				// This sets the correct path for the Exe file.
-				var path = AppDomain.CurrentDomain.BaseDirectory;
-				string command = Path.Combine(path, "wacs.exe");
+				// extract wacs.exe and wcfcert.exe from embedded resource and save it in the website's bin folder
+				var installerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "SolidCP Installer");
+				var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyVersionAttribute>().Version;
+				var leFolder = Path.Combine(installerPath, "bin", "LetsEncrypt", version);
+				var command = Path.Combine(leFolder, "wacs.exe");
+				var script = Path.Combine(leFolder, "wcfcert.exe");
+				if (!Directory.Exists(leFolder)) Directory.CreateDirectory(leFolder);
 
-				if (!File.Exists(command)) {
-					command = Shell.Default.Find("wacs");
-					if (command == null)
-					{
-						// install win-acme
-						if (Shell.Default.Find("dotnet") == null)
-						{
-							if (Shell.Default.Find("winget") != null)
-							{
-								Shell.Default.Exec("winget install Microsoft.DotNet.SDK.8");
-							}
-							else throw new NotSupportedException("Cannot install Win-Acme");
-						}
-						Shell.Default.Exec("dotnet tool install win-acme --global");
-						command = Shell.Default.Find("wacs");
-						if (command == null) throw new NotSupportedException("Cannot install Win-Acme");
-					}
-				}
-
-				var script = Path.Combine(webpath, "bin", "LetsEncrypt", "wcfcert.exe");
-
+				if (!File.Exists(command)) Utils.SaveResource("wacs.exe", command);
+				if (updateWCF && !File.Exists(script)) Utils.SaveResource("wcfcert.exe", script);
+			
 				command = $"\"{command}\" --source {(!hasPort80site ? $"manual --host {domain}" : $"iis --siteid {port80site.Id} --validation filesystem --webroot \"{port80path}\" --manualtargetisiis")}" +
 					$" {(updateWCF && updateIIS ? $"--installation iis,script" : (updateWCF ? "--installation script" : (updateIIS ? "--installation iis" : "")))} " +
 					$"{(updateIIS ? $"iis --installationsiteid {siteId}" : "")} " +
@@ -1262,24 +1250,22 @@ namespace SolidCP.Setup
 
 				Log.WriteInfo($"LE Command String: {command}\n");
 
-				Action<string> logger = (msg) =>
-				{
-					Log.Write(msg);
-				};
+				Action<string> logger = (msg) => Log.Write(msg);
 
 				Shell.Default.Log += logger;
-				Shell.Default.CreateNoWindow = false;
 				var results = Shell.Default.Exec(command);
-				Shell.Default.CreateNoWindow = true;
 				Shell.Default.Log -= logger;
-
-				Log.WriteInfo(results.OutputAndError().Result);
-				var exitCode = results.ExitCode().Result;
-				if (exitCode != 0) Log.WriteError($"wacs exited with error code: {exitCode}");
+				var output = results.OutputAndError().Result;
+				var res = !output.Contains("Create certificate failed");
 				
-				Log.WriteEnd("Lët's Encrypt InstallCertificate");
+				if (!res)
+				{
+					Log.WriteError($"There was an error creating the certificate.");
+				}
+				
+				Log.WriteEnd("Let's Encrypt InstallCertificate");
 			
-				return exitCode;
+				return res;
 			}
 			catch (Exception ex)
 			{

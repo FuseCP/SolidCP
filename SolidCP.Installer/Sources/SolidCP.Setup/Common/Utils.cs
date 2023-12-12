@@ -801,6 +801,21 @@ namespace SolidCP.Setup
 			}
 		}
 
+		public static void SaveResource(string resName, string fileName)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var resources = assembly.GetManifestResourceNames();
+			var resourceName = resources.FirstOrDefault(name => name.EndsWith(resName));
+			if (resourceName != null)
+			{
+				using (var resStream = assembly.GetManifestResourceStream(resourceName))
+				using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+				{
+					resStream.CopyTo(file);
+				}
+			}
+		}
+
 		public static bool IsGlobalDomain(string domain) => domain != "localhost" && !string.IsNullOrEmpty(domain) && domain.Contains('.');
 		public static bool IsHttps(string ip, string domain) => ip != "127.0.0.1" && ip != "::1" && IsGlobalDomain(domain);
 		public static bool IsHttpsAndNotWindows(string ip, string domain) => !OSInfo.IsWindows && IsHttps(ip, domain);

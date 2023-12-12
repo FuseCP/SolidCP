@@ -26,6 +26,7 @@ using SolidCP.Setup.Common;
 using SolidCP.Setup.Web;
 using SolidCP.Setup.Windows;
 using SolidCP.Providers.OS;
+using System.Windows.Forms;
 
 namespace SolidCP.Setup.Internal
 {
@@ -400,7 +401,9 @@ namespace SolidCP.Setup.Internal
 							CreateWebSite();
 							break;
 						case ActionTypes.ConfigureLetsEncrypt:
-							ConfigureLetsEncrypt();
+							if (!ConfigureLetsEncrypt(!string.IsNullOrEmpty(m_Ctx.SetupXml))) {
+								Execute.Log = "Failed to install Let's Encrypt certificate. Check the error log for details.";
+							}
 							break;
 						case ActionTypes.CryptoKey:
 							SetCryptoKey();
@@ -3068,7 +3071,7 @@ namespace SolidCP.Setup.Internal
 			list.Add(action);
 			return list;
 		}
-		private void ConfigureLetsEncrypt()
+		private bool ConfigureLetsEncrypt(bool isUnattended)
 		{
 			string ip = Context.WebSiteIP;
 			string siteId = Context.WebSiteId;
@@ -3078,14 +3081,21 @@ namespace SolidCP.Setup.Internal
 			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
 			var iisVersion = Context.IISVersion;
 			var iis7 = (iisVersion.Major >= 7);
+			bool success = true;
 
 			if ((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
 			{
 				if (OSInfo.IsWindows)
 				{
-					WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF);
+					success = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF);
 				}
 			}
+			if (!success)
+			{
+				Log.WriteError("Error creating Let's Encrypt certificate. Check the error log for details.");
+				if (!isUnattended) MessageBox.Show("Error creating Let's Encrypt certificate. Check the error log for details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			return success;
 		}
 		private void UpdateWebSiteBindings()
 		{
