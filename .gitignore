@@ -6,6 +6,7 @@
 [Bb]in/
 **/Resources/*.dll
 **/Resources/*.pdb
+**/Resources/*.exe
 TestResults/
 **/[Bb]uild/
 **/[Dd]eploy/
