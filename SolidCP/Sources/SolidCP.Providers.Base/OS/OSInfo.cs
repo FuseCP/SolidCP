@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 {
 
 	public enum OSPlatform { Unknown = 0, Windows, Mac, Linux, Unix, Other };
-	public enum OSFlavor { Unknown = 0, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, CentOS, SUSE, Alpine, Arch, FreeBSD, NetBSD, Other }
+	public enum OSFlavor { Unknown = 0, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, Oracle, CentOS, SUSE, Alpine, Arch, FreeBSD, NetBSD, Other }
 
 	public class OSInfo
 	{

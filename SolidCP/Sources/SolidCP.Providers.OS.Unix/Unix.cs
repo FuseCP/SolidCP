@@ -628,13 +628,17 @@ namespace SolidCP.Providers.OS
 
 		Shell bash, sh;
 
-		Installer apt, yum, brew;
+		Installer apt, yum, brew, zypper, apk, dnf, pacman;
 
 		public Shell Bash => bash ?? (bash = new Bash());
 		public Shell Sh => sh ?? (sh = new Sh());
 		public Installer Apt => apt ?? (apt = new Apt());
 		public Installer Yum => yum ?? (yum = new Yum());
 		public Installer Brew => brew ?? (brew = new Brew());
+		public Installer Zypper => zypper ?? (zypper = new Zypper());
+		public Installer Dnf => dnf ?? (dnf = new Dnf());
+		public Installer Pacman => pacman ?? (pacman = new Pacman());
+		public Installer Apk => apk ?? (apk = new Apk());
 
 		public virtual Shell DefaultShell => Bash;
 		public virtual Installer DefaultInstaller
@@ -648,8 +652,20 @@ namespace SolidCP.Providers.OS
 					case OSFlavor.Ubuntu: return Apt;
 					case OSFlavor.Mac: return Brew;
 					case OSFlavor.Fedora:
+						if (OSInfo.OSVersion.Major >= 22 && Dnf.IsInstallerInstalled) return Dnf;
+						else return Yum;
 					case OSFlavor.RedHat:
-					case OSFlavor.CentOS: return Yum;
+						if (OSInfo.OSVersion.Major >= 9 && Dnf.IsInstallerInstalled) return Dnf;
+						else return Yum;
+					case OSFlavor.CentOS:
+						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;		
+						else return Yum;
+					case OSFlavor.Oracle:
+						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
+						else return Yum;
+					case OSFlavor.SUSE: return Zypper;
+					case OSFlavor.Arch: return Pacman;
+					case OSFlavor.Alpine: return Apk;
 					default: throw new NotSupportedException("No installer defined for this operating system.");
 				}
 			}

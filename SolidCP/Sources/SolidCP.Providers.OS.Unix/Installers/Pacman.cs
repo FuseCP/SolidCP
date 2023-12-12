@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.Providers.OS
 {
@@ -10,26 +12,31 @@ namespace SolidCP.Providers.OS
 
         public override Shell AddSourcesAsync(string sources)
         {
-            throw new NotImplementedException();
+			throw new NotSupportedException("AddSources is not supported for pacman installer");
         }
 
         public override Shell InstallAsync(string apps)
         {
-            throw new NotImplementedException();
+			return Shell.Exec($"pacman -S {string.Join(" ", apps.Split(' ', ',', ';'))}");
         }
 
 		public override bool IsInstalled(string apps)
 		{
-			throw new NotImplementedException();
+			var applist = apps.Split(' ', ',', ';')
+				.Select(app => app.Trim());
+			foreach (var app in applist)
+			{
+				var output = Shell.Exec($"pacman -Qs {$"^{app}$"}").Output().Result ?? "";
+				var installed = Regex.IsMatch(output, $"^local/{app}", RegexOptions.Multiline);
+				if (!installed) return false;
+			}
+			return true;
 		}
 
 		public override Shell RemoveAsync(string apps)
 		{
-			throw new NotImplementedException();
+			return Shell.Exec($"pacman -R {string.Join(" ", apps.Split(' ', ',', ';'))}");
 		}
-		public override Shell UpdateAsync()
-		{
-			throw new NotImplementedException();
-		}
+		public override Shell UpdateAsync() => Shell;
 	}
 }

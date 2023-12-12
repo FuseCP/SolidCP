@@ -302,17 +302,19 @@ namespace SolidCP.UniversalInstaller
 				{
 					switch (OSInfo.OSFlavor)
 					{
-						case OSFlavor.Debian: current = new DebianInstaller(); break;
 						// TODO support for Ubuntu variants
-						// case OSFlavor.Mint:
+						case OSFlavor.Windows: current = new WindowsInstaller(); break;
+						case OSFlavor.Mac: current = new MacInstaller(); break;
+						case OSFlavor.Debian: current = new DebianInstaller(); break;
 						case OSFlavor.Ubuntu: current = new UbuntuInstaller(); break;
+						case OSFlavor.Mint: current = new MintInstaller(); break;
+						case OSFlavor.Fedora: current = new FedoraInstaller(); break;
 						case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 						case OSFlavor.CentOS: current = new CentOSInstaller(); break;
-						case OSFlavor.Fedora: current = new FedoraInstaller(); break;
-						case OSFlavor.Mac: current = new MacInstaller(); break;
-						case OSFlavor.Windows: current = new WindowsInstaller(); break;
-						case OSFlavor.Alpine: current = new AlpineInstaller(); break;
+						case OSFlavor.Oracle: current = new OracleInstaller(); break;
 						case OSFlavor.SUSE: current = new SuseInstaller(); break;
+						case OSFlavor.Arch: current = new ArchInstaller(); break;
+						case OSFlavor.Alpine: current = new AlpineInstaller(); break;
 						default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
 					}
 				}

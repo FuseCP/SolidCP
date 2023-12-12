@@ -8,13 +8,6 @@ namespace SolidCP.UniversalInstaller
 {
 	public class RedHatInstaller : FedoraInstaller
 	{
-
-		public override void InstallNet8Runtime()
-		{
-			if (CheckNet8RuntimeInstalled()) return;
-
-			throw new NotSupportedException();
-		}
 	}
 }
 

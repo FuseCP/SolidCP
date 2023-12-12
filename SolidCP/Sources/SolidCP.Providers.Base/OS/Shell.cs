@@ -9,6 +9,7 @@ using System.DirectoryServices;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.Providers.OS
 {
@@ -234,6 +235,9 @@ namespace SolidCP.Providers.OS
 
 		public virtual Shell ExecScriptAsync(string script)
 		{
+			script = script.Trim();
+			// adjust new lines to OS type
+			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
 			var file = ToTempFile(script.Trim());
 			var shell = ExecAsync($"{ShellExe} {file}");
 			if (shell.Process != null)

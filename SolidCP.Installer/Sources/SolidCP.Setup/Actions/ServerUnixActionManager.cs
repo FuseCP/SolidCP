@@ -76,8 +76,11 @@ namespace SolidCP.Setup.Actions
 
 				var exePath = Path.Combine(installerDir, Path.GetFileName(AppConfig.ConfigurationPath));
 
-				File.Copy(AppConfig.ConfigurationPath, exePath, true);
-				File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config", true);
+				if (AppConfig.ConfigurationPath != exePath)
+				{
+					File.Copy(AppConfig.ConfigurationPath, exePath, true);
+					File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config", true);
+				}
 				var sh = Shell.Default.Find("sh");
 				File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nmono {exePath}");
 

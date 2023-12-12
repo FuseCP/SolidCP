@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace SolidCP.UniversalInstaller
 {
-	public class CentOSInstaller : FedoraInstaller
+	public class OracleInstaller : FedoraInstaller
 	{
 	}
 }

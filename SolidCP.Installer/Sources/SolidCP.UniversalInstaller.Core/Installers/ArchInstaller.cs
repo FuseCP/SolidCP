@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace SolidCP.UniversalInstaller
 {
-	public class FedoraInstaller : UnixInstaller
+	public class ArchInstaller : UnixInstaller
 	{
 
 		public override void InstallNet8Runtime()
