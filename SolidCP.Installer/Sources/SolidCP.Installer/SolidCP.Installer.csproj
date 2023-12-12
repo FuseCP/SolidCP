@@ -456,6 +456,7 @@
 		<Message Text="Deleting unused files" Importance="high" />
 		<ItemGroup>
 			<FilesToDelete Include="bin\$(Configuration)\**\*.*" />
+			<FilesToDelete Remove="bin\$(Configuration)\Data\**\*.*" />
 			<FilesToDelete Remove="bin\$(Configuration)\SolidCP.Installer.exe" />
 			<FilesToDelete Remove="bin\$(Configuration)\Setup.dll" Condition=" '$(Configuration)' == 'Debug' " />
 			<FilesToDelete Remove="bin\$(Configuration)\Setup.pdb" Condition=" '$(Configuration)' == 'Debug' " />
