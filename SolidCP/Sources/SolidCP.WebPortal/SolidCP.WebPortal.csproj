@@ -1288,11 +1288,12 @@
     </ItemGroup>
     <Move SourceFiles="@(FilesToMove)"  DestinationFolder="bin\Lazy" />
 
-    <Message Text="Restore needed dlls from bin\Lazy to bin" Importance="high" />
+	  <!--<Message Text="Restore needed dlls from bin\Lazy to bin" Importance="high" />
     <ItemGroup>
       <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.*" />
+      <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.dll.config" />
     </ItemGroup>
-    <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="bin" />
+    <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="bin" />-->
   </Target>
 
   <Target Name="PreDeploySolidCPProjectBinaries">
