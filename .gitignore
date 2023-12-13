@@ -7,6 +7,7 @@
 **/Resources/*.dll
 **/Resources/*.pdb
 **/Resources/*.exe
+SolidCP\Sources\Tools\SCPTransportAgent\*.dll
 TestResults/
 **/[Bb]uild/
 **/[Dd]eploy/
