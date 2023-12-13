@@ -1245,7 +1245,7 @@ namespace SolidCP.Setup
 					$" {(updateWCF && updateIIS ? $"--installation iis,script" : (updateWCF ? "--installation script" : (updateIIS ? "--installation iis" : "")))} " +
 					$"{(updateIIS ? $"iis --installationsiteid {siteId}" : "")} " +
 					$"--emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My " +
-					$"{(updateWCF ? $"--script \"{script}\" --scriptparameters \"{{StorePath}} {{CertThumbprint}}\"" : "")} " +
+					$"{(updateWCF ? $"--script \"{script}\" --scriptparameters \"'{webpath}' {{StorePath}} {{CertThumbprint}}\"" : "")} " +
 					$"{(Debug || Debugger.IsAttached ? "--test --closeonfinish" : "")}";
 
 				Log.WriteInfo($"LE Command String: {command}\n");

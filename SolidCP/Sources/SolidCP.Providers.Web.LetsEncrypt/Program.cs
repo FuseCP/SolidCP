@@ -8,6 +8,28 @@ using System.IO;
 
 namespace SolidCP.Providers.Web.LetsEncrypt
 {
+	public static class MyExtensions
+	{
+		public static XElement Element(this XElement parent, XName name, bool createIfNotFound)
+		{
+			var childNode = parent.Element(name);
+			{
+				if (childNode != null)
+				{
+					return childNode;
+				}
+			};
+			//
+			if (createIfNotFound.Equals(true))
+			{
+				childNode = new XElement(name);
+				parent.Add(childNode);
+			}
+			//
+			return childNode;
+		}
+	}
+
 	public class Program
 	{
 
@@ -15,20 +37,20 @@ namespace SolidCP.Providers.Web.LetsEncrypt
 		public static void Main(string[] args)
 		{
 
-			Console.WriteLine("Update WCF Certificate v1.0");
+			Console.WriteLine("Update WCF Certificate v1.1");
 
-			if (args.Length != 2)
+			if (args.Length != 3)
 			{
 				Console.WriteLine("Error: Invalid number of arguments.\n" +
-					"Usage: wcfcert storename certthumb");
+					"Usage: wcfcert webrootpath storename certthumb");
 				Console.ReadKey();
 				return;
 			}
 
-			var storename = args[0];
-			var certthumb = args[1];
+			var rootPath = args[0];
+			var storename = args[1];
+			var certthumb = args[2];
 
-			var rootPath = Path.GetDirectoryName(Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory));
 			var webConfigFileName = Path.Combine(rootPath, "web.config");
 			XDocument wdoc = null;
 			using (var webConfigFile = File.OpenRead(webConfigFileName))
@@ -36,43 +58,13 @@ namespace SolidCP.Providers.Web.LetsEncrypt
 				wdoc = XDocument.Load(webConfigFile);
 			}
 
-			var root = wdoc.Element("configuration");
-			var serviceModel = root.Element("system.serviceModel");
-			if (serviceModel == null)
-			{
-				serviceModel = new XElement("system.serviceModel");
-				root.Add(serviceModel);
-			}
-			var behaviors = serviceModel.Element("behaviors");
-			if (behaviors == null)
-			{
-				behaviors = new XElement("behaviors");
-				serviceModel.Add(behaviors);
-			}
-			var serviceBehaviors = behaviors.Element("serviceBehaviors");
-			if (serviceBehaviors == null)
-			{
-				serviceBehaviors = new XElement("serviceBehaviors");
-				behaviors.Add(serviceBehaviors);
-			}
-			var behavior = serviceBehaviors.Element("behavior");
-			if (behavior == null)
-			{
-				behavior = new XElement("behavior");
-				serviceBehaviors.Add(behavior);
-			}
-			var serviceCredentials = behavior.Element("serviceCredentials");
-			if (serviceCredentials == null)
-			{
-				serviceCredentials = new XElement("serviceCredentials");
-				behavior.Add(serviceCredentials);
-			}
-			var serviceCertificate = serviceCredentials.Element("serviceCertificate");
-			if (serviceCertificate == null)
-			{
-				serviceCertificate = new XElement("serviceCertificate");
-				serviceCredentials.Add(serviceCertificate);
-			}
+			var root = wdoc.Root;
+			var serviceModel = root.Element("system.serviceModel", true);
+			var behaviors = serviceModel.Element("behaviors", true);
+			var serviceBehaviors = behaviors.Element("serviceBehaviors", true);
+			var behavior = serviceBehaviors.Element("behavior", true);
+			var serviceCredentials = behavior.Element("serviceCredentials", true);
+			var serviceCertificate = serviceCredentials.Element("serviceCertificate", true);
 			serviceCertificate.SetAttributeValue("storeLocation", "LocalMachine");
 			serviceCertificate.SetAttributeValue("storeName", storename);
 			serviceCertificate.SetAttributeValue("x509FindType", "FindByThumbprint");
@@ -82,7 +74,7 @@ namespace SolidCP.Providers.Web.LetsEncrypt
 			{
 				wdoc.Save(webConfigFile);
 
-				Console.WriteLine($"Set WCF certificate to LocalMachine, {storename} with Thumprint {certthumb}");
+				Console.WriteLine($"Set WCF certificate to LocalMachine, {storename} with Thumprint {certthumb} in {webConfigFileName}");
 			}
 		}
 	}
