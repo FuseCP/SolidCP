@@ -1,115 +1,115 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{24A4C231-73A9-4F03-ABAD-9A8FE5324495}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SolidCP.SchedulerServiceInstaller</RootNamespace>
-    <AssemblyName>SolidCP.SchedulerServiceInstaller</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <WixCATargetsPath Condition=" '$(WixCATargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.CA.targets</WixCATargetsPath>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Setup.SchedulerService\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Setup.SchedulerService\bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.Deployment.WindowsInstaller" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CustomAction.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="CustomAction.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
-      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
-      <Name>SolidCP.Providers.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
-      <Project>{1273d02f-6c5c-4752-86ce-99d504f6cffa}</Project>
-      <Name>SolidCP.Providers.OS.Unix</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj">
-      <Project>{899b3048-46be-4c4d-9d41-0043c8b0d11e}</Project>
-      <Name>SolidCP.Providers.OS.Windows2003</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2008\SolidCP.Providers.OS.Windows2008.csproj">
-      <Project>{bed2f43f-2dd8-45cf-ad7c-86799897c575}</Project>
-      <Name>SolidCP.Providers.OS.Windows2008</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj">
-      <Project>{27130bbb-76fa-411e-8b4d-51cd4dc821af}</Project>
-      <Name>SolidCP.Providers.OS.Windows2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj">
-      <Project>{4396082e-ec55-4741-a183-d0e374adc2fd}</Project>
-      <Name>SolidCP.Providers.OS.Windows2016</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj">
-      <Project>{c4b1ea53-1417-473f-bb8e-e71be84db3a5}</Project>
-      <Name>SolidCP.Providers.OS.Windows2019</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj">
-      <Project>{05b23c2b-15ce-48ef-995c-c5e517a04011}</Project>
-      <Name>SolidCP.Providers.OS.Windows2022</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj">
-      <Project>{9b99f215-5029-4779-bc2f-6d83cbb42205}</Project>
-      <Name>SolidCP.Providers.Web.IIs100</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj">
-      <Project>{9be0317d-e42e-4ff6-9a87-8c801f046ea1}</Project>
-      <Name>SolidCP.Providers.Web.IIs60</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj">
-      <Project>{1b9dce85-c664-49fc-b6e1-86c63cab88d1}</Project>
-      <Name>SolidCP.Providers.Web.IIs70</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj">
-      <Project>{6e348968-461d-45a1-b235-4f552947b9f1}</Project>
-      <Name>SolidCP.Providers.Web.IIs80</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj">
-      <Project>{3951c0ec-bd98-450e-b228-cdbe5bd4ad49}</Project>
-      <Name>SolidCP.Setup</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(WixCATargetsPath)" />
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+		<ProductVersion>8.0.30703</ProductVersion>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectGuid>{24A4C231-73A9-4F03-ABAD-9A8FE5324495}</ProjectGuid>
+		<OutputType>Library</OutputType>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<RootNamespace>SolidCP.SchedulerServiceInstaller</RootNamespace>
+		<AssemblyName>SolidCP.SchedulerServiceInstaller</AssemblyName>
+		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+		<FileAlignment>512</FileAlignment>
+		<WixCATargetsPath Condition=" '$(WixCATargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.CA.targets</WixCATargetsPath>
+		<TargetFrameworkProfile />
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>..\Setup.SchedulerService\bin\</OutputPath>
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>..\Setup.SchedulerService\bin\</OutputPath>
+		<DefineConstants>TRACE</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<Prefer32Bit>false</Prefer32Bit>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="System.Configuration.Install" />
+		<Reference Include="System.Core" />
+		<Reference Include="System.Data" />
+		<Reference Include="System.ServiceProcess" />
+		<Reference Include="System.Windows.Forms" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Xml" />
+		<Reference Include="Microsoft.Deployment.WindowsInstaller" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="CustomAction.cs" />
+		<Compile Include="Properties\AssemblyInfo.cs" />
+		<Content Include="CustomAction.config" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+			<Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+			<Name>SolidCP.Providers.Base</Name>
+		</ProjectReference>
+		<!--<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
+			<Project>{1273d02f-6c5c-4752-86ce-99d504f6cffa}</Project>
+			<Name>SolidCP.Providers.OS.Unix</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj">
+			<Project>{899b3048-46be-4c4d-9d41-0043c8b0d11e}</Project>
+			<Name>SolidCP.Providers.OS.Windows2003</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2008\SolidCP.Providers.OS.Windows2008.csproj">
+			<Project>{bed2f43f-2dd8-45cf-ad7c-86799897c575}</Project>
+			<Name>SolidCP.Providers.OS.Windows2008</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj">
+			<Project>{27130bbb-76fa-411e-8b4d-51cd4dc821af}</Project>
+			<Name>SolidCP.Providers.OS.Windows2012</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2016\SolidCP.Providers.OS.Windows2016.csproj">
+			<Project>{4396082e-ec55-4741-a183-d0e374adc2fd}</Project>
+			<Name>SolidCP.Providers.OS.Windows2016</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2019\SolidCP.Providers.OS.Windows2019.csproj">
+			<Project>{c4b1ea53-1417-473f-bb8e-e71be84db3a5}</Project>
+			<Name>SolidCP.Providers.OS.Windows2019</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Windows2022\SolidCP.Providers.OS.Windows2022.csproj">
+			<Project>{05b23c2b-15ce-48ef-995c-c5e517a04011}</Project>
+			<Name>SolidCP.Providers.OS.Windows2022</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs100\SolidCP.Providers.Web.IIs100.csproj">
+			<Project>{9b99f215-5029-4779-bc2f-6d83cbb42205}</Project>
+			<Name>SolidCP.Providers.Web.IIs100</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj">
+			<Project>{9be0317d-e42e-4ff6-9a87-8c801f046ea1}</Project>
+			<Name>SolidCP.Providers.Web.IIs60</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj">
+			<Project>{1b9dce85-c664-49fc-b6e1-86c63cab88d1}</Project>
+			<Name>SolidCP.Providers.Web.IIs70</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.IIs80\SolidCP.Providers.Web.IIs80.csproj">
+			<Project>{6e348968-461d-45a1-b235-4f552947b9f1}</Project>
+			<Name>SolidCP.Providers.Web.IIs80</Name>
+		</ProjectReference>-->
+		<ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj">
+			<Project>{3951c0ec-bd98-450e-b228-cdbe5bd4ad49}</Project>
+			<Name>SolidCP.Setup</Name>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="app.config" />
+	</ItemGroup>
+	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+	<Import Project="$(WixCATargetsPath)" />
 </Project>

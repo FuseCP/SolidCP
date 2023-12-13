@@ -268,6 +268,14 @@
 		<EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />
 		<EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
 		<EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
+		<EmbeddedResource Include="Resources\SyslogNet.Client.dll" />
+		<EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
+		<EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
+		<EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
+		<EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
+		<EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Unix.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2003.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2008.pdb" />
@@ -277,18 +285,12 @@
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2022.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Server.Utils.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.pdb" />
-		<EmbeddedResource Include="Resources\SyslogNet.Client.dll" />
 		<EmbeddedResource Include="Resources\SolidCP.Providers.Base.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Web.Clients.pdb" />
-		<EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
-		<EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
-		<EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
-		<EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
-		<EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
-		<Content Include="SolidCP.ico" />
 	</ItemGroup>
 	<ItemGroup>
+		<None Include="SolidCP.ico" />
 		<Folder Include="Tasks\" />
 	</ItemGroup>
 	<ItemGroup>
@@ -393,13 +395,13 @@
 			<Name>SolidCP.Providers.Web.IIs80</Name>
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<OutputItemType>EmbeddedResource</OutputItemType>
-		</ProjectReference>-->
+		</ProjectReference>
 		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Web.LetsEncrypt\SolidCP.Providers.Web.LetsEncrypt.csproj">
 			<Project>{4e59ef03-997a-4b41-8ca7-01a5db5613ff}</Project>
 			<Name>SolidCP.Providers.Web.LetsEncrypt</Name>
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<OutputItemType>EmbeddedResource</OutputItemType>
-		</ProjectReference>
+		</ProjectReference>-->
 		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj">
 			<Project>{e91e52f3-9555-4d00-b577-2b1dbdd87ca7}</Project>
 			<Name>SolidCP.Server.Utils</Name>
@@ -419,7 +421,6 @@
 	<Target Name="CopyResources">
 		<Message Text="Copying Installer Resources" Importance="high" />
 		<ItemGroup>
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs100\Microsoft.Web.Administration.dll" />
 			<!--<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Web.Delegation.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Web.Deployment.dll" />
@@ -429,7 +430,15 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\DotNetZip.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SyslogNet.Client.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Newtonsoft.Json.dll" />
+			<FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
+			<FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
+		</ItemGroup>
+		<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
 			<FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />
+			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.pdb" />
 			<FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2003.pdb" />
@@ -444,11 +453,6 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs60.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs70.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />-->
-			<FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
-			<FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
-			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
-			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
-			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
 		</ItemGroup>
 		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
 	</Target>

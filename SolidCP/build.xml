@@ -385,8 +385,10 @@
 		<ItemGroup>
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
+			<InstallerExe Include="$(InstallerProjectBin)\SolidCP.Installer.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(InstallerExe)" DestinationFolder="$(DeployFolder)" />
 
 		<!-- Compile updater.exe -->
 		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration)" />

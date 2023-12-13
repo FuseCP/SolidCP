@@ -27,14 +27,14 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj">
+    <!--<ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj">
       <Name>SolidCP.Installer.Core</Name>
       <Project>{0e4a3f5b-0bb1-4f63-863d-7b0182b378cf}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
+    </ProjectReference>-->
     <ProjectReference Include="..\SolidCP.Installer\SolidCP.Installer.csproj">
       <Name>SolidCP.Installer</Name>
       <Project>{a358c6e2-f57d-4ab9-b13d-fd3048134143}</Project>
@@ -43,14 +43,14 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj">
+    <!--<ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj">
       <Name>SolidCP.Setup</Name>
       <Project>{3951c0ec-bd98-450e-b228-cdbe5bd4ad49}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
+    </ProjectReference>-->
     <ProjectReference Include="..\SolidCP.SilentInstaller\SolidCP.SilentInstaller.csproj">
       <Name>SolidCP.SilentInstaller</Name>
       <Project>{cd3e79c3-aeef-43e6-a9ed-1130840fb2cd}</Project>
@@ -67,7 +67,7 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+    <!--<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
       <Name>SolidCP.Providers.Base</Name>
       <Private>True</Private>
@@ -162,8 +162,7 @@
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-
+    </ProjectReference>-->
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.wxi" />

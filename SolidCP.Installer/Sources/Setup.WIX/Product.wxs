@@ -46,11 +46,11 @@
       <!-- Binaries -->
       <DirectoryRef Id="INSTALLFOLDER">
        <Component Id="ProductFiles" Guid="A89FA6CF-53E2-4390-9E9D-11CD4297D738">
-        <File Id="SolidCP.Installer.Core.dll" Source="$(var.BUILDPATH)\SolidCP.Installer.Core.dll" />
+        <!--<File Id="SolidCP.Installer.Core.dll" Source="$(var.BUILDPATH)\SolidCP.Installer.Core.dll" />-->
         <File Id="SolidCP.Installer.exe" Source="$(var.BUILDPATH)\SolidCP.Installer.exe" />
         <File Id="SolidCP.Installer.exe.config" Source="$(var.BUILDPATH)\SolidCP.Installer.exe.config" />
         <File Id="SolidCP.SilentInstaller.exe" Source="$(var.BUILDPATH)\SolidCP.SilentInstaller.exe" />
-        <File Id="DotNetZip" Source="$(var.BUILDPATH)\Ionic.Zip.Reduced.dll" />
+        <!--<File Id="DotNetZip" Source="$(var.BUILDPATH)\DotNetZip.dll" />-->
       </Component>
       </DirectoryRef>
     

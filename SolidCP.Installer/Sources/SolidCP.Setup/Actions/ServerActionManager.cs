@@ -1113,16 +1113,41 @@ namespace SolidCP.Setup.Actions
 			var fileName = Path.Combine(vars.InstallationFolder, "web.config");
 			//
 			var xdoc = XDocument.Load(fileName);
+			
+			// Remove WSE3 sections
+			var configNode = xdoc.Root.Element("configSections");
+			var wse3Section = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "microsoft.web.services3", StringComparison.OrdinalIgnoreCase));
+			if (wse3Section != null) wse3Section.Remove();
+			wse3Section = xdoc.Root.Element("microsoft.web.services3");
+			if (wse3Section != null) wse3Section.Remove();
+
+			// add appsettings asp:UseTaskFriendlySynchronizationContext
+			var appsettings = xdoc.Root.Element("appSettings");
+			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
+			if (synccontext != null) synccontext.Remove();
+			synccontext = new XElement("add",new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
+			appsettings.Add(synccontext);
+
 			// Modify <system.web /> node child elements
 			var swnode = xdoc.Root.Element("system.web");
 			{
 				//
 				if (swnode.Element("compilation") != null)
 					swnode.Element("compilation").Remove();
+				// remove classic web services
+				if (swnode.Element("webServices") != null)
+					swnode.Element("webServices").Remove();
+
 			};
 			// Find/add WCF endpoints configuration section (DDTK)
 			var serviceModelNode = xdoc.Root.Element("system.serviceModel", true);
 			{
+				// add serviceHostingEnvironment
+				var env = serviceModelNode.Element("serviceHostingEnvironment");
+				if (env != null) env.Remove();
+				env = new XElement("serviceHostingEnvironment", new XAttribute("aspNetCompatibilityEnabled", "true"));
+				serviceModelNode.Add(env);
+
 				// Find/add bindings node if does not exist
 				var bindingsNode = serviceModelNode.Element("bindings", true);
 				{
@@ -1142,6 +1167,26 @@ namespace SolidCP.Setup.Actions
 					};
 				};
 			};
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath",
+				"bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Exchange2019;bin/Sharepoint2013;bin/Sharepoint2016;bin/Sharepoint2019;bin/Lync2013;bin/SfB2015;bin/SfB2019;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters;bin/Database;bin/DNS;bin/Providers;bin/Server;bin/EnterpriseServer;bin/netstandard"));
+			assemblyBinding.Add(probing);
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1160,13 +1205,62 @@ namespace SolidCP.Setup.Actions
 			var fileName = Path.Combine(vars.InstallationFolder, "web.config");
 			//
 			var xdoc = XDocument.Load(fileName);
+
+			// Remove WSE3 sections
+			var configNode = xdoc.Root.Element("configSections");
+			var wse3Section = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "microsoft.web.services3", StringComparison.OrdinalIgnoreCase));
+			if (wse3Section != null) wse3Section.Remove();
+			wse3Section = xdoc.Root.Element("microsoft.web.services3");
+			if (wse3Section != null) wse3Section.Remove();
+
+			// add appsettings asp:UseTaskFriendlySynchronizationContext
+			var appsettings = xdoc.Root.Element("appSettings");
+			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
+			if (synccontext != null) synccontext.Remove();
+			synccontext = new XElement("add", new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
+			appsettings.Add(synccontext);
+
 			// Modify <system.web /> node child elements
 			var swnode = xdoc.Root.Element("system.web");
 			{
 				//
 				if (swnode.Element("compilation") != null)
 					swnode.Element("compilation").Remove();
+				// remove classic web services
+				if (swnode.Element("webServices") != null)
+					swnode.Element("webServices").Remove();
 			};
+
+			// add serviceHostingEnvironment
+			var serviceModel = xdoc.Root.Element("system.serviceModel");
+			if (serviceModel == null)
+			{
+				serviceModel = new XElement("system.serviceModel");
+				xdoc.Root.Add(serviceModel);
+			}
+			var env = serviceModel.Element("serviceHostingEnvironment");
+			if (env != null) env.Remove();
+			env = new XElement("serviceHostingEnvironment", new XAttribute("aspNetCompatibilityEnabled", "true"));
+			serviceModel.Add(env);
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath", "bin/Code"));
+			assemblyBinding.Add(probing);
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1208,6 +1302,7 @@ namespace SolidCP.Setup.Actions
 			//
 			if (vars.IISVersion.Major == 6)
 			{
+				// runtime node required
 				DoMigrationOnIis6(vars);
 			}
 			else
@@ -1227,6 +1322,14 @@ namespace SolidCP.Setup.Actions
 			// Remove <system.web.extensions /> node
 			if (xdoc.Root.Element("system.web.extensions") != null)
 				xdoc.Root.Element("system.web.extensions").Remove();
+
+			// add appsettings asp:UseTaskFriendlySynchronizationContext
+			var appsettings = xdoc.Root.Element("appSettings");
+			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
+			if (synccontext != null) synccontext.Remove();
+			synccontext = new XElement("add", new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
+			appsettings.Add(synccontext);
+
 			// Modify <appSettings /> node
 			var apsnode = xdoc.Root.Element("appSettings");
 			{
@@ -1272,6 +1375,8 @@ namespace SolidCP.Setup.Actions
 				//
 				if (swnode.Element("compilation") != null)
 					swnode.Element("compilation").Remove();
+			
+			
 			};
 			// Remove <system.codedom /> node
 			if (xdoc.Root.Element("system.codedom") != null)
@@ -1300,8 +1405,28 @@ namespace SolidCP.Setup.Actions
 				}
 			};
 			// Remove <runtime /> node
-			if (xdoc.Root.Element("runtime") != null)
-				xdoc.Root.Element("runtime").Remove();
+			//if (xdoc.Root.Element("runtime") != null)
+			//	xdoc.Root.Element("runtime").Remove();
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath", "bin/Lazy"));
+			assemblyBinding.Add(probing);
+
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1370,8 +1495,27 @@ namespace SolidCP.Setup.Actions
 			if (xdoc.Root.Element("system.codedom") != null)
 				xdoc.Root.Element("system.codedom").Remove();
 			// Remove <runtime /> node
-			if (xdoc.Root.Element("runtime") != null)
-				xdoc.Root.Element("runtime").Remove();
+			//if (xdoc.Root.Element("runtime") != null)
+			//	xdoc.Root.Element("runtime").Remove();
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath", "bin/Lazy"));
+			assemblyBinding.Add(probing);
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
