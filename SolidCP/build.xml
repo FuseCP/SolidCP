@@ -166,6 +166,7 @@
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.log" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.old" />	
 			<ServerBuildExclude Include="$(ServerSrc)\appsettings.json" />					
+			<ServerBuildExclude Include="$(ServerSrc)\packages.config" />					
 			<ServerBuildExclude Include="$(ServerSrc)\**\WsePolicyCache.Config" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.csproj" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vb" />
@@ -222,6 +223,7 @@
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.suo" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.cs" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.snk" />
+			<PortalBuildExclude Include="$(PortalSrc)\packages.config" />			
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.csproj" />
 			<PortalBuildExclude Include="$(PortalSrc)\Code\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\bin\**" />
@@ -265,6 +267,7 @@
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.snk" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\packages.config" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.csproj" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.sln" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\web.release.config" />
@@ -1005,6 +1008,7 @@
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPUniversalInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.UniversalInstaller.exe" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.Installer.exe" />
           <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />
