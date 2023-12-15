@@ -36,11 +36,13 @@ namespace SolidCP.Web.Services
 		bool IsHttps(string adr) => adr.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 		bool IsNetTcp(string adr) => adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase);
 		bool IsPipe(string adr) => adr.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase);
+	
 		bool IsLocal(string adr)
 		{
 			var host = new Uri(adr).Host;
+			var hostIsIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline); 
 			return host == "localhost" || host == "127.0.0.1" || host == "::1" ||
-				Regex.IsMatch(host, "^192\\.168\\.[0-9]+\\.[0-9]+$") || // local network ip
+				hostIsIP && Regex.IsMatch(host, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline) || // local network ip
 				IsPipe(adr);
 		}
 		const bool AllowInsecureHttp = PolicyAttribute.AllowInsecureHttp;

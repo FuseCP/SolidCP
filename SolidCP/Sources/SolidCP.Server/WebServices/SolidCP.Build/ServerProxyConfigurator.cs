@@ -161,7 +161,7 @@ namespace SolidCP.Server.Client
 			// Use NetHttp as default protocol or WSHttp if UseMessageSecurityOverHttp is set
 			if (proxy.IsDefaultApi)
 			{
-				if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && 
+				if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !proxy.IsLocal &&
 					(UseMessageSecurityOnCore || IsCore.HasValue && IsCore.Value == false))
 				{
 					proxy.Protocol = Web.Client.Protocols.WSHttp;

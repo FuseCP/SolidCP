@@ -1324,11 +1324,11 @@ namespace SolidCP.Setup.Actions
 				xdoc.Root.Element("system.web.extensions").Remove();
 
 			// add appsettings asp:UseTaskFriendlySynchronizationContext
-			var appsettings = xdoc.Root.Element("appSettings");
+			/* var appsettings = xdoc.Root.Element("appSettings");
 			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
 			if (synccontext != null) synccontext.Remove();
 			synccontext = new XElement("add", new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
-			appsettings.Add(synccontext);
+			appsettings.Add(synccontext); */
 
 			// Modify <appSettings /> node
 			var apsnode = xdoc.Root.Element("appSettings");

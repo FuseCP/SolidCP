@@ -40,6 +40,7 @@ namespace SolidCP.EnterpriseServer
     {
         public const bool UseNetHttpAsDefaultProtocol = true;
         public const bool UseMessageSecurityOverHttp = true;
+        public const bool UseMessageSecurityOnCore = false;
 
         private string enterpriseServerUrl;
         private string username;
@@ -95,7 +96,8 @@ namespace SolidCP.EnterpriseServer
 
             if (proxy.IsDefaultApi)
             {
-                if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !proxy.IsLocal && !IsCore)
+                if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !proxy.IsLocal && 
+                    (UseMessageSecurityOnCore || !IsCore))
                 {
                     proxy.Protocol = Web.Client.Protocols.WSHttp;
                 }

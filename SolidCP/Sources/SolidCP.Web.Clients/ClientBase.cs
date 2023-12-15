@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.ServiceModel;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.CodeDom;
 using System.ServiceModel.Description;
+using System.Net;
 
 #if !NETFRAMEWORK
 using Grpc.Core;
@@ -176,14 +178,43 @@ namespace SolidCP.Web.Client
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
 					?.GetCustomAttribute<HasPolicyAttribute>() != null;
 
+		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
+
+		public bool IsLocalAddress(string adr)
+		{
+			return Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline);
+		}
+
+
+		public bool IsHostLocal(string host)
+		{
+			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
+			if (host == "localhost" || host == "127.0.0.1" || host == "::1" ||
+				isHostIP && IsLocalAddress(host)) return true;
+
+			if (!isHostIP)
+			{
+				IPAddress[] ips;
+				lock (ResolvedHosts)
+				{
+					if (!ResolvedHosts.TryGetValue(host, out ips))
+					{
+						ResolvedHosts.Add(host, ips = Dns.GetHostEntry(host).AddressList);
+					}
+				}
+				return ips
+					.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+					.All(ip => IsLocalAddress(ip.ToString()));
+			}
+			return false;
+		}
+
 		public bool IsLocal
 		{
 			get
 			{
 				var host = new Uri(url).Host;
-				return host == "localhost" || host == "127.0.0.1" || host == "::1" ||
-					Regex.IsMatch(host, "^192\\.168\\.[0-9]+\\.[0-9]+$") || // local network ip
-					url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase);
+				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || IsHostLocal(host);
 			}
 		}
 

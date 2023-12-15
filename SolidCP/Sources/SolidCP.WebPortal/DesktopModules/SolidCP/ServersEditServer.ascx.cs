@@ -50,14 +50,22 @@ namespace SolidCP.Portal
 	public partial class ServersEditServer : SolidCPModuleBase
 	{
 
+		int ServerId;
 		Task<ServerInfo> serverInfo = null;
 		Task<ServerInfo> ServerInfo
 		{
 			get
 			{
-				lock (this)
+				try
 				{
-					return serverInfo ?? (serverInfo = ES.Services.Servers.GetServerByIdAsync(PanelRequest.ServerId));
+					lock (this)
+					{
+						return serverInfo ?? (serverInfo = ES.Services.Servers.GetServerByIdAsync(ServerId));
+					}
+				}
+				catch (Exception ex)
+				{
+					throw;
 				}
 			}
 		}
@@ -68,12 +76,15 @@ namespace SolidCP.Portal
 			{
 				try
 				{
+					ServerId = PanelRequest.ServerId;
+
 					Task.WaitAll(
-						 BindTools(),
-						 BindServer(),
-						 BindServerMemory(),
-						 BindServerVersion(),
-						 BindServerFilepath());
+						BindTools(),
+						BindServer(),
+						BindServerMemory(),
+						BindServerVersion(),
+						BindServerFilepath()
+					);
 				}
 				catch (Exception ex)
 				{
@@ -126,22 +137,29 @@ namespace SolidCP.Portal
 		//}
 		private async Task BindTools()
 		{
-			lnkTerminalSessions.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_termservices");
+			try
+			{
+				lnkTerminalSessions.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_termservices");
 
-			lnkWindowsServices.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_winservices");
-			lnkUnixServices.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_winservices");
-			lnkWindowsProcesses.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_processes");
-			lnkEventViewer.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_eventviewer");
-			lnkPlatformInstaller.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_platforminstaller");
-			lnkServerReboot.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_reboot");
+				lnkWindowsServices.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_winservices");
+				lnkUnixServices.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_winservices");
+				lnkWindowsProcesses.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_processes");
+				lnkEventViewer.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_eventviewer");
+				lnkPlatformInstaller.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_platforminstaller");
+				lnkServerReboot.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_reboot");
 
-			lnkBackup.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "backup");
-			lnkRestore.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "restore");
+				lnkBackup.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "backup");
+				lnkRestore.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "restore");
 
-			lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
+				lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
 
-			pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = (await ServerInfo).OSPlatform == OSPlatform.Windows;
-			pnUnixServices.Visible = (await ServerInfo).OSPlatform != OSPlatform.Windows;
+				pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = (await ServerInfo).OSPlatform == OSPlatform.Windows;
+				pnUnixServices.Visible = (await ServerInfo).OSPlatform != OSPlatform.Windows;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
 		}
 
 		private async Task BindServer()
@@ -177,20 +195,20 @@ namespace SolidCP.Portal
 
 		private async Task BindServerVersion()
 		{
-			scpVersion.Text = await ES.Services.Servers.GetServerVersionAsync(PanelRequest.ServerId);
+			scpVersion.Text = await ES.Services.Servers.GetServerVersionAsync(ServerId);
 		}
 
 		private async Task BindServerMemory()
 		{
 			try
 			{
-				Memory memory = await ES.Services.Servers.GetMemoryAsync(PanelRequest.ServerId);
+				Memory memory = await ES.Services.Servers.GetMemoryAsync(ServerId);
 				freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
 				totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
 				ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
 				ramGauge.Progress = (int)((memory.TotalVisibleMemorySizeKB / 1024) - (memory.FreePhysicalMemoryKB / 1024));
 			}
-			catch
+			catch (Exception ex)
 			{
 				freeMemory.Text = "N/A";
 				totalMemory.Text = "N/A";
@@ -201,7 +219,7 @@ namespace SolidCP.Portal
 		{
 			// scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
 
-			scpFilepath.Text = await ES.Services.Servers.GetServerFilePathAsync(PanelRequest.ServerId);
+			scpFilepath.Text = await ES.Services.Servers.GetServerFilePathAsync(ServerId);
 		}
 
 		private void UpdateServer()
@@ -278,10 +296,6 @@ namespace SolidCP.Portal
 		}
 
 		protected void btnUpdate_Click(object sender, EventArgs e)
-		{
-			UpdateServer();
-		}
-		protected void btnUpdate_Click1(object sender, EventArgs e)
 		{
 			UpdateServer();
 		}
