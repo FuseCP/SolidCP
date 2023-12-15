@@ -35,9 +35,15 @@ using System.Data;
 using System.Configuration;
 using System.Collections;
 using System.Web;
+using System.Web.Script;
 using System.Web.Security;
 using System.Web.SessionState;
 using System.Security.Principal;
+using System.Web.UI;
+using System.Net;
+using System.Net.Http;
+using SolidCP.Portal;
+
 
 namespace SolidCP.WebPortal
 {
@@ -100,8 +106,21 @@ namespace SolidCP.WebPortal
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            // start Enterprise Server
+			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serverUrl);
+			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+			request.Proxy = null;
+			request.Method = "GET";
+            request.GetResponseAsync();
 
-        }
+			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
+				new ScriptResourceDefinition
+				{
+					Path = "~/JavaScript/jquery-2.1.0.min.js"
+				}
+			);
+		}
 
         protected void Application_End(object sender, EventArgs e)
         {

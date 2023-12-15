@@ -1262,7 +1262,6 @@
       <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
   </ItemGroup>
-
   <Target Name="MoveDllsToBinLazy" AfterTargets="Build">
     <Message Text="Move dll files to bin\Lazy" Importance="high" />
     <ItemGroup>
@@ -1286,16 +1285,14 @@
       <FilesToMove Include="bin\System.Web.Optimization.*" />
       <FilesToMove Include="bin\WebGrease.*" />
     </ItemGroup>
-    <Move SourceFiles="@(FilesToMove)"  DestinationFolder="bin\Lazy" />
-
-	  <!--<Message Text="Restore needed dlls from bin\Lazy to bin" Importance="high" />
+    <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Lazy" />
+    <!--<Message Text="Restore needed dlls from bin\Lazy to bin" Importance="high" />
     <ItemGroup>
       <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.*" />
       <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.dll.config" />
     </ItemGroup>
     <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="bin" />-->
   </Target>
-
   <Target Name="PreDeploySolidCPProjectBinaries">
     <ItemGroup>
       <_CustomFiles Include="$(TargetDir)\SolidCP.*" />
@@ -1305,7 +1302,6 @@
     </ItemGroup>
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

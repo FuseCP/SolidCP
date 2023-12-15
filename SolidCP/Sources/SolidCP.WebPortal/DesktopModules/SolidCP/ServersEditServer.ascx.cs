@@ -78,13 +78,15 @@ namespace SolidCP.Portal
 				{
 					ServerId = PanelRequest.ServerId;
 
-					Task.WaitAll(
-						BindTools(),
-						BindServer(),
-						BindServerMemory(),
-						BindServerVersion(),
-						BindServerFilepath()
-					);
+					Page.RegisterAsyncTask(new PageAsyncTask(() =>
+						Task.WhenAll(
+							BindTools(),
+							BindServer(),
+							BindServerMemory(),
+							BindServerVersion(),
+							BindServerFilepath()
+						)));
+					Page.ExecuteRegisteredAsyncTasks();
 				}
 				catch (Exception ex)
 				{

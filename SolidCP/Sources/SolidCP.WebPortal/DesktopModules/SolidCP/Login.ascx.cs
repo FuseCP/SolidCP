@@ -33,6 +33,7 @@
 using System;
 using System.Data;
 using System.Web;
+using System.Threading.Tasks;
 using SolidCP.EnterpriseServer;
 using SCP = SolidCP.EnterpriseServer;
  
@@ -92,8 +93,13 @@ namespace SolidCP.Portal
         {
             if (!IsPostBack)
             {
-                EnsureSCPA();
-                //
+                Page.RegisterAsyncTask(new System.Web.UI.PageAsyncTask(() =>
+                    Task.WhenAll(
+                       EnsureSCPA(),
+					    BindControlsAsync()
+                )));
+                Page.ExecuteRegisteredAsyncTasks();
+
                 BindControls();
             }
 
@@ -125,7 +131,7 @@ namespace SolidCP.Portal
             }
         }
 
-        private void EnsureSCPA()
+        private async Task EnsureSCPA()
         {
             var enabledScpa = ES.Services.Authentication.GetSystemSetupMode();
             //
@@ -137,14 +143,17 @@ namespace SolidCP.Portal
             Response.Redirect(EditUrl("scpa"), true);
         }
 
-        private void BindControls()
+        private async Task BindControlsAsync()
         {
             // load languages
             PortalUtils.LoadCultureDropDownList(ddlLanguage);
 
             // load themes
-            BindThemes();
+            await BindThemes();
 
+        }
+
+        private void BindControls() {
             // try to get the last login name from cookie
             HttpCookie cookie = Request.Cookies["SolidCPLogin"];
             if (cookie != null)
@@ -167,9 +176,9 @@ namespace SolidCP.Portal
             }
         }
 
-        private void BindThemes()
+        private async Task BindThemes()
         {
-            ddlTheme.DataSource = ES.Services.Authentication.GetLoginThemes();
+            ddlTheme.DataSource = await ES.Services.Authentication.GetLoginThemesAsync();
             ddlTheme.DataBind();
             Utils.SelectListItem(ddlTheme, PortalUtils.CurrentTheme);
         }
