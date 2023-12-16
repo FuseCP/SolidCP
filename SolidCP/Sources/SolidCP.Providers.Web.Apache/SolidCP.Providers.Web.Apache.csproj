@@ -14,4 +14,8 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+  </ItemGroup>
+
 </Project>
