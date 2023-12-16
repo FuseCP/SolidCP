@@ -133,7 +133,7 @@ namespace SolidCP.Portal
 
         private async Task EnsureSCPA()
         {
-            var enabledScpa = ES.Services.Authentication.GetSystemSetupMode();
+            var enabledScpa = await ES.Services.Authentication.GetSystemSetupModeAsync();
             //
             if (enabledScpa == false)
             {

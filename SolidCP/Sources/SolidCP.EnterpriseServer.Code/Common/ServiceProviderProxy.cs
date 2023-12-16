@@ -114,7 +114,7 @@ namespace SolidCP.EnterpriseServer
 			proxy.Url = serverUrl;
 			if (proxy.IsAuthenticated)
 			{
-				proxy.Credentials.Password = serverPassword; // CryptoUtils.Encrypt(serverPassword);
+				proxy.Credentials.Password = CryptoUtils.Encrypt(serverPassword);
 				proxy.Credentials.UserName = "";
 			}
 			else
