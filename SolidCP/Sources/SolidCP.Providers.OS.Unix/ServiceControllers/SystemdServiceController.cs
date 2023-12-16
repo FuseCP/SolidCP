@@ -190,25 +190,7 @@ WantedBy=multi-user.target
 			}
 		}
 
-		public override bool IsInstalled
-		{
-			get
-			{
-				try
-				{
-					var proc0 = System.Diagnostics.Process.GetProcessById(0);
-					if (proc0 != null) return proc0.ProcessName.StartsWith("systemd", StringComparison.OrdinalIgnoreCase);
-				}
-				catch { }
-
-				if (Shell.Find("pstree") != null)
-				{
-					return Shell.Exec("pstree").Output().Result.StartsWith("systemd");
-				}
-
-				return Shell.Find("systemctl") != null;
-			}
-		}
+		public override bool IsInstalled => Directory.Exists("/run/systemd/system");
 
 		public Shell Shell => Shell.Default;
 	}
