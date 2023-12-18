@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -34,11 +34,19 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+[assembly: AssemblyTitle("SolidCP.Providers.OS.Unix")]
+[assembly: AssemblyProduct("SolidCP.Providers.OS.Unix")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bec9fe6e-d9f3-4f13-a1e7-2a6ae97c7cc4")]
-
+[assembly: Guid("c1331890-7cd9-46d1-9be9-c29ce21d36ab")]

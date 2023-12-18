@@ -1,23 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<ProjectGuid>{684C932A-6C75-46AC-A327-F3689D89EB42}</ProjectGuid>
 		<RootNamespace>SolidCP.Providers</RootNamespace>
-		<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
+		<!--<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PublishUrl>publish\</PublishUrl>
-		<MapFileExtensions>true</MapFileExtensions>
 		<Product>SolidCP.Providers.Base</Product>
 		<WarningsAsErrors>618</WarningsAsErrors>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<LangVersion>12.0</LangVersion>
-		<!--<ProduceReferenceAssembly>true</ProduceReferenceAssembly>-->
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
 		<OutputPath>..\..\Bin\</OutputPath>
-		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<DebugType>portable</DebugType>
