@@ -7,7 +7,6 @@
 		<PublishUrl>publish\</PublishUrl>
 		<Product>SolidCP.Providers.Base</Product>
 		<WarningsAsErrors>618</WarningsAsErrors>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<LangVersion>12.0</LangVersion>
 		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>

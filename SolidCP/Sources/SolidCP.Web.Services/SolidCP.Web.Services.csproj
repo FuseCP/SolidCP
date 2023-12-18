@@ -2,12 +2,12 @@
 	<PropertyGroup>
 		<TargetFrameworks>net48;net8.0</TargetFrameworks>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
+		<OutputPath>..\..\Bin\</OutputPath>
+    	<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
 		<PackageReference Include="CoreWCF.Http" Version="1.5.1" />
