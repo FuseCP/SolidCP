@@ -229,7 +229,7 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
 		</ItemGroup>
 		<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.pdb" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.Providers.Base.pdb" />
 			<FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />
 			<FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SolidCP.Providers.OS.Unix.pdb" />

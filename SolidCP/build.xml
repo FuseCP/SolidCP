@@ -381,6 +381,8 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.Installer\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
+		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
+
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration)" />
 

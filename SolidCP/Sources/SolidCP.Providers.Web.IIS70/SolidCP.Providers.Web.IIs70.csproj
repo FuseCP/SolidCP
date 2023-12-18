@@ -20,7 +20,7 @@
 		<DebugType>none</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="DotNetZip.Reduced" Version="1.9.1.8" />
+		<PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching">

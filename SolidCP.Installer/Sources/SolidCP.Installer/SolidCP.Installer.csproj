@@ -438,8 +438,8 @@
 		</ItemGroup>
 		<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
 			<FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\bin\$(Configuration)\SolidCP.Providers.Base.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.pdb" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.Providers.Base.pdb" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.Web.Clients.pdb" />
 			<FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2003.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.OS.Windows2008.pdb" />

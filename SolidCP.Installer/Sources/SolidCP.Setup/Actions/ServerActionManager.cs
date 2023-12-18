@@ -1352,9 +1352,9 @@ namespace SolidCP.Setup.Actions
 					nodes.Remove();
 				};
 				// Set compatible request validation mode
-				var runtime = swnode.Element("httpRuntime");
-				runtime.SetAttributeValue("requestValidationMode", "2.0");
-				runtime.SetAttributeValue("targetFramework", "4.8");
+				var hruntime = swnode.Element("httpRuntime");
+				hruntime.SetAttributeValue("requestValidationMode", "2.0");
+				hruntime.SetAttributeValue("targetFramework", "4.8");
 				// Modify <httpHandlers /> node
 				var hhnode = swnode.Element("httpHandlers");
 				{

@@ -502,9 +502,9 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs60.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\SolidCP.Providers.Web.IIs70.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs80\SolidCP.Providers.Web.IIs80.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer\bin\SolidCP.EnterpriseServer.Base.pdb" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.EnterpriseServer.Base.pdb" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.EnterpriseServer.Client.pdb" />
-			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Web.Clients\bin\$(Configuration)\net48\SolidCP.Web.Clients.pdb" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\SolidCP.Web.Clients.pdb" />
 		</ItemGroup>
 		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
 	</Target>
