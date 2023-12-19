@@ -6,8 +6,6 @@
     <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>12</LangVersion>
-    <!--<SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>

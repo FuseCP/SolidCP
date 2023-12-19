@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<RootNamespace>SolidCP.Providers</RootNamespace>
-		<!--<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PublishUrl>publish\</PublishUrl>
 		<Product>SolidCP.Providers.Base</Product>

@@ -8,8 +8,8 @@
 		<ImplicitUsings>disable</ImplicitUsings>
 		<OutputPath>..\..\..\..\Bin</OutputPath>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-		<!--<SignAssembly>true</SignAssembly>
-		<AssemblyOriginatorKeyFile>..\SolidCP.snk</AssemblyOriginatorKeyFile>-->
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>

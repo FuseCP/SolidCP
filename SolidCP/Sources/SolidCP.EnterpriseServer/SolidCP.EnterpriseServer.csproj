@@ -11,8 +11,6 @@
     <ProjectGuid>{59C7623A-5181-48A5-880A-C9B82B48F589}</ProjectGuid>
     <!--<RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
     <RunArguments>/site:server</RunArguments>-->
-    <!--<SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
