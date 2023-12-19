@@ -96,7 +96,7 @@ namespace SolidCP.Portal
                 Page.RegisterAsyncTask(new System.Web.UI.PageAsyncTask(() =>
                     Task.WhenAll(
                        EnsureSCPA(),
-					    BindControlsAsync()
+					   BindControlsAsync()
                 )));
                 Page.ExecuteRegisteredAsyncTasks();
 

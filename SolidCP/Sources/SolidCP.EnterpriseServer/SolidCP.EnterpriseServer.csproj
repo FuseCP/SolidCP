@@ -9,6 +9,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>11</LangVersion>
     <ProjectGuid>{59C7623A-5181-48A5-880A-C9B82B48F589}</ProjectGuid>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
     <!--<RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
     <RunArguments>/site:server</RunArguments>-->
   </PropertyGroup>

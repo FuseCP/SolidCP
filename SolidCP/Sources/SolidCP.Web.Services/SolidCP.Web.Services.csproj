@@ -8,6 +8,7 @@
 		<OutputPath>..\..\Bin\</OutputPath>
     	<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
     	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
 		<PackageReference Include="CoreWCF.Http" Version="1.5.1" />
