@@ -96,14 +96,14 @@ namespace SolidCP.Providers.Web
 		protected string[] ASP_EXTENSIONS = new string[] { ".asa,5", ".asp,5", ".cdx,5", ".cer,5", ".htr,5" };
 
 		protected string[] ASPNET_11_EXTENSIONS = new string[] { ".asax,5", ".ascx,5", ".ashx,1",
-        ".asmx,1", ".aspx,1", ".axd,1", ".config,5", ".cs,5", ".csproj,5", ".licx,5", ".rem,1", ".resources,5", ".resx,5",
-        ".soap,1", ".vb,5", ".vbproj,5", ".vsdisco,1", ".webinfo,5"};
+		".asmx,1", ".aspx,1", ".axd,1", ".config,5", ".cs,5", ".csproj,5", ".licx,5", ".rem,1", ".resources,5", ".resx,5",
+		".soap,1", ".vb,5", ".vbproj,5", ".vsdisco,1", ".webinfo,5"};
 
 		protected string[] ASPNET_20_EXTENSIONS = new string[] { ".ad,5", ".adprototype,5", ".asax,5", ".ascx,5", ".ashx,1",
-        ".asmx,1", ".aspx,1", ".axd,1", ".browser,5", ".cd,5", ".compiled,5", ".config,5", ".cs,5", ".csproj,5", ".dd,5",
-        ".exclude,5", ".java,5", ".jsl,5", ".ldb,5", ".ldd,5", ".lddprototype,5", ".ldf,5", ".licx,5", ".master,5",
-        ".mdb,5", ".mdf,5", ".msgx,5", ".refresh,5", ".rem,1", ".resources,5", ".resx,5", ".sd,5", ".sdm,5", ".sdmDocument,5",
-        ".sitemap,5", ".skin,5", ".soap,1", ".svc,5", ".vb,5", ".vbproj,5", ".vjsproj,5", ".vsdisco,1", ".webinfo,5"};
+		".asmx,1", ".aspx,1", ".axd,1", ".browser,5", ".cd,5", ".compiled,5", ".config,5", ".cs,5", ".csproj,5", ".dd,5",
+		".exclude,5", ".java,5", ".jsl,5", ".ldb,5", ".ldd,5", ".lddprototype,5", ".ldf,5", ".licx,5", ".master,5",
+		".mdb,5", ".mdf,5", ".msgx,5", ".refresh,5", ".rem,1", ".resources,5", ".resx,5", ".sd,5", ".sdm,5", ".sdmDocument,5",
+		".sitemap,5", ".skin,5", ".soap,1", ".svc,5", ".vb,5", ".vbproj,5", ".vjsproj,5", ".vsdisco,1", ".webinfo,5"};
 
 		protected string[] ASPNET_40_EXTENSIONS = new string[] {".asax,5", ".ascx,5", ".ashx,1", ".asmx,1", ".aspx,1", ".axd,1",
 			".vsdisco,1", ".rem,1", ".soap,1", ".config,5", ".cs,5", ".csproj,5", ".vb,5", ".vbproj,5", ".webinfo,5", ".licx,5",
@@ -118,10 +118,10 @@ namespace SolidCP.Providers.Web
 
 		protected string[] COLDFUSION_EXTENSIONS = new string[] { ".cfc,5", ".cfm,5", ".cfml,5", ".cfr,5", ".cfswf,5", ".jws,5" };
 
-		protected string[] CUSTOM_ERRORS_TYPE1 = new string[] { "400", "403.1", "403.2", "403.3", "403.4", "403.5", "403.6", "403.7", 
-        "403.8" , "403.9", "403.10", "403.11", "403.12", "403.13", "403.14", "403.15", "403.16", "403.17", "403.18", "403.19", "403.20", "404", "404.2", "404.3", "405", "406",
-        "412", "414", "415", "500", "500.12", "500.13", "500.14", "500.15", "500.16", "500.17", "500.18", "500.19",
-        "500.100", "501"};
+		protected string[] CUSTOM_ERRORS_TYPE1 = new string[] { "400", "403.1", "403.2", "403.3", "403.4", "403.5", "403.6", "403.7",
+		"403.8" , "403.9", "403.10", "403.11", "403.12", "403.13", "403.14", "403.15", "403.16", "403.17", "403.18", "403.19", "403.20", "404", "404.2", "404.3", "405", "406",
+		"412", "414", "415", "500", "500.12", "500.13", "500.14", "500.15", "500.16", "500.17", "500.18", "500.19",
+		"500.100", "501"};
 
 		protected string[] CUSTOM_ERRORS_TYPE2 = new string[] { "401.1", "401.2", "401.3", "401.4", "401.5", "401.7", "407", "502" };
 
@@ -152,7 +152,7 @@ namespace SolidCP.Providers.Web
 		public const string COLDFUSION_2016_REGLOC = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 2016";
 		public const string COLDFUSION_2016_REGLOC_X64 = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 2016";
 		public const string COLDFUSION_11_REGLOC = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 11";
-		public const string COLDFUSION_11_REGLOC_X64 = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 11";		
+		public const string COLDFUSION_11_REGLOC_X64 = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 11";
 		public const string COLDFUSION_10_REGLOC = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 10";
 		public const string COLDFUSION_10_REGLOC_X64 = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 10";
 		public const string COLDFUSION_9_REGLOC = @"SOFTWARE\Adobe\Install Data\Adobe ColdFusion 9";
@@ -291,7 +291,7 @@ namespace SolidCP.Providers.Web
 			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["ProtectedFoldersFile"]); }
 		}
 
-        /*
+		/*
         protected string GalleryXmlFeedUrl
 		{
 			get
@@ -432,7 +432,7 @@ namespace SolidCP.Providers.Web
 					site.ColdFusionVersion = "9";
 					site.ColdFusionAvailable = true;
 				}
-				
+
 				if (IsColdFusion10Installed())
 				{
 					site.ColdFusionVersion = "10";
@@ -444,13 +444,13 @@ namespace SolidCP.Providers.Web
 					site.ColdFusionVersion = "11";
 					site.ColdFusionAvailable = true;
 				}
-				
+
 				if (IsColdFusion2016Installed())
 				{
 					site.ColdFusionVersion = "2016";
 					site.ColdFusionAvailable = true;
 				}
-				
+
 			}
 			else
 			{
@@ -458,20 +458,29 @@ namespace SolidCP.Providers.Web
 			}
 
 			WebAppVirtualDirectory[] appdirs = GetAppVirtualDirectories(siteId);
-            WebVirtualDirectory[] virtdirs = GetVirtualDirectories(siteId);
+			WebVirtualDirectory[] virtdirs = GetVirtualDirectories(siteId);
 
-            if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
-				{
-					if (AppVirtualDirectoryExists(siteId, "CFIDE") && AppVirtualDirectoryExists(siteId, "jakarta"));
-					site.CreateCFAppVirtualDirectories = true;
-				}
-			else
-				{
-					if (AppVirtualDirectoryExists(siteId, "CFIDE") && AppVirtualDirectoryExists(siteId, "JRunScripts"));
-					site.CreateCFAppVirtualDirectories = true;
-				}
+			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
 			{
-				site.CreateCFAppVirtualDirectories = false;
+				if (AppVirtualDirectoryExists(siteId, "CFIDE") && AppVirtualDirectoryExists(siteId, "jakarta"))
+				{
+					site.CreateCFAppVirtualDirectories = true;
+				}
+				else
+				{
+					site.CreateCFAppVirtualDirectories = false;
+				}
+			}
+			else
+			{
+				if (AppVirtualDirectoryExists(siteId, "CFIDE") && AppVirtualDirectoryExists(siteId, "JRunScripts"))
+				{
+					site.CreateCFAppVirtualDirectories = true;
+				}
+				else
+				{
+					site.CreateCFAppVirtualDirectories = false;
+				}
 			}
 
 			// check sharepoint
@@ -844,13 +853,13 @@ namespace SolidCP.Providers.Web
 			bool cfDirsinstalled = false;
 
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
-				{
-					if (AppVirtualDirectoryExists(site.SiteId, "CFIDE") && AppVirtualDirectoryExists(site.SiteId, "jakarta"));
-				}
+			{
+				if (AppVirtualDirectoryExists(site.SiteId, "CFIDE") && AppVirtualDirectoryExists(site.SiteId, "jakarta")) ;
+			}
 			else
-				{
-					if (AppVirtualDirectoryExists(site.SiteId, "CFIDE") && AppVirtualDirectoryExists(site.SiteId, "JRunScripts"));
-				}
+			{
+				if (AppVirtualDirectoryExists(site.SiteId, "CFIDE") && AppVirtualDirectoryExists(site.SiteId, "JRunScripts")) ;
+			}
 			{
 				cfDirsinstalled = true;
 			}
@@ -893,17 +902,17 @@ namespace SolidCP.Providers.Web
 			}
 		}
 
-        // AppPool
-        public virtual void ChangeAppPoolState(string siteId, AppPoolState state)
-        {
-        }
+		// AppPool
+		public virtual void ChangeAppPoolState(string siteId, AppPoolState state)
+		{
+		}
 
-        public virtual AppPoolState GetAppPoolState(string siteId)
-        {
-            return AppPoolState.Unknown;
-        }
+		public virtual AppPoolState GetAppPoolState(string siteId)
+		{
+			return AppPoolState.Unknown;
+		}
 
-        public virtual void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
+		public virtual void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
 		{
 			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
 
@@ -1026,12 +1035,12 @@ namespace SolidCP.Providers.Web
 		#endregion
 
 		#region Virtual Directories
-		
 
-        public virtual bool AppPoolExists(string siteId, string appPool)
-        {
-            return DirectoryEntry.Exists(GetAppVirtualDirectoryADSIPath(siteId, appPool));
-        }
+
+		public virtual bool AppPoolExists(string siteId, string appPool)
+		{
+			return DirectoryEntry.Exists(GetAppVirtualDirectoryADSIPath(siteId, appPool));
+		}
 
 
 
@@ -1056,13 +1065,13 @@ namespace SolidCP.Providers.Web
 
 			WebAppVirtualDirectory flashRemotingDir = new WebAppVirtualDirectory();
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
-				{
-					flashRemotingDir.Name = "jakarta";
-				}
+			{
+				flashRemotingDir.Name = "jakarta";
+			}
 			else
-				{
-					flashRemotingDir.Name = "JRunScripts";
-				}
+			{
+				flashRemotingDir.Name = "JRunScripts";
+			}
 			flashRemotingDir.ContentPath = CFFlashRemotingDirPath;
 			flashRemotingDir.EnableAnonymousAccess = true;
 			flashRemotingDir.EnableWindowsAuthentication = true;
@@ -1081,129 +1090,129 @@ namespace SolidCP.Providers.Web
 		public virtual void DeleteCFAppVirtualDirectories(string siteId)
 		{
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
-				{
-					DeleteAppVirtualDirectory(siteId, "CFIDE");
-					DeleteAppVirtualDirectory(siteId, "jakarta");
-				}
+			{
+				DeleteAppVirtualDirectory(siteId, "CFIDE");
+				DeleteAppVirtualDirectory(siteId, "jakarta");
+			}
 			else
-				{
-					DeleteAppVirtualDirectory(siteId, "CFIDE");
-					DeleteAppVirtualDirectory(siteId, "JRunScripts");
-				}
+			{
+				DeleteAppVirtualDirectory(siteId, "CFIDE");
+				DeleteAppVirtualDirectory(siteId, "JRunScripts");
+			}
 
 		}
-        public virtual void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
-        {
-
-        }
-
-        public virtual bool VirtualDirectoryExists(string siteId, string directoryName)
-        {
-            return DirectoryEntry.Exists(GetVirtualDirectoryADSIPath(siteId, directoryName));
-        }
-
-        public virtual WebVirtualDirectory[] GetVirtualDirectories(string siteId)
-        {
-            return GetVirtualDirectories(siteId, false);
-        }
-
-        private WebVirtualDirectory[] GetVirtualDirectories(string siteId, bool includeSystemDirectories)
-        {
-            List<WebVirtualDirectory> dirs = new List<WebVirtualDirectory>();
+		public virtual void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+		{
+
+		}
+
+		public virtual bool VirtualDirectoryExists(string siteId, string directoryName)
+		{
+			return DirectoryEntry.Exists(GetVirtualDirectoryADSIPath(siteId, directoryName));
+		}
+
+		public virtual WebVirtualDirectory[] GetVirtualDirectories(string siteId)
+		{
+			return GetVirtualDirectories(siteId, false);
+		}
+
+		private WebVirtualDirectory[] GetVirtualDirectories(string siteId, bool includeSystemDirectories)
+		{
+			List<WebVirtualDirectory> dirs = new List<WebVirtualDirectory>();
 
-            // MS SharedTools folder
-            string sharedToolsFolder = GetMicrosoftSharedFolderPath();
+			// MS SharedTools folder
+			string sharedToolsFolder = GetMicrosoftSharedFolderPath();
 
-            DirectoryEntry objSite = new DirectoryEntry(GetVirtualDirectoryADSIPath(siteId, ""));
-            foreach (DirectoryEntry objVirtDir in objSite.Children)
-            {
-                if (objVirtDir.SchemaClassName == "IIsWebVirtualDir" &&
-                    String.Compare(objVirtDir.Name, "root", true) != 0)
-                {
-                    // this is virtual directory
-                    WebVirtualDirectory dir = new WebVirtualDirectory();
-                    dir.Name = objVirtDir.Name;
-                    dir.ContentPath = (string)objVirtDir.Properties["Path"].Value;
+			DirectoryEntry objSite = new DirectoryEntry(GetVirtualDirectoryADSIPath(siteId, ""));
+			foreach (DirectoryEntry objVirtDir in objSite.Children)
+			{
+				if (objVirtDir.SchemaClassName == "IIsWebVirtualDir" &&
+					String.Compare(objVirtDir.Name, "root", true) != 0)
+				{
+					// this is virtual directory
+					WebVirtualDirectory dir = new WebVirtualDirectory();
+					dir.Name = objVirtDir.Name;
+					dir.ContentPath = (string)objVirtDir.Properties["Path"].Value;
 
-                    //do not show ColdFusion virtual directories
-                    if (dir.ContentPath.Equals(CFScriptsDirectoryPath) || dir.ContentPath.Equals(CFFlashRemotingDirPath))
-                    {
-                        continue;
-                    }
+					//do not show ColdFusion virtual directories
+					if (dir.ContentPath.Equals(CFScriptsDirectoryPath) || dir.ContentPath.Equals(CFFlashRemotingDirPath))
+					{
+						continue;
+					}
 
-                    // check if this is a system (FrontPage or SharePoint) virtual directory
-                    if (!includeSystemDirectories
-                        && !String.IsNullOrEmpty(sharedToolsFolder)
-                        && dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
-                        continue;
+					// check if this is a system (FrontPage or SharePoint) virtual directory
+					if (!includeSystemDirectories
+						&& !String.IsNullOrEmpty(sharedToolsFolder)
+						&& dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
+						continue;
 
-                    // add to the collection
-                    dirs.Add(dir);
+					// add to the collection
+					dirs.Add(dir);
 
-                    // fill properties
-                    //FillVirtualDirectoryFromWmiObject(dir, objVirtDir);
-                    //FillVirtualDirectoryRestFromWmiObject(dir, objVirtDir);
-                }
-            }
+					// fill properties
+					//FillVirtualDirectoryFromWmiObject(dir, objVirtDir);
+					//FillVirtualDirectoryRestFromWmiObject(dir, objVirtDir);
+				}
+			}
 
-            return dirs.ToArray();
-        }
+			return dirs.ToArray();
+		}
 
-        public virtual WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
-        {
-            WebVirtualDirectory dir = new WebVirtualDirectory();
-            ManagementObject objDir = wmi.GetObject(
-                String.Format("IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, directoryName)));
+		public virtual WebVirtualDirectory GetVirtualDirectory(string siteId, string directoryName)
+		{
+			WebVirtualDirectory dir = new WebVirtualDirectory();
+			ManagementObject objDir = wmi.GetObject(
+				String.Format("IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, directoryName)));
 
-            dir.Name = directoryName;
+			dir.Name = directoryName;
 
-            FillVirtualDirectoryFromWmiObject(dir, objDir);
+			FillVirtualDirectoryFromWmiObject(dir, objDir);
 
 
-            // load parent site settings
-            ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+			// load parent site settings
+			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
 
-            // check write permissions
-            dir.EnableWritePermissions = CheckWriteAccessEnabled(dir.ContentPath,
-                GetNonQualifiedAccountName(dir.AnonymousUsername));
+			// check write permissions
+			dir.EnableWritePermissions = CheckWriteAccessEnabled(dir.ContentPath,
+				GetNonQualifiedAccountName(dir.AnonymousUsername));
 
-            return dir;
-        }
+			return dir;
+		}
 
-        public virtual void CreateVirtualDirectoryNonApplication(string siteId, WebVirtualDirectory directory)
-        {
-            // create directory folder if not exists
-            if (!FileUtils.DirectoryExists(directory.ContentPath))
-                FileUtils.CreateDirectory(directory.ContentPath);
+		public virtual void CreateVirtualDirectoryNonApplication(string siteId, WebVirtualDirectory directory)
+		{
+			// create directory folder if not exists
+			if (!FileUtils.DirectoryExists(directory.ContentPath))
+				FileUtils.CreateDirectory(directory.ContentPath);
 
-            string dirId = GetVirtualDirectoryPath(siteId, directory.Name);
+			string dirId = GetVirtualDirectoryPath(siteId, directory.Name);
 
-            // create a new virtual directory
-            ManagementObject objDir = wmi.GetClass("IIsWebVirtualDir").CreateInstance();
-            objDir.Properties["Name"].Value = dirId;
-            objDir.Put();
+			// create a new virtual directory
+			ManagementObject objDir = wmi.GetClass("IIsWebVirtualDir").CreateInstance();
+			objDir.Properties["Name"].Value = dirId;
+			objDir.Put();
 
-            // update directory properties
-            ManagementObject objDirSetting = wmi.GetClass("IIsWebVirtualDirSetting").CreateInstance();
-            objDirSetting.Properties["Name"].Value = dirId;
-            objDirSetting.Properties["FriendlyName"].Value = directory.Name;
-            objDirSetting.Properties["Path"].Value = directory.ContentPath;
-            objDirSetting.Put();
+			// update directory properties
+			ManagementObject objDirSetting = wmi.GetClass("IIsWebVirtualDirSetting").CreateInstance();
+			objDirSetting.Properties["Name"].Value = dirId;
+			objDirSetting.Properties["FriendlyName"].Value = directory.Name;
+			objDirSetting.Properties["Path"].Value = directory.ContentPath;
+			objDirSetting.Put();
 
-            // check if site has write permissions enabled
-            ManagementObject objSiteSetting = wmi.GetObject(String.Format(
-                "IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, "")));
+			// check if site has write permissions enabled
+			ManagementObject objSiteSetting = wmi.GetObject(String.Format(
+				"IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, "")));
 
-            directory.EnableWritePermissions = CheckWriteAccessEnabled(
-                (string)objSiteSetting.Properties["Path"].Value,
-                GetNonQualifiedAccountName((string)objSiteSetting.Properties["AnonymousUserName"].Value));
+			directory.EnableWritePermissions = CheckWriteAccessEnabled(
+				(string)objSiteSetting.Properties["Path"].Value,
+				GetNonQualifiedAccountName((string)objSiteSetting.Properties["AnonymousUserName"].Value));
 
-            // update directory
-            UpdateVirtualDirectory(siteId, directory, false);
-        }
+			// update directory
+			UpdateVirtualDirectory(siteId, directory, false);
+		}
 
-        public virtual void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory)
-        {
+		public virtual void CreateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+		{
 
 
 
@@ -1218,187 +1227,187 @@ namespace SolidCP.Providers.Web
 
 
 
-            // create directory folder if not exists
-            if (!FileUtils.DirectoryExists(directory.ContentPath))
-                FileUtils.CreateDirectory(directory.ContentPath);
+			// create directory folder if not exists
+			if (!FileUtils.DirectoryExists(directory.ContentPath))
+				FileUtils.CreateDirectory(directory.ContentPath);
 
-            string dirId = GetVirtualDirectoryPath(siteId, directory.Name);
+			string dirId = GetVirtualDirectoryPath(siteId, directory.Name);
 
-            // create a new virtual directory
-            ManagementObject objDir = wmi.GetClass("IIsWebVirtualDir").CreateInstance();
-            objDir.Properties["Name"].Value = dirId;
-            objDir.Put();
-            objDir.InvokeMethod("AppCreate", new Object[] { true });
+			// create a new virtual directory
+			ManagementObject objDir = wmi.GetClass("IIsWebVirtualDir").CreateInstance();
+			objDir.Properties["Name"].Value = dirId;
+			objDir.Put();
+			objDir.InvokeMethod("AppCreate", new Object[] { true });
 
-            // update directory properties
-            ManagementObject objDirSetting = wmi.GetClass("IIsWebVirtualDirSetting").CreateInstance();
-            objDirSetting.Properties["Name"].Value = dirId;
-            objDirSetting.Properties["FriendlyName"].Value = directory.Name;
-            objDirSetting.Properties["Path"].Value = directory.ContentPath;
-            objDirSetting.Put();
+			// update directory properties
+			ManagementObject objDirSetting = wmi.GetClass("IIsWebVirtualDirSetting").CreateInstance();
+			objDirSetting.Properties["Name"].Value = dirId;
+			objDirSetting.Properties["FriendlyName"].Value = directory.Name;
+			objDirSetting.Properties["Path"].Value = directory.ContentPath;
+			objDirSetting.Put();
 
-            // check if site has write permissions enabled
-            ManagementObject objSiteSetting = wmi.GetObject(String.Format(
-                "IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, "")));
+			// check if site has write permissions enabled
+			ManagementObject objSiteSetting = wmi.GetObject(String.Format(
+				"IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, "")));
 
-            directory.EnableWritePermissions = CheckWriteAccessEnabled(
-                (string)objSiteSetting.Properties["Path"].Value,
-                GetNonQualifiedAccountName((string)objSiteSetting.Properties["AnonymousUserName"].Value));
+			directory.EnableWritePermissions = CheckWriteAccessEnabled(
+				(string)objSiteSetting.Properties["Path"].Value,
+				GetNonQualifiedAccountName((string)objSiteSetting.Properties["AnonymousUserName"].Value));
 
-            // update directory
-            UpdateVirtualDirectory(siteId, directory, false);
-        }
+			// update directory
+			UpdateVirtualDirectory(siteId, directory, false);
+		}
 
-        public virtual void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory)
-        {
-            UpdateVirtualDirectory(siteId, directory, true);
-        }
+		public virtual void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory)
+		{
+			UpdateVirtualDirectory(siteId, directory, true);
+		}
 
-        private void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory, bool updateProperties)
-        {
-            // load parent site settings
-            ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
-            ManagementObject objSiteSetting = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, "")));
-            string siteName = (string)objSite.Properties["ServerComment"].Value;
+		private void UpdateVirtualDirectory(string siteId, WebVirtualDirectory directory, bool updateProperties)
+		{
+			// load parent site settings
+			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+			ManagementObject objSiteSetting = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'", GetVirtualDirectoryPath(siteId, "")));
+			string siteName = (string)objSite.Properties["ServerComment"].Value;
 
 
-            if (String.IsNullOrEmpty(directory.AnonymousUsername) ||
-                String.IsNullOrEmpty(directory.AnonymousUserPassword))
-            {
-                directory.AnonymousUsername = GetNonQualifiedAccountName((string)objSiteSetting.Properties["AnonymousUserName"].Value);
-                directory.AnonymousUserPassword = (string)objSiteSetting.Properties["AnonymousUserPass"].Value;
-            }
+			if (String.IsNullOrEmpty(directory.AnonymousUsername) ||
+				String.IsNullOrEmpty(directory.AnonymousUserPassword))
+			{
+				directory.AnonymousUsername = GetNonQualifiedAccountName((string)objSiteSetting.Properties["AnonymousUserName"].Value);
+				directory.AnonymousUserPassword = (string)objSiteSetting.Properties["AnonymousUserPass"].Value;
+			}
 
 
-            // load original virt dir
-            ManagementObject objDir = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'",
-                GetVirtualDirectoryPath(siteId, directory.Name)));
+			// load original virt dir
+			ManagementObject objDir = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'",
+				GetVirtualDirectoryPath(siteId, directory.Name)));
 
-            string origPath = (string)objDir.Properties["Path"].Value;
+			string origPath = (string)objDir.Properties["Path"].Value;
 
-            string sharedToolsFolder = GetMicrosoftSharedFolderPath();
-            // remove unnecessary permissions
-            // if original folder has been changed
-            if (!String.IsNullOrEmpty(sharedToolsFolder) &&
-                !origPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
-            {
-                if (String.Compare(origPath, directory.ContentPath, true) != 0)
-                    RemoveWebFolderPermissions(origPath, directory.AnonymousUsername);
-            }
+			string sharedToolsFolder = GetMicrosoftSharedFolderPath();
+			// remove unnecessary permissions
+			// if original folder has been changed
+			if (!String.IsNullOrEmpty(sharedToolsFolder) &&
+				!origPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
+			{
+				if (String.Compare(origPath, directory.ContentPath, true) != 0)
+					RemoveWebFolderPermissions(origPath, directory.AnonymousUsername);
+			}
 
 
 
-            if (updateProperties)
-            {
+			if (updateProperties)
+			{
 
-                FillWmiObjectFromVirtualDirectory(objDir, directory, true);
-                FillWmiObjectFromVirtualDirectoryRest(objDir, directory);
+				FillWmiObjectFromVirtualDirectory(objDir, directory, true);
+				FillWmiObjectFromVirtualDirectoryRest(objDir, directory);
 
-                // UNC Share
-                ManagementObject objVirtDirUnc = wmi.GetObject(
-                    String.Format("IIsWebVirtualDir='{0}'", GetVirtualDirectoryPath(siteId, directory.Name)));
-                FillWmiObjectUNCSettingsFromVirtualDirectory(objVirtDirUnc, directory);
-                objVirtDirUnc.Put();
+				// UNC Share
+				ManagementObject objVirtDirUnc = wmi.GetObject(
+					String.Format("IIsWebVirtualDir='{0}'", GetVirtualDirectoryPath(siteId, directory.Name)));
+				FillWmiObjectUNCSettingsFromVirtualDirectory(objVirtDirUnc, directory);
+				objVirtDirUnc.Put();
 
-                // save account
-                objDir.Put();
-            }
-        }
+				// save account
+				objDir.Put();
+			}
+		}
 
-        public virtual void DeleteVirtualDirectory(string siteId, string directoryName)
-        {
+		public virtual void DeleteVirtualDirectory(string siteId, string directoryName)
+		{
 
-            // load virtual directory
-            ManagementObject objOrigDir = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'",
-                GetVirtualDirectoryPath(siteId, directoryName)));
+			// load virtual directory
+			ManagementObject objOrigDir = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'",
+				GetVirtualDirectoryPath(siteId, directoryName)));
 
-            string path = (string)objOrigDir.Properties["Path"].Value;
-            string anonymousUsername = (string)objOrigDir.Properties["AnonymousUserName"].Value;
+			string path = (string)objOrigDir.Properties["Path"].Value;
+			string anonymousUsername = (string)objOrigDir.Properties["AnonymousUserName"].Value;
 
-            // remove unnecessary permissions
-            RemoveWebFolderPermissions(path, GetNonQualifiedAccountName(anonymousUsername));
+			// remove unnecessary permissions
+			RemoveWebFolderPermissions(path, GetNonQualifiedAccountName(anonymousUsername));
 
-            // delete directory
-            ManagementObject objDir = wmi.GetObject(String.Format("IIsWebVirtualDir='{0}'",
-                GetVirtualDirectoryPath(siteId, directoryName)));
-            objDir.Delete();
-        }
+			// delete directory
+			ManagementObject objDir = wmi.GetObject(String.Format("IIsWebVirtualDir='{0}'",
+				GetVirtualDirectoryPath(siteId, directoryName)));
+			objDir.Delete();
+		}
 
 
-        public virtual bool AppVirtualDirectoryExists(string siteId, string directoryName)
-        {
-            return DirectoryEntry.Exists(GetAppVirtualDirectoryADSIPath(siteId, directoryName));
-        }
+		public virtual bool AppVirtualDirectoryExists(string siteId, string directoryName)
+		{
+			return DirectoryEntry.Exists(GetAppVirtualDirectoryADSIPath(siteId, directoryName));
+		}
 
-        public virtual WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
-        {
-            return GetAppVirtualDirectories(siteId, false);
-        }
+		public virtual WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
+		{
+			return GetAppVirtualDirectories(siteId, false);
+		}
 
-        private WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId, bool includeSystemDirectories)
-        {
-            List<WebAppVirtualDirectory> dirs = new List<WebAppVirtualDirectory>();
+		private WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId, bool includeSystemDirectories)
+		{
+			List<WebAppVirtualDirectory> dirs = new List<WebAppVirtualDirectory>();
 
-            // MS SharedTools folder
-            string sharedToolsFolder = GetMicrosoftSharedFolderPath();
+			// MS SharedTools folder
+			string sharedToolsFolder = GetMicrosoftSharedFolderPath();
 
-            DirectoryEntry objSite = new DirectoryEntry(GetAppVirtualDirectoryADSIPath(siteId, ""));
-            foreach (DirectoryEntry objVirtDir in objSite.Children)
-            {
-                if (objVirtDir.SchemaClassName == "IIsWebVirtualDir" &&
-                    String.Compare(objVirtDir.Name, "root", true) != 0)
-                {
-                    // this is virtual directory
-                    WebAppVirtualDirectory dir = new WebAppVirtualDirectory();
-                    dir.Name = objVirtDir.Name;
-                    dir.ContentPath = (string)objVirtDir.Properties["Path"].Value;
+			DirectoryEntry objSite = new DirectoryEntry(GetAppVirtualDirectoryADSIPath(siteId, ""));
+			foreach (DirectoryEntry objVirtDir in objSite.Children)
+			{
+				if (objVirtDir.SchemaClassName == "IIsWebVirtualDir" &&
+					String.Compare(objVirtDir.Name, "root", true) != 0)
+				{
+					// this is virtual directory
+					WebAppVirtualDirectory dir = new WebAppVirtualDirectory();
+					dir.Name = objVirtDir.Name;
+					dir.ContentPath = (string)objVirtDir.Properties["Path"].Value;
 
-                    //do not show ColdFusion virtual directories
-                    if (dir.ContentPath.Equals(CFScriptsDirectoryPath) || dir.ContentPath.Equals(CFFlashRemotingDirPath))
-                    {
-                        continue;
-                    }
+					//do not show ColdFusion virtual directories
+					if (dir.ContentPath.Equals(CFScriptsDirectoryPath) || dir.ContentPath.Equals(CFFlashRemotingDirPath))
+					{
+						continue;
+					}
 
-                    // check if this is a system (FrontPage or SharePoint) virtual directory
-                    if (!includeSystemDirectories
-                        && !String.IsNullOrEmpty(sharedToolsFolder)
-                        && dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
-                        continue;
+					// check if this is a system (FrontPage or SharePoint) virtual directory
+					if (!includeSystemDirectories
+						&& !String.IsNullOrEmpty(sharedToolsFolder)
+						&& dir.ContentPath.ToLower().StartsWith(sharedToolsFolder.ToLower()))
+						continue;
 
-                    // add to the collection
-                    dirs.Add(dir);
+					// add to the collection
+					dirs.Add(dir);
 
-                    // fill properties
-                    //FillAppVirtualDirectoryFromWmiObject(dir, objVirtDir);
-                    //FillAppVirtualDirectoryRestFromWmiObject(dir, objVirtDir);
-                }
-            }
+					// fill properties
+					//FillAppVirtualDirectoryFromWmiObject(dir, objVirtDir);
+					//FillAppVirtualDirectoryRestFromWmiObject(dir, objVirtDir);
+				}
+			}
 
-            return dirs.ToArray();
-        }
+			return dirs.ToArray();
+		}
 
-        public virtual WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
-        {
-            WebAppVirtualDirectory dir = new WebAppVirtualDirectory();
-            ManagementObject objDir = wmi.GetObject(
-                String.Format("IIsWebVirtualDirSetting='{0}'", GetAppVirtualDirectoryPath(siteId, directoryName)));
+		public virtual WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
+		{
+			WebAppVirtualDirectory dir = new WebAppVirtualDirectory();
+			ManagementObject objDir = wmi.GetObject(
+				String.Format("IIsWebVirtualDirSetting='{0}'", GetAppVirtualDirectoryPath(siteId, directoryName)));
 
-            dir.Name = directoryName;
+			dir.Name = directoryName;
 
-            FillAppVirtualDirectoryFromWmiObject(dir, objDir);
-            FillAppVirtualDirectoryRestFromWmiObject(dir, objDir);
+			FillAppVirtualDirectoryFromWmiObject(dir, objDir);
+			FillAppVirtualDirectoryRestFromWmiObject(dir, objDir);
 
-            // load parent site settings
-            ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+			// load parent site settings
+			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
 
-            // check write permissions
-            dir.EnableWritePermissions = CheckWriteAccessEnabled(dir.ContentPath,
-                GetNonQualifiedAccountName(dir.AnonymousUsername));
+			// check write permissions
+			dir.EnableWritePermissions = CheckWriteAccessEnabled(dir.ContentPath,
+				GetNonQualifiedAccountName(dir.AnonymousUsername));
 
-            return dir;
-        }
+			return dir;
+		}
 
-        public virtual void CreateAppVirtualDirectoryNonApplication(string siteId, WebAppVirtualDirectory directory)
+		public virtual void CreateAppVirtualDirectoryNonApplication(string siteId, WebAppVirtualDirectory directory)
 		{
 			// create directory folder if not exists
 			if (!FileUtils.DirectoryExists(directory.ContentPath))
@@ -1619,7 +1628,7 @@ namespace SolidCP.Providers.Web
 			}
 			return false;
 		}
-		
+
 		protected bool IsColdFusion11Installed()
 		{
 			RegistryKey keyColdFusion = Registry.LocalMachine.OpenSubKey(COLDFUSION_11_REGLOC);
@@ -1636,7 +1645,7 @@ namespace SolidCP.Providers.Web
 			}
 			return false;
 		}
-		
+
 		protected bool IsColdFusion10Installed()
 		{
 			RegistryKey keyColdFusion = Registry.LocalMachine.OpenSubKey(COLDFUSION_10_REGLOC);
@@ -1653,7 +1662,7 @@ namespace SolidCP.Providers.Web
 			}
 			return false;
 		}
-		
+
 		protected bool IsColdFusion9Installed()
 		{
 			RegistryKey keyColdFusion = Registry.LocalMachine.OpenSubKey(COLDFUSION_9_REGLOC);
@@ -1743,7 +1752,7 @@ namespace SolidCP.Providers.Web
 			}
 
 			return String.Empty;
-			
+
 			if (IsColdFusion10Installed())
 			{
 				RegistryKey keyColdFusion = Registry.LocalMachine.OpenSubKey(COLDFUSION_10_REGLOC);
@@ -1757,7 +1766,7 @@ namespace SolidCP.Providers.Web
 			}
 
 			return String.Empty;
-			
+
 			if (IsColdFusion11Installed())
 			{
 				RegistryKey keyColdFusion = Registry.LocalMachine.OpenSubKey(COLDFUSION_11_REGLOC);
@@ -1784,8 +1793,8 @@ namespace SolidCP.Providers.Web
 				return (string)keyColdFusion.GetValue(COLDFUSION_ROOT_PATH);
 			}
 
-			return String.Empty;		
-			
+			return String.Empty;
+
 		}
 
 		protected void EnableColdFusionScripting(string siteName)
@@ -2849,52 +2858,52 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-	   
 
-	    #endregion
 
-        #region Helicon Zoo
-        public virtual WebAppVirtualDirectory[] GetZooApplications(string siteId)
-        {
-            return new WebAppVirtualDirectory[] { };
-        }
+		#endregion
 
-        public virtual StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
-	    {
-	        //pass
-            return new StringResultObject();
-            
-	    }
+		#region Helicon Zoo
+		public virtual WebAppVirtualDirectory[] GetZooApplications(string siteId)
+		{
+			return new WebAppVirtualDirectory[] { };
+		}
 
-        public virtual StringResultObject SetZooConsoleEnabled(string siteId, string appName)
-	    {
-            return new StringResultObject();
-	    }
+		public virtual StringResultObject SetZooEnvironmentVariable(string siteId, string appName, string envName, string envValue)
+		{
+			//pass
+			return new StringResultObject();
 
-	    public virtual StringResultObject SetZooConsoleDisabled(string siteId, string appName)
-	    {
-            return new StringResultObject();
-	    }
+		}
 
-        #endregion
+		public virtual StringResultObject SetZooConsoleEnabled(string siteId, string appName)
+		{
+			return new StringResultObject();
+		}
 
-        #region Private Helper Methods
-        protected string GetVirtualDirectoryPath(string siteId, string directoryName)
-        {
-            string path = siteId + "/ROOT";
-            if (!String.IsNullOrEmpty(directoryName))
-                path += "/" + directoryName;
-            return path;
-        }
+		public virtual StringResultObject SetZooConsoleDisabled(string siteId, string appName)
+		{
+			return new StringResultObject();
+		}
 
-        private string GetVirtualDirectoryADSIPath(string siteId, string directoryName)
-        {
-            string path = "IIS://localhost/" + siteId + "/ROOT";
-            if (!String.IsNullOrEmpty(directoryName))
-                path += "/" + directoryName;
-            return path;
-        }
-        protected string GetAppVirtualDirectoryPath(string siteId, string directoryName)
+		#endregion
+
+		#region Private Helper Methods
+		protected string GetVirtualDirectoryPath(string siteId, string directoryName)
+		{
+			string path = siteId + "/ROOT";
+			if (!String.IsNullOrEmpty(directoryName))
+				path += "/" + directoryName;
+			return path;
+		}
+
+		private string GetVirtualDirectoryADSIPath(string siteId, string directoryName)
+		{
+			string path = "IIS://localhost/" + siteId + "/ROOT";
+			if (!String.IsNullOrEmpty(directoryName))
+				path += "/" + directoryName;
+			return path;
+		}
+		protected string GetAppVirtualDirectoryPath(string siteId, string directoryName)
 		{
 			string path = siteId + "/ROOT";
 			if (!String.IsNullOrEmpty(directoryName))
@@ -2925,22 +2934,7 @@ namespace SolidCP.Providers.Web
 			return (string)objVirtDir.Properties["Path"].Value;
 		}
 
-        private void FillVirtualDirectoryFromWmiObject(WebVirtualDirectory virtDir,
-            ManagementBaseObject obj)
-        {
-            virtDir.EnableDirectoryBrowsing = (bool)obj.Properties["EnableDirBrowsing"].Value;
-            virtDir.AnonymousUsername = (string)obj.Properties["AnonymousUserName"].Value;
-            virtDir.AnonymousUserPassword = (string)obj.Properties["AnonymousUserPass"].Value;
-            virtDir.EnableWindowsAuthentication = (bool)obj.Properties["AuthNTLM"].Value;
-            virtDir.EnableAnonymousAccess = (bool)obj.Properties["AuthAnonymous"].Value;
-            virtDir.EnableBasicAuthentication = (bool)obj.Properties["AuthBasic"].Value;
-            virtDir.EnableDynamicCompression = (bool)obj.Properties["DoDynamicCompression"].Value;
-            virtDir.EnableStaticCompression = (bool)obj.Properties["DoStaticCompression"].Value;
-            //virtDir.DefaultDocs = (string)obj.Properties["DefaultDoc"].Value;
-            virtDir.EnableParentPaths = (bool)obj.Properties["AspEnableParentPaths"].Value;
-        }
-
-        private void FillAppVirtualDirectoryFromWmiObject(WebAppVirtualDirectory virtDir,
+		private void FillVirtualDirectoryFromWmiObject(WebVirtualDirectory virtDir,
 			ManagementBaseObject obj)
 		{
 			virtDir.EnableDirectoryBrowsing = (bool)obj.Properties["EnableDirBrowsing"].Value;
@@ -2949,38 +2943,53 @@ namespace SolidCP.Providers.Web
 			virtDir.EnableWindowsAuthentication = (bool)obj.Properties["AuthNTLM"].Value;
 			virtDir.EnableAnonymousAccess = (bool)obj.Properties["AuthAnonymous"].Value;
 			virtDir.EnableBasicAuthentication = (bool)obj.Properties["AuthBasic"].Value;
-            virtDir.EnableDynamicCompression = (bool)obj.Properties["DoDynamicCompression"].Value;
-            virtDir.EnableStaticCompression = (bool)obj.Properties["DoStaticCompression"].Value;
+			virtDir.EnableDynamicCompression = (bool)obj.Properties["DoDynamicCompression"].Value;
+			virtDir.EnableStaticCompression = (bool)obj.Properties["DoStaticCompression"].Value;
+			//virtDir.DefaultDocs = (string)obj.Properties["DefaultDoc"].Value;
+			virtDir.EnableParentPaths = (bool)obj.Properties["AspEnableParentPaths"].Value;
+		}
+
+		private void FillAppVirtualDirectoryFromWmiObject(WebAppVirtualDirectory virtDir,
+			ManagementBaseObject obj)
+		{
+			virtDir.EnableDirectoryBrowsing = (bool)obj.Properties["EnableDirBrowsing"].Value;
+			virtDir.AnonymousUsername = (string)obj.Properties["AnonymousUserName"].Value;
+			virtDir.AnonymousUserPassword = (string)obj.Properties["AnonymousUserPass"].Value;
+			virtDir.EnableWindowsAuthentication = (bool)obj.Properties["AuthNTLM"].Value;
+			virtDir.EnableAnonymousAccess = (bool)obj.Properties["AuthAnonymous"].Value;
+			virtDir.EnableBasicAuthentication = (bool)obj.Properties["AuthBasic"].Value;
+			virtDir.EnableDynamicCompression = (bool)obj.Properties["DoDynamicCompression"].Value;
+			virtDir.EnableStaticCompression = (bool)obj.Properties["DoStaticCompression"].Value;
 			virtDir.DefaultDocs = (string)obj.Properties["DefaultDoc"].Value;
 			virtDir.EnableParentPaths = (bool)obj.Properties["AspEnableParentPaths"].Value;
 		}
 
-        private void FillWmiObjectFromVirtualDirectory(ManagementBaseObject obj, WebVirtualDirectory virtDir,
-    bool update)
-        {
-            if (!update)
-            {
-                obj.Properties["AppFriendlyName"].Value = virtDir.Name;
-                obj.Properties["AccessRead"].Value = true;// virtDir.AllowReadAccess;
-                obj.Properties["AccessScript"].Value = true;
-            }
+		private void FillWmiObjectFromVirtualDirectory(ManagementBaseObject obj, WebVirtualDirectory virtDir,
+	bool update)
+		{
+			if (!update)
+			{
+				obj.Properties["AppFriendlyName"].Value = virtDir.Name;
+				obj.Properties["AccessRead"].Value = true;// virtDir.AllowReadAccess;
+				obj.Properties["AccessScript"].Value = true;
+			}
 
-            obj.Properties["EnableDirBrowsing"].Value = virtDir.EnableDirectoryBrowsing;
-            obj.Properties["AuthNTLM"].Value = virtDir.EnableWindowsAuthentication;
-            obj.Properties["AuthAnonymous"].Value = virtDir.EnableAnonymousAccess;
-            obj.Properties["AuthBasic"].Value = virtDir.EnableBasicAuthentication;
-            obj.Properties["DoDynamicCompression"].Value = virtDir.EnableDynamicCompression;
-            obj.Properties["DoStaticCompression"].Value = virtDir.EnableStaticCompression;
+			obj.Properties["EnableDirBrowsing"].Value = virtDir.EnableDirectoryBrowsing;
+			obj.Properties["AuthNTLM"].Value = virtDir.EnableWindowsAuthentication;
+			obj.Properties["AuthAnonymous"].Value = virtDir.EnableAnonymousAccess;
+			obj.Properties["AuthBasic"].Value = virtDir.EnableBasicAuthentication;
+			obj.Properties["DoDynamicCompression"].Value = virtDir.EnableDynamicCompression;
+			obj.Properties["DoStaticCompression"].Value = virtDir.EnableStaticCompression;
 
-            obj.Properties["AspEnableParentPaths"].Value = virtDir.EnableParentPaths;
-            
-            if (!String.IsNullOrEmpty(virtDir.AnonymousUsername))
-            {
-                obj.Properties["AnonymousUserName"].Value = GetQualifiedAccountName(virtDir.AnonymousUsername);
-                obj.Properties["AnonymousUserPass"].Value = virtDir.AnonymousUserPassword;
-            }
-        }
-        private void FillWmiObjectFromAppVirtualDirectory(ManagementBaseObject obj, WebAppVirtualDirectory virtDir,
+			obj.Properties["AspEnableParentPaths"].Value = virtDir.EnableParentPaths;
+
+			if (!String.IsNullOrEmpty(virtDir.AnonymousUsername))
+			{
+				obj.Properties["AnonymousUserName"].Value = GetQualifiedAccountName(virtDir.AnonymousUsername);
+				obj.Properties["AnonymousUserPass"].Value = virtDir.AnonymousUserPassword;
+			}
+		}
+		private void FillWmiObjectFromAppVirtualDirectory(ManagementBaseObject obj, WebAppVirtualDirectory virtDir,
 			bool update)
 		{
 			if (!update)
@@ -2994,8 +3003,8 @@ namespace SolidCP.Providers.Web
 			obj.Properties["AuthNTLM"].Value = virtDir.EnableWindowsAuthentication;
 			obj.Properties["AuthAnonymous"].Value = virtDir.EnableAnonymousAccess;
 			obj.Properties["AuthBasic"].Value = virtDir.EnableBasicAuthentication;
-            obj.Properties["DoDynamicCompression"].Value = virtDir.EnableDynamicCompression;
-            obj.Properties["DoStaticCompression"].Value = virtDir.EnableStaticCompression;
+			obj.Properties["DoDynamicCompression"].Value = virtDir.EnableDynamicCompression;
+			obj.Properties["DoStaticCompression"].Value = virtDir.EnableStaticCompression;
 
 			obj.Properties["AspEnableParentPaths"].Value = virtDir.EnableParentPaths;
 			if (virtDir.DefaultDocs != null && virtDir.DefaultDocs != "")
@@ -3007,28 +3016,28 @@ namespace SolidCP.Providers.Web
 			}
 		}
 
-        private void FillWmiObjectUNCSettingsFromVirtualDirectory(ManagementBaseObject obj, WebVirtualDirectory virtDir)
-        {
-            // UNC access
-            if (!String.IsNullOrEmpty(virtDir.AnonymousUsername)
-                && virtDir.ContentPath.StartsWith(@"\\"))
-            {
-                //Log.WriteError(virtDir.ContentPath, new Exception());
-                ExecuteIgnorantly(delegate
-                {
-                    obj.Properties.Remove("UNCUserName");
-                    obj.Properties.Remove("UNCPassword");
+		private void FillWmiObjectUNCSettingsFromVirtualDirectory(ManagementBaseObject obj, WebVirtualDirectory virtDir)
+		{
+			// UNC access
+			if (!String.IsNullOrEmpty(virtDir.AnonymousUsername)
+				&& virtDir.ContentPath.StartsWith(@"\\"))
+			{
+				//Log.WriteError(virtDir.ContentPath, new Exception());
+				ExecuteIgnorantly(delegate
+				{
+					obj.Properties.Remove("UNCUserName");
+					obj.Properties.Remove("UNCPassword");
 
-                    obj.SetPropertyValue("UNCUserName", GetQualifiedAccountName(virtDir.AnonymousUsername));
-                    obj.SetPropertyValue("UNCPassword", virtDir.AnonymousUserPassword);
-                });
-                //
-                //
-                //obj.Properties["UNCUserName"].Value = GetQualifiedAccountName(virtDir.AnonymousUsername);
-                //obj.Properties["UNCPassword"].Value = virtDir.AnonymousUserPassword;
-            }
-        }
-        private void FillWmiObjectUNCSettingsFromAppVirtualDirectory(ManagementBaseObject obj, WebAppVirtualDirectory virtDir)
+					obj.SetPropertyValue("UNCUserName", GetQualifiedAccountName(virtDir.AnonymousUsername));
+					obj.SetPropertyValue("UNCPassword", virtDir.AnonymousUserPassword);
+				});
+				//
+				//
+				//obj.Properties["UNCUserName"].Value = GetQualifiedAccountName(virtDir.AnonymousUsername);
+				//obj.Properties["UNCPassword"].Value = virtDir.AnonymousUserPassword;
+			}
+		}
+		private void FillWmiObjectUNCSettingsFromAppVirtualDirectory(ManagementBaseObject obj, WebAppVirtualDirectory virtDir)
 		{
 			// UNC access
 			if (!String.IsNullOrEmpty(virtDir.AnonymousUsername)
@@ -3064,74 +3073,74 @@ namespace SolidCP.Providers.Web
 			}
 		}
 
-        private void FillVirtualDirectoryRestFromWmiObject(WebVirtualDirectory virtDir,
-            ManagementBaseObject obj)
-        {
-            virtDir.ContentPath = (string)obj.Properties["Path"].Value;
+		private void FillVirtualDirectoryRestFromWmiObject(WebVirtualDirectory virtDir,
+			ManagementBaseObject obj)
+		{
+			virtDir.ContentPath = (string)obj.Properties["Path"].Value;
 
-            //string httpRedirect = (string)obj.Properties["HttpRedirect"].Value;
-            //if (!String.IsNullOrEmpty(httpRedirect))
-            //{
-            //    virtDir.RedirectExactUrl = httpRedirect.Contains(REDIRECT_EXACT_URL);
-            //    virtDir.RedirectDirectoryBelow = httpRedirect.Contains(REDIRECT_DIRECTORY_BELOW);
-            //    virtDir.RedirectPermanent = httpRedirect.Contains(REDIRECT_PERMANENT);
-            //    virtDir.HttpRedirect = httpRedirect.Split(',')[0].Trim();
-            //}
+			//string httpRedirect = (string)obj.Properties["HttpRedirect"].Value;
+			//if (!String.IsNullOrEmpty(httpRedirect))
+			//{
+			//    virtDir.RedirectExactUrl = httpRedirect.Contains(REDIRECT_EXACT_URL);
+			//    virtDir.RedirectDirectoryBelow = httpRedirect.Contains(REDIRECT_DIRECTORY_BELOW);
+			//    virtDir.RedirectPermanent = httpRedirect.Contains(REDIRECT_PERMANENT);
+			//    virtDir.HttpRedirect = httpRedirect.Split(',')[0].Trim();
+			//}
 
 
-            // HTTP headers
-            //ManagementBaseObject[] objHttpHeaders =
-            //    ((ManagementBaseObject[])obj.Properties["HttpCustomHeaders"].Value);
+			// HTTP headers
+			//ManagementBaseObject[] objHttpHeaders =
+			//    ((ManagementBaseObject[])obj.Properties["HttpCustomHeaders"].Value);
 
-            //if (objHttpHeaders != null)
-            //{
-            //    virtDir.HttpHeaders = new HttpHeader[objHttpHeaders.Length];
-            //    for (int i = 0; i < objHttpHeaders.Length; i++)
-            //    {
-            //        virtDir.HttpHeaders[i] = new HttpHeader();
-            //        string headerVal = (string)objHttpHeaders[i].Properties["Keyname"].Value;
-            //        if (String.IsNullOrEmpty(headerVal))
-            //            continue;
+			//if (objHttpHeaders != null)
+			//{
+			//    virtDir.HttpHeaders = new HttpHeader[objHttpHeaders.Length];
+			//    for (int i = 0; i < objHttpHeaders.Length; i++)
+			//    {
+			//        virtDir.HttpHeaders[i] = new HttpHeader();
+			//        string headerVal = (string)objHttpHeaders[i].Properties["Keyname"].Value;
+			//        if (String.IsNullOrEmpty(headerVal))
+			//            continue;
 
-            //        int sepIdx = headerVal.IndexOf(": ");
-            //        if (sepIdx == -1)
-            //            continue;
+			//        int sepIdx = headerVal.IndexOf(": ");
+			//        if (sepIdx == -1)
+			//            continue;
 
-            //        virtDir.HttpHeaders[i].Key = headerVal.Substring(0, sepIdx);
-            //        virtDir.HttpHeaders[i].Value = headerVal.Substring(sepIdx + 2);
-            //    }
-            //}
+			//        virtDir.HttpHeaders[i].Key = headerVal.Substring(0, sepIdx);
+			//        virtDir.HttpHeaders[i].Value = headerVal.Substring(sepIdx + 2);
+			//    }
+			//}
 
-            //// HTTP errors (Skip inherited definitions)
-            //virtDir.HttpErrors = GetCustomHttpErrors(obj, virtDir, true).ToArray();
+			//// HTTP errors (Skip inherited definitions)
+			//virtDir.HttpErrors = GetCustomHttpErrors(obj, virtDir, true).ToArray();
 
-            // MIME mappings
-            //ManagementBaseObject[] objMimeMaps =
-            //    ((ManagementBaseObject[])obj.Properties["MimeMap"].Value);
+			// MIME mappings
+			//ManagementBaseObject[] objMimeMaps =
+			//    ((ManagementBaseObject[])obj.Properties["MimeMap"].Value);
 
-            //if (objMimeMaps != null)
-            //{
-            //    List<MimeMap> mimes = new List<MimeMap>();
-            //    for (int i = 0; i < objMimeMaps.Length; i++)
-            //    {
-            //        string mimeExt = (string)objMimeMaps[i].Properties["Extension"].Value;
+			//if (objMimeMaps != null)
+			//{
+			//    List<MimeMap> mimes = new List<MimeMap>();
+			//    for (int i = 0; i < objMimeMaps.Length; i++)
+			//    {
+			//        string mimeExt = (string)objMimeMaps[i].Properties["Extension"].Value;
 
-            //        if (String.IsNullOrEmpty(mimeExt))
-            //            continue;
+			//        if (String.IsNullOrEmpty(mimeExt))
+			//            continue;
 
-            //        MimeMap mime = new MimeMap();
-            //        mime.Extension = mimeExt;
-            //        mime.MimeType = (string)objMimeMaps[i].Properties["MimeType"].Value;
-            //        mimes.Add(mime);
-            //    }
+			//        MimeMap mime = new MimeMap();
+			//        mime.Extension = mimeExt;
+			//        mime.MimeType = (string)objMimeMaps[i].Properties["MimeType"].Value;
+			//        mimes.Add(mime);
+			//    }
 
-            //    virtDir.MimeMaps = mimes.ToArray();
-            //}
+			//    virtDir.MimeMaps = mimes.ToArray();
+			//}
 
-            
-        }
 
-        private void FillAppVirtualDirectoryRestFromWmiObject(WebAppVirtualDirectory virtDir,
+		}
+
+		private void FillAppVirtualDirectoryRestFromWmiObject(WebAppVirtualDirectory virtDir,
 			ManagementBaseObject obj)
 		{
 			virtDir.ContentPath = (string)obj.Properties["Path"].Value;
@@ -3273,127 +3282,127 @@ namespace SolidCP.Providers.Web
 			return type;
 		}
 
-        private void FillWmiObjectFromVirtualDirectoryRest(ManagementBaseObject obj,
-            WebVirtualDirectory virtDir)
-        {
-            obj.Properties["Path"].Value = virtDir.ContentPath;
-            //obj.Properties["HttpRedirect"].Value = null;
-            //if (!String.IsNullOrEmpty(virtDir.HttpRedirect))
-            //{
-            //    string httpRedirect = virtDir.HttpRedirect;
-            //    if (virtDir.RedirectExactUrl)
-            //        httpRedirect += ", " + REDIRECT_EXACT_URL;
-            //    if (virtDir.RedirectDirectoryBelow)
-            //        httpRedirect += ", " + REDIRECT_DIRECTORY_BELOW;
-            //    if (virtDir.RedirectPermanent)
-            //        httpRedirect += ", " + REDIRECT_PERMANENT;
-            //    obj.Properties["HttpRedirect"].Value = httpRedirect;
-            //}
+		private void FillWmiObjectFromVirtualDirectoryRest(ManagementBaseObject obj,
+			WebVirtualDirectory virtDir)
+		{
+			obj.Properties["Path"].Value = virtDir.ContentPath;
+			//obj.Properties["HttpRedirect"].Value = null;
+			//if (!String.IsNullOrEmpty(virtDir.HttpRedirect))
+			//{
+			//    string httpRedirect = virtDir.HttpRedirect;
+			//    if (virtDir.RedirectExactUrl)
+			//        httpRedirect += ", " + REDIRECT_EXACT_URL;
+			//    if (virtDir.RedirectDirectoryBelow)
+			//        httpRedirect += ", " + REDIRECT_DIRECTORY_BELOW;
+			//    if (virtDir.RedirectPermanent)
+			//        httpRedirect += ", " + REDIRECT_PERMANENT;
+			//    obj.Properties["HttpRedirect"].Value = httpRedirect;
+			//}
 
-            // HTTP headers
-            //if (virtDir.HttpHeaders != null)
-            //{
-            //    ManagementClass clsHttpHeader = wmi.GetClass("HttpCustomHeader");
-            //    ManagementObject[] httpHeaders = new ManagementObject[virtDir.HttpHeaders.Length];
-            //    for (int i = 0; i < virtDir.HttpHeaders.Length; i++)
-            //    {
-            //        httpHeaders[i] = clsHttpHeader.CreateInstance();
-            //        httpHeaders[i].Properties["Keyname"].Value =
-            //            virtDir.HttpHeaders[i].Key + ": " + virtDir.HttpHeaders[i].Value;
-            //        //httpHeaders[i].Properties["Value"].Value = virtDir.HttpHeaders[i].Value;
-            //        httpHeaders[i].Put();
-            //    }
-            //    obj.Properties["HttpCustomHeaders"].Value = httpHeaders;
-            //}
+			// HTTP headers
+			//if (virtDir.HttpHeaders != null)
+			//{
+			//    ManagementClass clsHttpHeader = wmi.GetClass("HttpCustomHeader");
+			//    ManagementObject[] httpHeaders = new ManagementObject[virtDir.HttpHeaders.Length];
+			//    for (int i = 0; i < virtDir.HttpHeaders.Length; i++)
+			//    {
+			//        httpHeaders[i] = clsHttpHeader.CreateInstance();
+			//        httpHeaders[i].Properties["Keyname"].Value =
+			//            virtDir.HttpHeaders[i].Key + ": " + virtDir.HttpHeaders[i].Value;
+			//        //httpHeaders[i].Properties["Value"].Value = virtDir.HttpHeaders[i].Value;
+			//        httpHeaders[i].Put();
+			//    }
+			//    obj.Properties["HttpCustomHeaders"].Value = httpHeaders;
+			//}
 
-            // HTTP errors
-            // load global settings for all of websites
-            //ManagementBaseObject objSitesSetting = wmi.GetObject(String.Format("IISWebServiceSetting='{0}'", IIS_SERVICE_ID));
-            //ManagementClass clsHttpError = wmi.GetClass("HttpError");
-            //// get all of custom http errors including inherited ones
-            //List<HttpError> httpErrors = GetCustomHttpErrors(objSitesSetting, virtDir, false);
-            //List<ManagementObject> objHttpErrors = new List<ManagementObject>();
-            //// merge both inherited and customized records
-            //if (virtDir.HttpErrors != null)
-            //{
-            //    foreach (HttpError errorA in virtDir.HttpErrors)
-            //    {
-            //        // skip empty entries
-            //        if (String.IsNullOrEmpty(errorA.ErrorContent))
-            //        {
-            //            continue;
-            //        }
-
-
-            //        // if error is not within list of Custom Errors in IIS 6.0 - just skip it
-            //        if (GetCustomErrorType(errorA.ErrorCode, errorA.ErrorSubcode) == 0)
-            //        {
-            //            continue;
-            //        }
-            //        else
-            //        {
-            //            //if error type is 2, it can't be with handler type "URL" - skip it
-            //            if ((GetCustomErrorType(errorA.ErrorCode, errorA.ErrorSubcode) == 2) && (String.Compare(errorA.HandlerType, "URL", true) == 0))
-            //            {
-            //                continue;
-            //            }
-            //        }
-
-            //        foreach (HttpError errorB in httpErrors)
-            //        {
-            //            if (String.Equals(errorA.ErrorCode, errorB.ErrorCode)
-            //                && String.Equals(errorA.ErrorSubcode, errorB.ErrorSubcode))
-            //            {
-            //                httpErrors.Remove(errorB);
-            //                break;
-            //            }
-            //        }
-            //        if (String.Compare(errorA.HandlerType, "file", true) == 0)
-            //        {
-            //            errorA.ErrorContent = Path.Combine(virtDir.ContentPath,
-            //                FileUtils.CorrectRelativePath(errorA.ErrorContent));
-            //        }
-            //        //
-            //        httpErrors.Add(errorA);
-            //    }
-            //}
-            //// put all of records to IIS
-            //foreach (HttpError httpError in httpErrors)
-            //{
-            //    ManagementObject error = clsHttpError.CreateInstance();
-            //    error.Properties["HttpErrorCode"].Value = httpError.ErrorCode;
-            //    error.Properties["HttpErrorSubcode"].Value = httpError.ErrorSubcode;
-            //    error.Properties["HandlerType"].Value = httpError.HandlerType;
-            //    error.Properties["HandlerLocation"].Value = httpError.ErrorContent;
-            //    error.Put();
-            //    //
-            //    objHttpErrors.Add(error);
-            //}
-            ////
-            //obj.Properties["HttpErrors"].Value = objHttpErrors.ToArray();
+			// HTTP errors
+			// load global settings for all of websites
+			//ManagementBaseObject objSitesSetting = wmi.GetObject(String.Format("IISWebServiceSetting='{0}'", IIS_SERVICE_ID));
+			//ManagementClass clsHttpError = wmi.GetClass("HttpError");
+			//// get all of custom http errors including inherited ones
+			//List<HttpError> httpErrors = GetCustomHttpErrors(objSitesSetting, virtDir, false);
+			//List<ManagementObject> objHttpErrors = new List<ManagementObject>();
+			//// merge both inherited and customized records
+			//if (virtDir.HttpErrors != null)
+			//{
+			//    foreach (HttpError errorA in virtDir.HttpErrors)
+			//    {
+			//        // skip empty entries
+			//        if (String.IsNullOrEmpty(errorA.ErrorContent))
+			//        {
+			//            continue;
+			//        }
 
 
-            // MIME mappings
-            //if (virtDir.MimeMaps != null)
-            //{
-            //    ManagementClass clsMimeMap = wmi.GetClass("MimeMap");
-            //    ManagementObject[] mimeMaps = new ManagementObject[virtDir.MimeMaps.Length];
-            //    for (int i = 0; i < virtDir.MimeMaps.Length; i++)
-            //    {
-            //        mimeMaps[i] = clsMimeMap.CreateInstance();
-            //        mimeMaps[i].Properties["Extension"].Value = virtDir.MimeMaps[i].Extension;
-            //        mimeMaps[i].Properties["MimeType"].Value = virtDir.MimeMaps[i].MimeType;
-            //        mimeMaps[i].Put();
-            //    }
-            //    obj.Properties["MimeMap"].Value = mimeMaps;
-            //}
+			//        // if error is not within list of Custom Errors in IIS 6.0 - just skip it
+			//        if (GetCustomErrorType(errorA.ErrorCode, errorA.ErrorSubcode) == 0)
+			//        {
+			//            continue;
+			//        }
+			//        else
+			//        {
+			//            //if error type is 2, it can't be with handler type "URL" - skip it
+			//            if ((GetCustomErrorType(errorA.ErrorCode, errorA.ErrorSubcode) == 2) && (String.Compare(errorA.HandlerType, "URL", true) == 0))
+			//            {
+			//                continue;
+			//            }
+			//        }
 
-            
+			//        foreach (HttpError errorB in httpErrors)
+			//        {
+			//            if (String.Equals(errorA.ErrorCode, errorB.ErrorCode)
+			//                && String.Equals(errorA.ErrorSubcode, errorB.ErrorSubcode))
+			//            {
+			//                httpErrors.Remove(errorB);
+			//                break;
+			//            }
+			//        }
+			//        if (String.Compare(errorA.HandlerType, "file", true) == 0)
+			//        {
+			//            errorA.ErrorContent = Path.Combine(virtDir.ContentPath,
+			//                FileUtils.CorrectRelativePath(errorA.ErrorContent));
+			//        }
+			//        //
+			//        httpErrors.Add(errorA);
+			//    }
+			//}
+			//// put all of records to IIS
+			//foreach (HttpError httpError in httpErrors)
+			//{
+			//    ManagementObject error = clsHttpError.CreateInstance();
+			//    error.Properties["HttpErrorCode"].Value = httpError.ErrorCode;
+			//    error.Properties["HttpErrorSubcode"].Value = httpError.ErrorSubcode;
+			//    error.Properties["HandlerType"].Value = httpError.HandlerType;
+			//    error.Properties["HandlerLocation"].Value = httpError.ErrorContent;
+			//    error.Put();
+			//    //
+			//    objHttpErrors.Add(error);
+			//}
+			////
+			//obj.Properties["HttpErrors"].Value = objHttpErrors.ToArray();
 
-            
-        }
 
-        private void FillWmiObjectFromAppVirtualDirectoryRest(ManagementBaseObject obj,
+			// MIME mappings
+			//if (virtDir.MimeMaps != null)
+			//{
+			//    ManagementClass clsMimeMap = wmi.GetClass("MimeMap");
+			//    ManagementObject[] mimeMaps = new ManagementObject[virtDir.MimeMaps.Length];
+			//    for (int i = 0; i < virtDir.MimeMaps.Length; i++)
+			//    {
+			//        mimeMaps[i] = clsMimeMap.CreateInstance();
+			//        mimeMaps[i].Properties["Extension"].Value = virtDir.MimeMaps[i].Extension;
+			//        mimeMaps[i].Properties["MimeType"].Value = virtDir.MimeMaps[i].MimeType;
+			//        mimeMaps[i].Put();
+			//    }
+			//    obj.Properties["MimeMap"].Value = mimeMaps;
+			//}
+
+
+
+
+		}
+
+		private void FillWmiObjectFromAppVirtualDirectoryRest(ManagementBaseObject obj,
 			WebAppVirtualDirectory virtDir)
 		{
 			obj.Properties["Path"].Value = virtDir.ContentPath;
@@ -3621,23 +3630,23 @@ namespace SolidCP.Providers.Web
 			return SecurityUtils.CheckWriteAccessEnabled(path, anonAccount, ServerSettings, UsersOU, GroupsOU);
 		}
 
-        protected void SetWebFolderPermissionsNonApp(string path, string anonAccount, bool enableWriteAccess)
-        {
-            if (String.IsNullOrEmpty(path))
-                return;
+		protected void SetWebFolderPermissionsNonApp(string path, string anonAccount, bool enableWriteAccess)
+		{
+			if (String.IsNullOrEmpty(path))
+				return;
 
-            if (!FileUtils.DirectoryExists(path))
-                FileUtils.CreateDirectory(path);
+			if (!FileUtils.DirectoryExists(path))
+				FileUtils.CreateDirectory(path);
 
-            NTFSPermission permissions = enableWriteAccess ? NTFSPermission.Modify : NTFSPermission.Read;
+			NTFSPermission permissions = enableWriteAccess ? NTFSPermission.Modify : NTFSPermission.Read;
 
-            SecurityUtils.GrantNtfsPermissions(path, anonAccount, permissions, true, true,
-                ServerSettings, UsersOU, GroupsOU);
+			SecurityUtils.GrantNtfsPermissions(path, anonAccount, permissions, true, true,
+				ServerSettings, UsersOU, GroupsOU);
 
-                SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.NETWORK_SERVICE, permissions, true, true);
-        }
+			SecurityUtils.GrantNtfsPermissionsBySid(path, SystemSID.NETWORK_SERVICE, permissions, true, true);
+		}
 
-        protected void SetWebFolderPermissions(string path, string anonAccount,
+		protected void SetWebFolderPermissions(string path, string anonAccount,
 			bool enableWriteAccess, bool dedicatedPool)
 		{
 			if (String.IsNullOrEmpty(path))
@@ -3997,8 +4006,8 @@ namespace SolidCP.Providers.Web
 						{
 							// delete directory
 							DeleteAppVirtualDirectory(siteId, vdirName);
-                            DeleteVirtualDirectory(siteId, vdirName);
-                        }
+							DeleteVirtualDirectory(siteId, vdirName);
+						}
 					}
 					catch (Exception ex)
 					{
@@ -4086,28 +4095,28 @@ namespace SolidCP.Providers.Web
 		}
 		#endregion
 
-        #region Directory Browsing
+		#region Directory Browsing
 
-        public virtual bool GetDirectoryBrowseEnabled(string siteId)
-        {
-            ManagementObject objVirtDir = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'", GetAppVirtualDirectoryPath(siteId, "")));
-            return objVirtDir.Properties["EnableDirBrowsing"].Value != null ? (bool)objVirtDir.Properties["EnableDirBrowsing"].Value : false;
-        }
+		public virtual bool GetDirectoryBrowseEnabled(string siteId)
+		{
+			ManagementObject objVirtDir = wmi.GetObject(String.Format("IIsWebVirtualDirSetting='{0}'", GetAppVirtualDirectoryPath(siteId, "")));
+			return objVirtDir.Properties["EnableDirBrowsing"].Value != null ? (bool)objVirtDir.Properties["EnableDirBrowsing"].Value : false;
+		}
 
-        public virtual void SetDirectoryBrowseEnabled(string siteId, bool enabled)
-        {
-            ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+		public virtual void SetDirectoryBrowseEnabled(string siteId, bool enabled)
+		{
+			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
 
-            WebSite site = GetSite(siteId);
-            site.EnableDirectoryBrowsing = enabled;
+			WebSite site = GetSite(siteId);
+			site.EnableDirectoryBrowsing = enabled;
 
-            FillWmiObjectFromAppVirtualDirectory(objSite, site, false);
-            objSite.Put();
-        }
+			FillWmiObjectFromAppVirtualDirectory(objSite, site, false);
+			objSite.Put();
+		}
 
-        #endregion
+		#endregion
 
-        public virtual bool IsIISInstalled()
+		public virtual bool IsIISInstalled()
 		{
 			int value = 0;
 			RegistryKey root = Registry.LocalMachine;
@@ -4126,235 +4135,235 @@ namespace SolidCP.Providers.Web
 			return OSInfo.IsWindows && IsIISInstalled();
 		}
 
-		
-        #region Microsoft Web Application Gallery
 
-        private const string MS_DEPLOY_ASSEMBLY_NAME = "Microsoft.Web.Deployment";
-        private const string WPI_INSTANCE_VIEWER = "viewer";
-	    private const string WPI_INSTANCE_INSTALLER = "installer";
+		#region Microsoft Web Application Gallery
 
-        virtual public bool CheckLoadUserProfile()
-        {
-            //throw new NotImplementedException("LoadUserProfile option valid only on IIS7 or higer");
-            return false;
-        }
+		private const string MS_DEPLOY_ASSEMBLY_NAME = "Microsoft.Web.Deployment";
+		private const string WPI_INSTANCE_VIEWER = "viewer";
+		private const string WPI_INSTANCE_INSTALLER = "installer";
 
-        virtual public void EnableLoadUserProfile()
-        {
-            throw new NotImplementedException("LoadUserProfile option valid only on IIS7 or higer");
-        }
+		virtual public bool CheckLoadUserProfile()
+		{
+			//throw new NotImplementedException("LoadUserProfile option valid only on IIS7 or higer");
+			return false;
+		}
 
-        
-
-	    public void InitFeeds(int UserId, string[] feeds)
-        {
-            //need to call InitFeeds() before any operation with WPIApplicationGallery()
-            WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-            module.InitFeeds(UserId, feeds);
-        }
-
-        public void SetResourceLanguage(int UserId, string resourceLanguage)
-        {
-            WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-            module.SetResourceLanguage(UserId, resourceLanguage);
-        }
-
-	    public bool IsMsDeployInstalled()
-        {
-            // TO-DO: Implement Web Deploy detection (x64/x86)
-            var isInstalled = false;
-            //
-            try
-            {
-                var msdeployRegKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\IIS Extensions\MSDeploy\3");
-                //
-                var keyValue = msdeployRegKey.GetValue("Install");
-                // We have found the required key in the registry hive
-                if (keyValue != null && keyValue.Equals(1))
-                {
-                    isInstalled = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError("Could not retrieve Web Deploy key from the registry", ex);
-            }
-            //
-            return isInstalled;
+		virtual public void EnableLoadUserProfile()
+		{
+			throw new NotImplementedException("LoadUserProfile option valid only on IIS7 or higer");
+		}
 
 
-        }
 
-	    public GalleryLanguagesResult GetGalleryLanguages(int UserId)
-        {
-            GalleryLanguagesResult result = new GalleryLanguagesResult();
-            WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-            try
-            {
-                result.Value = module.GetLanguages(UserId);
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.AddError(GalleryErrors.GetLanguagesError, ex);
-            }
+		public void InitFeeds(int UserId, string[] feeds)
+		{
+			//need to call InitFeeds() before any operation with WPIApplicationGallery()
+			WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+			module.InitFeeds(UserId, feeds);
+		}
 
-            return result;
-        }
+		public void SetResourceLanguage(int UserId, string resourceLanguage)
+		{
+			WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+			module.SetResourceLanguage(UserId, resourceLanguage);
+		}
 
-        public GalleryCategoriesResult GetGalleryCategories(int UserId)
-        {
-            GalleryCategoriesResult result = new GalleryCategoriesResult();
-
-            //try
-            //{
-            WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-            //
-            result.Value = module.GetCategories(UserId);
-            result.IsSuccess = true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    result.IsSuccess = false;
-            //    result.AddError(GalleryErrors.ProcessingFeedXMLError, ex);
-            //}
-            ////
-            return result;
-        }
-
-        public GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId)
-        {
-            GalleryApplicationsResult result = new GalleryApplicationsResult();
-
-            try
-            {
-                WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-                //
-                result.Value = module.GetApplications(UserId, categoryId);
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.AddError(GalleryErrors.ProcessingFeedXMLError, ex);
-            }
-            //
-            return result;
-        }
-
-        public GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern)
-        {
-            GalleryApplicationsResult result = new GalleryApplicationsResult();
-
-            try
-            {
-                WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-
-                result.Value = module.GetGalleryApplicationsFiltered(UserId, pattern);
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.AddError(ex.Message, ex);
-            }
+		public bool IsMsDeployInstalled()
+		{
+			// TO-DO: Implement Web Deploy detection (x64/x86)
+			var isInstalled = false;
+			//
+			try
+			{
+				var msdeployRegKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\IIS Extensions\MSDeploy\3");
+				//
+				var keyValue = msdeployRegKey.GetValue("Install");
+				// We have found the required key in the registry hive
+				if (keyValue != null && keyValue.Equals(1))
+				{
+					isInstalled = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Could not retrieve Web Deploy key from the registry", ex);
+			}
+			//
+			return isInstalled;
 
 
-            return result;
-        }
+		}
+
+		public GalleryLanguagesResult GetGalleryLanguages(int UserId)
+		{
+			GalleryLanguagesResult result = new GalleryLanguagesResult();
+			WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+			try
+			{
+				result.Value = module.GetLanguages(UserId);
+				result.IsSuccess = true;
+			}
+			catch (Exception ex)
+			{
+				result.IsSuccess = false;
+				result.AddError(GalleryErrors.GetLanguagesError, ex);
+			}
+
+			return result;
+		}
+
+		public GalleryCategoriesResult GetGalleryCategories(int UserId)
+		{
+			GalleryCategoriesResult result = new GalleryCategoriesResult();
+
+			//try
+			//{
+			WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+			//
+			result.Value = module.GetCategories(UserId);
+			result.IsSuccess = true;
+			//}
+			//catch (Exception ex)
+			//{
+			//    result.IsSuccess = false;
+			//    result.AddError(GalleryErrors.ProcessingFeedXMLError, ex);
+			//}
+			////
+			return result;
+		}
+
+		public GalleryApplicationsResult GetGalleryApplications(int UserId, string categoryId)
+		{
+			GalleryApplicationsResult result = new GalleryApplicationsResult();
+
+			try
+			{
+				WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+				//
+				result.Value = module.GetApplications(UserId, categoryId);
+				result.IsSuccess = true;
+			}
+			catch (Exception ex)
+			{
+				result.IsSuccess = false;
+				result.AddError(GalleryErrors.ProcessingFeedXMLError, ex);
+			}
+			//
+			return result;
+		}
+
+		public GalleryApplicationsResult GetGalleryApplicationsFiltered(int UserId, string pattern)
+		{
+			GalleryApplicationsResult result = new GalleryApplicationsResult();
+
+			try
+			{
+				WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+
+				result.Value = module.GetGalleryApplicationsFiltered(UserId, pattern);
+				result.IsSuccess = true;
+			}
+			catch (Exception ex)
+			{
+				result.IsSuccess = false;
+				result.AddError(ex.Message, ex);
+			}
 
 
-        public GalleryApplicationResult GetGalleryApplication(int UserId, string id)
-        {
-            GalleryApplicationResult result = new GalleryApplicationResult();
-            //
-            try
-            {
-                WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
-                //
-                result.Value = module.GetApplicationByProductId(UserId, id);
-                result.IsSuccess = true;
-                result.ErrorCodes.AddRange(module.GetMissingDependenciesForApplicationById(UserId, id));
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.AddError(GalleryErrors.ProcessingFeedXMLError, ex);
-            }
-            //
-            return result;
-        }
-
-        public GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id)
-        {
-            return GetGalleryApplicationStatus(UserId, id);
-        }
-
-        public GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id)
-        {
-            try
-            {
-                WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_INSTALLER);
-
-                return module.DownloadAppAndGetStatus(UserId, id);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Log.WriteError(ex);
-                return GalleryWebAppStatus.UnauthorizedAccessException;
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError(ex);
-                return GalleryWebAppStatus.Failed;
-            }
-        }
-
-        public DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id)
-        {
-            DeploymentParametersResult result = new DeploymentParametersResult();
-
-            try
-            {
-                WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_INSTALLER);
-                //
-                result.Value = module.GetApplicationParameters(UserId, id);
-                result.IsSuccess = true;
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.AddError(GalleryErrors.ProcessingPackageError, ex);
-            }
-            //
-            return result;
-        }
+			return result;
+		}
 
 
-        public StringResultObject InstallGalleryApplication(int UserId, string webAppId, List<DeploymentParameter> updatedValues, string languageId)
-        {
-            StringResultObject result = new StringResultObject();
+		public GalleryApplicationResult GetGalleryApplication(int UserId, string id)
+		{
+			GalleryApplicationResult result = new GalleryApplicationResult();
+			//
+			try
+			{
+				WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_VIEWER);
+				//
+				result.Value = module.GetApplicationByProductId(UserId, id);
+				result.IsSuccess = true;
+				result.ErrorCodes.AddRange(module.GetMissingDependenciesForApplicationById(UserId, id));
+			}
+			catch (Exception ex)
+			{
+				result.IsSuccess = false;
+				result.AddError(GalleryErrors.ProcessingFeedXMLError, ex);
+			}
+			//
+			return result;
+		}
 
-            try
-            {
-                WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_INSTALLER);
-                //
-                module.InstallApplication(UserId, webAppId, updatedValues, languageId, ref result);
+		public GalleryWebAppStatus DownloadGalleryApplication(int UserId, string id)
+		{
+			return GetGalleryApplicationStatus(UserId, id);
+		}
 
-                if (result.IsSuccess)
-                {
-                    module.DeleteWpiHelper(UserId);
-                }
-            }
-            catch (Exception ex)
-            {
-                result.IsSuccess = false;
-                result.AddError(GalleryErrors.PackageInstallationError, ex);
-            }
-            //
-            return result;
-        }
+		public GalleryWebAppStatus GetGalleryApplicationStatus(int UserId, string id)
+		{
+			try
+			{
+				WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_INSTALLER);
+
+				return module.DownloadAppAndGetStatus(UserId, id);
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				Log.WriteError(ex);
+				return GalleryWebAppStatus.UnauthorizedAccessException;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(ex);
+				return GalleryWebAppStatus.Failed;
+			}
+		}
+
+		public DeploymentParametersResult GetGalleryApplicationParameters(int UserId, string id)
+		{
+			DeploymentParametersResult result = new DeploymentParametersResult();
+
+			try
+			{
+				WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_INSTALLER);
+				//
+				result.Value = module.GetApplicationParameters(UserId, id);
+				result.IsSuccess = true;
+			}
+			catch (Exception ex)
+			{
+				result.IsSuccess = false;
+				result.AddError(GalleryErrors.ProcessingPackageError, ex);
+			}
+			//
+			return result;
+		}
+
+
+		public StringResultObject InstallGalleryApplication(int UserId, string webAppId, List<DeploymentParameter> updatedValues, string languageId)
+		{
+			StringResultObject result = new StringResultObject();
+
+			try
+			{
+				WPIApplicationGallery module = new WPIApplicationGallery(WPI_INSTANCE_INSTALLER);
+				//
+				module.InstallApplication(UserId, webAppId, updatedValues, languageId, ref result);
+
+				if (result.IsSuccess)
+				{
+					module.DeleteWpiHelper(UserId);
+				}
+			}
+			catch (Exception ex)
+			{
+				result.IsSuccess = false;
+				result.AddError(GalleryErrors.PackageInstallationError, ex);
+			}
+			//
+			return result;
+		}
 
 		#endregion
 
@@ -4364,79 +4373,79 @@ namespace SolidCP.Providers.Web
 			throw new NotSupportedException();
 		}
 
-        public virtual void RevokeWebManagementAccess(string siteName, string accountName)
+		public virtual void RevokeWebManagementAccess(string siteName, string accountName)
 		{
 			throw new NotSupportedException();
 		}
 
-        public virtual void ChangeWebManagementAccessPassword(string accountName, string accountPassword)
+		public virtual void ChangeWebManagementAccessPassword(string accountName, string accountPassword)
 		{
 			throw new NotSupportedException();
 		}
 
-        public virtual bool CheckWebManagementAccountExists(string accountName)
+		public virtual bool CheckWebManagementAccountExists(string accountName)
 		{
 			throw new NotSupportedException();
 		}
 
-        public virtual ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
+		public virtual ResultObject CheckWebManagementPasswordComplexity(string accountPassword)
 		{
 			throw new NotSupportedException();
 		}
-        #endregion
+		#endregion
 
-        #region SSL
+		#region SSL
 
-        public virtual SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
-        {
-            throw new NotSupportedException();
-        }
+		public virtual SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
+		{
+			throw new NotSupportedException();
+		}
 
-        public virtual String LEInstallCertificate(WebSite website, string email)
-        {
-            throw new NotSupportedException();
-        }
+		public virtual String LEInstallCertificate(WebSite website, string email)
+		{
+			throw new NotSupportedException();
+		}
 
-        public virtual SSLCertificate getCertificate(WebSite site)
-        {
-            throw new NotSupportedException();
-        }
+		public virtual SSLCertificate getCertificate(WebSite site)
+		{
+			throw new NotSupportedException();
+		}
 
-        public virtual SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
-        {
-            throw new NotSupportedException();
-        }
+		public virtual SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
+		{
+			throw new NotSupportedException();
+		}
 
-        public virtual byte[] ExportCertificate(string serialNumber, string password)
-        {
-            throw new NotSupportedException();
-        }
+		public virtual byte[] ExportCertificate(string serialNumber, string password)
+		{
+			throw new NotSupportedException();
+		}
 
-        public virtual SSLCertificate GenerateCSR(SSLCertificate certificate)
-        {
-            throw new NotSupportedException();
-        }
-        public virtual SSLCertificate generateRenewalCSR(SSLCertificate certificate)
-        {
-            throw new NotSupportedException();
-        }
-        public virtual List<SSLCertificate> GetServerCertificates()
-        {
-            throw new NotSupportedException();
-        }
-        public virtual ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)
-        {
-            throw new NotSupportedException();
-        }
-        public virtual SSLCertificate ImportCertificate(WebSite website)
-        {
-            throw new NotSupportedException();
-        }
-        public virtual bool CheckCertificate(WebSite webSite)
-        {
-            throw new NotSupportedException();
-        }
-        #endregion
+		public virtual SSLCertificate GenerateCSR(SSLCertificate certificate)
+		{
+			throw new NotSupportedException();
+		}
+		public virtual SSLCertificate generateRenewalCSR(SSLCertificate certificate)
+		{
+			throw new NotSupportedException();
+		}
+		public virtual List<SSLCertificate> GetServerCertificates()
+		{
+			throw new NotSupportedException();
+		}
+		public virtual ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)
+		{
+			throw new NotSupportedException();
+		}
+		public virtual SSLCertificate ImportCertificate(WebSite website)
+		{
+			throw new NotSupportedException();
+		}
+		public virtual bool CheckCertificate(WebSite webSite)
+		{
+			throw new NotSupportedException();
+		}
+		#endregion
 
-    }
+	}
 }

@@ -3641,6 +3641,7 @@ namespace SolidCP.Providers.Web
 
 			WebAppVirtualDirectory[] dirs = GetAppVirtualDirectories(srvman, siteId);
 
+			// TODO check if there is no bug here
 			foreach (WebAppVirtualDirectory dir in dirs)
 			{
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text;
 using System.Reflection;
 using System.Diagnostics;
@@ -21,17 +22,28 @@ namespace SolidCP.Installer
 		}
 
 		static Dictionary<string, Assembly> LoadedAssemblies = new Dictionary<string, Assembly>();
+		static ConcurrentDictionary<string, object> Locks = new ConcurrentDictionary<string, object>();
 
 		public static Assembly Resolve(object sender, ResolveEventArgs args)
 		{
-			var host = Assembly.GetExecutingAssembly();
-			var resources = host.GetManifestResourceNames();
 			var name = new AssemblyName(args.Name).Name;
-			var path = AppDomain.CurrentDomain.BaseDirectory;
 
-			lock (LoadedAssemblies)
+			var lockobj = Locks.GetOrAdd(name, new object());
+
+			lock (lockobj)
 			{
 				if (LoadedAssemblies.ContainsKey(name)) return LoadedAssemblies[name];
+
+				var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
+				if (loadedAssembly != null)
+				{
+					LoadedAssemblies.Add(name, loadedAssembly);
+					return loadedAssembly;
+				}
+
+				var host = Assembly.GetExecutingAssembly();
+				var path = AppDomain.CurrentDomain.BaseDirectory;
+				var resources = host.GetManifestResourceNames();
 				var fileName = Path.Combine(path, $"{name}.dll");
 				var copyToFile = name == "SolidCP.Installer.Core"; // save installer core to a file, so the domain can find it
 				var assName = resources.FirstOrDefault(res => res.EndsWith($"{name}.dll", StringComparison.OrdinalIgnoreCase));
