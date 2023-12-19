@@ -70,7 +70,7 @@
     <Compile Remove="Code\WPIHelper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" />
+    <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj"  OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
     <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
