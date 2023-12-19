@@ -1,34 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net48;net8.0</TargetFrameworks>
-    <Nullable>enable</Nullable>
-    <LangVersion>11</LangVersion>
-    <DefineConstants>$(DefineConstants);Client</DefineConstants>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <OutputPath>..\..\..\Bin</OutputPath>
-    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-    <EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-    <None Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\..\VersionInfo.cs" Link="VersionInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.DirectoryServices" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <PackageReference Include="System.ServiceModel.Primitives" Version="6.2.0" />
-    <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net48;net8.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<LangVersion>11</LangVersion>
+		<DefineConstants>$(DefineConstants);Client</DefineConstants>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<OutputPath>..\..\..\Bin</OutputPath>
+		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+		<EmbeddedResource Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+		<None Remove="Microsoft.NET.Sdk.Razor.SourceGenerators\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\..\..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.ServiceModel.Web" />
+		<Reference Include="System.DirectoryServices" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="System.ServiceModel.Primitives" Version="6.2.0" />
+		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
+		<PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />
+		<PackageReference Include="CoreWCF.WebHttp" Version="1.5.1" />
+	</ItemGroup>
 </Project>

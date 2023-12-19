@@ -182,12 +182,15 @@ namespace SolidCP.Build
 						.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						.AddUsings(
 							UsingDirective(ParseName("System.ServiceModel"))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true)))
-							.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
-							UsingDirective(ParseName("CoreWCF")));
-                            //UsingDirective(ParseName("System.ServiceModel.Activation")));
+								.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true))),
+							UsingDirective(ParseName("System.ServiceModel.Web"))
+								.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
+							UsingDirective(ParseName("CoreWCF")),
+							UsingDirective(ParseName("CoreWCF.Web"))
+								 .WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))));
 
-                    clientTree = CompilationUnit()
+
+					clientTree = CompilationUnit()
 						//.WithUsings(((CompilationUnitSyntax)oldTree).Usings)
 						//.AddUsings(UsingDirective(ParseName("CoreWCF"))
 						//	.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NET"), true, true, true)))
@@ -217,10 +220,12 @@ namespace SolidCP.Build
 						.AddUsings(UsingDirective(oldNS.Name))
 						.AddUsings(
 							UsingDirective(ParseName("System.ServiceModel"))
-							.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true)))
-							.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
-							UsingDirective(ParseName("CoreWCF"))
-							 .WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
+								.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true))),
+							UsingDirective(ParseName("System.ServiceModel.Web"))
+								.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
+							UsingDirective(ParseName("CoreWCF")),
+							UsingDirective(ParseName("CoreWCF.Web"))
+								 .WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
 							);
 							//UsingDirective(ParseName("System.ServiceModel.Activation")));
 
@@ -245,7 +250,8 @@ namespace SolidCP.Build
 					{
 						WebServiceNamespace = webServiceNamespace,
 						Class = ws.Class,
-						WebMethods = methods
+						WebMethods = methods,
+						Model = ws.Model
 					}
 					.Render())
 					.NormalizeWhitespace();
