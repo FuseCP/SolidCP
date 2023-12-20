@@ -106,6 +106,7 @@ After:
                 RouteTable.Routes.Add(new ServiceRoute($"pipe/{service.Name}", new ServiceHostFactory(), service));
 				RouteTable.Routes.Add(new ServiceRoute($"tcp/ssl/{service.Name}", new ServiceHostFactory(), service));
                 RouteTable.Routes.Add(new ServiceRoute($"pipe/ssl/{service.Name}", new ServiceHostFactory(), service));
+                RouteTable.Routes.Add(new ServiceRoute($"api/{service.Name}", new ServiceHostFactory(), service));
             }
 #endif
 		}

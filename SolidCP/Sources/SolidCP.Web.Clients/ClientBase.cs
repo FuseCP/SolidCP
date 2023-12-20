@@ -22,7 +22,7 @@ using Grpc.Net.Client;
 namespace SolidCP.Web.Client
 {
 
-	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
 	public class UserNamePasswordCredentials
 	{

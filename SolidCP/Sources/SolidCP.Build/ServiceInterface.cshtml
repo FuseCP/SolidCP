@@ -54,7 +54,6 @@ public interface I@(Class.Identifier) {
 	{
 		var name = method.Identifier.Text;
 		string webMethod;
-		var attr = Attribute(IdentifierName("WebInvoke"));
 		if (name.StartsWith("Add", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Insert", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Create", StringComparison.OrdinalIgnoreCase)) webMethod = "PUT";
@@ -90,8 +89,12 @@ public interface I@(Class.Identifier) {
 		}
 		var uri = sb.ToString();
 
-		attr = attr.WithArgumentList(ParseAttributeArgumentList($"(Method = \"{webMethod}\", UriTemplate = \"{uri}\",  " +
-			$"BodyStyle = WebMessageBodyStyle.{(hasMultipleComplexParameters ? "Wrapped" : "Bare")}, " +
+		var isGet = webMethod == "GET";
+		AttributeSyntax attr;
+		if (isGet) attr = Attribute(IdentifierName("WebGet"));
+		else attr = Attribute(IdentifierName("WebInvoke"));
+		attr = attr.WithArgumentList(ParseAttributeArgumentList((!isGet ? $"(Method = \"{webMethod}\", " : "") + "UriTemplate = \"{uri}\",  " +
+			$"BodyStyle = WebMessageBodyStyle.{(hasMultipleComplexParameters ? "WrappedRequest" : "Bare")}, " +
 			"RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)"));
 		return attr;
 	}

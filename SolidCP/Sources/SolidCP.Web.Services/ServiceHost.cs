@@ -16,7 +16,7 @@ using SolidCP.Web.Services;
 
 namespace SolidCP.Web.Services
 {
-	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
 	public class ServiceHost : System.ServiceModel.ServiceHost
 	{
@@ -36,11 +36,11 @@ namespace SolidCP.Web.Services
 		bool IsHttps(string adr) => adr.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 		bool IsNetTcp(string adr) => adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase);
 		bool IsPipe(string adr) => adr.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase);
-	
+
 		bool IsLocal(string adr)
 		{
 			var host = new Uri(adr).Host;
-			var hostIsIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline); 
+			var hostIsIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
 			return host == "localhost" || host == "127.0.0.1" || host == "::1" ||
 				hostIsIP && Regex.IsMatch(host, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline) || // local network ip
 				IsPipe(adr);
@@ -66,6 +66,7 @@ namespace SolidCP.Web.Services
 
 			var policy = contract.GetCustomAttributes(false).OfType<PolicyAttribute>().FirstOrDefault();
 			var isEncrypted = policy != null;
+			var isAuthenticated = isEncrypted && policy.Policy != "CommonPolicy";
 
 			Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
 			Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new UserNamePasswordValidator() { Policy = policy };
@@ -80,8 +81,15 @@ namespace SolidCP.Web.Services
 			{
 				if (IsHttp(adr))
 				{
-
-					if (HasApi(adr, "basic"))
+					if (HasApi(adr, "api"))
+					{
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
+						{
+							if (!isAuthenticated) AddEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.None) { Name = "rest.none" }, adr);
+							else AddEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.TransportCredentialOnly) { Name = "rest.credential" }, adr);
+						}
+					}
+					else if (HasApi(adr, "basic"))
 					{
 						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
@@ -119,7 +127,14 @@ namespace SolidCP.Web.Services
 				}
 				else if (IsHttps(adr))
 				{
-					if (HasApi(adr, "basic"))
+					if (HasApi(adr, "api"))
+					{
+						var binding = new WebHttpBinding(WebHttpSecurityMode.Transport);
+						binding.Name = "rest.transport";
+						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						AddEndpoint(contract, binding, adr);
+					}
+					else if (HasApi(adr, "basic"))
 					{
 						var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
 						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
