@@ -93,7 +93,7 @@ public interface I@(Class.Identifier) {
 		AttributeSyntax attr;
 		if (isGet) attr = Attribute(IdentifierName("WebGet"));
 		else attr = Attribute(IdentifierName("WebInvoke"));
-		attr = attr.WithArgumentList(ParseAttributeArgumentList((!isGet ? $"(Method = \"{webMethod}\", " : "") + "UriTemplate = \"{uri}\",  " +
+		attr = attr.WithArgumentList(ParseAttributeArgumentList((!isGet ? $"(Method = \"{webMethod}\", " : "(") + "UriTemplate = \"{uri}\",  " +
 			$"BodyStyle = WebMessageBodyStyle.{(hasMultipleComplexParameters ? "WrappedRequest" : "Bare")}, " +
 			"RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)"));
 		return attr;
