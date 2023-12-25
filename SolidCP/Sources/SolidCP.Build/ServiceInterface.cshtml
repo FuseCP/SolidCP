@@ -82,7 +82,7 @@ public interface I@(Class.Identifier) {
 		if (hasComplexParameters) webMethod = "POST";
 		var sb = new StringBuilder();
 
-		sb.Append(method.Identifier.Text);
+		sb.Append("/"); sb.Append(method.Identifier.Text);
 		foreach (var par in simpleParameters)
 		{
 			sb.Append("/{"); sb.Append(par.Identifier.Text); sb.Append("}");
@@ -93,9 +93,9 @@ public interface I@(Class.Identifier) {
 		AttributeSyntax attr;
 		if (isGet) attr = Attribute(IdentifierName("WebGet"));
 		else attr = Attribute(IdentifierName("WebInvoke"));
-		attr = attr.WithArgumentList(ParseAttributeArgumentList((!isGet ? $"(Method = \"{webMethod}\", " : "(") + "UriTemplate = \"{uri}\",  " +
-			$"BodyStyle = WebMessageBodyStyle.{(hasMultipleComplexParameters ? "WrappedRequest" : "Bare")}, " +
-			"RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)"));
+		attr = attr.WithArgumentList(ParseAttributeArgumentList((!isGet ? $"(Method = \"{webMethod}\", " : "(") + $"UriTemplate = \"{uri}\"" +
+			(hasMultipleComplexParameters ? $", BodyStyle = WebMessageBodyStyle.WrappedRequest)" : ")")));
+			//"RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)"
 		return attr;
 	}
 

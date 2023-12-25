@@ -65,17 +65,7 @@ namespace SolidCP.Web.Services
 					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
 					return attrTypes == null ? new Type[0] : attrTypes;
 				});
-			var webServices = types
-
-/* Unmerged change from project 'SolidCP.Web.Services (net48)'
-Before:
-					.Where(t => t.GetCustomAttribute<System.Web.Services.WebServiceAttribute>() != null &&
-After:
-					.Where(t => t.GetCustomAttribute<Services.WebServiceAttribute>() != null &&
-*/
-					.Where(t => t.GetCustomAttribute<WebServiceAttribute>() != null &&
-						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)))
-					.ToArray();
+			var webServices = types.ToArray();
 			return webServices;
 		}
 

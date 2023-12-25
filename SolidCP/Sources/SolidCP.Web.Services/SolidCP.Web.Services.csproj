@@ -16,7 +16,7 @@
 		<PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />
 		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.5.1" />
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.5.1" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.3.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
 		<!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />
