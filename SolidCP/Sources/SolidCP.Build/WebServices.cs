@@ -186,7 +186,8 @@ namespace SolidCP.Build
 							UsingDirective(ParseName("System.ServiceModel.Web"))
 								.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
 							UsingDirective(ParseName("CoreWCF")),
-							UsingDirective(ParseName("CoreWCF.Web"))
+							UsingDirective(ParseName("CoreWCF.Web")),
+							UsingDirective(ParseName("CoreWCF.OpenApi.Attributes"))
 								 .WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true))));
 
 
@@ -224,7 +225,8 @@ namespace SolidCP.Build
 							UsingDirective(ParseName("System.ServiceModel.Web"))
 								.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
 							UsingDirective(ParseName("CoreWCF")),
-							UsingDirective(ParseName("CoreWCF.Web"))
+							UsingDirective(ParseName("CoreWCF.Web")),
+							UsingDirective(ParseName("CoreWCF.OpenApi.Attributes"))
 								 .WithTrailingTrivia(Trivia(EndIfDirectiveTrivia(true)))
 							);
 							//UsingDirective(ParseName("System.ServiceModel.Activation")));
