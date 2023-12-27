@@ -280,6 +280,7 @@ namespace SolidCP.Web.Services
 							var debugBehavior = new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true };
 							host.Description.Behaviors.Add(debugBehavior);
 						}
+						host.Authorization.ServiceAuthorizationManager = new RestAuthorizationManager();
 					});
 
 				var isLocal = StartupCore.IsLocalService;
@@ -288,7 +289,7 @@ namespace SolidCP.Web.Services
 				{
 					var policy = ws.Contract.GetCustomAttributes(false).OfType<Services.PolicyAttribute>().FirstOrDefault();
 					var isEncrypted = policy != null;
-					var isAuthenticated = isEncrypted && policy.Policy != "CommonPolicy";
+					var isAuthenticated = isEncrypted && policy.Policy != PolicyAttribute.Encrypted;
 
 					BasicHttpBinding basicHttpBinding;
 					WSHttpBinding wsHttpBinding;

@@ -1,9 +1,13 @@
-﻿#if NETFRAMEWORK
-using System;
-using System.ServiceModel;
-using System.ServiceModel.Web;
+﻿using System;
 using System.Net;
 using System.Reflection;
+#if NETFRAMEWORK
+using System.ServiceModel;
+using System.ServiceModel.Web;
+#else
+using CoreWCF;
+using CoreWCF.Web;
+#endif
 
 namespace SolidCP.Web.Services {
 	public class RestAuthorizationManager : ServiceAuthorizationManager
@@ -28,7 +32,7 @@ namespace SolidCP.Web.Services {
 				}
 			}
 			var isEncrypted = policy != null;
-			var isAuthenticated = isEncrypted && policy.Policy != "CommonPolicy";
+			var isAuthenticated = isEncrypted && policy.Policy != PolicyAttribute.Encrypted;
 
 			if (!isAuthenticated) return true;
 
@@ -48,7 +52,11 @@ namespace SolidCP.Web.Services {
 				validator.Policy = policy;
 				try
 				{
+#if NETFRAMEWORK
 					validator.Validate(user.Name, user.Password);
+#else
+					validator.ValidateAsync(user.Name, user.Password).AsTask().Wait();
+#endif
 					return true;
 
 				} catch (FaultException)
@@ -66,4 +74,3 @@ namespace SolidCP.Web.Services {
 		}
 	}
 }
-#endif

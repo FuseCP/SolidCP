@@ -63,7 +63,7 @@ namespace SolidCP.Web.Services
 				}
 			}
 			var policy = contract.GetCustomAttribute<PolicyAttribute>();
-			if (policy != null && policy.Policy != "CommonPolicy")
+			if (policy != null && policy.Policy != PolicyAttribute.Encrypted)
 			{
                 int hpos = request.Headers.FindHeader(nameof(Credentials), $"{Namespace}{nameof(Credentials)}");
 				if (hpos < 0) throw new FaultException("No anonymous access allowed.");

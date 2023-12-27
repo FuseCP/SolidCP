@@ -92,7 +92,7 @@ namespace SolidCP.Web.Services
 
 			var policy = contract.GetCustomAttributes(false).OfType<PolicyAttribute>().FirstOrDefault();
 			var isEncrypted = policy != null;
-			var isAuthenticated = isEncrypted && policy.Policy != "CommonPolicy";
+			var isAuthenticated = isEncrypted && policy.Policy != PolicyAttribute.Encrypted;
 
 			Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
 			Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new UserNamePasswordValidator() { Policy = policy };

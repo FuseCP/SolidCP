@@ -227,7 +227,7 @@ namespace SolidCP.Web.Client
 				var serviceInterface = this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
 				var policy = serviceInterface?.GetCustomAttribute<HasPolicyAttribute>()?.Policy;
-				return policy != null && policy != "CommonPolicy";
+				return policy != null && policy != HasPolicyAttribute.Encrypted;
 			}
 		}
 		public bool HasSoapHeaders => this.GetType().GetInterfaces()
