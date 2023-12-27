@@ -74,8 +74,8 @@
 				</tr>
 			</table>
             <br /><br />
+			<asp:HyperLink runat="server" id="lnkDocs" NavigateUrl="~/api-docs">API Documentation</asp:HyperLink> <br />
             <a href="https://solidcp.com">SolidCP</a> &COPY; Copyright <%=DateTime.Now.Year%> All Rights Reserved.
-			<asp:HyperLink runat="server" id="lnkDocs" NavigateUrl="~/api-docs">API Documentation</asp:HyperLink>
 		</div>
     </form>
 </body>

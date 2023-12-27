@@ -69,6 +69,11 @@ namespace SolidCP.Web.Services
 			binding.MaxReceivedMessageSize = 5242880;
 			binding.MaxBufferSize = 5242880;
 			binding.ReaderQuotas = readerQuotas;
+			binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+			if (Authorization.ServiceAuthorizationManager == null || !(Authorization.ServiceAuthorizationManager is RestAuthorizationManager))
+			{
+				Authorization.ServiceAuthorizationManager = new RestAuthorizationManager();
+			}
 			var endpoint = AddServiceEndpoint(contract, binding, address);
 			var behavior = new WebHttpBehavior();
 			behavior.AutomaticFormatSelectionEnabled = true;

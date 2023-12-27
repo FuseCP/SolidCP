@@ -92,6 +92,7 @@
 		<Reference Include="System.Xml.Linq" />
 		<Reference Include="System.Runtime.Remoting" />
 		<Reference Include="SwaggerWcf">
+			<HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">

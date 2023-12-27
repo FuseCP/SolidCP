@@ -37,7 +37,7 @@ namespace SolidCP.Web.Services
 				}
 				else if (Policy.Policy == "EnterpriseServerPolicy" && ValidateEnterpriseServer != null)
 				{
-					if (ValidateEnterpriseServer != null && !ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user");
+					if (ValidateEnterpriseServer != null && !ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user or password");
 				}
 				else if (Policy.Policy == "CommonPolicy") { } // do not require username & password
 				else throw new NotSupportedException($"Unuspported policy {Policy.Policy} on service.");
