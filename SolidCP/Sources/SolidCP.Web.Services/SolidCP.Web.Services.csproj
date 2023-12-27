@@ -32,6 +32,10 @@
 		<Reference Include="System.ServiceModel.Activation" />
 		<Reference Include="System.Threading.Tasks" />
 		<Reference Include="System.Web" />
+		<!--<PackageReference Include="KornSW.SwaggerWcf" Version="1.2.16.414" />-->
+		<Reference Include="SwaggerWcf">
+			<HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
+		</Reference>
 		<!--<PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />-->
 	</ItemGroup>
 	<ItemGroup>

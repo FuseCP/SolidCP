@@ -47,7 +47,7 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    //[Policy(*EnterpriseServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
     public class esApplicationsInstaller
     {

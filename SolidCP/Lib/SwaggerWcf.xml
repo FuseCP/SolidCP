@@ -1,0 +1,589 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SwaggerWcf</name>
+    </assembly>
+    <members>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfAttribute">
+            <summary>
+            Attribute to enable a class or interface to be scanned by SwaggerWcf
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfAttribute.ServicePath">
+            <summary>
+            The base path on which the API is served, which is relative to the host. If it is not included,
+            the API is served directly under the host. The value MUST start with a leading slash (/). The
+            basePath does not support path templating.
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfAttribute.#ctor">
+            <summary>
+            Export this service on Swagger file
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfAttribute.#ctor(System.String)">
+            <summary>
+            Export this service on Swagger file with base path of <paramref name="servicePath"/>
+            </summary>
+            <param name="servicePath">Service path</param>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfContactInfoAttribute">
+            <summary>
+            Provides values for Contact information for the exposed API.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfContactInfoAttribute.Name">
+            <summary>
+            The identifying name of the contact person/organization.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfContactInfoAttribute.Email">
+            <summary>
+            The email address of the contact person/organization. MUST be in the format of an email address.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfContactInfoAttribute.Url">
+            <summary>
+            The URL pointing to the contact information. MUST be in the format of a URL.
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfContentTypesAttribute">
+            <summary>
+                Overrides the return type
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfContentTypesAttribute.#ctor(System.String[],System.String[])">
+            <summary>
+                Overrides the return type
+            </summary>
+            <param name="returnType">Method return type</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfContentTypesAttribute.ConsumeTypes">
+            <summary>
+                Override Response Content-Types
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfContentTypesAttribute.ProduceTypes">
+            <summary>
+                Override Response Content-Types
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfDefinitionAttribute">
+            <summary>
+                Attribute to describe a class as a definition on swagger
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfDefinitionAttribute.ExternalDocsDescription">
+            <summary>
+                Description of the external documentation
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfDefinitionAttribute.ExternalDocsUrl">
+            <summary>
+                URL of the external documentation
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfDefinitionAttribute.ModelName">
+            <summary>
+            Optional custom name for model. Model names default to class's fully qualified name
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfDefinitionAttribute.#ctor(System.String,System.String)">
+            <summary>
+                Configures a description with more information
+            </summary>
+            <param name="externalDocsDescription">Description external docs description</param>
+            <param name="externalDocsUrl">Description external docs URL</param>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfHeaderAttribute">
+            <summary>
+                Describe a parameter
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfHeaderAttribute.#ctor(System.String,System.Boolean,System.String,System.String)">
+            <summary>
+                Describes a parameter
+            </summary>
+            <param name="name">Parameter name</param>
+            <param name="required">Set parameter as required. Defaults is false.</param>
+            <param name="description">Parameter description.</param>
+            <param name="defaultValue">Parameter default value.</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfHeaderAttribute.Name">
+            <summary>
+                Name of this parameter
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfHeaderAttribute.Required">
+            <summary>
+                Defines if this parameter is required in operations
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfHeaderAttribute.Description">
+            <summary>
+                Description of this parameter
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfHeaderAttribute.DefaultValue">
+            <summary>
+                Default value of this parameter
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfHiddenAttribute">
+            <summary>
+                Attribute to hide a method, class, parameter or property from Swagger.
+                This overrides any tag-based settings.
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfLicenseInfoAttribute">
+            <summary>
+            Provides values for License information for the exposed API.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfLicenseInfoAttribute.Name">
+            <summary>
+            Required. The license name used for the API.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfLicenseInfoAttribute.Url">
+            <summary>
+            A URL to the license used for the API. MUST be in the format of a URL.
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfLicenseInfoAttribute.#ctor(System.String)">
+            <summary>
+             Provides values for License information for the exposed API.
+            </summary>
+            <param name="name">The license name used for the API.</param>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfParameterAttribute">
+            <summary>
+                Describe a parameter
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfParameterAttribute.#ctor(System.Boolean,System.String,System.Type)">
+            <summary>
+                Describes a parameter
+            </summary>
+            <param name="required">Set parameter as required. Defaults is false.</param>
+            <param name="description">Parameter description.</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfParameterAttribute.Required">
+            <summary>
+                Defines if this parameter is required in operations
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfParameterAttribute.Description">
+            <summary>
+                Description of this parameter
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfParameterAttribute.ParameterType">
+            <summary>
+                Override parameter type
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfPathAttribute">
+            <summary>
+                Attribute to describe a method exported as a path in swagger
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.#ctor(System.String,System.String,System.String,System.String,System.String,System.Boolean,System.String)">
+            <summary>
+                Configures a path with more information
+            </summary>
+            <param name="summary">Path summary</param>
+            <param name="description">Path description</param>
+            <param name="operationId">Path Operation ID</param>
+            <param name="externalDocsDescription">Path external docs description</param>
+            <param name="externalDocsUrl">Path external docs URL</param>
+            <param name="deprecated">Path deprecated (defaults to false)</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.Summary">
+            <summary>
+                Path summary
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.Description">
+            <summary>
+                Path description
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.OperationId">
+            <summary>
+                Path Operation ID
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.ExternalDocsDescription">
+            <summary>
+                Path external docs description
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.ExternalDocsUrl">
+            <summary>
+                Path external docs URL
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.Deprecated">
+            <summary>
+                Path deprecated
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPathAttribute.OperationPath">
+            <summary>
+                Operation path, extends service path
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute">
+            <summary>
+                Describe a property
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.#ctor">
+            <summary>
+                Describes a property
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Description">
+            <summary>
+                Description of this parameter
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Required">
+            <summary>
+                Determines whether this parameter is mandatory.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Default">
+            <summary>
+                Declares the value of the parameter that the server will use if none is provided
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Example">
+            <summary>
+                Illustrate what the value is supposed to be like.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Maximum">
+            <summary>
+                Maximum allowed value, as modified by ExclusiveMaximum.
+                Must be a valid JSON number, and storable as a decimal.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.ExclusiveMaximum">
+            <summary>
+                If true, the instance is valid if it is strictly less than the value of Maximum.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Minimum">
+            <summary>
+                Minimum allowed value, as modified by ExclusiveMinimum
+                Must be a valid JSON number, and storable as a decimal.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.ExclusiveMinimum">
+            <summary>
+                If true, the instance is valid if it is strictly greatern than the value of Maximum.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.MaxLength">
+            <summary>
+                Maximum length.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.MinLength">
+            <summary>
+                Minimum length
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.Pattern">
+            <summary>
+               Should be a valid regular expression, according to the ECMA 262 regular expression dialect.
+               A string instance is considered valid if the regular expression matches the instance successfully.
+               Regular expressions are not implicitly anchored.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.MaxItems">
+            <summary>
+                An array instance is valid against MaxItems if its size
+                is less than, or equal to, the value of this keyword.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.MinItems">
+            <summary>
+                An array instance is valid against MaxItems if its size
+                is greater than, or equal to, the value of this keyword.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.UniqueItems">
+            <summary>
+                If true, the instance validates successfully if all of its elements are unique.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfPropertyAttribute.MultipleOf">
+            <summary>
+                A numeric instance is valid against "multipleOf" if the result of
+                the division of the instance by this keyword's value is an integer.
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfRegexAttribute">
+            <summary>
+                Apply a Regular Expression
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfRegexAttribute.#ctor(System.String)">
+            <summary>
+                Applies a Regular Expression to a field or property
+            </summary>
+            <param name="regex">Regular Expression</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfRegexAttribute.Regex">
+            <summary>
+                Regular Expression
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfRequestTypeAttribute">
+            <summary>
+                Overrides the return type
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfRequestTypeAttribute.#ctor(System.String)">
+            <summary>
+                Overrides the return type
+            </summary>
+            <param name="name">Method parameter type name</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfRequestTypeAttribute.Name">
+            <summary>
+                Override parameter Type in Wrapped Request
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute">
+            <summary>
+                Attribute to describe path responses. If none is specified, a 'default' one is created
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.#ctor(System.String,System.String,System.Boolean,System.String[],System.Type,System.String,System.String)">
+            <summary>
+                Configures a response for a path
+            </summary>
+            <param name="code">Result code</param>
+            <param name="description">Result description</param>
+            <param name="emptyResponseOverride">Result has empty response body (override default response type)</param>
+            <param name="headers">Optional HTTP headers returned</param>
+            <param name="responseTypeOverride">Optional response Type override</param>
+            <param name="exampleMimeType">Optional Response Example MIME Type</param>
+            <param name="exampleContent">Optional Response Example Content</param>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.#ctor(System.Net.HttpStatusCode,System.String,System.Boolean,System.String[],System.Type,System.String,System.String)">
+            <summary>
+                Configures a response for a path
+            </summary>
+            <param name="code">Result code</param>
+            <param name="description">Result description</param>
+            <param name="emptyResponseOverride">Result has empty response body (override default response type)</param>
+            <param name="headers">Optional HTTP headers returned</param>
+            <param name="responseTypeOverride">Optional response Type override</param>
+            <param name="exampleMimeType">Optional Response Example MIME Type</param>
+            <param name="exampleContent">Optional Response Example Content</param>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.#ctor(System.Int32,System.String,System.Boolean,System.String[],System.Type,System.String,System.String)">
+            <summary>
+                Configures a response for a path
+            </summary>
+            <param name="code">Result code</param>
+            <param name="description">Result description</param>
+            <param name="emptyResponseOverride">Result has empty response body (override default response type)</param>
+            <param name="headers">Optional HTTP headers returned</param>
+            <param name="responseTypeOverride">Optional response Type override</param>
+            <param name="exampleMimeType">Optional Response Example MIME Type</param>
+            <param name="exampleContent">Optional Response Example Content</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.Code">
+            <summary>
+                Result code
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.Description">
+            <summary>
+                Result description
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.EmptyResponseOverride">
+            <summary>
+                Result has empty response body (override default response type)
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.Headers">
+            <summary>
+                Optional HTTP headers returned
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.ExampleMimeType">
+            <summary>
+                Example MIME Type
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.ExampleContent">
+            <summary>
+                Example Content
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfResponseAttribute.ResponseTypeOverride">
+            <summary>
+                Override response type
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfReturnTypeAttribute">
+            <summary>
+                Overrides the return type
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfReturnTypeAttribute.#ctor(System.Type,System.String)">
+            <summary>
+                Overrides the return type
+            </summary>
+            <param name="returnType">Method return type</param>
+            <param name="name">Method return type name</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfReturnTypeAttribute.ReturnType">
+            <summary>
+                Override Return Type
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfReturnTypeAttribute.Name">
+            <summary>
+                Override Return Type in Wrapped Responses
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfSecurityAttribute">
+            <summary>
+            Attribute to link operation to a security definition
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfSecurityAttribute.#ctor(System.String,System.String[])">
+            <summary>
+            Specify security definition for this operation
+            </summary>
+            <param name="securityDefinitionName">Name of the Security Definition</param>
+            <param name="scopes">Scopes of the security definition</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfSecurityAttribute.SecurityDefinitionName">
+            <summary>
+            Name of the Security Definition
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfSecurityAttribute.SecurityDefinitionScopes">
+            <summary>
+            Scopes of the Security Definition
+            </summary>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfServiceInfoAttribute">
+            <summary>
+            Provides metadata about the API. The metadata can be used by the clients if needed.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfServiceInfoAttribute.Title">
+            <summary>
+            Required. The title of the application.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfServiceInfoAttribute.Version">
+            <summary>
+            Required Provides the version of the application API (not to be confused with the specification version).
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfServiceInfoAttribute.Description">
+            <summary>
+            A short description of the application. GFM syntax can be used for rich text representation.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfServiceInfoAttribute.TermsOfService">
+            <summary>
+            The Terms of Service for the API.
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfServiceInfoAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Assigns service info values
+            </summary>
+            <param name="title">The title of the application</param>
+            <param name="version">Provides the version of the application API (not to be confused with the specification version)</param>
+        </member>
+        <member name="T:SwaggerWcf.Attributes.SwaggerWcfTagAttribute">
+            <summary>
+                Attribute to inject a tag into a class, method, parameter or property.
+                Tags can be used to categorize in Swagger UI and to hide elements using configuration
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Attributes.SwaggerWcfTagAttribute.#ctor(System.String,System.Boolean)">
+            <summary>
+                Injects a tag into an element
+            </summary>
+            <param name="name">Tag name</param>
+            <param name="hideFromSpec">Hide tag from spec</param>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfTagAttribute.TagName">
+            <summary>
+                Tag name
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Attributes.SwaggerWcfTagAttribute.HideFromSpec">
+            <summary>
+                Hide tag from spec
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.Type">
+            <summary>
+            (Required) The type of the security scheme. Valid values are "basic", "apiKey" or "oauth2".
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.Description">
+            <summary>
+            A short description for security scheme.
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.Name">
+            <summary>
+            (Required) The name of the header or query parameter to be used.
+            WARNING: Use only, when <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Type"/> equals "apiKey"
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.In">
+            <summary>
+            (Required) The location of the API key. Valid values are "query" or "header".
+            WARNING: Use only, when <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Type"/> equals "apiKey"
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.Flow">
+            <summary>
+            (Required) The flow used by the OAuth2 security scheme. Valid values are "implicit", "password", "application" or "accessCode".
+            WARNING: Use only, when <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Type"/> equals "oauth2"
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.AuthorizationUrl">
+            <summary>
+            (Required) The authorization URL to be used for this flow. This SHOULD be in the form of a URL.
+            WARNING: Use only, when <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Type"/> equals "oauth2" and <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Flow"/> equals "implicit" or "accessCode"
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.TokenUrl">
+            <summary>
+            (Required) The token URL to be used for this flow. This SHOULD be in the form of a URL.
+            WARNING: Use only, when <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Type"/> equals "oauth2" and <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Flow"/> equals "password" or "application" or "accessCode"
+            </summary>
+        </member>
+        <member name="P:SwaggerWcf.Models.SecurityAuthorization.Scopes">
+            <summary>
+            (Required) The available scopes for the OAuth2 security scheme.
+            This maps between a name of a scope to a short description of it (as the value of the property).
+            WARNING: Use only, when <see cref="P:SwaggerWcf.Models.SecurityAuthorization.Type"/> equals "oauth2"
+            </summary>
+        </member>
+        <member name="M:SwaggerWcf.Support.ListExtensions.Compute(System.String,System.String)">
+            <summary>
+            Compute the distance between two strings.
+            </summary>
+        </member>
+    </members>
+</doc>

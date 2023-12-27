@@ -9,6 +9,7 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Web;
 using System.Web.Routing;
+using SwaggerWcf;
 #else
 using CoreWCF;
 #endif
@@ -97,7 +98,8 @@ namespace SolidCP.Web.Services
 				RouteTable.Routes.Add(new ServiceRoute($"tcp/ssl/{service.Name}", new ServiceHostFactory(), service));
                 RouteTable.Routes.Add(new ServiceRoute($"pipe/ssl/{service.Name}", new ServiceHostFactory(), service));
                 RouteTable.Routes.Add(new ServiceRoute($"api/{service.Name}", new ServiceHostFactory(), service));
-            }
+			}
+			RouteTable.Routes.Add(new ServiceRoute("api-docs", new WebServiceHostFactory(), typeof(SwaggerWcfEndpoint)));
 #endif
 		}
 	}

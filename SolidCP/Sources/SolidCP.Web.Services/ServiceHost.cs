@@ -9,6 +9,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Xml;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
@@ -21,14 +22,14 @@ namespace SolidCP.Web.Services
 	public class ServiceHost : System.ServiceModel.ServiceHost
 	{
 		public ServiceHost() : base() { }
-		public ServiceHost(Type serviceType, params Uri[] baseAdresses) : base(serviceType, baseAdresses)
+		public ServiceHost(Type serviceType, params Uri[] baseAddresses) : base(serviceType, baseAddresses)
 		{
-			AddEndpoints(serviceType, baseAdresses);
+			AddEndpoints(serviceType, baseAddresses);
 		}
 
-		public ServiceHost(object singletonInstance, params Uri[] baseAdresses) : base(singletonInstance, baseAdresses)
+		public ServiceHost(object singletonInstance, params Uri[] baseAddresses) : base(singletonInstance, baseAddresses)
 		{
-			AddEndpoints(singletonInstance.GetType(), baseAdresses);
+			AddEndpoints(singletonInstance.GetType(), baseAddresses);
 		}
 
 		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"{api}/[a-zA-Z0-9_]+(?:\\?|$)");
@@ -53,6 +54,26 @@ namespace SolidCP.Web.Services
 			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
 			var endpoint = AddServiceEndpoint(contract, binding, address);
 			endpoint.EndpointBehaviors.Add(new SoapHeaderMessageInspector());
+		}
+		void AddWebEndpoint(Type contract, WebHttpBinding binding, string address)
+		{
+			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
+			var readerQuotas = new XmlDictionaryReaderQuotas
+			{
+				MaxBytesPerRead = 4096,
+				MaxDepth = 32,
+				MaxArrayLength = 16384,
+				MaxStringContentLength = 16384,
+				MaxNameTableCharCount = 16384
+			};
+			binding.MaxReceivedMessageSize = 5242880;
+			binding.MaxBufferSize = 5242880;
+			binding.ReaderQuotas = readerQuotas;
+			var endpoint = AddServiceEndpoint(contract, binding, address);
+			var behavior = new WebHttpBehavior();
+			behavior.AutomaticFormatSelectionEnabled = true;
+			behavior.HelpEnabled = true;
+			endpoint.EndpointBehaviors.Add(behavior);
 		}
 
 		void AddEndpoints(Type serviceType, Uri[] baseAdresses)
@@ -85,8 +106,8 @@ namespace SolidCP.Web.Services
 					{
 						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-							if (!isAuthenticated) AddEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.None) { Name = "rest.none" }, adr);
-							else AddEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.TransportCredentialOnly) { Name = "rest.credential" }, adr);
+							if (!isAuthenticated) AddWebEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.None) { Name = "rest.none" }, adr);
+							else AddWebEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.TransportCredentialOnly) { Name = "rest.credential" }, adr);
 						}
 					}
 					else if (HasApi(adr, "basic"))
@@ -132,7 +153,7 @@ namespace SolidCP.Web.Services
 						var binding = new WebHttpBinding(WebHttpSecurityMode.Transport);
 						binding.Name = "rest.transport";
 						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
-						AddEndpoint(contract, binding, adr);
+						AddWebEndpoint(contract, binding, adr);
 					}
 					else if (HasApi(adr, "basic"))
 					{

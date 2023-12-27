@@ -91,6 +91,8 @@
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />
 		<Reference Include="System.Runtime.Remoting" />
+		<Reference Include="SwaggerWcf">
+		</Reference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' != 'net48'">
 		<PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />

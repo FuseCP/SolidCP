@@ -15,7 +15,9 @@
 @Class.AttributeLists
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
 [ServiceContract(Namespace="@(WebServiceNamespace)")]
-#if !NETFRAMEWORK
+#if NETFRAMEWORK
+[SwaggerWcf("/api/@(Class.Identifier)")]
+#else
 [OpenApiBasePath("/api/@(Class.Identifier)")]
 #endif
 public interface I@(Class.Identifier) {
@@ -55,12 +57,13 @@ public interface I@(Class.Identifier) {
 			return aname != null && aname == typeof(byte).FullName;
 		}
 
-		//TODO check for enums
-		var tm = Model.GetTypeInfo(type).Type as INamedTypeSymbol;
+		TypeInfo info = Model.GetTypeInfo(type);
+		var tm = info.Type as INamedTypeSymbol;
+		if (tm.EnumUnderlyingType != null) return true;
 		var name = tm?.GetFullTypeName();
 		return name != null && (name == typeof(byte).FullName || name == typeof(sbyte).FullName || name == typeof(char).FullName || name == typeof(string).FullName || name == typeof(short).FullName ||
 			name == typeof(ushort).FullName || name == typeof(int).FullName || name == typeof(uint).FullName || name == typeof(long).FullName || name == typeof(ulong).FullName ||
-			name == typeof(float).FullName || name == typeof(double).FullName || name == typeof(bool).FullName || 
+			name == typeof(float).FullName || name == typeof(double).FullName || name == typeof(bool).FullName ||
 			name == typeof(DateTime).FullName || name == typeof(Decimal).FullName || name == typeof(TimeSpan).FullName ||
 			name == typeof(Guid).FullName || name == typeof(Uri).FullName || name == typeof(object).FullName ||
 			name == typeof(DateTimeOffset).FullName);

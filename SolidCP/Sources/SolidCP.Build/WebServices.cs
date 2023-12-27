@@ -183,7 +183,8 @@ namespace SolidCP.Build
 						.AddUsings(
 							UsingDirective(ParseName("System.ServiceModel"))
 								.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true))),
-							UsingDirective(ParseName("System.ServiceModel.Web"))
+							UsingDirective(ParseName("System.ServiceModel.Web")),
+							UsingDirective(ParseName("SwaggerWcf.Attributes"))
 								.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
 							UsingDirective(ParseName("CoreWCF")),
 							UsingDirective(ParseName("CoreWCF.Web")),
@@ -222,7 +223,8 @@ namespace SolidCP.Build
 						.AddUsings(
 							UsingDirective(ParseName("System.ServiceModel"))
 								.WithLeadingTrivia(Trivia(IfDirectiveTrivia(IdentifierName("NETFRAMEWORK"), true, true, true))),
-							UsingDirective(ParseName("System.ServiceModel.Web"))
+							UsingDirective(ParseName("System.ServiceModel.Web")),
+							UsingDirective(ParseName("SwaggerWcf.Attributes"))
 								.WithTrailingTrivia(Trivia(ElseDirectiveTrivia(true, true))),
 							UsingDirective(ParseName("CoreWCF")),
 							UsingDirective(ParseName("CoreWCF.Web")),

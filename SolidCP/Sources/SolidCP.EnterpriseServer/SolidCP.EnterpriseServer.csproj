@@ -1,155 +1,149 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>
-    <Nullable>disable</Nullable>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>11</LangVersion>
-    <ProjectGuid>{59C7623A-5181-48A5-880A-C9B82B48F589}</ProjectGuid>
-    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-    <!--<RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
+	<PropertyGroup>
+		<TargetFrameworks>net48</TargetFrameworks>
+		<Nullable>disable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<LangVersion>11</LangVersion>
+		<ProjectGuid>{59C7623A-5181-48A5-880A-C9B82B48F589}</ProjectGuid>
+		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+		<!--<RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress.exe</RunCommand>
     <RunArguments>/site:server</RunArguments>-->
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <OutputPath>bin_dotnet</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<OutputPath>bin_dotnet</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <OutputPath>bin_dotnet</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<OutputPath>bin_dotnet</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <OutputPath>bin_dotnet</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
-    <OutputPath>bin</OutputPath>
-    <OutputType>Library</OutputType>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <ImplicitUsings>disable</ImplicitUsings>
-    <RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
-    <RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9901</RunArguments>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<OutputPath>bin_dotnet</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<StartupObject>SolidCP.EnterpriseServer.Program</StartupObject>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="WebServices\**\*.*" />
-    <None Include="WebServices\**\*.*" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+		<OutputPath>bin</OutputPath>
+		<OutputType>Library</OutputType>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<ImplicitUsings>disable</ImplicitUsings>
+		<RunCommand>$(MSBuildExtensionsPath64)\..\IIS Express\iisexpress</RunCommand>
+		<RunArguments>/path:"$(MSBuildProjectDirectory)" /port:9901</RunArguments>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Code\OperatingSystems\OperatingSystemController.cs" />
-    <Compile Remove="Code\WebServers\WebServerController.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="WebServices\**\*.*" />
+		<None Include="WebServices\**\*.*" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="WebServices\SolidCP.Build\EnterpriseServerProxyConfigurator.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Code\OperatingSystems\OperatingSystemController.cs" />
+		<Compile Remove="Code\WebServers\WebServerController.cs" />
+		<Compile Remove="esApplicationsInstaller.g.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
-    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-    <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="WebServices\SolidCP.Build\EnterpriseServerProxyConfigurator.cs" />
+	</ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <Reference Include="System" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
+		<ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+		<ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="bin\Code\DotNetZip.dll" />
-    <Content Include="bin\Code\IPAddressRange.dll" />
-    <Content Include="bin\SolidCP.EnterpriseServer.Base.dll" />
-    <Content Include="bin\SolidCP.EnterpriseServer.Base.pdb" />
-    <Content Include="bin\Code\SolidCP.EnterpriseServer.Code.dll" />
-    <Content Include="bin\Code\SolidCP.EnterpriseServer.Code.pdb" />
-    <Content Include="bin\SolidCP.EnterpriseServer.dll" />
-    <Content Include="bin\SolidCP.EnterpriseServer.pdb" />
-    <None Include="Code\OperatingSystems\OperatingSystemController.cs" />
-    <None Include="Code\WebServers\WebServerController.cs" />
-    <None Include="Web.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+		<Reference Include="System" />
+		<Reference Include="System.Security" />
+		<Reference Include="System.Xml" />
+		<Reference Include="System.Configuration" />
+		<Reference Include="System.Xml.Linq" />
+		<Reference Include="System.ServiceModel" />
+		<Reference Include="System.ServiceModel.Web" />
+		<Reference Include="System.Web" />
+		<!--<PackageReference Include="KornSW.SwaggerWcf" Version="1.2.16.414" />-->
+		<Reference Include="SwaggerWcf">
+			<HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="Code\OperatingSystems\OperatingSystemController.cs" />
+		<None Include="Code\WebServers\WebServerController.cs" />
+		<None Include="esApplicationsInstaller.g.cs" />
+		<None Include="Web.config">
+			<SubType>Designer</SubType>
+		</None>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Images\logo.png" />
-    <Content Include="bin\SolidCP.EnterpriseServer.dll.config" />
-    <Content Include="bin\SolidCP.SchedulerService.exe.config" />
-    <None Include="Properties\PublishProfiles\Default Settings %282%29.pubxml" />
-    <None Include="Properties\PublishProfiles\Default Settings %283%29.pubxml" />
-    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
-    <None Include="Properties\PublishProfiles\Enterprise Server.pubxml" />
-    <None Include="TaskEventHandlers.config" />
-    <None Include="WsePolicyCache.Config" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Include="..\VersionInfo.cs">
+			<Link>VersionInfo.cs</Link>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Images\logo.png" />
+		<None Include="Properties\PublishProfiles\Default Settings %282%29.pubxml" />
+		<None Include="Properties\PublishProfiles\Default Settings %283%29.pubxml" />
+		<None Include="Properties\PublishProfiles\Default Settings.pubxml" />
+		<None Include="Properties\PublishProfiles\Enterprise Server.pubxml" />
+		<None Include="TaskEventHandlers.config" />
+		<None Include="WsePolicyCache.Config" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
+	</ItemGroup>
 
-  <Target Name="DeleteUnusedDlls" AfterTargets="Build">
-     <Message Text="Delete unused dll files" Importance="high"/>
-    <ItemGroup>
-      <FilesToDelete Include="bin\Google.Authenticator.*" />
-      <FilesToDelete Include="bin\Microsoft.Bcl.AsyncInterfaces.*" />
-      <FilesToDelete Include="bin\Microsoft.Win32.Registry.*" />
-      <FilesToDelete Include="bin\Newtonsoft.Json.*" />
-      <FilesToDelete Include="bin\QRCoder.*" />
-      <FilesToDelete Include="bin\RestSharp.*" />
-      <FilesToDelete Include="bin\IPAddressRange.*" />
-      <FilesToDelete Include="bin\DotNetZip.*" />
-      <FilesToDelete Include="bin\Microsoft.IdentityModel.Logging.*" />
-      <FilesToDelete Include="bin\Microsoft.IdentityModel.Tokens.*" />
-      <FilesToDelete Include="bin\SolidCP.Server.Client.*" />
-      <FilesToDelete Include="bin\SolidCP.Web.Clients.*" />
-      <FilesToDelete Include="bin\WhoisClient.*" />
-      <FilesToDelete Include="bin\Twilio.*" />
-      <FilesToDelete Include="bin\SolidCP.Templates.*" />
-      <FilesToDelete Include="bin\System.*" />
+	<ItemGroup>
+		<Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
+	</ItemGroup>
 
-    </ItemGroup>
-    <Delete Files="@(FilesToDelete)" />
-  </Target>
+	<Target Name="DeleteUnusedDlls" AfterTargets="Build">
+		<Message Text="Delete unused dll files" Importance="high" />
+		<ItemGroup>
+			<FilesToDelete Include="bin\Google.Authenticator.*" />
+			<FilesToDelete Include="bin\Microsoft.Bcl.AsyncInterfaces.*" />
+			<FilesToDelete Include="bin\Microsoft.Win32.Registry.*" />
+			<FilesToDelete Include="bin\Newtonsoft.Json.*" />
+			<FilesToDelete Include="bin\QRCoder.*" />
+			<FilesToDelete Include="bin\RestSharp.*" />
+			<FilesToDelete Include="bin\IPAddressRange.*" />
+			<FilesToDelete Include="bin\DotNetZip.*" />
+			<FilesToDelete Include="bin\Microsoft.IdentityModel.Logging.*" />
+			<FilesToDelete Include="bin\Microsoft.IdentityModel.Tokens.*" />
+			<FilesToDelete Include="bin\SolidCP.Server.Client.*" />
+			<FilesToDelete Include="bin\SolidCP.Web.Clients.*" />
+			<FilesToDelete Include="bin\WhoisClient.*" />
+			<FilesToDelete Include="bin\Twilio.*" />
+			<FilesToDelete Include="bin\SolidCP.Templates.*" />
+			<FilesToDelete Include="bin\System.*" />
+
+		</ItemGroup>
+		<Delete Files="@(FilesToDelete)" />
+	</Target>
 </Project>

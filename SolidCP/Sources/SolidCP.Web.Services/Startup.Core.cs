@@ -244,7 +244,7 @@ namespace SolidCP.Web.Services
                 MaxNameTableCharCount = 16384
             };
             binding.MaxReceivedMessageSize = 5242880;
-            binding.MaxBufferSize = 65536;
+            binding.MaxBufferSize = 5242880;
             binding.ReaderQuotas = readerQuotas;
             builder.AddServiceWebEndpoint(service, contract, binding, address, address, behavior =>
             {
