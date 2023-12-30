@@ -264,19 +264,6 @@ namespace SolidCP.Web.Services
 			{
 				var webServices = ServiceTypes.Types;
 
-				builder.ConfigureAllServiceHostBase(host =>
-					{
-						if (Certificate != null) host.Credentials.ServiceCertificate.Certificate = Certificate;
-						var behavior = host.Description.Behaviors.Find<ServiceDebugBehavior>();
-						if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
-						else
-						{
-							var debugBehavior = new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true };
-							host.Description.Behaviors.Add(debugBehavior);
-						}
-						host.Authorization.ServiceAuthorizationManager = new RestAuthorizationManager();
-					});
-
 				var isLocal = StartupCore.IsLocalService;
 
 				foreach (var ws in webServices)
@@ -425,6 +412,26 @@ namespace SolidCP.Web.Services
 				var serviceMetadataBehavior = app.ApplicationServices.GetRequiredService<ServiceMetadataBehavior>();
 				serviceMetadataBehavior.HttpGetEnabled = HttpPort.HasValue;
 				serviceMetadataBehavior.HttpsGetEnabled = HttpsPort.HasValue;
+
+				builder.ConfigureAllServiceHostBase(host =>
+				{
+					if (Certificate != null) host.Credentials.ServiceCertificate.Certificate = Certificate;
+					var behavior = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+					if (behavior != null) behavior.IncludeExceptionDetailInFaults = true;
+					else
+					{
+						var debugBehavior = new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true };
+						host.Description.Behaviors.Add(debugBehavior);
+					}
+					host.Authorization.ServiceAuthorizationManager = new RestAuthorizationManager();
+					foreach (var endpoint in host.Description.Endpoints)
+					{
+						if (endpoint.Binding is WebHttpBinding) {
+							endpoint.EndpointBehaviors.Add(new SoapHeaderMessageInspector());
+						}
+					}
+				});
+
 			});
 
 		}

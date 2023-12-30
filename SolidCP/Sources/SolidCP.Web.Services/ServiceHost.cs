@@ -75,9 +75,11 @@ namespace SolidCP.Web.Services
 				Authorization.ServiceAuthorizationManager = new RestAuthorizationManager();
 			}
 			var endpoint = AddServiceEndpoint(contract, binding, address);
+			var messageInspector = new SoapHeaderMessageInspector();
 			var behavior = new WebHttpBehavior();
 			behavior.AutomaticFormatSelectionEnabled = true;
 			behavior.HelpEnabled = true;
+			endpoint.EndpointBehaviors.Add(messageInspector);
 			endpoint.EndpointBehaviors.Add(behavior);
 		}
 
