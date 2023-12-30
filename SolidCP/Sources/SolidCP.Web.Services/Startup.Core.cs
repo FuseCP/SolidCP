@@ -53,15 +53,15 @@ namespace SolidCP.Web.Services
 		public static int? HttpPort = null;
 		public static int? HttpsPort = null;
 		public static int? NetTcpPort = null;
-		public static string? HttpHost = null;
-		public static string? HttpsHost = null;
-		public static string? NetTcpHost = null;
+		public static string HttpHost = null;
+		public static string HttpsHost = null;
+		public static string NetTcpHost = null;
 		public static StoreLocation StoreLocation = StoreLocation.LocalMachine;
 		public static StoreName StoreName = StoreName.My;
 		public static X509FindType FindType = X509FindType.FindBySubjectName;
-		public static string? Name = null;
-		public static string? CertificateFile = null;
-		public static string? CertificatePassword = null;
+		public static string Name = null;
+		public static string CertificateFile = null;
+		public static string CertificatePassword = null;
 		public static string Password;
 		public static string KeyFile = null;
 		public static string ProbingPaths = "";
@@ -262,13 +262,7 @@ namespace SolidCP.Web.Services
 
 			app.UseServiceModel(builder =>
 			{
-				var webServices = StartupNetFX.GetWebServices()
-						 .Select(ws => new
-						 {
-							 Service = ws,
-							 Contract = ws.GetInterfaces().FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)
-						 })
-						 .Where(ws => ws.Contract != null);
+				var webServices = ServiceTypes.Types;
 
 				builder.ConfigureAllServiceHostBase(host =>
 					{

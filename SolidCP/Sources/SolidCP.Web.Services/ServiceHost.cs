@@ -32,7 +32,7 @@ namespace SolidCP.Web.Services
 			AddEndpoints(singletonInstance.GetType(), baseAddresses);
 		}
 
-		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"{api}/[a-zA-Z0-9_]+(?:\\?|$)");
+		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"/{api}/[a-zA-Z0-9_]+(?:\\?|$)");
 		bool IsHttp(string adr) => adr.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
 		bool IsHttps(string adr) => adr.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 		bool IsNetTcp(string adr) => adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase);

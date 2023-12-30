@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 #if NETFRAMEWORK
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -12,25 +14,33 @@ using CoreWCF.Web;
 namespace SolidCP.Web.Services {
 	public class RestAuthorizationManager : ServiceAuthorizationManager
 	{
+		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"/{api}/[a-zA-Z0-9_]+(?:\\?|$)");
+
 		/// <summary>  
 		/// Method source sample taken from here: http://bit.ly/1hUa1LR  
 		/// </summary>  
+#if NETFRAMEWORK
 		protected override bool CheckAccessCore(OperationContext operationContext)
+#else
+		protected override async ValueTask<bool> CheckAccessCoreAsync(OperationContext operationContext)
+#endif
 		{
-			string bindingName = operationContext.EndpointDispatcher.ChannelDispatcher.BindingName;
-			if (WebOperationContext.Current == null || string.Compare(bindingName, "webHttpBinding", true) != 0) return true;
-
-			var instance = operationContext.InstanceContext.GetServiceInstance();
-			PolicyAttribute policy = null;
-			var insttype = instance.GetType();
-			while (insttype != null && policy == null)
+			string endpointUri = operationContext.EndpointDispatcher.EndpointAddress.Uri.AbsoluteUri;
+			if (WebOperationContext.Current == null || !HasApi(endpointUri, "api"))
 			{
-				policy = insttype.GetCustomAttribute<PolicyAttribute>();
-				if (policy == null)
-				{
-					insttype = insttype.BaseType;
-				}
+#if NETFRAMEWORK
+				return base.CheckAccessCore(operationContext);
+#else
+				return await base.CheckAccessCoreAsync(operationContext);
+#endif
 			}
+
+			var match = Regex.Match(endpointUri, "(?<=/api/)[a-zA-Z0-9_]+(?=\\?|$)", RegexOptions.Singleline);
+			if (!match.Success) throw new NotSupportedException("Error parsing endpoint address.");
+			var typeName = match.Value;
+			var type = ServiceTypes.Types[typeName];
+			var contract = type?.Contract;
+			PolicyAttribute policy = contract?.GetCustomAttribute<PolicyAttribute>();
 			var isEncrypted = policy != null;
 			var isAuthenticated = isEncrypted && policy.Policy != PolicyAttribute.Encrypted;
 

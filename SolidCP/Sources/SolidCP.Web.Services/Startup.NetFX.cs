@@ -22,53 +22,8 @@ namespace SolidCP.Web.Services
 	public static class StartupNetFX
 	{
 
-		public static Assembly[] ServiceAssemblies { get; set; }
-
-		public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
-		{
-			if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-			try
-			{
-				return assembly.GetTypes();
-			}
-			catch (ReflectionTypeLoadException e)
-			{
-				return e.Types.Where(t => t != null);
-			}
-		}
-
 		static object startLock = new object();
 		static bool wasCalled = false;
-
-		public static IEnumerable<Type> GetWebServices()
-		{
-			Assembly eserver = null, server = null;
-
-			try
-			{
-				eserver = Assembly.Load("SolidCP.EnterpriseServer");
-			}
-			catch { }
-			try
-			{
-				server = Assembly.Load("SolidCP.Server");
-			}
-			catch { }
-			ServiceAssemblies = new Assembly[]
-			{
-				eserver, server
-			}
-			.Where(a => a != null)
-			.ToArray();
-
-			var types = ServiceAssemblies
-				.SelectMany(a => {
-					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
-					return attrTypes == null ? new Type[0] : attrTypes;
-				});
-			var webServices = types.ToArray();
-			return webServices;
-		}
 
 		public static void Start()
 		{
@@ -79,7 +34,7 @@ namespace SolidCP.Web.Services
 				wasCalled = true;
 			}
 
-			AddServiceRoutes(GetWebServices());
+			AddServiceRoutes(ServiceTypes.Types.Select(srvc => srvc.Service));
 			//SvcVirtualPathProvider.SetupSvcServices(webServices);
 			//DictionaryVirtualPathProvider.Startup();
 		}
