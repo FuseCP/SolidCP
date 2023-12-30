@@ -8,7 +8,7 @@
             "name": "SolidCP.Server",
             "type": "coreclr",
             "request": "launch",
-            "program": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server/bin/net.core/SolidCP.Server.dll",
+            "program": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server/bin_dotnet/SolidCP.Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server",
             "stopAtEntry": false,

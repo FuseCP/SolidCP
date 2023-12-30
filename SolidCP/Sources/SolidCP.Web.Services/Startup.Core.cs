@@ -335,7 +335,7 @@ namespace SolidCP.Web.Services
 						{
 							if (Certificate != null)
 							{
-								netTcpSslBinding = new NetTcpBinding(CoreWCF.SecurityMode.Transport);
+								netTcpSslBinding = new NetTcpBinding(SecurityMode.Transport);
 								netTcpSslBinding.Security.Message.ClientCredentialType = MessageCredentialType.None;
 								netTcpSslBinding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
 								netTcpSslUri = new Uri($"net.tcp://{NetTcpHost}:{NetTcpPort}/tcp/ssl/{ws.Service.Name}");
@@ -343,7 +343,7 @@ namespace SolidCP.Web.Services
 							}
 							if (isLocal || AllowInsecureHttp)
 							{
-								netTcpBinding = new NetTcpBinding(CoreWCF.SecurityMode.None);
+								netTcpBinding = new NetTcpBinding(SecurityMode.None);
 								netTcpUri = new Uri($"net.tcp://{NetTcpHost}:{NetTcpPort}/tcp/{ws.Service.Name}");
 								builder.AddServiceEndpoint(ws.Service, ws.Contract, netTcpBinding, netTcpUri);
 							}
@@ -395,13 +395,13 @@ namespace SolidCP.Web.Services
 						{
 							if (Certificate != null)
 							{
-								netTcpSslBinding = new NetTcpBinding(CoreWCF.SecurityMode.Transport);
+								netTcpSslBinding = new NetTcpBinding(SecurityMode.Transport);
 								netTcpSslBinding.Security.Message.ClientCredentialType = MessageCredentialType.None;
 								netTcpSslBinding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
 								netTcpSslUri = new Uri($"net.tcp://{NetTcpHost}:{NetTcpPort}/tcp/ssl/{ws.Service.Name}");
 								builder.AddServiceEndpoint(ws.Service, ws.Contract, netTcpSslBinding, netTcpSslUri);
 							}
-							netTcpBinding = new NetTcpBinding(CoreWCF.SecurityMode.None);
+							netTcpBinding = new NetTcpBinding(SecurityMode.None);
 							netTcpUri = new Uri($"net.tcp://{NetTcpHost}:{NetTcpPort}/tcp/{ws.Service.Name}");
 							builder.AddServiceEndpoint(ws.Service, ws.Contract, netTcpBinding, netTcpUri);
 						}

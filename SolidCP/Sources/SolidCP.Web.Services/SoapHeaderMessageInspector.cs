@@ -43,13 +43,18 @@ namespace SolidCP.Web.Services
 		{
 			var instance = instanceContext.GetServiceInstance();
 			var instanceType = instance.GetType();
-			var action = request.Headers.Action;
-			var operationName = action.Substring(action.LastIndexOf("/") + 1);
+			var adr = request.Headers.To.OriginalString;
+			var isRest = HasApi(adr, "api");
+			string operationName;
+			if (!isRest) {
+				var action = request.Headers.Action;
+				operationName = action.Substring(action.LastIndexOf("/") + 1);
+			} else {
+				operationName = request.Properties["HttpOperationName"] as string;
+			}
 			var contract = instanceType.GetInterfaces()
 				.FirstOrDefault(intf => intf.GetCustomAttribute<ServiceContractAttribute>() != null);
 			var method = contract.GetMethod(operationName);
-			var adr = channel.LocalAddress.Uri.AbsoluteUri;
-			var isRest = HasApi(adr, "api");
 			var soapattr = method.GetCustomAttribute<SoapHeaderAttribute>();
 			if (soapattr != null)
 			{

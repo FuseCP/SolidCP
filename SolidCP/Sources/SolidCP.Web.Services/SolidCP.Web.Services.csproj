@@ -44,6 +44,16 @@
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Remove="DictionaryVirtualPathProvider.cs" />
+	  <Compile Remove="Path.cs" />
+	  <Compile Remove="SvcVirtualPathProvider.cs" />
+	  <Compile Remove="SvcHttpModule.cs" />
+	  <None Include="DictionaryVirtualPathProvider.cs" />
+	  <None Include="Path.cs" />
+	  <None Include="SvcVirtualPathProvider.cs" />
+	  <None Include="SvcHttpModule.cs" />
+	</ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 	</ItemGroup>
 </Project>

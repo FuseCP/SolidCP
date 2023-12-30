@@ -21,7 +21,7 @@ namespace SolidCP.Web.Services
 		public ServiceType(Type type)
 		{
 			Service = type;
-			Contract = Contract = type.GetInterfaces().FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
+			Contract = type.GetInterfaces().FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
 		}
 	}
 
@@ -53,7 +53,7 @@ namespace SolidCP.Web.Services
 			var types = Assemblies
 				.SelectMany(a => {
 					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
-					return attrTypes == null ? new Type[0] : attrTypes;
+					return attrTypes ?? new Type[0];
 				});
 			return types;
 		}

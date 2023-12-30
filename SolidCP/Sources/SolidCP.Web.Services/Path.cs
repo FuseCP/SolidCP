@@ -10,11 +10,8 @@ using System.Text.RegularExpressions;
 
 namespace SolidCP.Web.Services
 {
-
 	public class Paths
 	{
-
-
 		public static void Split(string path, out string directory, out string name)
 		{
 			path = Normalize(path);
