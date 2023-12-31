@@ -249,10 +249,6 @@ namespace SolidCP.Portal
 			// Preview Domain
 			server.InstantDomainAlias = txtPreviewDomain.Text;
 
-			// Platform
-			server.OSPlatform = ServerInfo.Result.OSPlatform;
-			server.IsCore = ServerInfo.Result.IsCore;
-
 			try
 			{
 				int result = ES.Services.Servers.UpdateServer(server);
