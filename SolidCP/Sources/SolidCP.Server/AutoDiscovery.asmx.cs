@@ -66,7 +66,7 @@ namespace SolidCP.Server
 
         [WebMethod]
 		public OSPlatformInfo GetOSPlatform()
-		{    
+		{
             return OSInfo.Current.GetOSPlatform();
         }
 

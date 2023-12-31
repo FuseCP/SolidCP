@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "SolidCP.Server",
+            "name": "SolidCP.Server net8",
             "type": "coreclr",
             "request": "launch",
             "program": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server/bin_dotnet/SolidCP.Server.dll",

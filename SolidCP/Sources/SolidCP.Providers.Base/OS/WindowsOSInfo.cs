@@ -428,11 +428,12 @@ namespace SolidCP.Providers.OS
 						case 10:
 							int ReleaseId = GetReleaseId();
 							// Server 2016
-							if (ReleaseId == 1607 || ReleaseId == 1803 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.WindowsServer2016;
+							if ((ReleaseId == 1607 || ReleaseId == 1709 || ReleaseId == 1803) && 
+								info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.WindowsServer2016;
 							// Windows 10 below 1903
 							else if (ReleaseId == 1507 || ReleaseId == 1511 || ReleaseId == 1607 || ReleaseId == 1703 || ReleaseId == 1709 || ReleaseId == 1803) ret = WindowsVersion.Windows10;
 							// Server 2019 and Windows 10 above 1903
-							else if (ReleaseId == 1809 || ReleaseId == 1903)
+							else if (ReleaseId == 1809 || ReleaseId == 1903 || ReleaseId == 1909 || ReleaseId == 2004 || ReleaseId == 2009)
 							{
 								if (info.wProductType == (byte)WinPlatform.VER_NT_WORKSTATION) ret = WindowsVersion.Windows10;
 								else ret = WindowsVersion.WindowsServer2019;
