@@ -2,7 +2,9 @@
 @using Microsoft.CodeAnalysis
 @using Microsoft.CodeAnalysis.CSharp
 @using Microsoft.CodeAnalysis.CSharp.Syntax
+@using System;
 @using System.Collections.Generic;
+@using System.Text;
 @using System.Linq;
 
 @using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory
@@ -13,12 +15,18 @@
 @Class.AttributeLists
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
 [ServiceContract(Namespace="@(WebServiceNamespace)")]
+#if NETFRAMEWORK
+[SwaggerWcf("/api/@(Class.Identifier)")]
+#else
+[OpenApiBasePath("/api/@(Class.Identifier)")]
+#endif
 public interface I@(Class.Identifier) {
 
 	@foreach (var method in WebMethods
 		.Select(m => (MemberDeclarationSyntax)MethodDeclaration(m.ReturnType, m.Identifier)
 					.WithAttributeLists(m.AttributeLists
-						.Add(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract"))))))
+						.Add(AttributeList(SingletonSeparatedList(Attribute(IdentifierName("OperationContract")))))
+						.Add(AttributeList(SingletonSeparatedList(WebInvokeAttribute(m)))))
 					.WithParameterList(m.ParameterList)
 					.WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))) {
 		@method
@@ -31,4 +39,99 @@ public interface I@(Class.Identifier) {
 	public string WebServiceNamespace { get; set; }
 	public ClassDeclarationSyntax Class { get; set; }
 	public IEnumerable<MethodDeclarationSyntax> WebMethods { get; set; }
+	public SemanticModel Model { get; set; }
+
+	public bool IsSimpleType(TypeSyntax type)
+	{
+		if (type is NullableTypeSyntax) {
+			//var nullable = (NullableTypeSyntax)type;
+			//return IsSimpleType(nullable.ElementType);
+			return false;
+		}
+
+		// check for array of byte
+		if (type is ArrayTypeSyntax) {
+			var array = (ArrayTypeSyntax)type;
+			var atm = Model.GetTypeInfo(array.ElementType).Type as INamedTypeSymbol;
+			var aname = atm?.GetFullTypeName();
+			return aname != null && aname == typeof(byte).FullName;
+		}
+
+		TypeInfo info = Model.GetTypeInfo(type);
+		var tm = info.Type as INamedTypeSymbol;
+		if (tm.EnumUnderlyingType != null) return true;
+		var name = tm?.GetFullTypeName();
+		return name != null && (name == typeof(byte).FullName || name == typeof(sbyte).FullName || name == typeof(char).FullName || name == typeof(string).FullName || name == typeof(short).FullName ||
+			name == typeof(ushort).FullName || name == typeof(int).FullName || name == typeof(uint).FullName || name == typeof(long).FullName || name == typeof(ulong).FullName ||
+			name == typeof(float).FullName || name == typeof(double).FullName || name == typeof(bool).FullName ||
+			name == typeof(DateTime).FullName || name == typeof(Decimal).FullName || name == typeof(TimeSpan).FullName ||
+			name == typeof(Guid).FullName || name == typeof(Uri).FullName || name == typeof(object).FullName ||
+			name == typeof(DateTimeOffset).FullName);
+	}
+
+	public bool IsStringType(TypeSyntax type) {
+		var tm = Model.GetTypeInfo(type).Type as INamedTypeSymbol;
+		var name = tm?.GetFullTypeName();
+		return name != null && name == typeof(string).FullName;
+	}
+
+	public AttributeSyntax WebInvokeAttribute(MethodDeclarationSyntax method)
+	{
+		var name = method.Identifier.Text;
+		string webMethod;
+		if (name.StartsWith("Add", StringComparison.OrdinalIgnoreCase) ||
+			name.StartsWith("Insert", StringComparison.OrdinalIgnoreCase) ||
+			name.StartsWith("Create", StringComparison.OrdinalIgnoreCase)) webMethod = "PUT";
+		else if (name.StartsWith("Update", StringComparison.OrdinalIgnoreCase) ||
+			name.StartsWith("Set", StringComparison.OrdinalIgnoreCase)) webMethod = "POST";
+		else if (name.StartsWith("Delete", StringComparison.OrdinalIgnoreCase) || 
+			name.StartsWith("Remove", StringComparison.OrdinalIgnoreCase) ||
+			name.StartsWith("Drop", StringComparison.OrdinalIgnoreCase)) webMethod = "DELETE";
+		else webMethod = "GET";
+
+		var parameters = method.ParameterList.Parameters
+			.OfType<ParameterSyntax>()
+			.Select(par => new {
+				Parameter = par,
+				IsSimple = !par.Modifiers.Any(mod => mod.IsKind(SyntaxKind.OutKeyword)) && IsSimpleType(par.Type),
+				IsString = !par.Modifiers.Any(mod => mod.IsKind(SyntaxKind.OutKeyword)) && IsStringType(par.Type)
+			});
+		IEnumerable<ParameterSyntax> stringParameters = parameters
+			.Where(par => par.IsString)
+			.Select(par => par.Parameter);
+		IEnumerable<ParameterSyntax> complexParameters = parameters
+			.Where(par => !par.IsSimple)
+			.Select(par => par.Parameter);
+		IEnumerable<ParameterSyntax> simpleParameters = parameters
+			.Where(par => par.IsSimple && !par.IsString)
+			.Select(par => par.Parameter);
+		var complexParametersCount = complexParameters.Count();
+		var hasComplexParameters = complexParametersCount >= 1;
+		var hasMultipleComplexParameters = complexParametersCount >= 2;
+		if (hasComplexParameters) webMethod = "POST";
+		var sb = new StringBuilder();
+
+		sb.Append("/"); sb.Append(method.Identifier.Text);
+		foreach (var par in stringParameters)
+		{
+			sb.Append("/{"); sb.Append(par.Identifier.Text); sb.Append("}");
+		}
+		int n = 0;
+		foreach (var par in simpleParameters) {
+			if (n++ == 0) sb.Append("?");
+			else sb.Append("&");
+			sb.Append(par.Identifier.Text); sb.Append("={"); sb.Append(par.Identifier.Text); sb.Append("}");
+		}
+		var uri = sb.ToString();
+
+		var isGet = webMethod == "GET";
+		AttributeSyntax attr;
+		if (isGet) attr = Attribute(IdentifierName("WebGet"));
+		else attr = Attribute(IdentifierName("WebInvoke"));
+		attr = attr.WithArgumentList(ParseAttributeArgumentList((!isGet ? $"(Method = \"{webMethod}\", " : "(") + $"UriTemplate = \"{uri}\"" +
+			(hasMultipleComplexParameters ? $", BodyStyle = WebMessageBodyStyle.WrappedRequest)" : ")")));
+			//"RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)"
+		return attr;
+	}
+
 }

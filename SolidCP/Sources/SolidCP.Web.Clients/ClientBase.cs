@@ -22,7 +22,7 @@ using Grpc.Net.Client;
 namespace SolidCP.Web.Client
 {
 
-	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
 	public class UserNamePasswordCredentials
 	{
@@ -227,7 +227,7 @@ namespace SolidCP.Web.Client
 				var serviceInterface = this.GetType().GetInterfaces()
 					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
 				var policy = serviceInterface?.GetCustomAttribute<HasPolicyAttribute>()?.Policy;
-				return policy != null && policy != "CommonPolicy";
+				return policy != null && policy != HasPolicyAttribute.Encrypted;
 			}
 		}
 		public bool HasSoapHeaders => this.GetType().GetInterfaces()

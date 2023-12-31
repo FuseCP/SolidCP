@@ -1,1 +1,3 @@
-
+[submodule "SolidCP/Lib/swaggerwcf"]
+	path = SolidCP/Lib/swaggerwcf
+	url = https://github.com/simonegli8/swaggerwcf

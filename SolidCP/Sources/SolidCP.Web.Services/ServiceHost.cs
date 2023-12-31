@@ -9,6 +9,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Security;
 using System.Text;
+using System.Xml;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
@@ -16,31 +17,31 @@ using SolidCP.Web.Services;
 
 namespace SolidCP.Web.Services
 {
-	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+	public enum Protocols { BasicHttp, BasicHttps, NetHttp, NetHttps, WSHttp, WSHttps, NetTcp, NetTcpSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
 
 	public class ServiceHost : System.ServiceModel.ServiceHost
 	{
 		public ServiceHost() : base() { }
-		public ServiceHost(Type serviceType, params Uri[] baseAdresses) : base(serviceType, baseAdresses)
+		public ServiceHost(Type serviceType, params Uri[] baseAddresses) : base(serviceType, baseAddresses)
 		{
-			AddEndpoints(serviceType, baseAdresses);
+			AddEndpoints(serviceType, baseAddresses);
 		}
 
-		public ServiceHost(object singletonInstance, params Uri[] baseAdresses) : base(singletonInstance, baseAdresses)
+		public ServiceHost(object singletonInstance, params Uri[] baseAddresses) : base(singletonInstance, baseAddresses)
 		{
-			AddEndpoints(singletonInstance.GetType(), baseAdresses);
+			AddEndpoints(singletonInstance.GetType(), baseAddresses);
 		}
 
-		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"{api}/[a-zA-Z0-9_]+(?:\\?|$)");
+		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"/{api}/[a-zA-Z0-9_]+(?:\\?|$)");
 		bool IsHttp(string adr) => adr.StartsWith("http://", StringComparison.OrdinalIgnoreCase);
 		bool IsHttps(string adr) => adr.StartsWith("https://", StringComparison.OrdinalIgnoreCase);
 		bool IsNetTcp(string adr) => adr.StartsWith("net.tcp://", StringComparison.OrdinalIgnoreCase);
 		bool IsPipe(string adr) => adr.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase);
-	
+
 		bool IsLocal(string adr)
 		{
 			var host = new Uri(adr).Host;
-			var hostIsIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline); 
+			var hostIsIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
 			return host == "localhost" || host == "127.0.0.1" || host == "::1" ||
 				hostIsIP && Regex.IsMatch(host, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline) || // local network ip
 				IsPipe(adr);
@@ -54,6 +55,33 @@ namespace SolidCP.Web.Services
 			var endpoint = AddServiceEndpoint(contract, binding, address);
 			endpoint.EndpointBehaviors.Add(new SoapHeaderMessageInspector());
 		}
+		void AddWebEndpoint(Type contract, WebHttpBinding binding, string address)
+		{
+			binding.CloseTimeout = binding.OpenTimeout = binding.ReceiveTimeout = binding.SendTimeout = TimeSpan.FromMinutes(10);
+			var readerQuotas = new XmlDictionaryReaderQuotas
+			{
+				MaxBytesPerRead = 4096,
+				MaxDepth = 32,
+				MaxArrayLength = 16384,
+				MaxStringContentLength = 16384,
+				MaxNameTableCharCount = 16384
+			};
+			binding.MaxReceivedMessageSize = 5242880;
+			binding.MaxBufferSize = 5242880;
+			binding.ReaderQuotas = readerQuotas;
+			binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+			if (Authorization.ServiceAuthorizationManager == null || !(Authorization.ServiceAuthorizationManager is RestAuthorizationManager))
+			{
+				Authorization.ServiceAuthorizationManager = new RestAuthorizationManager();
+			}
+			var endpoint = AddServiceEndpoint(contract, binding, address);
+			var messageInspector = new SoapHeaderMessageInspector();
+			var behavior = new WebHttpBehavior();
+			behavior.AutomaticFormatSelectionEnabled = true;
+			behavior.HelpEnabled = true;
+			endpoint.EndpointBehaviors.Add(messageInspector);
+			endpoint.EndpointBehaviors.Add(behavior);
+		}
 
 		void AddEndpoints(Type serviceType, Uri[] baseAdresses)
 		{
@@ -66,6 +94,7 @@ namespace SolidCP.Web.Services
 
 			var policy = contract.GetCustomAttributes(false).OfType<PolicyAttribute>().FirstOrDefault();
 			var isEncrypted = policy != null;
+			var isAuthenticated = isEncrypted && policy.Policy != PolicyAttribute.Encrypted;
 
 			Credentials.UserNameAuthentication.UserNamePasswordValidationMode = UserNamePasswordValidationMode.Custom;
 			Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new UserNamePasswordValidator() { Policy = policy };
@@ -80,8 +109,15 @@ namespace SolidCP.Web.Services
 			{
 				if (IsHttp(adr))
 				{
-
-					if (HasApi(adr, "basic"))
+					if (HasApi(adr, "api"))
+					{
+						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
+						{
+							if (!isAuthenticated) AddWebEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.None) { Name = "rest.none" }, adr);
+							else AddWebEndpoint(contract, new WebHttpBinding(WebHttpSecurityMode.TransportCredentialOnly) { Name = "rest.credential" }, adr);
+						}
+					}
+					else if (HasApi(adr, "basic"))
 					{
 						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
@@ -119,7 +155,14 @@ namespace SolidCP.Web.Services
 				}
 				else if (IsHttps(adr))
 				{
-					if (HasApi(adr, "basic"))
+					if (HasApi(adr, "api"))
+					{
+						var binding = new WebHttpBinding(WebHttpSecurityMode.Transport);
+						binding.Name = "rest.transport";
+						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;
+						AddWebEndpoint(contract, binding, adr);
+					}
+					else if (HasApi(adr, "basic"))
 					{
 						var binding = new BasicHttpBinding(BasicHttpSecurityMode.Transport);
 						binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.None;

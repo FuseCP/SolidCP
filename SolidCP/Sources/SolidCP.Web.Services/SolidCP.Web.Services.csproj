@@ -6,8 +6,8 @@
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
 		<OutputPath>..\..\Bin\</OutputPath>
-    	<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
-    	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
@@ -16,6 +16,8 @@
 		<PackageReference Include="CoreWCF.Primitives" Version="1.5.1" />
 		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.5.1" />
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.5.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
 		<!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />
@@ -31,10 +33,25 @@
 		<Reference Include="System.ServiceModel.Activation" />
 		<Reference Include="System.Threading.Tasks" />
 		<Reference Include="System.Web" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<!--<PackageReference Include="KornSW.SwaggerWcf" Version="1.2.16.414" />-->
+		<Reference Include="SwaggerWcf">
+			<HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
+		</Reference>
 		<!--<PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />-->
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="DictionaryVirtualPathProvider.cs" />
+	  <Compile Remove="Path.cs" />
+	  <Compile Remove="SvcVirtualPathProvider.cs" />
+	  <Compile Remove="SvcHttpModule.cs" />
+	  <None Include="DictionaryVirtualPathProvider.cs" />
+	  <None Include="Path.cs" />
+	  <None Include="SvcVirtualPathProvider.cs" />
+	  <None Include="SvcHttpModule.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />

@@ -150,10 +150,10 @@ namespace SolidCP.Providers.OS
 							case WindowsVersion.Windows11:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022")) as Providers.OS.IOperatingSystem;
 								break;
+							case WindowsVersion.Windows10:
 							case WindowsVersion.WindowsServer2019:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019")) as Providers.OS.IOperatingSystem;
 								break;
-							case WindowsVersion.Windows10:
 							case WindowsVersion.WindowsServer2016:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2016, SolidCP.Providers.OS.Windows2016")) as Providers.OS.IOperatingSystem;
 								break;

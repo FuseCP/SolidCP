@@ -33,6 +33,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 using Ionic.Zip;
 
 namespace SolidCP.EnterpriseServer
@@ -46,7 +47,9 @@ namespace SolidCP.EnterpriseServer
 			using (ZipFile zip = new ZipFile())
 			{
 				//use unicode if necessary
-				zip.UseUnicodeAsNecessary = true;
+				zip.AlternateEncoding = Encoding.UTF8;
+				zip.AlternateEncodingUsage = ZipOption.AsNecessary;
+				//zip.UseUnicodeAsNecessary = true;
 				//skip locked files
 				zip.ZipErrorAction = ZipErrorAction.Skip;
 				foreach (string file in files)

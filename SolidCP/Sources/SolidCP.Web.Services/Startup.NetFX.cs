@@ -9,6 +9,7 @@ using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.Web;
 using System.Web.Routing;
+using SwaggerWcf;
 #else
 using CoreWCF;
 #endif
@@ -21,63 +22,8 @@ namespace SolidCP.Web.Services
 	public static class StartupNetFX
 	{
 
-		public static Assembly[] ServiceAssemblies { get; set; }
-
-		public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
-		{
-			if (assembly == null) throw new ArgumentNullException(nameof(assembly));
-			try
-			{
-				return assembly.GetTypes();
-			}
-			catch (ReflectionTypeLoadException e)
-			{
-				return e.Types.Where(t => t != null);
-			}
-		}
-
 		static object startLock = new object();
 		static bool wasCalled = false;
-
-		public static IEnumerable<Type> GetWebServices()
-		{
-			Assembly eserver = null, server = null;
-
-			try
-			{
-				eserver = Assembly.Load("SolidCP.EnterpriseServer");
-			}
-			catch { }
-			try
-			{
-				server = Assembly.Load("SolidCP.Server");
-			}
-			catch { }
-			ServiceAssemblies = new Assembly[]
-			{
-				eserver, server
-			}
-			.Where(a => a != null)
-			.ToArray();
-
-			var types = ServiceAssemblies
-				.SelectMany(a => {
-					var attrTypes = a.GetCustomAttribute<WCFServiceTypesAttribute>()?.Types;
-					return attrTypes == null ? new Type[0] : attrTypes;
-				});
-			var webServices = types
-
-/* Unmerged change from project 'SolidCP.Web.Services (net48)'
-Before:
-					.Where(t => t.GetCustomAttribute<System.Web.Services.WebServiceAttribute>() != null &&
-After:
-					.Where(t => t.GetCustomAttribute<Services.WebServiceAttribute>() != null &&
-*/
-					.Where(t => t.GetCustomAttribute<WebServiceAttribute>() != null &&
-						(t.GetInterfaces().Any(i => i.GetCustomAttribute<ServiceContractAttribute>() != null)))
-					.ToArray();
-			return webServices;
-		}
 
 		public static void Start()
 		{
@@ -88,7 +34,7 @@ After:
 				wasCalled = true;
 			}
 
-			AddServiceRoutes(GetWebServices());
+			AddServiceRoutes(ServiceTypes.Types.Select(srvc => srvc.Service));
 			//SvcVirtualPathProvider.SetupSvcServices(webServices);
 			//DictionaryVirtualPathProvider.Startup();
 		}
@@ -106,7 +52,9 @@ After:
                 RouteTable.Routes.Add(new ServiceRoute($"pipe/{service.Name}", new ServiceHostFactory(), service));
 				RouteTable.Routes.Add(new ServiceRoute($"tcp/ssl/{service.Name}", new ServiceHostFactory(), service));
                 RouteTable.Routes.Add(new ServiceRoute($"pipe/ssl/{service.Name}", new ServiceHostFactory(), service));
-            }
+                RouteTable.Routes.Add(new ServiceRoute($"api/{service.Name}", new ServiceHostFactory(), service));
+			}
+			RouteTable.Routes.Add(new ServiceRoute("api-docs", new WebServiceHostFactory(), typeof(SwaggerWcfEndpoint)));
 #endif
 		}
 	}

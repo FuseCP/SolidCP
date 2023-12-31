@@ -31,15 +31,15 @@ namespace SolidCP.Web.Services
 		{
 			if (Policy != null)
 			{
-				if (Policy.Policy == "ServerPolicy" && ValidateServer != null)
+				if (Policy.Policy == PolicyAttribute.ServerAuthenticated && ValidateServer != null)
 				{
 					if (ValidateServer != null && !ValidateServer(password)) throw new FaultException("Invalid server password");
 				}
-				else if (Policy.Policy == "EnterpriseServerPolicy" && ValidateEnterpriseServer != null)
+				else if (Policy.Policy == PolicyAttribute.EnterpriseServerAuthenticated && ValidateEnterpriseServer != null)
 				{
-					if (ValidateEnterpriseServer != null && !ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user");
+					if (ValidateEnterpriseServer != null && !ValidateEnterpriseServer(userName, password)) throw new FaultException("Invalid user or password");
 				}
-				else if (Policy.Policy == "CommonPolicy") { } // do not require username & password
+				else if (Policy.Policy == PolicyAttribute.Encrypted) { } // do not require username & password
 				else throw new NotSupportedException($"Unuspported policy {Policy.Policy} on service.");
 				
 			}
