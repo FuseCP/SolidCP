@@ -291,7 +291,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="SolidCP.ico" />
-		<Folder Include="Tasks\" />
 	</ItemGroup>
 	<ItemGroup>
 		<BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -417,6 +416,15 @@
 			<Name>SolidCP.UniversalInstaller.Core</Name>
 			<OutputItemType>EmbeddedResource</OutputItemType>
 		</ProjectReference>
+		<ProjectReference Include="..\SolidCP.Updater\SolidCP.Updater.csproj">
+			<Project>{f01a019e-1501-45a2-94d8-c621866a3ecd}</Project>
+			<Name>SolidCP.Updater</Name>
+			<OutputItemType>None</OutputItemType>
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Tasks\" />
 	</ItemGroup>
 	<Target Name="CopyResources">
 		<Message Text="Copying Installer Resources" Importance="high" />

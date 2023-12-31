@@ -149,7 +149,7 @@
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2008.pdb" />
 	</ItemGroup>
 
-	<Target Name="CopyResources" BeforeTargets="Build">
+	<Target Name="CopyResources" BeforeTargets="BeforeBuild">
 		<Message Text="Copying Installer Resources" Importance="high" />
 		<ItemGroup>
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\IIs100\Microsoft.Web.Administration.dll" />
