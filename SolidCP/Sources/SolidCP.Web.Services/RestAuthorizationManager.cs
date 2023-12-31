@@ -25,7 +25,7 @@ namespace SolidCP.Web.Services {
 		protected override async ValueTask<bool> CheckAccessCoreAsync(OperationContext operationContext)
 #endif
 		{
-			string endpointUri = operationContext.EndpointDispatcher.EndpointAddress.Uri.AbsoluteUri;
+			string endpointUri = operationContext.EndpointDispatcher.EndpointAddress.Uri.AbsolutePath;
 			if (WebOperationContext.Current == null || !HasApi(endpointUri, "api"))
 			{
 #if NETFRAMEWORK

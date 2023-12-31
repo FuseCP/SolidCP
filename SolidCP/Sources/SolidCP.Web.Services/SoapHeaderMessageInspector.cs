@@ -37,14 +37,17 @@ namespace SolidCP.Web.Services
 		{
 		}
 
-		bool HasApi(string adr, string api) => Regex.IsMatch(adr, $"/{api}/[a-zA-Z0-9_]+(?:\\?|$)");
+		bool HasApi(string adr, string type, string api) {
+			var match = Regex.Match(adr, $"/(?<api>[a-z]+)/{type}(?:\\?|$|/)");
+			return match.Success && match.Groups["api"].Value == api;
+		}
 
 		public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
 		{
 			var instance = instanceContext.GetServiceInstance();
 			var instanceType = instance.GetType();
-			var adr = request.Headers.To.OriginalString;
-			var isRest = HasApi(adr, "api");
+			var adr = OperationContext.Current.EndpointDispatcher.EndpointAddress.Uri.AbsolutePath;
+			var isRest = HasApi(adr, instanceType.Name, "api");
 			string operationName;
 			if (!isRest) {
 				var action = request.Headers.Action;
