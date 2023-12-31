@@ -22,11 +22,12 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-		<ProjectReference Include="..\..\..\SolidCP.Server\SolidCP.Server.csproj">
+		<!--<ProjectReference Include="..\..\..\SolidCP.Server\SolidCP.Server.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<OutputItemType>None</OutputItemType>
 			<PrivateAssets>All</PrivateAssets>
-		</ProjectReference>
+			<SetConfiguration>Configuration=$(Configuration)</SetConfiguration>
+		</ProjectReference>-->
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<Reference Include="System.ServiceModel" />

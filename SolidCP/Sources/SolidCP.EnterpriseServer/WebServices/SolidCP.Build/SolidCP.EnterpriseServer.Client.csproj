@@ -29,11 +29,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
 		<ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
-		<ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj">
+		<!--<ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<OutputItemType>None</OutputItemType>
 			<PrivateAssets>All</PrivateAssets>
-		</ProjectReference>
+		</ProjectReference>-->
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
