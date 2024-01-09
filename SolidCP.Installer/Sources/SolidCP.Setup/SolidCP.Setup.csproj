@@ -17,7 +17,7 @@
 		</UpgradeBackupLocation>
 		<TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
 		<PublishUrl>publish\</PublishUrl>
-		<OutputPath>bin\$(Configuration)\</OutputPath>
+		<OutputPath>..\..\Build\$(Configuration)\</OutputPath>
 		<Install>true</Install>
 		<InstallFrom>Disk</InstallFrom>
 		<UpdateEnabled>false</UpdateEnabled>
