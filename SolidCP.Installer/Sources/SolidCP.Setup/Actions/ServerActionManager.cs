@@ -1120,6 +1120,29 @@ namespace SolidCP.Setup.Actions
 			if (wse3Section != null) wse3Section.Remove();
 			wse3Section = xdoc.Root.Element("microsoft.web.services3");
 			if (wse3Section != null) wse3Section.Remove();
+			// add swaggerwcf section
+			var swaggerwcfsection = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "swaggerwcf", StringComparison.OrdinalIgnoreCase));
+			if (swaggerwcfsection != null) swaggerwcfsection.Remove();
+			swaggerwcfsection = new XElement("section", new XAttribute("name", "swaggerwcf"), new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf"));
+			configNode.Add(swaggerwcfsection);
+
+			currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
+			swaggerwcfsection = XElement.Parse($@"
+<swaggerwcf>
+	<settings>
+		<setting name=""InfoDescription"" value=""SolidCP Server Service"" />
+		<setting name=""InfoVersion"" value=""{vars.Version}"" />
+		<setting name=""InfoTermsOfService"" value=""Terms of Service"" />
+		<setting name=""InfoTitle"" value=""SolidCP Server Service"" />
+		<setting name=""InfoContactName"" value=""SolidCP"" />
+		<setting name=""InfoContactUrl"" value=""http://solidcp.com/forum"" />
+		<setting name=""InfoContactEmail"" value=""support@solidcp.com"" />
+		<setting name=""InfoLicenseUrl"" value=""https://github.com/FuseCP/SolidCP/blob/master/LICENSE.txt"" />
+		<setting name=""InfoLicenseName"" value=""Creative Commons Share-alike"" />
+	</settings>
+</swaggerwcf>");
+			if (currentswaggerwcfsection != null) currentswaggerwcfsection.ReplaceWith(swaggerwcfsection);
+			else xdoc.Root.Add(swaggerwcfsection);
 
 			// add appsettings asp:UseTaskFriendlySynchronizationContext
 			var appsettings = xdoc.Root.Element("appSettings");
@@ -1139,6 +1162,19 @@ namespace SolidCP.Setup.Actions
 					swnode.Element("webServices").Remove();
 
 			};
+
+			// modify <system.webServer /> node
+			var swsnode = xdoc.Root.Element("system.webServer");
+			if (swsnode == null)
+			{
+				swsnode = new XElement("system.webServer");
+				xdoc.Root.Add(swsnode);
+			}
+			var modules = swsnode.Element("modules");
+			if (modules != null) modules.Remove();
+			modules = new XElement("modules", new XAttribute("runAllManagedModulesForAllRequests", "true"));
+			swsnode.Add(modules);
+
 			// Find/add WCF endpoints configuration section (DDTK)
 			var serviceModelNode = xdoc.Root.Element("system.serviceModel", true);
 			{
@@ -1212,6 +1248,30 @@ namespace SolidCP.Setup.Actions
 			if (wse3Section != null) wse3Section.Remove();
 			wse3Section = xdoc.Root.Element("microsoft.web.services3");
 			if (wse3Section != null) wse3Section.Remove();
+			// add swaggerwcf section
+			var swaggerwcfsection = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "swaggerwcf", StringComparison.OrdinalIgnoreCase));
+			if (swaggerwcfsection != null) swaggerwcfsection.Remove();
+			swaggerwcfsection = new XElement("section", new XAttribute("name", "swaggerwcf"), new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf"));
+			configNode.Add(swaggerwcfsection);
+
+			currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
+			swaggerwcfsection = XElement.Parse($@"
+<swaggerwcf>
+	<settings>
+		<setting name=""InfoDescription"" value=""SolidCP EnterpriseServer Service"" />
+		<setting name=""InfoVersion"" value=""{vars.Version}"" />
+		<setting name=""InfoTermsOfService"" value=""Terms of Service"" />
+		<setting name=""InfoTitle"" value=""SolidCP EnterpriseServer Service"" />
+		<setting name=""InfoContactName"" value=""SolidCP"" />
+		<setting name=""InfoContactUrl"" value=""http://solidcp.com/forum"" />
+		<setting name=""InfoContactEmail"" value=""support@solidcp.com"" />
+		<setting name=""InfoLicenseUrl"" value=""https://github.com/FuseCP/SolidCP/blob/master/LICENSE.txt"" />
+		<setting name=""InfoLicenseName"" value=""Creative Commons Share-alike"" />
+	</settings>
+</swaggerwcf>");
+			if (currentswaggerwcfsection != null) currentswaggerwcfsection.ReplaceWith(swaggerwcfsection);
+			else xdoc.Root.Add(swaggerwcfsection);
+
 
 			// add appsettings asp:UseTaskFriendlySynchronizationContext
 			var appsettings = xdoc.Root.Element("appSettings");
@@ -1230,6 +1290,18 @@ namespace SolidCP.Setup.Actions
 				if (swnode.Element("webServices") != null)
 					swnode.Element("webServices").Remove();
 			};
+
+			// modify <system.webServer /> node
+			var swsnode = xdoc.Root.Element("system.webServer");
+			if (swsnode == null)
+			{
+				swsnode = new XElement("system.webServer");
+				xdoc.Root.Add(swsnode);
+			}
+			var modules = swsnode.Element("modules");
+			if (modules != null) modules.Remove();
+			modules = new XElement("modules", new XAttribute("runAllManagedModulesForAllRequests", "true"));
+			swsnode.Add(modules);
 
 			// add serviceHostingEnvironment
 			var serviceModel = xdoc.Root.Element("system.serviceModel");
