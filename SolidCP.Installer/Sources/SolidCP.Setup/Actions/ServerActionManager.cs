@@ -1126,7 +1126,7 @@ namespace SolidCP.Setup.Actions
 			swaggerwcfsection = new XElement("section", new XAttribute("name", "swaggerwcf"), new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf"));
 			configNode.Add(swaggerwcfsection);
 
-			currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
+			var currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
 			swaggerwcfsection = XElement.Parse($@"
 <swaggerwcf>
 	<settings>
@@ -1254,7 +1254,7 @@ namespace SolidCP.Setup.Actions
 			swaggerwcfsection = new XElement("section", new XAttribute("name", "swaggerwcf"), new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf"));
 			configNode.Add(swaggerwcfsection);
 
-			currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
+			var currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
 			swaggerwcfsection = XElement.Parse($@"
 <swaggerwcf>
 	<settings>
