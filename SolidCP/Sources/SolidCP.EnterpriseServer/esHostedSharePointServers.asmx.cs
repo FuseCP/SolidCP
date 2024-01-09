@@ -36,6 +36,7 @@ using System.ComponentModel;
 using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.Providers.SharePoint;
+using SolidCP.EnterpriseServer.Base.HostedSolution;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -222,10 +223,14 @@ namespace SolidCP.EnterpriseServer
 		}
 
         [WebMethod]
-        public SharePointSiteDiskSpace[] CalculateSharePointSitesDiskSpace(int itemId, out int errorCode)
+        public CalculateSharePointSitesDiskSpaceResult CalculateSharePointSitesDiskSpace(int itemId)
         {
-            return HostedSharePointServerController.CalculateSharePointSitesDiskSpace(itemId, out  errorCode);
-        }
+			var result = new CalculateSharePointSitesDiskSpaceResult();
+			int errorCode;
+            result.Result = HostedSharePointServerController.CalculateSharePointSitesDiskSpace(itemId, out errorCode);
+			result.ErrorCode = errorCode;
+			return result;
+		}
 
 
         [WebMethod]

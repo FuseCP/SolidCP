@@ -13,8 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer", "SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj", "{59C7623A-5181-48A5-880A-C9B82B48F589}"
 	ProjectSection(ProjectDependencies) = postProject
-		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775} = {C09CE910-F16B-48A1-B2CC-C99B8C1CF775}
 		{60E39314-659C-4FAD-AB91-D0D08E223578} = {60E39314-659C-4FAD-AB91-D0D08E223578}
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775} = {C09CE910-F16B-48A1-B2CC-C99B8C1CF775}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Base", "SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj", "{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}"
@@ -39,6 +39,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Build", "SolidCP.Build\SolidCP.Build.csproj", "{E6F2F435-38DF-4ADA-A2C1-AFF56D063A7A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{4B58B034-584E-44D8-955B-DFD4B57CBF22}"
+	ProjectSection(ProjectDependencies) = postProject
+		{59C7623A-5181-48A5-880A-C9B82B48F589} = {59C7623A-5181-48A5-880A-C9B82B48F589}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Tests", "SolidCP.EnterpriseServer.Tests\SolidCP.EnterpriseServer.Tests.csproj", "{CF6ED6C7-D614-4521-8DFF-86C3AE2932A5}"
 EndProject

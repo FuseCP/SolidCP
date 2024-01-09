@@ -56,7 +56,6 @@
 	<ItemGroup>
 		<Compile Remove="Code\OperatingSystems\OperatingSystemController.cs" />
 		<Compile Remove="Code\WebServers\WebServerController.cs" />
-		<Compile Remove="esApplicationsInstaller.g.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -93,7 +92,6 @@
 	<ItemGroup>
 		<None Include="Code\OperatingSystems\OperatingSystemController.cs" />
 		<None Include="Code\WebServers\WebServerController.cs" />
-		<None Include="esApplicationsInstaller.g.cs" />
 		<None Include="Web.config">
 			<SubType>Designer</SubType>
 		</None>
