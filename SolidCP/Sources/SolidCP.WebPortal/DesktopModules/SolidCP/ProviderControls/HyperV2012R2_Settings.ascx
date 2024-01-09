@@ -507,7 +507,7 @@
                     <asp:Localize ID="locVar" runat="server" meta:resourcekey="locVar" Text="The following variables are supported:"></asp:Localize>
                 </td>
                 <td>
-                    <asp:Label ID="labPsVars" Font-Names="Consolas" runat="server" Text="$vmName, $vmId, $vmObject, $extIpAddresses, $extMasks, $extGateway,
+                    <asp:Label ID="labPsVars" Font-Names="Consolas" runat="server" Text="$vmName, $vmId, $vmObject, $vmTemplateName, $vmTemplatePath, $extIpAddresses, $extMasks, $extGateway,
                         $extAdapterName, $extAdapterMac, $privIpAddresses, $privMasks, $privGateway, $privAdapterName, $privAdapterMac,
                         $mngIpAddresses, $mngMasks, $mngGateway, $mngAdapterName, $mngAdapterMac"></asp:Label>
                 </td>

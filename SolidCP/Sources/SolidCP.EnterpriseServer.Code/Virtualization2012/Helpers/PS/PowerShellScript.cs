@@ -41,6 +41,8 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
             {
                 if (script.Contains("$vmName")) vars += "$vmName = \"" + vm.Name + "\"" + Environment.NewLine;
                 if (script.Contains("$vmId")) vars += "$vmId = \"" + vm.VirtualMachineId + "\"" + Environment.NewLine;
+                if (script.Contains("$vmTemplateName")) vars += "$vmTemplateName = \"" + vm.OperatingSystemTemplate + "\"" + Environment.NewLine;
+                if (script.Contains("$vmTemplatePath")) vars += "$vmTemplatePath = \"" + vm.OperatingSystemTemplatePath + "\"" + Environment.NewLine;
                 if (script.Contains("$vmObject")) vars += "$vmObject = Get-VM -Id \"" + vm.VirtualMachineId + "\"" + Environment.NewLine;
                 PrepareNetworkVariables(script, ref vars, vm, "ext");
                 PrepareNetworkVariables(script, ref vars, vm, "priv");
