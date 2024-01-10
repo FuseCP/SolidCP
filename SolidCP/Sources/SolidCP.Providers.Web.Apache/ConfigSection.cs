@@ -442,5 +442,17 @@ namespace SolidCP.Providers.Web.Apache
 		public VirtualHost() { Name = nameof(VirtualHost); }
 	}
 
+	public class ConfigFile: ConfigSection
+	{
+		public string FullName { get; set; }
+		public ConfigFile(string path)
+		{
+			FullName = path;
+			Name = Path.GetFileNameWithoutExtension(path);
+			Parse(File.ReadAllText(path));
+		}
+
+		public static ConfigFile Load(string path) => new ConfigFile(path);
+	}
 
 }
