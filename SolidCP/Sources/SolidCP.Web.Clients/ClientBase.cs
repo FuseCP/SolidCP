@@ -33,7 +33,7 @@ namespace SolidCP.Web.Client
 	public class ClientBase : IDisposable
 	{
 
-		public const long MaximumMessageSize = 10*1024*1024; // 10 MB
+		public const long MaximumMessageSize = 10 * 1024 * 1024; // 10 MB
 		public const bool UseMessageSecurityOverHttp = true;
 		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
 		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
@@ -84,9 +84,12 @@ namespace SolidCP.Web.Client
 			}
 		}
 
-		public void SetProtocol(string url, ref Protocols protocol) {
-			 if (url.StartsWith("https://")) {
-				switch (protocol) {
+		public void SetProtocol(string url, ref Protocols protocol)
+		{
+			if (url.StartsWith("https://"))
+			{
+				switch (protocol)
+				{
 					case Protocols.BasicHttp: protocol = Protocols.BasicHttps; break;
 					case Protocols.NetHttp: protocol = Protocols.NetHttps; break;
 					case Protocols.WSHttp: protocol = Protocols.WSHttps; break;
@@ -94,8 +97,11 @@ namespace SolidCP.Web.Client
 					case Protocols.gRPCWeb: protocol = Protocols.gRPCWebSsl; break;
 					default: break;
 				}
-			} else if (url.StartsWith("http://")) {
-				switch (protocol) {
+			}
+			else if (url.StartsWith("http://"))
+			{
+				switch (protocol)
+				{
 					case Protocols.BasicHttps: protocol = Protocols.BasicHttp; break;
 					case Protocols.NetHttps: protocol = Protocols.NetHttp; break;
 					case Protocols.WSHttps: protocol = Protocols.WSHttp; break;
@@ -250,8 +256,9 @@ namespace SolidCP.Web.Client
 			return url;
 		}
 		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
-		
-		public static string AssertScheme(this string url, Protocols protocol) {
+
+		public static string AssertScheme(this string url, Protocols protocol)
+		{
 			if (url.StartsWith("http://") &&
 				!(protocol == Protocols.BasicHttp || protocol == Protocols.NetHttp || protocol == Protocols.WSHttp ||
 				protocol == Protocols.gRPC || protocol == Protocols.gRPCWeb) ||
@@ -293,6 +300,14 @@ namespace SolidCP.Web.Client
 
 		T client = null;
 
+		Binding GetNamedPipeBinding(bool secure)
+		{
+			NetNamedPipeBinding pipe;
+			if (secure) pipe = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
+			else pipe = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+			pipe.MaxReceivedMessageSize = MaximumMessageSize;
+			return pipe;
+		}
 		protected T Client
 		{
 			get
@@ -404,18 +419,12 @@ namespace SolidCP.Web.Client
 							tcps.MaxReceivedMessageSize = MaximumMessageSize;
 							binding = tcps;
 							break;
-						//#if NETFRAMEWOR
 						case Protocols.NetPipe:
-							var pipe = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-							pipe.MaxReceivedMessageSize = MaximumMessageSize;
-							binding = pipe;
+							binding = GetNamedPipeBinding(false);
 							break;
 						case Protocols.NetPipeSsl:
-							var pipes = new NetNamedPipeBinding(NetNamedPipeSecurityMode.Transport);
-							pipes.MaxReceivedMessageSize = MaximumMessageSize;
-							binding = pipes;
+							binding = GetNamedPipeBinding(true);
 							break;
-							//#endif
 					}
 					binding.ReceiveTimeout = Timeout ?? ReceiveTimeout;
 					binding.SendTimeout = Timeout ?? SendTimeout;
@@ -449,10 +458,10 @@ namespace SolidCP.Web.Client
 						factory.Endpoint.EndpointBehaviors.Add(clientCredentials);
 					}
 					clientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.PeerOrChainTrust;
-					
+
 					client = factory.CreateChannel();
 					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
-				
+
 				}
 #if !NETFRAMEWORK && gRPC
 				else if (IsGRPC)

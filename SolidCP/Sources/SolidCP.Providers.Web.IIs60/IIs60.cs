@@ -4406,7 +4406,7 @@ namespace SolidCP.Providers.Web
 			throw new NotSupportedException();
 		}
 
-		public virtual SSLCertificate getCertificate(WebSite site)
+		public virtual SSLCertificate GetCertificate(WebSite site)
 		{
 			throw new NotSupportedException();
 		}
@@ -4425,7 +4425,7 @@ namespace SolidCP.Providers.Web
 		{
 			throw new NotSupportedException();
 		}
-		public virtual SSLCertificate generateRenewalCSR(SSLCertificate certificate)
+		public virtual SSLCertificate GenerateRenewalCSR(SSLCertificate certificate)
 		{
 			throw new NotSupportedException();
 		}

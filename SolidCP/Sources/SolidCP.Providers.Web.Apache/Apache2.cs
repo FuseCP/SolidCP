@@ -156,7 +156,7 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		public SSLCertificate generateRenewalCSR(SSLCertificate certificate)
+		public SSLCertificate GenerateRenewalCSR(SSLCertificate certificate)
 		{
 			throw new NotImplementedException();
 		}
@@ -176,7 +176,7 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		public SSLCertificate getCertificate(WebSite site)
+		public SSLCertificate GetCertificate(WebSite site)
 		{
 			throw new NotImplementedException();
 		}
