@@ -12,7 +12,7 @@ using System.CodeDom;
 using System.ServiceModel.Description;
 using System.Net;
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && gRPC
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using ProtoBuf.Grpc.Client;
@@ -285,7 +285,7 @@ namespace SolidCP.Web.Client
 	{
 
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && gRPC
 		static Dictionary<string, GrpcChannel> GrpcPool = new Dictionary<string, GrpcChannel>();
 #endif
 		static readonly Dictionary<string, ChannelFactory<T>> FactoryPool = new Dictionary<string, ChannelFactory<T>>();
@@ -454,7 +454,7 @@ namespace SolidCP.Web.Client
 					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
 				
 				}
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK && gRPC
 				else if (IsGRPC)
 				{
 					// TODO soap header & username credentials

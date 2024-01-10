@@ -81,7 +81,8 @@ public interface I@(Class.Identifier) {
 		string webMethod;
 		if (name.StartsWith("Add", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Insert", StringComparison.OrdinalIgnoreCase) ||
-			name.StartsWith("Create", StringComparison.OrdinalIgnoreCase)) webMethod = "PUT";
+			name.StartsWith("Create", StringComparison.OrdinalIgnoreCase) ||
+			name.StartsWith("Exe", StringComparison.OrdinalIgnoreCase)) webMethod = "PUT";
 		else if (name.StartsWith("Update", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Set", StringComparison.OrdinalIgnoreCase)) webMethod = "POST";
 		else if (name.StartsWith("Delete", StringComparison.OrdinalIgnoreCase) || 
