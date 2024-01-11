@@ -51,7 +51,8 @@ namespace SolidCP.Providers.FTP
 	{
 		public string ConfigPath => ProviderSettings[nameof(ConfigPath)];
 
-		public VsFtpConfig Config = new VsFtpConfig(ConfigPath);
+		VsFtpConfig config = null;
+		public VsFtpConfig Config => config ?? (config = new VsFtpConfig(ConfigPath));
 
 		public Shell Shell => Shell.Default;
 
