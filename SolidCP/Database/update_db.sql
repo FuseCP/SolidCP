@@ -20099,7 +20099,7 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1910
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1910')
 BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1910, N'ConfigPath', N'/etc/vsftpd.conf')
 END
@@ -20112,10 +20112,10 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1911
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1911')
 BEGIN
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ApacheConfigPath', N'/etc/apache2/httpd')
-INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ApacheGlobalConfigPath', N'/etc/apache2/httpd/httpd.conf')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ApacheConfigPath', N'/etc/apache2')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ApacheGlobalConfigPath', N'/etc/apache2/apache2.conf')
 END
 GO
 
