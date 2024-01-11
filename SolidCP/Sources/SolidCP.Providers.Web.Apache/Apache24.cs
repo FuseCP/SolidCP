@@ -18,8 +18,9 @@ namespace SolidCP.Providers.Web
 		public OS.Shell Shell => OS.Shell.Default;
 
 		#region Properties
-		public string ApacheConfigPath => ProviderSettings[nameof(ApacheConfigPath)];
-		public string ApacheGlobalConfigPath => ProviderSettings[nameof(ApacheGlobalConfigPath)];
+		public string ApacheConfigPath => ProviderSettings[nameof(ApacheConfigPath)]; // /etc/apache2/httpd
+
+		public string ApacheGlobalConfigPath => ProviderSettings[nameof(ApacheGlobalConfigPath)];	// /etc/apache2/httpd/httpd.conf
 		#endregion
 
 		ConfigFile Config(string siteId)
@@ -27,6 +28,7 @@ namespace SolidCP.Providers.Web
 			var path = Path.Combine(ApacheConfigPath, "sites-available", $"{siteId}.conf");
 			return ConfigFile.Load(path);
 		}
+
 		ConfigFile GlobalConfig
 		{
 			get
@@ -36,6 +38,7 @@ namespace SolidCP.Providers.Web
 				return conf;
 			}
 		}
+
 		void ReloadApache()
 		{
 			var output = Shell.Exec("apachectl start");
