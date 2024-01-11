@@ -204,7 +204,7 @@ namespace SolidCP.Providers.Web
 		{
 			var conf = Config(siteId);
 			var locations = conf.Descendants.OfType<Location>().Where(loc => loc.Url == directoryName);
-			foreach (var location in locations) location.Delete();
+			foreach (var location in locations) location.Remove();
 			conf.Save();
 			ReloadApache();
 		}
@@ -243,7 +243,7 @@ namespace SolidCP.Providers.Web
 		{
 			ChangeSiteState(siteId, ServerState.Stopped);
 			var conf = Config(siteId);
-			conf.Delete();
+			conf.Remove();
 		}
 
 		public void DeleteUser(string siteId, string userName)
@@ -254,10 +254,11 @@ namespace SolidCP.Providers.Web
 		public void DeleteVirtualDirectory(string siteId, string directoryName)
 		{
 			var conf = Config(siteId);
+			var url = "/" + directoryName.TrimStart('/');
 			var locations = conf.Descendants
 				.OfType<Location>()
-				.Where(loc => loc.Url == directoryName);
-			foreach (var location in locations) location.Delete();
+				.Where(loc => loc.Url == url);
+			foreach (var location in locations) location.Remove();
 			conf.Save();
 			ReloadApache();
 		}
@@ -402,7 +403,7 @@ namespace SolidCP.Providers.Web
 		{
 			throw new NotImplementedException();
 		}
-
+		
 		public HtaccessFolder GetHeliconApeFolder(string siteId, string folderPath)
 		{
 			throw new NotImplementedException();
@@ -495,7 +496,7 @@ namespace SolidCP.Providers.Web
 		}
 		public ServerBinding[] GetSiteBindings(string siteId) => GetSiteBindings(Config(siteId));
 
-		public ServerBinding[] GetSiteBindings(ConfigFile conf)
+		ServerBinding[] GetSiteBindings(ConfigFile conf)
 		{
 			var vhosts = conf.Sections.OfType<VirtualHost>();
 			var listens = new ConfigFile[] { GlobalConfig }
@@ -810,7 +811,8 @@ namespace SolidCP.Providers.Web
 		public bool VirtualDirectoryExists(string siteId, string directoryName)
 		{
 			var conf = Config(siteId);
-			return conf.Descendants.OfType<Location>().Any(loc => loc.Url == directoryName);
+			var url = "/" + directoryName.TrimStart('/');
+			return conf.Descendants.OfType<Location>().Any(loc => loc.Url == url);
 		}
 
 		public override bool IsInstalled()
@@ -818,7 +820,7 @@ namespace SolidCP.Providers.Web
 			if (!OS.OSInfo.IsWindows && Shell.Find("httpd") != null)
 			{
 				var output = Shell.Exec("httpd -V").Output().Result;
-				var match = Regex.Match(output, @"^Server [Vv]ersion:\s*[A-Za-z/]*, (?<version>[0-9.]+)", RegexOptions.Multiline);
+				var match = Regex.Match(output, @"^Server [Vv]ersion:\s*[A-Za-z]*/(?<version>[0-9.]+)", RegexOptions.Multiline);
 				if (match.Success)
 				{
 					var version = new Version(match.Groups["version"].Value);

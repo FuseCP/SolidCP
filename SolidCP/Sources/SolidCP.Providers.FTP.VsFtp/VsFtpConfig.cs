@@ -44,53 +44,61 @@ using SolidCP.Providers.FTP;
 
 namespace SolidCP.Providers.FTP
 {
-    public class VsFtpConfig
-    {
-        public const string ConfigFile = "/etc/vsftpd.conf";
+	public class VsFtpConfig
+	{
+		public string ConfigFile;
 
-        static string text = null;
+		public VsFtpConfig(string path) { ConfigFile = path; }
 
-        public string Text {
-            get {
-                if (text == null) {
-                    text = File.ReadAllText(ConfigFile);
-                }
-                return text;
-            }
-            set {
-                text = value;
-            }
-        }
-        public void Save() => File.WriteAllText(ConfigFile, Text);
+		static string text = null;
 
-        public string this[string name]
-        {
-            get {
+		public string Text
+		{
+			get
+			{
+				if (text == null)
+				{
+					text = File.ReadAllText(ConfigFile);
+				}
+				return text;
+			}
+			set
+			{
+				text = value;
+			}
+		}
+		public void Save() => File.WriteAllText(ConfigFile, Text);
+
+		public string this[string name]
+		{
+			get
+			{
 				var matches = Regex.Matches(@$"(?<=^\s*{name}\s*=\s*).*?(?=\s*$)", Text, RegexOptions.Multiline);
 				return matches.OfType<Match>().LastOrDefault()?.Value;
-		    }
-            set
-            {
-                bool exists = false;
-				Text = Regex.Replace(Text, @$"(?<=^\s*{name}\s*=\s*).*?(?=\s*$)", (Match m) => {
-                    exists = true;
-                    return value;
-                }, RegexOptions.Multiline);
-                if (!exists)
-                {
-                    Text = Text + $"{Environment.NewLine}{name}={value}";
-                }
+			}
+			set
+			{
+				bool exists = false;
+				Text = Regex.Replace(Text, @$"(?<=^\s*{name}\s*=\s*).*?(?=\s*$)", (Match m) =>
+				{
+					exists = true;
+					return value;
+				}, RegexOptions.Multiline);
+				if (!exists)
+				{
+					Text = Text + $"{Environment.NewLine}{name}={value}";
+				}
 			}
 		}
 
-        public string UserListFile => this["userlist_file"];
-        public bool UserListDeny => this["userlist_deny"] == "YES";
-        public bool UserListEnable => this["userlist_enable"] == "YES";
-        public bool LocalEnable => this["local_enable"] == "YES";
+		public string UserListFile => this["userlist_file"];
+		public bool UserListDeny => this["userlist_deny"] == "YES";
+		public bool UserListEnable => this["userlist_enable"] == "YES";
+		public bool LocalEnable => this["local_enable"] == "YES";
 
-        public IEnumerable<string> UserList => UserListFile != null ? File.ReadLines(UserListFile).Select(u => u.Trim()) : new string[0];
+		public IEnumerable<string> UserList => UserListFile != null ? File.ReadLines(UserListFile).Select(u => u.Trim()) : new string[0];
 
 
-    }
+	}
 }
 

@@ -49,7 +49,9 @@ namespace SolidCP.Providers.FTP
 {
 	public class VsFtp : HostingServiceProviderBase, IFtpServer
 	{
-		public static readonly VsFtpConfig Config = new VsFtpConfig();
+		public string ConfigPath => ProviderSettings[nameof(ConfigPath)];
+
+		public VsFtpConfig Config = new VsFtpConfig(ConfigPath);
 
 		public Shell Shell => Shell.Default;
 

@@ -351,16 +351,6 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] =
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Unix System')
-BEGIN
-INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(500, 1, N'UnixSystem', N'Unix System', N'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix', N'Unix',	NULL)
-END
-ELSE
-BEGIN
-UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'Unix System'
-END
-GO
-
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2007.AllowLitigationHold')
 BEGIN
 INSERT [dbo].[Quotas]  ([QuotaID], [GroupID],[QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID]) VALUES (420, 12, 24,N'Exchange2007.AllowLitigationHold',N'Allow Litigation Hold',1, 0 , NULL)
@@ -14430,7 +14420,7 @@ GO
 
 
 
-Delete from [dbo].[UserSettings] where [SettingsName] in ('BandwidthXLST','DiskspaceXLST');
+DELETE FROM [dbo].[UserSettings] WHERE [SettingsName] in ('BandwidthXLST','DiskspaceXLST');
 
 INSERT INTO [dbo].[UserSettings] ([UserID],[SettingsName],[PropertyName],[PropertyValue])
 	VALUES (1, 'BandwidthXLST','Transform','<?xml version="1.0" encoding="UTF-8"?>
@@ -19661,6 +19651,20 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 END
 GO
 
+-- Unix
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Unix System')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(500, 1, N'UnixSystem', N'Unix System', N'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix', N'Unix',	NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '500')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'UsersHome', N'%HOME%')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'LogDir', N'/var/log')
+END
+GO
+
 -- HyperV2022
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderName] = 'HyperV2022')
@@ -19830,7 +19834,7 @@ BEGIN
 END
 GO
 
--- Add Platform column to Servers
+-- Add Platform and IsCode columns to Servers
 DECLARE @NoPlatform bit, @NoIsCore bit
 
 SET @NoPlatform = 0
@@ -20087,3 +20091,31 @@ RETURN
 ')
 
 GO
+
+-- VsFtp
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1910')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1910, 3, N'VSFTP', N'VSFTP FTP Server', N'SolidCP.Providers.FTP.VsFtp, SolidCP.Providers.FTP.VsFtp', N'VSFTP', NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1910
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1910, N'ConfigPath', N'/etc/vsftpd.conf')
+END
+GO
+
+-- Apache
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1911')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1911, 3, N'Apache', N'Apache Web Server 2.4', N'SolidCP.Providers.Web.Apache24, SolidCP.Providers.FTP.Apache', N'Apache', NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1911
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ApacheConfigPath', N'/etc/apache2/httpd')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ApacheGlobalConfigPath', N'/etc/apache2/httpd/httpd.conf')
+END
+GO
+

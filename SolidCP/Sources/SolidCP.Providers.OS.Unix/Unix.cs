@@ -21,12 +21,12 @@ namespace SolidCP.Providers.OS
 		#region Properties
 		protected virtual string UsersHome
 		{
-			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["UsersHome"] ?? "%HOME%"); }
+			get { return FileUtils.EvaluateSystemVariables(ProviderSettings[nameof(UsersHome)] ?? "%HOME%"); }
 		}
 
 		protected virtual string LogDir
 		{
-			get { return FileUtils.EvaluateSystemVariables(ProviderSettings["LogDir"]) ?? "/var/log"; }
+			get { return FileUtils.EvaluateSystemVariables(ProviderSettings[nameof(LogDir)]) ?? "/var/log"; }
 		}
 
 		#endregion

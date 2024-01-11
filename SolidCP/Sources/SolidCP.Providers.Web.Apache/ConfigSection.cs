@@ -274,7 +274,7 @@ namespace SolidCP.Providers.Web.Apache
 			if (Parent != null) Parent.Save();
 		}
 
-		public virtual void Delete() {
+		public virtual void Remove() {
 			if (Parent != null) Parent.Remove(this);
 		}
 		public ConfigFile Root => Parent == null ? (this as ConfigFile) : Parent.Root;
@@ -534,7 +534,7 @@ namespace SolidCP.Providers.Web.Apache
 				Write(w);
 			}
 		}
-		public override void Delete()
+		public override void Remove()
 		{
 			File.Delete(FullName);
 		}
