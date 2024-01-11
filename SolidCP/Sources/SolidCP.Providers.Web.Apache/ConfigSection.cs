@@ -9,12 +9,12 @@ using System.ComponentModel.Design;
 
 namespace SolidCP.Providers.Web.Apache
 {
-
 	public partial class ConfigSection : KeyedCollection<string, ConfigSection.Setting>
 	{
-		public struct Setting
+		public class Setting
 		{
 			public string Name;
+			public int NameIndex;
 			public string Value;
 			public bool IsComment;
 			public bool IsSection => Section != null;
@@ -70,7 +70,8 @@ namespace SolidCP.Providers.Web.Apache
 			if (setting.IsComment || setting.IsSection) index = IndexOf(setting);
 			if (index == -1) index = Count;
 			return setting.IsComment ? $"_comment{index}" :
-				setting.IsSection ? $"_section{index}" : setting.Name;
+				setting.IsSection ? $"_section{index}" : 
+				setting.NameIndex == 0 ? setting.Name : $"{setting.Name}{setting.NameIndex}";
 		}
 		public string this[string key]
 		{
@@ -81,22 +82,51 @@ namespace SolidCP.Providers.Web.Apache
 			}
 			set
 			{
+				int nameIndex = 0;
 				if (string.IsNullOrEmpty(value))
 				{
-					if (Contains(key)) Remove(key);
-				}
-				else if (Contains(key))
-				{
-					var setting = base[key];
-					setting.Value = value.Trim();
+					if (Contains(key))
+					{
+						string indexedKey = key;
+						do
+						{
+							Remove(indexedKey);
+							indexedKey = $"{key}{++nameIndex}";
+						} while (Contains(indexedKey));
+					}
 				}
 				else
 				{
-					Add(new Setting { Name = key, Value = value.Trim(), Parent = this, IsComment = false });
+					if (Contains(key)) base[key].Value = value.Trim();
+					else Add(new Setting { Name = key, NameIndex = nameIndex, Value = value.Trim(), Parent = this, IsComment = false });
 				}
 			}
 		}
 
+		public void Add(string key, string value)
+		{
+			int nameIndex = 0;
+			if (Contains(key))
+			{
+				string indexedKey;
+				do
+				{
+					indexedKey = $"{key}{++nameIndex}";
+				} while (Contains(indexedKey));
+				key = indexedKey;
+			}
+			Add(new Setting { Name = key, NameIndex = nameIndex, Value = value.Trim(), Parent = this, IsComment = false });
+		}
+		public IEnumerable<string> GetAll(string key)
+		{
+			int nameIndex = 0;
+			string indexedKey = key;
+			while (Contains(indexedKey))
+			{
+				yield return base[indexedKey].Value;
+				indexedKey = $"{key}{++nameIndex}";
+			}
+		}
 		struct LineInfo
 		{
 			public string Text;
@@ -146,7 +176,7 @@ namespace SolidCP.Providers.Web.Apache
 				{
 					var key = match.Groups["key"].Value;
 					var setting = match.Groups["setting"].Value;
-					section[key] = setting;
+					section.Add(key, setting);
 				}
 				else if (match.Groups["section"].Success)
 				{
@@ -202,7 +232,7 @@ namespace SolidCP.Providers.Web.Apache
 				}
 				else if (match.Groups["comment"].Success)
 				{
-					section.Add(new Setting() { Value = match.Groups["comment"].Value, IsComment = true, Parent = section });
+					section.AddComment(match.Groups["comment"].Value);
 				}
 				else
 				{
@@ -214,16 +244,40 @@ namespace SolidCP.Providers.Web.Apache
 		public IEnumerable<ConfigSection> Sections => this
 			.Where(setting => setting.IsSection)
 			.Select(setting => setting.Section);
+		public IEnumerable<ConfigSection> Descendants => Sections.SelectMany(sec => sec.Descendants);
+
 		public void Add(ConfigSection section)
 		{
 			Add(new Setting() { Parent = this, IsComment = false, Name = section.Name, Section = section });
+		}
+		public void Add(IEnumerable<ConfigSection> range)
+		{
+			foreach (var section in range) Add(section);
+		}
+
+		public void AddComment(string comment)
+		{
+			Add(new Setting() { Value = comment, IsComment = true, Parent = this });
 		}
 		public void Remove(ConfigSection section)
 		{
 			var setting = this.FirstOrDefault(setting => setting.Section == section);
 			Remove(setting);
 		}
+		public void Remove(IEnumerable<ConfigSection> range)
+		{
+			foreach (var section in range) Remove(section);
+		}
 
+		public virtual void Save()
+		{
+			if (Parent != null) Parent.Save();
+		}
+
+		public virtual void Delete() {
+			if (Parent != null) Parent.Remove(this);
+		}
+		public ConfigFile Root => Parent == null ? (this as ConfigFile) : Parent.Root;
 		public override string ToString()
 		{
 			var w = new StringWriter();
@@ -271,6 +325,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <Directory directory-path> ... </Directory>
 	public class Directory : ConfigSection
 	{
+		public string Path { get { return Argument; } set { Argument = value; } }
 		public Directory() { Name = nameof(Directory); }
 	}
 
@@ -278,6 +333,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <DirectoryMatch regex> ... </DirectoryMatch>
 	public class DirectoryMatch : ConfigSection
 	{
+		public string Regex { get { return Argument; } set { Argument = value; } }
 		public DirectoryMatch() { Name = nameof(DirectoryMatch); }
 	}
 
@@ -292,6 +348,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <ElseIf expression> ... </ElseIf>
 	public class ElseIf : ConfigSection
 	{
+		public string Expression { get { return Argument; } set { Argument = value; } }
 		public ElseIf() { Name = nameof(ElseIf); }
 	}
 
@@ -299,6 +356,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <Files filename> ... </Files>
 	public class Files : ConfigSection
 	{
+		public string Filename { get { return Argument; } set { Argument = value; } }
 		public Files() { Name = nameof(Files); }
 	}
 
@@ -306,6 +364,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <FilesMatch regex> ... </FilesMatch>
 	public class FilesMatch : ConfigSection
 	{
+		public string Regex { get { return Argument; } set { Argument = value; } }
 		public FilesMatch() { Name = nameof(FilesMatch); }
 	}
 
@@ -313,6 +372,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <If expression> ... </If>
 	public class If : ConfigSection
 	{
+		public string Expression { get { return Argument; } set { Argument = value; } }
 		public If() { Name = nameof(If); }
 	}
 
@@ -320,6 +380,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <IfDefine [!]parameter-name> ...     </IfDefine>
 	public class IfDefine : ConfigSection
 	{
+		public string ParameterName { get { return Argument; } set { Argument = value; } }
 		public IfDefine() { Name = nameof(IfDefine); }
 	}
 
@@ -327,6 +388,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <IfDirective [!]directive-name> ...     </IfDirective>
 	public class IfDirective : ConfigSection
 	{
+		public string DirectiveName { get { return Argument; } set { Argument = value; } }
 		public IfDirective() { Name = nameof(IfDirective); }
 	}
 
@@ -334,6 +396,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <IfFile [!]filename> ...     </IfFile>
 	public class IfFile : ConfigSection
 	{
+		public string Filename { get { return Argument; } set { Argument = value; } }
 		public IfFile() { Name = nameof(IfFile); }
 	}
 
@@ -341,6 +404,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <IfModule [!]module-file|module-identifier> ...     </IfModule>
 	public class IfModule : ConfigSection
 	{
+		public string Module { get { return Argument; } set { Argument = value; } }
 		public IfModule() { Name = nameof(IfModule); }
 	}
 
@@ -348,6 +412,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <IfSection [!]section-name> ...     </IfSection>
 	public class IfSection : ConfigSection
 	{
+		public string SectionName { get { return Argument; } set { Argument = value; } }
 		public IfSection() { Name = nameof(IfSection); }
 	}
 
@@ -355,6 +420,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <IfVersion [[!]operator] version> ... </IfVersion>
 	public class IfVersion : ConfigSection
 	{
+		public string Version { get { return Argument; } set { Argument = value; } }
 		public IfVersion() { Name = nameof(IfVersion); }
 	}
 
@@ -362,6 +428,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <Limit method [method] ... > ...     </Limit>
 	public class Limit : ConfigSection
 	{
+		public string Methods { get { return Argument; } set { Argument = value; } }
 		public Limit() { Name = nameof(Limit); }
 	}
 
@@ -369,6 +436,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <LimitExcept method [method] ... > ...     </LimitExcept>
 	public class LimitExcept : ConfigSection
 	{
+		public string Methods { get { return Argument; } set { Argument = value; } }
 		public LimitExcept() { Name = nameof(LimitExcept); }
 	}
 
@@ -376,6 +444,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <Location     URL-path|URL> ... </Location>
 	public class Location : ConfigSection
 	{
+		public string Url { get { return Argument; } set { Argument = value; } }
 		public Location() { Name = nameof(Location); }
 	}
 
@@ -383,6 +452,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <LocationMatch     regex> ... </LocationMatch>
 	public class LocationMatch : ConfigSection
 	{
+		public string Regex { get { return Argument; } set { Argument = value; } }
 		public LocationMatch() { Name = nameof(LocationMatch); }
 	}
 
@@ -397,6 +467,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <MDomainSet dns-name [ other-dns-name... ]>...</MDomainSet>
 	public class MDomainSet : ConfigSection
 	{
+		public string DnsNames { get { return Argument; } set { Argument = value; } }
 		public MDomainSet() { Name = nameof(MDomainSet); }
 	}
 
@@ -404,6 +475,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <Proxy wildcard-url> ...</Proxy>
 	public class Proxy : ConfigSection
 	{
+		public string Url { get { return Argument; } set { Argument = value; } }
 		public Proxy() { Name = nameof(Proxy); }
 	}
 
@@ -411,6 +483,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <ProxyMatch regex> ...</ProxyMatch>
 	public class ProxyMatch : ConfigSection
 	{
+		public string Regex { get { return Argument; } set { Argument = value; } }
 		public ProxyMatch() { Name = nameof(ProxyMatch); }
 	}
 
@@ -439,6 +512,7 @@ namespace SolidCP.Providers.Web.Apache
 	// <VirtualHost addr[:port] [addr[:port]] ...> ... </VirtualHost>
 	public class VirtualHost : ConfigSection
 	{
+		public string Hosts { get { return Argument; } set { Argument = value; } }
 		public VirtualHost() { Name = nameof(VirtualHost); }
 	}
 
@@ -449,10 +523,55 @@ namespace SolidCP.Providers.Web.Apache
 		{
 			FullName = path;
 			Name = Path.GetFileNameWithoutExtension(path);
-			Parse(File.ReadAllText(path));
+			if (File.Exists(path)) Parse(File.ReadAllText(path));
 		}
 
+		public override void Save()
+		{
+			using (var stream = new FileStream(FullName, FileMode.Create, FileAccess.Write))
+			using (var w = new StreamWriter(stream, Encoding.UTF8))
+			{
+				Write(w);
+			}
+		}
+		public override void Delete()
+		{
+			File.Delete(FullName);
+		}
+
+		public void Include()
+		{
+			var files = GetAll("Include")
+				.Concat(GetAll("IncludeOptional"))
+				.SelectMany(filepattern =>
+				{
+					if (!Path.IsPathRooted(filepattern)) filepattern = Path.Combine(Path.GetDirectoryName(FullName), filepattern);
+					if (filepattern.Contains('*') || filepattern.Contains('?'))
+					{
+						return System.IO.Directory.EnumerateFiles(filepattern);
+					}
+					else
+					{
+						return new string[] { filepattern };
+					}
+				});
+			foreach (var file in files)
+			{
+				if (File.Exists(file))
+				{
+					var include = new IncludeFile(file);
+					Add(include);
+					include.Include();
+				}
+			}
+		}
+
+		public DateTime Created => File.GetCreationTimeUtc(FullName);
 		public static ConfigFile Load(string path) => new ConfigFile(path);
 	}
 
+	public class IncludeFile: ConfigFile
+	{
+		public IncludeFile(string path) : base(path) { }
+	}
 }

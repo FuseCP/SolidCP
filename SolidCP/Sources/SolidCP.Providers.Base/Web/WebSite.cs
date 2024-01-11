@@ -45,32 +45,32 @@ namespace SolidCP.Providers.Web
 	[Serializable]
 	[DataContract]
 	public class WebSite : WebAppVirtualDirectory
-    {
-        #region String constants
-        public const string IIS7_SITE_ID = "WebSiteId_IIS7";
+	{
+		#region String constants
+		public const string IIS7_SITE_ID = "WebSiteId_IIS7";
 		public const string IIS7_LOG_EXT_FILE_FIELDS = "IIS7_LogExtFileFields";
-        #endregion
+		#endregion
 
-        private string siteId;
+		private string siteId;
 		private string siteIPAddress;
-        private int siteIPAddressId;
-        private bool isDedicatedIP;
-        private string dataPath;
+		private int siteIPAddressId;
+		private bool isDedicatedIP;
+		private string dataPath;
 		private ServerBinding[] bindings;
-        private bool frontPageAvailable;
-        private bool frontPageInstalled;
-	    private bool coldFusionAvailable;
-	    private bool createCFAppVirtualDirectories;
+		private bool frontPageAvailable;
+		private bool frontPageInstalled;
+		private bool coldFusionAvailable;
+		private bool createCFAppVirtualDirectories;
 		private bool createCFAppVirtualDirectoriesPol;
-	    private string frontPageAccount;
-        private string frontPagePassword;
-	    private string coldFusionVersion;
-        private ServerState siteState;
-        private bool securedFoldersInstalled;
-        private bool heliconApeInstalled;
-	    private bool heliconApeEnabled;
-        private HeliconApeStatus heliconApeStatus;
-        private bool sniEnabled;
+		private string frontPageAccount;
+		private string frontPagePassword;
+		private string coldFusionVersion;
+		private ServerState siteState;
+		private bool securedFoldersInstalled;
+		private bool heliconApeInstalled;
+		private bool heliconApeEnabled;
+		private HeliconApeStatus heliconApeStatus;
+		private bool sniEnabled;
 		private string siteInternalIPAddress;
 
 		public WebSite()
@@ -92,20 +92,20 @@ namespace SolidCP.Providers.Web
 			set { siteIPAddress = value; }
 		}
 
-        [Persistent]
+		[Persistent]
 		[DataMember]
-        public int SiteIPAddressId
-        {
-            get { return siteIPAddressId; }
-            set { siteIPAddressId = value; }
-        }
+		public int SiteIPAddressId
+		{
+			get { return siteIPAddressId; }
+			set { siteIPAddressId = value; }
+		}
 
 		[DataMember]
-        public bool IsDedicatedIP
-        {
-            get { return isDedicatedIP; }
-            set { isDedicatedIP = value; }
-        }
+		public bool IsDedicatedIP
+		{
+			get { return isDedicatedIP; }
+			set { isDedicatedIP = value; }
+		}
 
 		/// <summary>
 		/// Gets or sets logs path for the web site
@@ -114,123 +114,123 @@ namespace SolidCP.Providers.Web
 		[DataMember]
 		public string LogsPath { get; set; }
 
-        [Persistent]
+		[Persistent]
 		[DataMember]
-        public string DataPath
-        {
-            get { return dataPath; }
-            set { dataPath = value; }
-        }
+		public string DataPath
+		{
+			get { return dataPath; }
+			set { dataPath = value; }
+		}
 
 		[DataMember]
-        public ServerBinding[] Bindings
+		public ServerBinding[] Bindings
 		{
 			get { return bindings; }
 			set { bindings = value; }
 		}
 
-        [Persistent]
+		[Persistent]
 		[DataMember]
-        public string FrontPageAccount
-        {
-            get { return this.frontPageAccount; }
-            set { this.frontPageAccount = value; }
-        }
+		public string FrontPageAccount
+		{
+			get { return this.frontPageAccount; }
+			set { this.frontPageAccount = value; }
+		}
 
-        [Persistent]
+		[Persistent]
 		[DataMember]
-        public string FrontPagePassword
-        {
-            get { return this.frontPagePassword; }
-            set { this.frontPagePassword = value; }
-        }
-
-		[DataMember]
-        public bool FrontPageAvailable
-        {
-            get { return this.frontPageAvailable; }
-            set { this.frontPageAvailable = value; }
-        }
+		public string FrontPagePassword
+		{
+			get { return this.frontPagePassword; }
+			set { this.frontPagePassword = value; }
+		}
 
 		[DataMember]
-        public bool FrontPageInstalled
-        {
-            get { return this.frontPageInstalled; }
-            set { this.frontPageInstalled = value; }
-        }
+		public bool FrontPageAvailable
+		{
+			get { return this.frontPageAvailable; }
+			set { this.frontPageAvailable = value; }
+		}
 
 		[DataMember]
-	    public bool ColdFusionAvailable
-	    {
-            get { return this.coldFusionAvailable; }
-            set { this.coldFusionAvailable = value; }
-	    }
+		public bool FrontPageInstalled
+		{
+			get { return this.frontPageInstalled; }
+			set { this.frontPageInstalled = value; }
+		}
 
 		[DataMember]
-	    public string ColdFusionVersion
-	    {
-            get { return this.coldFusionVersion; }
-            set { this.coldFusionVersion = value; }
-	    }
+		public bool ColdFusionAvailable
+		{
+			get { return this.coldFusionAvailable; }
+			set { this.coldFusionAvailable = value; }
+		}
 
 		[DataMember]
-	    public bool CreateCFAppVirtualDirectories
-	    {
-            get { return this.createCFAppVirtualDirectories; }
-            set { this.createCFAppVirtualDirectories = value; }
-	    }
+		public string ColdFusionVersion
+		{
+			get { return this.coldFusionVersion; }
+			set { this.coldFusionVersion = value; }
+		}
 
 		[DataMember]
-	    public bool CreateCFAppVirtualDirectoriesPol
-	    {
-            get { return this.createCFAppVirtualDirectoriesPol; }
-            set { this.createCFAppVirtualDirectoriesPol = value; }
-	    }
+		public bool CreateCFAppVirtualDirectories
+		{
+			get { return this.createCFAppVirtualDirectories; }
+			set { this.createCFAppVirtualDirectories = value; }
+		}
 
 		[DataMember]
-	    public ServerState SiteState
-        {
-            get { return this.siteState; }
-            set { this.siteState = value; }
-        }
+		public bool CreateCFAppVirtualDirectoriesPol
+		{
+			get { return this.createCFAppVirtualDirectoriesPol; }
+			set { this.createCFAppVirtualDirectoriesPol = value; }
+		}
 
 		[DataMember]
-        public bool SecuredFoldersInstalled
-        {
-            get { return this.securedFoldersInstalled; }
-            set { this.securedFoldersInstalled = value; }
-        }
+		public ServerState SiteState
+		{
+			get { return this.siteState; }
+			set { this.siteState = value; }
+		}
 
 		[DataMember]
-        public bool HeliconApeInstalled
-        {
-            get { return this.heliconApeInstalled; }
-            set { this.heliconApeInstalled = value; }
-        }
+		public bool SecuredFoldersInstalled
+		{
+			get { return this.securedFoldersInstalled; }
+			set { this.securedFoldersInstalled = value; }
+		}
 
 		[DataMember]
-	    public bool HeliconApeEnabled
-	    {
-            get { return this.heliconApeEnabled; }
-            set { this.heliconApeEnabled = value; }
-	    }
+		public bool HeliconApeInstalled
+		{
+			get { return this.heliconApeInstalled; }
+			set { this.heliconApeInstalled = value; }
+		}
 
 		[DataMember]
-        public HeliconApeStatus HeliconApeStatus
-        {
-            get { return this.heliconApeStatus; }
-            set { this.heliconApeStatus = value; }
-        }
+		public bool HeliconApeEnabled
+		{
+			get { return this.heliconApeEnabled; }
+			set { this.heliconApeEnabled = value; }
+		}
 
 		[DataMember]
-	    public bool SniEnabled
-	    {
-            get { return this.sniEnabled; }
-            set { this.sniEnabled = value; }
-	    }
+		public HeliconApeStatus HeliconApeStatus
+		{
+			get { return this.heliconApeStatus; }
+			set { this.heliconApeStatus = value; }
+		}
 
 		[DataMember]
-        public string SiteInternalIPAddress
+		public bool SniEnabled
+		{
+			get { return this.sniEnabled; }
+			set { this.sniEnabled = value; }
+		}
+
+		[DataMember]
+		public string SiteInternalIPAddress
 		{
 			get { return siteInternalIPAddress; }
 			set { siteInternalIPAddress = value; }
@@ -290,7 +290,7 @@ namespace SolidCP.Providers.Web
 
 		public static string WhatFrameworkVersionIs(SiteAppPoolMode value)
 		{
-			SiteAppPoolMode dotNetVersion = value & (SiteAppPoolMode.dotNetFramework1 
+			SiteAppPoolMode dotNetVersion = value & (SiteAppPoolMode.dotNetFramework1
 				| SiteAppPoolMode.dotNetFramework2 | SiteAppPoolMode.dotNetFramework4);
 			//
 			return String.Format("v{0}", MMD[dotNetVersion][IIS7]);
