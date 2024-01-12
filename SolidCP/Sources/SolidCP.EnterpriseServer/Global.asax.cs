@@ -30,6 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if NETFRAMEWORK
 using System;
 using System.Data;
 using System.Configuration;
@@ -72,6 +73,7 @@ namespace SolidCP.EnterpriseServer
 				{
 					timer = new Timer(60000 * this.keepAliveMinutes);
 					timer.Elapsed += new ElapsedEventHandler(KeepAlive);
+               timer.AutoReset = true;
 					timer.Start();
 				}
 			}
@@ -88,3 +90,4 @@ namespace SolidCP.EnterpriseServer
         } 
     }
 }
+#endif

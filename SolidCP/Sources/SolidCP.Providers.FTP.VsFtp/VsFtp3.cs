@@ -47,7 +47,7 @@ using SolidCP.Server.Utils;
 
 namespace SolidCP.Providers.FTP
 {
-	public class VsFtp : HostingServiceProviderBase, IFtpServer
+	public class VsFtp3 : HostingServiceProviderBase, IFtpServer
 	{
 		public string ConfigPath => ProviderSettings[nameof(ConfigPath)];
 
@@ -175,7 +175,7 @@ namespace SolidCP.Providers.FTP
 
 			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder)) Directory.CreateDirectory(account.Folder);
 			// add user and set password
-			Shell.Exec($"useradd -s /bin/null{(!string.IsNullOrEmpty(account.Folder) ? $" -d {account.Folder}" : "")} {account.Name}");
+			Shell.Exec($"useradd -s /bin/nologin{(!string.IsNullOrEmpty(account.Folder) ? $" -d {account.Folder}" : "")} {account.Name}");
 			Shell.Exec($"echo \"{account.Password}\" | passwd {account.Name} -stdin");
 
 			// add to userlist file if necessary
@@ -281,7 +281,21 @@ namespace SolidCP.Providers.FTP
 
 		public override bool IsInstalled()
 		{
-			return OSInfo.IsUnix && Shell.Find("vsftpd") != null;
+			if (!OSInfo.IsWindows && Shell.Find("vsftpd") != null)
+			{
+				var output = Shell.Exec("vsftpd -v").Output().Result;
+				var match = Regex.Match(output, @"[0-9.]+");
+				if (match.Success)
+				{
+					try
+					{
+						var version = new Version(match.Value);
+						return version.Major == 3;
+					}
+					catch { }
+				}
+			}
+			return false;
 		}
 
 	}

@@ -20095,7 +20095,7 @@ GO
 -- VsFtp
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1910')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1910, 3, N'VSFTP', N'VSFTP FTP Server', N'SolidCP.Providers.FTP.VsFtp, SolidCP.Providers.FTP.VsFtp', N'VSFTP', NULL)
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1910, 3, N'vsftpd', N'vsftpd FTP Server 3', N'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp', N'vsftpd', NULL)
 END
 GO
 

@@ -42,17 +42,22 @@ using System.Security.Principal;
 using System.Web.UI;
 using System.Net;
 using System.Net.Http;
+using System.Timers;
 using SolidCP.Portal;
 
 
 namespace SolidCP.WebPortal
 {
-    public class Global : System.Web.HttpApplication
-    {
+	public class Global : System.Web.HttpApplication
+	{
+		private int keepAliveMinutes = 10;
+		private static string keepAliveUrl = "";
+		private static System.Timers.Timer timer = null;
+
 		protected void Application_PostAuthorizeRequest(Object sender, EventArgs e)
-        {
-            if (User.Identity.IsAuthenticated == true && Request.RawUrl.IndexOf("WebResource.axd") == -1)
-            {
+		{
+			if (User.Identity.IsAuthenticated == true && Request.RawUrl.IndexOf("WebResource.axd") == -1)
+			{
 				FormsAuthenticationTicket authTicket = (FormsAuthenticationTicket)Context.Items[FormsAuthentication.FormsCookieName];
 
 				string roleName = String.Empty;
@@ -74,45 +79,45 @@ namespace SolidCP.WebPortal
 
 				string[] roles = null;
 
-                switch (roleName)
-                {
-                    case "Administrator":
-                        roles = new string[] { "Administrator", "PlatformHelpdesk", "PlatformCSR", "Reseller", "ResellerCSR", "ResellerHelpdesk", "User" };
-                        break;
-                    case "Reseller":
-                        roles = new string[] { "Reseller", "ResellerCSR", "ResellerHelpdesk", "User" };
-                        break;
-                    case "PlatformCSR":
-                        roles = new string[] { "PlatformCSR", "ResellerCSR", "ResellerHelpdesk", "User" };
-                        break;
-                    case "PlatformHelpdesk":
-                        roles = new string[] { "PlatformHelpdesk", "ResellerHelpdesk", "User" };
-                        break;
-                    case "ResellerCSR":
-                        roles = new string[] { "ResellerCSR", "User" };
-                        break;
-                    case "ResellerHelpdesk":
-                        roles = new string[] { "ResellerHelpdesk", "User" };
-                        break;
-                    default:
-                        roles = new string[] { "User" };
-                        break;
-                }
+				switch (roleName)
+				{
+					case "Administrator":
+						roles = new string[] { "Administrator", "PlatformHelpdesk", "PlatformCSR", "Reseller", "ResellerCSR", "ResellerHelpdesk", "User" };
+						break;
+					case "Reseller":
+						roles = new string[] { "Reseller", "ResellerCSR", "ResellerHelpdesk", "User" };
+						break;
+					case "PlatformCSR":
+						roles = new string[] { "PlatformCSR", "ResellerCSR", "ResellerHelpdesk", "User" };
+						break;
+					case "PlatformHelpdesk":
+						roles = new string[] { "PlatformHelpdesk", "ResellerHelpdesk", "User" };
+						break;
+					case "ResellerCSR":
+						roles = new string[] { "ResellerCSR", "User" };
+						break;
+					case "ResellerHelpdesk":
+						roles = new string[] { "ResellerHelpdesk", "User" };
+						break;
+					default:
+						roles = new string[] { "User" };
+						break;
+				}
 
 				HttpContext.Current.User = new GenericPrincipal(HttpContext.Current.User.Identity, roles);
-            }
+			}
 
-        }
+		}
 
-        protected void Application_Start(object sender, EventArgs e)
-        {
-            // start Enterprise Server
+		protected void Application_Start(object sender, EventArgs e)
+		{
+			// start Enterprise Server
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serverUrl);
 			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			request.Proxy = null;
 			request.Method = "GET";
-            request.GetResponseAsync();
+			request.GetResponseAsync();
 
 			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
@@ -122,9 +127,30 @@ namespace SolidCP.WebPortal
 			);
 		}
 
-        protected void Application_End(object sender, EventArgs e)
-        {
+		protected void Application_BeginRequest(object sender, EventArgs e)
+		{
+			// ASP.NET Integration Mode workaround
+			if (String.IsNullOrEmpty(keepAliveUrl))
+			{
+				// init keep-alive
+				keepAliveUrl = HttpContext.Current.Request.Url.ToString();
+				if (this.keepAliveMinutes > 0)
+				{
+					timer = new System.Timers.Timer(60000 * this.keepAliveMinutes);
+					timer.Elapsed += new ElapsedEventHandler(KeepAlive);
+					timer.AutoReset = true;
+					timer.Start();
+				}
+			}
+		}
+		protected void Application_End(object sender, EventArgs e)
+		{
 
-        }
-    }
+		}
+
+		private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
+		{
+			using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+		}
+	}
 }

@@ -820,14 +820,20 @@ namespace SolidCP.Providers.Web
 
 		public override bool IsInstalled()
 		{
-			if (!OS.OSInfo.IsWindows && Shell.Find("httpd") != null)
+			//if (OS.OSInfo.IsWindows) return false;
+			var hashttpd = Shell.Find("httpd") != null;
+			var hasapache2 = Shell.Find("apache2") != null;
+			if ((hashttpd || hasapache2) && Shell.Find("apachectl") != null && Shell.Find("a2ensite") != null)
 			{
-				var output = Shell.Exec("httpd -V").Output().Result;
+				var exe = hashttpd ? "httpd" : "apache2";
+				var output = Shell.Exec($"{exe} -V").Output().Result;
 				var match = Regex.Match(output, @"^Server [Vv]ersion:\s*[A-Za-z]*/(?<version>[0-9.]+)", RegexOptions.Multiline);
 				if (match.Success)
 				{
-					var version = new Version(match.Groups["version"].Value);
-					return version.Major == 2 && version.Minor == 4;
+					try {
+						var version = new Version(match.Groups["version"].Value);
+						return version.Major == 2 && version.Minor == 4;
+					} catch { }
 				}
 			}
 			return false;

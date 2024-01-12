@@ -74,6 +74,7 @@ namespace SolidCP.Server
 				{
 					timer = new Timer(60000 * this.keepAliveMinutes);
 					timer.Elapsed += new ElapsedEventHandler(KeepAlive);
+					timer.AutoReset = true;
 					timer.Start();
 				}
 			}

@@ -70,31 +70,52 @@ namespace SolidCP.Portal
 			}
 		}
 
+		const string ExceptionProperty = "ServersEditServerException";
 		protected void Page_Load(object sender, EventArgs e)
 		{
 			if (!IsPostBack)
 			{
-				try
+				Exception exc;
+				if ((exc = Session[ExceptionProperty] as Exception) != null)
 				{
-					ServerId = PanelRequest.ServerId;
-
-					Page.RegisterAsyncTask(new PageAsyncTask(() =>
-						Task.WhenAll(
-							BindTools(),
-							BindServer(),
-							BindServerMemory(),
-							BindServerVersion(),
-							BindServerFilepath()
-						)));
-					Page.ExecuteRegisteredAsyncTasks();
+					Session[ExceptionProperty] = null;
+					ShowErrorMessage("SERVER_GET_SERVER", exc);
 				}
-				catch (Exception ex)
+				else
 				{
-					ShowErrorMessage("SERVER_GET_SERVER", ex);
-					return;
-				}
+					try
+					{
+						ServerId = PanelRequest.ServerId;
+						Page.Error += PageError;
+						Page.RegisterAsyncTask(new PageAsyncTask(() =>
+							Task.WhenAll(
+								BindTools(),
+								BindServer(),
+								BindServerMemory(),
+								BindServerVersion(),
+								BindServerFilepath()
+							)));
+						Page.ExecuteRegisteredAsyncTasks();
+					}
+					catch (Exception ex)
+					{
+						ShowErrorMessage("SERVER_GET_SERVER", ex);
+						return;
+					}
 
-				IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
+					IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
+				}
+			}
+		}
+
+		protected void PageError(object sender, EventArgs args)
+		{
+			var ex = Server.GetLastError();
+			if (ex != null)
+			{
+				Session[ExceptionProperty] = ex;
+				Server.ClearError();
+				Response.Redirect(Request.Url.AbsoluteUri);
 			}
 		}
 
