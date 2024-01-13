@@ -78,7 +78,7 @@ namespace SolidCP.Web.Client
 					else if (value == Protocols.gRPCWebSsl) url = url.SetApi("grpc/web");
 					else if (value == Protocols.NetPipe) url = url.SetApi("pipe");
 					else if (value == Protocols.NetPipeSsl) url = url.SetApi("pipe/ssl");
-					// else if (value == Protocols.Assembly) url = url.SetScheme("assembly");
+					else if (value == Protocols.Assembly) url = url.SetScheme("assembly");
 				}
 				protocol = value;
 			}
@@ -461,6 +461,7 @@ namespace SolidCP.Web.Client
 
 					client = factory.CreateChannel();
 					((IClientChannel)client).OperationTimeout = Timeout ?? TimeSpan.FromSeconds(120);
+
 
 				}
 #if !NETFRAMEWORK && gRPC

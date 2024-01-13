@@ -40,6 +40,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using System.Threading;
 using System.Threading.Tasks;
 
 using SolidCP.EnterpriseServer;
@@ -49,10 +50,9 @@ namespace SolidCP.Portal
 {
 	public partial class ServersEditServer : SolidCPModuleBase
 	{
-
 		int ServerId;
-		Task<ServerInfo> serverInfo = null;
-		Task<ServerInfo> ServerInfo
+		ServerInfo serverInfo = null;
+		ServerInfo ServerInfo
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace SolidCP.Portal
 				{
 					lock (this)
 					{
-						return serverInfo ?? (serverInfo = ES.Services.Servers.GetServerByIdAsync(ServerId));
+						return serverInfo ?? (serverInfo = ES.Services.Servers.GetServerById(ServerId));
 					}
 				}
 				catch (Exception ex)
@@ -70,57 +70,27 @@ namespace SolidCP.Portal
 			}
 		}
 
-		const string ExceptionProperty = "ServersEditServerException";
 		protected void Page_Load(object sender, EventArgs e)
 		{
 			if (!IsPostBack)
 			{
-				Exception exc;
-				if ((exc = Session[ExceptionProperty] as Exception) != null)
+				try
 				{
-					Session[ExceptionProperty] = null;
-					ShowErrorMessage("SERVER_GET_SERVER", exc);
+					ServerId = PanelRequest.ServerId;
+					BindTools();
+					BindServer();
+					BindServerMemory();
+					BindServerVersion();
+					BindServerFilepath();
 				}
-				else
+				catch (Exception ex)
 				{
-					try
-					{
-						ServerId = PanelRequest.ServerId;
-						Page.Error += PageError;
-						Page.RegisterAsyncTask(new PageAsyncTask(() =>
-							Task.WhenAll(
-								BindTools(),
-								BindServer(),
-								BindServerMemory(),
-								BindServerVersion(),
-								BindServerFilepath()
-							)));
-						Page.ExecuteRegisteredAsyncTasks();
-					}
-					catch (Exception ex)
-					{
-						ShowErrorMessage("SERVER_GET_SERVER", ex);
-						return;
-					}
-
-					IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
+					ShowErrorMessage("SERVER_GET_SERVER", ex);
+					return;
 				}
-			}
-		}
 
-		protected void PageError(object sender, EventArgs args)
-		{
-			var ex = Server.GetLastError();
-			if (ex != null)
-			{
-				Session[ExceptionProperty] = ex;
-				Server.ClearError();
-				Response.Redirect(Request.Url.AbsoluteUri);
+				IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
 			}
-		}
-
-		public void Bind()
-		{
 		}
 		//protected void rbUsersCreationMode_SelectedIndexChanged(object sender, EventArgs e)
 		//{
@@ -158,7 +128,7 @@ namespace SolidCP.Portal
 		//        this.trAdButton.Visible = false;
 		//    }
 		//}
-		private async Task BindTools()
+		private void BindTools()
 		{
 			try
 			{
@@ -176,8 +146,8 @@ namespace SolidCP.Portal
 
 				lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
 
-				pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = (await ServerInfo).OSPlatform == OSPlatform.Windows;
-				pnUnixServices.Visible = (await ServerInfo).OSPlatform != OSPlatform.Windows;
+				pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = ServerInfo.OSPlatform == OSPlatform.Windows;
+				pnUnixServices.Visible = ServerInfo.OSPlatform != OSPlatform.Windows;
 			}
 			catch (Exception ex)
 			{
@@ -185,9 +155,9 @@ namespace SolidCP.Portal
 			}
 		}
 
-		private async Task BindServer()
+		private void BindServer()
 		{
-			ServerInfo server = await ServerInfo;
+			ServerInfo server = ServerInfo;
 
 			if (server == null)
 				RedirectToBrowsePage();
@@ -216,16 +186,16 @@ namespace SolidCP.Portal
 			txtPreviewDomain.Text = server.InstantDomainAlias;
 		}
 
-		private async Task BindServerVersion()
+		private void BindServerVersion()
 		{
-			scpVersion.Text = await ES.Services.Servers.GetServerVersionAsync(ServerId);
+			scpVersion.Text = ES.Services.Servers.GetServerVersion(ServerId);
 		}
 
-		private async Task BindServerMemory()
+		private void BindServerMemory()
 		{
 			try
 			{
-				Memory memory = await ES.Services.Servers.GetMemoryAsync(ServerId);
+				Memory memory = ES.Services.Servers.GetMemory(ServerId);
 				freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
 				totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
 				ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
@@ -238,11 +208,11 @@ namespace SolidCP.Portal
 			}
 		}
 
-		private async Task BindServerFilepath()
+		private void BindServerFilepath()
 		{
 			// scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
 
-			scpFilepath.Text = await ES.Services.Servers.GetServerFilePathAsync(ServerId);
+			scpFilepath.Text = ES.Services.Servers.GetServerFilePath(ServerId);
 		}
 
 		private void UpdateServer()

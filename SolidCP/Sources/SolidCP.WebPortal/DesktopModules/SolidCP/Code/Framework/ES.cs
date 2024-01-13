@@ -32,6 +32,8 @@
 
 using System;
 using System.Web;
+using System.Web.Security;
+using System.Collections.Concurrent;
 using SolidCP.EnterpriseServer.Client;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.HostedSolution;
@@ -43,21 +45,33 @@ namespace SolidCP.Portal
 
 	public class ES
 	{
+		public FormsAuthenticationTicket AuthTicket = null;
+		public ES() {
+			try
+			{
+				if (HttpContext.Current != null)
+				{
+					AuthTicket = PortalUtils.AuthTicket;
+				}
+			}
+			catch { }
+		}
+
 		static ES services = null;
+		static object Lock = new object();
 		public static ES Services
 		{
 			get
 			{
-				/* ES services = (ES)HttpContext.Current.Items["WebServices"];
-
-                if (services == null)
-                {
-                    services = new ES();
-                    HttpContext.Current.Items["WebServices"] = services;
-                }
-
-				return services; */
-				return services ?? (services = new ES());
+				lock (Lock)
+				{
+					if (services == null)
+					{
+						services = new ES();
+						services.AuthTicket = null;
+					}
+				}
+				return services;
 			}
 		}
 
@@ -272,36 +286,27 @@ namespace SolidCP.Portal
 			get { return GetCachedProxy<esTest>(); }
 		}
 
-		protected ES()
-		{
-		}
-
 		public static void Start()
 		{
 			Services.Test.TouchAsync();
 		}
 		protected virtual T GetCachedProxy<T>()
+			where T: Web.Client.ClientBase
 		{
 			return GetCachedProxy<T>(true);
 		}
 
+		static ConcurrentDictionary<Type, Web.Client.ClientBase> cache = new ConcurrentDictionary<Type, Web.Client.ClientBase>();
 		protected virtual T GetCachedProxy<T>(bool secureCalls)
+			where T: Web.Client.ClientBase
 		{
 			Type t = typeof(T);
-			string key = t.FullName + ".ServiceProxy";
-			T proxy = (T)HttpContext.Current.Items[key];
-			if (proxy == null)
-			{
-				proxy = (T)Activator.CreateInstance(t);
-				HttpContext.Current.Items[key] = proxy;
-			}
-
-			object p = proxy;
+			var proxy = cache.GetOrAdd(t, t => Activator.CreateInstance<T>());
 
 			// configure proxy
-			PortalUtils.ConfigureEnterpriseServerProxy((SolidCP.Web.Client.ClientBase)p, secureCalls);
+			PortalUtils.ConfigureEnterpriseServerProxy(proxy, secureCalls, AuthTicket);
 
-			return proxy;
+			return (T)proxy;
 		}
 	}
 }

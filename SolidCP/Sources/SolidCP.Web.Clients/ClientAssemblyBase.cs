@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using SolidCP.Providers;
 
@@ -40,19 +41,21 @@ namespace SolidCP.Web.Client
 				{
 					var field = type.GetField(attr.Field);
 					field.SetValue(service, Client.SoapHeader);
-				} else
+				}
+				else
 				{
 					prop.SetValue(service, Client.SoapHeader);
 				}
 			}
 			return (T)method.Invoke(service, parameters);
 		}
-        protected void Invoke(string typeName, string methodName, params object[] parameters) {
+		protected void Invoke(string typeName, string methodName, params object[] parameters)
+		{
 			Invoke<object>(typeName, methodName, null, parameters);
 		}
 
 
-        protected T Invoke<T, TItem>(string typeName, string methodName, params object[] parameters)
+		protected T Invoke<T, TItem>(string typeName, string methodName, params object[] parameters)
 		{
 			var result = Invoke<object>(typeName, methodName, parameters);
 			if (result is IEnumerable<TItem> list) return (T)((object)list.ToArray());
@@ -61,16 +64,25 @@ namespace SolidCP.Web.Client
 
 		protected Task<T> InvokeAsync<T>(string typeName, string methodName, params object[] parameters)
 		{
-			return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters));
+			return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
+				CancellationToken.None,
+				TaskCreationOptions.None,
+				TaskScheduler.FromCurrentSynchronizationContext());
 		}
 		protected Task<T> InvokeAsync<T, TItem>(string typeName, string methodName, params object[] parameters)
 		{
-			return Task.Factory.StartNew<T>(() => Invoke<T, TItem>(typeName, methodName, parameters));
+			return Task.Factory.StartNew<T>(() => Invoke<T, TItem>(typeName, methodName, parameters),
+				CancellationToken.None,
+				TaskCreationOptions.None,
+				TaskScheduler.FromCurrentSynchronizationContext());
 		}
-        protected Task InvokeAsync(string typeName, string methodName, params object[] parameters)
-        {
-            return Task.Factory.StartNew(() => Invoke<object>(typeName, methodName, parameters));
-        }
+		protected Task InvokeAsync(string typeName, string methodName, params object[] parameters)
+		{
+			return Task.Factory.StartNew(() => Invoke<object>(typeName, methodName, parameters),
+				CancellationToken.None,
+				TaskCreationOptions.None,
+				TaskScheduler.FromCurrentSynchronizationContext());
+		}
 
-    }
+	}
 }
