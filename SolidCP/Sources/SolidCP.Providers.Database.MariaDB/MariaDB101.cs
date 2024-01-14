@@ -946,8 +946,9 @@ namespace SolidCP.Providers.Database
 		protected virtual bool IsInstalledUnix(string version)
 		{
 			var processes = Process.GetProcessesByName("mysqld")
+				.Concat(Process.GetProcessesByName("mariadbd"))
 				.Select(p => p.MainModule.FileName)
-				.Concat(new string[] { Shell.Default.Find("mysqld") })
+				.Concat(new string[] { Shell.Default.Find("mysqld"), Shell.Default.Find("mariadbd") })
 				.Where(exe => exe != null)
 				.Distinct();
 			foreach (var exe in processes)
