@@ -26,22 +26,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
+using System;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Database
 {
-    public class MsSqlServer2017 : MsSqlServer2005
-    {
-        public override bool IsInstalled()
-        {
-            return true;
-        }
-
-        public override void TruncateDatabase(string databaseName)
-        {
-            SqlDatabase database = GetDatabase(databaseName);
-            ExecuteNonQuery(String.Format(@"USE [{0}];DBCC SHRINKFILE ('{1}', 1);",
-                databaseName,  database.LogName));
-        }
-    }
+	public class MsSqlServer2017 : MsSqlServer2016
+	{
+		protected override bool CheckUnixVersion(string version) {
+			var processes = Process.GetProcessesByName("sqlservr")
+				.Select(p => p.MainModule.FileName);
+			foreach (var exe in processes) {
+				if (File.Exists(exe))
+				{
+					var output = Shell.Default.ExecScript($"PAL_PROGRAM_INFO=1 {exe}").Output().Result;
+					var match = Regex.Match(output, @"^\s*Version\s+(?<version>[0-9.]+)", RegexOptions.Multiline);
+					if (match.Success)
+					{
+						var ver = match.Groups["version"].Value;
+						if (ver.StartsWith(version)) return true;
+					}
+				}
+			}
+			return false;
+		}
+		public override bool IsInstalled()
+		{
+			return CheckVersion("14.");
+		}
+	}
 }

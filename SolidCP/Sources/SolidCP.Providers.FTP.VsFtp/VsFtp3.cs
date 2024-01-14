@@ -37,6 +37,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Linq;
+using System.Diagnostics;
 using Mono.Posix;
 using Mono.Unix;
 
@@ -281,18 +282,29 @@ namespace SolidCP.Providers.FTP
 
 		public override bool IsInstalled()
 		{
-			if (!OSInfo.IsWindows && Shell.Find("vsftpd") != null)
+			if (!OSInfo.IsWindows)
 			{
-				var output = Shell.Exec("vsftpd -v").Output().Result;
-				var match = Regex.Match(output, @"[0-9.]+");
-				if (match.Success)
+				var processes = Process.GetProcessesByName("vsftpd")
+					.Select(p => p.MainModule.FileName)
+					.Concat(new string[] { Shell.Default.Find("vsftpd") })
+					.Where(exe => exe != null)
+					.Distinct();
+				foreach (var exe in processes)
 				{
-					try
+					if (File.Exists(exe))
 					{
-						var version = new Version(match.Value);
-						return version.Major == 3;
+						var output = Shell.Default.Exec($"\"{exe}\" -v").Output().Result;
+						var match = Regex.Match(output, @"[0-9][0-9.]+");
+						if (match.Success)
+						{
+							try
+							{
+								var version = new Version(match.Value);
+								if (version.Major == 3) return true;
+							}
+							catch { }
+						}
 					}
-					catch { }
 				}
 			}
 			return false;

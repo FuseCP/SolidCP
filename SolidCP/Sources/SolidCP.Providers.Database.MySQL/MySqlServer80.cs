@@ -45,60 +45,12 @@ using MySql.Data.MySqlClient;
 
 namespace SolidCP.Providers.Database
 {
-    public class MySqlServer80 : MySqlServer
+    public class MySqlServer80 : MySqlServer57
 	{
 
-		public MySqlServer80()
-		{
+		public MySqlServer80(): base() {	}
 
-		}
-
-		public bool IsInstalledWindows()
-		{
-
-			if (OSInfo.IsWindows)
-			{
-				string versionNumber = null;
-
-				RegistryKey HKLM = Registry.LocalMachine;
-
-				RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 8.0");
-
-				if (key != null)
-				{
-					versionNumber = (string)key.GetValue("Version");
-				}
-				else
-				{
-					key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 8.0");
-					if (key != null)
-					{
-						versionNumber = (string)key.GetValue("Version");
-					}
-					else
-					{
-						return false;
-					}
-				}
-
-				string[] split = versionNumber.Split(new char[] { '.' });
-
-				return split[0].Equals("8") & split[1].Equals("0");
-			}
-			return false;
-		}
-
-		public override bool IsInstalled()
-		{
-			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
-			else if (OSInfo.IsUnix)
-			{
-				var version = Shell.Default.Exec("mysql -V").Output().Result;
-
-				return version.Contains("Ver 8.0.");
-			}
-			else return false;
-		}
+		public override bool IsInstalled() => IsInstalled("8.0");
 
 		public override void CreateUser(SqlUser user, string password)
 		{

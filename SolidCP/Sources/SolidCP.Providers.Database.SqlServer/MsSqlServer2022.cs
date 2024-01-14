@@ -26,33 +26,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
 namespace SolidCP.Providers.Database
 {
-    public class MsSqlServer2022 : MsSqlServer2005
-    {
-        public override bool IsInstalled()
-        {
-            return true;
-        }
-
-        public override void TruncateDatabase(string databaseName)
-        {
-            SqlDatabase database = GetDatabase(databaseName);
-            ExecuteNonQuery(String.Format(@"USE [{0}];DBCC SHRINKFILE ('{1}', 1);",
-                databaseName,  database.LogName));
-        }
-
-        public override string[] GetUsers()
-        {
-            DataTable dt = ExecuteQuery("select name from sys.sql_logins where name not like '##MS%' and IS_SRVROLEMEMBER ('sysadmin',name) = 0").Tables[0];
-            List<string> users = new List<string>();
-            foreach (DataRow dr in dt.Rows)
-                users.Add(dr["name"].ToString());
-            return users.ToArray();
-        }
-    }
+	public class MsSqlServer2022 : MsSqlServer2019
+	{
+		public override bool IsInstalled()
+		{
+			return CheckVersion("16.");
+		}
+	}
 }

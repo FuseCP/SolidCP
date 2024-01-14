@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.ServiceProcess;
 using SolidCP.Providers.OS;
 using SolidCP.Server.Utils;
@@ -1036,23 +1037,29 @@ namespace SolidCP.Providers.DNS
 
 		#endregion
 
-		public bool IsInstalledWindows()
+		protected virtual bool IsInstalled(string version)
 		{
-			var services = System.ServiceProcess.ServiceController.GetServices();
-			return services.Any(s => s.DisplayName.Contains("ISC BIND"));
-			// TODO check if version is 9
-		}
-
-		public override bool IsInstalled()
-		{
-			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
-			else if (OSInfo.IsUnix)
+			var processes = Process.GetProcessesByName("named")
+				.Select(p => p.MainModule.FileName)
+				.Concat(new string[] { Shell.Default.Find("named") })
+				.Where(exe => exe != null)
+				.Distinct();
+			foreach (var exe in processes)
 			{
-				return Shell.Default.Find("named") != null &&
-					Shell.Default.Exec("named -version").Output().Result.Contains("BIND 9.");
+				if (File.Exists(exe))
+				{
+					var output = Shell.Default.Exec($"\"{exe}\" -version").Output().Result;
+					var match = Regex.Match(output, @"(?<=BIND\s*)(?<version>[0-9][0-9.]+)", RegexOptions.IgnoreCase);
+					if (match.Success)
+					{
+						var ver = match.Groups["version"].Value;
+						if (ver.StartsWith(version)) return true;
+					}
+				}
 			}
 			return false;
 		}
 
+		public override bool IsInstalled() => IsInstalled("9.");
 	}
 }

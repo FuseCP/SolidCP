@@ -32,21 +32,14 @@ using System.Data;
 
 namespace SolidCP.Providers.Database
 {
-    public class MsSqlServer2019 : MsSqlServer2005
+    public class MsSqlServer2019 : MsSqlServer2017
     {
         public override bool IsInstalled()
         {
-            return true;
-        }
+			return CheckVersion("15.");
+		}
 
-        public override void TruncateDatabase(string databaseName)
-        {
-            SqlDatabase database = GetDatabase(databaseName);
-            ExecuteNonQuery(String.Format(@"USE [{0}];DBCC SHRINKFILE ('{1}', 1);",
-                databaseName,  database.LogName));
-        }
-
-        public override string[] GetUsers()
+		public override string[] GetUsers()
         {
             DataTable dt = ExecuteQuery("select name from sys.sql_logins where name not like '##MS%' and IS_SRVROLEMEMBER ('sysadmin',name) = 0").Tables[0];
             List<string> users = new List<string>();

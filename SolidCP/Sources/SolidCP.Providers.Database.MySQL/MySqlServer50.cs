@@ -37,57 +37,8 @@ namespace SolidCP.Providers.Database
 {
 	public class MySqlServer50 : MySqlServer
 	{
+		public MySqlServer50(): base() { }
 
-		public MySqlServer50()
-		{
-
-		}
-
-		public bool IsInstalledWindows()
-		{
-			if (OSInfo.IsWindows)
-			{
-				string versionNumber = null;
-
-				RegistryKey HKLM = Registry.LocalMachine;
-
-				RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.0");
-
-				if (key != null)
-				{
-					versionNumber = (string)key.GetValue("Version");
-				}
-				else
-				{
-					key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.0");
-					if (key != null)
-					{
-						versionNumber = (string)key.GetValue("Version");
-					}
-					else
-					{
-						return false;
-					}
-				}
-
-				string[] split = versionNumber.Split(new char[] { '.' });
-
-				return split[0].Equals("5") & split[1].Equals("0");
-			}
-			return false;
-		}
-		public override bool IsInstalled()
-		{
-			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
-			else if (OSInfo.IsUnix)
-			{
-				if (Shell.Default.Find("mysql") == null) return false;
-
-				var version = Shell.Default.Exec("mysql -version").Output().Result;
-
-				return version.Contains("Ver 5.0.");
-			}
-			else return false;
-		}
+		public override bool IsInstalled() => IsInstalled("5.0");
 	}
 }

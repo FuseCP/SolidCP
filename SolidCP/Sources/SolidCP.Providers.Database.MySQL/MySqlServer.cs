@@ -35,16 +35,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Microsoft.Win32;
 using MySql.Data.MySqlClient;
-using System.IO;
 
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
 using SolidCP.Providers.OS;
 using SolidCP.Providers;
-using System.Reflection;
-using System.Data.Common;
+
 
 namespace SolidCP.Providers.Database
 {
@@ -498,52 +500,48 @@ namespace SolidCP.Providers.Database
 
 		private string BackupDatabase(string databaseName, string backupName)
 		{
-			if (backupName == null)
-				backupName = databaseName + ".sql";
-			string cmd = Path.Combine(MySqlBinFolder, "mysqldump.exe");
+			if (backupName == null) backupName = databaseName + ".sql";
+			var exe = OSInfo.IsWindows ? "mysqldump.exe" : "mysqldump";
+			string cmd = Path.Combine(MySqlBinFolder, exe);
+			if (!File.Exists(cmd)) cmd = Shell.Default.Find(exe);
+			if (cmd == null) throw new FileNotFoundException($"mysqldump executable not found.");
+
 			string bakFile = Path.Combine(BackupTempFolder, backupName);
 
-			string args = string.Format(" --host={0} --port={1} --user={2} --password={3} --opt --skip-extended-insert --skip-quick --skip-comments --result-file=\"{4}\" {5}",
-				ServerName, ServerPort, RootLogin, RootPassword, bakFile, databaseName);
+			cmd = $"\"{cmd}\" --host={ServerName} --port={ServerPort} --user={RootLogin} --password={RootPassword} --opt --skip-extended-insert --skip-quick --skip-comments --result-file=\"{bakFile}\" {databaseName}";
 
 			// backup database
-			FileUtils.ExecuteSystemCommand(cmd, args);
+			Shell.Default.Exec(cmd);
 
 			return bakFile;
 		}
 
 		public virtual void TruncateDatabase(string databaseName)
 		{
+			if (databaseName.Contains(" ") || databaseName.Contains("\n")) throw new NotSupportedException("databaseName must not contain whitespace");
+
 			string zipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 			FileUtils.CreateDirectory(zipPath);
-			// create temporary batchfile
-			string batchfilename = Path.Combine(zipPath, "MySql_Truncate.bat");
-			StreamWriter file = new StreamWriter(batchfilename);
-			file.WriteLine("@ECHO OFF");
-			file.WriteLine("cls");
-			file.WriteLine("set host=%1%");
-			file.WriteLine("set port=%2%");
-			file.WriteLine("set user=%3%");
-			file.WriteLine("set password=%4%");
-			file.WriteLine("set dbname=%5%");
-			file.WriteLine("\"" + Path.Combine(MySqlBinFolder, "mysql") + "\" --host=%host% --port=%port% --user=%user% --password=%password% -N -e \"SELECT CONCAT('OPTIMIZE TABLE ', table_name, ';') FROM information_schema.tables WHERE table_schema = %dbname% AND data_free/1024/1024 > 5;\" | mysql --host=%host% --port=%port% --user=%user% --password=%password% %dbname%");
-			file.Close();
 
 			// close current database connections
 			CloseDatabaseConnections(databaseName);
 
-			try
-			{
-				string args = string.Format(" {0} {1} {2} {3} {4}",
-					ServerName, ServerPort,
-					RootLogin, RootPassword, databaseName);
+			// execute script
+			string exe = OSInfo.IsWindows ? "mysql.exe" : "mysql";
+			var mysqlexe = Path.Combine(MySqlBinFolder, exe);
+			if (!File.Exists(mysqlexe)) mysqlexe = Shell.Default.Find(exe);
+			if (mysqlexe == null) throw new FileNotFoundException("mysql executable not found.");
 
-				FileUtils.ExecuteSystemCommand(batchfilename, args);
-			}
-			finally
-			{
-				FileUtils.DeleteDirectoryAdvanced(zipPath);
-			}
+			var script = $"\"{mysqlexe}\" --host={ServerName} --port={ServerPort} --user={RootLogin} --password={RootPassword} -N -e " +
+				$"\"SELECT CONCAT('OPTIMIZE TABLE ', table_name, ';') FROM information_schema.tables WHERE table_schema = {databaseName} AND data_free/1024/1024 > 5;\" " +
+				$"| \"{mysqlexe}\" --host={ServerName} --port={ServerPort} --user={RootLogin} --password={RootPassword} {databaseName}";
+
+			var cdir = Environment.CurrentDirectory;
+			Environment.CurrentDirectory = zipPath;
+			Shell.Default.ExecScript(script);
+			Environment.CurrentDirectory = cdir;
+
+			FileUtils.DeleteDirectoryAdvanced(zipPath);
 		}
 
 		#endregion
@@ -930,13 +928,13 @@ namespace SolidCP.Providers.Database
 		}
 		#endregion
 
-		public bool IsInstalledWindows()
+		protected virtual bool IsInstalledWindows(string version)
 		{
 			string versionNumber = null;
 
 			RegistryKey HKLM = Registry.LocalMachine;
 
-			RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 4.1");
+			RegistryKey key = HKLM.OpenSubKey(@$"SOFTWARE\MySQL AB\MySQL Server {version}");
 
 			if (key != null)
 			{
@@ -944,7 +942,7 @@ namespace SolidCP.Providers.Database
 			}
 			else
 			{
-				key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 4.1");
+				key = HKLM.OpenSubKey(@$"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server {version}");
 				if (key != null)
 				{
 					versionNumber = (string)key.GetValue("Version");
@@ -955,22 +953,39 @@ namespace SolidCP.Providers.Database
 				}
 			}
 
-			string[] split = versionNumber.Split(new char[] { '.' });
+			versionNumber = Regex.Match(versionNumber, "[0-9.]+").Value;
 
-			return split[0].Equals("4");
+			return versionNumber.StartsWith(version);
 		}
 
-		public override bool IsInstalled()
+		protected virtual bool IsInstalledUnix(string version)
 		{
-			if (OSInfo.IsWindows && IsInstalledWindows()) return true;
-			else if (OSInfo.IsUnix)
+			var processes = Process.GetProcessesByName("mysqld")
+				.Select(p => p.MainModule.FileName)
+				.Concat(new string[] { Shell.Default.Find("mysqld") })
+				.Where(exe => exe != null)
+				.Distinct();
+			foreach (var exe in processes)
 			{
-				if (Shell.Default.Find("mysql") == null) return false;
-
-				var version = Shell.Default.Exec("mysql -version").Output().Result;
-				return version.Contains("Ver 4.");
+				if (File.Exists(exe))
+				{
+					var output = Shell.Default.Exec($"\"{exe}\" --version").Output().Result;
+					var match = Regex.Match(output, @"(?<version>[0-9][0-9.]+)(?!.*MariaDB)", RegexOptions.IgnoreCase);
+					if (match.Success)
+					{
+						var ver = match.Groups["version"].Value;
+						if (ver.StartsWith(version)) return true;
+					}
+				}
 			}
-			else return false;
+			return false;
 		}
+
+		protected virtual bool IsInstalled(string version)
+		{
+			if (OSInfo.IsWindows) return IsInstalledWindows(version);
+			else return IsInstalledUnix(version);
+		}
+		public override bool IsInstalled() => IsInstalled("4.1");
 	}
 }
