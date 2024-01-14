@@ -20108,7 +20108,7 @@ GO
 -- Apache
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1911')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1911, 3, N'Apache', N'Apache Web Server 2.4', N'SolidCP.Providers.Web.Apache24, SolidCP.Providers.FTP.Apache', N'Apache', NULL)
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1911, 2, N'Apache', N'Apache Web Server 2.4', N'SolidCP.Providers.Web.Apache24, SolidCP.Providers.FTP.Apache', N'Apache', NULL)
 END
 GO
 
