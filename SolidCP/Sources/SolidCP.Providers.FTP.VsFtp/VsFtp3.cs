@@ -298,7 +298,7 @@ namespace SolidCP.Providers.FTP
 					{
 						try
 						{
-							var output = Shell.Default.Exec($"\"{exe}\" -v").Output().Result;
+							var output = Shell.Default.ExecScript($"\"{exe}\" -v 0>&1").Output().Result;
 							var match = Regex.Match(output, @"[0-9][0-9.]+");
 							if (match.Success)
 							{

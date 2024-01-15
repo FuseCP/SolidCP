@@ -43,7 +43,11 @@ namespace SolidCP.Providers.OS
 
 		bool errorEOF = true, outputEOF = true, hasProcessExited = true;
 		int exitCode = 0;
-		public bool IsCompleted => Process == null || ((DoNotWaitForProcessExit || hasProcessExited || Process.HasExited) && errorEOF && outputEOF);
+		bool checkHasExited = true;
+
+		// Process.HasExited can cause deadlock because it raises Exit event, therefore disable it in CheckCompleted by checkHasExited = false
+		public bool IsCompleted => Process == null ||
+			((DoNotWaitForProcessExit || hasProcessExited || (checkHasExited && Process.HasExited)) && errorEOF && outputEOF);
 		public Shell GetResult() => this;
 		public Shell Parent { get; set; } = null;
 		public virtual char PathSeparator => Path.PathSeparator;
@@ -101,13 +105,17 @@ namespace SolidCP.Providers.OS
 		void CheckCompleted()
 		{
 			Action cnt = null;
+			var exited = Process.HasExited;
 			lock (this)
 			{
+				hasProcessExited = hasProcessExited || exited;
+				checkHasExited = false;
 				if (IsCompleted && Continuation != null)
 				{
 					cnt = Continuation;
 					Continuation = null;
 				}
+				checkHasExited = true;
 			}
 			cnt?.Invoke();
 		}

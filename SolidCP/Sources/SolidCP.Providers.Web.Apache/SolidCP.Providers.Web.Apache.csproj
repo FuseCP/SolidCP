@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PublishUrl>publish\</PublishUrl>
-    <WarningsAsErrors>618</WarningsAsErrors>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>11</LangVersion>
-    <Nullable>enable</Nullable>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PublishUrl>publish\</PublishUrl>
+		<WarningsAsErrors>618</WarningsAsErrors>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<LangVersion>11</LangVersion>
+		<Nullable>disable</Nullable>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+	</ItemGroup>
 </Project>

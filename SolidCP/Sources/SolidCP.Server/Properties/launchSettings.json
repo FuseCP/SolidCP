@@ -1,7 +1,15 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "net6": {
+    "WSL": {
+      "commandName": "WSL2",
+      "launchUrl": "https://localhost:9007/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "APPSETTING_appliationUrls": "https://localhost:9011;http://localhost:9012;net.tcp://localhost:9013"
+      },
+      "distributionName": ""
+    },
+    "net8": {
       "commandName": "Project",
       "launchUrl": "https://localhost:9007",
       "environmentVariables": {
@@ -14,22 +22,9 @@
         "APPSETTING_ServerCertificate.Name": "localhost"
       },
       "applicationUrl": "https://localhost:9007;http://localhost:9006;net.tcp://localhost:9008"
-    },
-    "WSL": {
-      "commandName": "WSL2",
-      "launchUrl": "https://localhost:9007/",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "APPSETTING_appliationUrls": "https://localhost:9011;http://localhost:9012;net.tcp://localhost:9013"
-      },
-      "distributionName": ""
-    },
-    /* "net48": {
-      "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\IIS Express\\iisexpress.exe",
-      "commandLineArgs": "/site:solidcp.server"
-    } */
+    }
   },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
