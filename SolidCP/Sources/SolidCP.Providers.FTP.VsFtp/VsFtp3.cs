@@ -108,7 +108,8 @@ namespace SolidCP.Providers.FTP
 
 		#region Accounts
 
-		IEnumerable<string> Users {
+		IEnumerable<string> Users
+		{
 			get
 			{
 				if (Config.UserListEnable)
@@ -153,7 +154,8 @@ namespace SolidCP.Providers.FTP
 					Password = user.Password
 				};
 				return ftp;
-			} catch
+			}
+			catch
 			{
 				return null;
 			}
@@ -168,7 +170,8 @@ namespace SolidCP.Providers.FTP
 			{
 				var user = new UnixUserInfo(account.Name);
 				exists = true;
-			} catch
+			}
+			catch
 			{
 				exists = false;
 			}
@@ -285,7 +288,7 @@ namespace SolidCP.Providers.FTP
 			if (!OSInfo.IsWindows)
 			{
 				var processes = Process.GetProcessesByName("vsftpd")
-					.Select(p => p.MainModule.FileName)
+					.Select(p => p.ExecutableFile())
 					.Concat(new string[] { Shell.Default.Find("vsftpd") })
 					.Where(exe => exe != null)
 					.Distinct();
@@ -293,17 +296,17 @@ namespace SolidCP.Providers.FTP
 				{
 					if (File.Exists(exe))
 					{
-						var output = Shell.Default.Exec($"\"{exe}\" -v").Output().Result;
-						var match = Regex.Match(output, @"[0-9][0-9.]+");
-						if (match.Success)
+						try
 						{
-							try
+							var output = Shell.Default.Exec($"\"{exe}\" -v").Output().Result;
+							var match = Regex.Match(output, @"[0-9][0-9.]+");
+							if (match.Success)
 							{
 								var version = new Version(match.Value);
 								if (version.Major == 3) return true;
 							}
-							catch { }
 						}
+						catch { }
 					}
 				}
 			}

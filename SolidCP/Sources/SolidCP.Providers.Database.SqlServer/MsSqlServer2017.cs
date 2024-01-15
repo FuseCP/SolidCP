@@ -39,17 +39,24 @@ namespace SolidCP.Providers.Database
 	{
 		protected override bool CheckUnixVersion(string version) {
 			var processes = Process.GetProcessesByName("sqlservr")
-				.Select(p => p.MainModule.FileName);
+				.Select(p => p.ExecutableFile())
+				.Concat(new string[] { Shell.Default.Find("sqlservr") })
+				.Where(exe => exe != null)
+				.Distinct();
 			foreach (var exe in processes) {
 				if (File.Exists(exe))
 				{
-					var output = Shell.Default.ExecScript($"PAL_PROGRAM_INFO=1 {exe}").Output().Result;
-					var match = Regex.Match(output, @"^\s*Version\s+(?<version>[0-9.]+)", RegexOptions.Multiline);
-					if (match.Success)
+					try
 					{
-						var ver = match.Groups["version"].Value;
-						if (ver.StartsWith(version)) return true;
+						var output = Shell.Default.ExecScript($"PAL_PROGRAM_INFO=1 {exe}").Output().Result;
+						var match = Regex.Match(output, @"^\s*Version\s+(?<version>[0-9][0-9.]+)", RegexOptions.Multiline);
+						if (match.Success)
+						{
+							var ver = match.Groups["version"].Value;
+							if (ver.StartsWith(version)) return true;
+						}
 					}
+					catch { }
 				}
 			}
 			return false;

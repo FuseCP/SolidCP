@@ -49,10 +49,10 @@ using SolidCP.Providers.Database;
 
 namespace SolidCP.Providers.Database
 {
-    public class MariaDB104 : MariaDB103
+    public class MariaDB106 : MariaDB105
     {
-        public MariaDB104(): base() { }
+        public MariaDB106(): base() { }
 
-        public override bool IsInstalled() => IsInstalled("10.4");
+        public override bool IsInstalled() => IsInstalled("10.6");
     }
 }

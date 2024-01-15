@@ -36,23 +36,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Data;
 using Microsoft.Win32;
-using MySql.Data.MySqlClient;
+//using MySql.Data.MySqlClient;
 using System.IO;
 
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
-using System.Data.Common;
-
-using SolidCP.Providers.Database;
+using MySql.Data.MySqlClient;
 
 namespace SolidCP.Providers.Database
 {
-    public class MariaDB104 : MariaDB103
-    {
-        public MariaDB104(): base() { }
+    public class MySqlServer82: MySqlServer81
+	{
+		public MySqlServer82(): base() {	}
 
-        public override bool IsInstalled() => IsInstalled("10.4");
-    }
+		public override bool IsInstalled() => IsInstalled("8.2");
+	}
 }

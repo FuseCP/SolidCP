@@ -961,7 +961,7 @@ namespace SolidCP.Providers.Database
 		protected virtual bool IsInstalledUnix(string version)
 		{
 			var processes = Process.GetProcessesByName("mysqld")
-				.Select(p => p.MainModule.FileName)
+				.Select(p => p.ExecutableFile())
 				.Concat(new string[] { Shell.Default.Find("mysqld") })
 				.Where(exe => exe != null)
 				.Distinct();
@@ -969,13 +969,17 @@ namespace SolidCP.Providers.Database
 			{
 				if (File.Exists(exe))
 				{
-					var output = Shell.Default.Exec($"\"{exe}\" --version").Output().Result;
-					var match = Regex.Match(output, @"(?<version>[0-9][0-9.]+)(?!.*MariaDB)", RegexOptions.IgnoreCase);
-					if (match.Success)
+					try
 					{
-						var ver = match.Groups["version"].Value;
-						if (ver.StartsWith(version)) return true;
+						var output = Shell.Default.Exec($"\"{exe}\" --version").Output().Result;
+						var match = Regex.Match(output, @"(?<version>[0-9][0-9.]+)(?!.*MariaDB)", RegexOptions.IgnoreCase);
+						if (match.Success)
+						{
+							var ver = match.Groups["version"].Value;
+							if (ver.StartsWith(version)) return true;
+						}
 					}
+					catch { }
 				}
 			}
 			return false;

@@ -840,7 +840,7 @@ namespace SolidCP.Providers.Web
 		{
 			var processes = Process.GetProcessesByName("httpd")
 				.Concat(Process.GetProcessesByName("apache2"))
-				.Select(p => p.MainModule.FileName)
+				.Select(p => p.ExecutableFile())
 				.Concat(new string[] { Shell.Default.Find("httpd"), Shell.Default.Find("apache2") })
 				.Where(exe => exe != null)
 				.Distinct();
@@ -848,13 +848,17 @@ namespace SolidCP.Providers.Web
 			{
 				if (File.Exists(exe))
 				{
-					var output = Shell.Exec($"{exe} -V").Output().Result;
-					var match = Regex.Match(output, @"^Server [Vv]ersion:\s*[A-Za-z]*/(?<version>[0-9][0-9.]+)", RegexOptions.Multiline);
-					if (match.Success)
+					try
 					{
-						var ver = match.Groups["version"].Value;
-						if (ver.StartsWith(version)) return true;
+						var output = Shell.Exec($"\"{exe}\" -V").Output().Result;
+						var match = Regex.Match(output, @"^Server [Vv]ersion:\s*[A-Za-z]*/(?<version>[0-9][0-9.]+)", RegexOptions.Multiline);
+						if (match.Success)
+						{
+							var ver = match.Groups["version"].Value;
+							if (ver.StartsWith(version)) return true;
+						}
 					}
+					catch { }
 				}
 			}
 			return false;

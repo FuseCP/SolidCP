@@ -1040,7 +1040,7 @@ namespace SolidCP.Providers.DNS
 		protected virtual bool IsInstalled(string version)
 		{
 			var processes = Process.GetProcessesByName("named")
-				.Select(p => p.MainModule.FileName)
+				.Select(p => p.ExecutableFile())
 				.Concat(new string[] { Shell.Default.Find("named") })
 				.Where(exe => exe != null)
 				.Distinct();
@@ -1048,13 +1048,17 @@ namespace SolidCP.Providers.DNS
 			{
 				if (File.Exists(exe))
 				{
-					var output = Shell.Default.Exec($"\"{exe}\" -version").Output().Result;
-					var match = Regex.Match(output, @"(?<=BIND\s*)(?<version>[0-9][0-9.]+)", RegexOptions.IgnoreCase);
-					if (match.Success)
+					try
 					{
-						var ver = match.Groups["version"].Value;
-						if (ver.StartsWith(version)) return true;
+						var output = Shell.Default.Exec($"\"{exe}\" -version").Output().Result;
+						var match = Regex.Match(output, @"(?<=BIND\s*)(?<version>[0-9][0-9.]+)", RegexOptions.IgnoreCase);
+						if (match.Success)
+						{
+							var ver = match.Groups["version"].Value;
+							if (ver.StartsWith(version)) return true;
+						}
 					}
+					catch { }
 				}
 			}
 			return false;
