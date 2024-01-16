@@ -48,6 +48,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml;
 using Whois.NET;
 using OS = SolidCP.Server.Client;
@@ -287,11 +288,12 @@ namespace SolidCP.EnterpriseServer
 					throw new ApplicationException("Could not get providers list.");
 				}
 
-				foreach (ProviderInfo provider in providers)
-				{
-					if (!provider.DisableAutoDiscovery)
+				var Lock = new object();
+				var tasks = providers
+					.Where(provider => !provider.DisableAutoDiscovery)
+					.Select(async provider =>
 					{
-						BoolResult isInstalled = IsInstalled(server.ServerId, provider.ProviderId);
+						BoolResult isInstalled = await IsInstalledAsync(server.ServerId, provider).ConfigureAwait(false);
 						if (isInstalled.IsSuccess)
 						{
 							if (isInstalled.Value)
@@ -302,11 +304,11 @@ namespace SolidCP.EnterpriseServer
 									service.ServerId = server.ServerId;
 									service.ProviderId = provider.ProviderId;
 									service.ServiceName = provider.DisplayName;
-									AddService(service);
+									lock (Lock) AddService(service);
 								}
 								catch (Exception ex)
 								{
-									TaskManager.WriteError(ex);
+									lock (Lock) TaskManager.WriteError(ex);
 								}
 							}
 						}
@@ -318,10 +320,10 @@ namespace SolidCP.EnterpriseServer
 									"Could not check if specific software intalled for {0}. Following errors have been occured:\n{1}",
 									provider.ProviderName, errors);
 
-							TaskManager.WriteError(str);
+							lock (Lock) TaskManager.WriteError(str);
 						}
-					}
-				}
+					});
+				Task.WhenAll(tasks).Wait();
 			}
 			catch (Exception ex)
 			{
@@ -1082,6 +1084,27 @@ namespace SolidCP.EnterpriseServer
 				ServiceProviderProxy.ServerInit(ad, serverId);
 
 				res = ad.IsInstalled(provider.ProviderType);
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, ErrorCodes.CANNOT_CHECK_IF_PROVIDER_SOFTWARE_INSTALLED, ex);
+
+			}
+
+			TaskManager.CompleteResultTask();
+			return res;
+		}
+
+		public static async Task<BoolResult> IsInstalledAsync(int serverId, ProviderInfo provider)
+		{
+			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
+
+			try
+			{
+				AutoDiscovery ad = new AutoDiscovery();
+				ServiceProviderProxy.ServerInit(ad, serverId);
+
+				res = await ad.IsInstalledAsync(provider.ProviderType).ConfigureAwait(false);
 			}
 			catch (Exception ex)
 			{
