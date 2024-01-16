@@ -117,13 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblApacheBinPath.Text" xml:space="preserve">
+  <data name="lblBinPath.Text" xml:space="preserve">
     <value>Apache Programmordner:</value>
   </data>
-  <data name="lblApacheConfigFile.Text" xml:space="preserve">
+  <data name="lblConfigFile.Text" xml:space="preserve">
     <value>Apache Konfigurationsdatei:</value>
   </data>
-  <data name="lblApacheConfigPath.Text" xml:space="preserve">
+  <data name="lblConfigPath.Text" xml:space="preserve">
     <value>Apache Konfigurationsverzeichnis:</value>
   </data>
 </root>
