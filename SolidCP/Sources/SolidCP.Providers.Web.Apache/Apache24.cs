@@ -22,7 +22,7 @@ namespace SolidCP.Providers.Web
 		#region Properties
 		public string ApacheConfigPath => ProviderSettings[nameof(ApacheConfigPath)]; // /etc/apache2
 
-		public string ApacheGlobalConfigPath => ProviderSettings[nameof(ApacheGlobalConfigPath)]; // /etc/apache2/apache2.conf
+		public string ApacheConfigFile => ProviderSettings[nameof(ApacheConfigFile)]; // /etc/apache2/apache2.conf
 
 		public string ApacheBinPath => ProviderSettings[nameof(ApacheBinPath)];
 
@@ -50,7 +50,7 @@ namespace SolidCP.Providers.Web
 		{
 			get
 			{
-				var conf = ConfigFile.Load(ApacheGlobalConfigPath);
+				var conf = ConfigFile.Load(ApacheConfigFile);
 				conf.Include();
 				return conf;
 			}

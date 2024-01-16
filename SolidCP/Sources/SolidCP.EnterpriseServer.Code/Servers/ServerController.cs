@@ -247,7 +247,7 @@ namespace SolidCP.EnterpriseServer
 					return;
 				if (ex.Message.Contains("The remote name could not be resolved") || ex.Message.Contains("Unable to connect"))
 				{
-					TaskManager.WriteError("The remote server could not ne resolved");
+					TaskManager.WriteError("The remote server could not be resolved");
 					return;
 				}
 				return;
