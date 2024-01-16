@@ -52,16 +52,16 @@ namespace SolidCP.Portal.ProviderControls
 
 		public void BindSettings(StringDictionary settings)
 		{
-			txtApacheConfigPath.Text = settings["ApacheConfigPath"];
-			txtApacheConfigFile.Text = settings["ApacheConfigFile"];
-			txtApacheBinPath.Text = settings["ApacheBinPath"];
+			txtConfigPath.Text = settings["ConfigPath"];
+			txtConfigFile.Text = settings["ConfigFile"];
+			txtBinPath.Text = settings["BinPath"];
 		}
 
 		public void SaveSettings(StringDictionary settings)
 		{
-			settings["ApacheConfigPath"] = txtApacheConfigPath.Text;
-			settings["ApacheConfigFile"] = txtApacheConfigFile.Text;
-			settings["ApacheBinPath"] = txtApacheBinPath.Text;
+			settings["ConfigPath"] = txtConfigPath.Text;
+			settings["ConfigFile"] = txtConfigFile.Text;
+			settings["BinPath"] = txtBinPath.Text;
 		}
 	}
 }

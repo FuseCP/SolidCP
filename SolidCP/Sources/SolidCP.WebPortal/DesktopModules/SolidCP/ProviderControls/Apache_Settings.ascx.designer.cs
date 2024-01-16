@@ -15,13 +15,13 @@ namespace SolidCP.Portal.ProviderControls
 	{
 
 		/// <summary>
-		/// lblApacheConfigPath control.
+		/// lblConfigPath control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblApacheConfigPath;
+		protected global::System.Web.UI.WebControls.Label lblConfigPath;
 
 		/// <summary>
 		/// txtApacheConfigPath control.
@@ -33,13 +33,13 @@ namespace SolidCP.Portal.ProviderControls
 		protected global::System.Web.UI.WebControls.TextBox txtApacheConfigPath;
 
 		/// <summary>
-		/// lblApacheConfigFile control.
+		/// lblConfigFile control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblApacheConfigFile;
+		protected global::System.Web.UI.WebControls.Label lblConfigFile;
 
 		/// <summary>
 		/// txtApacheConfigFile control.
@@ -51,13 +51,13 @@ namespace SolidCP.Portal.ProviderControls
 		protected global::System.Web.UI.WebControls.TextBox txtApacheConfigFile;
 
 		/// <summary>
-		/// lblApacheBinPath control.
+		/// lblBinPath control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblApacheBinPath;
+		protected global::System.Web.UI.WebControls.Label lblBinPath;
 
 		/// <summary>
 		/// txtApacheBinPath control.

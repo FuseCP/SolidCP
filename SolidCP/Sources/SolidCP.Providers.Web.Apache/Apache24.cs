@@ -20,11 +20,11 @@ namespace SolidCP.Providers.Web
 		public OS.Shell Shell => OS.Shell.Default;
 
 		#region Properties
-		public string ApacheConfigPath => ProviderSettings[nameof(ApacheConfigPath)]; // /etc/apache2
+		public string ApacheConfigPath => ProviderSettings["ConfigPath"]; // /etc/apache2
 
-		public string ApacheConfigFile => ProviderSettings[nameof(ApacheConfigFile)]; // /etc/apache2/apache2.conf
+		public string ApacheConfigFile => ProviderSettings["ConfigFile"]; // /etc/apache2/apache2.conf
 
-		public string ApacheBinPath => ProviderSettings[nameof(ApacheBinPath)];
+		public string ApacheBinPath => ProviderSettings["BinPath"];
 
 		string ApacheCmd(string cmd)
 		{
