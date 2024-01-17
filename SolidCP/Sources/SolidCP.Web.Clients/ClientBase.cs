@@ -226,6 +226,15 @@ namespace SolidCP.Web.Client
 
 		public bool IsDefaultApi => !Regex.IsMatch(url, "(?:basic|net|ws|grpc|grpc/ssl|tcp|tcp/ssl|pipe|pipe/ssl)(?:/[A-Za-z0-9_¨]+)?/?(?:\\?|$)");
 
+		public HasPolicyAttribute Policy
+		{
+			get
+			{
+				var serviceInterface = this.GetType().GetInterfaces()
+					.FirstOrDefault(i => i.GetCustomAttribute<ServiceContractAttribute>() != null);
+				return serviceInterface?.GetCustomAttribute<HasPolicyAttribute>();
+			}
+		}
 		public bool IsAuthenticated
 		{
 			get
@@ -482,6 +491,7 @@ namespace SolidCP.Web.Client
 				else if (IsAssembly)
 				{
 					var assemblyClient = new U();
+					assemblyClient.Client = this;
 					assemblyClient.AssemblyName = url.Substring("assembly://".Length);
 					client = assemblyClient;
 				}

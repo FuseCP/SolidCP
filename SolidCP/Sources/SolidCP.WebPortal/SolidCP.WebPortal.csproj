@@ -503,6 +503,7 @@
     <Compile Include="Code\Adapters\PasswordRecoveryAdapter.cs" />
     <Compile Include="Code\Adapters\TreeViewAdapter.cs" />
     <Compile Include="Code\Adapters\WebControlAdapterExtender.cs" />
+    <Compile Include="Code\AssemblyLoader.cs" />
     <Compile Include="Code\ContentPane.cs" />
     <Compile Include="Code\Controls\DesktopContextValidator.cs" />
     <Compile Include="Code\PortalAntiXSS.cs" />
@@ -1219,7 +1220,7 @@
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>9001</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9001/</IISUrl>
+          <IISUrl>http://localhost:9018/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -17,6 +17,9 @@ namespace SolidCP.Web.Client
 		public ClientBase Client { get; set; }
 
 		Assembly Assembly => Assembly.Load(AssemblyName);
+		static Assembly serviceAssembly = null;
+		static object Lock = new object();
+
 		protected T Invoke<T>(string typeName, string methodName, params object[] parameters)
 		{
 			var assembly = Assembly;
@@ -25,11 +28,29 @@ namespace SolidCP.Web.Client
 			// authentication
 			if (Client.IsAuthenticated)
 			{
-				var serviceAssembly = Assembly.Load("SolidCP.Web.Services");
-				var validator = serviceAssembly.GetType("UserNamePasswordValidator");
-				var validateMethod = validator.GetMethod("Validate", BindingFlags.Public | BindingFlags.Static);
-				if (validateMethod == null) validateMethod = validator.GetMethod("ValidateAsync", BindingFlags.Public | BindingFlags.Static);
-				if (validateMethod != null) validateMethod.Invoke(null, new object[] { Client.Credentials.UserName, Client.Credentials.Password });
+				if (Client.Credentials == null) throw new UnauthorizedAccessException("You must specify user credentials to access this service.");
+
+				lock (Lock)
+				{
+					if (serviceAssembly == null) serviceAssembly = Assembly.Load("SolidCP.Web.Services");
+				}
+				var validatorType = serviceAssembly.GetType("SolidCP.Web.Services.UserNamePasswordValidator");
+				var validatorPolicyField = validatorType.GetField("Policy");
+				var validator = Activator.CreateInstance(validatorType);
+				var policyType = serviceAssembly.GetType("SolidCP.Web.Services.PolicyAttribute");
+				var policy = Activator.CreateInstance(policyType, Client.Policy.Policy);
+				validatorPolicyField.SetValue(validator, policy);
+
+				var validateMethod = validatorType.GetMethod("Validate", BindingFlags.Public | BindingFlags.Instance);
+				if (validateMethod != null) validateMethod.Invoke(validator, new object[] { Client.Credentials.UserName, Client.Credentials.Password });
+				else
+				{
+					validateMethod = validatorType.GetMethod("ValidateAsync", BindingFlags.Public | BindingFlags.Instance);
+					if (validateMethod != null)
+					{
+						(validateMethod.Invoke(validator, new object[] { Client.Credentials.UserName, Client.Credentials.Password }) as Task).Wait();
+					} else throw new NotSupportedException("Validator method not found.");
+				}
 			}
 			object service = Activator.CreateInstance(type);
 			// set soap headers

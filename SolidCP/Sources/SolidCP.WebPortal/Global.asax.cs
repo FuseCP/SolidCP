@@ -44,6 +44,7 @@ using System.Net;
 using System.Net.Http;
 using System.Timers;
 using SolidCP.Portal;
+using System.Threading.Tasks;
 
 
 namespace SolidCP.WebPortal
@@ -109,15 +110,29 @@ namespace SolidCP.WebPortal
 
 		}
 
+		Task TouchTask;
 		protected void Application_Start(object sender, EventArgs e)
 		{
+			Web.Client.CertificateValidator.Init();
+
 			// start Enterprise Server
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serverUrl);
-			request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-			request.Proxy = null;
-			request.Method = "GET";
-			request.GetResponseAsync();
+			if (serverUrl.StartsWith("http://") || serverUrl.StartsWith("https://"))
+			{
+				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serverUrl);
+				request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+				request.Proxy = null;
+				request.Method = "GET";
+				request.GetResponseAsync();
+			} else if (!serverUrl.StartsWith("assembly://"))
+			{
+				var esTestClient = new SolidCP.EnterpriseServer.Client.esTest();
+				esTestClient.Url = serverUrl;
+				TouchTask = esTestClient.TouchAsync();
+			} else
+			{
+				AssemblyLoader.Init();
+			}
 
 			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
 				new ScriptResourceDefinition
