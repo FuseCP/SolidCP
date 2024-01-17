@@ -150,7 +150,11 @@ namespace SolidCP.WebPortal
 
 		private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
 		{
-			using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+			try
+			{
+				using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+			}
+			catch { }
 		}
 	}
 }

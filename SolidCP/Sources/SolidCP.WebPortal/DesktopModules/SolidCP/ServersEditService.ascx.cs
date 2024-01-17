@@ -55,7 +55,7 @@ namespace SolidCP.Portal
 		Task<ServiceInfo> service = null;
 		Task<ProviderInfo> provider = null;
 		Task<ResourceGroupInfo> resourceGroup = null;
-
+		
 		async Task<ServiceInfo> Service()
 		{
 			lock (this)
@@ -398,7 +398,8 @@ namespace SolidCP.Portal
 		private void RedirectBack()
 		{
 			// redirect to the previous page
-			Response.Redirect(EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_server"));
+			Response.Redirect(EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_server"), false);
+			Context.ApplicationInstance.CompleteRequest();
 		}
 
 		#region Cluster methods
