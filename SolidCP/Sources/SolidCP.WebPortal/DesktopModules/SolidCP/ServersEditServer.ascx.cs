@@ -52,21 +52,23 @@ namespace SolidCP.Portal
 	{
 		int ServerId;
 		Task<ServerInfo> serverInfo = null;
-		Task<ServerInfo> ServerInfo
+		async Task<ServerInfo> ServerInfo()
 		{
-			get
+			try
 			{
-				try
+				lock (this)
 				{
-					lock (this)
+					if (serverInfo == null)
 					{
-						return serverInfo ?? (serverInfo = ES.Services.Servers.GetServerByIdAsync(ServerId));
+						serverInfo = ES.Services.Servers.GetServerByIdAsync(ServerId);
 					}
 				}
-				catch (Exception ex)
-				{
-					throw;
-				}
+				return await serverInfo;
+			}
+			catch (Exception ex)
+			{
+				throw;
+
 			}
 		}
 
@@ -151,8 +153,9 @@ namespace SolidCP.Portal
 
 				lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
 
-				pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = (await ServerInfo).OSPlatform == OSPlatform.Windows;
-				pnUnixServices.Visible = (await ServerInfo).OSPlatform != OSPlatform.Windows;
+				var serverInfo = await ServerInfo();
+				pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = serverInfo.OSPlatform == OSPlatform.Windows;
+				pnUnixServices.Visible = serverInfo.OSPlatform != OSPlatform.Windows;
 			}
 			catch (Exception ex)
 			{
@@ -162,7 +165,7 @@ namespace SolidCP.Portal
 
 		private async Task BindServer()
 		{
-			ServerInfo server = await ServerInfo;
+			ServerInfo server = await ServerInfo();
 
 			if (server == null)
 				RedirectToBrowsePage();
