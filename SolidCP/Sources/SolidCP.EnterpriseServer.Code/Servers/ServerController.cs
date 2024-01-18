@@ -288,42 +288,41 @@ namespace SolidCP.EnterpriseServer
 					throw new ApplicationException("Could not get providers list.");
 				}
 
-				var Lock = new object();
-				var tasks = providers
-					.Where(provider => !provider.DisableAutoDiscovery)
-					.Select(async provider =>
+				var discovery = providers
+					.Where(provider => !provider.DisableAutoDiscovery);
+
+				foreach (var provider in discovery)
+				{
+					BoolResult isInstalled = IsInstalled(server.ServerId, provider);
+					if (isInstalled.IsSuccess)
 					{
-						BoolResult isInstalled = await IsInstalledAsync(server.ServerId, provider).ConfigureAwait(false);
-						if (isInstalled.IsSuccess)
+						if (isInstalled.Value)
 						{
-							if (isInstalled.Value)
+							try
 							{
-								try
-								{
-									ServiceInfo service = new ServiceInfo();
-									service.ServerId = server.ServerId;
-									service.ProviderId = provider.ProviderId;
-									service.ServiceName = provider.DisplayName;
-									lock (Lock) AddService(service);
-								}
-								catch (Exception ex)
-								{
-									lock (Lock) TaskManager.WriteError(ex);
-								}
+								ServiceInfo service = new ServiceInfo();
+								service.ServerId = server.ServerId;
+								service.ProviderId = provider.ProviderId;
+								service.ServiceName = provider.DisplayName;
+								AddService(service);
+							}
+							catch (Exception ex)
+							{
+								TaskManager.WriteError(ex);
 							}
 						}
-						else
-						{
-							string errors = string.Join("\n", isInstalled.ErrorCodes.ToArray());
-							string str =
-								string.Format(
-									"Could not check if specific software intalled for {0}. Following errors have been occured:\n{1}",
-									provider.ProviderName, errors);
+					}
+					else
+					{
+						string errors = string.Join("\n", isInstalled.ErrorCodes.ToArray());
+						string str =
+							string.Format(
+								"Could not check if specific software intalled for {0}. Following errors have been occured:\n{1}",
+								provider.ProviderName, errors);
 
-							lock (Lock) TaskManager.WriteError(str);
-						}
-					});
-				Task.WhenAll(tasks).SafeWait(TimeSpan.FromMinutes(5));
+						TaskManager.WriteError(str);
+					}
+				}
 			}
 			catch (Exception ex)
 			{
@@ -1095,7 +1094,7 @@ namespace SolidCP.EnterpriseServer
 			return res;
 		}
 
-		public static async Task<BoolResult> IsInstalledAsync(int serverId, ProviderInfo provider)
+		public static BoolResult IsInstalled(int serverId, ProviderInfo provider)
 		{
 			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
 
@@ -1104,7 +1103,7 @@ namespace SolidCP.EnterpriseServer
 				AutoDiscovery ad = new AutoDiscovery();
 				ServiceProviderProxy.ServerInit(ad, serverId);
 
-				res = await ad.IsInstalledAsync(provider.ProviderType).ConfigureAwait(false);
+				res = ad.IsInstalled(provider.ProviderType);
 			}
 			catch (Exception ex)
 			{

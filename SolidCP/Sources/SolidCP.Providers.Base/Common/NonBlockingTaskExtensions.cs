@@ -15,9 +15,11 @@ namespace System.Threading.Tasks
 	{
 		public static void SafeWait(this Task task)
 		{
+
 			if (SynchronizationContext.Current.GetType().Name == "AspNetSynchronizationContext")
 			{
-				while (!task.IsCompleted) task.Wait(1);
+				while (!task.IsCompleted) Thread.Sleep(1);
+				task.Wait(1);
 			}
 			else task.Wait(); // For WCF we don't need SafeWait
 		}
@@ -27,7 +29,8 @@ namespace System.Threading.Tasks
 			if (SynchronizationContext.Current.GetType().Name == "AspNetSynchronizationContext")
 			{
 				var stop = DateTime.Now.AddMilliseconds(milliseconds);
-				while (!task.IsCompleted && DateTime.Now < stop) task.Wait(1);
+				while (!task.IsCompleted && DateTime.Now < stop) Thread.Sleep(1);
+				task.Wait(1);
 			}
 			else task.Wait(milliseconds); // For WCF we don't need SafeWait
 		}
@@ -37,7 +40,8 @@ namespace System.Threading.Tasks
 			if (SynchronizationContext.Current.GetType().Name == "AspNetSynchronizationContext")
 			{
 				var stop = DateTime.Now + timeout;
-				while (!task.IsCompleted && DateTime.Now < stop) task.Wait(1);
+				while (!task.IsCompleted && DateTime.Now < stop) Thread.Sleep(1);
+				task.Wait(1);
 			}
 			else task.Wait(timeout);
 		}
@@ -46,7 +50,8 @@ namespace System.Threading.Tasks
 		{
 			if (SynchronizationContext.Current.GetType().Name == "AspNetSynchronizationContext")
 			{
-				while (!task.IsCompleted && !token.IsCancellationRequested) task.Wait(1);
+				while (!task.IsCompleted && !token.IsCancellationRequested) Thread.Sleep(1);
+				task.Wait(1, token);
 			}
 			else task.Wait(token);
 		}
@@ -56,7 +61,8 @@ namespace System.Threading.Tasks
 			if (SynchronizationContext.Current.GetType().Name == "AspNetSynchronizationContext")
 			{
 				var stop = DateTime.Now.AddMilliseconds(milliseconds);
-				while (!task.IsCompleted && !token.IsCancellationRequested && DateTime.Now < stop) task.Wait(1);
+				while (!task.IsCompleted && !token.IsCancellationRequested && DateTime.Now < stop) Thread.Sleep(1);
+				task.Wait(1, token);
 			}
 			else task.Wait(milliseconds, token);
 		}
