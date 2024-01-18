@@ -11,13 +11,32 @@ using System.Security.Policy;
 using System.IO;
 using System.CodeDom;
 using System.Collections.Concurrent;
+using System.Web;
 
 namespace SolidCP.WebPortal
 {
 	public class AssemblyLoader
 	{
+		public static string ShadowCopyFolder => Path.Combine(Path.GetTempPath(), "SolidCPShadowCopies");
+		public static string TempFile => Path.Combine(ShadowCopyFolder, $"{Guid.NewGuid()}.dll");
+
+		public static void Dispose()
+		{
+			var files = Directory.EnumerateFiles(ShadowCopyFolder);
+			foreach (var file in files)
+			{
+				try
+				{
+					File.Delete(file);
+				}
+				catch { }
+			}
+		}
+
 		public static void Init()
 		{
+			if (!Directory.Exists(ShadowCopyFolder)) Directory.CreateDirectory(ShadowCopyFolder);
+
 			ProbingPaths = ConfigurationManager.AppSettings["ExternalProbingPaths"];
 			if (!string.IsNullOrEmpty(ProbingPaths))
 			{
@@ -47,7 +66,9 @@ namespace SolidCP.WebPortal
 				}
 				catch { }
 
-				var exposeWebServices = string.Equals(ConfigurationManager.AppSettings["ExposeWebServices"], "true", StringComparison.OrdinalIgnoreCase);
+				var exposeWebServicesText = ConfigurationManager.AppSettings["ExposeWebServices"];
+				var exposeWebServices = string.IsNullOrEmpty(exposeWebServicesText) &&
+					!string.Equals(exposeWebServicesText, "none", StringComparison.OrdinalIgnoreCase);
 				if (exposeWebServices) StartWebServices();
 			}
 		}
@@ -58,8 +79,6 @@ namespace SolidCP.WebPortal
 			var StartupNetFX = assembly?.GetType("SolidCP.Web.Services.StartupNetFX");
 			var method = StartupNetFX?.GetMethod("Start", BindingFlags.Public | BindingFlags.Static);
 			method?.Invoke(null, new object[0]);
-
-
 		}
 
 		static readonly string exepath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
@@ -104,7 +123,13 @@ namespace SolidCP.WebPortal
 
 				foreach (var p in dlls)
 				{
-					var a = Assembly.LoadFrom(p.FullName);
+					// Create shadow copy
+					var tmp = TempFile;
+					File.Copy(p.FullName, tmp);
+					var pdb = Path.ChangeExtension(p.FullName, ".pdb");
+					if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(tmp, ".pdb"));
+					// Load assembly
+					var a = Assembly.LoadFrom(tmp);
 					if (a != null)
 					{
 						LoadedAssemblies.Add(name, a);

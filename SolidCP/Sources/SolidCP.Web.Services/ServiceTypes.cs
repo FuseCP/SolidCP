@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 #if NETFRAMEWORK
 using System.ServiceModel;
+using System.Configuration;
 #else
 using CoreWCF;
 #endif
@@ -29,20 +30,50 @@ namespace SolidCP.Web.Services
 	{
 		public static Assembly[] Assemblies { get; set; }
 
+		static string exposeWebServices = null;
+		public static string ExposeWebServices
+		{
+			get
+			{
+				if (exposeWebServices == null)
+				{
+#if NETFRAMEWORK
+				exposeWebServices = (ConfigurationManager.AppSettings["ExposeWebServices"] ?? "").ToLower();
+#else
+					throw new NotSupportedException("ExposeWebServices not set.");
+#endif
+				}
+				return exposeWebServices;
+			}
+			set
+			{
+				exposeWebServices = value.ToLower();
+			}
+		}
+
+
 		public static IEnumerable<Type> GetWebServices()
 		{
 			Assembly eserver = null, server = null;
 
-			try
+			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices.Contains("enterpriseserver"))
 			{
-				eserver = Assembly.Load("SolidCP.EnterpriseServer");
+				try
+				{
+					eserver = Assembly.Load("SolidCP.EnterpriseServer");
+				}
+				catch { }
 			}
-			catch { }
-			try
+
+			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices.Split(';', ',').Any(s => s == "server"))
 			{
-				server = Assembly.Load("SolidCP.Server");
+				try
+				{
+					server = Assembly.Load("SolidCP.Server");
+				}
+				catch { }
 			}
-			catch { }
+			
 			Assemblies = new Assembly[]
 			{
 				eserver, server

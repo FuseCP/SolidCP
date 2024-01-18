@@ -105,6 +105,7 @@ namespace SolidCP.Web.Services
 			AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "0.0.0.0";
 			TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
 			KeyFile = builder.Configuration.GetValue<string>("ServerCertificate:KeyFile");
+			ServiceTypes.ExposeWebServices = builder.Configuration.GetValue<string>("exposeWebServices") ?? "";
 
 			if (TraceLevel != TraceLevel.Off && (OSInfo.IsLinux || OSInfo.IsMac))
 			{

@@ -323,7 +323,7 @@ namespace SolidCP.EnterpriseServer
 							lock (Lock) TaskManager.WriteError(str);
 						}
 					});
-				Task.WhenAll(tasks).Wait();
+				Task.WhenAll(tasks).SafeWait(TimeSpan.FromMinutes(5));
 			}
 			catch (Exception ex)
 			{
