@@ -36,6 +36,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.ActiveDirectory;
 using System.IO;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
@@ -60,19 +61,51 @@ namespace SolidCP.Setup
 			base.InitializePageInternal();
 
 			string component = SetupVariables.ComponentFullName;
-			this.Description = string.Format("Specify {0} Let's Encrypt settings.", component);
+			Description = string.Format("Specify {0} Let's Encrypt settings.", component);
 
-			this.AllowMoveBack = true;
-			this.AllowMoveNext = true;
-			this.AllowCancel = true;
-			manualCert.CheckedChanged += (sender, args) =>
-			{
-				txtLetsEncryptEmail.Enabled = !manualCert.Checked;
-			};
+			AllowMoveBack = true;
+			AllowMoveNext = true;
+			AllowCancel = true;
 
 			// init fields
-			this.txtLetsEncryptEmail.Text = SetupVariables.LetsEncryptEmail;
+			txtLetsEncryptEmail.Text = SetupVariables.LetsEncryptEmail ?? "";
+			txtCertFileFile.Text = SetupVariables.CertificateFile ?? "";
+			txtCertFilePassword.Text = SetupVariables.CertificatePassword ?? "";
+			txtStoreLocation.Text = SetupVariables.CertificateStoreLocation ?? "";
+			txtStoreName.Text = SetupVariables.CertificateStore ?? "";
+			txtStoreFindType.Text = SetupVariables.CertificateFindType ?? "";
+			txtStoreFindValue.Text = SetupVariables.CertificateFindValue ?? "";
+			manualCert.Checked = false;
+			tabControl.Selected += SetAllowedMoveNext;
+			manualCert.CheckedChanged += SetAllowedMoveNext;
+
+			txtStoreLocation.Items.Clear();
+			txtStoreLocation.Items.Add(StoreLocation.LocalMachine.ToString());
+			txtStoreLocation.Items.Add(StoreLocation.CurrentUser.ToString());
+
+
+			txtStoreName.Items.Clear();
+			txtStoreName.Items.Add(StoreName.Root.ToString());
+			txtStoreName.Items.Add(StoreName.My.ToString());
+			txtStoreName.Items.Add(StoreName.TrustedPeople.ToString());
+
+			txtStoreFindType.Items.Clear();
+			txtStoreFindType.Items.Add(X509FindType.FindBySubjectName.ToString());
+			txtStoreFindType.Items.Add(X509FindType.FindByThumbprint.ToString());
+			txtStoreFindType.Items.Add(X509FindType.FindBySubjectDistinguishedName.ToString());
+			txtStoreFindType.Items.Add(X509FindType.FindBySubjectKeyIdentifier.ToString());
+			txtStoreFindType.Items.Add(X509FindType.FindBySerialNumber.ToString());
+			txtStoreFindType.Items.Add(X509FindType.FindByIssuerName.ToString());
+			txtStoreFindType.Items.Add(X509FindType.FindByIssuerDistinguishedName.ToString());
+
+			txtCertFileFile.Enabled = txtCertFilePassword.Enabled = btnOpenCertFile.Enabled = !OSInfo.IsWindows;
+
 			Update();
+		}
+
+		private void SetAllowedMoveNext(object sender, EventArgs args)
+		{
+			AllowMoveNext = !IsHttps || (tabControl.SelectedTab != tabPageManual) || manualCert.Checked;
 		}
 
 		bool iis7 => SetupVariables.IISVersion.Major >= 7;
@@ -99,28 +132,106 @@ namespace SolidCP.Setup
 			}
 			return true;
 		}
+
+		private bool CheckCertStore()
+		{
+			X509FindType findType;
+			StoreLocation location;
+			StoreName name;
+			if (!Enum.TryParse<StoreLocation>(txtStoreLocation.Text, out location)) {
+				ShowWarning("The entered Store Location is invalid.");
+				return false;
+			}
+			if (!Enum.TryParse<StoreName>(txtStoreName.Text, out name)) {
+				ShowWarning("The entered Store Name is invalid.");
+				return false;
+			}
+			if (!Enum.TryParse<X509FindType>(txtStoreFindType.Text, out findType))
+			{
+				ShowWarning("The entered Find Type is invalid.");
+				return false;
+			}
+			return true;
+		}
+
+		private bool CheckCertFile()
+		{
+			var file = txtCertFileFile.Text;
+			if (!File.Exists(file))
+			{
+				ShowWarning("The entered Certificate File could not be found.");
+				return false;
+			}
+			try
+			{
+				var cert2 = new X509Certificate2(file, txtCertFilePassword.Text);
+			} catch
+			{
+				ShowWarning("The entered password is invalid.");
+				return false;
+			}
+			return true;
+		}
 		protected internal override void OnBeforeMoveNext(CancelEventArgs e)
 		{
-			if (IsHttps && !manualCert.Checked && !CheckEmail())
-			{
-				e.Cancel = true;
-				return;
-			}
+			SetupVariables.LetsEncryptEmail = null;
+			SetupVariables.CertificateFile = null;
+			SetupVariables.CertificatePassword = null;
+			SetupVariables.CertificateStoreLocation = null;
+			SetupVariables.CertificateStore = null;
+			SetupVariables.CertificateFindType = null;
+			SetupVariables.CertificateFindValue = null;
 
 			if (IsHttps)
 			{
-				if (manualCert.Checked)
+
+				if (tabControl.SelectedTab == tabPageCertStore)
 				{
-					SetupVariables.LetsEncryptEmail = "";
-				}
-				else
+					if (!CheckCertStore())
+					{
+						e.Cancel = true;
+						return;
+					}
+					SetupVariables.CertificateStoreLocation = txtStoreLocation.Text;
+					SetupVariables.CertificateStore = txtStoreName.Text;
+					SetupVariables.CertificateFindType = txtStoreFindType.Text;
+					SetupVariables.CertificateFindValue = txtStoreFindValue.Text;
+				} else if (tabControl.SelectedTab == tabPageCertFile)
 				{
-					SetupVariables.LetsEncryptEmail = this.txtLetsEncryptEmail.Text;
+					if (!CheckCertFile())
+					{
+						e.Cancel = true;
+						return;
+					}
+					SetupVariables.CertificateFile = txtCertFileFile.Text;
+					SetupVariables.CertificatePassword = txtCertFilePassword.Text;
+				} else if (tabControl.SelectedTab == tabPageLetsEncrypt)
+				{
+					if (!CheckEmail())
+					{
+						e.Cancel = true;
+						return;
+					}
+					SetupVariables.LetsEncryptEmail = txtLetsEncryptEmail.Text;
+				} else if (tabControl.SelectedTab == tabPageManual)
+				{
+					if (!manualCert.Checked)
+					{
+						e.Cancel = true;
+						return;
+					}
 				}
 			}
-			else SetupVariables.LetsEncryptEmail = "";
 
 			base.OnBeforeMoveNext(e);
+		}
+
+		private void btnOpenCertFile_Click(object sender, EventArgs e)
+		{
+			if (openCertFileDialog.ShowDialog() == DialogResult.OK)
+			{
+				txtCertFileFile.Text = openCertFileDialog.FileName;
+			}
 		}
 	}
 }
