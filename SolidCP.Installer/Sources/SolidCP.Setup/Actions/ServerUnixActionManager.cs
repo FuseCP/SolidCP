@@ -208,6 +208,12 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
 			settings.CryptoKey = vars.CryptoKey;
 			settings.ServerPassword = vars.ServerPassword;
+			settings.CertificateFile = vars.CertificateFile;
+			settings.CertificatePassword = vars.CertificatePassword;
+			settings.CertificateStoreLocation = vars.CertificateStoreLocation;
+			settings.CertificateStoreName = vars.CertificateStore;
+			settings.CertificateFindType = vars.CertificateFindType;
+			settings.CertificateFindValue = vars.CertificateFindValue;
 
 			installer.InstallServerPrerequisites();
 			installer.InstallServerWebsite();

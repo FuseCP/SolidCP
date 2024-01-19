@@ -49,9 +49,9 @@ using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
-	public partial class LetsEncryptPage : BannerWizardPage
+	public partial class CertificatePage : BannerWizardPage
 	{
-		public LetsEncryptPage()
+		public CertificatePage()
 		{
 			InitializeComponent();
 		}
@@ -99,6 +99,8 @@ namespace SolidCP.Setup
 			txtStoreFindType.Items.Add(X509FindType.FindByIssuerDistinguishedName.ToString());
 
 			txtCertFileFile.Enabled = txtCertFilePassword.Enabled = btnOpenCertFile.Enabled = !OSInfo.IsWindows;
+
+			if (OSInfo.IsWindows) tabControl.Controls.Remove(tabPageCertFile);
 
 			Update();
 		}

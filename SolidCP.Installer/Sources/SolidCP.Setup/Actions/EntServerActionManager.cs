@@ -71,23 +71,23 @@ namespace SolidCP.Setup.Actions
 			{
 				OnInstallProgressChanged(LogStartInstallMessage, 0);
 				Log.WriteStart(LogStartInstallMessage);
-                var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-                vars.CryptoKey = Utils.GetRandomString(20);
-                var Xml = new XmlDocument();
-                Xml.Load(file);
-                var CryptoNode = Xml.SelectSingleNode("configuration/appSettings/add[@key='SolidCP.CryptoKey']") as XmlElement;
-                if (CryptoNode != null)
-                    CryptoNode.SetAttribute("value", vars.CryptoKey);
-                Xml.Save(file);
-                // SolidCP.SchedulerService.exe.config
-                var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
-                var Xml1 = new XmlDocument();
-                Xml1.Load(file1);
-                var CryptoNode1 = Xml1.SelectSingleNode("configuration/appSettings/add[@key='SolidCP.CryptoKey']") as XmlElement;
-                if (CryptoNode1 != null)
-                    CryptoNode1.SetAttribute("value", vars.CryptoKey);
-                Xml1.Save(file1);
-                Log.WriteEnd(LogEndInstallMessage);
+				var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
+				vars.CryptoKey = Utils.GetRandomString(20);
+				var Xml = new XmlDocument();
+				Xml.Load(file);
+				var CryptoNode = Xml.SelectSingleNode("configuration/appSettings/add[@key='SolidCP.CryptoKey']") as XmlElement;
+				if (CryptoNode != null)
+					CryptoNode.SetAttribute("value", vars.CryptoKey);
+				Xml.Save(file);
+				// SolidCP.SchedulerService.exe.config
+				var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
+				var Xml1 = new XmlDocument();
+				Xml1.Load(file1);
+				var CryptoNode1 = Xml1.SelectSingleNode("configuration/appSettings/add[@key='SolidCP.CryptoKey']") as XmlElement;
+				if (CryptoNode1 != null)
+					CryptoNode1.SetAttribute("value", vars.CryptoKey);
+				Xml1.Save(file1);
+				Log.WriteEnd(LogEndInstallMessage);
 			}
 			catch (Exception ex)
 			{
@@ -99,82 +99,82 @@ namespace SolidCP.Setup.Actions
 		}
 	}
 
-    public class InstallSchedulerServiceAction : Action, IInstallAction, IUninstallAction
-    {
-        public const string LogStartInstallMessage = "Installing Scheduler Windows Service...";
-        public const string LogStartUninstallMessage = "Uninstalling Scheduler Windows Service...";
+	public class InstallSchedulerServiceAction : Action, IInstallAction, IUninstallAction
+	{
+		public const string LogStartInstallMessage = "Installing Scheduler Windows Service...";
+		public const string LogStartUninstallMessage = "Uninstalling Scheduler Windows Service...";
 
-        void IInstallAction.Run(SetupVariables vars)
-        {
-            try
-            {
+		void IInstallAction.Run(SetupVariables vars)
+		{
+			try
+			{
 
-                Begin(LogStartInstallMessage);
+				Begin(LogStartInstallMessage);
 
-                Log.WriteStart(LogStartInstallMessage);
+				Log.WriteStart(LogStartInstallMessage);
 
-                var ServiceName = Global.Parameters.SchedulerServiceName;
-                var ServiceFile = Path.Combine(vars.InstallationFolder, "bin", Global.Parameters.SchedulerServiceFileName);
+				var ServiceName = Global.Parameters.SchedulerServiceName;
+				var ServiceFile = Path.Combine(vars.InstallationFolder, "bin", Global.Parameters.SchedulerServiceFileName);
 
-                Log.WriteInfo(String.Format("Scheduler Service Name: \"{0}\"", Global.Parameters.SchedulerServiceName));
+				Log.WriteInfo(String.Format("Scheduler Service Name: \"{0}\"", Global.Parameters.SchedulerServiceName));
 
-                if (ServiceController.GetServices().Any(s => s.DisplayName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    Log.WriteEnd("Scheduler Service Already Installed.");
-                    InstallLog.AppendLine(String.Format("- Scheduler Service \"{0}\" Already Installed.", Global.Parameters.SchedulerServiceName));
-                    return;
-                }
+				if (ServiceController.GetServices().Any(s => s.DisplayName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
+				{
+					Log.WriteEnd("Scheduler Service Already Installed.");
+					InstallLog.AppendLine(String.Format("- Scheduler Service \"{0}\" Already Installed.", Global.Parameters.SchedulerServiceName));
+					return;
+				}
 
-                ManagedInstallerClass.InstallHelper(new[] { "/i /LogFile=\"\" ", ServiceFile });
-                Utils.StartService(Global.Parameters.SchedulerServiceName);
+				ManagedInstallerClass.InstallHelper(new[] { "/i /LogFile=\"\" ", ServiceFile });
+				Utils.StartService(Global.Parameters.SchedulerServiceName);
 
-                AppConfig.EnsureComponentConfig(vars.ComponentId);
-                AppConfig.SetComponentSettingStringValue(vars.ComponentId, "ServiceName", ServiceName);
-                AppConfig.SetComponentSettingStringValue(vars.ComponentId, "ServiceFile", ServiceFile);
-                AppConfig.SaveConfiguration();
-            }
-            catch (Exception ex)
-            {
-                UninstallService(vars);
+				AppConfig.EnsureComponentConfig(vars.ComponentId);
+				AppConfig.SetComponentSettingStringValue(vars.ComponentId, "ServiceName", ServiceName);
+				AppConfig.SetComponentSettingStringValue(vars.ComponentId, "ServiceFile", ServiceFile);
+				AppConfig.SaveConfiguration();
+			}
+			catch (Exception ex)
+			{
+				UninstallService(vars);
 
-                if (Utils.IsThreadAbortException(ex))
-                {
-                    return;
-                }
+				if (Utils.IsThreadAbortException(ex))
+				{
+					return;
+				}
 
-                Log.WriteError("Installing scheduler service error.", ex);
-                throw;
-            }
-        }
+				Log.WriteError("Installing scheduler service error.", ex);
+				throw;
+			}
+		}
 
-        void IUninstallAction.Run(SetupVariables vars)
-        {
-            try
-            {
-                Log.WriteStart(LogStartUninstallMessage);
-                UninstallService(vars);
-                Log.WriteEnd("Scheduler Service Uninstalled.");
-            }
-            catch (Exception ex)
-            {
-                if (Utils.IsThreadAbortException(ex))
-                {
-                    return;
-                }
+		void IUninstallAction.Run(SetupVariables vars)
+		{
+			try
+			{
+				Log.WriteStart(LogStartUninstallMessage);
+				UninstallService(vars);
+				Log.WriteEnd("Scheduler Service Uninstalled.");
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+				{
+					return;
+				}
 
-                Log.WriteError("Uninstalling scheduler service error.", ex);
-                throw;
-            }
-        }
+				Log.WriteError("Uninstalling scheduler service error.", ex);
+				throw;
+			}
+		}
 
-        private void UninstallService(SetupVariables vars)
-        {
-            if (ServiceController.GetServices().Any(s => s.ServiceName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                ManagedInstallerClass.InstallHelper(new[] { "/u /LogFile=\"\" ", Path.Combine(vars.InstallationFolder, "bin", Global.Parameters.SchedulerServiceFileName) });
-            }
-        }
-    }
+		private void UninstallService(SetupVariables vars)
+		{
+			if (ServiceController.GetServices().Any(s => s.ServiceName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
+			{
+				ManagedInstallerClass.InstallHelper(new[] { "/u /LogFile=\"\" ", Path.Combine(vars.InstallationFolder, "bin", Global.Parameters.SchedulerServiceFileName) });
+			}
+		}
+	}
 
 	public class CreateDatabaseAction : Action, IInstallAction, IUninstallAction
 	{
@@ -244,7 +244,7 @@ namespace SolidCP.Setup.Actions
 	{
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            try
+			try
 			{
 				//
 				Log.WriteStart(String.Format("Creating database user {0}", vars.Database));
@@ -404,115 +404,115 @@ namespace SolidCP.Setup.Actions
 			Log.WriteStart("Updating web.config file (connection string)");
 			var file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
 			vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
-            var Xml = new XmlDocument();            
-            Xml.Load(file);
-            var ConnNode = Xml.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;            
-            if(ConnNode != null)
-                ConnNode.SetAttribute("connectionString", vars.ConnectionString);
-            Xml.Save(file);
+			var Xml = new XmlDocument();
+			Xml.Load(file);
+			var ConnNode = Xml.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
+			if (ConnNode != null)
+				ConnNode.SetAttribute("connectionString", vars.ConnectionString);
+			Xml.Save(file);
 			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
-            // Schedular
-            var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
-            var Xml1 = new XmlDocument();
-            Xml1.Load(file);
-            var ConnNode1 = Xml1.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
-            if (ConnNode1 != null)
-                ConnNode1.SetAttribute("connectionString", vars.ConnectionString);
-            Xml.Save(file1);
-            Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
-        }
+			// Schedular
+			var file1 = Path.Combine(vars.InstallationFolder, "Bin", "SolidCP.SchedulerService.exe.config");
+			var Xml1 = new XmlDocument();
+			Xml1.Load(file);
+			var ConnNode1 = Xml1.SelectSingleNode("configuration/connectionStrings/add[@name='EnterpriseServer']") as XmlElement;
+			if (ConnNode1 != null)
+				ConnNode1.SetAttribute("connectionString", vars.ConnectionString);
+			Xml.Save(file1);
+			Log.WriteEnd(String.Format("Updated {0} file", vars.ConfigurationFile));
+		}
 	}
 
-    public class SaveSchedulerServiceConnectionStringAction : Action, IInstallAction
-    {
-        void IInstallAction.Run(SetupVariables vars)
-        {
-            Log.WriteStart(string.Format("Updating {0}.config file (connection string)", Global.Parameters.SchedulerServiceFileName));
-            var file = Path.Combine(vars.InstallationFolder, "bin", string.Format("{0}.config", Global.Parameters.SchedulerServiceFileName));
-            string content;
-            
-            using (var reader = new StreamReader(file))
-            {
-                content = reader.ReadToEnd();
-            }
-            
-            vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
-            content = Utils.ReplaceScriptVariable(content, "installer.connectionstring", vars.ConnectionString);
-            
-            using (var writer = new StreamWriter(file))
-            {
-                writer.Write(content);
-            }
-            
-            Log.WriteEnd(string.Format("Updated {0}.config file (connection string)", Global.Parameters.SchedulerServiceFileName));
-        }
-    }
+	public class SaveSchedulerServiceConnectionStringAction : Action, IInstallAction
+	{
+		void IInstallAction.Run(SetupVariables vars)
+		{
+			Log.WriteStart(string.Format("Updating {0}.config file (connection string)", Global.Parameters.SchedulerServiceFileName));
+			var file = Path.Combine(vars.InstallationFolder, "bin", string.Format("{0}.config", Global.Parameters.SchedulerServiceFileName));
+			string content;
 
-    public class SaveSchedulerServiceCryptoKeyAction : Action, IInstallAction
-    {
-        void IInstallAction.Run(SetupVariables vars)
-        {
-            Log.WriteStart(string.Format("Updating {0}.config file (crypto key)", Global.Parameters.SchedulerServiceFileName));
+			using (var reader = new StreamReader(file))
+			{
+				content = reader.ReadToEnd();
+			}
 
-            try
-            {
-                UpdateCryptoKey(vars.InstallationFolder);
-            }
-            catch (Exception)
-            {
-            }
+			vars.ConnectionString = String.Format(vars.ConnectionString, vars.DatabaseServer, vars.Database, vars.Database, vars.DatabaseUserPassword);
+			content = Utils.ReplaceScriptVariable(content, "installer.connectionstring", vars.ConnectionString);
 
-            Log.WriteEnd(string.Format("Updated {0}.config file (connection string)", Global.Parameters.SchedulerServiceFileName));
-        }
+			using (var writer = new StreamWriter(file))
+			{
+				writer.Write(content);
+			}
 
-        private static void UpdateCryptoKey(string installFolder)
-        {
-            string path = Path.Combine(installFolder, "web.config");
-            string cryptoKey = "0123456789";
+			Log.WriteEnd(string.Format("Updated {0}.config file (connection string)", Global.Parameters.SchedulerServiceFileName));
+		}
+	}
 
-            if (File.Exists(path))
-            {
-                using (var reader = new StreamReader(path))
-                {
-                    string content = reader.ReadToEnd();
-                    var pattern = new Regex(@"(?<=<add key=""SolidCP.CryptoKey"" .*?value\s*=\s*"")[^""]+(?="".*?>)");
-                    Match match = pattern.Match(content);
-                    cryptoKey = match.Value;
-                }
-            }
+	public class SaveSchedulerServiceCryptoKeyAction : Action, IInstallAction
+	{
+		void IInstallAction.Run(SetupVariables vars)
+		{
+			Log.WriteStart(string.Format("Updating {0}.config file (crypto key)", Global.Parameters.SchedulerServiceFileName));
 
-            ChangeConfigString("installer.cryptokey", cryptoKey, installFolder);
-        }
+			try
+			{
+				UpdateCryptoKey(vars.InstallationFolder);
+			}
+			catch (Exception)
+			{
+			}
 
-        private static void ChangeConfigString(string searchString, string replaceValue, string installFolder)
-        {
-            string path = Path.Combine(installFolder, "web.config");
+			Log.WriteEnd(string.Format("Updated {0}.config file (connection string)", Global.Parameters.SchedulerServiceFileName));
+		}
 
-            if (File.Exists(path))
-            {
-                string content;
+		private static void UpdateCryptoKey(string installFolder)
+		{
+			string path = Path.Combine(installFolder, "web.config");
+			string cryptoKey = "0123456789";
 
-                using (var reader = new StreamReader(path))
-                {
-                    content = reader.ReadToEnd();
-                }
+			if (File.Exists(path))
+			{
+				using (var reader = new StreamReader(path))
+				{
+					string content = reader.ReadToEnd();
+					var pattern = new Regex(@"(?<=<add key=""SolidCP.CryptoKey"" .*?value\s*=\s*"")[^""]+(?="".*?>)");
+					Match match = pattern.Match(content);
+					cryptoKey = match.Value;
+				}
+			}
 
-                var re = new Regex("\\$\\{" + searchString + "\\}+", RegexOptions.IgnoreCase);
-                content = re.Replace(content, replaceValue);
+			ChangeConfigString("installer.cryptokey", cryptoKey, installFolder);
+		}
 
-                using (var writer = new StreamWriter(path))
-                {
-                    writer.Write(content);
-                }
-            }
-        }
-    }
-    
+		private static void ChangeConfigString(string searchString, string replaceValue, string installFolder)
+		{
+			string path = Path.Combine(installFolder, "web.config");
+
+			if (File.Exists(path))
+			{
+				string content;
+
+				using (var reader = new StreamReader(path))
+				{
+					content = reader.ReadToEnd();
+				}
+
+				var re = new Regex("\\$\\{" + searchString + "\\}+", RegexOptions.IgnoreCase);
+				content = re.Replace(content, replaceValue);
+
+				using (var writer = new StreamWriter(path))
+				{
+					writer.Write(content);
+				}
+			}
+		}
+	}
+
 	public class SaveEntServerConfigSettingsAction : Action, IInstallAction
 	{
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            Log.WriteStart("SaveEntServerConfigSettingsAction");
+			Log.WriteStart("SaveEntServerConfigSettingsAction");
 			AppConfig.EnsureComponentConfig(vars.ComponentId);
 			//
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, "Database", vars.Database);
@@ -527,7 +527,7 @@ namespace SolidCP.Setup.Actions
 			AppConfig.SetComponentSettingStringValue(vars.ComponentId, Global.Parameters.CryptoKey, vars.CryptoKey);
 			//
 			AppConfig.SaveConfiguration();
-            Log.WriteEnd("SaveEntServerConfigSettingsAction");
+			Log.WriteEnd("SaveEntServerConfigSettingsAction");
 		}
 	}
 
@@ -540,6 +540,7 @@ namespace SolidCP.Setup.Actions
 			new EnsureServiceAccntSecured(),
 			new CopyFilesAction(),
 			new SetEntServerCryptoKeyAction(),
+			new SetCertificateAction(),
 			new CreateWindowsAccountAction(),
 			new ConfigureAspNetTempFolderPermissionsAction(),
 			new SetNtfsPermissionsAction(),
@@ -554,9 +555,9 @@ namespace SolidCP.Setup.Actions
 			new SaveAspNetDbConnectionStringAction(),
 			new SaveComponentConfigSettingsAction(),
 			new SaveEntServerConfigSettingsAction(),
-            new SaveSchedulerServiceConnectionStringAction(),
-            new SaveSchedulerServiceCryptoKeyAction(),
-            new InstallSchedulerServiceAction()
+			new SaveSchedulerServiceConnectionStringAction(),
+			new SaveSchedulerServiceCryptoKeyAction(),
+			new InstallSchedulerServiceAction()
 		};
 
 		public EntServerActionManager(SetupVariables sessionVars) : base(sessionVars)

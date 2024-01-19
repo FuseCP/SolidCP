@@ -274,7 +274,7 @@ namespace SolidCP.Setup
 				// Assign WebPortal setup variables set to acquire corresponding settings
 				var page3 = new WebPage { SetupVariables = portalSetup };
 				var page4 = new InsecureHttpWarningPage() { SetupVariables = portalSetup };
-				var page5 = new LetsEncryptPage { SetupVariables = portalSetup };
+				var page5 = new CertificatePage { SetupVariables = portalSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
 				var page6 = new DatabasePage { SetupVariables = esServerSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings

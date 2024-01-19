@@ -139,7 +139,7 @@ namespace SolidCP.Setup
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
 				var page4 = new InsecureHttpWarningPage();
-				var page5 = new LetsEncryptPage();
+				var page5 = new CertificatePage();
 				var page6 = new UserAccountPage();
 				var page7 = new UrlPage();
 				var page8 = new ExpressInstallPage2();
@@ -227,7 +227,7 @@ namespace SolidCP.Setup
 			
 			WebPage page1 = new WebPage();
 			var page2 = new InsecureHttpWarningPage();
-			LetsEncryptPage page3 = new LetsEncryptPage();
+			CertificatePage page3 = new CertificatePage();
 			UrlPage page4 = new UrlPage();
 			ExpressInstallPage page5 = new ExpressInstallPage();
 			//create install currentScenario

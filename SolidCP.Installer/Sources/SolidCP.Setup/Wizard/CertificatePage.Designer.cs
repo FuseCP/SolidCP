@@ -32,7 +32,7 @@
 
 namespace SolidCP.Setup
 {
-	partial class LetsEncryptPage
+	partial class CertificatePage
 	{
 		/// <summary> 
 		/// Required designer variable.

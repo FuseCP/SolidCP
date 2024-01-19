@@ -872,6 +872,79 @@ namespace SolidCP.Setup.Actions
 		}
 	}
 
+	public class SetCertificateAction : Action, IInstallAction
+	{
+		public const string LogStartInstallMessage = "Setting certificate...";
+
+		public override bool Indeterminate
+		{
+			get { return true; }
+		}
+
+		void IInstallAction.Run(SetupVariables vars)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(vars.CertificateStore) || string.IsNullOrEmpty(vars.CertificateStoreLocation) ||
+					string.IsNullOrEmpty(vars.CertificateFindType) ||string.IsNullOrEmpty(vars.CertificateFindValue))
+				{ return; }
+
+				Begin(LogStartInstallMessage);
+				Log.WriteStart("Updating configuration file (certificate)");
+				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
+				var doc = XElement.Load(file);
+				var configuration = doc.Element("configuration");
+				var serviceModel = configuration.Element("system.serviceModel");
+				if (serviceModel == null)
+				{
+					serviceModel = new XElement("system.serviceModel");
+					configuration.Add(serviceModel);
+				}
+				var behaviors = serviceModel.Element("behaviors");
+				if (behaviors == null)
+				{
+					behaviors = new XElement("behaviors");
+					serviceModel.Add(behaviors);
+				}
+				var serviceBehaiors = behaviors.Element("serviceBehaviors");
+				if (serviceBehaiors == null)
+				{
+					serviceBehaiors = new XElement("serviceBehaviors");
+					behaviors.Add(serviceBehaiors);
+				}
+				var behavior = serviceBehaiors.Element("behavior");
+				if (behavior == null)
+				{
+					behavior = new XElement("behavior");
+					serviceBehaiors.Add(behavior);
+				}
+				var serviceCredentials = behavior.Element("serviceCredentials");
+				if (serviceCredentials == null)
+				{
+					serviceCredentials = new XElement("serviceCredentials");
+					behavior.Add(serviceCredentials);
+				}
+				var cert = serviceCredentials.Element("serviceCertificate");
+				if (cert != null) cert.Remove();
+				cert = new XElement("serviceCertificate", new XAttribute("storeName", vars.CertificateStore),
+					new XAttribute("storeLocation", vars.CertificateStoreLocation),
+					new XAttribute("X509FindType", vars.CertificateFindType),
+					new XAttribute("findValue", vars.CertificateFindValue));
+				serviceCredentials.Add(cert);
+				doc.Save(file);
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Configuration file update error", ex);
+
+				throw;
+			}
+		}
+	}
+
 	public class SetCommonDistributiveParamsAction : Action, IPrepareDefaultsAction
 	{
 		public override bool Indeterminate
@@ -1638,6 +1711,7 @@ namespace SolidCP.Setup.Actions
 			new EnsureServiceAccntSecured(),
 			new CopyFilesAction(),
 			new SetServerPasswordAction(),
+			new SetCertificateAction(),
 			new CreateWindowsAccountAction(),
 			new ConfigureAspNetTempFolderPermissionsAction(),
 			new SetNtfsPermissionsAction(),

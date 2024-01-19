@@ -160,7 +160,7 @@ namespace SolidCP.Setup
 				var page2 = new InstallFolderPage();
 				var page3 = new WebPage();
 				var page4 = new InsecureHttpWarningPage();
-				var page5 = new LetsEncryptPage();
+				var page5 = new CertificatePage();
 				UserAccountPage page6 = null;
 				if (OSInfo.IsWindows) page6 = new UserAccountPage();
 				var page7 = new ServerPasswordPage();
@@ -250,7 +250,7 @@ namespace SolidCP.Setup
 
 			WebPage page1 = new WebPage();
 			var page2 = new InsecureHttpWarningPage();
-			var page3 = new LetsEncryptPage();
+			var page3 = new CertificatePage();
 			ServerPasswordPage page4 = new ServerPasswordPage();
 			ExpressInstallPage page5 = new ExpressInstallPage();
 			//create install actions
@@ -314,7 +314,7 @@ namespace SolidCP.Setup
 			LicenseAgreementPage licPage = new LicenseAgreementPage();
 			WebPage page1 = new WebPage();
 			var page2 = new InsecureHttpWarningPage();
-			var page3 = new LetsEncryptPage();
+			var page3 = new CertificatePage();
 			ExpressInstallPage page4 = new ExpressInstallPage();
 			//create install currentScenario
 			InstallAction action = new InstallAction(ActionTypes.Backup);
