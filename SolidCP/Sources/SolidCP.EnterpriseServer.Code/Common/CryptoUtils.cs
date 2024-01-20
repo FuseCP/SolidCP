@@ -240,7 +240,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static string DecryptServerUrl(string serverUrl)
 		{
-			if (serverUrl.StartsWith("sshencrypted://"))
+			if (!string.IsNullOrEmpty(serverUrl) && serverUrl.StartsWith("sshencrypted://"))
 			{
 				serverUrl = Decrypt(serverUrl.Substring("sshencrypted://".Length));
 			}
@@ -249,7 +249,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static string EncryptServerUrl(string serverUrl)
 		{
-			if (serverUrl.StartsWith("ssh://")) {
+			if (!string.IsNullOrEmpty(serverUrl) && serverUrl.StartsWith("ssh://")) {
 				serverUrl = $"sshencrypted://{Encrypt(serverUrl)}";
 			}
 			return serverUrl;
