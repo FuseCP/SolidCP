@@ -373,7 +373,7 @@ namespace SolidCP.Web.Client
 			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
 
 			var sshClient = new SshClient(sshlogin.Authority, user, password);
-			ThreadPool.QueueUserWorkItem<object>(state =>
+			ThreadPool.QueueUserWorkItem(state =>
 			{
 				lock (sshClient)
 				{
@@ -383,11 +383,14 @@ namespace SolidCP.Web.Client
 					forwardedPort.Start();
 					var apppath = AppDomain.CurrentDomain.BaseDirectory;
 					var appData = Path.Combine(apppath, "App_Data");
-					if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
 					var sshUrlFile = Path.Combine(appData, "SshUrls.txt");
-					lock (SshLock) File.WriteAllLines(sshUrlFile, SshClients.Keys.ToArray());
+					lock (SshLock)
+					{
+						if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
+						File.WriteAllLines(sshUrlFile, SshClients.Keys.ToArray());
+					}
 				}
-			}, null, false);
+			});
 			return sshClient;
 		}
 
