@@ -467,7 +467,7 @@ namespace SolidCP.Web.Client
 
 		public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
-			foreach (var url in urls)
+			foreach (var url in urls.Take(50)) // only pre start the first 50 servers due to performance reasons
 			{
 				lock (SshLock) SshTunnels.GetOrAdd(url, StartSshTunnel);
 			}
