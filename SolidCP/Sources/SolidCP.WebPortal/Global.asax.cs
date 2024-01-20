@@ -160,6 +160,7 @@ namespace SolidCP.WebPortal
 		}
 		protected void Application_End(object sender, EventArgs e)
 		{
+			Web.Client.ClientBase.DisposeAllSshTunnels();
 			AssemblyLoader.Dispose();
 		}
 
