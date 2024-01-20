@@ -465,6 +465,8 @@ namespace SolidCP.Web.Client
 			return tunnel;
 		}
 
+		//TODO Run StartAllSshTunnels on user login with servers occupied by the user instead of on application start
+		// with all servers
 		public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
 			foreach (var url in urls.Take(50)) // only pre start the first 50 servers due to performance reasons
