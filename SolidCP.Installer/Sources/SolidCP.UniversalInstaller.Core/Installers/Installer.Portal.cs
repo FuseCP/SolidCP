@@ -36,7 +36,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			WebPortalSettings = new WebPortalSettings();
 		}
-		public void ConfigureWebPortal(WebPortalSettings settings)
+		public virtual void ConfigureWebPortal(WebPortalSettings settings)
 		{
 
 		}

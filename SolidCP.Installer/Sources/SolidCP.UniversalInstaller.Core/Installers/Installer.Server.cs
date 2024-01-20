@@ -26,10 +26,7 @@ namespace SolidCP.UniversalInstaller
 
 		public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
 
-		public virtual void ConfigureServer()
-		{
-		}
-
+		public virtual void ConfigureServer() { }
 		public virtual void InstallServer()
 		{
 			InstallServerPrerequisites();
@@ -56,7 +53,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemoveServerUser() { }
 		public virtual void RemoveServerApplicationPool() { }
 		public virtual void ReadServerConfiguration() { }
-		public void ConfigureServer(ServerSettings settings) { }
+		public virtual void ConfigureServer(ServerSettings settings) {
+		}
 		public virtual void UnzipServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);

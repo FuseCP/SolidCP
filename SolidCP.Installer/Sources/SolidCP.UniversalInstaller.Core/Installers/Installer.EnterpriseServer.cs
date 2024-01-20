@@ -11,6 +11,7 @@ using System.Diagnostics.Contracts;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Xml.Linq;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -36,19 +37,14 @@ namespace SolidCP.UniversalInstaller
 				EnterpriseServerSettings.Urls ?? "",
 				"", "");
 		}
-		public virtual void ReadEnterpriseServerConfiguration()
-		{
-			EnterpriseServerSettings = new EnterpriseServerSettings();
-		}
-		public void ConfigureEnterpriseServer(EnterpriseServerSettings settings)
-		{
+		public virtual void ReadEnterpriseServerConfiguration() { }
 
-		}
+		public virtual void ConfigureEnterpriseServer(EnterpriseServerSettings settings) { }
+
 		public virtual void UnzipEnterpriseServer()
 		{
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
 			UnzipFromResource("SolidCP-EnterpriseServer.zip", websitePath, UnzipFilter);
 		}
-
 	}
 }

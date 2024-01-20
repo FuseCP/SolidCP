@@ -31,15 +31,10 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Management;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
 using System.IO;
-using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -60,8 +55,10 @@ namespace SolidCP.Setup
 		{
 			base.InitializePageInternal();
 
+			Text = "Certificate Settings";
+
 			string component = SetupVariables.ComponentFullName;
-			Description = string.Format("Specify {0} Let's Encrypt settings.", component);
+			Description = $"Configure a Server Certificate for {component}.";
 
 			AllowMoveBack = true;
 			AllowMoveNext = true;
@@ -153,6 +150,20 @@ namespace SolidCP.Setup
 				ShowWarning("The entered Find Type is invalid.");
 				return false;
 			}
+			if (string.IsNullOrEmpty(txtStoreFindValue.Text))
+			{
+				ShowWarning("You must specify a Find Value.");
+				return false;
+			}
+			var store = new X509Store(name, location);
+			store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+			var certs = store.Certificates.Find(findType, txtStoreFindValue.Text, true);
+			if (!certs.OfType<X509Certificate2>().Any())
+			{
+				ShowWarning($"No valid certificates found for {txtStoreFindValue.Text}.");
+				return false;
+			}
+
 			return true;
 		}
 

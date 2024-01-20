@@ -59,6 +59,9 @@ namespace SolidCP.Setup
 		{
 			base.InitializePageInternal();
 
+			Text = "Warning Insecure Http Protocol";
+			Description = "You've choosen an insecure http protocol.";
+
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;

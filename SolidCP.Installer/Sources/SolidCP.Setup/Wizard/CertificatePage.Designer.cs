@@ -119,7 +119,7 @@ namespace SolidCP.Setup
 			this.tabPageCertStore.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageCertStore.Size = new System.Drawing.Size(443, 199);
 			this.tabPageCertStore.TabIndex = 0;
-			this.tabPageCertStore.Text = "Certificate Store";
+			this.tabPageCertStore.Text = "   Certificate Store   ";
 			// 
 			// groupBoxStore
 			// 
@@ -131,9 +131,9 @@ namespace SolidCP.Setup
 			this.groupBoxStore.Controls.Add(this.lblStoreName);
 			this.groupBoxStore.Controls.Add(this.txtStoreFindType);
 			this.groupBoxStore.Controls.Add(this.txtStoreFindValue);
-			this.groupBoxStore.Location = new System.Drawing.Point(18, 6);
+			this.groupBoxStore.Location = new System.Drawing.Point(18, 18);
 			this.groupBoxStore.Name = "groupBoxStore";
-			this.groupBoxStore.Size = new System.Drawing.Size(401, 178);
+			this.groupBoxStore.Size = new System.Drawing.Size(401, 164);
 			this.groupBoxStore.TabIndex = 8;
 			this.groupBoxStore.TabStop = false;
 			this.groupBoxStore.Text = "Certificate Store Settings";
@@ -141,7 +141,7 @@ namespace SolidCP.Setup
 			// lblStoreLocation
 			// 
 			this.lblStoreLocation.AutoSize = true;
-			this.lblStoreLocation.Location = new System.Drawing.Point(37, 45);
+			this.lblStoreLocation.Location = new System.Drawing.Point(33, 36);
 			this.lblStoreLocation.Name = "lblStoreLocation";
 			this.lblStoreLocation.Size = new System.Drawing.Size(51, 13);
 			this.lblStoreLocation.TabIndex = 4;
@@ -150,7 +150,7 @@ namespace SolidCP.Setup
 			// lblStoreFindValue
 			// 
 			this.lblStoreFindValue.AutoSize = true;
-			this.lblStoreFindValue.Location = new System.Drawing.Point(37, 126);
+			this.lblStoreFindValue.Location = new System.Drawing.Point(33, 117);
 			this.lblStoreFindValue.Name = "lblStoreFindValue";
 			this.lblStoreFindValue.Size = new System.Drawing.Size(60, 13);
 			this.lblStoreFindValue.TabIndex = 7;
@@ -159,7 +159,7 @@ namespace SolidCP.Setup
 			// txtStoreLocation
 			// 
 			this.txtStoreLocation.FormattingEnabled = true;
-			this.txtStoreLocation.Location = new System.Drawing.Point(113, 42);
+			this.txtStoreLocation.Location = new System.Drawing.Point(109, 33);
 			this.txtStoreLocation.Name = "txtStoreLocation";
 			this.txtStoreLocation.Size = new System.Drawing.Size(258, 21);
 			this.txtStoreLocation.TabIndex = 0;
@@ -167,7 +167,7 @@ namespace SolidCP.Setup
 			// lblStoreFindType
 			// 
 			this.lblStoreFindType.AutoSize = true;
-			this.lblStoreFindType.Location = new System.Drawing.Point(37, 99);
+			this.lblStoreFindType.Location = new System.Drawing.Point(33, 90);
 			this.lblStoreFindType.Name = "lblStoreFindType";
 			this.lblStoreFindType.Size = new System.Drawing.Size(57, 13);
 			this.lblStoreFindType.TabIndex = 6;
@@ -176,7 +176,7 @@ namespace SolidCP.Setup
 			// txtStoreName
 			// 
 			this.txtStoreName.FormattingEnabled = true;
-			this.txtStoreName.Location = new System.Drawing.Point(113, 69);
+			this.txtStoreName.Location = new System.Drawing.Point(109, 60);
 			this.txtStoreName.Name = "txtStoreName";
 			this.txtStoreName.Size = new System.Drawing.Size(258, 21);
 			this.txtStoreName.TabIndex = 1;
@@ -184,7 +184,7 @@ namespace SolidCP.Setup
 			// lblStoreName
 			// 
 			this.lblStoreName.AutoSize = true;
-			this.lblStoreName.Location = new System.Drawing.Point(37, 72);
+			this.lblStoreName.Location = new System.Drawing.Point(33, 63);
 			this.lblStoreName.Name = "lblStoreName";
 			this.lblStoreName.Size = new System.Drawing.Size(35, 13);
 			this.lblStoreName.TabIndex = 5;
@@ -193,14 +193,14 @@ namespace SolidCP.Setup
 			// txtStoreFindType
 			// 
 			this.txtStoreFindType.FormattingEnabled = true;
-			this.txtStoreFindType.Location = new System.Drawing.Point(113, 96);
+			this.txtStoreFindType.Location = new System.Drawing.Point(109, 87);
 			this.txtStoreFindType.Name = "txtStoreFindType";
 			this.txtStoreFindType.Size = new System.Drawing.Size(258, 21);
 			this.txtStoreFindType.TabIndex = 2;
 			// 
 			// txtStoreFindValue
 			// 
-			this.txtStoreFindValue.Location = new System.Drawing.Point(113, 123);
+			this.txtStoreFindValue.Location = new System.Drawing.Point(109, 114);
 			this.txtStoreFindValue.Name = "txtStoreFindValue";
 			this.txtStoreFindValue.Size = new System.Drawing.Size(258, 20);
 			this.txtStoreFindValue.TabIndex = 3;
@@ -214,7 +214,7 @@ namespace SolidCP.Setup
 			this.tabPageCertFile.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageCertFile.Size = new System.Drawing.Size(443, 199);
 			this.tabPageCertFile.TabIndex = 1;
-			this.tabPageCertFile.Text = "Certificate File";
+			this.tabPageCertFile.Text = "   Certificate File   ";
 			// 
 			// groupBoxCertFile
 			// 
@@ -284,7 +284,7 @@ namespace SolidCP.Setup
 			this.tabPageLetsEncrypt.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageLetsEncrypt.Size = new System.Drawing.Size(443, 199);
 			this.tabPageLetsEncrypt.TabIndex = 2;
-			this.tabPageLetsEncrypt.Text = "Let\'s Encrypt";
+			this.tabPageLetsEncrypt.Text = "   Let\'s Encrypt   ";
 			// 
 			// grpLESettings
 			// 
@@ -331,7 +331,7 @@ namespace SolidCP.Setup
 			this.tabPageManual.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPageManual.Size = new System.Drawing.Size(443, 199);
 			this.tabPageManual.TabIndex = 3;
-			this.tabPageManual.Text = "Manual Configuration";
+			this.tabPageManual.Text = "   Manual Configuration   ";
 			// 
 			// groupBox1
 			// 
@@ -360,12 +360,12 @@ namespace SolidCP.Setup
 			this.openCertFileDialog.Filter = "Certificate Files|*.pfx|All files|*.*";
 			this.openCertFileDialog.Title = "Use Certificate File";
 			// 
-			// LetsEncryptPage
+			// CertificatePage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.tabControl);
-			this.Name = "LetsEncryptPage";
+			this.Name = "CertificatePage";
 			this.Size = new System.Drawing.Size(457, 228);
 			this.tabControl.ResumeLayout(false);
 			this.tabPageCertStore.ResumeLayout(false);

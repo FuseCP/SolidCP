@@ -192,7 +192,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			return (!file.StartsWith("Setup/") && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
 				!file.EndsWith(".config", StringComparison.OrdinalIgnoreCase) && file != "appsettings.json" &&
-				!file.EndsWith(".aspx") && !file.EndsWith(".asax")) ? file : null;
+				!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 		}
 		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string?>? filter = null)
 		{
@@ -209,7 +209,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				foreach (var zipEntry in zip)
 				{
-					var name = filter?.Invoke(zipEntry.FileName) ?? null;
+					var name = filter?.Invoke(zipEntry.FileName);
 
 					if (name != null)
 					{
@@ -290,6 +290,19 @@ namespace SolidCP.UniversalInstaller
 
 				Console.WriteLine("Press any key to exit...");
 				Console.Read();
+			}
+		}
+
+		protected void ParseConnectionString(string connectionString, out string server, out string user, out string password)
+		{
+			server = user = password = "";
+
+			var matches = Regex.Matches(connectionString, @"(?:Server\s*=\s*8?<server>.*?\s*(?:;|$)))|(?:uid\s*=\s*(?<user>.*?\s*(?:;|$)))|(?:pwd\s*=\s*(?<password>.*?\s*(?:;|$)))", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+			foreach (Match match in matches)
+			{
+				if (match.Groups["server"].Success) server = match.Groups["server"].Value;
+				if (match.Groups["user"].Success) user = match.Groups["user"].Value;
+				if (match.Groups["password"].Success) password = match.Groups["password"].Value;
 			}
 		}
 

@@ -32,6 +32,9 @@
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
+	  <PackageReference Include="SSH.NET" Version="2023.0.1" />
+	</ItemGroup>
+	<ItemGroup>
 		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 	</ItemGroup>
 </Project>

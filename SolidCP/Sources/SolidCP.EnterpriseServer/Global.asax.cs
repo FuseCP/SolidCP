@@ -55,11 +55,13 @@ namespace SolidCP.EnterpriseServer
             //if (!Debugger.IsAttached) Debugger.Launch();
             UsernamePasswordValidator.Init();
             Web.Client.CertificateValidator.Init();
+            Web.Client.StartAllSshTunnels();
             Web.Services.StartupNetFX.Start();
         }
 
         protected void Application_End(object sender, EventArgs e)
         {
+            Web.Clients.DisposeAllSshTunnels();
         }
 
 		protected void Application_BeginRequest(object sender, EventArgs e)

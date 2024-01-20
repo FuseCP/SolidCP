@@ -5,12 +5,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Reflection;
 using System.CodeDom;
 using System.ServiceModel.Description;
 using System.Net;
+using System.IO;
+using Renci.SshNet;
+using SolidCP.Providers.OS;
 
 #if !NETFRAMEWORK && gRPC
 using Grpc.Core;
@@ -22,7 +26,7 @@ using Grpc.Net.Client;
 namespace SolidCP.Web.Client
 {
 
-	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly }
+	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly, Ssh }
 
 	public class UserNamePasswordCredentials
 	{
@@ -79,6 +83,7 @@ namespace SolidCP.Web.Client
 					else if (value == Protocols.NetPipe) url = url.SetApi("pipe");
 					else if (value == Protocols.NetPipeSsl) url = url.SetApi("pipe/ssl");
 					else if (value == Protocols.Assembly) url = url.SetScheme("assembly");
+					else if (value == Protocols.Ssh) url = url.SetScheme("ssh");
 				}
 				protocol = value;
 			}
@@ -107,6 +112,19 @@ namespace SolidCP.Web.Client
 					case Protocols.WSHttps: protocol = Protocols.WSHttp; break;
 					case Protocols.gRPCSsl: protocol = Protocols.gRPC; break;
 					case Protocols.gRPCWebSsl: protocol = Protocols.gRPCWeb; break;
+					default: break;
+				}
+			}
+			else if (url.StartsWith("ssh://"))
+			{
+				switch (protocol)
+				{
+					case Protocols.BasicHttps: protocol = Protocols.BasicHttp; break;
+					case Protocols.NetHttps: protocol = Protocols.NetHttp; break;
+					case Protocols.WSHttps: protocol = Protocols.WSHttp; break;
+					case Protocols.gRPCSsl: protocol = Protocols.gRPC; break;
+					case Protocols.gRPCWebSsl: protocol = Protocols.gRPCWeb; break;
+					case Protocols.NetTcpSsl: protocol = Protocols.NetTcp; break;
 					default: break;
 				}
 			}
@@ -167,6 +185,18 @@ namespace SolidCP.Web.Client
 				}
 				//#endif
 				else if (url.StartsWith("assembly://")) Protocol = Protocols.Assembly;
+				else if (url.StartsWith("ssh://"))
+				{
+					if (url.HasApi("basic")) protocol = Protocols.BasicHttp;
+					else if (url.HasApi("net")) protocol = Protocols.NetHttp;
+					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
+					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
+					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
+					else if (url.HasApi("tcp")) protocol = Protocols.NetTcp;
+					else if (url.HasApi("tcp/ssl")) protocol = Protocols.NetTcp;
+					else protocol = Protocols.BasicHttp;
+
+				}
 				else throw new NotSupportedException("illegal protocol");
 			}
 		}
@@ -176,7 +206,9 @@ namespace SolidCP.Web.Client
 		public bool IsAssembly => Protocol == Protocols.Assembly;
 		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
-		public bool IsSecureProtocol => IsSsl;
+		
+		public bool IsSsh => Protocol == Protocols.Ssh || url.StartsWith("ssh://");
+		public bool IsSecureProtocol => IsSsl || IsSsh;
 
 		public bool IsHttp => Protocol <= Protocols.WSHttp;
 		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
@@ -219,6 +251,7 @@ namespace SolidCP.Web.Client
 		{
 			get
 			{
+				if (url.StartsWith("ssh://")) return true;
 				var host = new Uri(url).Host;
 				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || IsHostLocal(host);
 			}
@@ -276,7 +309,8 @@ namespace SolidCP.Web.Client
 				protocol == Protocols.gRPCSsl || protocol == Protocols.gRPCWebSsl) ||
 				url.StartsWith("net.tcp://") && !(protocol == Protocols.NetTcp || protocol == Protocols.NetTcpSsl) ||
 				url.StartsWith("net.pipe://") && !(protocol == Protocols.NetPipe || protocol == Protocols.NetPipeSsl) ||
-				url.StartsWith("assembly://") && protocol != Protocols.Assembly)
+				url.StartsWith("assembly://") && protocol != Protocols.Assembly ||
+				url.StartsWith("ssh://") && protocol != Protocols.Assembly && protocol != Protocols.NetPipe && protocol != Protocols.NetPipeSsl)
 				throw new NotSupportedException("This protocol is not valid for this connection.");
 			return url;
 		}
@@ -317,12 +351,101 @@ namespace SolidCP.Web.Client
 			pipe.MaxReceivedMessageSize = MaximumMessageSize;
 			return pipe;
 		}
+
+		static ConcurrentDictionary<string, SshClient> SshClients = new ConcurrentDictionary<string, SshClient>();
+		static object SshLock = new object();
+		static bool SshDisposed = false;
+
+		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?<localport>[0-9]+:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_-.]+):(?<remoteport>[0-9]+)(?=/|$|?";
+
+		public static SshClient StartSshTunnel(string url)
+		{
+			lock (SshLock) if (SshDisposed) return null;
+
+			var match = Regex.Match(url, ParseSshUrlRegex, RegexOptions.Singleline);
+			var sshlogin = new Uri(match.Groups["sshlogin"].Value);
+			var userTokens = sshlogin.UserInfo.Split(':');
+			var user = userTokens[0];
+			var password = "";
+			if (userTokens.Length >= 2) password = userTokens[1];
+			var localport = uint.Parse(match.Groups["localport"].Value);
+			var host = match.Groups["host"].Value;
+			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
+
+			var sshClient = new SshClient(sshlogin.Authority, user, password);
+			ThreadPool.QueueUserWorkItem<object>(state =>
+			{
+				lock (sshClient)
+				{
+					var forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
+					sshClient.Connect();
+					sshClient.AddForwardedPort(forwardedPort);
+					forwardedPort.Start();
+					var apppath = AppDomain.CurrentDomain.BaseDirectory;
+					var appData = Path.Combine(apppath, "App_Data");
+					if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
+					var sshUrlFile = Path.Combine(appData, "SshUrls.txt");
+					lock (SshLock) File.WriteAllLines(sshUrlFile, SshClients.Keys.ToArray());
+				}
+			}, null, false);
+			return sshClient;
+		}
+
+		public static void StartAllSshTunnels()
+		{
+			string[] urls = new string[0];
+			var apppath = AppDomain.CurrentDomain.BaseDirectory;
+			var appData = Path.Combine(apppath, "App_Data");
+			var sshUrlFile = Path.Combine(appData, "SshUrls.txt");
+
+			lock (SshLock)
+			{
+				if (File.Exists(sshUrlFile)) urls = File.ReadAllLines(sshUrlFile);
+			}
+			foreach (var url in urls)
+			{
+				lock (SshLock) SshClients.GetOrAdd(url, StartSshTunnel);
+			}
+		}
+
+		public static void DisposeAllSshTunnels()
+		{
+			lock (SshLock)
+			{
+				SshDisposed = true;
+
+				foreach (var sshClient in SshClients.Values)
+				{
+					foreach (var port in sshClient.ForwardedPorts) port.Stop();
+					sshClient.Disconnect();
+					sshClient.Dispose();
+				}
+			}
+		}
 		protected T Client
 		{
 			get
 			{
+				var serviceurl = url;
+				if (serviceurl.StartsWith("ssh://"))
+				{
+					SshClient sshClient;
+					lock (SshLock) sshClient = SshClients.GetOrAdd(url, StartSshTunnel); // block until ssh tunnel is ready
+					while (!sshClient.IsConnected) lock(sshClient) Thread.Sleep(0);
 
-				var serviceurl = $"{url}/{this.GetType().Name}";
+					if (IsHttp || IsHttps)
+					{
+						serviceurl = serviceurl.SetScheme("http");
+					} else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
+					{
+						if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
+						serviceurl = serviceurl.SetScheme("net.tcp");
+					}
+
+					Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{m.Groups["localport"].Value}", RegexOptions.Singleline);
+				}
+				
+				serviceurl = $"{serviceurl}/{this.GetType().Name}";
 
 				if (client != null)
 				{
