@@ -206,7 +206,7 @@ namespace SolidCP.Web.Client
 		public bool IsAssembly => Protocol == Protocols.Assembly;
 		public bool IsSsl => Protocol == Protocols.BasicHttps || Protocol == Protocols.WSHttps || Protocol == Protocols.NetHttps || Protocol == Protocols.NetTcpSsl || Protocol == Protocols.NetPipeSsl ||
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
-		
+
 		public bool IsSsh => Protocol == Protocols.Ssh || url.StartsWith("ssh://");
 		public bool IsSecureProtocol => IsSsl || IsSsh;
 
@@ -251,7 +251,7 @@ namespace SolidCP.Web.Client
 		{
 			get
 			{
-				if (url.StartsWith("ssh://")) return true;
+				if (IsSsh) return true;
 				var host = new Uri(url).Host;
 				return url.StartsWith("pipe://", StringComparison.OrdinalIgnoreCase) || IsHostLocal(host);
 			}
@@ -283,6 +283,8 @@ namespace SolidCP.Web.Client
 			?.GetCustomAttribute<SolidCP.Providers.SoapHeaderAttribute>()
 			!= null;
 
+		public static void StartAllSshTunnels(IEnumerable<string> urls) => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.StartAllSshTunnels(urls);
+		public static void DisposeAllSshTunnels() => ClientBase<ClientAssemblyBase, ClientAssemblyBase>.DisposeAllSshTunnels();
 		public virtual void Close() { }
 		public void Dispose()
 		{
@@ -352,15 +354,47 @@ namespace SolidCP.Web.Client
 			return pipe;
 		}
 
-		static ConcurrentDictionary<string, SshClient> SshClients = new ConcurrentDictionary<string, SshClient>();
+		public class SshTunnel : IDisposable
+		{
+			public SshClient Client;
+			public ForwardedPortLocal Port;
+			public string Url;
+			public Exception Exception, ConnectException;
+			public SshTunnel(string url, SshClient client, ForwardedPortLocal port)
+			{
+				Url = url;
+				Client = client;
+				Exception = null;
+				ConnectException = null;
+				Port = port;
+			}
+
+			bool isDisposed = false;
+			public void Disconnect()
+			{
+				if (Port.IsStarted) Port.Stop();
+				if (Client.IsConnected) Client.Disconnect();
+			}
+			public void Dispose()
+			{
+				Disconnect();
+				if (!isDisposed)
+				{
+					isDisposed = true;
+					Client.Dispose();
+				}
+			}
+		}
+
+		static ConcurrentDictionary<string, SshTunnel> SshTunnels = new ConcurrentDictionary<string, SshTunnel>();
 		static object SshLock = new object();
 		static bool SshDisposed = false;
 
 		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?<localport>[0-9]+:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_-.]+):(?<remoteport>[0-9]+)(?=/|$|?";
 
-		public static SshClient StartSshTunnel(string url)
+		public static SshTunnel StartSshTunnel(string url)
 		{
-			lock (SshLock) if (SshDisposed) return null;
+			lock (SshLock) if (SshDisposed) throw new ObjectDisposedException("Ssh tunnels have been disposed.");
 
 			var match = Regex.Match(url, ParseSshUrlRegex, RegexOptions.Singleline);
 			var sshlogin = new Uri(match.Groups["sshlogin"].Value);
@@ -373,81 +407,125 @@ namespace SolidCP.Web.Client
 			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
 
 			var sshClient = new SshClient(sshlogin.Authority, user, password);
+			var forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
+			sshClient.AddForwardedPort(forwardedPort);
+			var tunnel = new SshTunnel(url, sshClient, forwardedPort);
+
 			ThreadPool.QueueUserWorkItem(state =>
 			{
-				lock (sshClient)
+				lock (tunnel)
 				{
-					var forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
-					sshClient.Connect();
-					sshClient.AddForwardedPort(forwardedPort);
-					forwardedPort.Start();
-					var apppath = AppDomain.CurrentDomain.BaseDirectory;
-					var appData = Path.Combine(apppath, "App_Data");
-					var sshUrlFile = Path.Combine(appData, "SshUrls.txt");
-					lock (SshLock)
+					try
 					{
-						if (!Directory.Exists(appData)) Directory.CreateDirectory(appData);
-						File.WriteAllLines(sshUrlFile, SshClients.Keys.ToArray());
+						sshClient.Connect();
+						forwardedPort.Start();
+
+						EventHandler<Renci.SshNet.Common.ExceptionEventArgs> exceptionEvent = null;
+						exceptionEvent = new EventHandler<Renci.SshNet.Common.ExceptionEventArgs>((sender, args) =>
+						{
+							lock (tunnel) if (tunnel.Exception == args.Exception) return;
+							lock (tunnel)
+							{
+								if (tunnel.Exception == args.Exception) return;
+								sshClient.ErrorOccurred -= exceptionEvent;
+								forwardedPort.Exception -= exceptionEvent;
+								tunnel.Exception = args.Exception;
+								try
+								{
+									forwardedPort.Stop();
+									sshClient.Disconnect();
+								}
+								catch { }
+
+								tunnel.ConnectException = null;
+								try
+								{
+									sshClient.Connect();
+									forwardedPort.Start();
+								}
+								catch (Exception ex)
+								{
+									tunnel.ConnectException = ex;
+									tunnel.Disconnect();
+								}
+								sshClient.ErrorOccurred += exceptionEvent;
+								forwardedPort.Exception += exceptionEvent;
+							}
+						});
+						sshClient.ErrorOccurred += exceptionEvent;
+						forwardedPort.Exception += exceptionEvent;
+					}
+					catch (Exception ex)
+					{
+						tunnel.ConnectException = ex;
+						tunnel.Disconnect();
 					}
 				}
 			});
-			return sshClient;
+			return tunnel;
 		}
 
-		public static void StartAllSshTunnels()
+		public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
-			string[] urls = new string[0];
-			var apppath = AppDomain.CurrentDomain.BaseDirectory;
-			var appData = Path.Combine(apppath, "App_Data");
-			var sshUrlFile = Path.Combine(appData, "SshUrls.txt");
-
-			lock (SshLock)
-			{
-				if (File.Exists(sshUrlFile)) urls = File.ReadAllLines(sshUrlFile);
-			}
 			foreach (var url in urls)
 			{
-				lock (SshLock) SshClients.GetOrAdd(url, StartSshTunnel);
+				lock (SshLock) SshTunnels.GetOrAdd(url, StartSshTunnel);
 			}
 		}
 
-		public static void DisposeAllSshTunnels()
+		public static new void DisposeAllSshTunnels()
 		{
 			lock (SshLock)
 			{
 				SshDisposed = true;
 
-				foreach (var sshClient in SshClients.Values)
+				foreach (var tunnel in SshTunnels.Values.ToArray())
 				{
-					foreach (var port in sshClient.ForwardedPorts) port.Stop();
-					sshClient.Disconnect();
-					sshClient.Dispose();
+					SshTunnel t;
+					SshTunnels.TryRemove(tunnel.Url, out t);
+					tunnel.Dispose();
 				}
 			}
 		}
+
+		string UseSsh(string serviceurl)
+		{
+			SshTunnel tunnel;
+			lock (SshLock) tunnel = SshTunnels.GetOrAdd(url, StartSshTunnel);
+			// block until ssh tunnel is ready
+			while (!tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null) lock (tunnel) Thread.Sleep(1);
+
+			lock (tunnel)
+			{
+				if (tunnel.ConnectException != null)
+				{
+					var ex = tunnel.ConnectException;
+					tunnel.ConnectException = null;
+					SshTunnels.TryRemove(tunnel.Url, out tunnel);
+					throw ex;
+				}
+			}
+
+			if (IsHttp || IsHttps)
+			{
+				serviceurl = serviceurl.SetScheme("http");
+			}
+			else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
+			{
+				if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
+				serviceurl = serviceurl.SetScheme("net.tcp");
+			}
+
+			return Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{m.Groups["localport"].Value}", RegexOptions.Singleline);
+		}
+
 		protected T Client
 		{
 			get
 			{
 				var serviceurl = url;
-				if (serviceurl.StartsWith("ssh://"))
-				{
-					SshClient sshClient;
-					lock (SshLock) sshClient = SshClients.GetOrAdd(url, StartSshTunnel); // block until ssh tunnel is ready
-					while (!sshClient.IsConnected) lock(sshClient) Thread.Sleep(0);
+				if (serviceurl.StartsWith("ssh://")) serviceurl = UseSsh(serviceurl);
 
-					if (IsHttp || IsHttps)
-					{
-						serviceurl = serviceurl.SetScheme("http");
-					} else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
-					{
-						if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
-						serviceurl = serviceurl.SetScheme("net.tcp");
-					}
-
-					Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{m.Groups["localport"].Value}", RegexOptions.Singleline);
-				}
-				
 				serviceurl = $"{serviceurl}/{this.GetType().Name}";
 
 				if (client != null)

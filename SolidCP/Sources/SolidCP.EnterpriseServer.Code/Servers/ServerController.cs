@@ -98,8 +98,12 @@ namespace SolidCP.EnterpriseServer
 		public static List<ServerInfo> GetAllServers()
 		{
 			// fill collection
-			return ObjectUtils.CreateListFromDataSet<ServerInfo>(
+			var servers = ObjectUtils.CreateListFromDataSet<ServerInfo>(
 				DataProvider.GetAllServers(SecurityContext.User.UserId));
+			
+			foreach (var server in servers) DecryptServerUrl(server);
+
+			return servers;
 		}
 
 		public static DataSet GetRawAllServers()
@@ -115,6 +119,8 @@ namespace SolidCP.EnterpriseServer
 			// fill collection
 			ObjectUtils.FillCollectionFromDataSet<ServerInfo>(
 				servers, DataProvider.GetServers(SecurityContext.User.UserId));
+
+			foreach (var server in servers) DecryptServerUrl(server);
 
 			return servers;
 		}
@@ -136,25 +142,43 @@ namespace SolidCP.EnterpriseServer
 			server.Password = CryptoUtils.Decrypt(server.Password);
 			server.ADPassword = CryptoUtils.Decrypt(server.ADPassword);
 
+			DecryptServerUrl(server);
+
 			return server;
+		}
+
+		public static void DecryptServerUrl(ServerInfo server)
+		{
+			server.ServerUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
+		}
+
+		public static void EncryptServerUrl(ServerInfo server)
+		{
+			server.ServerUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 		}
 
 		public static ServerInfo GetServerShortDetails(int serverId)
 		{
-			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
+			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServerShortDetails(serverId));
+			DecryptServerUrl(server);
+			return server;
 		}
 
 		public static ServerInfo GetServerById(int serverId, bool forAutodiscover = false)
 		{
-			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
+			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServer(SecurityContext.User.UserId, serverId, forAutodiscover));
+			DecryptServerUrl(server);
+			return server;
 		}
 
 		public static ServerInfo GetServerByName(string serverName)
 		{
-			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
+			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServerByName(SecurityContext.User.UserId, serverName));
+			DecryptServerUrl(server);
+			return server;
 		}
 
 
@@ -170,7 +194,7 @@ namespace SolidCP.EnterpriseServer
 			try
 			{
 				var test = new Server.Client.Test();
-				test.Url = serverUrl;
+				test.Url = CryptoUtils.DecryptServerUrl(serverUrl);
 				test.Touch();
 				return 0;
 			}
@@ -360,7 +384,9 @@ namespace SolidCP.EnterpriseServer
 
 			TaskManager.StartTask("SERVER", "ADD", server.ServerName);
 
-			int serverId = DataProvider.AddServer(server.ServerName, server.ServerUrl,
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
+			int serverId = DataProvider.AddServer(server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.OSPlatform, server.IsCore);
@@ -415,7 +441,9 @@ namespace SolidCP.EnterpriseServer
 				server.IsCore = isCore;
 			}
 
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
+			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
@@ -441,8 +469,10 @@ namespace SolidCP.EnterpriseServer
 			// set password
 			server.Password = password;
 
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
 			// update server
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
+			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
@@ -468,8 +498,10 @@ namespace SolidCP.EnterpriseServer
 			// set password
 			server.ADPassword = adPassword;
 
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
 			// update server
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
+			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
 				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,

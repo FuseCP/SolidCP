@@ -36,8 +36,6 @@ using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.WebAppGallery;
 using SolidCP.Providers.Common;
-using Microsoft.Web.Administration;
-using Microsoft.Web.Management.Server;
 
 namespace SolidCP.Providers.Web
 {

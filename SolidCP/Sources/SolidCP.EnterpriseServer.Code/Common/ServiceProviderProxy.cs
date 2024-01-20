@@ -110,6 +110,9 @@ namespace SolidCP.EnterpriseServer
 		private static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
 			 ServerProxyConfigurator cnfg, string serverUrl, string serverPassword)
 		{
+			// decrypt server url
+			serverUrl = CryptoUtils.DecryptServerUrl(serverUrl);
+			
 			// set URL & password
 			proxy.Url = serverUrl;
 			if (proxy.IsAuthenticated)
