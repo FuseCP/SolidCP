@@ -131,7 +131,7 @@ namespace SolidCP.WebPortal
 				TouchTask = esTestClient.TouchAsync();
 			} else
 			{
-				AssemblyLoader.Init();
+				Web.Client.AssemblyLoader.Init();
 			}
 
 			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
@@ -161,7 +161,7 @@ namespace SolidCP.WebPortal
 		protected void Application_End(object sender, EventArgs e)
 		{
 			Web.Client.ClientBase.DisposeAllSshTunnels();
-			AssemblyLoader.Dispose();
+			Web.Client.AssemblyLoader.Dispose();
 		}
 
 		private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)

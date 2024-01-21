@@ -124,10 +124,8 @@
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
@@ -503,7 +501,6 @@
     <Compile Include="Code\Adapters\PasswordRecoveryAdapter.cs" />
     <Compile Include="Code\Adapters\TreeViewAdapter.cs" />
     <Compile Include="Code\Adapters\WebControlAdapterExtender.cs" />
-    <Compile Include="Code\AssemblyLoader.cs" />
     <Compile Include="Code\ContentPane.cs" />
     <Compile Include="Code\Controls\DesktopContextValidator.cs" />
     <Compile Include="Code\PortalAntiXSS.cs" />

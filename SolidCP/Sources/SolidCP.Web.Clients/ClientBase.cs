@@ -164,22 +164,22 @@ namespace SolidCP.Web.Client
 				}
 				else if (url.StartsWith("net.tcp://"))
 				{
-					if (url.HasApi("tcp/ssl")) Protocol = Protocols.NetTcpSsl;
+					if (url.HasApi("tcp/ssl")) protocol = Protocols.NetTcpSsl;
 					else if (url.HasApi("tcp"))
 					{
 						if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
-						else Protocol = Protocols.NetTcp;
+						else protocol = Protocols.NetTcp;
 					}
 					else throw new NotSupportedException("net.tcp url must include tcp api");
 				}
 				//#if NETFRAMEWORK
 				else if (url.StartsWith("net.pipe://"))
 				{
-					if (url.HasApi("pipe/ssl")) Protocol = Protocols.NetPipeSsl;
+					if (url.HasApi("pipe/ssl")) protocol = Protocols.NetPipeSsl;
 					else if (url.HasApi("pipe"))
 					{
 						if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
-						else Protocol = Protocols.NetPipe;
+						else protocol = Protocols.NetPipe;
 					}
 					else throw new NotSupportedException("net.pipe url must include pipe api");
 				}
@@ -193,7 +193,7 @@ namespace SolidCP.Web.Client
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
 					else if (url.HasApi("tcp")) protocol = Protocols.NetTcp;
-					else if (url.HasApi("tcp/ssl")) protocol = Protocols.NetTcp;
+					else if (url.HasApi("tcp/ssl")) protocol = Protocols.NetTcpSsl;
 					else protocol = Protocols.BasicHttp;
 
 				}
@@ -390,15 +390,15 @@ namespace SolidCP.Web.Client
 		static object SshLock = new object();
 		static bool SshDisposed = false;
 
-		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?<localport>[0-9]+:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_-.]+):(?<remoteport>[0-9]+)(?=/|$|?";
+		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?<localport>[0-9]+):(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):(?<remoteport>[0-9]+)(?=/|$|\?)";
 
 		public static SshTunnel StartSshTunnel(string url)
 		{
 			lock (SshLock) if (SshDisposed) throw new ObjectDisposedException("Ssh tunnels have been disposed.");
 
 			var match = Regex.Match(url, ParseSshUrlRegex, RegexOptions.Singleline);
-			var sshlogin = new Uri(match.Groups["sshlogin"].Value);
-			var userTokens = sshlogin.UserInfo.Split(':');
+			var uri = new Uri(url);
+			var userTokens = uri.UserInfo.Split(':');
 			var user = userTokens[0];
 			var password = "";
 			if (userTokens.Length >= 2) password = userTokens[1];
@@ -406,9 +406,8 @@ namespace SolidCP.Web.Client
 			var host = match.Groups["host"].Value;
 			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
 
-			var sshClient = new SshClient(sshlogin.Authority, user, password);
+			var sshClient = new SshClient(uri.Host, uri.Port != -1 ? uri.Port : 22, user, password);
 			var forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
-			sshClient.AddForwardedPort(forwardedPort);
 			var tunnel = new SshTunnel(url, sshClient, forwardedPort);
 
 			ThreadPool.QueueUserWorkItem(state =>
@@ -418,6 +417,7 @@ namespace SolidCP.Web.Client
 					try
 					{
 						sshClient.Connect();
+						sshClient.AddForwardedPort(forwardedPort);
 						forwardedPort.Start();
 
 						EventHandler<Renci.SshNet.Common.ExceptionEventArgs> exceptionEvent = null;
@@ -503,20 +503,20 @@ namespace SolidCP.Web.Client
 				{
 					var ex = tunnel.ConnectException;
 					tunnel.ConnectException = null;
-					SshTunnels.TryRemove(tunnel.Url, out tunnel);
+					SshTunnel t;
+					SshTunnels.TryRemove(tunnel.Url, out t);
 					throw ex;
 				}
 			}
 
-			if (IsHttp || IsHttps)
-			{
-				serviceurl = serviceurl.SetScheme("http");
-			}
+			if (IsHttp) serviceurl = serviceurl.SetScheme("http");
 			else if (Protocol == Protocols.NetTcp || Protocol == Protocols.NetTcpSsl)
 			{
 				if (Protocol == Protocols.NetTcpSsl) Protocol = Protocols.NetTcp;
 				serviceurl = serviceurl.SetScheme("net.tcp");
 			}
+			else if (IsHttps) throw new NotSupportedException("Https over ssh tunnel is not supported.");
+			else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
 
 			return Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{m.Groups["localport"].Value}", RegexOptions.Singleline);
 		}

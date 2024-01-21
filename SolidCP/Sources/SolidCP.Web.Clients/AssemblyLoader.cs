@@ -2,54 +2,81 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using System.Configuration;
-using System.Diagnostics;
 using System.Reflection;
-using System.Security.Policy;
 using System.IO;
-using System.CodeDom;
 using System.Collections.Concurrent;
-using System.Web;
+#if NETFRAMEWORK
+using System.Configuration;
+#endif
 
-namespace SolidCP.WebPortal
+using SolidCP.Providers.OS;
+
+namespace SolidCP.Web.Client
 {
 	public class AssemblyLoader
 	{
-		public static string ShadowCopyFolder => Path.Combine(Path.GetTempPath(), "SolidCPShadowCopies");
-		public static string TempFile => Path.Combine(ShadowCopyFolder, $"{Guid.NewGuid()}.dll");
-
-		public static void Dispose()
+		static string shadowCopyFolder = null;
+		public static string ShadowCopyFolder
 		{
-			var files = Directory.EnumerateFiles(ShadowCopyFolder);
-			foreach (var file in files)
+			get
 			{
-				try
+				if (shadowCopyFolder == null)
 				{
-					File.Delete(file);
+					shadowCopyFolder = Path.Combine(Path.GetTempPath(), "SolidCPShadowCopies");
+					if (!Directory.Exists(shadowCopyFolder)) Directory.CreateDirectory(shadowCopyFolder);
 				}
-				catch { }
+				return shadowCopyFolder;
 			}
 		}
 
-		public static void Init()
+		public static string TempFile(string file)
 		{
-			if (!Directory.Exists(ShadowCopyFolder)) Directory.CreateDirectory(ShadowCopyFolder);
+			return Path.Combine(ShadowCopyFolder, $"{Path.GetFileNameWithoutExtension(file)}.{Guid.NewGuid()}.dll");
+		}
 
+		public static void Dispose()
+		{
+			if (shadowCopyFolder != null && Directory.Exists(shadowCopyFolder))
+			{
+				var files = Directory.EnumerateFiles(ShadowCopyFolder);
+				foreach (var file in files)
+				{
+					try
+					{
+						File.Delete(file);
+					}
+					catch { }
+				}
+			}
+		}
+
+		public static bool Initialized = false;
+		public static void Init(string probingPaths = null, string exposeWebServices = null, bool loadEnterpriseServer = true)
+		{
+			if (Initialized) return;
+			Initialized = true;
+
+#if NETFRAMEWORK
 			ProbingPaths = ConfigurationManager.AppSettings["ExternalProbingPaths"];
+#else
+			ProbingPaths = probingPaths;
+#endif
+
 			if (!string.IsNullOrEmpty(ProbingPaths))
 			{
 				AppDomain.CurrentDomain.AssemblyResolve += Resolve;
 
 				try
 				{
-					var eserver = Assembly.Load("SolidCP.EnterpriseServer");
-					if (eserver != null)
+					if (loadEnterpriseServer)
 					{
-						var validatorType = eserver.GetType("SolidCP.EnterpriseServer.UsernamePasswordValidator");
-						var init = validatorType.GetMethod("Init", BindingFlags.Public | BindingFlags.Static);
-						init.Invoke(null, new object[0]);
+						var eserver = Assembly.Load("SolidCP.EnterpriseServer");
+						if (eserver != null)
+						{
+							var validatorType = eserver.GetType("SolidCP.EnterpriseServer.UsernamePasswordValidator");
+							var init = validatorType.GetMethod("Init", BindingFlags.Public | BindingFlags.Static);
+							init.Invoke(null, new object[0]);
+						}
 					}
 				}
 				catch { }
@@ -66,19 +93,23 @@ namespace SolidCP.WebPortal
 				}
 				catch { }
 
-				var exposeWebServicesText = ConfigurationManager.AppSettings["ExposeWebServices"];
-				var exposeWebServices = string.IsNullOrEmpty(exposeWebServicesText) &&
-					!string.Equals(exposeWebServicesText, "none", StringComparison.OrdinalIgnoreCase);
-				if (exposeWebServices) StartWebServices();
+#if NETFRAMEWORK
+				exposeWebServices = ConfigurationManager.AppSettings["ExposeWebServices"];
+#endif
+				var exposeAnyWebServices = string.IsNullOrEmpty(exposeWebServices) &&
+				!string.Equals(exposeWebServices, "none", StringComparison.OrdinalIgnoreCase);
+				if (exposeAnyWebServices) StartWebServices();
 			}
 		}
 
 		static void StartWebServices()
 		{
+#if NETFRAMEWORK
 			var assembly = Assembly.Load("SolidCP.Web.Services");
 			var StartupNetFX = assembly?.GetType("SolidCP.Web.Services.StartupNetFX");
 			var method = StartupNetFX?.GetMethod("Start", BindingFlags.Public | BindingFlags.Static);
 			method?.Invoke(null, new object[0]);
+#endif
 		}
 
 		static readonly string exepath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
@@ -123,13 +154,18 @@ namespace SolidCP.WebPortal
 
 				foreach (var p in dlls)
 				{
+					string file;
 					// Create shadow copy
-					var tmp = TempFile;
-					File.Copy(p.FullName, tmp);
-					var pdb = Path.ChangeExtension(p.FullName, ".pdb");
-					if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(tmp, ".pdb"));
+					if (OSInfo.IsWindows)
+					{
+						file = TempFile(p.FullName);
+						File.Copy(p.FullName, file);
+						var pdb = Path.ChangeExtension(p.FullName, ".pdb");
+						if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(file, ".pdb"));
+					}
+					else file = p.FullName;
 					// Load assembly
-					var a = Assembly.LoadFrom(tmp);
+					var a = Assembly.LoadFrom(file);
 					if (a != null)
 					{
 						LoadedAssemblies.Add(name, a);

@@ -66,11 +66,13 @@ namespace SolidCP.EnterpriseServer
 				ClientBase.StartAllSshTunnels(sshServers);
 			});
 			Web.Services.StartupNetFX.Start();
+			Web.Client.AssemblyLoader.Init(null, null, false);
 		}
 
 		protected void Application_End(object sender, EventArgs e)
 		{
 			ClientBase.DisposeAllSshTunnels();
+			Web.Client.AssemblyLoader.Dispose();
 		}
 
 		protected void Application_BeginRequest(object sender, EventArgs e)

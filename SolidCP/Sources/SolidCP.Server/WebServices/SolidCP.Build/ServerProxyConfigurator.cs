@@ -166,12 +166,16 @@ namespace SolidCP.Server.Client
 				{
 					proxy.Protocol = Web.Client.Protocols.WSHttp;
 				}
-				else if (UseNetHttpAsDefaultProtocol && proxy.IsDefaultApi &&
+				else if (UseNetHttpAsDefaultProtocol &&
 					(UseNetHttpOnCore || IsCore.HasValue && IsCore.Value == false))
 				{
 					if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
 					else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
-				}
+					else if (proxy.IsSsh) proxy.Protocol = Web.Client.Protocols.NetHttp;
+				} 
+			} else if (proxy.IsSsh && proxy.Protocol == Web.Client.Protocols.NetTcpSsl)
+			{
+				proxy.Protocol = Web.Client.Protocols.NetTcp;
 			}
 		}
 	}
