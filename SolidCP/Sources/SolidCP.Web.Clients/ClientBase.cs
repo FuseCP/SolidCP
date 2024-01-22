@@ -142,6 +142,8 @@ namespace SolidCP.Web.Client
 			set
 			{
 				url = value;
+				if (string.IsNullOrEmpty(url)) throw new ArgumentNullException("Url must not be null or empty.");
+
 				if (url.StartsWith("http://"))
 				{
 					if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
@@ -299,7 +301,7 @@ namespace SolidCP.Web.Client
 			url = Regex.Replace(url, $"/{api}(?=\\?|$)", "");
 			return url;
 		}
-		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]://", $"{scheme}://");
+		public static string SetScheme(this string url, string scheme) => Regex.Replace(url, "^[a-zA-Z.]+://", $"{scheme}://");
 
 		public static string AssertScheme(this string url, Protocols protocol)
 		{
@@ -390,7 +392,7 @@ namespace SolidCP.Web.Client
 		static object SshLock = new object();
 		static bool SshDisposed = false;
 
-		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?<localport>[0-9]+):(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):(?<remoteport>[0-9]+)(?=/|$|\?)";
+		const string ParseSshUrlRegex = @"(?<=^[a-zA-Z.]+://)(?<sshlogin>[^/]*)/(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9]+\.[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?=/|$|\?)";
 
 		public static SshTunnel StartSshTunnel(string url)
 		{
@@ -402,12 +404,15 @@ namespace SolidCP.Web.Client
 			var user = userTokens[0];
 			var password = "";
 			if (userTokens.Length >= 2) password = userTokens[1];
-			var localport = uint.Parse(match.Groups["localport"].Value);
-			var host = match.Groups["host"].Value;
+			var localport = match.Groups["localport"].Success ? uint.Parse(match.Groups["localport"].Value) : uint.MaxValue;
+			var host = match.Groups["host"].Success ? match.Groups["host"].Value : "127.0.0.1";
 			var remoteport = uint.Parse(match.Groups["remoteport"].Value);
 
 			var sshClient = new SshClient(uri.Host, uri.Port != -1 ? uri.Port : 22, user, password);
-			var forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
+			ForwardedPortLocal forwardedPort;
+			if (localport == uint.MaxValue) forwardedPort = new ForwardedPortLocal("127.0.0.1", host, remoteport);
+			else forwardedPort = new ForwardedPortLocal("127.0.0.1", localport, host, remoteport);
+
 			var tunnel = new SshTunnel(url, sshClient, forwardedPort);
 
 			ThreadPool.QueueUserWorkItem(state =>
@@ -494,9 +499,18 @@ namespace SolidCP.Web.Client
 		{
 			SshTunnel tunnel;
 			lock (SshLock) tunnel = SshTunnels.GetOrAdd(url, StartSshTunnel);
-			// block until ssh tunnel is ready
-			while (!tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null) lock (tunnel) Thread.Sleep(1);
 
+			Thread.Sleep(0);
+			
+			// block until ssh tunnel is ready
+			bool wait;
+			lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null;
+			while (wait)
+			{
+				Thread.Sleep(1);
+				lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null;
+			}
+			
 			lock (tunnel)
 			{
 				if (tunnel.ConnectException != null)
@@ -518,7 +532,7 @@ namespace SolidCP.Web.Client
 			else if (IsHttps) throw new NotSupportedException("Https over ssh tunnel is not supported.");
 			else throw new NotSupportedException("This protocol is not supported over ssh tunnel.");
 
-			return Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{m.Groups["localport"].Value}", RegexOptions.Singleline);
+			return Regex.Replace(serviceurl, ParseSshUrlRegex, m => $"127.0.0.1:{tunnel.Port.BoundPort}", RegexOptions.Singleline);
 		}
 
 		protected T Client

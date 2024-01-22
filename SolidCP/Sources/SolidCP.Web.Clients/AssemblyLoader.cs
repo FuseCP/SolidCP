@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 #if NETFRAMEWORK
 using System.Configuration;
 #endif
@@ -29,21 +30,76 @@ namespace SolidCP.Web.Client
 			}
 		}
 
+		static char ToChar(byte b)
+		{
+			b = (byte)(b & 0x1F);
+			if (b < 10) return (char)(b + (byte)'0');
+			else return (char)(b - 10 + (byte)'a');
+		}
+		public static IEnumerable<char> ToName(IEnumerable<byte> bytes)
+		{
+			uint carry = 0;
+
+			foreach (var b in bytes)
+			{
+				carry = (carry << 3) + (uint)(b & 0x7);
+				if (carry >= 0x1F)
+				{
+					yield return ToChar((byte)(carry & 0x1F));
+					carry = carry >> 5;
+				}
+				yield return ToChar((byte)((uint)b >> 3));
+			}
+			if (carry > 0) yield return ToChar((byte)(carry & 0x1F));
+
+		}
+		public static string SHA1Name(string plainText)
+		{
+			// Convert plain text into a byte array.
+			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+			HashAlgorithm hash = new SHA1Managed(); ;
+
+			// Compute hash value of our plain text with appended salt.
+			byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+
+			// Return the result.
+			return new string(ToName(hashBytes).ToArray());
+		}
+
 		public static string TempFile(string file)
 		{
-			return Path.Combine(ShadowCopyFolder, $"{Path.GetFileNameWithoutExtension(file)}.{Guid.NewGuid()}.dll");
+			var dir = Path.Combine(ShadowCopyFolder, SHA1Name(Path.GetDirectoryName(file)));
+			if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+			return Path.Combine(dir, Path.GetFileName(file));
 		}
 
 		public static void Dispose()
 		{
 			if (shadowCopyFolder != null && Directory.Exists(shadowCopyFolder))
 			{
-				var files = Directory.EnumerateFiles(ShadowCopyFolder);
+				var files = Directory.EnumerateFiles(ShadowCopyFolder, "*.*", SearchOption.AllDirectories);
+				var directories = new List<string>();
+				var exclude = new List<string>();
 				foreach (var file in files)
 				{
 					try
 					{
 						File.Delete(file);
+						directories.Add(Path.GetDirectoryName(file));
+					}
+					catch {
+						exclude.Add(Path.GetDirectoryName(file));
+					}
+				}
+				foreach (var dir in directories
+					.Distinct()
+					.Except(exclude)
+					.OrderByDescending(d => d))
+				{
+					try
+					{
+						Directory.Delete(dir);
 					}
 					catch { }
 				}
@@ -159,9 +215,13 @@ namespace SolidCP.Web.Client
 					if (OSInfo.IsWindows)
 					{
 						file = TempFile(p.FullName);
-						File.Copy(p.FullName, file);
-						var pdb = Path.ChangeExtension(p.FullName, ".pdb");
-						if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(file, ".pdb"));
+						try
+						{
+							File.Copy(p.FullName, file, true);
+							var pdb = Path.ChangeExtension(p.FullName, ".pdb");
+							if (File.Exists(pdb)) File.Copy(pdb, Path.ChangeExtension(file, ".pdb"), true);
+						}
+						catch { }
 					}
 					else file = p.FullName;
 					// Load assembly

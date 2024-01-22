@@ -181,7 +181,6 @@ namespace SolidCP.EnterpriseServer
 			return server;
 		}
 
-
 		public static int CheckServerAvailable(string serverUrl, string password)
 		{
 			// check account
@@ -229,7 +228,9 @@ namespace SolidCP.EnterpriseServer
 				{
 					TaskManager.WriteError("General Server Error");
 					TaskManager.WriteError(ex);
-					return BusinessErrorCodes.ERROR_ADD_SERVER_APPLICATION_ERROR;
+					//return BusinessErrorCodes.ERROR_ADD_SERVER_APPLICATION_ERROR;
+
+					throw;
 				}
 			}
 			finally

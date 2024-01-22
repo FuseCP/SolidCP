@@ -109,24 +109,13 @@ namespace SolidCP.EnterpriseServer
 
 		private static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
 			 ServerProxyConfigurator cnfg, string serverUrl, string serverPassword)
-		{
-			// decrypt server url
-			serverUrl = CryptoUtils.DecryptServerUrl(serverUrl);
-			
+		{			
 			// set URL & password
-			proxy.Url = serverUrl;
+			cnfg.ServerUrl = CryptoUtils.DecryptServerUrl(serverUrl);
 			if (proxy.IsAuthenticated)
 			{
-				proxy.Credentials.Password = CryptoUtils.Encrypt(serverPassword);
-				proxy.Credentials.UserName = "";
+				cnfg.ServerPassword = CryptoUtils.Encrypt(serverPassword);
 			}
-			else
-			{
-				proxy.Credentials.Password = "";
-				proxy.Credentials.UserName = "";
-			}
-			//cnfg.ServerUrl = serverUrl;
-			//cnfg.ServerPassword = serverPassword;
 
 			// configure proxy!
 			cnfg.Configure(proxy);
