@@ -20175,3 +20175,123 @@ INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [Property
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'sslmode', N'True')
 END
 GO
+
+-- Increase size of ServerUrl column for encrypted urls
+ALTER TABLE [dbo].[Servers] ALTER COLUMN [ServerUrl] nvarchar(255) NULL;
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddServer')
+DROP PROCEDURE AddServer
+GO
+
+CREATE PROCEDURE AddServer
+(
+	@ServerID int OUTPUT,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(255),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@VirtualServer bit,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@OSPlatform int,
+	@IsCore bit
+)
+AS
+
+IF @PrimaryGroupID = 0
+
+SET @PrimaryGroupID = NULL
+
+INSERT INTO Servers
+(
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	OSPlatform,
+	IsCore
+)
+VALUES
+(
+	@ServerName,
+	@ServerUrl,
+	@Password,
+	@Comments,
+	@VirtualServer,
+	@InstantDomainAlias,
+	@PrimaryGroupID,
+	@ADEnabled,
+	@ADRootDomain,
+	@ADUsername,
+	@ADPassword,
+	@ADAuthenticationType,
+	@OSPlatform,
+	@IsCore
+)
+
+SET @ServerID = SCOPE_IDENTITY()
+
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServer')
+DROP PROCEDURE UpdateServer
+GO
+
+CREATE PROCEDURE UpdateServer
+(
+	@ServerID int,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(255),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@ADParentDomain nvarchar(200),
+	@ADParentDomainController nvarchar(200),
+	@OSPlatform int,
+	@IsCore bit
+)
+AS
+
+IF @PrimaryGroupID = 0
+SET @PrimaryGroupID = NULL
+
+UPDATE Servers SET
+	ServerName = @ServerName,
+	ServerUrl = @ServerUrl,
+	Password = @Password,
+	Comments = @Comments,
+	InstantDomainAlias = @InstantDomainAlias,
+	PrimaryGroupID = @PrimaryGroupID,
+	ADEnabled = @ADEnabled,
+	ADRootDomain = @ADRootDomain,
+	ADUsername = @ADUsername,
+	ADPassword = @ADPassword,
+	ADAuthenticationType = @ADAuthenticationType,
+	ADParentDomain = @ADParentDomain,
+	ADParentDomainController = @ADParentDomainController,
+	OSPlatform = @OSPlatform,
+	IsCore = @IsCore
+WHERE ServerID = @ServerID
+RETURN
+GO
