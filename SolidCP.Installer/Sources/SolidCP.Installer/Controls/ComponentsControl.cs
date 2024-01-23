@@ -231,7 +231,7 @@ namespace SolidCP.Installer.Controls
 			string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]).Replace('\\', Path.DirectorySeparatorChar);
 			string installerType = Utils.GetDbString(row[Global.Parameters.InstallerType]);
 
-            if (componentCode != "server" && componentName != "Server asp.net v4.5") row.Delete();
+            if (componentCode != "server" || componentName != "Server asp.net v4.5") row.Delete();
             else
             {
                 row[Global.Parameters.ComponentName] = "Server";
