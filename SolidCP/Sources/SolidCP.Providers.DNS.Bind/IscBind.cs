@@ -1055,7 +1055,7 @@ namespace SolidCP.Providers.DNS
 						if (match.Success)
 						{
 							var ver = match.Groups["version"].Value;
-							if (ver.StartsWith(version)) return true;
+							if (version.Split(';').Any(v => ver.StartsWith(v))) return true;
 						}
 					}
 					catch { }
@@ -1064,6 +1064,6 @@ namespace SolidCP.Providers.DNS
 			return false;
 		}
 
-		public override bool IsInstalled() => IsInstalled("9.");
+		public override bool IsInstalled() => IsInstalled("9.;8.");
 	}
 }

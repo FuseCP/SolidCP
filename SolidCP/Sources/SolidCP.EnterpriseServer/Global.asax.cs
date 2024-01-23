@@ -43,7 +43,7 @@ using System.Timers;
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
-using SolidCP.Web.Client;
+using SolidCP.Web.Clients;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -57,7 +57,7 @@ namespace SolidCP.EnterpriseServer
 		{
 			//if (!Debugger.IsAttached) Debugger.Launch();
 			UsernamePasswordValidator.Init();
-			Web.Client.CertificateValidator.Init();
+			Web.Clients.CertificateValidator.Init();
 			ThreadPool.QueueUserWorkItem(state =>
 			{
 				var sshServers = ServerController.GetServers()
@@ -66,13 +66,13 @@ namespace SolidCP.EnterpriseServer
 				ClientBase.StartAllSshTunnels(sshServers);
 			});
 			Web.Services.StartupNetFX.Start();
-			Web.Client.AssemblyLoader.Init(null, null, false);
+			Web.Clients.AssemblyLoader.Init(null, null, false);
 		}
 
 		protected void Application_End(object sender, EventArgs e)
 		{
 			ClientBase.DisposeAllSshTunnels();
-			Web.Client.AssemblyLoader.Dispose();
+			Web.Clients.AssemblyLoader.Dispose();
 		}
 
 		protected void Application_BeginRequest(object sender, EventArgs e)

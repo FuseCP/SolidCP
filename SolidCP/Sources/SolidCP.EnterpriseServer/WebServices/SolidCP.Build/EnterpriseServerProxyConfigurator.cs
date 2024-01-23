@@ -82,7 +82,7 @@ namespace SolidCP.EnterpriseServer
 			set { this.password = value; }
 		}
 
-		public void Configure(SolidCP.Web.Client.ClientBase proxy)
+		public void Configure(SolidCP.Web.Clients.ClientBase proxy)
 		{
 			// set proxy URL
 			string serverUrl = enterpriseServerUrl.Trim();
@@ -99,15 +99,15 @@ namespace SolidCP.EnterpriseServer
 				if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !proxy.IsLocal &&
 					 (UseMessageSecurityOnCore || !IsCore))
 				{
-					proxy.Protocol = Web.Client.Protocols.WSHttp;
+					proxy.Protocol = Web.Clients.Protocols.WSHttp;
 				}
 				else if (UseNetHttpAsDefaultProtocol)
 				{
 					// use NetHttp protocol as default
-					if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
-					else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
+					if (proxy.IsHttp) proxy.Protocol = Web.Clients.Protocols.NetHttp;
+					else if (proxy.IsHttps) proxy.Protocol = Web.Clients.Protocols.NetHttps;
 				}
-			} else if (proxy.IsSsh && proxy.Protocol == Web.Client.Protocols.NetTcpSsl) proxy.Protocol = Web.Client.Protocols.NetTcp;
+			} else if (proxy.IsSsh && proxy.Protocol == Web.Clients.Protocols.NetTcpSsl) proxy.Protocol = Web.Clients.Protocols.NetTcp;
 
 
 			if (!String.IsNullOrEmpty(username) && proxy.IsAuthenticated)

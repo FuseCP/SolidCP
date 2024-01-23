@@ -3,7 +3,7 @@ namespace SolidCP.Server.Tests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SolidCP.Providers;
     using SolidCP.Server.Client;
-    using SolidCP.Web.Client;
+    using SolidCP.Web.Clients;
     using System.ServiceModel;
 
     [TestClass]

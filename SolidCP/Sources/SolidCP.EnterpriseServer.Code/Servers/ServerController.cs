@@ -318,7 +318,7 @@ namespace SolidCP.EnterpriseServer
 
 				foreach (var provider in discovery)
 				{
-					BoolResult isInstalled = IsInstalled(server.ServerId, provider);
+					BoolResult isInstalled = IsInstalled(server, provider);
 					if (isInstalled.IsSuccess)
 					{
 						if (isInstalled.Value)
@@ -1135,6 +1135,27 @@ namespace SolidCP.EnterpriseServer
 			{
 				AutoDiscovery ad = new AutoDiscovery();
 				ServiceProviderProxy.ServerInit(ad, serverId);
+
+				res = ad.IsInstalled(provider.ProviderType);
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, ErrorCodes.CANNOT_CHECK_IF_PROVIDER_SOFTWARE_INSTALLED, ex);
+
+			}
+
+			TaskManager.CompleteResultTask();
+			return res;
+
+		}
+		public static BoolResult IsInstalled(ServerInfo server, ProviderInfo provider)
+		{
+			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
+
+			try
+			{
+				AutoDiscovery ad = new AutoDiscovery();
+				ServiceProviderProxy.ServerInit(ad, server.ServerUrl, server.Password);
 
 				res = ad.IsInstalled(provider.ProviderType);
 			}

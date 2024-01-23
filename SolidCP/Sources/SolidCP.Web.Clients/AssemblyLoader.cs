@@ -12,7 +12,7 @@ using System.Configuration;
 
 using SolidCP.Providers.OS;
 
-namespace SolidCP.Web.Client
+namespace SolidCP.Web.Clients
 {
 	public class AssemblyLoader
 	{
@@ -58,7 +58,7 @@ namespace SolidCP.Web.Client
 			// Convert plain text into a byte array.
 			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
-			HashAlgorithm hash = new SHA1Managed(); ;
+			HashAlgorithm hash = new SHA1Managed();
 
 			// Compute hash value of our plain text with appended salt.
 			byte[] hashBytes = hash.ComputeHash(plainTextBytes);

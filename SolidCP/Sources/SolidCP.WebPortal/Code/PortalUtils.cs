@@ -721,12 +721,12 @@ namespace SolidCP.Portal
 			}
 		}
 
-		public static void ConfigureEnterpriseServerProxy(SolidCP.Web.Client.ClientBase proxy)
+		public static void ConfigureEnterpriseServerProxy(SolidCP.Web.Clients.ClientBase proxy)
 		{
 			ConfigureEnterpriseServerProxy(proxy, true);
 		}
 
-		public static void ConfigureEnterpriseServerProxy(SolidCP.Web.Client.ClientBase proxy, bool applyPolicy, FormsAuthenticationTicket authTicket = null)
+		public static void ConfigureEnterpriseServerProxy(SolidCP.Web.Clients.ClientBase proxy, bool applyPolicy, FormsAuthenticationTicket authTicket = null)
 		{
 			// load ES properties
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];

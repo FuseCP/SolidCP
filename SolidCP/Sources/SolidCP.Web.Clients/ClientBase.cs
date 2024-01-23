@@ -23,7 +23,7 @@ using ProtoBuf.Grpc.Client;
 using Grpc.Net.Client;
 #endif
 
-namespace SolidCP.Web.Client
+namespace SolidCP.Web.Clients
 {
 
 	public enum Protocols { BasicHttp, NetHttp, WSHttp, BasicHttps, NetHttps, WSHttps, NetTcp, NetTcpSsl, NetPipe, NetPipeSsl, RESTHttp, RESTHttps, gRPC, gRPCSsl, gRPCWeb, gRPCWebSsl, Assembly, Ssh }
@@ -314,7 +314,7 @@ namespace SolidCP.Web.Client
 				url.StartsWith("net.tcp://") && !(protocol == Protocols.NetTcp || protocol == Protocols.NetTcpSsl) ||
 				url.StartsWith("net.pipe://") && !(protocol == Protocols.NetPipe || protocol == Protocols.NetPipeSsl) ||
 				url.StartsWith("assembly://") && protocol != Protocols.Assembly ||
-				url.StartsWith("ssh://") && protocol != Protocols.Assembly && protocol != Protocols.NetPipe && protocol != Protocols.NetPipeSsl)
+				url.StartsWith("ssh://") && (protocol == Protocols.Assembly || protocol == Protocols.NetPipe || protocol == Protocols.NetPipeSsl))
 				throw new NotSupportedException("This protocol is not valid for this connection.");
 			return url;
 		}
@@ -371,11 +371,69 @@ namespace SolidCP.Web.Client
 				Port = port;
 			}
 
+			bool isRestarting = false;
+			public void Restart(object sender, Renci.SshNet.Common.ExceptionEventArgs args)
+			{
+				lock (this)
+				{
+					if (isRestarting || Exception == args.Exception) return;
+					isRestarting = true;
+					Exception = args.Exception;
+				}
+
+				lock (this)
+				{
+					if (isRestarting || Exception == args.Exception || ConnectException != null) return;
+					Client.ErrorOccurred -= Restart;
+					Port.Exception -= Restart;
+					Exception = args.Exception;
+					isRestarting = true;
+					try
+					{
+						Port.Stop();
+						Client.Disconnect();
+					}
+					catch { }
+
+					ConnectException = null;
+					try
+					{
+						Client.Connect();
+						Port.Start();
+					}
+					catch (Exception ex)
+					{
+						ConnectException = ex;
+						Disconnect();
+					}
+					isRestarting = false;
+					Client.ErrorOccurred += Restart;
+					Port.Exception += Restart;
+				}
+			}
+
 			bool isDisposed = false;
 			public void Disconnect()
 			{
-				if (Port.IsStarted) Port.Stop();
-				if (Client.IsConnected) Client.Disconnect();
+				lock (this)
+				{
+					if (Port.IsStarted)
+					{
+						try
+						{
+							Port.Stop();
+						}
+						catch { }
+					}
+					if (Client.IsConnected)
+					{
+						try
+						{
+							Client.Disconnect();
+						}
+						catch { }
+					}
+				}
 			}
 			public void Dispose()
 			{
@@ -424,41 +482,8 @@ namespace SolidCP.Web.Client
 						sshClient.Connect();
 						sshClient.AddForwardedPort(forwardedPort);
 						forwardedPort.Start();
-
-						EventHandler<Renci.SshNet.Common.ExceptionEventArgs> exceptionEvent = null;
-						exceptionEvent = new EventHandler<Renci.SshNet.Common.ExceptionEventArgs>((sender, args) =>
-						{
-							lock (tunnel) if (tunnel.Exception == args.Exception) return;
-							lock (tunnel)
-							{
-								if (tunnel.Exception == args.Exception) return;
-								sshClient.ErrorOccurred -= exceptionEvent;
-								forwardedPort.Exception -= exceptionEvent;
-								tunnel.Exception = args.Exception;
-								try
-								{
-									forwardedPort.Stop();
-									sshClient.Disconnect();
-								}
-								catch { }
-
-								tunnel.ConnectException = null;
-								try
-								{
-									sshClient.Connect();
-									forwardedPort.Start();
-								}
-								catch (Exception ex)
-								{
-									tunnel.ConnectException = ex;
-									tunnel.Disconnect();
-								}
-								sshClient.ErrorOccurred += exceptionEvent;
-								forwardedPort.Exception += exceptionEvent;
-							}
-						});
-						sshClient.ErrorOccurred += exceptionEvent;
-						forwardedPort.Exception += exceptionEvent;
+						sshClient.ErrorOccurred += tunnel.Restart;
+						forwardedPort.Exception += tunnel.Restart;
 					}
 					catch (Exception ex)
 					{
@@ -501,7 +526,7 @@ namespace SolidCP.Web.Client
 			lock (SshLock) tunnel = SshTunnels.GetOrAdd(url, StartSshTunnel);
 
 			Thread.Sleep(0);
-			
+
 			// block until ssh tunnel is ready
 			bool wait;
 			lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null;
@@ -510,7 +535,7 @@ namespace SolidCP.Web.Client
 				Thread.Sleep(1);
 				lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null;
 			}
-			
+
 			lock (tunnel)
 			{
 				if (tunnel.ConnectException != null)

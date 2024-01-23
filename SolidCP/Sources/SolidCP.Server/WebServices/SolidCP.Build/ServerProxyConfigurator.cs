@@ -89,7 +89,7 @@ namespace SolidCP.Server.Client
 
 		public bool? IsCore { get; set; } = null;
 
-		public void Configure(SolidCP.Web.Client.ClientBase proxy)
+		public void Configure(SolidCP.Web.Clients.ClientBase proxy)
 		{
 			// configure proxy URL
 			if (!String.IsNullOrEmpty(serverUrl))
@@ -164,18 +164,18 @@ namespace SolidCP.Server.Client
 				if (UseMessageSecurityOverHttp && proxy.IsHttp && proxy.IsEncrypted && !proxy.IsLocal &&
 					(UseMessageSecurityOnCore || IsCore.HasValue && IsCore.Value == false))
 				{
-					proxy.Protocol = Web.Client.Protocols.WSHttp;
+					proxy.Protocol = Web.Clients.Protocols.WSHttp;
 				}
 				else if (UseNetHttpAsDefaultProtocol &&
 					(UseNetHttpOnCore || IsCore.HasValue && IsCore.Value == false))
 				{
-					if (proxy.IsHttp) proxy.Protocol = Web.Client.Protocols.NetHttp;
-					else if (proxy.IsHttps) proxy.Protocol = Web.Client.Protocols.NetHttps;
-					else if (proxy.IsSsh) proxy.Protocol = Web.Client.Protocols.NetHttp;
+					if (proxy.IsHttp) proxy.Protocol = Web.Clients.Protocols.NetHttp;
+					else if (proxy.IsHttps) proxy.Protocol = Web.Clients.Protocols.NetHttps;
+					else if (proxy.IsSsh) proxy.Protocol = Web.Clients.Protocols.NetHttp;
 				} 
-			} else if (proxy.IsSsh && proxy.Protocol == Web.Client.Protocols.NetTcpSsl)
+			} else if (proxy.IsSsh && proxy.Protocol == Web.Clients.Protocols.NetTcpSsl)
 			{
-				proxy.Protocol = Web.Client.Protocols.NetTcp;
+				proxy.Protocol = Web.Clients.Protocols.NetTcp;
 			}
 		}
 	}

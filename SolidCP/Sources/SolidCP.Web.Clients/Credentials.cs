@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.Web.Client
+namespace SolidCP.Web.Clients
 { 
 
     [DataContract(Namespace = "http://solidcp/credentials")]

@@ -32,7 +32,7 @@ using System.Text;
 
 using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Client;
-using SolidCP.Web.Client;
+using SolidCP.Web.Clients;
 
 namespace SolidCP.Import.CsvBulk
 {

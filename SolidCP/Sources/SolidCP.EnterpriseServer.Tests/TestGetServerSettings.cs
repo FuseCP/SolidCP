@@ -41,13 +41,13 @@ namespace SolidCP.EnterpriseServer.Tests
 		{
 			var testClient = new esTest();
 			testClient.Url = "https://localhost:44332";
-			testClient.Protocol = Web.Client.Protocols.BasicHttps;
+			testClient.Protocol = Web.Clients.Protocols.BasicHttps;
 			Assert.AreEqual("Hello", testClient.Echo("Hello"));
 			Assert.AreEqual("Hello", await testClient.EchoAsync("Hello"));
 			//var settings = testClient.GetSystemSettings(SystemSettings.ACCESS_IP_SETTINGS);
 			var esClient = new esSystem();
 			esClient.Url = "https://localhost:44332";
-			esClient.Protocol = Web.Client.Protocols.BasicHttps;
+			esClient.Protocol = Web.Clients.Protocols.BasicHttps;
 			esClient.Credentials.UserName = "serveradmin";
 			esClient.Credentials.Password = "0192iw0192IW";
 			var settings = esClient.GetSystemSettings(SystemSettings.ACCESS_IP_SETTINGS);

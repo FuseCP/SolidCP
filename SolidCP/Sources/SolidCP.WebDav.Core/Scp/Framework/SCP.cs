@@ -267,12 +267,12 @@ namespace SolidCP.WebDav.Core.Scp.Framework
             object p = proxy;
 
             // configure proxy
-			ConfigureEnterpriseServerProxy((SolidCP.Web.Client.ClientBase)p, secureCalls);
+			ConfigureEnterpriseServerProxy((SolidCP.Web.Clients.ClientBase)p, secureCalls);
 
             return proxy;
         }
 
-        public void ConfigureEnterpriseServerProxy(SolidCP.Web.Client.ClientBase proxy, bool applyPolicy)
+        public void ConfigureEnterpriseServerProxy(SolidCP.Web.Clients.ClientBase proxy, bool applyPolicy)
         {
             // load ES properties
             string serverUrl = WebDavAppConfigManager.Instance.EnterpriseServerUrl;

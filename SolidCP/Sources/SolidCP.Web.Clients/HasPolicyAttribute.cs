@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.Web.Client
+namespace SolidCP.Web.Clients
 {
 	public enum Policies { Encrypted, ServerAuthenticated, EnterpriseServerAuthenticated }
 	public class HasPolicyAttribute : Attribute

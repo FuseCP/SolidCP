@@ -9,7 +9,7 @@ using System.ServiceModel.Dispatcher;
 using System.ServiceModel.Channels;
 using SolidCP.Providers;
 
-namespace SolidCP.Web.Client
+namespace SolidCP.Web.Clients
 {
 	public class SoapHeaderClientMessageInspector : IClientMessageInspector
 	{

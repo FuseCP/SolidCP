@@ -43,7 +43,7 @@ namespace SolidCP.EnterpriseServer
 {
 	public class ServiceProviderProxy
 	{
-		public static SolidCP.Web.Client.ClientBase Init(SolidCP.Web.Client.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
+		public static SolidCP.Web.Clients.ClientBase Init(SolidCP.Web.Clients.ClientBase proxy, int serviceId, StringDictionary additionalSettings = null)
 		{
 			ServerProxyConfigurator cnfg = new ServerProxyConfigurator();
 
@@ -76,7 +76,7 @@ namespace SolidCP.EnterpriseServer
 			return ServerInit(proxy, cnfg, service.ServerId);
 		}
 
-		public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
+		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, ServerProxyConfigurator cnfg, int serverId)
 		{
 			// get server info
 			ServerInfo server = ServerController.GetServerByIdInternal(serverId);
@@ -107,7 +107,7 @@ namespace SolidCP.EnterpriseServer
 			return ServerInit(proxy, cnfg, server.ServerUrl, server.Password);
 		}
 
-		private static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
+		private static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy,
 			 ServerProxyConfigurator cnfg, string serverUrl, string serverPassword)
 		{			
 			// set URL & password
@@ -123,13 +123,13 @@ namespace SolidCP.EnterpriseServer
 			return proxy;
 		}
 
-		public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy,
+		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy,
 			 string serverUrl, string serverPassword)
 		{
 			return ServerInit(proxy, new ServerProxyConfigurator(), serverUrl, serverPassword);
 		}
 
-		public static SolidCP.Web.Client.ClientBase ServerInit(SolidCP.Web.Client.ClientBase proxy, int serverId)
+		public static SolidCP.Web.Clients.ClientBase ServerInit(SolidCP.Web.Clients.ClientBase proxy, int serverId)
 		{
 			return ServerInit(proxy, new ServerProxyConfigurator(), serverId);
 		}

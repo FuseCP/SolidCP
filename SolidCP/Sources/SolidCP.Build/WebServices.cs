@@ -298,7 +298,7 @@ namespace SolidCP.Build
 
 				if (policy != null)
 				{
-					hasPolicy = AttributeList(SingletonSeparatedList(Attribute(ParseName("SolidCP.Web.Client.HasPolicy"))
+					hasPolicy = AttributeList(SingletonSeparatedList(Attribute(ParseName("SolidCP.Web.Clients.HasPolicy"))
 						.WithArgumentList(policy.ArgumentList)));
 				}
 

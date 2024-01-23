@@ -191,7 +191,7 @@ namespace SolidCP.FixDefaultPublicFolderMailbox
             string key = t.FullName + ".ServiceProxy";
             T proxy = (T)Activator.CreateInstance(t);
 
-            Web.Client.ClientBase p = proxy as Web.Client.ClientBase;
+            Web.Clients.ClientBase p = proxy as Web.Clients.ClientBase;
 
             // configure proxy
             EnterpriseServerProxyConfigurator cnfg = new EnterpriseServerProxyConfigurator();

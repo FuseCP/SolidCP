@@ -87,12 +87,12 @@ namespace SolidCP.AWStats.Viewer
             return AuthenticationResult.DomainNotFound;
 		}
 
-        private void SetupProxy(Web.Client.ClientBase proxy)
+        private void SetupProxy(Web.Clients.ClientBase proxy)
         {
             SetupProxy(proxy, null, null);
         }
 
-        private void SetupProxy(Web.Client.ClientBase proxy,
+        private void SetupProxy(Web.Clients.ClientBase proxy,
             string username, string password)
         {
             // create ES configurator

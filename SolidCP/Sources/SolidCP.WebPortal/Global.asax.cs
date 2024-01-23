@@ -113,7 +113,7 @@ namespace SolidCP.WebPortal
 		Task TouchTask;
 		protected void Application_Start(object sender, EventArgs e)
 		{
-			Web.Client.CertificateValidator.Init();
+			Web.Clients.CertificateValidator.Init();
 
 			// start Enterprise Server
 			string serverUrl = PortalConfiguration.SiteSettings["EnterpriseServer"];
@@ -131,7 +131,7 @@ namespace SolidCP.WebPortal
 				TouchTask = esTestClient.TouchAsync();
 			} else
 			{
-				Web.Client.AssemblyLoader.Init();
+				Web.Clients.AssemblyLoader.Init();
 			}
 
 			ScriptManager.ScriptResourceMapping.AddDefinition("jquery",
@@ -160,8 +160,8 @@ namespace SolidCP.WebPortal
 		}
 		protected void Application_End(object sender, EventArgs e)
 		{
-			Web.Client.ClientBase.DisposeAllSshTunnels();
-			Web.Client.AssemblyLoader.Dispose();
+			Web.Clients.ClientBase.DisposeAllSshTunnels();
+			Web.Clients.AssemblyLoader.Dispose();
 		}
 
 		private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)

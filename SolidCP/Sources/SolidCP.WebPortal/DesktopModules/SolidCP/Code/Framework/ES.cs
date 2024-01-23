@@ -291,14 +291,14 @@ namespace SolidCP.Portal
 			Services.Test.TouchAsync();
 		}
 		protected virtual T GetCachedProxy<T>()
-			where T: Web.Client.ClientBase
+			where T: Web.Clients.ClientBase
 		{
 			return GetCachedProxy<T>(true);
 		}
 
-		static ConcurrentDictionary<Type, Web.Client.ClientBase> cache = new ConcurrentDictionary<Type, Web.Client.ClientBase>();
+		static ConcurrentDictionary<Type, Web.Clients.ClientBase> cache = new ConcurrentDictionary<Type, Web.Clients.ClientBase>();
 		protected virtual T GetCachedProxy<T>(bool secureCalls)
-			where T: Web.Client.ClientBase
+			where T: Web.Clients.ClientBase
 		{
 			Type t = typeof(T);
 			var proxy = cache.GetOrAdd(t, t => Activator.CreateInstance<T>());

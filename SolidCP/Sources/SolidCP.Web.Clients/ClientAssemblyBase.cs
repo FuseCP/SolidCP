@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SolidCP.Providers;
 
-namespace SolidCP.Web.Client
+namespace SolidCP.Web.Clients
 {
 	public class ClientAssemblyBase
 	{
