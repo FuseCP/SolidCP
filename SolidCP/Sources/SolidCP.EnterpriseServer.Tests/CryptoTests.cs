@@ -19,9 +19,6 @@ namespace SolidCP.EnterpriseServer.Tests
 			Assert.IsTrue(encurl.StartsWith("sshencrypted://"));
 			var decurl = CryptoUtils.DecryptServerUrl(encurl);
 			Assert.AreEqual<string>(url, decurl);
-
-			encurl = "sshencrypted://SkIOeHzRREU5W7V+XIaAbFf+DctFmdUoW5di3nypxI9Ka1UAFCnJRJKF4PYJ9dvUF68Xn62ck5075fF1K/tVH";
-
 		}
 	}
 }

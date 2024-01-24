@@ -362,6 +362,7 @@ namespace SolidCP.Web.Clients
 			public ForwardedPortLocal Port;
 			public string Url;
 			public Exception Exception, ConnectException;
+			public bool IsConnecting;
 			public SshTunnel(string url, SshClient client, ForwardedPortLocal port)
 			{
 				Url = url;
@@ -369,6 +370,7 @@ namespace SolidCP.Web.Clients
 				Exception = null;
 				ConnectException = null;
 				Port = port;
+				IsConnecting = true;
 			}
 
 			bool isRestarting = false;
@@ -376,24 +378,14 @@ namespace SolidCP.Web.Clients
 			{
 				lock (this)
 				{
-					if (isRestarting || Exception == args.Exception) return;
-					isRestarting = true;
-					Exception = args.Exception;
-				}
-
-				lock (this)
-				{
 					if (isRestarting || Exception == args.Exception || ConnectException != null) return;
+					Exception = args.Exception;
+					isRestarting = true;
+					IsConnecting = true;
 					Client.ErrorOccurred -= Restart;
 					Port.Exception -= Restart;
-					Exception = args.Exception;
-					isRestarting = true;
-					try
-					{
-						Port.Stop();
-						Client.Disconnect();
-					}
-					catch { }
+					
+					Disconnect();
 
 					ConnectException = null;
 					try
@@ -404,9 +396,10 @@ namespace SolidCP.Web.Clients
 					catch (Exception ex)
 					{
 						ConnectException = ex;
+						isRestarting = false;
 						Disconnect();
 					}
-					isRestarting = false;
+					isRestarting = IsConnecting = false;
 					Client.ErrorOccurred += Restart;
 					Port.Exception += Restart;
 				}
@@ -479,15 +472,18 @@ namespace SolidCP.Web.Clients
 				{
 					try
 					{
+						tunnel.IsConnecting = true;
 						sshClient.Connect();
 						sshClient.AddForwardedPort(forwardedPort);
 						forwardedPort.Start();
+						tunnel.IsConnecting = false;
 						sshClient.ErrorOccurred += tunnel.Restart;
 						forwardedPort.Exception += tunnel.Restart;
 					}
 					catch (Exception ex)
 					{
 						tunnel.ConnectException = ex;
+						tunnel.IsConnecting = false;
 						tunnel.Disconnect();
 					}
 				}
@@ -529,11 +525,11 @@ namespace SolidCP.Web.Clients
 
 			// block until ssh tunnel is ready
 			bool wait;
-			lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null;
+			lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
 			while (wait)
 			{
 				Thread.Sleep(1);
-				lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.ConnectException == null;
+				lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.Port.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
 			}
 
 			lock (tunnel)
