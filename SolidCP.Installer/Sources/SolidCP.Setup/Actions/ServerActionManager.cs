@@ -45,6 +45,7 @@ using Microsoft.Win32;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Security.Cryptography.X509Certificates;
 using SolidCP.Providers.OS;
 using System.Runtime.Remoting.Contexts;
 using System.Web.Services.Description;
@@ -885,12 +886,37 @@ namespace SolidCP.Setup.Actions
 		{
 			try
 			{
-				if (string.IsNullOrEmpty(vars.CertificateStore) || string.IsNullOrEmpty(vars.CertificateStoreLocation) ||
-					string.IsNullOrEmpty(vars.CertificateFindType) ||string.IsNullOrEmpty(vars.CertificateFindValue))
+				if ((string.IsNullOrEmpty(vars.CertificateStore) || string.IsNullOrEmpty(vars.CertificateStoreLocation) ||
+					string.IsNullOrEmpty(vars.CertificateFindType) || string.IsNullOrEmpty(vars.CertificateFindValue)) &&
+					(string.IsNullOrEmpty(vars.CertificateFile) || string.IsNullOrEmpty(vars.CertificatePassword)))
 				{ return; }
 
 				Begin(LogStartInstallMessage);
 				Log.WriteStart("Updating configuration file (certificate)");
+
+				if (!string.IsNullOrEmpty(vars.CertificateFile))
+				{
+					// import certificate into local my store
+					try {
+						var certificate = new X509Certificate2(vars.CertificateFile, vars.CertificatePassword);
+						using (var store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
+						{
+							store.Open(OpenFlags.ReadWrite);
+							var current = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false)
+								.OfType<X509Certificate2>();
+							if (!current.Any()) store.Add(certificate);
+							else Log.WriteError($"Error importing {Path.GetFileName(vars.CertificateFile)} to local my certificate store. There is already another certifictae with that Thumbprint in the store.");
+							store.Close();
+						}
+						vars.CertificateStore = nameof(StoreName.My);
+						vars.CertificateStoreLocation = nameof(StoreLocation.LocalMachine);
+						vars.CertificateFindType = nameof(X509FindType.FindByThumbprint);
+						vars.CertificateFindValue = certificate.Thumbprint;
+					} catch(Exception ex) {
+						Log.WriteError($"Error importing {Path.GetFileName(vars.CertificateFile)} to local my certificate store.", ex);
+						throw;
+					}
+				}
 				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
 				var doc = XElement.Load(file);
 				var configuration = doc.Element("configuration");

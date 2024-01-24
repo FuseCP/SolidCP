@@ -95,10 +95,6 @@ namespace SolidCP.Setup
 			txtStoreFindType.Items.Add(X509FindType.FindByIssuerName.ToString());
 			txtStoreFindType.Items.Add(X509FindType.FindByIssuerDistinguishedName.ToString());
 
-			txtCertFileFile.Enabled = txtCertFilePassword.Enabled = btnOpenCertFile.Enabled = !OSInfo.IsWindows;
-
-			if (OSInfo.IsWindows) tabControl.Controls.Remove(tabPageCertFile);
-
 			Update();
 		}
 
