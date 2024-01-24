@@ -207,7 +207,20 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			settings.LetsEncryptCertificateDomains = domain;
 			settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
 			settings.CryptoKey = vars.CryptoKey;
-			settings.ServerPassword = vars.ServerPassword;
+			if (vars.UpdateServerPassword)
+			{
+				if (vars.SetupAction == SetupActions.Setup)
+				{
+					settings.ServerPassword = "";
+					settings.ServerPasswordSHA1 = vars.ServerPassword;
+				} else
+				{
+					settings.ServerPassword = vars.ServerPassword;
+				}
+			} else
+			{
+				settings.ServerPassword = "";
+			}
 			settings.CertificateFile = vars.CertificateFile;
 			settings.CertificatePassword = vars.CertificatePassword;
 			settings.CertificateStoreLocation = vars.CertificateStoreLocation;

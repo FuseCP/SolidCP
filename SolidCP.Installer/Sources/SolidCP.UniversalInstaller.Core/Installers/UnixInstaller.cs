@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SolidCP.EnterpriseServer;
+using SolidCP.Setup;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -91,9 +92,9 @@ namespace SolidCP.UniversalInstaller
 			if (File.Exists(appsettingsfile))
 			{
 				var appsettings = JsonConvert.DeserializeObject<ServerAppSettings>(File.ReadAllText(appsettingsfile)) ?? new ServerAppSettings();
-				CryptoUtils.CryptoKey = ServerSettings.CryptoKey;
 				ServerSettings.Urls = appsettings.applicationUrls;
-				ServerSettings.ServerPassword = CryptoUtils.Decrypt(appsettings.Server?.Password ?? "");
+				ServerSettings.ServerPasswordSHA1 = appsettings.Server?.Password ?? "";
+				ServerSettings.ServerPassword = "";
 				ServerSettings.LetsEncryptCertificateEmail = appsettings.LettuceEncrypt?.EmailAddress;
 				ServerSettings.LetsEncryptCertificateDomains = (appsettings.LettuceEncrypt != null && appsettings.LettuceEncrypt.DomainNames != null) ? string.Join(", ", appsettings.LettuceEncrypt.DomainNames) : "";
 				ServerSettings.CertificateFile = appsettings.Certificate?.File;
@@ -120,10 +121,17 @@ namespace SolidCP.UniversalInstaller
 			if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
 			else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
 
-			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword))
+			if (!string.IsNullOrEmpty(ServerSettings.ServerPassword) || !string.IsNullOrEmpty(ServerSettings.ServerPasswordSHA1))
 			{
-				CryptoUtils.CryptoKey = ServerSettings.CryptoKey;
-				appsettings.Server = new ServerAppSettings.ServerSetting() { Password = CryptoUtils.Encrypt(ServerSettings.ServerPassword ?? "") };
+				string pwsha1;
+				if (!string.IsNullOrEmpty(ServerSettings.ServerPassword))
+				{
+					pwsha1 = Utils.ComputeSHA1(ServerSettings.ServerPassword);
+				} else
+				{
+					pwsha1 = ServerSettings.ServerPasswordSHA1;
+				}
+				appsettings.Server = new ServerAppSettings.ServerSetting() { Password = pwsha1 };
 			}
 
 			if (!string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(ServerSettings.LetsEncryptCertificateDomains))

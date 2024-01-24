@@ -845,13 +845,17 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
+			if (!vars.UpdateServerPassword) return;
 			try
 			{
 				Begin(LogStartInstallMessage);
 				Log.WriteStart("Updating configuration file (server password)");
 				Log.WriteInfo("Single quotes are added for clarity purposes");
 				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-				string hash = Utils.ComputeSHA1(vars.ServerPassword);
+				string hash;
+				// TODO is this a bug? ServerPasswordPage uses strange setting of Util.ComputeSHA1
+				if (vars.SetupAction == SetupActions.Setup) hash = vars.ServerPassword; 
+				else hash = Utils.ComputeSHA1(vars.ServerPassword);
 				var XmlDoc = new XmlDocument();
 				XmlDoc.Load(file);
 				var Node = XmlDoc.SelectSingleNode("configuration/SolidCP.server/security/password") as XmlElement;

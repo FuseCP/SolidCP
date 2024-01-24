@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Security.Policy;
 using System.Security.Principal;
+using SolidCP.Setup;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace SolidCP.UniversalInstaller
@@ -107,11 +108,12 @@ namespace SolidCP.UniversalInstaller
 				ServerSettings.CertificateFindValue = cert.Attribute("findValue")?.Value;
 			}
 
+			ServerSettings.ServerPasswordSHA1 = ServerSettings.ServerPassword = "";
 			// server password
 			var password = configuration?.Element("SolidCP.server/security/password");
 			if (password != null)
 			{
-				ServerSettings.ServerPassword = password.Attribute("value")?.Value;
+				ServerSettings.ServerPasswordSHA1 = password.Attribute("value")?.Value;
 			}
 		}
 
@@ -164,7 +166,8 @@ namespace SolidCP.UniversalInstaller
 			var server = configuration.Element("SolidCP.server");
 			var security = server?.Element("security");
 			var password = security?.Element("password");
-			password.Attribute("value").SetValue(settings.ServerPassword);
+			var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA1 : Utils.ComputeSHA1(settings.ServerPassword);
+			password.Attribute("value").SetValue(pwsha1);
 
 			// Swagger Version
 			var swaggerwcf = configuration.Element("swaggerWcf");
