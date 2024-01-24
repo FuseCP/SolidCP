@@ -37,7 +37,7 @@
                 <scp:CollapsiblePanel ID="ConnectionHeader" runat="server" IsCollapsed="true"
                     TargetControlID="ConnectionPanel" ResourceKey="ConnectionHeader" Text="Connection Settings"></scp:CollapsiblePanel>
                 <asp:Panel ID="ConnectionPanel" runat="server" Height="0" Style="overflow: hidden;">
-                    <table>
+                    <table width="100%">
                         <tr>
                             <td class="SubHead" style="width: 150px">
                                 <asp:Label ID="lblServerUrl" runat="server" meta:resourcekey="lblServerUrl"></asp:Label>

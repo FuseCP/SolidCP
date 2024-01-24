@@ -12,6 +12,7 @@ using System.Reflection;
 using System.CodeDom;
 using System.ServiceModel.Description;
 using System.Net;
+using System.Diagnostics;
 using System.IO;
 using Renci.SshNet;
 using SolidCP.Providers.OS;
@@ -384,6 +385,8 @@ namespace SolidCP.Web.Clients
 					IsConnecting = true;
 					Client.ErrorOccurred -= Restart;
 					Port.Exception -= Restart;
+
+					Trace.TraceError($"Exception on SSH Tunnel {Url}: {Exception}");
 					
 					Disconnect();
 
@@ -398,6 +401,8 @@ namespace SolidCP.Web.Clients
 						ConnectException = ex;
 						isRestarting = false;
 						Disconnect();
+
+						Trace.TraceError($"Failed to reconnect SSH Tunnel to {Url}: {ex}");
 					}
 					isRestarting = IsConnecting = false;
 					Client.ErrorOccurred += Restart;
@@ -479,12 +484,16 @@ namespace SolidCP.Web.Clients
 						tunnel.IsConnecting = false;
 						sshClient.ErrorOccurred += tunnel.Restart;
 						forwardedPort.Exception += tunnel.Restart;
+						
+						Trace.TraceInformation($"SSH Tunnel on {url} started.");
 					}
 					catch (Exception ex)
 					{
 						tunnel.ConnectException = ex;
 						tunnel.IsConnecting = false;
 						tunnel.Disconnect();
+						
+						Trace.TraceError($"Failed to connect SSH Tunnel to {url}: {ex}");
 					}
 				}
 			});
