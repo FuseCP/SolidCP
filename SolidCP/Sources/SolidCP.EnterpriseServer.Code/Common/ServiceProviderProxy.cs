@@ -114,7 +114,7 @@ namespace SolidCP.EnterpriseServer
 			cnfg.ServerUrl = CryptoUtils.DecryptServerUrl(serverUrl);
 			if (proxy.IsAuthenticated)
 			{
-				cnfg.ServerPassword = CryptoUtils.Encrypt(serverPassword);
+				cnfg.ServerPassword = CryptoUtils.SHA1(serverPassword);
 			}
 
 			// configure proxy!
