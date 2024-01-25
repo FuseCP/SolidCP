@@ -38,8 +38,8 @@ namespace SolidCP.UniversalInstaller
 		}
 		public bool NeedRemoveNet8Runtime = false;
 		public bool NeedRemoveNet8AspRuntime = false;
-		public virtual string? InstallWebRootPath { get; set; } = null;
-		public virtual string? InstallExeRootPath { get; set; } = null;
+		public virtual string InstallWebRootPath { get; set; } = null;
+		public virtual string InstallExeRootPath { get; set; } = null;
 		public abstract string WebsiteLogsPath { get; }
 		public int EstimatedOutputLines = 0;
 
