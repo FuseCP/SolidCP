@@ -117,4 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lblWebSiteDomain.Text" xml:space="preserve">
+    <value>You've choosen an insecure http protocol for the server. That way you will only be able to access the server from localhost, a LAN IP, via an SSH Tunnel or VPN. You can access the server via SSH Tunnel by specifying the url 
+ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;/&lt;remoteport&gt;
+when adding the server in SolidCP Portal</value>
+  </data>
 </root>

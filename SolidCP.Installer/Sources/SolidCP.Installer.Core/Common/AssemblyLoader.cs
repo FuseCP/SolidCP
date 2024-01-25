@@ -87,13 +87,22 @@ namespace SolidCP.Installer.Common
 				domain.InitializeLifetimeService();
 				domain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
 
-				AssemblyLoader loader = (AssemblyLoader)domain.CreateInstanceAndUnwrap(
-					typeof(AssemblyLoader).Assembly.FullName,
-					typeof(AssemblyLoader).FullName);
+				AssemblyLoader loader;
 
-				foreach (TraceListener listener in Trace.Listeners)
+				if (!Debugger.IsAttached)
 				{
-					loader.AddTraceListener(listener);
+					loader = (AssemblyLoader)domain.CreateInstanceAndUnwrap(
+						typeof(AssemblyLoader).Assembly.FullName,
+						typeof(AssemblyLoader).FullName);
+
+					foreach (TraceListener listener in Trace.Listeners)
+					{
+						loader.AddTraceListener(listener);
+					}
+				}
+				else  // don't call in separate AppDomain when debugging
+				{
+					loader = new AssemblyLoader();
 				}
 
 				object ret = loader.RemoteRun(fileName, typeName, methodName, parameters);

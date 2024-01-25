@@ -72,8 +72,14 @@ namespace SolidCP.Setup.Actions
 			try
 			{
 				var installerDir = Path.Combine(Path.GetDirectoryName(vars.InstallationFolder), "Installer");
-				if (!Directory.Exists(installerDir)) Directory.CreateDirectory(installerDir);
-
+				if (!Directory.Exists(installerDir))
+				{
+					Directory.CreateDirectory(installerDir);
+					OSInfo.Unix.GrantUnixPermissions(installerDir,
+						UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
+						UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.GroupExecute |
+						UnixFileMode.OtherRead | UnixFileMode.OtherWrite | UnixFileMode.OtherExecute);
+				}
 				var exePath = Path.Combine(installerDir, Path.GetFileName(AppConfig.ConfigurationPath));
 
 				if (AppConfig.ConfigurationPath != exePath)
@@ -85,13 +91,13 @@ namespace SolidCP.Setup.Actions
 				File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nmono {exePath}");
 
 				OSInfo.Unix.GrantUnixPermissions("/usr/bin/solidcp", UnixFileMode.UserExecute | UnixFileMode.UserRead | UnixFileMode.UserWrite |
-					UnixFileMode.GroupRead | UnixFileMode.GroupExecute | UnixFileMode.GroupWrite |
+					UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
 					UnixFileMode.OtherExecute | UnixFileMode.OtherRead);
-				OSInfo.Unix.GrantUnixPermissions(exePath, UnixFileMode.GroupExecute | UnixFileMode.GroupRead | UnixFileMode.GroupWrite |
+				OSInfo.Unix.GrantUnixPermissions(exePath, UnixFileMode.GroupExecute | UnixFileMode.GroupRead |
 					UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
 					UnixFileMode.OtherRead | UnixFileMode.OtherExecute);
-				OSInfo.Unix.GrantUnixPermissions(exePath + ".config", UnixFileMode.GroupRead | UnixFileMode.GroupWrite | UnixFileMode.UserRead | UnixFileMode.UserWrite |
-					UnixFileMode.OtherRead | UnixFileMode.OtherWrite);
+				OSInfo.Unix.GrantUnixPermissions(exePath + ".config", UnixFileMode.GroupRead | UnixFileMode.UserRead | UnixFileMode.UserWrite |
+					UnixFileMode.OtherRead);
 
 				// creat icon
 				var iconFileName = Path.Combine(installerDir, "logo.png");
@@ -228,6 +234,8 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			settings.CertificateFindType = vars.CertificateFindType;
 			settings.CertificateFindValue = vars.CertificateFindValue;
 
+			if (vars.InstallNet8Runtime) installer.InstallNet8Runtime();
+
 			installer.InstallServerPrerequisites();
 			installer.InstallServerWebsite();
 			installer.SetServerFilePermissions();
@@ -240,6 +248,8 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			Finish(LogStartMessage);
 
 			//update install log
+
+			if (vars.InstallNet8Runtime) InstallLog.AppendLine("- Installed .NET 8 Runtime.");
 			InstallLog.AppendLine("- Created a new system service SolidCPServer running the website.");
 			InstallLog.AppendLine("  You can access the application by the following URLs:");
 			foreach (string url in urls)

@@ -385,11 +385,13 @@ namespace SolidCP.Setup
 		}
 		internal static CheckStatuses CheckNet8Runtime(SetupVariables setupVariables, out string details)
 		{
-			details = "NET 8 Runtime is installed.";
+			details = ".NET 8 Runtime is installed.";
 			CheckStatuses ret = CheckStatuses.Success;
 			if (!UniversalInstaller.Installer.Current.CheckNet8RuntimeInstalled())
 			{
-				details = "NET 8 Runtime not installed.";
+				setupVariables.InstallNet8Runtime = true;
+
+				details = ".NET 8 Runtime not installed.";
 				ret = CheckStatuses.Warning;
 			}
 			return ret;

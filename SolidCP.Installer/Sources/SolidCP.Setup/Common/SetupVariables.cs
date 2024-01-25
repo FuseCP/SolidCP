@@ -361,5 +361,7 @@ namespace SolidCP.Setup
 		}
 
 		public string InstallerExe { get; set; }
+
+		public bool InstallNet8Runtime { get; set; }
 	}
 }

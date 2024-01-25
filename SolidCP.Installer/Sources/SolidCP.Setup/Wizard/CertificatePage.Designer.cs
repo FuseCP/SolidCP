@@ -357,7 +357,7 @@ namespace SolidCP.Setup
 			// 
 			this.openCertFileDialog.DefaultExt = "pfx";
 			this.openCertFileDialog.FileName = "localhost.pfx";
-			this.openCertFileDialog.Filter = "Certificate Files|*.pfx|All files|*.*";
+			this.openCertFileDialog.Filter = "Certificate Files (*.pfx)|*.pfx|All files (*.*)|*.*";
 			this.openCertFileDialog.Title = "Use Certificate File";
 			// 
 			// CertificatePage

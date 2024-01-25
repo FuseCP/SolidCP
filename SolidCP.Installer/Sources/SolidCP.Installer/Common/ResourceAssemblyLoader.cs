@@ -51,7 +51,7 @@ namespace SolidCP.Installer
 				if (assName != null)
 				{
 					if (copyToFile == true)
-					{
+					{ // load from file
 						using (var assStream = host.GetManifestResourceStream(assName))
 						using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
 						{

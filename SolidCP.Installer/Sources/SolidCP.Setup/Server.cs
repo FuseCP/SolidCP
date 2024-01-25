@@ -152,7 +152,7 @@ namespace SolidCP.Setup
 					page1.Checks.AddRange(new ConfigurationCheck[]
 					{
 					new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
-					new ConfigurationCheck(CheckTypes.Net8Runtime, "NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
 					new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
 					});
 				}

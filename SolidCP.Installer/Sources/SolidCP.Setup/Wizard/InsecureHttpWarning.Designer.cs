@@ -60,6 +60,7 @@ namespace SolidCP.Setup
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InsecureHttpWarningPage));
 			this.grpWebSiteSettings = new System.Windows.Forms.GroupBox();
 			this.lblWebSiteDomain = new System.Windows.Forms.Label();
 			this.grpWebSiteSettings.SuspendLayout();
@@ -77,12 +78,11 @@ namespace SolidCP.Setup
 			// 
 			// lblWebSiteDomain
 			// 
-			this.lblWebSiteDomain.Location = new System.Drawing.Point(30, 53);
+			this.lblWebSiteDomain.Location = new System.Drawing.Point(30, 30);
 			this.lblWebSiteDomain.Name = "lblWebSiteDomain";
-			this.lblWebSiteDomain.Size = new System.Drawing.Size(340, 62);
+			this.lblWebSiteDomain.Size = new System.Drawing.Size(340, 85);
 			this.lblWebSiteDomain.TabIndex = 4;
-			this.lblWebSiteDomain.Text = "You\'ve choosen an insecure http protocol for the server. That way you will only b" +
-    "e able to access the server from localhost or a LAN IP.";
+			this.lblWebSiteDomain.Text = resources.GetString("lblWebSiteDomain.Text");
 			// 
 			// InsecureHttpWarningPage
 			// 

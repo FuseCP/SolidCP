@@ -838,7 +838,14 @@ namespace SolidCP.Setup
 				{
 					if (!ResolvedHosts.TryGetValue(host, out ips))
 					{
-						ResolvedHosts.Add(host, ips = Dns.GetHostEntry(host).AddressList);
+						try
+						{
+							ips = Dns.GetHostEntry(host).AddressList;
+							ResolvedHosts.Add(host, ips);
+						} catch
+						{
+							return false;
+						}
 					}
 				}
 				return ips

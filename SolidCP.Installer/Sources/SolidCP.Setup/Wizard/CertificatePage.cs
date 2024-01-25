@@ -41,6 +41,7 @@ using System.Windows.Forms;
 
 using SolidCP.Setup.Web;
 using SolidCP.Providers.OS;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
@@ -76,15 +77,14 @@ namespace SolidCP.Setup
 			tabControl.Selected += SetAllowedMoveNext;
 			manualCert.CheckedChanged += SetAllowedMoveNext;
 
-			txtStoreLocation.Items.Clear();
-			txtStoreLocation.Items.Add(StoreLocation.LocalMachine.ToString());
-			txtStoreLocation.Items.Add(StoreLocation.CurrentUser.ToString());
+			string[] names, locations;
+			CertificateStoreInfo.GetStoreNames(out names, out locations);
 
+			txtStoreLocation.Items.Clear();
+			txtStoreLocation.Items.AddRange(locations.OfType<object>().ToArray());
 
 			txtStoreName.Items.Clear();
-			txtStoreName.Items.Add(StoreName.Root.ToString());
-			txtStoreName.Items.Add(StoreName.My.ToString());
-			txtStoreName.Items.Add(StoreName.TrustedPeople.ToString());
+			txtStoreName.Items.AddRange(names.OfType<object>().ToArray());
 
 			txtStoreFindType.Items.Clear();
 			txtStoreFindType.Items.Add(X509FindType.FindBySubjectName.ToString());
@@ -151,16 +151,15 @@ namespace SolidCP.Setup
 				ShowWarning("You must specify a Find Value.");
 				return false;
 			}
-			var store = new X509Store(name, location);
-			store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-			var certs = store.Certificates.Find(findType, txtStoreFindValue.Text, true);
-			if (!certs.OfType<X509Certificate2>().Any())
+
+			if (!CertificateStoreInfo.Exists(location, name, findType, txtStoreFindValue.Text))
 			{
 				ShowWarning($"No valid certificates found for {txtStoreFindValue.Text}.");
 				return false;
 			}
-
+			
 			return true;
+
 		}
 
 		private bool CheckCertFile()
