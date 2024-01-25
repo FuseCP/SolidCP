@@ -62,6 +62,8 @@ rm packages-microsoft-prod.deb
 			}
 
 			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
+
+			HasDotnet = Shell.Find("dotnet") != null;
 		}
 
 	}

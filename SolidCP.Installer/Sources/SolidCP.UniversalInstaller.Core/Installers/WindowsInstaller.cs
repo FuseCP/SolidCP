@@ -46,16 +46,22 @@ namespace SolidCP.UniversalInstaller
 					throw new PlatformNotSupportedException("NET 8 is not supported on this OS.");
 
 				WinGet.Install("Microsoft.DotNet.AspNetCore.8;Microsoft.DotNet.Runtime.8");
+
+				HasDotnet = Shell.Find("dotnet") != null;
 			}
 		}
 
 		public override void RemoveNet8AspRuntime()
 		{
 			WinGet.Remove("Microsoft.DotNet.AspNetCore.8");
+
+			HasDotnet = Shell.Find("dotnet") != null;
 		}
 		public override void RemoveNet8NetRuntime()
 		{
 			WinGet.Remove("Microsoft.DotNet.Runtime.8");
+
+			HasDotnet = Shell.Find("dotnet") != null;
 		}
 
 		public void InstallNet48()
