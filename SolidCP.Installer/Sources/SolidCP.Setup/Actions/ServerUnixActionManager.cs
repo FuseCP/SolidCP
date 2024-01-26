@@ -248,9 +248,10 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 			Finish(LogStartMessage);
 
 			//update install log
+			var serviceId = (installer as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
 
 			if (vars.InstallNet8Runtime) InstallLog.AppendLine("- Installed .NET 8 Runtime.");
-			InstallLog.AppendLine("- Created a new system service SolidCPServer running the website.");
+			InstallLog.AppendLine($"- Created a new system service {serviceId} running the website.");
 			InstallLog.AppendLine("  You can access the application by the following URLs:");
 			foreach (string url in urls)
 			{
