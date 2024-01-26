@@ -47,7 +47,7 @@ namespace SolidCP.UniversalInstaller
 
 				WinGet.Install("Microsoft.DotNet.AspNetCore.8;Microsoft.DotNet.Runtime.8");
 
-				HasDotnet = Shell.Find("dotnet") != null;
+				ResetHasDotnet();
 			}
 		}
 
@@ -55,13 +55,13 @@ namespace SolidCP.UniversalInstaller
 		{
 			WinGet.Remove("Microsoft.DotNet.AspNetCore.8");
 
-			HasDotnet = Shell.Find("dotnet") != null;
+			ResetHasDotnet();
 		}
 		public override void RemoveNet8NetRuntime()
 		{
 			WinGet.Remove("Microsoft.DotNet.Runtime.8");
 
-			HasDotnet = Shell.Find("dotnet") != null;
+			ResetHasDotnet();
 		}
 
 		public void InstallNet48()

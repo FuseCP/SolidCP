@@ -22,7 +22,7 @@ namespace SolidCP.UniversalInstaller
 
 			Shell.Exec($"installer -pkg \"{tmp}\" -target /");
 			
-			HasDotnet = Shell.Find("dotnet") != null;
+			ResetHasDotnet();
 		}
 
 		public override void RemoveNet8AspRuntime()

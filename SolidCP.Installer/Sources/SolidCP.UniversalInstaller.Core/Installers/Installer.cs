@@ -36,6 +36,7 @@ namespace SolidCP.UniversalInstaller
 			get => hasDotnet ?? (hasDotnet = Shell.Find("dotnet") != null).Value;
 			set => hasDotnet = value;
 		}
+		public void ResetHasDotnet() => hasDotnet = null;
 		public bool NeedRemoveNet8Runtime = false;
 		public bool NeedRemoveNet8AspRuntime = false;
 		public virtual string InstallWebRootPath { get; set; } = null;
