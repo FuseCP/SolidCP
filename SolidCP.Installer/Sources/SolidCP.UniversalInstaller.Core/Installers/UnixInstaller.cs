@@ -8,7 +8,6 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SolidCP.EnterpriseServer;
-using SolidCP.Setup;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -186,7 +185,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallNet8Runtime();
 		}
-		public override Func<string, string?>? UnzipFilter => Net8UnzipFilter;
+		public override Func<string, string> UnzipFilter => Net8UnzipFilter;
 		public override bool IsRunningAsAdmin()
 		{
 			//var uid = Mono.Posix.Syscall.getuid();

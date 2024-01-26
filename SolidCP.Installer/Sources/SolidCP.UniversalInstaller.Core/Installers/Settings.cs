@@ -33,6 +33,7 @@ namespace SolidCP.UniversalInstaller
 		public string DatabaseServer { get; set; }
 		public string DatabaseUser { get; set; }
 		public string DatabasePassword { get; set; }
+		public bool WindowsAuthentication { get; set; }
 		public string CryptoKey { get; set; }
 	}
 

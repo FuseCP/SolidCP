@@ -360,10 +360,10 @@
     <EmbeddedResource Include="Resources\wacs.exe" />
     <EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
     <EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
-    <None Include="Resources\SolidCP.Installer.Core.pdb" />
+    <!--<EmbeddedResource Include="Resources\SolidCP.Installer.Core.pdb" />-->
     <EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
     <EmbeddedResource Include="Resources\logo.png" />
-    <None Include="Resources\Icons.MenuFileOpenIcon.png" />
+    <Content Include="Resources\Icons.MenuFileOpenIcon.png" />
     <Content Include="Resources\System.Runtime.CompilerServices.Unsafe.dll" />
     <EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
     <EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
@@ -372,6 +372,7 @@
     <EmbeddedResource Include="Resources\DotNetZip.dll" />
     <Content Include="Resources\MarginImage.GIF" />
     <EmbeddedResource Include="Resources\SyslogNet.Client.dll" />
+    <EmbeddedResource Include="Resources\Renci.SshNet.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\InstallerForm.resx">
@@ -487,7 +488,8 @@
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
       <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
-    </ItemGroup>
+      <FilesToCopy Include="..\..\..\SolidCP\Bin\net48\Renci.SshNet.dll" />	 
+	  </ItemGroup>
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
       <FilesToCopy Include="..\..\..\SolidCP\Bin\netstandard2.0\SolidCP.Providers.Base.pdb" />
       <FilesToCopy Include="..\SolidCP.UniversalInstaller.Core\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.Core.pdb" />

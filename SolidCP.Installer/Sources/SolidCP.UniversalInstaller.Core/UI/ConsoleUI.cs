@@ -182,7 +182,7 @@ Components to Install
 			Console.WriteLine(ex.ToString());
 		}
 
-		ConsoleForm? InstallationProgress = null;
+		ConsoleForm InstallationProgress = null;
 		public override void ShowInstallationProgress()
 		{
 			InstallationProgress = new ConsoleForm(@"

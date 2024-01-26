@@ -38,7 +38,6 @@ using SolidCP.Installer.Common;
 using System.Data;
 using System.Threading;
 using SolidCP.Installer.Configuration;
-using SolidCP.UniversalInstaller;
 using System.IO;
 using System.Collections;
 using System.Configuration;

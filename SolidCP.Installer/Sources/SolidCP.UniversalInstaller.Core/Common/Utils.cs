@@ -44,12 +44,12 @@ using System.Linq;
 using SolidCP.Providers.OS;
 using System.Net;
 
-namespace SolidCP.Setup
+namespace SolidCP.UniversalInstaller
 {
 	/// <summary>
 	/// Utils class.
 	/// </summary>
-	public sealed class Utils
+	public class Utils
 	{
 
 		/// <summary>

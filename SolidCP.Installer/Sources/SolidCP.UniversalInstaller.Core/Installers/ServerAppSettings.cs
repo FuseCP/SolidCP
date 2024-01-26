@@ -14,7 +14,7 @@ namespace SolidCP.UniversalInstaller
 	{
 		public class ServerSetting
 		{
-			public string? Password { get; set; }
+			public string Password { get; set; }
 		}
 
 		public class CertificateSetting
@@ -22,16 +22,16 @@ namespace SolidCP.UniversalInstaller
 			public StoreLocation StoreLocation;
 			public StoreName StoreName;
 			public X509FindType FindType;
-			public string? FindValue { get; set; }
-			public string? File { get; set; }
-			public string? Password { get; set; }
+			public string FindValue { get; set; }
+			public string File { get; set; }
+			public string Password { get; set; }
 		}
 
 		public class LettuceEncryptSetting
 		{
 			public bool AcceptTermOfService { get; set; }
 			public string[] DomainNames { get; set; }
-			public string? EmailAddress { get; set; }
+			public string EmailAddress { get; set; }
 		}
 		public class IgnoreAllowedHostsResolver : DefaultContractResolver
 		{
@@ -47,10 +47,10 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		public string? applicationUrls { get; set; } = null;
-		public string? AllowedHosts { get; set; } = null;
-		public ServerSetting? Server { get; set; }
-		public CertificateSetting? Certificate { get; set; }
-		public LettuceEncryptSetting? LettuceEncrypt { get; set; }
+		public string applicationUrls { get; set; } = null;
+		public string AllowedHosts { get; set; } = null;
+		public ServerSetting Server { get; set; }
+		public CertificateSetting Certificate { get; set; }
+		public LettuceEncryptSetting LettuceEncrypt { get; set; }
 	}
 }

@@ -163,7 +163,7 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		public virtual Func<string, string?>? UnzipFilter => null;
+		public virtual Func<string, string> UnzipFilter => null;
 
 		public async Task<string> DownloadFileAsync(string url)
 		{
@@ -185,17 +185,17 @@ namespace SolidCP.UniversalInstaller
 			return tmp;
 		}
 		public string DownloadFile(string url) => DownloadFileAsync(url).Result;
-		public string? Net48UnzipFilter(string file)
+		public string Net48UnzipFilter(string file)
 		{
 			return (!file.StartsWith("Setup/") && !file.StartsWith("bin_dotnet/") && !file.EndsWith(".json")) ? file : null;
 		}
-		public string? Net8UnzipFilter(string file)
+		public string Net8UnzipFilter(string file)
 		{
 			return (!file.StartsWith("Setup/") && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
 				!file.EndsWith(".config", StringComparison.OrdinalIgnoreCase) && file != "appsettings.json" &&
 				!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 		}
-		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string?>? filter = null)
+		public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string> filter = null)
 		{
 			var assembly = Assembly.GetEntryAssembly();
 			var resourceName = assembly.GetManifestResourceNames()
@@ -294,20 +294,28 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		protected void ParseConnectionString(string connectionString, out string server, out string user, out string password)
+		protected void ParseConnectionString(string connectionString, out string server, out string user, out string password,
+			out bool windowsAuthentication)
 		{
 			server = user = password = "";
-
-			var matches = Regex.Matches(connectionString, @"(?:Server\s*=\s*8?<server>.*?\s*(?:;|$)))|(?:uid\s*=\s*(?<user>.*?\s*(?:;|$)))|(?:pwd\s*=\s*(?<password>.*?\s*(?:;|$)))", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+			windowsAuthentication = false;
+			
+			var matches = Regex.Matches(connectionString, @"(?:Server\s*=\s*(?<server>.*?)\s*(?:;|$))|(?:(?:uid|User ID)\s*=\s*(?<user>.*?)\s*(?:;|$))|(?:(?:pwd|Password)\s*=\s*(?<password>.*?)\s*(?:;|$))|(?:Integrated Security\s*=\s*(?<windowsAuth>.*?)\s*(?:;|$))", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 			foreach (Match match in matches)
 			{
 				if (match.Groups["server"].Success) server = match.Groups["server"].Value;
 				if (match.Groups["user"].Success) user = match.Groups["user"].Value;
 				if (match.Groups["password"].Success) password = match.Groups["password"].Value;
+				if (match.Groups["windowsAuth"].Success)
+				{
+					var win = match.Groups["windowsAuth"].Value;
+					windowsAuthentication = string.Equals(win, "true", StringComparison.OrdinalIgnoreCase) ||
+						string.Equals(win, "SSPI", StringComparison.OrdinalIgnoreCase);
+				}
 			}
 		}
 
-		static Installer? current;
+		static Installer current;
 		public static Installer Current
 		{
 			get

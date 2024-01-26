@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller
 
 	public class ConsoleField
 	{
-		public string? Name = null;
+		public string Name = null;
 		public int X { get; set; }
 		public int Y { get; set; }
 		public int Width { get; set; }
@@ -77,13 +77,13 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public ConsoleField() { Text = ""; }
-		public Action<ConsoleField>? Validate = null;
-		public Action? Click = null;
+		public Action<ConsoleField> Validate = null;
+		public Action Click = null;
 		public bool Clicked { get; set; } = false;
 		public bool Checked { get; set; } = false;
 		public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
 		public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
-		public virtual ConsoleForm? Parent { get; set; } = null;
+		public virtual ConsoleForm Parent { get; set; } = null;
 
 		public virtual bool Edit(ConsoleKeyInfo key) => false;
 		public virtual void ReceiveFocus()
@@ -156,9 +156,9 @@ namespace SolidCP.UniversalInstaller
 		public override bool Centered => false;
 		public int EstimatedMaxProgress { get; set; }
 
-		Shell? shell;
+		Shell shell;
 		int lines = 0;
-		public Shell? Shell
+		public Shell Shell
 		{
 			get { return shell; }
 			set
@@ -369,13 +369,13 @@ namespace SolidCP.UniversalInstaller
 		public Installer Installer { get; set; } = Installer.Current;
 		public Shell Shell => Installer.Shell;
 		public string Template = "";
-		public PercentField? Progress => Fields
+		public PercentField Progress => Fields
 			.OfType<PercentField>()
 			.FirstOrDefault();
 
-		public ConsoleField? Focus = null;
+		public ConsoleField Focus = null;
 
-		public Button? DefaultButton => Fields
+		public Button DefaultButton => Fields
 			.OfType<Button>()
 			.FirstOrDefault(f => f.Default);
 
@@ -426,7 +426,7 @@ namespace SolidCP.UniversalInstaller
 			action?.Invoke(this);
 			return this;
 		}
-		public void SetFocus(ConsoleField? field)
+		public void SetFocus(ConsoleField field)
 		{
 			Console.CursorVisible = false;
 			if (Focus != null)
@@ -554,7 +554,7 @@ namespace SolidCP.UniversalInstaller
 			return this;
 		}
 
-		public ConsoleForm Save(object? result)
+		public ConsoleForm Save(object result)
 		{
 			if (result == null) return this;
 
@@ -624,7 +624,7 @@ namespace SolidCP.UniversalInstaller
 			return this;
 		}
 
-		public ConsoleForm Load(object? source)
+		public ConsoleForm Load(object source)
 		{
 			if (source == null) return this;
 

@@ -128,7 +128,8 @@
 		<EmbeddedResource Include="Resources\Microsoft.Web.PlatformInstaller.dll" />-->
 		<EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
 		<EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-		
+		<EmbeddedResource Include="Resources\Renci.SshNet.dll" />
+
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Server.zip" Link="Resources\SolidCP-Server.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-EnterpriseServer.zip" Link="Resources\SolidCP-EnterpriseServer.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Portal.zip" Link="Resources\SolidCP-Portal.zip" />
@@ -166,6 +167,7 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\Renci.SshNet.dll" />
 		</ItemGroup>
 		<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
 			<FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />

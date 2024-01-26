@@ -13,8 +13,6 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Security.Policy;
 using System.Security.Principal;
-using SolidCP.Setup;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -22,17 +20,17 @@ namespace SolidCP.UniversalInstaller
 	{
 		const bool Net8RuntimeNeeded = false;
 
-		public override string? InstallExeRootPath
+		public override string InstallExeRootPath
 		{
 			get => base.InstallExeRootPath ??
 				(base.InstallExeRootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), SolidCP));
 			set => base.InstallExeRootPath = value;
 		}
-		public override string? InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }
+		public override string InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }
 		public override string WebsiteLogsPath => InstallExeRootPath ?? "";
 
 		WinGet WinGet => (WinGet)((IWindowsOperatingSystem)OSInfo.Current).WinGet;
-		public override Func<string, string?>? UnzipFilter => Net48UnzipFilter;
+		public override Func<string, string> UnzipFilter => Net48UnzipFilter;
 
 		public override void InstallNet8Runtime()
 		{
@@ -210,11 +208,13 @@ namespace SolidCP.UniversalInstaller
 			var cstring = configuration?.Element("connectionStrings").Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
 
 			string server, user, password;
-			ParseConnectionString(cstring?.Attribute("value")?.Value, out server, out user, out password);
+			bool windowsAuthentication;
+			ParseConnectionString(cstring?.Attribute("value")?.Value, out server, out user, out password, out windowsAuthentication);
 
 			EnterpriseServerSettings.DatabaseServer = server;
 			EnterpriseServerSettings.DatabaseUser = user;
 			EnterpriseServerSettings.DatabasePassword = password;
+			EnterpriseServerSettings.WindowsAuthentication = windowsAuthentication;
 
 			// CryptoKey
 			var cryptoKey = configuration?.Elements("appSettings/add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
@@ -282,7 +282,8 @@ namespace SolidCP.UniversalInstaller
 			// Connection String
 			var connectionStrings = configuration.Element("connectionStrings");
 			var cstring = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-			cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database=SolidCP;uid={settings.DatabaseUser};pwd={settings.DatabasePassword}");
+			var authentication = settings.WindowsAuthentication ? "Integrated Security=true" : $"User ID={settings.DatabaseUser};Password={settings.DatabasePassword}";
+			cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database=SolidCP;{authentication}");
 
 			// Swagger Version
 			var swaggerwcf = configuration.Element("swaggerWcf");

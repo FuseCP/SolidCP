@@ -7,7 +7,7 @@ namespace SolidCP.UniversalInstaller {
 
     public abstract class UI {
 
-        static UI? current;
+        static UI current;
         public static UI Current
         {
             get

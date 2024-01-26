@@ -274,6 +274,7 @@
 		<EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
 		<EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
 		<EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
+		<EmbeddedResource Include="Resources\Renci.SshNet.dll" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Unix.pdb" />
@@ -443,6 +444,7 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.IO.FileSystem.AccessControl.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.AccessControl.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\Renci.SshNet.dll" />
 		</ItemGroup>
 		<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
 			<FilesToCopy Include="..\SolidCP.Installer.Core\bin\$(Configuration)\SolidCP.Installer.Core.pdb" />

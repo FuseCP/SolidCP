@@ -37009,6 +37009,21 @@ After creating your virtual directory go to FP administrator and create a subweb
     <DefaultValue>Public IP Address:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
+    <Key>lblBinPath.Text</Key>
+    <DefaultValue>Apache Bin Folder:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
+    <Key>lblConfigFile.Text</Key>
+    <DefaultValue>Apache Configuration File:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
+    <Key>lblConfigPath.Text</Key>
+    <DefaultValue>Apache Configuration Path:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\ArgoMail_EditAccount.ascx.resx</File>
     <Key>chkDeleteOnForward.Text</Key>
     <DefaultValue>Delete Message on Forward</DefaultValue>
@@ -47039,6 +47054,21 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\StorageSpaceServices_Settings.ascx.resx</File>
     <Key>lblWebDavSiteAppPoolIdentity.Text</Key>
     <DefaultValue>Webdav site application pool identity:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Unix_Settings.ascx.resx</File>
+    <Key>lblLogDir.Text</Key>
+    <DefaultValue>Log Directory:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Unix_Settings.ascx.resx</File>
+    <Key>lblUsersHome.Text</Key>
+    <DefaultValue>Users Home Directory:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_Settings.ascx.resx</File>
+    <Key>lblConfigFile.Text</Key>
+    <DefaultValue>vsftpd Configuration File:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2003_Settings.ascx.resx</File>
