@@ -56,7 +56,8 @@ namespace SolidCP.Web.Services
 		{
 			Assembly eserver = null, server = null;
 
-			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices.Contains("enterpriseserver"))
+			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
+				ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "enterpriseserver"))
 			{
 				try
 				{
@@ -65,7 +66,8 @@ namespace SolidCP.Web.Services
 				catch { }
 			}
 
-			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices.Split(';', ',').Any(s => s == "server"))
+			if (ExposeWebServices == "" || ExposeWebServices == "all" || ExposeWebServices == "true" ||
+				ExposeWebServices.Split(';', ',').Any(s => s.Trim() == "server"))
 			{
 				try
 				{
