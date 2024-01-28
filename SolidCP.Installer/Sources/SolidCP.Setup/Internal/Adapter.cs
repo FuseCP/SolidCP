@@ -346,15 +346,25 @@ namespace SolidCP.Setup.Internal
 								Execute.UserName);
 							break;
 						case ActionTypes.DeleteWebSite:
-							if (iis7)
-								DeleteIIS7WebSite(Execute.SiteId);
-							else
-								DeleteWebSite(Execute.SiteId);
+							if (OSInfo.IsWindows)
+							{
+								if (iis7)
+									DeleteIIS7WebSite(Execute.SiteId);
+								else
+									DeleteWebSite(Execute.SiteId);
+							} else
+							{
+								var a = (IUninstallAction)new InstallServerUnixAction();
+								a.Run(Execute.SetupVariables);
+							}
 							break;
 						case ActionTypes.DeleteVirtualDirectory:
-							DeleteVirtualDirectory(
-								Execute.SiteId,
-								Execute.Name);
+							if (OSInfo.IsWindows)
+							{
+								DeleteVirtualDirectory(
+									Execute.SiteId,
+									Execute.Name);
+							}
 							break;
 						case ActionTypes.DeleteUserMembership:
 							DeleteUserMembership(Execute.Domain, Execute.Name, Execute.Membership);
@@ -363,10 +373,13 @@ namespace SolidCP.Setup.Internal
 							DeleteUserAccount(Execute.Domain, Execute.Name);
 							break;
 						case ActionTypes.DeleteApplicationPool:
-							if (iis7)
-								DeleteIIS7ApplicationPool(Execute.Name);
-							else
-								DeleteApplicationPool(Execute.Name);
+							if (OSInfo.IsWindows)
+							{
+								if (iis7)
+									DeleteIIS7ApplicationPool(Execute.Name);
+								else
+									DeleteApplicationPool(Execute.Name);
+							}
 							break;
 						case ActionTypes.UpdateConfig:
 							if (string.IsNullOrWhiteSpace(Execute.Key))
@@ -398,7 +411,12 @@ namespace SolidCP.Setup.Internal
 								Context.InstallationFolder);
 							break;
 						case ActionTypes.CreateWebSite:
-							CreateWebSite();
+							if (OSInfo.IsWindows) CreateWebSite();
+							else
+							{
+								var a = (IInstallAction)new InstallServerUnixAction();
+								a.Run(Execute.SetupVariables);
+							}
 							break;
 						case ActionTypes.ConfigureLetsEncrypt:
 							if (!ConfigureLetsEncrypt(!string.IsNullOrEmpty(m_Ctx.SetupXml))) {
@@ -2640,20 +2658,22 @@ namespace SolidCP.Setup.Internal
 
 		private void CopyWebConfig()
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Copying web.config");
 				string configPath = Path.Combine(Context.InstallationFolder, "web.config");
 				string config6Path = Path.Combine(Context.InstallationFolder, "web6.config");
 
-				bool iis7 = (Context.IISVersion.Major == 6);
+				bool iis6 = (Context.IISVersion.Major == 6);
 				if (!File.Exists(config6Path))
 				{
 					Log.WriteInfo(string.Format("File {0} not found", config6Path));
 					return;
 				}
 
-				if (iis7)
+				if (iis6)
 				{
 					if (!File.Exists(configPath))
 					{
@@ -2722,6 +2742,8 @@ namespace SolidCP.Setup.Internal
 
 		private void UpdateWebConfigNamespaces()
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				// find all .config files in the installation directory
@@ -3099,6 +3121,12 @@ namespace SolidCP.Setup.Internal
 		}
 		private void UpdateWebSiteBindings()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				UpdateWebSiteBindingsUnix();
+				return;
+			}
+
 			string componentId = Context.ComponentId;
 			string component = Context.ComponentFullName;
 			string siteId = Context.WebSiteId;
@@ -3186,7 +3214,36 @@ namespace SolidCP.Setup.Internal
 			}
 		}
 
-		private void CreateDatabaseUser()
+		private void UpdateWebSiteBindingsUnix()
+		{
+			try
+			{
+				var ip = Context.WebSiteIP;
+				var port = Context.WebSitePort;
+				var domain = Context.WebSiteDomain;
+				var urls = Utils.GetApplicationUrls(ip, domain, port, null)
+					.Select(url => Utils.IsHttps(ip, domain) ? "https://" + url : "http://" + url);
+
+				Log.WriteStart("Updating configuration file (web site bindings)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Context.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.Urls = string.Join(";", urls.ToArray());
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
+
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Update web site bindings error", ex);
+			}
+		}
+
+			private void CreateDatabaseUser()
 		{
 			try
 			{
@@ -3342,6 +3399,11 @@ namespace SolidCP.Setup.Internal
 
 		private void SetServerPassword()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				SetServerPasswordUnix();
+				return;
+			}
 			try
 			{
 				Log.WriteStart("Updating configuration file (server password)");
@@ -3380,8 +3442,35 @@ namespace SolidCP.Setup.Internal
 			}
 		}
 
+		private void SetServerPasswordUnix()
+		{
+			try
+			{
+				Log.WriteStart("Updating configuration file (server password)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Context.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.ServerPasswordSHA1 = Context.ServerPassword;
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Configuration file update error", ex);
+				throw;
+			}
+		}
+
 		private void UpdateServerPassword()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				UpdateServerPasswordUnix();
+				return;
+			}
 			try
 			{
 				if (!Context.UpdateServerPassword)
@@ -3425,6 +3514,27 @@ namespace SolidCP.Setup.Internal
 			}
 		}
 
+		private void UpdateServerPasswordUnix()
+		{
+			try
+			{
+				Log.WriteStart("Updating configuration file (server password)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Context.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.ServerPasswordSHA1 = Utils.ComputeSHA1(Context.ServerPassword);
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Configuration file update error", ex);
+				throw;
+			}
+		}
 		private void SetServiceSettings()
 		{
 			try
@@ -3635,6 +3745,8 @@ namespace SolidCP.Setup.Internal
 
 		private void ConfigureFolderPermissions()
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				string path;

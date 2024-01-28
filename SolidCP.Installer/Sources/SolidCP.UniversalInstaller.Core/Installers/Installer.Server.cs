@@ -38,7 +38,7 @@ namespace SolidCP.UniversalInstaller
 
 		public virtual void RemoveServer()
 		{
-			RemoveServerPrerequisites();
+			//RemoveServerPrerequisites();
 			RemoveServerWebsite();
 			RemoveServerFolder();
 		}

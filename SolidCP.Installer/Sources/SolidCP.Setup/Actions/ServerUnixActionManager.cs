@@ -175,105 +175,140 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-			if (String.IsNullOrEmpty(vars.InstallationFolder) || vars.InstallationFolder.Contains('\\'))
-				vars.InstallationFolder = Path.Combine("/var/www/SolidCP", vars.ComponentName);
-			//
-			if (String.IsNullOrEmpty(vars.WebSiteDomain))
-				vars.WebSiteDomain = String.Empty;
-
-
-			var siteName = vars.ComponentFullName;
-			var ip = vars.WebSiteIP;
-			var port = vars.WebSitePort;
-			var domain = vars.WebSiteDomain;
-			var contentPath = vars.InstallationFolder;
-			var iisVersion = vars.IISVersion;
-			var iis7 = (iisVersion.Major >= 7);
-			var userName = CreateWebApplicationPoolAction.GetWebIdentity(vars);
-			var userPassword = vars.UserPassword;
-			var appPool = vars.WebApplicationPoolName;
-			var componentId = vars.ComponentId;
-			var newSiteId = String.Empty;
-			var urls = Utils.GetApplicationUrls(ip, domain, port, null)
-				.Select(url => Utils.IsHttps(ip, domain) ? "https://" + url : "http://" + url);
-			var installer = UniversalInstaller.Installer.Current;
-
-			Begin(LogStartMessage);
-
 			Log.WriteStart(LogStartMessage);
-			installer.Shell.Log += (msg) =>
-			{
-				Log.Write(msg);
-			};
 
-			installer.ReadServerConfiguration();
-
-			var settings = installer.ServerSettings;
-			settings.Urls = string.Join(";", urls.ToArray());
-			settings.LetsEncryptCertificateDomains = domain;
-			settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
-			settings.CryptoKey = vars.CryptoKey;
-			if (vars.UpdateServerPassword)
+			try
 			{
-				if (vars.SetupAction == SetupActions.Setup)
+
+				if (String.IsNullOrEmpty(vars.InstallationFolder) || vars.InstallationFolder.Contains('\\'))
+					vars.InstallationFolder = Path.Combine("/var/www/SolidCP", vars.ComponentName);
+				//
+				if (String.IsNullOrEmpty(vars.WebSiteDomain))
+					vars.WebSiteDomain = String.Empty;
+
+
+				var siteName = vars.ComponentFullName;
+				var ip = vars.WebSiteIP;
+				var port = vars.WebSitePort;
+				var domain = vars.WebSiteDomain;
+				var contentPath = vars.InstallationFolder;
+				var iisVersion = vars.IISVersion;
+				var iis7 = (iisVersion.Major >= 7);
+				var userName = CreateWebApplicationPoolAction.GetWebIdentity(vars);
+				var userPassword = vars.UserPassword;
+				var appPool = vars.WebApplicationPoolName;
+				var componentId = vars.ComponentId;
+				var newSiteId = String.Empty;
+				var urls = Utils.GetApplicationUrls(ip, domain, port, null)
+					.Select(url => Utils.IsHttps(ip, domain) ? "https://" + url : "http://" + url);
+				var installer = UniversalInstaller.Installer.Current;
+
+				Begin(LogStartMessage);
+
+				Log.WriteStart(LogStartMessage);
+				installer.Shell.Log += (msg) =>
+				{
+					Log.Write(msg);
+				};
+
+				installer.ReadServerConfiguration();
+
+				var settings = installer.ServerSettings;
+				settings.Urls = string.Join(";", urls.ToArray());
+				settings.LetsEncryptCertificateDomains = domain;
+				settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
+				settings.CryptoKey = vars.CryptoKey;
+				if (vars.UpdateServerPassword)
+				{
+					if (vars.SetupAction == SetupActions.Setup)
+					{
+						settings.ServerPassword = "";
+						settings.ServerPasswordSHA1 = vars.ServerPassword;
+					}
+					else
+					{
+						settings.ServerPassword = vars.ServerPassword;
+					}
+				}
+				else
 				{
 					settings.ServerPassword = "";
-					settings.ServerPasswordSHA1 = vars.ServerPassword;
-				} else
-				{
-					settings.ServerPassword = vars.ServerPassword;
 				}
-			} else
-			{
-				settings.ServerPassword = "";
+				settings.CertificateFile = vars.CertificateFile;
+				settings.CertificatePassword = vars.CertificatePassword;
+				settings.CertificateStoreLocation = vars.CertificateStoreLocation;
+				settings.CertificateStoreName = vars.CertificateStore;
+				settings.CertificateFindType = vars.CertificateFindType;
+				settings.CertificateFindValue = vars.CertificateFindValue;
+
+				if (vars.InstallNet8Runtime) installer.InstallNet8Runtime();
+
+				installer.InstallServerPrerequisites();
+				installer.InstallServerWebsite();
+				installer.SetServerFilePermissions();
+				installer.ConfigureServer();
+
+				vars.VirtualDirectory = String.Empty;
+				vars.NewWebSite = true;
+				vars.NewVirtualDirectory = false;
+
+				Finish(LogStartMessage);
+
+				Log.WriteEnd("Installed SolidCP Server");
+
+				//update install log
+				var serviceId = (installer as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
+
+				if (vars.InstallNet8Runtime) InstallLog.AppendLine("- Installed .NET 8 Runtime.");
+				InstallLog.AppendLine($"- Created a new system service {serviceId} running the website.");
+				InstallLog.AppendLine("  You can access the application by the following URLs:");
+				foreach (string url in urls)
+				{
+					InstallLog.AppendLine("  " + url);
+				}
+				InstallLog.AppendLine($"- Opened the firewall for port {vars.WebSitePort}.");
+				InstallLog.AppendLine("- Set file permissions on the website folder.");
+				InstallLog.AppendLine("- Configured the server.");
 			}
-			settings.CertificateFile = vars.CertificateFile;
-			settings.CertificatePassword = vars.CertificatePassword;
-			settings.CertificateStoreLocation = vars.CertificateStoreLocation;
-			settings.CertificateStoreName = vars.CertificateStore;
-			settings.CertificateFindType = vars.CertificateFindType;
-			settings.CertificateFindValue = vars.CertificateFindValue;
-
-			if (vars.InstallNet8Runtime) installer.InstallNet8Runtime();
-
-			installer.InstallServerPrerequisites();
-			installer.InstallServerWebsite();
-			installer.SetServerFilePermissions();
-			installer.ConfigureServer();
-
-			vars.VirtualDirectory = String.Empty;
-			vars.NewWebSite = true;
-			vars.NewVirtualDirectory = false;
-
-			Finish(LogStartMessage);
-
-			//update install log
-			var serviceId = (installer as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
-
-			if (vars.InstallNet8Runtime) InstallLog.AppendLine("- Installed .NET 8 Runtime.");
-			InstallLog.AppendLine($"- Created a new system service {serviceId} running the website.");
-			InstallLog.AppendLine("  You can access the application by the following URLs:");
-			foreach (string url in urls)
+			catch (Exception ex)
 			{
-				InstallLog.AppendLine("  " + url);
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Web site install error", ex);
+				InstallLog.AppendLine(string.Format("- Failed to install \"{0}\" web site ", "SolidCP Server"));
+
+				throw;
 			}
-			InstallLog.AppendLine($"- Opened the firewall for port {vars.WebSitePort}.");
-			InstallLog.AppendLine("- Set file permissions on the website folder.");
-			InstallLog.AppendLine("- Configured the server.");
+
 		}
 
 		void IUninstallAction.Run(SetupVariables vars)
 		{
-			var iisVersion = vars.IISVersion;
-			var iis7 = (iisVersion.Major >= 7);
-			var siteId = vars.WebSiteId;
-			//
-
 			Log.WriteStart("Deleting web site");
+			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
 
-			UniversalInstaller.Installer.Current.RemoveServer();
+			try
+			{
+				var port = vars.WebSitePort;
 
-			Log.WriteInfo(String.Format("Deleting web site \"{0}\"", siteId));
+				Log.WriteInfo($"Deleting \"{serviceId}\" system service");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.RemoveServer();
+				Log.WriteEnd("Deleted web site");
+				InstallLog.AppendLine($"- Deleted \"{serviceId}\" system service");
+				InstallLog.AppendLine($"- Removed firewall rules for port {port}");
+			} catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Web site delete error", ex);
+				InstallLog.AppendLine($"- Failed to delete \"{serviceId}\" system service");
+
+				throw;
+
+			}
 		}
 	}
 

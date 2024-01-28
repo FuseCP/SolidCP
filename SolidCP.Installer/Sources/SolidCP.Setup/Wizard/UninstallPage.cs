@@ -145,7 +145,7 @@ namespace SolidCP.Setup
 							case ActionTypes.DeleteWebSite:
 								if (!OSInfo.IsWindows)
 								{
-									DeleteUnixWebSite(action.Port, action.SiteId);
+									DeleteUnixWebSite(action.Port);
 								} else if (iis7)
 									DeleteIIS7WebSite(action.SiteId);
 								else
@@ -769,17 +769,18 @@ namespace SolidCP.Setup
 				throw;
 			}
 		}
-		private void DeleteUnixWebSite(string port, string siteId)
+		private void DeleteUnixWebSite(string port)
 		{
+			Log.WriteStart("Deleting web site");
+			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
+
 			try
 			{
-				Log.WriteStart("Deleting web site");
-				Log.WriteInfo(string.Format("Deleting \"{0}\" web site", "SolidCP Server"));
+				Log.WriteInfo($"Deleting \"{serviceId}\" system service");
 				var installer = UniversalInstaller.Installer.Current;
-				installer.RemoveServerPrerequisites();
-				installer.RemoveServerWebsite();
+				installer.RemoveServer();
 				Log.WriteEnd("Deleted web site");
-				InstallLog.AppendLine(string.Format("- Deleted \"{0}\" web site ", "SolidCP Server"));
+				InstallLog.AppendLine($"- Deleted \"{serviceId}\" system service");
 				InstallLog.AppendLine($"- Removed firewall rules for port {port}");
 			}
 			catch (Exception ex)
@@ -788,9 +789,10 @@ namespace SolidCP.Setup
 					return;
 
 				Log.WriteError("Web site delete error", ex);
-				InstallLog.AppendLine(string.Format("- Failed to delete \"{0}\" web site ", "SolidCP Server"));
+				InstallLog.AppendLine($"- Failed to delete \"{serviceId}\" system service");
 
 				throw;
+
 			}
 		}
 

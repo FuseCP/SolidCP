@@ -167,7 +167,12 @@ namespace SolidCP.Setup
 								Wizard.SetupVariables.InstallationFolder);
 							break;
 						case ActionTypes.CreateWebSite:
-							CreateWebSite();
+							if (OSInfo.IsWindows) CreateWebSite();
+							else
+							{
+								var a = (IInstallAction)new InstallServerUnixAction();
+								a.Run(Wizard.SetupVariables);
+							}
 							break;
 						case ActionTypes.ConfigureLetsEncrypt:
 							if (!ConfigureLetsEncrypt(isUnattended)) action.Log = "Failed to install Let's Encrypt certificate. Check the error log for details.";
@@ -2618,6 +2623,12 @@ namespace SolidCP.Setup
 
 		private void SetServerPassword()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				SetServerPasswordUnix();
+				return;
+			}
+
 			try
 			{
 				Log.WriteStart("Updating configuration file (server password)");
@@ -2656,8 +2667,36 @@ namespace SolidCP.Setup
 			}
 		}
 
+		private void SetServerPasswordUnix()
+		{
+			try
+			{
+				Log.WriteStart("Updating configuration file (server password)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.ServerPasswordSHA1 = Wizard.SetupVariables.ServerPassword;
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Configuration file update error", ex);
+				throw;
+			}
+		}
+
 		private void UpdateServerPassword()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				UpdateServerPasswordUnix();
+				return;
+			}
+
 			try
 			{
 				if (!Wizard.SetupVariables.UpdateServerPassword)
@@ -2691,6 +2730,28 @@ namespace SolidCP.Setup
 				//string component = Wizard.SetupVariables.ComponentFullName;
 				//InstallLog.AppendLine(string.Format("- Updated {0} web.config file", component));
 
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Configuration file update error", ex);
+				throw;
+			}
+		}
+
+		private void UpdateServerPasswordUnix()
+		{
+			try
+			{
+				Log.WriteStart("Updating configuration file (server password)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.ServerPassword = Wizard.SetupVariables.ServerPassword;
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
 			}
 			catch (Exception ex)
 			{
