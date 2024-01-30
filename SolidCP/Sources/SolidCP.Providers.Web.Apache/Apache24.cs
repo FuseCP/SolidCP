@@ -565,7 +565,7 @@ namespace SolidCP.Providers.Web
 					}))
 				.SelectMany(vhost =>
 				{
-					var match = Regex.Match(vhost.Address, @"(?:(?<adr>[0-9.]+|\[[0-9a-fA-F:]+\]|\*)|(?<domain>[0-9a-zA-Z_\-.]+)):(?<port>[0-9]+)");
+					var match = Regex.Match(vhost.Address, @"(?:(?<adr>[0-9.]+|\[[0-9a-fA-F:]+\]|\*)|(?<domain>[0-9a-zA-Z_\-.´]+)):(?<port>[0-9]+)");
 					var ip = match.Groups["adr"].Success ? match.Groups["adr"].Value : "";
 					if (ip == "*" || ip == "0.0.0.0" || ip == "::") ip = "";
 					var port = match.Groups["port"].Value;
