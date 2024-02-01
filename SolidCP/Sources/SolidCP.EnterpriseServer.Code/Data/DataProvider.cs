@@ -2844,7 +2844,7 @@ namespace SolidCP.EnterpriseServer
             );
         }
 
-        public static bool ExchangeAccountEmailAddressExists(string emailAddress)
+        public static bool ExchangeAccountEmailAddressExists(string emailAddress, bool checkContacts)
         {
             SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
             outParam.Direction = ParameterDirection.Output;
@@ -2854,6 +2854,7 @@ namespace SolidCP.EnterpriseServer
                 CommandType.StoredProcedure,
                 "ExchangeAccountEmailAddressExists",
                 new SqlParameter("@EmailAddress", emailAddress),
+                new SqlParameter("@checkContacts", checkContacts),
                 outParam
             );
 
