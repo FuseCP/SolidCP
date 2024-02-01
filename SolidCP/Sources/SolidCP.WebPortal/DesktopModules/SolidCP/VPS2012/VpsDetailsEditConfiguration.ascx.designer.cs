@@ -105,6 +105,15 @@ namespace SolidCP.Portal.VPS2012
         protected global::System.Web.UI.WebControls.Localize locCores;
 
         /// <summary>
+        /// valCoresStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize valCoresStatus;
+
+        /// <summary>
         /// lblRam control.
         /// </summary>
         /// <remarks>
@@ -141,6 +150,15 @@ namespace SolidCP.Portal.VPS2012
         protected global::System.Web.UI.WebControls.Localize locMB;
 
         /// <summary>
+        /// valRamStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize valRamStatus;
+
+        /// <summary>
         /// lblHdd control.
         /// </summary>
         /// <remarks>
@@ -175,6 +193,15 @@ namespace SolidCP.Portal.VPS2012
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locGB;
+
+        /// <summary>
+        /// valHddStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize valHddStatus;
 
         /// <summary>
         /// hiddenTxtValHdd control.

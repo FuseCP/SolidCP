@@ -453,4 +453,13 @@
   <data name="valHddSize.ErrorMessage" xml:space="preserve">
     <value>Geben Sie einen numerischen Wert ein</value>
   </data>
+  <data name="valCoresStatus.Text" xml:space="preserve">
+    <value>(Planzuteilung: {0}, zugewiesen: {1}, verfügbar: {2})</value>
+  </data>
+  <data name="valHddStatus.Text" xml:space="preserve">
+    <value>(Planzuteilung: {0}, zugewiesen: {1}, verfügbar: {2})</value>
+  </data>
+  <data name="valRamStatus.Text" xml:space="preserve">
+    <value>(Planzuteilung: {0}, zugewiesen: {1}, verfügbar: {2})</value>
+  </data>
 </root>

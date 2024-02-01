@@ -35,6 +35,7 @@
                                 <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="80">
                                     </asp:DropDownList>
                                 <asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/>
+                                <asp:Localize ID="valCoresStatus" runat="server" meta:resourcekey="valCoresStatus" Text=""/>
                             </div>
 
                             <asp:Label ID="lblRam" runat="server" AssociatedControlID="txtRam"
@@ -45,6 +46,7 @@
                                         ControlToValidate="txtRam" meta:resourcekey="RequireRamValidator" SetFocusOnError="true"
                                         ValidationGroup="Vps">*</asp:RequiredFieldValidator>
                                 <asp:Localize ID="locMB" runat="server" meta:resourcekey="locMB" Text="MB"/>
+                                <asp:Localize ID="valRamStatus" runat="server" meta:resourcekey="valRamStatus" Text=""/>
                             </div>
 
                             <asp:Label ID="lblHdd" runat="server" AssociatedControlID="txtHdd"
@@ -55,6 +57,7 @@
                                         ControlToValidate="txtHdd" meta:resourcekey="RequireHddValidator" SetFocusOnError="true"
                                         ValidationGroup="Vps">*</asp:RequiredFieldValidator>                                    
                                 <asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/>
+                                <asp:Localize ID="valHddStatus" runat="server" meta:resourcekey="valHddStatus" Text=""/>
                                 <asp:HiddenField id="hiddenTxtValHdd" runat="server" />
                             </div>
                             <div style="margin-top:15px; margin-bottom:25px; margin-left:10px;">

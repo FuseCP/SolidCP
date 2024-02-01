@@ -95,7 +95,7 @@
                                                 </scp:PasswordControl>
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <asp:CheckBox ID="chkSendSummary" runat="server" AutoPostBack="true" Checked="true"
+                                                <asp:CheckBox ID="chkSendSummary" runat="server" AutoPostBack="true" Checked="false"
                                                     meta:resourcekey="chkSendSummary" Text="Send summary letter to:" /><br />
                                                 <asp:TextBox ID="txtSummaryEmail" runat="server" CssClass="form-control form-control" AutoPostBack="true"></asp:TextBox>
                                                 <asp:RequiredFieldValidator ID="SummaryEmailValidator" runat="server" Text="*" Display="Dynamic"
@@ -116,7 +116,8 @@
                                             <div class="col-sm-10 form-inline">
                                                     <asp:DropDownList ID="ddlCpu" runat="server" CssClass="form-control" Width="80">
                                                     </asp:DropDownList>
-                                             <asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/>
+                                            <asp:Localize ID="locCores" runat="server" meta:resourcekey="locCores" Text="cores"/> 
+                                            <asp:Localize ID="valCoresStatus" runat="server" meta:resourcekey="valCoresStatus" Text=""/>
                                             </div>
                                          <asp:Label ID="lblRam" meta:resourcekey="lblRam" runat="server" Text="RAM:" CssClass="col-sm-2"  AssociatedControlID="txtRam"></asp:Label>
                                             <div class="col-sm-10 form-inline">
@@ -129,9 +130,10 @@
 														ControlToValidate="txtRam" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
 													</asp:RegularExpressionValidator>
                                                     <asp:Localize ID="locMB" runat="server" meta:resourcekey="locMB" Text="MB"/>
+                                                    <asp:Localize ID="valRamStatus" runat="server" meta:resourcekey="valRamStatus" Text=""/>
                                             </div>
                                          <asp:Label ID="lblHdd" meta:resourcekey="lblHdd" runat="server" Text="HDD:" CssClass="col-sm-2"  AssociatedControlID="txtHdd"></asp:Label>
-                                                    <div class="col-sm-10 form-inline">
+                                            <div class="col-sm-10 form-inline">
                                                     <asp:TextBox ID="txtHdd" runat="server" CssClass="form-control form-control" Width="150" Text="0"></asp:TextBox>
                                                     <asp:RequiredFieldValidator ID="RequireHddValidator" runat="server" Text="*" Display="Dynamic"
                                                         ControlToValidate="txtHdd" meta:resourcekey="RequireHddValidator" SetFocusOnError="true"
@@ -141,7 +143,8 @@
 														ControlToValidate="txtHdd" Display="Dynamic" SetFocusOnError="true" ValidationGroup="Vps">
 													</asp:RegularExpressionValidator>
                                                     <asp:Localize ID="locGB" runat="server" meta:resourcekey="locGB" Text="GB"/>
-                                                    </div>
+                                                    <asp:Localize ID="valHddStatus" runat="server" meta:resourcekey="valHddStatus" Text=""/>
+                                            </div>
                                         <div style="margin-top:15px; margin-bottom:25px; margin-left:10px;">
                                             <CPCC:StyleButton id="btnAddHdd" CssClass="btn btn-success" runat="server" Visible="false" OnClick="btnAddHdd_Click" CausesValidation="false"> <i class="fa fa-check">&nbsp;</i>&nbsp;<asp:Localize runat="server" meta:resourcekey="btnAddHdd"/> </CPCC:StyleButton>
                                         </div>
