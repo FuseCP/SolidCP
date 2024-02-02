@@ -1517,9 +1517,9 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Account Email Addresses
-        private static bool EmailAddressExists(string emailAddress)
+        private static bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
-            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress);
+            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
@@ -2817,7 +2817,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // check
-                if (EmailAddressExists(emailAddress))
+                if (EmailAddressExists(emailAddress, false))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -4774,7 +4774,7 @@ namespace SolidCP.EnterpriseServer
                 LogExtension.WriteVariables(new {email});
 
                 // check e-mail
-                if (EmailAddressExists(email))
+                if (EmailAddressExists(email, true))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -5131,7 +5131,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // check
-                if (EmailAddressExists(emailAddress))
+                if (EmailAddressExists(emailAddress, true))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -5612,7 +5612,7 @@ namespace SolidCP.EnterpriseServer
                     email = name + "@" + domain;
 
                     // check e-mail
-                    if (EmailAddressExists(email))
+                    if (EmailAddressExists(email, true))
                         return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
                 }
 
@@ -5785,7 +5785,7 @@ namespace SolidCP.EnterpriseServer
                 string email = name + "@" + domain;
 
                 // check e-mail
-                if (EmailAddressExists(email))
+                if (EmailAddressExists(email, true))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 string accountName = OrganizationController.BuildAccountNameEx(org, name);
@@ -6156,7 +6156,7 @@ namespace SolidCP.EnterpriseServer
             try
             {
                 // check
-                if (EmailAddressExists(emailAddress))
+                if (EmailAddressExists(emailAddress, true))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization

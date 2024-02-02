@@ -2474,9 +2474,9 @@ namespace SolidCP.EnterpriseServer
             return ObjectUtils.Deserialize<T>(entity.Xml);
         }
 
-        private static bool EmailAddressExists(string emailAddress)
+        private static bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
-            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress);
+            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
@@ -2533,7 +2533,7 @@ namespace SolidCP.EnterpriseServer
                 // e-mail
                 string email = name + "@" + domain;
 
-                if (EmailAddressExists(email))
+                if (EmailAddressExists(email, false))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -2679,7 +2679,7 @@ namespace SolidCP.EnterpriseServer
                 // e-mail
                 string email = name + "@" + domain;
 
-                if (EmailAddressExists(email))
+                if (EmailAddressExists(email, false))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -3551,7 +3551,7 @@ namespace SolidCP.EnterpriseServer
 
                     if (!userPrincipalNameOwned)
                     {
-                        if (EmailAddressExists(userPrincipalName))
+                        if (EmailAddressExists(userPrincipalName, false))
                             return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
                     }
                 }
