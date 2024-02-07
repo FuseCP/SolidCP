@@ -40,6 +40,7 @@ using SolidCP.EnterpriseServer;
 using SolidCP.Portal.Code.Helpers;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Providers.ResultObjects;
+using System.Data;
 
 namespace SolidCP.Portal.VPS2012
 {
@@ -137,7 +138,29 @@ namespace SolidCP.Portal.VPS2012
             password.SetPackagePolicy(PanelSecurity.PackageId, UserSettings.VPS_POLICY, "AdministratorPasswordPolicy");
 
             // OS templates
-            listOperatingSystems.DataSource = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
+            LibraryItem[] ostItems = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
+            List<LibraryItem> ostList = new List<LibraryItem>();
+
+            bool isAdmin = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+
+            foreach (LibraryItem ostItem in ostItems) // filter out admin only templates if user is not admin
+            {
+                if (isAdmin)
+                {
+                    ostList.Add(ostItem);
+                }
+                else
+                {
+                    if (ostItem.ServerAdminOnly.Equals(false))
+                    {
+                        ostList.Add(ostItem);
+                    }
+                }
+            }
+
+            LibraryItem[] ostItemsFiltered = ostList.ToArray();
+
+            listOperatingSystems.DataSource = ostItemsFiltered;
             listOperatingSystems.DataBind();
             listOperatingSystems.Items.Insert(0, new ListItem(GetLocalizedString("SelectOsTemplate.Text"), ""));
 
