@@ -20294,4 +20294,32 @@ UPDATE Servers SET
 	IsCore = @IsCore
 WHERE ServerID = @ServerID
 RETURN
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'ExchangeAccountEmailAddressExists')
+DROP PROCEDURE ExchangeAccountEmailAddressExists
+GO
+CREATE PROCEDURE [dbo].[ExchangeAccountEmailAddressExists]
+(
+	@EmailAddress nvarchar(300),
+	@checkContacts bit,
+	@Exists bit OUTPUT
+)
+AS
+	SET @Exists = 0
+	IF EXISTS(SELECT * FROM [dbo].[ExchangeAccountEmailAddresses] WHERE [EmailAddress] = @EmailAddress)
+		BEGIN
+			SET @Exists = 1
+		END
+	ELSE IF EXISTS(SELECT * FROM [dbo].[ExchangeAccounts] WHERE [PrimaryEmailAddress] = @EmailAddress AND ([AccountType] <> 2 OR @checkContacts = 1))
+		BEGIN
+			SET @Exists = 1
+		END
+
+	RETURN
 GO

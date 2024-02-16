@@ -555,7 +555,7 @@ namespace SolidCP.EnterpriseServer
         public static int AddServer(string serverName, string serverUrl,
             string password, string comments, bool virtualServer, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, OSPlatform osPlatform, bool? isCore)
+            string adAuthenticationType)
         {
             SqlParameter prmServerId = new SqlParameter("@ServerID", SqlDbType.Int);
             prmServerId.Direction = ParameterDirection.Output;
@@ -574,9 +574,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdRootDomain", adRootDomain),
                 new SqlParameter("@AdUsername", adUsername),
                 new SqlParameter("@AdPassword", adPassword),
-                new SqlParameter("@AdAuthenticationType", adAuthenticationType),
-                new SqlParameter("@OSPlatform", osPlatform),
-                new SqlParameter("@IsCore", isCore));
+                new SqlParameter("@AdAuthenticationType", adAuthenticationType));
 
             return Convert.ToInt32(prmServerId.Value);
         }
@@ -584,8 +582,7 @@ namespace SolidCP.EnterpriseServer
         public static void UpdateServer(int serverId, string serverName, string serverUrl,
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, string adParentDomain, string adParentDomainController,
-            OSPlatform osPlatform, bool? isCore)
+            string adAuthenticationType, string adParentDomain, String adParentDomainController)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
                 ObjectQualifier + "UpdateServer",
@@ -602,9 +599,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@AdPassword", adPassword),
                 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
                 new SqlParameter("@AdParentDomain", adParentDomain),
-                new SqlParameter("@AdParentDomainController", adParentDomainController),
-                new SqlParameter("@OSPlatform", osPlatform),
-                new SqlParameter("@IsCore", isCore));
+                new SqlParameter("@AdParentDomainController", adParentDomainController));
 
         }
 
@@ -2849,7 +2844,7 @@ namespace SolidCP.EnterpriseServer
             );
         }
 
-        public static bool ExchangeAccountEmailAddressExists(string emailAddress)
+        public static bool ExchangeAccountEmailAddressExists(string emailAddress, bool checkContacts)
         {
             SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
             outParam.Direction = ParameterDirection.Output;
@@ -2859,6 +2854,7 @@ namespace SolidCP.EnterpriseServer
                 CommandType.StoredProcedure,
                 "ExchangeAccountEmailAddressExists",
                 new SqlParameter("@EmailAddress", emailAddress),
+                new SqlParameter("@checkContacts", checkContacts),
                 outParam
             );
 
