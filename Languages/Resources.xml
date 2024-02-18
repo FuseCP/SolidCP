@@ -33804,7 +33804,7 @@ After creating your virtual directory go to FP administrator and create a subweb
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
     <Key>secContactInfo.Text</Key>
-    <DefaultValue />
+    <DefaultValue>Contact Information</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
