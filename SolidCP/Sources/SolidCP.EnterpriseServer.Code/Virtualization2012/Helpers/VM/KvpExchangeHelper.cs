@@ -226,6 +226,11 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 kvp[i].Name = taskNameArr[i];
                 kvp[i].Data = taskData;
             }
+            string taskDataLog = taskData;
+            if ("ChangeAdministratorPassword".Equals(taskName))
+            {
+                taskDataLog = "Password=******";
+            }
 
             try
             {
@@ -253,7 +258,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
             catch (Exception ex)
             {
                 // log error
-                TaskManager.WriteWarning(String.Format("Error setting KVP items '{0}': {1}", kvp[0].Data, ex.Message));
+                TaskManager.WriteWarning(String.Format("Error setting KVP items '{0}': {1}", taskDataLog, ex.Message));
             }
 
             return null;
