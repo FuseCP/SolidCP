@@ -44,12 +44,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 
             #region Context variables
             // service ID
-            int serviceId = VirtualizationHelper.GetServiceId(PackageId);
-
-            if (serviceId != VMSettings.ServiceId)// VPS reinstall --> VM was moved
-            {
-                PackageController.MovePackageItem(VMSettings.Id, serviceId, true);
-            }
+            int serviceId = VMSettings.ServiceId;
 
             // load service settings
             StringDictionary settings = ServerController.GetServiceSettings(serviceId);
