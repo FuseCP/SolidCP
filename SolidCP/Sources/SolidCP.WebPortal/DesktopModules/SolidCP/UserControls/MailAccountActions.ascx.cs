@@ -57,13 +57,14 @@ namespace SolidCP.Portal
         None = 0,
         Disable = 1,
         Enable = 2,
+        Delete = 3
     }
 
     public partial class MailAccountActions : ActionListControlBase<MailAccountActionTypes>
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         protected override DropDownList ActionsList
@@ -79,6 +80,8 @@ namespace SolidCP.Portal
                     return ChangeMailAccountState(false, ids);
                 case MailAccountActionTypes.Enable:
                     return ChangeMailAccountState(true, ids);
+                case MailAccountActionTypes.Delete:
+                    return DeleteMailAccount(ids);
             }
 
             return 0;
@@ -90,6 +93,7 @@ namespace SolidCP.Portal
             {
                 case MailAccountActionTypes.Disable:
                 case MailAccountActionTypes.Enable:
+                case MailAccountActionTypes.Delete:
                     FireExecuteAction();
                     break;
             }
@@ -102,6 +106,19 @@ namespace SolidCP.Portal
                 var mailAccount = ES.Services.MailServers.GetMailAccount(id);
                 mailAccount.Enabled = enable;
                 int result = ES.Services.MailServers.UpdateMailAccount(mailAccount);
+
+                if (result < 0)
+                    return result;
+            }
+
+            return 0;
+        }
+
+        private int DeleteMailAccount(List<int> ids)
+        {
+            foreach (var id in ids)
+            {
+                int result = ES.Services.MailServers.DeleteMailAccount(id);
 
                 if (result < 0)
                     return result;

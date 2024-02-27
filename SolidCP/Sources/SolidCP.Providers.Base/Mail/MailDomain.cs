@@ -139,6 +139,7 @@ namespace SolidCP.Providers.Mail
 		private int maxAliases;
 		private int maxDomainAliases;
 		private int maxLists;
+		private int sizeMB;
 		private int maxDomainSizeInMB;
 		private int maxDomainUsers;
 		private int maxMailboxSizeInMB;
@@ -316,8 +317,13 @@ namespace SolidCP.Providers.Mail
 			set { maxLists = value; }
 		}
 
-	
-        public int MaxDomainSizeInMB
+		public int SizeMB
+		{
+			get { return sizeMB; }
+			set { sizeMB = value; }
+		}
+
+		public int MaxDomainSizeInMB
 		{
 			get { return maxDomainSizeInMB; }
 			set { maxDomainSizeInMB = value; }

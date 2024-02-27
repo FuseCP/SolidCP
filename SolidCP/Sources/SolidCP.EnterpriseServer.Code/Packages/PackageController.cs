@@ -50,6 +50,7 @@ using OS = SolidCP.Providers.OS;
 using Reports = SolidCP.EnterpriseServer.Base.Reports;
 using System.Diagnostics;
 using SolidCP.Templates;
+using System.Linq;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -1399,6 +1400,12 @@ namespace SolidCP.EnterpriseServer
 
             FlatternItemsTable(dsItems, 1, itemType);
 
+            //MailServer
+            if (groupName == "Mail")
+            {
+                ProcessItemSize(dsItems, 1, itemType);
+            }
+
             return dsItems;
         }
 
@@ -1701,6 +1708,51 @@ namespace SolidCP.EnterpriseServer
 
                     drItem[columnName] = propValue;
                 }
+            }
+        }
+
+        private static void ProcessItemSize(DataSet dsItems, int itemsTablePosition, Type itemType)
+        {
+            try
+            {
+                DataTable dtItems = dsItems.Tables[1];
+
+                var accountsSize = new List<MailAccount>();
+
+                foreach (DataRow drItem in dtItems.Rows)
+                {
+                    //SmarterMail 8629.x +
+                    if (drItem["ProviderId"].ToString() == "68" && drItem["TypeName"].ToString() == "SolidCP.Providers.Mail.MailAccount, SolidCP.Providers.Base")
+                    {
+                        MailAddress address = new MailAddress(drItem["ItemName"].ToString());
+                        string host = address.Host;
+
+                        if (!accountsSize.Any(x => x.Name.Contains("@" + host)))
+                        {
+                            MailServer mail = new MailServer();
+                            ServiceProviderProxy.Init(mail, int.Parse(drItem["ServiceID"].ToString()));
+
+                            MailAccount[] accounts = mail.GetAccounts(host);
+
+                            foreach (MailAccount account in accounts)
+                            {
+                                accountsSize.Add(account);
+                            }
+                        }
+
+                        foreach (var account in accountsSize)
+                        {
+                            if (account.Name == drItem["ItemName"].ToString())
+                            {
+                                double size = ((double)account.Size) / 1048576.0;
+                                drItem["ItemSize"] = Math.Round(size, 2, MidpointRounding.ToEven);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
             }
         }
         #endregion
