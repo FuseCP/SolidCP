@@ -18,6 +18,7 @@
             <asp:ListItem Value="0">Actions</asp:ListItem>
             <asp:ListItem Value="1">Disable</asp:ListItem>
             <asp:ListItem Value="2">Enable</asp:ListItem>
+            <asp:ListItem Value="3">Delete</asp:ListItem>
         </asp:DropDownList>
             <div class="input-group-btn">
                 <CPCC:StyleButton id="btnApply" CssClass="btn btn-primary" runat="server" OnClick="btnApply_Click" OnClientClick="return ShowProgress(this);"><asp:Localize runat="server" meta:resourcekey="btnApplyText"/> </CPCC:StyleButton>

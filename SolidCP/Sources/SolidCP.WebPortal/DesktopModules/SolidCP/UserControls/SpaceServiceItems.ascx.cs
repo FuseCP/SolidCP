@@ -109,6 +109,32 @@ namespace SolidCP.Portal.UserControls
             itemsQuota.QuotaName = QuotaName;
             lblQuotaName.Text = GetSharedLocalizedString("Quota." + QuotaName) + ":";
 
+            try
+            {
+                if (QuotaName == "Mail.Accounts")
+                {
+                    ProviderInfo provider = ES.Services.Servers.GetPackageServiceProvider(PanelSecurity.PackageId, "Mail");
+                    if (provider.EditorControl == "SmarterMail100" || provider.EditorControl == "SmarterMail100x")
+                    {
+                        lblUsedSpace.Visible = true;
+                        lblUsedSpaceValue.Visible = true;
+
+                        lblUsedSpace.Text = GetSharedLocalizedString("UsedSpace." + QuotaName) + ":";
+                        var domains = ES.Services.MailServers.GetMailDomains(PanelSecurity.PackageId, true);
+
+                        var totalUsedSpace = 0;
+                        foreach (var item in domains)
+                        {
+                            var domain = ES.Services.MailServers.GetMailDomain(item.Id);
+                            totalUsedSpace += domain.SizeMB;
+                        }
+
+                        lblUsedSpaceValue.Text = totalUsedSpace.ToString("N2") + " MB";
+                    }
+                }
+            }
+            catch (Exception) { }
+
             // edit button
             string localizedButtonText = HostModule.GetLocalizedString(btnAddItem.Text + ".Text");
             if (localizedButtonText != null)
@@ -120,7 +146,8 @@ namespace SolidCP.Portal.UserControls
             gvItems.Columns[3].Visible = gvItems.Columns[4].Visible =
                                          (PanelSecurity.SelectedUser.Role != UserRole.User) && chkRecursive.Checked;
             gvItems.Columns[5].Visible = (PanelSecurity.SelectedUser.Role == UserRole.Administrator);
-            gvItems.Columns[6].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+            gvItems.Columns[6].Visible = false;
+            gvItems.Columns[7].Visible = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
 
             ShowActionList();
 
@@ -233,10 +260,13 @@ namespace SolidCP.Portal.UserControls
                     break;
                 case "Mail.Accounts":
                     ProviderInfo provider = ES.Services.Servers.GetPackageServiceProvider(PanelSecurity.PackageId, "Mail");
-                    if (provider.EditorControl == "SmarterMail100")
+                    if (provider.EditorControl == "SmarterMail100" || provider.EditorControl == "SmarterMail100x")
                     {
                         mailActions.Visible = true;
                         checkboxColumn.Visible = true;
+                        gvItems.Columns[6].Visible = true;
+                        gvItems.Columns[1].ItemStyle.Width = new Unit(60, UnitType.Percentage);
+                        gvItems.Columns[6].ItemStyle.Width = new Unit(30, UnitType.Percentage);
                     }
                     break;
             }

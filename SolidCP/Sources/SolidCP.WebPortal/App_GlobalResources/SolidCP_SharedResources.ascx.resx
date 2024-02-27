@@ -1599,7 +1599,10 @@
   <data name="Quota.Mail.Accounts" xml:space="preserve">
     <value>Mail Accounts</value>
   </data>
-  <data name="Quota.Mail.Forwardings" xml:space="preserve">
+  <data name="UsedSpace.Mail.Accounts" xml:space="preserve">
+    <value>Used Space</value>
+  </data>
+	<data name="Quota.Mail.Forwardings" xml:space="preserve">
     <value>Mail Forwardings</value>
   </data>
   <data name="Quota.Mail.Groups" xml:space="preserve">

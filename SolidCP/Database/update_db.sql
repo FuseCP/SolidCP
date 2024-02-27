@@ -19849,3 +19849,9 @@ AS
 
 	RETURN
 GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'SmarterMail 8629.x +')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (68, 4, N'SmarterMail', N'SmarterMail 8629.x +', N'SolidCP.Providers.Mail.SmarterMail8629, SolidCP.Providers.Mail.SmarterMail8629', N'SmarterMail100x', NULL)
+END
+GO

@@ -6,15 +6,15 @@
 <%@ Register Src="MailAccountActions.ascx" TagName="MailAccountActions" TagPrefix="scp" %>
 
 <script type="text/javascript">
-                function checkAll(selectAllCheckbox) {
-                    //get all checkbox and select it
-                    $('td :checkbox').prop("checked", selectAllCheckbox.checked);
-                }
-                function unCheckSelectAll(selectCheckbox) {
-                    //if any item is unchecked, uncheck header checkbox as also
-                    if (!selectCheckbox.checked)
-                        $('th :checkbox').prop("checked", false);
-                }
+    function checkAll(selectAllCheckbox) {
+        //get all checkbox and select it
+        $('td :checkbox').prop("checked", selectAllCheckbox.checked);
+    }
+    function unCheckSelectAll(selectCheckbox) {
+        //if any item is unchecked, uncheck header checkbox as also
+        if (!selectCheckbox.checked)
+            $('th :checkbox').prop("checked", false);
+    }
 </script>
 
  <div class="FormButtonsBar right">
@@ -100,6 +100,14 @@
 				</asp:hyperlink>
 			</ItemTemplate>
         </asp:TemplateField>
+        <asp:TemplateField HeaderText="gvItemsSize">
+            <ItemStyle Wrap="False"></ItemStyle>
+			<ItemTemplate>
+				<asp:Label id="lnkEdit5" runat="server">
+					<%# Eval("ItemSize","{0:N2}") %>
+				</asp:Label>
+			</ItemTemplate>
+        </asp:TemplateField>
         <asp:TemplateField>
 			<ItemTemplate>
 				<CPCC:StyleButton ID="cmdDetach" runat="server" 
@@ -131,5 +139,7 @@
 
 <asp:Panel id="QuotasPanel" runat="server" CssClass="GridFooter">
 	<asp:Label ID="lblQuotaName" runat="server" Text="Items" CssClass="NormalBold"></asp:Label>&nbsp;
-	<scp:Quota ID="itemsQuota" runat="server" QuotaName="Group.Items" />
+	<scp:Quota ID="itemsQuota" runat="server" QuotaName="Group.Items" /><br />
+    <asp:Label ID="lblUsedSpace" Visible="false" runat="server" Text="Used Space" CssClass="NormalBold"></asp:Label>&nbsp;
+	<asp:Label ID="lblUsedSpaceValue" Visible="false" runat="server" Text=""></asp:Label>
 </asp:Panel>

@@ -28277,6 +28277,8 @@ INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName]
 GO
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (66, 4, N'SmarterMail', N'SmarterMail 10.x +', N'SolidCP.Providers.Mail.SmarterMail10, SolidCP.Providers.Mail.SmarterMail10', N'SmarterMail100', NULL)
 GO
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (68, 4, N'SmarterMail', N'SmarterMail 8629.x +', N'SolidCP.Providers.Mail.SmarterMail8629, SolidCP.Providers.Mail.SmarterMail8629', N'SmarterMail100x', NULL)
+GO
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (90, 12, N'Exchange2010SP2', N'Hosted Microsoft Exchange Server 2010 SP2', N'SolidCP.Providers.HostedSolution.Exchange2010SP2, SolidCP.Providers.HostedSolution', N'Exchange', NULL)
 GO
 INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (100, 1, N'Windows2008', N'Windows Server 2008', N'SolidCP.Providers.OS.Windows2008, SolidCP.Providers.OS.Windows2008', N'Windows2008', NULL)
