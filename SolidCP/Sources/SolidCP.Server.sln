@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31912.275
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.34114.132
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Caching Application Block", "Caching Application Block", "{C8E6F2E4-A5B8-486A-A56E-92D864524682}"
 	ProjectSection(SolutionItems) = preProject
@@ -264,6 +264,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.OS.Window
 	ProjectSection(ProjectDependencies) = postProject
 		{C4B1EA53-1417-473F-BB8E-E71BE84DB3A5} = {C4B1EA53-1417-473F-BB8E-E71BE84DB3A5}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Providers.Mail.SmarterMail8629", "SolidCP.Providers.Mail.SmarterMail8629\SolidCP.Providers.Mail.SmarterMail8629.csproj", "{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1267,6 +1269,18 @@ Global
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|x86.ActiveCfg = Release|Any CPU
 		{05B23C2B-15CE-48EF-995C-C5E517A04011}.Release|x86.Build.0 = Release|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Debug|x86.Build.0 = Debug|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Release|x86.ActiveCfg = Release|Any CPU
+		{AE1C06F6-A67C-49BC-994F-13208FDDEB9D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
