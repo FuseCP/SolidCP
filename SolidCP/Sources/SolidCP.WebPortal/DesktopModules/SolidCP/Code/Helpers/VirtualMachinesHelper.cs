@@ -34,8 +34,7 @@ using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Virtualization;
 using System.Web;
 using System;
-using SolidCP.EnterpriseServer.VirtualizationServer;
-using SolidCP.EnterpriseServer.VirtualizationServerForPrivateCloud;
+using SolidCP.EnterpriseServer.Client;
 
 namespace SolidCP.Portal
 {

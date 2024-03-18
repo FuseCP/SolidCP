@@ -49,18 +49,12 @@ using SolidCP.Providers.Database;
 
 namespace SolidCP.Providers.Database
 {
-    public class MariaDB103 : MariaDB101
+    public class MariaDB103 : MariaDB102
     {
 
-        public MariaDB103()
-        {
+        public MariaDB103(): base() { }
 
-        }
-
-        public override bool IsInstalled()
-        {
-            return true;
-        }
+        public override bool IsInstalled() => IsInstalled("10.3");
 
         public override long CalculateDatabaseSize(string database)
         {

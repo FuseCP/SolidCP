@@ -32,6 +32,7 @@
 
 using SolidCP.EnterpriseServer.Extensions;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
@@ -47,10 +48,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml;
 using Whois.NET;
-using OS = SolidCP.Providers.OS;
-
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
+//using System.Runtime.InteropServices;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -88,15 +91,19 @@ namespace SolidCP.EnterpriseServer
 																			};
 
 		private static List<string> _datePatterns = new List<string> {   @"ddd MMM dd HH:mm:ss G\MT yyyy",
-                                                                         @"yyyymmdd"
-                                                                              };
+																								 @"yyyymmdd"
+																										};
 
 		#region Servers
 		public static List<ServerInfo> GetAllServers()
 		{
 			// fill collection
-			return ObjectUtils.CreateListFromDataSet<ServerInfo>(
+			var servers = ObjectUtils.CreateListFromDataSet<ServerInfo>(
 				DataProvider.GetAllServers(SecurityContext.User.UserId));
+			
+			foreach (var server in servers) DecryptServerUrl(server);
+
+			return servers;
 		}
 
 		public static DataSet GetRawAllServers()
@@ -112,6 +119,8 @@ namespace SolidCP.EnterpriseServer
 			// fill collection
 			ObjectUtils.FillCollectionFromDataSet<ServerInfo>(
 				servers, DataProvider.GetServers(SecurityContext.User.UserId));
+
+			foreach (var server in servers) DecryptServerUrl(server);
 
 			return servers;
 		}
@@ -133,25 +142,43 @@ namespace SolidCP.EnterpriseServer
 			server.Password = CryptoUtils.Decrypt(server.Password);
 			server.ADPassword = CryptoUtils.Decrypt(server.ADPassword);
 
+			DecryptServerUrl(server);
+
 			return server;
+		}
+
+		public static void DecryptServerUrl(ServerInfo server)
+		{
+			server.ServerUrl = CryptoUtils.DecryptServerUrl(server.ServerUrl);
+		}
+
+		public static void EncryptServerUrl(ServerInfo server)
+		{
+			server.ServerUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
 		}
 
 		public static ServerInfo GetServerShortDetails(int serverId)
 		{
-			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
+			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServerShortDetails(serverId));
+			DecryptServerUrl(server);
+			return server;
 		}
 
-		public static ServerInfo GetServerById(int serverId, bool forAutodiscover)
+		public static ServerInfo GetServerById(int serverId, bool forAutodiscover = false)
 		{
-			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
+			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServer(SecurityContext.User.UserId, serverId, forAutodiscover));
+			DecryptServerUrl(server);
+			return server;
 		}
 
 		public static ServerInfo GetServerByName(string serverName)
 		{
-			return ObjectUtils.FillObjectFromDataReader<ServerInfo>(
+			var server = ObjectUtils.FillObjectFromDataReader<ServerInfo>(
 				DataProvider.GetServerByName(SecurityContext.User.UserId, serverName));
+			DecryptServerUrl(server);
+			return server;
 		}
 
 		public static int CheckServerAvailable(string serverUrl, string password)
@@ -165,7 +192,9 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-				// TO-DO: Check connectivity
+				var test = new Server.Client.Test();
+				test.Url = CryptoUtils.DecryptServerUrl(serverUrl);
+				test.Touch();
 				return 0;
 			}
 			catch (WebException ex)
@@ -199,7 +228,68 @@ namespace SolidCP.EnterpriseServer
 				{
 					TaskManager.WriteError("General Server Error");
 					TaskManager.WriteError(ex);
-					return BusinessErrorCodes.ERROR_ADD_SERVER_APPLICATION_ERROR;
+					//return BusinessErrorCodes.ERROR_ADD_SERVER_APPLICATION_ERROR;
+
+					throw;
+				}
+			}
+			finally
+			{
+				TaskManager.CompleteTask();
+			}
+		}
+
+		public static void GetServerPlatform(string serverUrl, string password, out OSPlatform platform, out bool? isCore)
+		{
+			platform = OSPlatform.Unknown;
+			isCore = null;
+			// check account
+			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive
+				 | DemandAccount.IsAdmin);
+			if (accountCheck < 0) return;
+
+			TaskManager.StartTask("SERVER", "GET_SERVER_PLATFORM", serverUrl);
+
+			try
+			{
+				var os = new Server.Client.OperatingSystem();
+				ServiceProviderProxy.ServerInit(os, serverUrl, password);
+				var p = os.GetOSPlatform();
+				platform = p.OSPlatform;
+				isCore = p.IsCore;
+			}
+			catch (WebException ex)
+			{
+				HttpWebResponse response = (HttpWebResponse)ex.Response;
+				if (response != null && response.StatusCode == HttpStatusCode.NotFound)
+					return;
+				else if (response != null && response.StatusCode == HttpStatusCode.BadRequest)
+					return;
+				else if (response != null && response.StatusCode == HttpStatusCode.InternalServerError)
+					return;
+				else if (response != null && response.StatusCode == HttpStatusCode.ServiceUnavailable)
+					return;
+				else if (response != null && response.StatusCode == HttpStatusCode.Unauthorized)
+					return;
+				if (ex.Message.Contains("The remote name could not be resolved") || ex.Message.Contains("Unable to connect"))
+				{
+					TaskManager.WriteError("The remote server could not be resolved");
+					return;
+				}
+				return;
+			}
+			catch (Exception ex)
+			{
+				if (ex.Message.Contains("The signature or decryption was invalid"))
+				{
+					TaskManager.WriteWarning("Wrong server access credentials");
+					return;
+				}
+				else
+				{
+					TaskManager.WriteError("General Server Error");
+					TaskManager.WriteError(ex);
+					return;
 				}
 			}
 			finally
@@ -223,45 +313,45 @@ namespace SolidCP.EnterpriseServer
 					throw new ApplicationException("Could not get providers list.");
 				}
 
-				foreach (ProviderInfo provider in providers)
+				var discovery = providers
+					.Where(provider => !provider.DisableAutoDiscovery);
+
+				foreach (var provider in discovery)
 				{
-					if (!provider.DisableAutoDiscovery)
+					BoolResult isInstalled = IsInstalled(server, provider);
+					if (isInstalled.IsSuccess)
 					{
-						BoolResult isInstalled = IsInstalled(server.ServerId, provider.ProviderId);
-						if (isInstalled.IsSuccess)
+						if (isInstalled.Value)
 						{
-							if (isInstalled.Value)
+							try
 							{
-								try
-								{
-									ServiceInfo service = new ServiceInfo();
-									service.ServerId = server.ServerId;
-									service.ProviderId = provider.ProviderId;
-									service.ServiceName = provider.DisplayName;
-									AddService(service);
-								}
-								catch (Exception ex)
-								{
-									TaskManager.WriteError(ex);
-								}
+								ServiceInfo service = new ServiceInfo();
+								service.ServerId = server.ServerId;
+								service.ProviderId = provider.ProviderId;
+								service.ServiceName = provider.DisplayName;
+								AddService(service);
+							}
+							catch (Exception ex)
+							{
+								TaskManager.WriteError(ex);
 							}
 						}
-						else
-						{
-							string errors = string.Join("\n", isInstalled.ErrorCodes.ToArray());
-							string str =
-								string.Format(
-									"Could not check if specific software intalled for {0}. Following errors have been occured:\n{1}",
-									provider.ProviderName, errors);
+					}
+					else
+					{
+						string errors = string.Join("\n", isInstalled.ErrorCodes.ToArray());
+						string str =
+							string.Format(
+								"Could not check if specific software intalled for {0}. Following errors have been occured:\n{1}",
+								provider.ProviderName, errors);
 
-							TaskManager.WriteError(str);
-						}
+						TaskManager.WriteError(str);
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				throw new ApplicationException("Could not find services. General error was occued.", ex);
+				throw new ApplicationException("Could not find services. General error has occurred.", ex);
 			}
 		}
 
@@ -284,14 +374,23 @@ namespace SolidCP.EnterpriseServer
 				int availResult = CheckServerAvailable(server.ServerUrl, server.Password);
 				if (availResult < 0)
 					return availResult;
+
+				OSPlatform osPlatform;
+				bool? isCore;
+				GetServerPlatform(server.ServerUrl, server.Password,
+					out osPlatform, out isCore);
+				server.OSPlatform = osPlatform;
+				server.IsCore = isCore;
 			}
 
 			TaskManager.StartTask("SERVER", "ADD", server.ServerName);
 
-			int serverId = DataProvider.AddServer(server.ServerName, server.ServerUrl,
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
+			int serverId = DataProvider.AddServer(server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.VirtualServer, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType);
+				server.ADAuthenticationType, server.OSPlatform, server.IsCore);
 
 			if (autoDiscovery)
 			{
@@ -335,12 +434,21 @@ namespace SolidCP.EnterpriseServer
 				int availResult = CheckServerAvailable(server.ServerUrl, server.Password);
 				if (availResult < 0)
 					return availResult;
+
+				OSPlatform osPlatform = OSPlatform.Unknown;
+				bool? isCore = null;
+				GetServerPlatform(server.ServerUrl, server.Password, out osPlatform, out isCore);
+				server.OSPlatform = osPlatform;
+				server.IsCore = isCore;
 			}
 
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
+			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
+				server.OSPlatform, server.IsCore);
 
 			TaskManager.CompleteTask();
 
@@ -362,11 +470,14 @@ namespace SolidCP.EnterpriseServer
 			// set password
 			server.Password = password;
 
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
 			// update server
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
+			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
+				server.OSPlatform, server.IsCore);
 
 			TaskManager.CompleteTask();
 
@@ -388,11 +499,14 @@ namespace SolidCP.EnterpriseServer
 			// set password
 			server.ADPassword = adPassword;
 
+			var serverUrl = CryptoUtils.EncryptServerUrl(server.ServerUrl);
+
 			// update server
-			DataProvider.UpdateServer(server.ServerId, server.ServerName, server.ServerUrl,
+			DataProvider.UpdateServer(server.ServerId, server.ServerName, serverUrl,
 				CryptoUtils.Encrypt(server.Password), server.Comments, server.InstantDomainAlias,
 				server.PrimaryGroupId, server.ADEnabled, server.ADRootDomain, server.ADUsername, CryptoUtils.Encrypt(server.ADPassword),
-				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController);
+				server.ADAuthenticationType, server.ADParentDomain, server.ADParentDomainController,
+				server.OSPlatform, server.IsCore);
 
 			TaskManager.CompleteTask();
 
@@ -443,7 +557,9 @@ namespace SolidCP.EnterpriseServer
 			OS.OperatingSystem os = new OS.OperatingSystem();
 			ServiceProviderProxy.Init(os, serviceId);
 			Dictionary<int, string> res = new Dictionary<int, string>();
-			string downloadPath = @"C:\SolidCPDownloads\".Replace(@"\\", @"\");
+			string downloadPath = Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+				"SolidCP", "Downloads");
 			string unpackedZipDirectory = downloadPath + zipFileName.Replace(".zip", "");
 			string ipAddress = os.Url.Split('/')[2].Split(':')[0];
 
@@ -729,24 +845,24 @@ namespace SolidCP.EnterpriseServer
 
 			TaskManager.StartTask("SERVER", "UPDATE_SERVICE", GetServerByIdInternal(origService.ServerId).ServerName, origService.ServerId);
 
-            if (!origService.ServiceName.Equals(service.ServiceName))
-                TaskManager.WriteParameter("New service name", service.ServiceName);
+			if (!origService.ServiceName.Equals(service.ServiceName))
+				TaskManager.WriteParameter("New service name", service.ServiceName);
 
-            //TODO: Add the ability to transfer to another node (ServerID, update procedure) 
-            if (service.ProviderId > 0) //if we have a value, then updateServiceFully
-            {
-                if(origService.ProviderId != service.ProviderId)
-                    TaskManager.WriteParameter("New Provider Id", service.ProviderId.ToString());
-                DataProvider.UpdateServiceFully(service.ServiceId, service.ProviderId, service.ServiceName,
-                service.ServiceQuotaValue, service.ClusterId, service.Comments);
-                TaskManager.Write("Updated Service Fully");
-            }
-            else
-            {
-                DataProvider.UpdateService(service.ServiceId, service.ServiceName,
-                service.ServiceQuotaValue, service.ClusterId, service.Comments);
-                TaskManager.Write("Updated Service");
-            }			
+			//TODO: Add the ability to transfer to another node (ServerID, update procedure) 
+			if (service.ProviderId > 0) //if we have a value, then updateServiceFully
+			{
+				if (origService.ProviderId != service.ProviderId)
+					TaskManager.WriteParameter("New Provider Id", service.ProviderId.ToString());
+				DataProvider.UpdateServiceFully(service.ServiceId, service.ProviderId, service.ServiceName,
+				service.ServiceQuotaValue, service.ClusterId, service.Comments);
+				TaskManager.Write("Updated Service Fully");
+			}
+			else
+			{
+				DataProvider.UpdateService(service.ServiceId, service.ServiceName,
+				service.ServiceQuotaValue, service.ClusterId, service.Comments);
+				TaskManager.Write("Updated Service");
+			}
 
 			TaskManager.CompleteTask();
 
@@ -996,8 +1112,50 @@ namespace SolidCP.EnterpriseServer
 					return res;
 				}
 
-				AutoDiscovery.AutoDiscovery ad = new AutoDiscovery.AutoDiscovery();
+				AutoDiscovery ad = new AutoDiscovery();
 				ServiceProviderProxy.ServerInit(ad, serverId);
+
+				res = ad.IsInstalled(provider.ProviderType);
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, ErrorCodes.CANNOT_CHECK_IF_PROVIDER_SOFTWARE_INSTALLED, ex);
+
+			}
+
+			TaskManager.CompleteResultTask();
+			return res;
+		}
+
+		public static BoolResult IsInstalled(int serverId, ProviderInfo provider)
+		{
+			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
+
+			try
+			{
+				AutoDiscovery ad = new AutoDiscovery();
+				ServiceProviderProxy.ServerInit(ad, serverId);
+
+				res = ad.IsInstalled(provider.ProviderType);
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, ErrorCodes.CANNOT_CHECK_IF_PROVIDER_SOFTWARE_INSTALLED, ex);
+
+			}
+
+			TaskManager.CompleteResultTask();
+			return res;
+
+		}
+		public static BoolResult IsInstalled(ServerInfo server, ProviderInfo provider)
+		{
+			BoolResult res = TaskManager.StartResultTask<BoolResult>("AUTO_DISCOVERY", "IS_INSTALLED");
+
+			try
+			{
+				AutoDiscovery ad = new AutoDiscovery();
+				ServiceProviderProxy.ServerInit(ad, server.ServerUrl, server.Password);
 
 				res = ad.IsInstalled(provider.ProviderType);
 			}
@@ -1013,7 +1171,7 @@ namespace SolidCP.EnterpriseServer
 
 		public static string GetServerVersion(int serverId)
 		{
-			AutoDiscovery.AutoDiscovery ad = new AutoDiscovery.AutoDiscovery();
+			AutoDiscovery ad = new AutoDiscovery();
 			ServiceProviderProxy.ServerInit(ad, serverId);
 
 			return ad.GetServerVersion();
@@ -1021,255 +1179,255 @@ namespace SolidCP.EnterpriseServer
 
 		public static string GetServerFilePath(int serverId)
 		{
-			AutoDiscovery.AutoDiscovery ad = new AutoDiscovery.AutoDiscovery();
+			AutoDiscovery ad = new AutoDiscovery();
 			ServiceProviderProxy.ServerInit(ad, serverId);
 
 			return ad.GetServerFilePath(); // ad.GetServer
 		}
 
-        #endregion
+		#endregion
 
-        #region Private Network VLANs
-        public static VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
-        {
-            VLANsPaged result = new VLANsPaged();
+		#region Private Network VLANs
+		public static VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+		{
+			VLANsPaged result = new VLANsPaged();
 
-            // get reader
-            IDataReader reader = DataProvider.GetPrivateNetworVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
+			// get reader
+			IDataReader reader = DataProvider.GetPrivateNetworVLANsPaged(SecurityContext.User.UserId, serverId, filterColumn, filterValue, sortColumn, startRow, maximumRows);
 
-            // number of items = first data reader
-            reader.Read();
-            result.Count = (int)reader[0];
+			// number of items = first data reader
+			reader.Read();
+			result.Count = (int)reader[0];
 
-            // items = second data reader
-            reader.NextResult();
-            result.Items = ObjectUtils.CreateListFromDataReader<VLANInfo>(reader).ToArray();
+			// items = second data reader
+			reader.NextResult();
+			result.Items = ObjectUtils.CreateListFromDataReader<VLANInfo>(reader).ToArray();
 
-            return result;
-        }
+			return result;
+		}
 
-        public static IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
-        {
-            IntResult res = new IntResult();
+		public static IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+		{
+			IntResult res = new IntResult();
 
-            #region Check account statuses
-            // check account
-            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
-                return res;
-            #endregion
+			#region Check account statuses
+			// check account
+			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+				return res;
+			#endregion
 
-            // start task
-            res = TaskManager.StartResultTask<IntResult>("VLAN", "ADD", vlan.ToString());
+			// start task
+			res = TaskManager.StartResultTask<IntResult>("VLAN", "ADD", vlan.ToString());
 
-            TaskManager.WriteParameter("ServerID", serverId);
+			TaskManager.WriteParameter("ServerID", serverId);
 
-            try
-            {
-                res.Value = DataProvider.AddPrivateNetworkVLAN(serverId, vlan, comments);
+			try
+			{
+				res.Value = DataProvider.AddPrivateNetworkVLAN(serverId, vlan, comments);
 
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "VLAN_ADD_ERROR", ex);
-                return res;
-            }
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "VLAN_ADD_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
+			TaskManager.CompleteResultTask();
+			return res;
+		}
 
-        public static ResultObject DeletePrivateNetworkVLANs(int[] vlans)
-        {
-            ResultObject res = new ResultObject();
+		public static ResultObject DeletePrivateNetworkVLANs(int[] vlans)
+		{
+			ResultObject res = new ResultObject();
 
-            #region Check account statuses
-            // check account
-            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
-                return res;
-            #endregion
+			#region Check account statuses
+			// check account
+			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+				return res;
+			#endregion
 
-            // start task
-            res = TaskManager.StartResultTask<ResultObject>("VLAN", "DELETE_RANGE");
+			// start task
+			res = TaskManager.StartResultTask<ResultObject>("VLAN", "DELETE_RANGE");
 
-            try
-            {
-                foreach (int vlanId in vlans)
-                {
-                    ResultObject vlanRes = DeletePrivateNetworkVLAN(vlanId);
-                    if (!vlanRes.IsSuccess && vlanRes.ErrorCodes.Count > 0)
-                    {
-                        res.ErrorCodes.AddRange(vlanRes.ErrorCodes);
-                        res.IsSuccess = false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "VLAN_DELETE_RANGE_ERROR", ex);
-                return res;
-            }
+			try
+			{
+				foreach (int vlanId in vlans)
+				{
+					ResultObject vlanRes = DeletePrivateNetworkVLAN(vlanId);
+					if (!vlanRes.IsSuccess && vlanRes.ErrorCodes.Count > 0)
+					{
+						res.ErrorCodes.AddRange(vlanRes.ErrorCodes);
+						res.IsSuccess = false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "VLAN_DELETE_RANGE_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
+			TaskManager.CompleteResultTask();
+			return res;
+		}
 
-        private static ResultObject DeletePrivateNetworkVLAN(int vlanId)
-        {
-            ResultObject res = new ResultObject();
+		private static ResultObject DeletePrivateNetworkVLAN(int vlanId)
+		{
+			ResultObject res = new ResultObject();
 
-            // start task
-            res = TaskManager.StartResultTask<ResultObject>("VLAN", "DELETE");
+			// start task
+			res = TaskManager.StartResultTask<ResultObject>("VLAN", "DELETE");
 
-            try
-            {
-                int result = DataProvider.DeletePrivateNetworkVLAN(vlanId);
-                if (result == -2)
-                {
-                    TaskManager.CompleteResultTask(res, "ERROR_VLAN_USED_BY_PACKAGE_ITEM");
-                    return res;
-                }
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "VLAN_DELETE_ERROR", ex);
-                return res;
-            }
+			try
+			{
+				int result = DataProvider.DeletePrivateNetworkVLAN(vlanId);
+				if (result == -2)
+				{
+					TaskManager.CompleteResultTask(res, "ERROR_VLAN_USED_BY_PACKAGE_ITEM");
+					return res;
+				}
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "VLAN_DELETE_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
+			TaskManager.CompleteResultTask();
+			return res;
+		}
 
-        public static ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
-        {
-            ResultObject res = new ResultObject();
+		public static ResultObject AddPrivateNetworkVLANsRange(int serverId, int startVLAN, int endVLAN, string comments)
+		{
+			ResultObject res = new ResultObject();
 
-            #region Check account statuses
-            // check account
-            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
-                return res;
-            #endregion
+			#region Check account statuses
+			// check account
+			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+				return res;
+			#endregion
 
-            // start task
-            res = TaskManager.StartResultTask<ResultObject>("VLAN", "ADD_RANGE", startVLAN);
+			// start task
+			res = TaskManager.StartResultTask<ResultObject>("VLAN", "ADD_RANGE", startVLAN);
 
-            TaskManager.WriteParameter("ServerID", serverId);
-            TaskManager.WriteParameter("End VLAN", endVLAN);
+			TaskManager.WriteParameter("ServerID", serverId);
+			TaskManager.WriteParameter("End VLAN", endVLAN);
 
-            try
-            {
-                for (int i = startVLAN; i <= endVLAN; i++)
-                {
-                    DataProvider.AddPrivateNetworkVLAN(serverId, i, comments);
-                }
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "VLAN_ADD_RANGE_ERROR", ex);
-                return res;
-            }
+			try
+			{
+				for (int i = startVLAN; i <= endVLAN; i++)
+				{
+					DataProvider.AddPrivateNetworkVLAN(serverId, i, comments);
+				}
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "VLAN_ADD_RANGE_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
+			TaskManager.CompleteResultTask();
+			return res;
+		}
 
-        public static VLANInfo GetPrivateNetworVLAN(int vlanId)
-        {
-            return ObjectUtils.FillObjectFromDataReader<VLANInfo>(
-                DataProvider.GetPrivateNetworVLAN(vlanId));
-        }
+		public static VLANInfo GetPrivateNetworVLAN(int vlanId)
+		{
+			return ObjectUtils.FillObjectFromDataReader<VLANInfo>(
+				 DataProvider.GetPrivateNetworVLAN(vlanId));
+		}
 
-        public static ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
-        {
-            ResultObject res = new ResultObject();
+		public static ResultObject UpdatePrivateNetworVLAN(int vlanId, int serverId, int vlan, string comments)
+		{
+			ResultObject res = new ResultObject();
 
-            #region Check account statuses
-            // check account
-            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
-                return res;
-            #endregion
+			#region Check account statuses
+			// check account
+			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsAdmin | DemandAccount.IsActive))
+				return res;
+			#endregion
 
-            // start task
-            res = TaskManager.StartResultTask<ResultObject>("VLAN", "UPDATE");
+			// start task
+			res = TaskManager.StartResultTask<ResultObject>("VLAN", "UPDATE");
 
-            try
-            {
-                DataProvider.UpdatePrivateNetworVLAN(vlanId, serverId, vlan, comments);
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "VLAN_UPDATE_ERROR", ex);
-                return res;
-            }
+			try
+			{
+				DataProvider.UpdatePrivateNetworVLAN(vlanId, serverId, vlan, comments);
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "VLAN_UPDATE_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
+			TaskManager.CompleteResultTask();
+			return res;
+		}
 
-        public static PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
-        {
-            PackageVLANsPaged result = new PackageVLANsPaged();
+		public static PackageVLANsPaged GetPackagePrivateNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+		{
+			PackageVLANsPaged result = new PackageVLANsPaged();
 
-            // get reader
-            IDataReader reader = DataProvider.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+			// get reader
+			IDataReader reader = DataProvider.GetPackagePrivateNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
 
-            // number of items = first data reader
-            reader.Read();
-            result.Count = (int)reader[0];
+			// number of items = first data reader
+			reader.Read();
+			result.Count = (int)reader[0];
 
-            // items = second data reader
-            reader.NextResult();
-            result.Items = ObjectUtils.CreateListFromDataReader<PackageVLAN>(reader).ToArray();
+			// items = second data reader
+			reader.NextResult();
+			result.Items = ObjectUtils.CreateListFromDataReader<PackageVLAN>(reader).ToArray();
 
-            return result;
-        }
+			return result;
+		}
 
-        public static ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
-        {
-            #region Check account and space statuses
-            // create result object
-            ResultObject res = new ResultObject();
+		public static ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
+		{
+			#region Check account and space statuses
+			// create result object
+			ResultObject res = new ResultObject();
 
-            // check account
-            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
-                return res;
+			// check account
+			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+				return res;
 
-            // check package
-            if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
-                return res;
-            #endregion
+			// check package
+			if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
+				return res;
+			#endregion
 
-            res = TaskManager.StartResultTask<ResultObject>("VLAN", "DEALLOCATE_PACKAGE_VLAN", packageId);
+			res = TaskManager.StartResultTask<ResultObject>("VLAN", "DEALLOCATE_PACKAGE_VLAN", packageId);
 
-            try
-            {
-                foreach (int id in packageVlanId)
-                {
-                    DataProvider.DeallocatePackageVLAN(id);
-                }
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "DEALLOCATE_PACKAGE_VLAN_ERROR", ex);
-                return res;
-            }
+			try
+			{
+				foreach (int id in packageVlanId)
+				{
+					DataProvider.DeallocatePackageVLAN(id);
+				}
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "DEALLOCATE_PACKAGE_VLAN_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
+			TaskManager.CompleteResultTask();
+			return res;
+		}
 
-        public static List<VLANInfo> GetUnallottedVLANs(int packageId, string groupName)
-        {
+		public static List<VLANInfo> GetUnallottedVLANs(int packageId, string groupName)
+		{
 
-            int serviceId = 0;
-            bool servicebyid = int.TryParse(groupName, out serviceId);
-            if (!servicebyid) // get service ID
-                serviceId = PackageController.GetPackageServiceId(packageId, groupName);
+			int serviceId = 0;
+			bool servicebyid = int.TryParse(groupName, out serviceId);
+			if (!servicebyid) // get service ID
+				serviceId = PackageController.GetPackageServiceId(packageId, groupName);
 
 
-            // get unallotted vlans
-            return ObjectUtils.CreateListFromDataReader<VLANInfo>(
-                DataProvider.GetUnallottedVLANs(packageId, serviceId));
-        }
+			// get unallotted vlans
+			return ObjectUtils.CreateListFromDataReader<VLANInfo>(
+				 DataProvider.GetUnallottedVLANs(packageId, serviceId));
+		}
 
 		public static void AllocatePackageVLANs(int packageId, int[] vlanIds)
 		{
@@ -1282,102 +1440,102 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
-        {
-            #region Check account and space statuses
-            // create result object
-            ResultObject res = new ResultObject();
+		{
+			#region Check account and space statuses
+			// create result object
+			ResultObject res = new ResultObject();
 
-            // check account
-            if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
-                return res;
+			// check account
+			if (!SecurityContext.CheckAccount(res, DemandAccount.NotDemo | DemandAccount.IsActive))
+				return res;
 
-            // check package
-            if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
-                return res;
-            #endregion
+			// check package
+			if (!SecurityContext.CheckPackage(res, packageId, DemandPackage.IsActive))
+				return res;
+			#endregion
 
-            // get total number of addresses requested
-            if (!allocateRandom && vlanId != null)
-                vlansNumber = vlanId.Length;
+			// get total number of addresses requested
+			if (!allocateRandom && vlanId != null)
+				vlansNumber = vlanId.Length;
 
-            if (vlansNumber <= 0)
-            {
-                res.IsSuccess = true;
-                return res; // just exit
-            }
+			if (vlansNumber <= 0)
+			{
+				res.IsSuccess = true;
+				return res; // just exit
+			}
 
-            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
 
-            // get maximum server IPs
-            List<VLANInfo> vlans = ServerController.GetUnallottedVLANs(packageId, groupName);
-            int maxAvailableVLANs = vlans.Count;
+			// get maximum server IPs
+			List<VLANInfo> vlans = ServerController.GetUnallottedVLANs(packageId, groupName);
+			int maxAvailableVLANs = vlans.Count;
 
-            if (maxAvailableVLANs == 0)
-            {
-                res.ErrorCodes.Add("VLANS_POOL_IS_EMPTY");
-                return res;
-            }
+			if (maxAvailableVLANs == 0)
+			{
+				res.ErrorCodes.Add("VLANS_POOL_IS_EMPTY");
+				return res;
+			}
 
-            // get hosting plan VLAN limits
-            PackageContext cntx = PackageController.GetPackageContext(packageId);
-            int quotaAllocated = cntx.Quotas[quotaName].QuotaAllocatedValue;
-            int quotaUsed = cntx.Quotas[quotaName].QuotaUsedValue;
+			// get hosting plan VLAN limits
+			PackageContext cntx = PackageController.GetPackageContext(packageId);
+			int quotaAllocated = cntx.Quotas[quotaName].QuotaAllocatedValue;
+			int quotaUsed = cntx.Quotas[quotaName].QuotaUsedValue;
 
-            // check the maximum allowed number
-            if (quotaAllocated != -1) // check only if not unlimited 
-            {
-                if (vlansNumber > (quotaAllocated - quotaUsed))
-                {
-                    res.ErrorCodes.Add("VLANS_QUOTA_LIMIT_REACHED");
-                    return res;
-                }
-            }
+			// check the maximum allowed number
+			if (quotaAllocated != -1) // check only if not unlimited 
+			{
+				if (vlansNumber > (quotaAllocated - quotaUsed))
+				{
+					res.ErrorCodes.Add("VLANS_QUOTA_LIMIT_REACHED");
+					return res;
+				}
+			}
 
-            // check if requested more than available
-            if (maxAvailableVLANs != -1 &&
-                (vlansNumber > maxAvailableVLANs))
-                vlansNumber = maxAvailableVLANs;
+			// check if requested more than available
+			if (maxAvailableVLANs != -1 &&
+				 (vlansNumber > maxAvailableVLANs))
+				vlansNumber = maxAvailableVLANs;
 
-            res = TaskManager.StartResultTask<ResultObject>("VLAN", "ALLOCATE_PACKAGE_VLAN", packageId);
+			res = TaskManager.StartResultTask<ResultObject>("VLAN", "ALLOCATE_PACKAGE_VLAN", packageId);
 
-            try
-            {
-                if (allocateRandom)
-                {
-                    int[] ids = new int[vlansNumber];
-                    for (int i = 0; i < vlansNumber; i++)
-                        ids[i] = vlans[i].VlanId;
+			try
+			{
+				if (allocateRandom)
+				{
+					int[] ids = new int[vlansNumber];
+					for (int i = 0; i < vlansNumber; i++)
+						ids[i] = vlans[i].VlanId;
 
-                    vlanId = ids;
-                }
+					vlanId = ids;
+				}
 
-                // prepare XML document
-                string xml = PrepareXML(vlanId);
+				// prepare XML document
+				string xml = PrepareXML(vlanId);
 
-                // save to database
-                try
-                {
-                    DataProvider.AllocatePackageVLANs(packageId, xml);
-                }
-                catch (Exception ex)
-                {
-                    TaskManager.CompleteResultTask(res, "VPS_CANNOT_ADD_VLANS_TO_DATABASE", ex);
-                    return res;
-                }
-            }
-            catch (Exception ex)
-            {
-                TaskManager.CompleteResultTask(res, "VPS_ALLOCATE_PRIVATE_VLANS_GENERAL_ERROR", ex);
-                return res;
-            }
+				// save to database
+				try
+				{
+					DataProvider.AllocatePackageVLANs(packageId, xml);
+				}
+				catch (Exception ex)
+				{
+					TaskManager.CompleteResultTask(res, "VPS_CANNOT_ADD_VLANS_TO_DATABASE", ex);
+					return res;
+				}
+			}
+			catch (Exception ex)
+			{
+				TaskManager.CompleteResultTask(res, "VPS_ALLOCATE_PRIVATE_VLANS_GENERAL_ERROR", ex);
+				return res;
+			}
 
-            TaskManager.CompleteResultTask();
-            return res;
-        }
-        #endregion
+			TaskManager.CompleteResultTask();
+			return res;
+		}
+		#endregion
 
-        #region IP Addresses
-        public static List<IPAddressInfo> GetIPAddresses(IPAddressPool pool, int serverId)
+		#region IP Addresses
+		public static List<IPAddressInfo> GetIPAddresses(IPAddressPool pool, int serverId)
 		{
 			return ObjectUtils.CreateListFromDataReader<IPAddressInfo>(
 				DataProvider.GetIPAddresses(SecurityContext.User.UserId, (int)pool, serverId));
@@ -1790,12 +1948,12 @@ namespace SolidCP.EnterpriseServer
 			// check if requested more than available
 			if (maxAvailableIPs != -1 &&
 				(addressesNumber > maxAvailableIPs))
-            {
+			{
 				res.ErrorCodes.Add("IP_ADDRESSES_POOL_IS_NOT_ENOUGH_IPS");
 				return res;
 				//addressesNumber = maxAvailableIPs; //it is not good to ignore problem
 			}
-				
+
 
 			res = TaskManager.StartResultTask<ResultObject>("IP_ADDRESS", "ALLOCATE_PACKAGE_IP", packageId);
 
@@ -1867,40 +2025,40 @@ namespace SolidCP.EnterpriseServer
 				true, number, new int[0]);
 		}
 
-        public static ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
-        {
-            // get maximum server VLANs
-            int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
+		public static ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
+		{
+			// get maximum server VLANs
+			int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
 
-            // get hosting plan VLANs
-            int number = 0;
+			// get hosting plan VLANs
+			int number = 0;
 
-            PackageContext cntx = PackageController.GetPackageContext(packageId);
-            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
-            if (cntx.Quotas.ContainsKey(quotaName))
-            {
-                if (cntx.Quotas[quotaName].QuotaAllocatedValue == -1)
-                {
-                    // unlimited
-                    //number = maxAvailableVLANs; // assign max available server VLANs
-                    if (maxAvailableVLANs > 0)
-                    {
-                        number = 1;//assign 1 VLAN or the entire free pool if unlimited. What is better???
-                    }
-                    else number = 0;
-                }
-                else
-                {
-                    // quota
-                    number = cntx.Quotas[quotaName].QuotaAllocatedValue - cntx.Quotas[quotaName].QuotaUsedValue;
-                }
-            }
+			PackageContext cntx = PackageController.GetPackageContext(packageId);
+			string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			if (cntx.Quotas.ContainsKey(quotaName))
+			{
+				if (cntx.Quotas[quotaName].QuotaAllocatedValue == -1)
+				{
+					// unlimited
+					//number = maxAvailableVLANs; // assign max available server VLANs
+					if (maxAvailableVLANs > 0)
+					{
+						number = 1;//assign 1 VLAN or the entire free pool if unlimited. What is better???
+					}
+					else number = 0;
+				}
+				else
+				{
+					// quota
+					number = cntx.Quotas[quotaName].QuotaAllocatedValue - cntx.Quotas[quotaName].QuotaUsedValue;
+				}
+			}
 
-            // allocate
-            return AllocatePackageVLANs(packageId, groupName, true, number, new int[0]);
-        }
+			// allocate
+			return AllocatePackageVLANs(packageId, groupName, true, number, new int[0]);
+		}
 
-        public static ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
+		public static ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)
 		{
 			#region Check account and space statuses
 			// create result object
@@ -2340,7 +2498,7 @@ namespace SolidCP.EnterpriseServer
 			if (accountCheck < 0) return accountCheck;
 
 			if (domainType == DomainType.Domain)
-            {
+			{
 				PackageContext cntx = PackageController.GetPackageContext(packageId);
 				if (!cntx.Quotas[Quotas.OS_NOTALLOWTENANTCREATEDOMAINS].QuotaExhausted)
 				{
@@ -2368,13 +2526,13 @@ namespace SolidCP.EnterpriseServer
 			if (domainId < 0)
 				return domainId;
 
-            DomainInfo domain = ServerController.GetDomain(domainId);
+			DomainInfo domain = ServerController.GetDomain(domainId);
 			if (domain != null)
 			{
 				if (domain.ZoneItemId != 0)
 				{
-                    AddAllServiceDNS(domain);
-                }
+					AddAllServiceDNS(domain);
+				}
 
 				UpdateDomainWhoisData(domain);
 			}
@@ -2404,22 +2562,22 @@ namespace SolidCP.EnterpriseServer
 				MailServerController.AddMailDomainPointer(pointMailDomainId, domainId);
 			}
 
-            // add Preview Domain
-            createPreviewDomain &= (domainType != DomainType.DomainPointer);
-            if (createPreviewDomain)
-            {
-                // check if Preview Domain is configured
-                string domainAlias = GetDomainAlias(packageId, domainName);
+			// add Preview Domain
+			createPreviewDomain &= (domainType != DomainType.DomainPointer);
+			if (createPreviewDomain)
+			{
+				// check if Preview Domain is configured
+				string domainAlias = GetDomainAlias(packageId, domainName);
 
-                // add Preview Domain if required
-                if (!String.IsNullOrEmpty(domainAlias))
-                {
-                    // add alias
-                    CreateDomainPreviewDomain(hostName, domainId);
-                }
-            }
+				// add Preview Domain if required
+				if (!String.IsNullOrEmpty(domainAlias))
+				{
+					// add alias
+					CreateDomainPreviewDomain(hostName, domainId);
+				}
+			}
 
-            return domainId;
+			return domainId;
 		}
 
 		public static int AddDomain(DomainInfo domain)
@@ -2494,10 +2652,10 @@ namespace SolidCP.EnterpriseServer
 				else
 					return checkResult;
 			}
-			
-                //        if (domainName.ToLower().StartsWith("www."))
-                //            return BusinessErrorCodes.ERROR_DOMAIN_STARTS_WWW;
-            
+
+			//        if (domainName.ToLower().StartsWith("www."))
+			//            return BusinessErrorCodes.ERROR_DOMAIN_STARTS_WWW;
+
 			// place log record
 			TaskManager.StartTask("DOMAIN", "ADD", domainName, 0, packageId, new BackgroundTaskParameter("CreateZone", createDnsZone));
 
@@ -2769,7 +2927,7 @@ namespace SolidCP.EnterpriseServer
 			{
 				PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
 				if (!cntx.Quotas[Quotas.OS_NOTALLOWTENANTDELETEDOMAINS].QuotaExhausted)
-                {
+				{
 					accountCheck = SecurityContext.CheckAccount(DemandAccount.IsAdmin);
 					if (accountCheck < 0) return accountCheck;
 				}
@@ -2829,7 +2987,7 @@ namespace SolidCP.EnterpriseServer
 				// delete domain
 				DataProvider.DeleteDomain(SecurityContext.User.UserId, domainId);
 
-                return 0;
+				return 0;
 			}
 			catch (Exception ex)
 			{
@@ -2925,8 +3083,8 @@ namespace SolidCP.EnterpriseServer
 
 					domain = GetDomain(domainId);
 
-                    AddAllServiceDNS(domain);
-                }
+					AddAllServiceDNS(domain);
+				}
 
 				// add web site DNS records
 				int res = AddWebSiteZoneRecords("", domainId);
@@ -2945,168 +3103,168 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        private static void AddAllServiceDNS(DomainInfo domain)
-        {
-            PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
-            if (cntx != null)
-            {
-                // fill dictionaries
-                foreach (HostingPlanGroupInfo group in cntx.GroupsArray)
-                {
-                    try
-                    {
-                        bool bFound = false;
-                        switch (group.GroupName)
-                        {
-                            case ResourceGroups.Dns:
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Ftp, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2000, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2005, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2008, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2012, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2014, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2016, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2019, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2022, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MariaDB, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Statistics, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS2012, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPSForPC, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Dns, domain, "");
-                                break;
-                            case ResourceGroups.Os:
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Os, domain, "");
-                                break;
-                            case ResourceGroups.RDS:
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.RDS, domain, "");
-                                break;
-                            case ResourceGroups.HostedOrganizations:
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedOrganizations, domain, "");
-                                ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedCRM, domain, "");
-                                break;
-                            case ResourceGroups.Mail:
-                                List<DomainInfo> myDomains = ServerController.GetMyDomains(domain.PackageId);
-                                foreach (DomainInfo mailDomain in myDomains)
-                                {
-                                    if ((mailDomain.MailDomainId != 0) && (domain.DomainName.ToLower() == mailDomain.DomainName.ToLower()))
-                                    {
-                                        bFound = true;
-                                        break;
-                                    }
-                                }
-                                if (bFound) ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Mail, domain, "");
-                                break;
-                            case ResourceGroups.Exchange:
-                                List<Organization> orgs = OrganizationController.GetOrganizations(domain.PackageId, false);
-                                foreach (Organization o in orgs)
-                                {
-                                    List<OrganizationDomainName> names = OrganizationController.GetOrganizationDomains(o.Id);
-                                    foreach (OrganizationDomainName name in names)
-                                    {
-                                        if (domain.DomainName.ToLower() == name.DomainName.ToLower())
-                                        {
-                                            bFound = true;
-                                            break;
-                                        }
-                                    }
-                                    if (bFound) break;
-                                }
-                                if (bFound)
-                                {
-                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Exchange, domain, "");
-                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.BlackBerry, domain, "");
-                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.OCS, domain, "");
-                                }
-                                break;
-                            case ResourceGroups.Lync:
-                                List<Organization> orgsLync = OrganizationController.GetOrganizations(domain.PackageId, false);
-                                foreach (Organization o in orgsLync)
-                                {
-                                    if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
-                                        (o.LyncTenantId != null))
-                                    {
-                                        bFound = true;
-                                        break;
-                                    }
-                                }
-                                if (bFound)
-                                {
-                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Lync, domain, "");
-                                }
-                                break;
-                            case ResourceGroups.SfB:
-                                List<Organization> orgsSfB = OrganizationController.GetOrganizations(domain.PackageId, false);
-                                foreach (Organization o in orgsSfB)
-                                {
-                                    if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
-                                        (o.SfBTenantId != null))
-                                    {
-                                        bFound = true;
-                                        break;
-                                    }
-                                }
-                                if (bFound)
-                                {
-                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.SfB, domain, "");
-                                }
-                                break;
-                            case ResourceGroups.Web:
-                                List<WebSite> sites = WebServerController.GetWebSites(domain.PackageId, false);
-                                foreach (WebSite w in sites)
-                                {
-                                    if ((w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
-                                        (w.SiteId.ToLower() == domain.DomainName.ToLower()))
-                                    {
-                                        WebServerController.AddWebSitePointer(w.Id,
-                                                                                (w.SiteId.ToLower() == domain.DomainName.ToLower()) ? "" : w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
-                                                                                domain.DomainId, false, true, true);
-                                    }
+		private static void AddAllServiceDNS(DomainInfo domain)
+		{
+			PackageContext cntx = PackageController.GetPackageContext(domain.PackageId);
+			if (cntx != null)
+			{
+				// fill dictionaries
+				foreach (HostingPlanGroupInfo group in cntx.GroupsArray)
+				{
+					try
+					{
+						bool bFound = false;
+						switch (group.GroupName)
+						{
+							case ResourceGroups.Dns:
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Ftp, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2000, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2005, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2008, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2012, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2014, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2016, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2019, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2022, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MariaDB, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Statistics, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPS2012, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.VPSForPC, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Dns, domain, "");
+								break;
+							case ResourceGroups.Os:
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Os, domain, "");
+								break;
+							case ResourceGroups.RDS:
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.RDS, domain, "");
+								break;
+							case ResourceGroups.HostedOrganizations:
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedOrganizations, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.HostedCRM, domain, "");
+								break;
+							case ResourceGroups.Mail:
+								List<DomainInfo> myDomains = ServerController.GetMyDomains(domain.PackageId);
+								foreach (DomainInfo mailDomain in myDomains)
+								{
+									if ((mailDomain.MailDomainId != 0) && (domain.DomainName.ToLower() == mailDomain.DomainName.ToLower()))
+									{
+										bFound = true;
+										break;
+									}
+								}
+								if (bFound) ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Mail, domain, "");
+								break;
+							case ResourceGroups.Exchange:
+								List<Organization> orgs = OrganizationController.GetOrganizations(domain.PackageId, false);
+								foreach (Organization o in orgs)
+								{
+									List<OrganizationDomainName> names = OrganizationController.GetOrganizationDomains(o.Id);
+									foreach (OrganizationDomainName name in names)
+									{
+										if (domain.DomainName.ToLower() == name.DomainName.ToLower())
+										{
+											bFound = true;
+											break;
+										}
+									}
+									if (bFound) break;
+								}
+								if (bFound)
+								{
+									ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Exchange, domain, "");
+									ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.BlackBerry, domain, "");
+									ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.OCS, domain, "");
+								}
+								break;
+							case ResourceGroups.Lync:
+								List<Organization> orgsLync = OrganizationController.GetOrganizations(domain.PackageId, false);
+								foreach (Organization o in orgsLync)
+								{
+									if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
+										 (o.LyncTenantId != null))
+									{
+										bFound = true;
+										break;
+									}
+								}
+								if (bFound)
+								{
+									ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Lync, domain, "");
+								}
+								break;
+							case ResourceGroups.SfB:
+								List<Organization> orgsSfB = OrganizationController.GetOrganizations(domain.PackageId, false);
+								foreach (Organization o in orgsSfB)
+								{
+									if ((o.DefaultDomain.ToLower() == domain.DomainName.ToLower()) &
+										 (o.SfBTenantId != null))
+									{
+										bFound = true;
+										break;
+									}
+								}
+								if (bFound)
+								{
+									ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.SfB, domain, "");
+								}
+								break;
+							case ResourceGroups.Web:
+								List<WebSite> sites = WebServerController.GetWebSites(domain.PackageId, false);
+								foreach (WebSite w in sites)
+								{
+									if ((w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
+										 (w.SiteId.ToLower() == domain.DomainName.ToLower()))
+									{
+										WebServerController.AddWebSitePointer(w.Id,
+																							 (w.SiteId.ToLower() == domain.DomainName.ToLower()) ? "" : w.SiteId.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
+																							 domain.DomainId, false, true, true);
+									}
 
-                                    List<DomainInfo> pointers = WebServerController.GetWebSitePointers(w.Id);
-                                    foreach (DomainInfo pointer in pointers)
-                                    {
-                                        if ((pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
-                                            (pointer.DomainName.ToLower() == domain.DomainName.ToLower()))
-                                        {
-                                            WebServerController.AddWebSitePointer(w.Id,
-                                                                                    (pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
-                                                                                    domain.DomainId, false, true, true);
-                                        }
-                                    }
-                                }
+									List<DomainInfo> pointers = WebServerController.GetWebSitePointers(w.Id);
+									foreach (DomainInfo pointer in pointers)
+									{
+										if ((pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), "").IndexOf('.') == -1) ||
+											 (pointer.DomainName.ToLower() == domain.DomainName.ToLower()))
+										{
+											WebServerController.AddWebSitePointer(w.Id,
+																								 (pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
+																								 domain.DomainId, false, true, true);
+										}
+									}
+								}
 
-                                if (sites.Count == 1)
-                                {
-                                    // load site item
-                                    IPAddressInfo ip = ServerController.GetIPAddress(sites[0].SiteIPAddressId);
+								if (sites.Count == 1)
+								{
+									// load site item
+									IPAddressInfo ip = ServerController.GetIPAddress(sites[0].SiteIPAddressId);
 
-                                    string serviceIp = (ip != null) ? ip.ExternalIP : null;
+									string serviceIp = (ip != null) ? ip.ExternalIP : null;
 
-                                    if (string.IsNullOrEmpty(serviceIp))
-                                    {
-                                        StringDictionary settings = ServerController.GetServiceSettings(sites[0].ServiceId);
-                                        if (settings["PublicSharedIP"] != null)
-                                            serviceIp = settings["PublicSharedIP"].ToString();
-                                    }
+									if (string.IsNullOrEmpty(serviceIp))
+									{
+										StringDictionary settings = ServerController.GetServiceSettings(sites[0].ServiceId);
+										if (settings["PublicSharedIP"] != null)
+											serviceIp = settings["PublicSharedIP"].ToString();
+									}
 
-                                    ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Web, domain, serviceIp, true);
-                                }
+									ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.Web, domain, serviceIp, true);
+								}
 
-                                break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        TaskManager.WriteError(ex);
-                    }
-                }
-            }
-        }
+								break;
+						}
+					}
+					catch (Exception ex)
+					{
+						TaskManager.WriteError(ex);
+					}
+				}
+			}
+		}
 
 		private static int AddWebSiteZoneRecords(string hostName, int domainId)
 		{
@@ -3161,10 +3319,10 @@ namespace SolidCP.EnterpriseServer
 					parentZone = parentDomain.DomainName;
 				}
 
-                if (previewDomainId > 0)
-                {
-                    EnableDomainDns(previewDomainId);
-                }
+				if (previewDomainId > 0)
+				{
+					EnableDomainDns(previewDomainId);
+				}
 
 				if (domain.WebSiteId > 0)
 				{
@@ -3413,7 +3571,7 @@ namespace SolidCP.EnterpriseServer
 		}
 
 		public static int AddDnsZoneRecord(int domainId, string recordName, DnsRecordType recordType,
-				   string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPort)
+					string recordData, int mxPriority, int srvPriority, int srvWeight, int srvPort)
 		{
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);

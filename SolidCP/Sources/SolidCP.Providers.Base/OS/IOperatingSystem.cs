@@ -33,8 +33,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Security;
+using System.Text.RegularExpressions;
+using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
+using System.Runtime.InteropServices;
+
 
 namespace SolidCP.Providers.OS
 {
@@ -42,60 +49,71 @@ namespace SolidCP.Providers.OS
     /// Summary description for IOperationSystem.
     /// </summary>
     public interface IOperatingSystem
-    {
-        // files
-        string CreatePackageFolder(string initialPath);
-        bool FileExists(string path);
-        bool DirectoryExists(string path);
-        SystemFile GetFile(string path);
-        SystemFile[] GetFiles(string path);
-        SystemFile[] GetDirectoriesRecursive(string rootFolder, string path);
-        SystemFile[] GetFilesRecursive(string rootFolder, string path);
-        SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern);
-        byte[] GetFileBinaryContent(string path);
+	{
+		// files
+		string CreatePackageFolder(string initialPath);
+		bool FileExists(string path);
+		bool DirectoryExists(string path);
+		SystemFile GetFile(string path);
+		SystemFile[] GetFiles(string path);
+		SystemFile[] GetDirectoriesRecursive(string rootFolder, string path);
+		SystemFile[] GetFilesRecursive(string rootFolder, string path);
+		SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern);
+		byte[] GetFileBinaryContent(string path);
 		byte[] GetFileBinaryContentUsingEncoding(string path, string encoding);
-        byte[] GetFileBinaryChunk(string path, int offset, int length);
-        string GetFileTextContent(string path);
-        void CreateFile(string path);
-        void CreateDirectory(string path);
-        void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime);
-        void DeleteFile(string path);
-        void DeleteFiles(string[] files);
-        void DeleteEmptyDirectories(string[] directories);
-        void UpdateFileBinaryContent(string path, byte[] content);
+		byte[] GetFileBinaryChunk(string path, int offset, int length);
+		string GetFileTextContent(string path);
+		void CreateFile(string path);
+		void CreateDirectory(string path);
+		void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime);
+		void DeleteFile(string path);
+		void DeleteFiles(string[] files);
+		void DeleteEmptyDirectories(string[] directories);
+		void UpdateFileBinaryContent(string path, byte[] content);
 		void UpdateFileBinaryContentUsingEncoding(string path, byte[] content, string encoding);
-        void AppendFileBinaryContent(string path, byte[] chunk);
-        void UpdateFileTextContent(string path, string content);
-        void MoveFile(string sourcePath, string destinationPath);
-        void CopyFile(string sourcePath, string destinationPath);
-        void ZipFiles(string zipFile, string rootPath, string[] files);
-        string[] UnzipFiles(string zipFile, string destFolder);
-        void CreateBackupZip(string zipFile, string rootPath);
+		void AppendFileBinaryContent(string path, byte[] chunk);
+		void UpdateFileTextContent(string path, string content);
+		void MoveFile(string sourcePath, string destinationPath);
+		void CopyFile(string sourcePath, string destinationPath);
+		void ZipFiles(string zipFile, string rootPath, string[] files);
+		string[] UnzipFiles(string zipFile, string destFolder);
+		void CreateBackupZip(string zipFile, string rootPath);
 
-        UserPermission[] GetGroupNtfsPermissions(string path, UserPermission[] users, string usersOU);
-        void GrantGroupNtfsPermissions(string path, UserPermission[] users, string usersOU, bool resetChildPermissions);
+		// Synchronizing
+		FolderGraph GetFolderGraph(string path);
+		void ExecuteSyncActions(FileSyncAction[] actions);
 
-        // ODBC DSNs
-        string[] GetInstalledOdbcDrivers();
-        string[] GetDSNNames();
-        SystemDSN GetDSN(string dsnName);
-        void CreateDSN(SystemDSN dsn);
-        void UpdateDSN(SystemDSN dsn);
-        void DeleteDSN(string dsnName);
+		void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
+		Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword);
+		void DeleteDirectoryRecursive(string rootPath);
 
-        // Access databases
-        void CreateAccessDatabase(string databasePath);
+		// logging
+		List<string> GetLogNames();
+		List<SystemLogEntry> GetLogEntries(string logName);
+		SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows);
+		void ClearLog(string logName);
 
-        // Synchronizing
-        FolderGraph GetFolderGraph(string path);
-        void ExecuteSyncActions(FileSyncAction[] actions);
+		// processes
+		OSProcess[] GetOSProcesses();
+		void TerminateOSProcess(int pid);
+		OSService[] GetOSServices();
+		void ChangeOSServiceStatus(string id, OSServiceStatus status);
 
-        void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword);
-        Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword);
-        void DeleteDirectoryRecursive(string rootPath);
+		// reboot
+		void RebootSystem();
 
-        // File Services
-        bool CheckFileServicesInstallation();
-        bool InstallFsrmService();
-    }
+		// memory
+		Memory GetMemory();
+
+		// execute command
+		string ExecuteSystemCommand(string path, string args);
+
+		OSPlatformInfo GetOSPlatform();
+
+		Shell DefaultShell { get; }
+		Installer DefaultInstaller { get; }
+		Web.IWebServer WebServer { get; }
+		ServiceController ServiceController { get; }
+	}
+
 }

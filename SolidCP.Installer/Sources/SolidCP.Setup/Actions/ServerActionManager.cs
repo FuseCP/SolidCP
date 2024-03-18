@@ -45,6 +45,12 @@ using Microsoft.Win32;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Security.Cryptography.X509Certificates;
+using SolidCP.Providers.OS;
+using System.Runtime.Remoting.Contexts;
+using System.Web.Services.Description;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace SolidCP.Setup.Actions
 {
@@ -345,7 +351,7 @@ namespace SolidCP.Setup.Actions
 			var netbiosDomain = userDomain;
 			var userName = vars.UserAccount;
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			//
 			if (!String.IsNullOrEmpty(userDomain))
 			{
@@ -381,7 +387,7 @@ namespace SolidCP.Setup.Actions
 			var identity = GetWebIdentity(vars);
 			var componentId = vars.ComponentId;
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			var poolExists = false;
 
 			//
@@ -451,7 +457,7 @@ namespace SolidCP.Setup.Actions
 			{
 				var appPoolName = String.Format(AppPoolNameFormatString, vars.ComponentFullName);
 				var iisVersion = vars.IISVersion;
-                var iis7 = (iisVersion.Major >= 7);
+				var iis7 = (iisVersion.Major >= 7);
 				var poolExists = false;
 				//
 				Log.WriteStart(LogStartUninstallMessage);
@@ -505,13 +511,13 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            var siteName = vars.ComponentFullName;
+			var siteName = vars.ComponentFullName;
 			var ip = vars.WebSiteIP;
 			var port = vars.WebSitePort;
 			var domain = vars.WebSiteDomain;
 			var contentPath = vars.InstallationFolder;
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			var userName = CreateWebApplicationPoolAction.GetWebIdentity(vars);
 			var userPassword = vars.UserPassword;
 			var appPool = vars.WebApplicationPoolName;
@@ -558,7 +564,7 @@ namespace SolidCP.Setup.Actions
 				ApplicationPool = appPool,
 				//
 				Bindings = new ServerBinding[] {
-					new ServerBinding(ip, port, domain)
+					new ServerBinding(ip, port, domain, null, componentId)
 				},
 			};
 
@@ -572,14 +578,14 @@ namespace SolidCP.Setup.Actions
 				newSiteId = WebUtils.CreateSite(site);
 			}
 
-            try
-            {
-                Utils.OpenFirewallPort(vars.ComponentFullName, vars.WebSitePort, vars.IISVersion);
-            }
-            catch (Exception ex)
-            {
-                Log.WriteError("Open windows firewall port error", ex);
-            }
+			try
+			{
+				Utils.OpenFirewallPort(vars.ComponentFullName, vars.WebSitePort, vars.IISVersion);
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Open windows firewall port error", ex);
+			}
 
 			vars.VirtualDirectory = String.Empty;
 			vars.NewWebSite = true;
@@ -599,14 +605,14 @@ namespace SolidCP.Setup.Actions
 			string[] urls = Utils.GetApplicationUrls(ip, domain, port, null);
 			foreach (string url in urls)
 			{
-				InstallLog.AppendLine("  http://" + url);
+				InstallLog.AppendLine(Utils.IsHttps(ip, domain) ? "  https://" + url : "  http://" + url);
 			}
 		}
 
 		void IUninstallAction.Run(SetupVariables vars)
 		{
 			var iisVersion = vars.IISVersion;
-            var iis7 = (iisVersion.Major >= 7);
+			var iis7 = (iisVersion.Major >= 7);
 			var siteId = vars.WebSiteId;
 			//
 			try
@@ -639,6 +645,58 @@ namespace SolidCP.Setup.Actions
 				throw;
 			}
 		}
+	}
+
+	public class InstallLetsEncryptCertificateAction : Action, IInstallAction, IUninstallAction
+	{
+		public const string LogStartMessage = "Configuring Let's Encrypt...";
+		void IInstallAction.Run(SetupVariables vars)
+		{
+
+			try
+			{
+				string ip = vars.WebSiteIP;
+				string siteId = vars.WebSiteId;
+				string domain = vars.WebSiteDomain;
+				string email = vars.LetsEncryptEmail;
+				var componentCode = vars.ComponentCode;
+				var isUnattended = !string.IsNullOrEmpty(vars.SetupXml);
+				bool updateWCF = componentCode == Global.EntServer.ComponentCode || componentCode == Global.Server.ComponentCode;
+				bool updateIIS = !updateWCF;
+				var iisVersion = vars.IISVersion;
+				var iis7 = (iisVersion.Major >= 7);
+
+				if (OSInfo.IsWindows && iis7 && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
+				{
+					Begin(LogStartMessage);
+					//
+					Log.WriteStart(LogStartMessage);
+
+					Log.WriteInfo($"Configuring Let's Encrypt for domain {domain} with email {email}");
+
+					var success = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF, updateIIS);
+
+					if (!success) {
+						if (!isUnattended) MessageBox.Show("Let's Encrypt certificate installation failed. Please check the log file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						InstallLog.AppendLine($"- Let's Encrypt certificate installation failed. Please check the log file.");
+					} else {
+						//update install log
+						InstallLog.AppendLine($"- Installed Let's Encrypt for domain \"{domain}\"");
+					}
+
+					Finish(LogStartMessage);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Error installing Let's Encrypt certificate", ex);
+				throw;
+
+			}
+		}
+		void IUninstallAction.Run(SetupVariables vars) { }
 	}
 
 	public class CopyFilesAction : Action, IInstallAction, IUninstallAction
@@ -787,21 +845,123 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            try
+			if (!vars.UpdateServerPassword) return;
+			try
 			{
 				Begin(LogStartInstallMessage);
 				Log.WriteStart("Updating configuration file (server password)");
 				Log.WriteInfo("Single quotes are added for clarity purposes");
 				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
-				string hash = Utils.ComputeSHA1(vars.ServerPassword);
-                var XmlDoc = new XmlDocument();
-                XmlDoc.Load(file);
-                var Node = XmlDoc.SelectSingleNode("configuration/SolidCP.server/security/password") as XmlElement;
-                if (Node == null)
-                    throw new Exception("Unable to set a server access password. Check structure of configuration file.");
-                else
-                    Node.SetAttribute("value", hash);
-                XmlDoc.Save(file);			
+				string hash;
+				// TODO is this a bug? ServerPasswordPage uses strange setting of Util.ComputeSHA1
+				if (vars.SetupAction == SetupActions.Setup) hash = vars.ServerPassword; 
+				else hash = Utils.ComputeSHA1(vars.ServerPassword);
+				var XmlDoc = new XmlDocument();
+				XmlDoc.Load(file);
+				var Node = XmlDoc.SelectSingleNode("configuration/SolidCP.server/security/password") as XmlElement;
+				if (Node == null)
+					throw new Exception("Unable to set a server access password. Check structure of configuration file.");
+				else
+					Node.SetAttribute("value", hash);
+				XmlDoc.Save(file);
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Configuration file update error", ex);
+
+				throw;
+			}
+		}
+	}
+
+	public class SetCertificateAction : Action, IInstallAction
+	{
+		public const string LogStartInstallMessage = "Setting certificate...";
+
+		public override bool Indeterminate
+		{
+			get { return true; }
+		}
+
+		void IInstallAction.Run(SetupVariables vars)
+		{
+			try
+			{
+				if ((string.IsNullOrEmpty(vars.CertificateStore) || string.IsNullOrEmpty(vars.CertificateStoreLocation) ||
+					string.IsNullOrEmpty(vars.CertificateFindType) || string.IsNullOrEmpty(vars.CertificateFindValue)) &&
+					(string.IsNullOrEmpty(vars.CertificateFile) || string.IsNullOrEmpty(vars.CertificatePassword)))
+				{ return; }
+
+				Begin(LogStartInstallMessage);
+				Log.WriteStart("Updating configuration file (certificate)");
+
+				if (!string.IsNullOrEmpty(vars.CertificateFile))
+				{
+					// import certificate into local my store
+					try {
+						var certificate = new X509Certificate2(vars.CertificateFile, vars.CertificatePassword);
+						using (var store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
+						{
+							store.Open(OpenFlags.ReadWrite);
+							var current = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, false)
+								.OfType<X509Certificate2>();
+							if (!current.Any()) store.Add(certificate);
+							else Log.WriteError($"Error importing {Path.GetFileName(vars.CertificateFile)} to local my certificate store. There is already another certifictae with that Thumbprint in the store.");
+							store.Close();
+						}
+						vars.CertificateStore = nameof(StoreName.My);
+						vars.CertificateStoreLocation = nameof(StoreLocation.LocalMachine);
+						vars.CertificateFindType = nameof(X509FindType.FindByThumbprint);
+						vars.CertificateFindValue = certificate.Thumbprint;
+					} catch(Exception ex) {
+						Log.WriteError($"Error importing {Path.GetFileName(vars.CertificateFile)} to local my certificate store.", ex);
+						throw;
+					}
+				}
+				string file = Path.Combine(vars.InstallationFolder, vars.ConfigurationFile);
+				var doc = XElement.Load(file);
+				var configuration = doc.Element("configuration");
+				var serviceModel = configuration.Element("system.serviceModel");
+				if (serviceModel == null)
+				{
+					serviceModel = new XElement("system.serviceModel");
+					configuration.Add(serviceModel);
+				}
+				var behaviors = serviceModel.Element("behaviors");
+				if (behaviors == null)
+				{
+					behaviors = new XElement("behaviors");
+					serviceModel.Add(behaviors);
+				}
+				var serviceBehaiors = behaviors.Element("serviceBehaviors");
+				if (serviceBehaiors == null)
+				{
+					serviceBehaiors = new XElement("serviceBehaviors");
+					behaviors.Add(serviceBehaiors);
+				}
+				var behavior = serviceBehaiors.Element("behavior");
+				if (behavior == null)
+				{
+					behavior = new XElement("behavior");
+					serviceBehaiors.Add(behavior);
+				}
+				var serviceCredentials = behavior.Element("serviceCredentials");
+				if (serviceCredentials == null)
+				{
+					serviceCredentials = new XElement("serviceCredentials");
+					behavior.Add(serviceCredentials);
+				}
+				var cert = serviceCredentials.Element("serviceCertificate");
+				if (cert != null) cert.Remove();
+				cert = new XElement("serviceCertificate", new XAttribute("storeName", vars.CertificateStore),
+					new XAttribute("storeLocation", vars.CertificateStoreLocation),
+					new XAttribute("X509FindType", vars.CertificateFindType),
+					new XAttribute("findValue", vars.CertificateFindValue));
+				serviceCredentials.Add(cert);
+				doc.Save(file);
 			}
 			catch (Exception ex)
 			{
@@ -966,7 +1126,7 @@ namespace SolidCP.Setup.Actions
 
 		void IInstallAction.Run(SetupVariables vars)
 		{
-            if (vars.IISVersion.Major >= 7)
+			if (vars.IISVersion.Major >= 7)
 			{
 				ChangeAspNetVersionOnIis7(vars);
 			}
@@ -1056,16 +1216,77 @@ namespace SolidCP.Setup.Actions
 			var fileName = Path.Combine(vars.InstallationFolder, "web.config");
 			//
 			var xdoc = XDocument.Load(fileName);
+			
+			// Remove WSE3 sections
+			var configNode = xdoc.Root.Element("configSections");
+			var wse3Section = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "microsoft.web.services3", StringComparison.OrdinalIgnoreCase));
+			if (wse3Section != null) wse3Section.Remove();
+			wse3Section = xdoc.Root.Element("microsoft.web.services3");
+			if (wse3Section != null) wse3Section.Remove();
+			// add swaggerwcf section
+			var swaggerwcfsection = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "swaggerwcf", StringComparison.OrdinalIgnoreCase));
+			if (swaggerwcfsection != null) swaggerwcfsection.Remove();
+			swaggerwcfsection = new XElement("section", new XAttribute("name", "swaggerwcf"), new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf"));
+			configNode.Add(swaggerwcfsection);
+
+			var currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
+			swaggerwcfsection = XElement.Parse($@"
+<swaggerwcf>
+	<settings>
+		<setting name=""InfoDescription"" value=""SolidCP Server Service"" />
+		<setting name=""InfoVersion"" value=""{vars.Version}"" />
+		<setting name=""InfoTermsOfService"" value=""Terms of Service"" />
+		<setting name=""InfoTitle"" value=""SolidCP Server Service"" />
+		<setting name=""InfoContactName"" value=""SolidCP"" />
+		<setting name=""InfoContactUrl"" value=""http://solidcp.com/forum"" />
+		<setting name=""InfoContactEmail"" value=""support@solidcp.com"" />
+		<setting name=""InfoLicenseUrl"" value=""https://github.com/FuseCP/SolidCP/blob/master/LICENSE.txt"" />
+		<setting name=""InfoLicenseName"" value=""Creative Commons Share-alike"" />
+	</settings>
+</swaggerwcf>");
+			if (currentswaggerwcfsection != null) currentswaggerwcfsection.ReplaceWith(swaggerwcfsection);
+			else xdoc.Root.Add(swaggerwcfsection);
+
+			// add appsettings asp:UseTaskFriendlySynchronizationContext
+			var appsettings = xdoc.Root.Element("appSettings");
+			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
+			if (synccontext != null) synccontext.Remove();
+			synccontext = new XElement("add",new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
+			appsettings.Add(synccontext);
+
 			// Modify <system.web /> node child elements
 			var swnode = xdoc.Root.Element("system.web");
 			{
 				//
 				if (swnode.Element("compilation") != null)
 					swnode.Element("compilation").Remove();
+				// remove classic web services
+				if (swnode.Element("webServices") != null)
+					swnode.Element("webServices").Remove();
+
 			};
+
+			// modify <system.webServer /> node
+			var swsnode = xdoc.Root.Element("system.webServer");
+			if (swsnode == null)
+			{
+				swsnode = new XElement("system.webServer");
+				xdoc.Root.Add(swsnode);
+			}
+			var modules = swsnode.Element("modules");
+			if (modules != null) modules.Remove();
+			modules = new XElement("modules", new XAttribute("runAllManagedModulesForAllRequests", "true"));
+			swsnode.Add(modules);
+
 			// Find/add WCF endpoints configuration section (DDTK)
 			var serviceModelNode = xdoc.Root.Element("system.serviceModel", true);
 			{
+				// add serviceHostingEnvironment
+				var env = serviceModelNode.Element("serviceHostingEnvironment");
+				if (env != null) env.Remove();
+				env = new XElement("serviceHostingEnvironment", new XAttribute("aspNetCompatibilityEnabled", "true"));
+				serviceModelNode.Add(env);
+
 				// Find/add bindings node if does not exist
 				var bindingsNode = serviceModelNode.Element("bindings", true);
 				{
@@ -1085,6 +1306,26 @@ namespace SolidCP.Setup.Actions
 					};
 				};
 			};
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath",
+				"bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Exchange2019;bin/Sharepoint2013;bin/Sharepoint2016;bin/Sharepoint2019;bin/Lync2013;bin/SfB2015;bin/SfB2019;bin/Lync2013HP;bin/Dns2012;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters;bin/Database;bin/DNS;bin/Providers;bin/Server;bin/EnterpriseServer;bin/netstandard"));
+			assemblyBinding.Add(probing);
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1103,13 +1344,98 @@ namespace SolidCP.Setup.Actions
 			var fileName = Path.Combine(vars.InstallationFolder, "web.config");
 			//
 			var xdoc = XDocument.Load(fileName);
+
+			// Remove WSE3 sections
+			var configNode = xdoc.Root.Element("configSections");
+			var wse3Section = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "microsoft.web.services3", StringComparison.OrdinalIgnoreCase));
+			if (wse3Section != null) wse3Section.Remove();
+			wse3Section = xdoc.Root.Element("microsoft.web.services3");
+			if (wse3Section != null) wse3Section.Remove();
+			// add swaggerwcf section
+			var swaggerwcfsection = configNode.Elements().FirstOrDefault(s => string.Equals(s.Attribute("name").Value, "swaggerwcf", StringComparison.OrdinalIgnoreCase));
+			if (swaggerwcfsection != null) swaggerwcfsection.Remove();
+			swaggerwcfsection = new XElement("section", new XAttribute("name", "swaggerwcf"), new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf"));
+			configNode.Add(swaggerwcfsection);
+
+			var currentswaggerwcfsection = xdoc.Root.Elements().FirstOrDefault(e => e.Name == "swaggerwcf");
+			swaggerwcfsection = XElement.Parse($@"
+<swaggerwcf>
+	<settings>
+		<setting name=""InfoDescription"" value=""SolidCP EnterpriseServer Service"" />
+		<setting name=""InfoVersion"" value=""{vars.Version}"" />
+		<setting name=""InfoTermsOfService"" value=""Terms of Service"" />
+		<setting name=""InfoTitle"" value=""SolidCP EnterpriseServer Service"" />
+		<setting name=""InfoContactName"" value=""SolidCP"" />
+		<setting name=""InfoContactUrl"" value=""http://solidcp.com/forum"" />
+		<setting name=""InfoContactEmail"" value=""support@solidcp.com"" />
+		<setting name=""InfoLicenseUrl"" value=""https://github.com/FuseCP/SolidCP/blob/master/LICENSE.txt"" />
+		<setting name=""InfoLicenseName"" value=""Creative Commons Share-alike"" />
+	</settings>
+</swaggerwcf>");
+			if (currentswaggerwcfsection != null) currentswaggerwcfsection.ReplaceWith(swaggerwcfsection);
+			else xdoc.Root.Add(swaggerwcfsection);
+
+
+			// add appsettings asp:UseTaskFriendlySynchronizationContext
+			var appsettings = xdoc.Root.Element("appSettings");
+			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
+			if (synccontext != null) synccontext.Remove();
+			synccontext = new XElement("add", new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
+			appsettings.Add(synccontext);
+
 			// Modify <system.web /> node child elements
 			var swnode = xdoc.Root.Element("system.web");
 			{
 				//
 				if (swnode.Element("compilation") != null)
 					swnode.Element("compilation").Remove();
+				// remove classic web services
+				if (swnode.Element("webServices") != null)
+					swnode.Element("webServices").Remove();
 			};
+
+			// modify <system.webServer /> node
+			var swsnode = xdoc.Root.Element("system.webServer");
+			if (swsnode == null)
+			{
+				swsnode = new XElement("system.webServer");
+				xdoc.Root.Add(swsnode);
+			}
+			var modules = swsnode.Element("modules");
+			if (modules != null) modules.Remove();
+			modules = new XElement("modules", new XAttribute("runAllManagedModulesForAllRequests", "true"));
+			swsnode.Add(modules);
+
+			// add serviceHostingEnvironment
+			var serviceModel = xdoc.Root.Element("system.serviceModel");
+			if (serviceModel == null)
+			{
+				serviceModel = new XElement("system.serviceModel");
+				xdoc.Root.Add(serviceModel);
+			}
+			var env = serviceModel.Element("serviceHostingEnvironment");
+			if (env != null) env.Remove();
+			env = new XElement("serviceHostingEnvironment", new XAttribute("aspNetCompatibilityEnabled", "true"));
+			serviceModel.Add(env);
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath", "bin/Code"));
+			assemblyBinding.Add(probing);
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1151,6 +1477,7 @@ namespace SolidCP.Setup.Actions
 			//
 			if (vars.IISVersion.Major == 6)
 			{
+				// runtime node required
 				DoMigrationOnIis6(vars);
 			}
 			else
@@ -1170,6 +1497,14 @@ namespace SolidCP.Setup.Actions
 			// Remove <system.web.extensions /> node
 			if (xdoc.Root.Element("system.web.extensions") != null)
 				xdoc.Root.Element("system.web.extensions").Remove();
+
+			// add appsettings asp:UseTaskFriendlySynchronizationContext
+			var appsettings = xdoc.Root.Element("appSettings");
+			var synccontext = appsettings.Elements().FirstOrDefault(s => s.Attribute("key").Value == "aspnet:UseTaskFriendlySynchronizationContext");
+			if (synccontext != null) synccontext.Remove();
+			synccontext = new XElement("add", new XAttribute("key", "aspnet:UseTaskFriendlySynchronizationContext"), new XAttribute("value", "true"));
+			appsettings.Add(synccontext);
+
 			// Modify <appSettings /> node
 			var apsnode = xdoc.Root.Element("appSettings");
 			{
@@ -1192,7 +1527,9 @@ namespace SolidCP.Setup.Actions
 					nodes.Remove();
 				};
 				// Set compatible request validation mode
-				swnode.Element("httpRuntime").SetAttributeValue("requestValidationMode", "2.0");
+				var hruntime = swnode.Element("httpRuntime");
+				hruntime.SetAttributeValue("requestValidationMode", "2.0");
+				hruntime.SetAttributeValue("targetFramework", "4.8");
 				// Modify <httpHandlers /> node
 				var hhnode = swnode.Element("httpHandlers");
 				{
@@ -1215,6 +1552,8 @@ namespace SolidCP.Setup.Actions
 				//
 				if (swnode.Element("compilation") != null)
 					swnode.Element("compilation").Remove();
+			
+			
 			};
 			// Remove <system.codedom /> node
 			if (xdoc.Root.Element("system.codedom") != null)
@@ -1243,8 +1582,28 @@ namespace SolidCP.Setup.Actions
 				}
 			};
 			// Remove <runtime /> node
-			if (xdoc.Root.Element("runtime") != null)
-				xdoc.Root.Element("runtime").Remove();
+			//if (xdoc.Root.Element("runtime") != null)
+			//	xdoc.Root.Element("runtime").Remove();
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath", "bin/Lazy"));
+			assemblyBinding.Add(probing);
+
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1313,8 +1672,27 @@ namespace SolidCP.Setup.Actions
 			if (xdoc.Root.Element("system.codedom") != null)
 				xdoc.Root.Element("system.codedom").Remove();
 			// Remove <runtime /> node
-			if (xdoc.Root.Element("runtime") != null)
-				xdoc.Root.Element("runtime").Remove();
+			//if (xdoc.Root.Element("runtime") != null)
+			//	xdoc.Root.Element("runtime").Remove();
+
+			// add probing paths
+			var runtime = xdoc.Root.Element("runtime");
+			if (runtime == null)
+			{
+				runtime = new XElement("runtime");
+				xdoc.Root.Add(runtime);
+			}
+			var assemblyBinding = runtime.Element("assemblyBinding");
+			if (assemblyBinding == null)
+			{
+				assemblyBinding = new XElement("assemblyBinding", new XAttribute("xmlns", "urn:schemas-microsoft-com:asm.v1"));
+				runtime.Add(assemblyBinding);
+			}
+			var probing = assemblyBinding?.Element("probing");
+			if (probing != null) probing.Remove();
+			probing = new XElement("probing", new XAttribute("privatePath", "bin/Lazy"));
+			assemblyBinding.Add(probing);
+
 			// Save all changes
 			xdoc.Save(fileName);
 		}
@@ -1363,11 +1741,13 @@ namespace SolidCP.Setup.Actions
 			new EnsureServiceAccntSecured(),
 			new CopyFilesAction(),
 			new SetServerPasswordAction(),
+			new SetCertificateAction(),
 			new CreateWindowsAccountAction(),
 			new ConfigureAspNetTempFolderPermissionsAction(),
 			new SetNtfsPermissionsAction(),
 			new CreateWebApplicationPoolAction(),
 			new CreateWebSiteAction(),
+			new InstallLetsEncryptCertificateAction(),
 			new SwitchAppPoolAspNetVersion(),
 			new SaveComponentConfigSettingsAction()
 		};

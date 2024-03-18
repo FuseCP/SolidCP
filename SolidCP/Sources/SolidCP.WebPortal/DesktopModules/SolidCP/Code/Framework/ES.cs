@@ -32,211 +32,222 @@
 
 using System;
 using System.Web;
-using SolidCP.EnterpriseServer.HostedSolution;
-using Microsoft.Web.Services3;
+using System.Web.Security;
+using System.Collections.Concurrent;
+using SolidCP.EnterpriseServer.Client;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.EnterpriseServer.Base;
-using SolidCP.EnterpriseServer.VirtualizationServer;
-using SolidCP.EnterpriseServer.VirtualizationServer2012;
-using SolidCP.EnterpriseServer.VirtualizationServerProxmox;
-using SolidCP.EnterpriseServer.VirtualizationServerForPrivateCloud;
 
 namespace SolidCP.Portal
 {
-    // ES.Services
+	// ES.Services
 
-    public class ES
-    {
-        public static ES Services
-        {
-            get
-            {
-                ES services = (ES)HttpContext.Current.Items["WebServices"];
+	public class ES
+	{
+		public FormsAuthenticationTicket AuthTicket = null;
+		public ES() {
+			try
+			{
+				if (HttpContext.Current != null)
+				{
+					AuthTicket = PortalUtils.AuthTicket;
+				}
+			}
+			catch { }
+		}
 
-                if (services == null)
-                {
-                    services = new ES();
-                    HttpContext.Current.Items["WebServices"] = services;
-                }
+		static ES services = null;
+		static object Lock = new object();
+		public static ES Services
+		{
+			get
+			{
+				lock (Lock)
+				{
+					if (services == null)
+					{
+						services = new ES();
+						services.AuthTicket = null;
+					}
+				}
+				return services;
+			}
+		}
 
-                return services;
-            }
-        }
-
-        public esCRM CRM
-        {
-            get
-            {
-                return GetCachedProxy<esCRM>();
-            }
-        }
-        
-
-        public esVirtualizationServer VPS
-        {
-            get { return GetCachedProxy<esVirtualizationServer>(); }
-        }
-
-        public esVirtualizationServer2012 VPS2012
-        {
-            get { return GetCachedProxy<esVirtualizationServer2012>(); }
-        }
-
-        public esVirtualizationServerProxmox Proxmox
-        {
-            get { return GetCachedProxy<esVirtualizationServerProxmox>(); }
-        }
-
-        public esVirtualizationServerForPrivateCloud VPSPC
-        {
-            get { return GetCachedProxy<esVirtualizationServerForPrivateCloud>(); }
-        }
-
-        public esBlackBerry BlackBerry
-        {
-            get { return GetCachedProxy<esBlackBerry>(); }
-        }
-        
-        public esOCS OCS
-        {
-            get { return GetCachedProxy<esOCS>(); }
-        }
+		public esCRM CRM
+		{
+			get
+			{
+				return GetCachedProxy<esCRM>();
+			}
+		}
 
 
-        public esLync Lync
-        {
-            get { return GetCachedProxy<esLync>(); }
-        }
+		public esVirtualizationServer VPS
+		{
+			get { return GetCachedProxy<esVirtualizationServer>(); }
+		}
 
-        public esSfB SfB
-        {
-            get { return GetCachedProxy<esSfB>(); }
-        }
+		public esVirtualizationServer2012 VPS2012
+		{
+			get { return GetCachedProxy<esVirtualizationServer2012>(); }
+		}
+
+		public esVirtualizationServerProxmox Proxmox
+		{
+			get { return GetCachedProxy<esVirtualizationServerProxmox>(); }
+		}
+
+		public esVirtualizationServerForPrivateCloud VPSPC
+		{
+			get { return GetCachedProxy<esVirtualizationServerForPrivateCloud>(); }
+		}
+
+		public esBlackBerry BlackBerry
+		{
+			get { return GetCachedProxy<esBlackBerry>(); }
+		}
+
+		public esOCS OCS
+		{
+			get { return GetCachedProxy<esOCS>(); }
+		}
 
 
-        public esOrganizations Organizations
-        {
-            get
-            {
-                return GetCachedProxy<esOrganizations>();
-            }
-        }
+		public esLync Lync
+		{
+			get { return GetCachedProxy<esLync>(); }
+		}
+
+		public esSfB SfB
+		{
+			get { return GetCachedProxy<esSfB>(); }
+		}
+
+
+		public esOrganizations Organizations
+		{
+			get
+			{
+				return GetCachedProxy<esOrganizations>();
+			}
+		}
 
 		public esSystem System
 		{
 			get { return GetCachedProxy<esSystem>(); }
 		}
 
-        public esApplicationsInstaller ApplicationsInstaller
-        {
-            get { return GetCachedProxy<esApplicationsInstaller>(); }
-        }
+		public esApplicationsInstaller ApplicationsInstaller
+		{
+			get { return GetCachedProxy<esApplicationsInstaller>(); }
+		}
 
-        public esWebApplicationGallery WebApplicationGallery
-        {
-            get { return GetCachedProxy<esWebApplicationGallery>(); }
-        }
+		public esWebApplicationGallery WebApplicationGallery
+		{
+			get { return GetCachedProxy<esWebApplicationGallery>(); }
+		}
 
-        public esAuditLog AuditLog
-        {
-            get { return GetCachedProxy<esAuditLog>(); }
-        }
+		public esAuditLog AuditLog
+		{
+			get { return GetCachedProxy<esAuditLog>(); }
+		}
 
-        public esAuthentication Authentication
-        {
-            get { return GetCachedProxy<esAuthentication>(false); }
-        }
+		public esAuthentication Authentication
+		{
+			get { return GetCachedProxy<esAuthentication>(false); }
+		}
 
-        public esComments Comments
-        {
-            get { return GetCachedProxy<esComments>(); }
-        }
+		public esComments Comments
+		{
+			get { return GetCachedProxy<esComments>(); }
+		}
 
-        public esDatabaseServers DatabaseServers
-        {
-            get { return GetCachedProxy<esDatabaseServers>(); }
-        }
+		public esDatabaseServers DatabaseServers
+		{
+			get { return GetCachedProxy<esDatabaseServers>(); }
+		}
 
-        public esFiles Files
-        {
-            get { return GetCachedProxy<esFiles>(); }
-        }
+		public esFiles Files
+		{
+			get { return GetCachedProxy<esFiles>(); }
+		}
 
-        public esFtpServers FtpServers
-        {
-            get { return GetCachedProxy<esFtpServers>(); }
-        }
+		public esFtpServers FtpServers
+		{
+			get { return GetCachedProxy<esFtpServers>(); }
+		}
 
-        public esMailServers MailServers
-        {
-            get { return GetCachedProxy<esMailServers>(); }
-        }
+		public esMailServers MailServers
+		{
+			get { return GetCachedProxy<esMailServers>(); }
+		}
 
-        public esOperatingSystems OperatingSystems
-        {
-            get { return GetCachedProxy<esOperatingSystems>(); }
-        }
+		public esOperatingSystems OperatingSystems
+		{
+			get { return GetCachedProxy<esOperatingSystems>(); }
+		}
 
-        public esPackages Packages
-        {
-            get { return GetCachedProxy<esPackages>(); }
-        }
+		public esPackages Packages
+		{
+			get { return GetCachedProxy<esPackages>(); }
+		}
 
-        public esScheduler Scheduler
-        {
-            get { return GetCachedProxy<esScheduler>(); }
-        }
+		public esScheduler Scheduler
+		{
+			get { return GetCachedProxy<esScheduler>(); }
+		}
 
-        public esTasks Tasks
-        {
-            get { return GetCachedProxy<esTasks>(); }
-        }
+		public esTasks Tasks
+		{
+			get { return GetCachedProxy<esTasks>(); }
+		}
 
-        public esServers Servers
-        {
-            get { return GetCachedProxy<esServers>(); }
-        }
+		public esServers Servers
+		{
+			get { return GetCachedProxy<esServers>(); }
+		}
 
-        public esStatisticsServers StatisticsServers
-        {
-            get { return GetCachedProxy<esStatisticsServers>(); }
-        }
+		public esStatisticsServers StatisticsServers
+		{
+			get { return GetCachedProxy<esStatisticsServers>(); }
+		}
 
-        public esUsers Users
-        {
-            get { return GetCachedProxy<esUsers>(); }
-        }
+		public esUsers Users
+		{
+			get { return GetCachedProxy<esUsers>(); }
+		}
 
-        public esWebServers WebServers
-        {
-            get { return GetCachedProxy<esWebServers>(); }
-        }
+		public esWebServers WebServers
+		{
+			get { return GetCachedProxy<esWebServers>(); }
+		}
 
-        public esSharePointServers SharePointServers
-        {
-            get { return GetCachedProxy<esSharePointServers>(); }
-        }
+		public esSharePointServers SharePointServers
+		{
+			get { return GetCachedProxy<esSharePointServers>(); }
+		}
 
 		public esHostedSharePointServers HostedSharePointServers
 		{
 			get { return GetCachedProxy<esHostedSharePointServers>(); }
 		}
 
-        public esHostedSharePointServersEnt HostedSharePointServersEnt
-        {
-            get { return GetCachedProxy<esHostedSharePointServersEnt>(); }
-        }
+		public esHostedSharePointServersEnt HostedSharePointServersEnt
+		{
+			get { return GetCachedProxy<esHostedSharePointServersEnt>(); }
+		}
 
-        public esImport Import
-        {
-            get { return GetCachedProxy<esImport>(); }
-        }
+		public esImport Import
+		{
+			get { return GetCachedProxy<esImport>(); }
+		}
 
-        public esBackup Backup
-        {
-            get { return GetCachedProxy<esBackup>(); }
-        }
+		public esBackup Backup
+		{
+			get { return GetCachedProxy<esBackup>(); }
+		}
 
 		public esExchangeServer ExchangeServer
 		{
@@ -244,59 +255,58 @@ namespace SolidCP.Portal
 		}
 
 
-        public esHeliconZoo HeliconZoo
-        {
-            get { return GetCachedProxy<esHeliconZoo>(); }
-        }
+		public esHeliconZoo HeliconZoo
+		{
+			get { return GetCachedProxy<esHeliconZoo>(); }
+		}
 
 
-        public esEnterpriseStorage EnterpriseStorage
-        {
-            get { return GetCachedProxy<esEnterpriseStorage>(); }
-        }
+		public esEnterpriseStorage EnterpriseStorage
+		{
+			get { return GetCachedProxy<esEnterpriseStorage>(); }
+		}
 
-        public esRemoteDesktopServices RDS
-        {
-            get { return GetCachedProxy<esRemoteDesktopServices>(); }
-        }
+		public esRemoteDesktopServices RDS
+		{
+			get { return GetCachedProxy<esRemoteDesktopServices>(); }
+		}
 
-        public esStorageSpaces StorageSpaces
-        {
-            get { return GetCachedProxy<esStorageSpaces>(); }
-        }
+		public esStorageSpaces StorageSpaces
+		{
+			get { return GetCachedProxy<esStorageSpaces>(); }
+		}
 
-        public esSpamExperts SpamExperts
-        {
-            get { return GetCachedProxy<esSpamExperts>(); }
-        }
+		public esSpamExperts SpamExperts
+		{
+			get { return GetCachedProxy<esSpamExperts>(); }
+		}
 
+		public esTest Test
+		{
+			get { return GetCachedProxy<esTest>(); }
+		}
 
-        protected ES()
-        {
-        }
+		public static void Start()
+		{
+			Services.Test.TouchAsync();
+		}
+		protected virtual T GetCachedProxy<T>()
+			where T: Web.Clients.ClientBase
+		{
+			return GetCachedProxy<T>(true);
+		}
 
-        protected virtual T GetCachedProxy<T>()
-        {
-            return GetCachedProxy<T>(true);
-        }
+		static ConcurrentDictionary<Type, Web.Clients.ClientBase> cache = new ConcurrentDictionary<Type, Web.Clients.ClientBase>();
+		protected virtual T GetCachedProxy<T>(bool secureCalls)
+			where T: Web.Clients.ClientBase
+		{
+			Type t = typeof(T);
+			var proxy = cache.GetOrAdd(t, t => Activator.CreateInstance<T>());
 
-        protected virtual T GetCachedProxy<T>(bool secureCalls)
-        {
-            Type t = typeof(T);
-            string key = t.FullName + ".ServiceProxy";
-            T proxy = (T)HttpContext.Current.Items[key];
-            if (proxy == null)
-            {
-                proxy = (T)Activator.CreateInstance(t);
-                HttpContext.Current.Items[key] = proxy;
-            }
+			// configure proxy
+			PortalUtils.ConfigureEnterpriseServerProxy(proxy, secureCalls, AuthTicket);
 
-            object p = proxy;
-
-            // configure proxy
-			PortalUtils.ConfigureEnterpriseServerProxy((WebServicesClientProtocol)p, secureCalls);
-
-            return proxy;
-        }
-    }
+			return (T)proxy;
+		}
+	}
 }

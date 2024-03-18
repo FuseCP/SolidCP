@@ -40,9 +40,11 @@ using System.Xml;
 using System.Xml.Serialization;
 
 using SolidCP.Server;
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
-using OS = SolidCP.Providers.OS;
+//using OS = SolidCP.Providers.OS;
 using System.Collections;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.DNS;
@@ -297,11 +299,11 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        private static WindowsServer GetServerService(int serverId)
+        private static Server.Client.OperatingSystem GetServerService(int serverId)
         {
-            WindowsServer winServer = new WindowsServer();
-            ServiceProviderProxy.ServerInit(winServer, serverId);
-            return winServer;
+            Server.Client.OperatingSystem server = new Server.Client.OperatingSystem();
+            ServiceProviderProxy.ServerInit(server, serverId);
+            return server;
         }
 
         #region Terminal Services Sessions
@@ -339,13 +341,13 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Windows Processes
-        public static WindowsProcess[] GetWindowsProcesses(int serverId)
+        #region OS Processes
+        public static OSProcess[] GetOSProcesses(int serverId)
         {
-            return GetServerService(serverId).GetWindowsProcesses();
+            return GetServerService(serverId).GetOSProcesses();
         }
 
-        public static int TerminateWindowsProcess(int serverId, int pid)
+        public static int TerminateOSProcess(int serverId, int pid)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -360,7 +362,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                GetServerService(serverId).TerminateWindowsProcess(pid);
+                GetServerService(serverId).TerminateOSProcess(pid);
                 return 0;
             }
             catch (Exception ex)
@@ -375,12 +377,12 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Windows Services
-        public static WindowsService[] GetWindowsServices(int serverId)
+        public static OSService[] GetOSServices(int serverId)
         {
-            return GetServerService(serverId).GetWindowsServices();
+            return GetServerService(serverId).GetOSServices();
         }
 
-        public static int ChangeWindowsServiceStatus(int serverId, string id, WindowsServiceStatus status)
+        public static int ChangeOSServiceStatus(int serverId, string id, OSServiceStatus status)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
@@ -396,7 +398,7 @@ namespace SolidCP.EnterpriseServer
 
             try
             {
-                GetServerService(serverId).ChangeWindowsServiceStatus(id, status);
+                GetServerService(serverId).ChangeOSServiceStatus(id, status);
                 return 0;
             }
             catch (Exception ex)

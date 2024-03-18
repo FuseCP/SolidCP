@@ -31,7 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -101,11 +101,6 @@
     <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="CPCC\CPCC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Bin\CPCC.dll</HintPath>
@@ -115,14 +110,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.0.3.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Client, Version=1.0.3.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -137,10 +124,8 @@
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
@@ -1232,7 +1217,7 @@
           <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>9001</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9001/</IISUrl>
+          <IISUrl>http://localhost:9018/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -1262,7 +1247,50 @@
       <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
       <Name>CPCC</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
+      <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
+      <Name>SolidCP.EnterpriseServer.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
+      <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
+      <Name>SolidCP.EnterpriseServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
+      <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
+      <Name>SolidCP.Web.Clients</Name>
+    </ProjectReference>
   </ItemGroup>
+  <Target Name="MoveDllsToBinLazy" AfterTargets="Build">
+    <Message Text="Move dll files to bin\Lazy" Importance="high" />
+    <ItemGroup>
+      <FilesToMove Include="bin\AdvancedStringBuilder.*" />
+      <!--<FilesToMove Include="bin\AntiXssLibrary.*" />-->
+      <FilesToMove Include="bin\Antlr3.Runtime.*" />
+      <FilesToMove Include="bin\Newtonsoft.Json.*" />
+      <FilesToMove Include="bin\BundleTransformer.Core.*" />
+      <FilesToMove Include="bin\BundleTransformer.Less.*" />
+      <FilesToMove Include="bin\CPCC.*" />
+      <FilesToMove Include="bin\JavaScriptEngineSwitcher.Core.*" />
+      <FilesToMove Include="bin\JavaScriptEngineSwitcher.Msie.*" />
+      <FilesToMove Include="bin\Microsoft.ReportViewer.Common.*" />
+      <FilesToMove Include="bin\Microsoft.ReportViewer.ProcessingObjectModel.*" />
+      <FilesToMove Include="bin\Microsoft.ReportViewer.WebForms.*" />
+      <FilesToMove Include="bin\Microsoft.Win32.Registry.*" />
+      <FilesToMove Include="bin\MsieJavaScriptEngine.*" />
+      <FilesToMove Include="bin\SolidCP.Providers.Base.*" />
+      <FilesToMove Include="bin\System.Security.AccessControl.*" />
+      <FilesToMove Include="bin\System.Security.Principal.Windows.*" />
+      <FilesToMove Include="bin\System.Web.Optimization.*" />
+      <FilesToMove Include="bin\WebGrease.*" />
+    </ItemGroup>
+    <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Lazy" />
+    <!--<Message Text="Restore needed dlls from bin\Lazy to bin" Importance="high" />
+    <ItemGroup>
+      <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.*" />
+      <FilesNeededInBin Include="bin\Lazy\SolidCP.Portal.Modules.dll.config" />
+    </ItemGroup>
+    <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="bin" />-->
+  </Target>
   <Target Name="PreDeploySolidCPProjectBinaries">
     <ItemGroup>
       <_CustomFiles Include="$(TargetDir)\SolidCP.*" />

@@ -34,15 +34,11 @@ using System;
 using System.Data;
 using System.Web;
 using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using System.ComponentModel;
-using Microsoft.Web.Services3;
-
 using SolidCP.Providers;
 using SolidCP.Providers.Mail;
 using SolidCP.Server.Utils;
-using Microsoft.Web.Services3.Messaging;
 
 namespace SolidCP.Server
 {

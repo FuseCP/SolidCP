@@ -4,10 +4,13 @@
 #build
 [Oo]bj/
 [Bb]in/
+**/Resources/*.dll
+**/Resources/*.pdb
+**/Resources/*.exe
+SolidCP\Sources\Tools\SCPTransportAgent\*.dll
 TestResults/
 **/[Bb]uild/
 **/[Dd]eploy/
-
 
 # globs
 Makefile.in
@@ -49,17 +52,23 @@ msbuild.log
 
 bin/Debug
 bin/Release
-bin
+**/bin/
+**/bin_dotnet/
 *.vshost.*
 *.pdb
 *.vs10x
 *.user
+*.g.cs
+*.log
 
+/SolidCP/Sources/packages
 /SolidCP/msbuild.log
 /SolidCP/Sources/Tools/SCPTransportAgent/SCPTransportAgent.dll
+/SolidCP.Installer/Sources/packages/
 /SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
 /SolidCP.Installer/Sources/Setup.WIXBootstrapper/SolidCP.msi
-/SolidCP.Installer/Sources/SolidCP.Installer/updater.exe
+/SolidCP.Installer/Sources/SolidCP.Installer/[Uu]pdater.exe
+/SolidCP.Installer/Sources/SolidCP.UniversalInstaller/Resources/
 /SolidCP/SolidCP-Auto-Upgrade.ps1
 /SolidCP/Dev_CleanRelease.ps1
 /SolidCP/CleanRelease_Marc_Dev.ps1

@@ -37,6 +37,8 @@ using System.Security.Cryptography;
 using System.Configuration;
 using Microsoft.Win32;
 
+using SolidCP.Providers.OS;
+
 namespace SolidCP.EnterpriseServer
 {
 	/// <summary>
@@ -44,32 +46,40 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	public class CryptoUtils
 	{
-        static string EnterpriseServerRegistryPath = "SOFTWARE\\SolidCP\\EnterpriseServer";
+		static string EnterpriseServerRegistryPath = "SOFTWARE\\SolidCP\\EnterpriseServer";
+
+		private static string GetKeyFromRegistry(string Key)
+		{
+			string value = string.Empty;
+
+			if (!string.IsNullOrEmpty(Key))
+			{
+				RegistryKey root = Registry.LocalMachine;
+				RegistryKey rk = root.OpenSubKey(EnterpriseServerRegistryPath);
+				if (rk != null)
+				{
+					value = (string)rk.GetValue(Key, null);
+					rk.Close();
+				}
+			}
+			return value;
+		}
 
 		public static string CryptoKey
 		{
-			get 
-            {
-                string Key = ConfigurationManager.AppSettings["SolidCP.AltCryptoKey"];
-                string value = string.Empty;
+			get
+			{
+				string Key = ConfigurationManager.AppSettings["SolidCP.AltCryptoKey"];
+				string value = string.Empty;
 
-                if (!string.IsNullOrEmpty(Key))
-                {
-                    RegistryKey root = Registry.LocalMachine;
-                    RegistryKey rk = root.OpenSubKey(EnterpriseServerRegistryPath);
-                    if (rk != null)
-                    {
-                        value = (string)rk.GetValue(Key, null);
-                        rk.Close();
-                    }
-                }
+				if (OSInfo.IsWindows) value = GetKeyFromRegistry(Key);
 
-                if (!string.IsNullOrEmpty(value))
-                    return value;
-                else
-                    return ConfigurationManager.AppSettings["SolidCP.CryptoKey"]; 
-                
-            }
+				if (!string.IsNullOrEmpty(value))
+					return value;
+				else
+					return ConfigurationManager.AppSettings["SolidCP.CryptoKey"];
+
+			}
 		}
 
 		public static bool EncryptionEnabled
@@ -85,11 +95,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			string Password = CryptoKey;
 
-			if(!EncryptionEnabled)
+			if (!EncryptionEnabled)
 				return InputText;
 
-            if (InputText == null)
-                return InputText;
+			if (InputText == null)
+				return InputText;
 
 			// We are now going to create an instance of the 
 			// Rihndael class.
@@ -103,12 +113,12 @@ namespace SolidCP.EnterpriseServer
 			// using a dictionary attack.
 			byte[] Salt = Encoding.ASCII.GetBytes(Password.Length.ToString());
 
- 
+
 			// The (Secret Key) will be generated from the specified 
 			// password and salt.
 			PasswordDeriveBytes SecretKey = new PasswordDeriveBytes(Password, Salt);
 
- 
+
 			// Create a encryptor from the existing SecretKey bytes.
 			// We use 32 bytes for the secret key 
 			// (the default Rijndael key length is 256 bit = 32 bytes) and
@@ -116,11 +126,11 @@ namespace SolidCP.EnterpriseServer
 			// (the default Rijndael IV length is 128 bit = 16 bytes)
 			ICryptoTransform Encryptor = RijndaelCipher.CreateEncryptor(SecretKey.GetBytes(32), SecretKey.GetBytes(16));
 
- 
-			// Create a MemoryStream that is going to hold the encrypted bytes 
-			MemoryStream memoryStream = new MemoryStream(); 
 
- 
+			// Create a MemoryStream that is going to hold the encrypted bytes 
+			MemoryStream memoryStream = new MemoryStream();
+
+
 			// Create a CryptoStream through which we are going to be processing our data. 
 			// CryptoStreamMode.Write means that we are going to be writing data 
 			// to the stream and the output will be written in the MemoryStream
@@ -143,7 +153,7 @@ namespace SolidCP.EnterpriseServer
 			memoryStream.Close();
 			cryptoStream.Close();
 
-        
+
 
 			// Convert encrypted data into a base64-encoded string.
 			// A common mistake would be to use an Encoding class for that. 
@@ -152,7 +162,7 @@ namespace SolidCP.EnterpriseServer
 			// That is designed exactly for what we are trying to do. 
 			string EncryptedData = Convert.ToBase64String(CipherBytes);
 
- 
+
 
 			// Return encrypted string.
 			return EncryptedData;
@@ -163,16 +173,16 @@ namespace SolidCP.EnterpriseServer
 		{
 			try
 			{
-				if(!EncryptionEnabled)
+				if (!EncryptionEnabled)
 					return InputText;
 
-                if (InputText == null || InputText == "")
-                    return InputText;
+				if (InputText == null || InputText == "")
+					return InputText;
 
 				string Password = CryptoKey;
-				RijndaelManaged  RijndaelCipher = new RijndaelManaged();
+				RijndaelManaged RijndaelCipher = new RijndaelManaged();
 
- 
+
 				byte[] EncryptedData = Convert.FromBase64String(InputText);
 				byte[] Salt = Encoding.ASCII.GetBytes(Password.Length.ToString());
 
@@ -181,12 +191,12 @@ namespace SolidCP.EnterpriseServer
 
 				// Create a decryptor from the existing SecretKey bytes.
 				ICryptoTransform Decryptor = RijndaelCipher.CreateDecryptor(SecretKey.GetBytes(32), SecretKey.GetBytes(16));
- 
 
-				MemoryStream  memoryStream = new MemoryStream(EncryptedData);
+
+				MemoryStream memoryStream = new MemoryStream(EncryptedData);
 
 				// Create a CryptoStream. (always use Read mode for decryption).
-				CryptoStream  cryptoStream = new CryptoStream(memoryStream, Decryptor, CryptoStreamMode.Read);
+				CryptoStream cryptoStream = new CryptoStream(memoryStream, Decryptor, CryptoStreamMode.Read);
 
 
 				// Since at this point we don't know what the size of decrypted data
@@ -214,18 +224,35 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-        public static string SHA1(string plainText)
-        {
-            // Convert plain text into a byte array.
-            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+		public static string SHA1(string plainText)
+		{
+			// Convert plain text into a byte array.
+			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
 
-            HashAlgorithm hash = new SHA1Managed();;
+			HashAlgorithm hash = new SHA1Managed(); ;
 
-            // Compute hash value of our plain text with appended salt.
-            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+			// Compute hash value of our plain text with appended salt.
+			byte[] hashBytes = hash.ComputeHash(plainTextBytes);
 
-            // Return the result.
-            return Convert.ToBase64String(hashBytes);
-        }
+			// Return the result.
+			return Convert.ToBase64String(hashBytes);
+		}
+
+		public static string DecryptServerUrl(string serverUrl)
+		{
+			if (!string.IsNullOrEmpty(serverUrl) && serverUrl.StartsWith("sshencrypted://"))
+			{
+				serverUrl = Decrypt(serverUrl.Substring("sshencrypted://".Length));
+			}
+			return serverUrl;
+		}
+
+		public static string EncryptServerUrl(string serverUrl)
+		{
+			if (!string.IsNullOrEmpty(serverUrl) && serverUrl.StartsWith("ssh://")) {
+				serverUrl = $"sshencrypted://{Encrypt(serverUrl)}";
+			}
+			return serverUrl;
+		}
 	}
 }

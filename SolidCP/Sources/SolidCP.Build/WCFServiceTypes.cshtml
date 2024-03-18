@@ -1,0 +1,31 @@
+// wcf client types attribute
+@using Microsoft.CodeAnalysis
+@using Microsoft.CodeAnalysis.CSharp
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using System.Collections.Generic;
+@using System.Linq;
+@using System;
+
+@using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory
+
+@namespace SolidCP.Build
+@inherits RazorBlade.PlainTextTemplate
+
+[assembly:SolidCP.Web.Services.WCFServiceTypes(new System.Type[] {
+@{
+	int n = 0;
+	foreach (var type in Types) {
+		if (n > 0) {
+			<text>,
+  </text>
+		}
+		<text>typeof(@(type))</text>
+		n++;
+	}
+}
+})]
+
+@functions
+{
+	public IEnumerable<QualifiedNameSyntax> Types { get; set; }
+ }

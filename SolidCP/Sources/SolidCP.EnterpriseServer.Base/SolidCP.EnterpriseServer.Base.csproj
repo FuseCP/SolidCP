@@ -1,197 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SolidCP.EnterpriseServer.Base</RootNamespace>
-    <AssemblyName>SolidCP.EnterpriseServer.Base</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>..\..\Bin</OutputPath>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly> 
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\SolidCP.EnterpriseServer\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <WarningsAsErrors>618</WarningsAsErrors>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\SolidCP.EnterpriseServer\bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="SolidCP.Providers.Base">
-      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
-      <Link>VersionInfo.cs</Link>
-    </Compile>
-    <Compile Include="Common\BusinessSuccessCodes.cs" />
-    <Compile Include="Common\BusinessErrorCodes.cs" />
-    <Compile Include="Common\GenericStringResult.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\KeyValueBunch.cs" />
-    <Compile Include="Common\MailTemplate.cs" />
-    <Compile Include="Common\StorageSpaceFolderTypes.cs" />
-    <Compile Include="Common\WebPlatformInstaller.cs" />
-    <Compile Include="DatabaseServers\DatabaseBrowserConfiguration.cs" />
-    <Compile Include="ExchangeServer\ExchangeEmailAddress.cs" />
-    <Compile Include="HostedSolution\AccessTokenTypes.cs" />
-    <Compile Include="HostedSolution\AdditionalGroup.cs" />
-    <Compile Include="HostedSolution\OrganizationStatistics.cs" />
-    <Compile Include="HostedSolution\ServiceLevel.cs" />
-    <Compile Include="HostedSolution\CRMLycenseTypes.cs" />
-    <Compile Include="HostedSolution\ESPermission.cs" />
-    <Compile Include="HostedSolution\AccessToken.cs" />
-    <Compile Include="HostedSolution\WebDavAccessToken.cs" />
-    <Compile Include="Log\LogRecord.cs" />
-    <Compile Include="Packages\ServiceLevelQuotaValueInfo.cs" />
-    <Compile Include="Packages\HostingPlanContext.cs" />
-    <Compile Include="Packages\HostingPlanGroupInfo.cs" />
-    <Compile Include="Packages\HostingPlanInfo.cs" />
-    <Compile Include="Packages\HostingPlanQuotaInfo.cs" />
-    <Compile Include="Packages\PackageAddonInfo.cs" />
-    <Compile Include="Packages\PackageContext.cs" />
-    <Compile Include="Packages\PackageInfo.cs" />
-    <Compile Include="Packages\PackageResult.cs" />
-    <Compile Include="Packages\PackageSettings.cs" />
-    <Compile Include="Packages\PackageStatus.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reports\OverusageReport.custom.cs" />
-    <Compile Include="Reports\OverusageReport.Designer.cs">
+    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    <Compile Update="Reports\OverusageReport.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>OverusageReport.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Reports\OverusageReportUtils.cs" />
-    <Compile Include="Scheduling\ScheduleInfo.cs" />
-    <Compile Include="Scheduling\SchedulePriority.cs" />
-    <Compile Include="Scheduling\SchedulerException.cs" />
-    <Compile Include="Scheduling\SchedulerTask.cs" />
-    <Compile Include="Scheduling\ScheduleStatus.cs" />
-    <Compile Include="Scheduling\ScheduleTaskInfo.cs" />
-    <Compile Include="Scheduling\ScheduleTaskParameterInfo.cs" />
-    <Compile Include="Scheduling\ScheduleTaskParameterType.cs" />
-    <Compile Include="Scheduling\ScheduleType.cs" />
-    <Compile Include="Scheduling\ScheduleViewConfiguration.cs" />
-    <Compile Include="Scheduling\ThreadStartParameters.cs" />
-    <Compile Include="Security\DemandAccount.cs" />
-    <Compile Include="Security\DemandPackage.cs" />
-    <Compile Include="Servers\DomainType.cs" />
-    <Compile Include="Servers\IPAddressesPaged.cs" />
-    <Compile Include="Servers\IPAddressPool.cs" />
-    <Compile Include="Servers\ServiceGroupIds.cs" />
-    <Compile Include="Servers\VLANInfo.cs" />
-    <Compile Include="Servers\VLANsPaged.cs" />
-    <Compile Include="SpamExperts\SpamExpertsRoute.cs" />
-    <Compile Include="System\SystemSettings.cs" />
-    <Compile Include="Tasks\BackgroundTask.cs" />
-    <Compile Include="Tasks\BackgroundTaskLogRecord.cs" />
-    <Compile Include="Tasks\BackgroundTaskStatus.cs" />
-    <Compile Include="Users\OneTimePasswordStates.cs" />
-    <Compile Include="Users\UserInfo.cs" />
-    <Compile Include="Users\UserLoginStatus.cs" />
-    <Compile Include="Users\UsernamePolicy.cs" />
-    <Compile Include="Users\UserRole.cs" />
-    <Compile Include="Users\UserSettings.cs" />
-    <Compile Include="Users\UserStatus.cs" />
-    <Compile Include="Servers\ClusterInfo.cs" />
-    <Compile Include="Servers\DomainInfo.cs" />
-    <Compile Include="Servers\GlobalDnsRecord.cs" />
-    <Compile Include="Servers\IPAddressInfo.cs" />
-    <Compile Include="Servers\ProviderInfo.cs" />
-    <Compile Include="Packages\QuotaInfo.cs" />
-    <Compile Include="Packages\Quotas.cs" />
-    <Compile Include="Packages\QuotaValueInfo.cs" />
-    <Compile Include="Servers\ResourceGroupInfo.cs" />
-    <Compile Include="Servers\ResourceGroups.cs" />
-    <Compile Include="Servers\ServerInfo.cs" />
-    <Compile Include="Servers\ServiceInfo.cs" />
-    <Compile Include="Servers\VirtualGroupInfo.cs" />
-    <Compile Include="Virtualization\AvailableVLANList.cs" />
-    <Compile Include="Virtualization\NetworkAdapterDetails.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\NetworkAdapterIPAddress.cs" />
-    <Compile Include="Virtualization\PackageIPAddress.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\PackageIPAddressesPaged.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\PackageVLAN.cs" />
-    <Compile Include="Virtualization\PackageVLANsPaged.cs" />
-    <Compile Include="Virtualization\PrivateIPAddress.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\PrivateIPAddressesPaged.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\VirtualizationErrorCodes.cs" />
-    <Compile Include="Virtualization\VirtualMachineTimeZoneList.cs" />
-    <Compile Include="Virtualization\VirtualMachineMetaItem.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\VirtualMachineMetaItemsPaged.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Virtualization\VirtualMachinePermission.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Wizards\ApplicationInfo.cs" />
-    <Compile Include="Wizards\InstallationInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SolidCP.snk" />
@@ -208,31 +43,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
+    <Compile Remove="SpamExperts\SpamExperts.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="RDS\" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+  </ItemGroup>
 </Project>

@@ -176,6 +176,11 @@ namespace SolidCP.Providers.Web.Iis
 			}
 			return cert;
 		}
+#if DEBUG
+        bool Debug => System.Diagnostics.Debugger.IsAttached;
+#else
+        const bool Debug = false;
+#endif
 
         public String LEInstallCertificate(WebSite website, string email)
         {
@@ -202,10 +207,10 @@ namespace SolidCP.Providers.Web.Iis
                 runSpace = OpenRunspace();
                 var scripts = new List<string>
                 {
-                    string.Format("& '{0}' --target iissite  --installation iis --siteid {2} --emailaddress {1} --accepttos --usedefaulttaskuser", command, email, siteid)
+                    $"& '{command}' --source iis  --siteid {siteid} --installation iis --installationsiteid {siteid} --emailaddress {email} --accepttos --usedefaulttaskuser {(Debug ? "--test --closeonfinish" : "")}"
                 };
 
-                Log.WriteInfo("LE Command Strïng: {0}", scripts);
+                Log.WriteInfo("LE Command String: {0}", scripts);
 
                 results = ExecuteLocalScript(runSpace, scripts, out errors);
 
@@ -215,8 +220,9 @@ namespace SolidCP.Providers.Web.Iis
                 Log.WriteInfo(result);
                 CloseRunspace(runSpace);
 
-            }
-            catch (Exception ex)
+                if (result.Contains("Create certificate failed")) throw new Exception($"Error creating Let's Encrypt certificate:{Environment.NewLine}{result}");
+			}
+			catch (Exception ex)
             {
                 Log.WriteError("Error adding Lets Encrypt certificate IIS70", ex);
                 return ex.ToString();

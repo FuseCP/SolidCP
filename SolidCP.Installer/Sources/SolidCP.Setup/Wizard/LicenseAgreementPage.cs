@@ -39,6 +39,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -57,9 +58,11 @@ namespace SolidCP.Setup
 			this.Text = "License Agreement";
 			this.Description = "Please review the license terms before installing the product";
 
+			string resource = OSInfo.IsWindows ? "SolidCP.Setup.EULA.rtf" : "SolidCP.Setup.EULA.Unix.rtf";
+
 			try
 			{
-				using (Stream stream = Utils.GetResourceStream("SolidCP.Setup.EULA.rtf"))
+				using (Stream stream = Utils.GetResourceStream(resource))
 				{
 					using (StreamReader sr = new StreamReader(stream))
 					{

@@ -351,7 +351,6 @@ UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] =
 END
 GO
 
-
 IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Exchange2007.AllowLitigationHold')
 BEGIN
 INSERT [dbo].[Quotas]  ([QuotaID], [GroupID],[QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID]) VALUES (420, 12, 24,N'Exchange2007.AllowLitigationHold',N'Allow Litigation Hold',1, 0 , NULL)
@@ -14421,7 +14420,7 @@ GO
 
 
 
-Delete from [dbo].[UserSettings] where [SettingsName] in ('BandwidthXLST','DiskspaceXLST');
+DELETE FROM [dbo].[UserSettings] WHERE [SettingsName] in ('BandwidthXLST','DiskspaceXLST');
 
 INSERT INTO [dbo].[UserSettings] ([UserID],[SettingsName],[PropertyName],[PropertyValue])
 	VALUES (1, 'BandwidthXLST','Transform','<?xml version="1.0" encoding="UTF-8"?>
@@ -17187,7 +17186,7 @@ INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [Pro
 END
 ELSE
 BEGIN
-UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'MySQL Server 5.7'
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL WHERE [DisplayName] = 'MySQL Server 8.0'
 END
 GO
 
@@ -18489,7 +18488,7 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1572')
 BEGIN
-INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', N'1')
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1572, 50, N'MariaDB', N'MariaDB 10.5', N'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
 END
 ELSE
 BEGIN
@@ -19646,9 +19645,23 @@ INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [Pro
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1800')
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1802')
 BEGIN
 INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1802, N'UsersHome', N'%SYSTEMDRIVE%\HostingSpaces')
+END
+GO
+
+-- Unix
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'Unix System')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderId], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(500, 1, N'UnixSystem', N'Unix System', N'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix', N'Unix',	NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '500')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'UsersHome', N'%HOME%')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (500, N'LogDir', N'/var/log')
 END
 GO
 
@@ -19820,6 +19833,467 @@ BEGIN
 	UPDATE [dbo].[Quotas] SET [QuotaName] = N'OS.NotAllowTenantCreateDomains', [QuotaDescription] = N'Not allow Tenants to Create Top Level Domains' WHERE [QuotaID] = 410
 END
 GO
+
+-- Add Platform and IsCode columns to Servers
+DECLARE @NoPlatform bit, @NoIsCore bit
+
+SET @NoPlatform = 0
+SET @NoIsCore = 0
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'OSPlatform'
+)
+BEGIN
+	SET @NoPlatform = 1
+END
+
+IF NOT EXISTS (
+  SELECT * FROM sys.columns 
+  WHERE object_id = OBJECT_ID(N'[dbo].[Servers]') 
+  AND name = 'IsCore'
+)
+BEGIN
+	SET @NoIsCore = 1
+END
+
+IF @NoPlatform = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [OSPlatform] INT NOT NULL DEFAULT 0
+END
+
+IF @NoIsCore = 1
+BEGIN
+	ALTER TABLE [dbo].[Servers] ADD [IsCore] BIT NULL
+END
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC ('
+	ALTER PROCEDURE AddServer
+	(
+		@ServerID int OUTPUT,
+		@ServerName nvarchar(100),
+		@ServerUrl nvarchar(100),
+		@Password nvarchar(100),
+		@Comments ntext,
+		@VirtualServer bit,
+		@InstantDomainAlias nvarchar(200),
+		@PrimaryGroupID int,
+		@ADEnabled bit,
+		@ADRootDomain nvarchar(200),
+		@ADUsername nvarchar(100),
+		@ADPassword nvarchar(100),
+		@ADAuthenticationType varchar(50),
+		@OSPlatform int,
+		@IsCore bit
+	)
+	AS
+
+	IF @PrimaryGroupID = 0
+
+	SET @PrimaryGroupID = NULL
+
+	INSERT INTO Servers
+	(
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADEnabled,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		OSPlatform,
+		IsCore
+	)
+	VALUES
+	(
+		@ServerName,
+		@ServerUrl,
+		@Password,
+		@Comments,
+		@VirtualServer,
+		@InstantDomainAlias,
+		@PrimaryGroupID,
+		@ADEnabled,
+		@ADRootDomain,
+		@ADUsername,
+		@ADPassword,
+		@ADAuthenticationType,
+		@OSPlatform,
+		@IsCore
+	)
+
+	SET @ServerID = SCOPE_IDENTITY()
+
+	RETURN
+	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+	ALTER PROCEDURE GetServerInternal
+	(
+		@ServerID int
+	)
+	AS
+	SELECT
+		ServerID,
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADEnabled,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		ADParentDomain,
+		ADParentDomainController,
+		OSPlatform,
+		IsCore
+	FROM Servers
+	WHERE
+		ServerID = @ServerID
+
+	RETURN
+	')
+	
+IF @NoPlatform =
+1 OR @NoIsCore = 1
+EXEC('
+	ALTER PROCEDURE GetServerByName
+	(
+		@ActorID int,
+		@ServerName nvarchar(100)
+	)
+	AS
+-- check rights
+	DECLARE @IsAdmin bit
+	SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+	SELECT
+		ServerID,
+		ServerName,
+		ServerUrl,
+		Password,
+		Comments,
+		VirtualServer,
+		InstantDomainAlias,
+		PrimaryGroupID,
+		ADRootDomain,
+		ADUsername,
+		ADPassword,
+		ADAuthenticationType,
+		ADParentDomain,
+		ADParentDomainController,
+		OSPlatform,
+		IsCore
+	FROM Servers
+	WHERE
+		ServerName = @ServerName
+		AND @IsAdmin = 1
+
+	RETURN
+	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+	ALTER PROCEDURE UpdateServer
+	(
+		@ServerID int,
+		@ServerName nvarchar(100),
+		@ServerUrl nvarchar(100),
+		@Password nvarchar(100),
+		@Comments ntext,
+		@InstantDomainAlias nvarchar(200),
+		@PrimaryGroupID int,
+		@ADEnabled bit,
+		@ADRootDomain nvarchar(200),
+		@ADUsername nvarchar(100),
+		@ADPassword nvarchar(100),
+		@ADAuthenticationType varchar(50),
+		@ADParentDomain nvarchar(200),
+		@ADParentDomainController nvarchar(200),
+		@OSPlatform int,
+		@IsCore bit
+	)
+	AS
+
+	IF @PrimaryGroupID = 0
+	SET @PrimaryGroupID = NULL
+
+	UPDATE Servers SET
+		ServerName = @ServerName,
+		ServerUrl = @ServerUrl,
+		Password = @Password,
+		Comments = @Comments,
+		InstantDomainAlias = @InstantDomainAlias,
+		PrimaryGroupID = @PrimaryGroupID,
+		ADEnabled = @ADEnabled,
+		ADRootDomain = @ADRootDomain,
+		ADUsername = @ADUsername,
+		ADPassword = @ADPassword,
+		ADAuthenticationType = @ADAuthenticationType,
+		ADParentDomain = @ADParentDomain,
+		ADParentDomainController = @ADParentDomainController,
+		OSPlatform = @OSPlatform,
+		IsCore = @IsCore
+	WHERE ServerID = @ServerID
+	RETURN
+	')
+
+IF @NoPlatform = 1 OR @NoIsCore = 1
+EXEC('
+ALTER PROCEDURE [dbo].[GetServer]
+(
+	@ActorID int,
+	@ServerID int,
+	@forAutodiscover bit
+)
+AS
+-- check rights
+DECLARE @IsAdmin bit
+SET @IsAdmin = dbo.CheckIsUserAdmin(@ActorID)
+
+SELECT
+	ServerID,
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	ADParentDomain,
+	ADParentDomainController,
+	OSPlatform,
+	IsCore
+
+FROM Servers
+WHERE
+	ServerID = @ServerID
+	AND (@IsAdmin = 1 OR @forAutodiscover = 1)
+
+RETURN
+')
+
+GO
+
+-- VsFtp
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1910')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1910, 3, N'vsftpd', N'vsftpd FTP Server 3', N'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp', N'vsftpd', NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1910')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1910, N'ConfigFile', N'/etc/vsftpd.conf')
+END
+GO
+
+-- Apache
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1911')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1911, 2, N'Apache', N'Apache Web Server 2.4', N'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache', N'Apache', NULL)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1911')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ConfigPath', N'/etc/apache2')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'ConfigFile', N'/etc/apache2/apache2.conf')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1911, N'BinPath', N'')
+END
+GO
+
+-- MariaDB 10.6
+
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1573')
+BEGIN
+INSERT [dbo].[Providers] ([ProviderID], [GroupID], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES (1573, 50, N'MariaDB', N'MariaDB 10.6', N'SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB', N'MariaDB', NULL)
+END
+ELSE
+BEGIN
+UPDATE [dbo].[Providers] SET [DisableAutoDiscovery] = NULL, GroupID = 50 WHERE [ProviderID] = '1573'
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '1573')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InstallFolder', N'%PROGRAMFILES%\MariaDB 10.5')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'InternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (1573, N'RootPassword', N'')
+END
+GO
+
+-- MySql 8.1
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.1')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(305, 90, N'MySQL', N'MySQL Server 8.1', N'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+END
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '305')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'InternalAddress', N'localhost,3306')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'RootPassword', N'')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (305, N'sslmode', N'True')
+END
+GO
+
+-- MySql 8.2
+IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [DisplayName] = 'MySQL Server 8.2')
+BEGIN
+INSERT [Providers] ([ProviderID], [GroupId], [ProviderName], [DisplayName], [ProviderType], [EditorControl], [DisableAutoDiscovery]) VALUES(306, 90, N'MySQL', N'MySQL Server 8.2', N'SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL', N'MySQL', NULL)
+END
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ServiceDefaultProperties] WHERE [ProviderID] = '306')
+BEGIN
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'ExternalAddress', N'localhost')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'InstallFolder', N'%PROGRAMFILES%\MySQL\MySQL Server 8.0')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'InternalAddress', N'localhost,3306')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'RootLogin', N'root')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'RootPassword', N'')
+INSERT [dbo].[ServiceDefaultProperties] ([ProviderID], [PropertyName], [PropertyValue]) VALUES (306, N'sslmode', N'True')
+END
+GO
+
+-- Increase size of ServerUrl column for encrypted urls
+ALTER TABLE [dbo].[Servers] ALTER COLUMN [ServerUrl] nvarchar(255) NULL;
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddServer')
+DROP PROCEDURE AddServer
+GO
+
+CREATE PROCEDURE AddServer
+(
+	@ServerID int OUTPUT,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(255),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@VirtualServer bit,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@OSPlatform int,
+	@IsCore bit
+)
+AS
+
+IF @PrimaryGroupID = 0
+
+SET @PrimaryGroupID = NULL
+
+INSERT INTO Servers
+(
+	ServerName,
+	ServerUrl,
+	Password,
+	Comments,
+	VirtualServer,
+	InstantDomainAlias,
+	PrimaryGroupID,
+	ADEnabled,
+	ADRootDomain,
+	ADUsername,
+	ADPassword,
+	ADAuthenticationType,
+	OSPlatform,
+	IsCore
+)
+VALUES
+(
+	@ServerName,
+	@ServerUrl,
+	@Password,
+	@Comments,
+	@VirtualServer,
+	@InstantDomainAlias,
+	@PrimaryGroupID,
+	@ADEnabled,
+	@ADRootDomain,
+	@ADUsername,
+	@ADPassword,
+	@ADAuthenticationType,
+	@OSPlatform,
+	@IsCore
+)
+
+SET @ServerID = SCOPE_IDENTITY()
+
+RETURN
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateServer')
+DROP PROCEDURE UpdateServer
+GO
+
+CREATE PROCEDURE UpdateServer
+(
+	@ServerID int,
+	@ServerName nvarchar(100),
+	@ServerUrl nvarchar(255),
+	@Password nvarchar(100),
+	@Comments ntext,
+	@InstantDomainAlias nvarchar(200),
+	@PrimaryGroupID int,
+	@ADEnabled bit,
+	@ADRootDomain nvarchar(200),
+	@ADUsername nvarchar(100),
+	@ADPassword nvarchar(100),
+	@ADAuthenticationType varchar(50),
+	@ADParentDomain nvarchar(200),
+	@ADParentDomainController nvarchar(200),
+	@OSPlatform int,
+	@IsCore bit
+)
+AS
+
+IF @PrimaryGroupID = 0
+SET @PrimaryGroupID = NULL
+
+UPDATE Servers SET
+	ServerName = @ServerName,
+	ServerUrl = @ServerUrl,
+	Password = @Password,
+	Comments = @Comments,
+	InstantDomainAlias = @InstantDomainAlias,
+	PrimaryGroupID = @PrimaryGroupID,
+	ADEnabled = @ADEnabled,
+	ADRootDomain = @ADRootDomain,
+	ADUsername = @ADUsername,
+	ADPassword = @ADPassword,
+	ADAuthenticationType = @ADAuthenticationType,
+	ADParentDomain = @ADParentDomain,
+	ADParentDomainController = @ADParentDomainController,
+	OSPlatform = @OSPlatform,
+	IsCore = @IsCore
+WHERE ServerID = @ServerID
+RETURN
 
 SET ANSI_NULLS ON
 GO

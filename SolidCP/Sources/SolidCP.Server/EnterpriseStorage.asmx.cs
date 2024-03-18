@@ -35,11 +35,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Web;
 using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using System.ComponentModel;
-using Microsoft.Web.Services3;
-
 using SolidCP.Providers;
 using SolidCP.Providers.EnterpriseStorage;
 using SolidCP.Providers.OS;
@@ -147,7 +144,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public bool SetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting, Providers.Web.WebDavFolderRule[] rules)
+        public bool SetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting, WebDavFolderRule[] rules)
         {
             try
             {
@@ -164,7 +161,7 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public Providers.Web.WebDavFolderRule[] GetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting)
+        public WebDavFolderRule[] GetFolderWebDavRules(string organizationId, string folder, WebDavSetting setting)
         {
             try
             {

@@ -57,8 +57,10 @@
 		<SCPTransportAgentBuild>$(BuildFolder)\SCPTransportAgent</SCPTransportAgentBuild>
 		<LocalizationToolkitBuild>$(BuildFolder)\LocalizationToolkit</LocalizationToolkitBuild>
 		<InstallerBuild>$(BuildFolder)\Installer</InstallerBuild>
+		<UniversalInstallerBuild>$(BuildFolder)\UniversalInstaller</UniversalInstallerBuild>
 		<FixDefaultPublicFolderMailboxBuild>$(BuildFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxBuild>
         <WiXInstallerBuild>$(BuildFolder)\WiXInstaller</WiXInstallerBuild>
+		<WIX Condition=" '$(WIX)' == '' ">$(RootFolder)\tools\WIX\x86</WIX>
 
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
@@ -75,6 +77,7 @@
 	<Target Name="RestorePackages">
 	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
 	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
@@ -115,6 +118,7 @@
 		<RemoveDir Directories="$(SCPTransportAgentBuild)"/>
 		<RemoveDir Directories="$(LocalizationToolkitBuild)"/>
 		<RemoveDir Directories="$(InstallerBuild)"/>
+		<RemoveDir Directories="$(UniversalInstallerBuild)"/>		
 		<RemoveDir Directories="$(BuildFolder)"/>
     <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
 
@@ -132,6 +136,7 @@
 		<MakeDir Directories="$(SCPTransportAgentBuild)"/>
 		<MakeDir Directories="$(LocalizationToolkitBuild)"/>
 		<MakeDir Directories="$(InstallerBuild)"/>
+		<MakeDir Directories="$(UniversalInstallerBuild)"/>
     <MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
   </Target>
 
@@ -147,13 +152,27 @@
 			<ServerBuildExclude Include="$(ServerSrc)\App_Cache\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\Images\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\LogParser\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\WebServices\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\Properties\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\wwwroot\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin_dotnet\WebServices\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\bin\wwwroot\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\Pages\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.user" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.suo" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.cs" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.md" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.snk" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.log" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.old" />	
+			<ServerBuildExclude Include="$(ServerSrc)\appsettings.json" />					
+			<ServerBuildExclude Include="$(ServerSrc)\packages.config" />					
+			<ServerBuildExclude Include="$(ServerSrc)\**\WsePolicyCache.Config" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.csproj" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vb" />
 			<ServerBuildExclude Include="$(ServerSrc)\**\*.vbproj" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\*.asmx" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Administration.*"/>
 			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Web.Management.*"/>
 			<ServerBuildExclude Include="$(ServerSrc)\bin\Microsoft.Exchange.*"/>
@@ -177,6 +196,15 @@
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.user" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.suo" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.cs" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.snk" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\appsettings.json" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\WsePolicyCache.Config" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.asmx" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.md" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.old" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.log" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\Properties\**" />
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\refs\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.csproj" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\*.metacsproj" />
 			<EnterpriseServerBuildFiles Include="$(EnterpriseServerSrc)\**\*.*" Exclude="@(EnterpriseServerBuildExclude)"/>
@@ -195,6 +223,8 @@
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.user" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.suo" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.cs" />
+			<PortalBuildExclude Include="$(PortalSrc)\**\*.snk" />
+			<PortalBuildExclude Include="$(PortalSrc)\packages.config" />			
 			<PortalBuildExclude Include="$(PortalSrc)\**\*.csproj" />
 			<PortalBuildExclude Include="$(PortalSrc)\Code\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\DesktopModules\**\bin\**" />
@@ -215,6 +245,7 @@
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.user" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.suo" />
+			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.snk" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.cs" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.csproj" />
 			<SchedulerServiceBuildFiles Include="$(SchedulerServiceSrc)\**\*.*" Exclude="@(SchBuildExclude)" />
@@ -236,6 +267,8 @@
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.user" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.suo" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.cs" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.snk" />
+	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\packages.config" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.csproj" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\*.sln" />
 	  <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\web.release.config" />
@@ -345,25 +378,51 @@
 	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
 
 		<PropertyGroup>
-			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Installer</InstallerProjectRoot>
-			<InstallerProjectBin>$(InstallerProjectRoot)\bin\$(BuildConfiguration)</InstallerProjectBin>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.Installer\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
+		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
+
 		<!-- compile Installer -->
-		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.csproj" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
-			<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />
-			<InstallerBinaries Include="$(InstallerProjectBin)\*.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
+			<InstallerExe Include="$(InstallerProjectBin)\SolidCP.Installer.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(InstallerExe)" DestinationFolder="$(DeployFolder)" />
 
 		<!-- Compile updater.exe -->
 		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- build MSI package -->
 
+	</Target>
+
+	<Target Name="CreateUniversalSetupBuild" DependsOnTargets="ZipDeploy">
+
+		<PropertyGroup>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
+		</PropertyGroup>
+
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
+
+		<!-- compile Installer -->
+		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration)" />
+
+		<!-- copy installer binaries for upgrade -->
+		<ItemGroup>
+			<!--<InstallerBinaries Include="$(InstallerProjectBin)\*.dll" />-->
+			<InstallerBinaries Include="$(InstallerProjectBin)\*.exe" />
+		</ItemGroup>
+		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(DeployFolder)" />
+
+		<!-- build MSI package -->
 	</Target>
 
   <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
@@ -378,10 +437,10 @@
     <Target Name="WiXCreateRedistFileListBuild" DependsOnTargets="CreateFixDefaultPublicFolderMailboxBuild" >
         <RemoveDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
         <MakeDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(EnterpriseServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\EnterpriseServerFiles.wxs -gg -sreg -srd -var wix.BUILDESPATH -cg EnterpriseServerFiles -dr PI_ESERVER_INSTALL_DIR' />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(ServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\ServerFiles.wxs -gg -sreg -srd -var wix.BUILDSPATH -cg ServerFiles -dr PI_SERVER_INSTALL_DIR' />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(PortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\PortalFiles.wxs -gg -sreg -srd -var wix.BUILDPPATH -cg PortalFiles -dr PI_PORTAL_INSTALL_DIR' />
-        <Exec Command='"$(WIX)bin\heat.exe" dir $(WebDavPortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\WebDavPortalFiles.wxs -gg -sreg -srd -var wix.BUILDWDPPATH -cg WebDavPortalFiles -dr PI_WEBDAVPORTAL_INSTALL_DIR' />
+        <Exec Command='"$(WIX)\bin\heat.exe" dir $(EnterpriseServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\EnterpriseServerFiles.wxs -gg -sreg -srd -var wix.BUILDESPATH -cg EnterpriseServerFiles -dr PI_ESERVER_INSTALL_DIR' />
+        <Exec Command='"$(WIX)\bin\heat.exe" dir $(ServerBuild) -o $(WiXInstallerBuild)\ComponentsFiles\ServerFiles.wxs -gg -sreg -srd -var wix.BUILDSPATH -cg ServerFiles -dr PI_SERVER_INSTALL_DIR' />
+        <Exec Command='"$(WIX)\bin\heat.exe" dir $(PortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\PortalFiles.wxs -gg -sreg -srd -var wix.BUILDPPATH -cg PortalFiles -dr PI_PORTAL_INSTALL_DIR' />
+        <Exec Command='"$(WIX)\bin\heat.exe" dir $(WebDavPortalBuild) -o $(WiXInstallerBuild)\ComponentsFiles\WebDavPortalFiles.wxs -gg -sreg -srd -var wix.BUILDWDPPATH -cg WebDavPortalFiles -dr PI_WEBDAVPORTAL_INSTALL_DIR' />
 
 		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\Setup.WIX\Setup.Wix.wixproj" Properties="Configuration=$(BuildConfiguration);DefineSolutionProperties=false">
 			<Output
@@ -770,10 +829,10 @@
 	</Target>
 
 	<!-- Deploy -->
-	<Target Name="Deploy" DependsOnTargets="CreateStandaloneBootstrapper" >
+	<Target Name="ZipDeploy" DependsOnTargets="CreateStandaloneBootstrapper" >
 		<ItemGroup>
 			<PortalInstallFiles Include="$(PortalInstall)\**\*.*" />
-      <WebDavPortalInstallFiles Include="$(WebDavPortalInstall)\**\*.*" />
+			<WebDavPortalInstallFiles Include="$(WebDavPortalInstall)\**\*.*" />
 			<EnterpriseServerInstallFiles Include="$(EnterpriseServerInstall)\**\*.*" />
 			<ServerInstallFiles Include="$(ServerInstall)\**\*.*" />
 
@@ -863,6 +922,8 @@
 
   </Target>
 
+  <Target Name="Deploy" DependsOnTargets="CreateUniversalSetupBuild" />
+	
   <Target Name="uploadwebpi" DependsOnTargets="BuildWebPlatformInstallerFeed">
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPFeed-$(Version).xml" LocalFile="$(DeployFolder)\SolidCPFeed.xml" />
   </Target>
@@ -949,6 +1010,8 @@
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPUniversalInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.UniversalInstaller.exe" />
+		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.Installer.exe" />
           <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />

@@ -519,6 +519,15 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.WebControls.Label lblServerTools;
 
         /// <summary>
+        /// pnTerminalPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnTerminalPanel;
+
+        /// <summary>
         /// lnkTerminalSessions control.
         /// </summary>
         /// <remarks>
@@ -528,6 +537,15 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.WebControls.HyperLink lnkTerminalSessions;
 
         /// <summary>
+        /// pnWindowsServices control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnWindowsServices;
+
+        /// <summary>
         /// lnkWindowsServices control.
         /// </summary>
         /// <remarks>
@@ -535,6 +553,24 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkWindowsServices;
+
+        /// <summary>
+        /// pnUnixServices control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnUnixServices;
+
+        /// <summary>
+        /// lnkUnixServices control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink lnkUnixServices;
 
         /// <summary>
         /// lnkWindowsProcesses control.
@@ -553,6 +589,15 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HyperLink lnkEventViewer;
+
+        /// <summary>
+        /// pnPlatformPanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnPlatformPanel;
 
         /// <summary>
         /// lnkPlatformInstaller control.

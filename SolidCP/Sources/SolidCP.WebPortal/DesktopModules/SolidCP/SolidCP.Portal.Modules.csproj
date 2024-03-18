@@ -19,12 +19,13 @@
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <OutputPath>..\..\bin\Lazy</OutputPath>
+    <LangVersion>9</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,7 +37,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -59,21 +59,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Lib\Microsoft.ReportViewer.WebForms.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=Amd64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Client, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Bin\SolidCP.EnterpriseServer.Client.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -92,10 +79,6 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
-    <Reference Include="SolidCP.Providers.Base, Version=1.2.2.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
@@ -269,6 +252,20 @@
     <Compile Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx.designer.cs">
       <DependentUpon>ExchangeJournalingMailboxGeneralSettings.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ProviderControls\Unix_Settings.ascx.cs">
+      <DependentUpon>Unix_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\Unix_Settings.ascx.designer.cs">
+      <DependentUpon>Unix_Settings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\vsftpd_Settings.ascx.cs">
+      <DependentUpon>vsftpd_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\vsftpd_Settings.ascx.designer.cs">
+      <DependentUpon>vsftpd_Settings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -359,6 +356,13 @@
     </Compile>
     <Compile Include="ProviderControls\Proxmox_Settings.ascx.designer.cs">
       <DependentUpon>Proxmox_Settings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\Apache_Settings.ascx.cs">
+      <DependentUpon>Apache_Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\Apache_Settings.ascx.designer.cs">
+      <DependentUpon>Apache_Settings.ascx</DependentUpon>
     </Compile>
     <Compile Include="Proxmox\RemoteControl\Connect.aspx.cs">
       <DependentUpon>Connect.aspx</DependentUpon>
@@ -5615,6 +5619,8 @@
     <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx" />
+    <Content Include="ProviderControls\Unix_Settings.ascx" />
+    <Content Include="ProviderControls\vsftpd_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
     <Content Include="ProviderControls\SmarterMail100x_EditAccount.ascx" />
     <Content Include="ProviderControls\SmarterMail100x_EditDomain.ascx" />
@@ -5628,6 +5634,7 @@
     <Content Include="ProviderControls\SpamExperts_Settings.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_Settings.ascx" />
     <Content Include="ProviderControls\Proxmox_Settings.ascx" />
+    <Content Include="ProviderControls\Apache_Settings.ascx" />
     <Content Include="Proxmox\RemoteControl\Connect.aspx" />
     <Content Include="Proxmox\RemoteControl\msrdp.cab" />
     <Content Include="Proxmox\TestVirtualMachineTemplate.aspx" />
@@ -6609,6 +6616,24 @@
     <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx" />
     <Content Include="App_LocalResources\SettingsVerificationCodeLetter.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SettingsVerificationCodeLetter.ascx.resx" />
+    <Content Include="ProviderControls\App_LocalResources\Apache_Settings.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\vsftpd_Settings.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\vsftpd_Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\Apache_Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\Unix_Settings.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\Unix_Settings.ascx.de-DE.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
@@ -9129,6 +9154,22 @@
       <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
       <Name>CPCC</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
+      <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
+      <Name>SolidCP.EnterpriseServer.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
+      <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
+      <Name>SolidCP.EnterpriseServer.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
+      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
+      <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
+      <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
+      <Name>SolidCP.Web.Clients</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\SolidCP.WebPortal\SolidCP.WebPortal.csproj">
       <Project>{C99EFB18-FFE7-45BB-8CA8-29336F3E8C68}</Project>
       <Name>SolidCP.WebPortal</Name>
@@ -9202,6 +9243,13 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Target Name="MoveDllsToBin" AfterTargets="Build">
+    <Message Text="Move Portal dll files to bin" Importance="high" />
+    <ItemGroup>
+      <FilesNeededInBin Include="..\..\bin\Lazy\SolidCP.Portal.Modules.*" />
+    </ItemGroup>
+    <Move SourceFiles="@(FilesNeededInBin)" DestinationFolder="..\..\bin" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -6,7 +6,7 @@
 //     the code is regenerated. 
 // </auto-generated>
 //------------------------------------------------------------------------------
-
+#if NETFRAMEWORK
 namespace SolidCP.Server {
     
     
@@ -65,5 +65,8 @@ namespace SolidCP.Server {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litAspNetMode;
-    }
+
+        protected global::System.Web.UI.WebControls.Literal litOS;
+	}
 }
+#endif

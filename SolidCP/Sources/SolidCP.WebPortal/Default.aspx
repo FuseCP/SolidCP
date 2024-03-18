@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="SolidCP.WebPortal.DefaultPage" %>
+<%@ Page Language="C#" Async="true" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="SolidCP.WebPortal.DefaultPage" %>
 
 <!DOCTYPE html>
 <html runat="server" id="htmltheme">

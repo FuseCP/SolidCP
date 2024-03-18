@@ -73,11 +73,11 @@ namespace SolidCP.Providers.OS
         
         public override bool IsInstalled()
         {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Windows8
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012R2
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Windows81;
+            var version = OSInfo.WindowsVersion;
+            return version == WindowsVersion.WindowsServer2012
+                || version == WindowsVersion.Windows8
+                || version == WindowsVersion.WindowsServer2012R2
+                || version == WindowsVersion.Windows81;
         }
         
         public override void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
@@ -524,5 +524,6 @@ namespace SolidCP.Providers.OS
 
         #endregion
 
+        public override Web.IWebServer WebServer => webServer ?? (webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs80, SolidCP.Providers.Web.IIs80")));
     }
 }

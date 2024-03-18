@@ -43,6 +43,7 @@ namespace SolidCP.Setup.Web
 		private string ip;
 		private string port;
 		private string host;
+		private string scheme;
 
 		/// <summary>
 		/// Initializes a new instance of the class.
@@ -57,11 +58,18 @@ namespace SolidCP.Setup.Web
 		/// <param name="ip">IP address.</param>
 		/// <param name="port">TCP port.</param>
 		/// <param name="host">Host header value.</param>
-		public ServerBinding(string ip, string port, string host)
+		public ServerBinding(string ip, string port, string host, string scheme = null, string componentId = null)
 		{
 			this.ip = ip;
 			this.port = port;
 			this.host = host;
+			this.scheme = scheme ?? 
+				((port != "80" && 
+				(((componentId == Global.WebPortal.ComponentCode || componentId == Global.WebDavPortal.ComponentCode) &&
+					Utils.IsHttps(ip, host)) ||
+				Utils.IsHttpsAndNotWindows(ip, host))) ?
+				Uri.UriSchemeHttps :
+				Uri.UriSchemeHttp);
 		}
 
 		/// <summary>
@@ -89,6 +97,11 @@ namespace SolidCP.Setup.Web
 		{
 			get { return host; }
 			set { host = value; }
+		}
+
+		public string Scheme {
+			get { return scheme; }
+			set { scheme = value; }
 		}
 	}
 }

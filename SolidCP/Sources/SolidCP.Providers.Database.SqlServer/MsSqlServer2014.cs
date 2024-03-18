@@ -34,18 +34,11 @@
 
 namespace SolidCP.Providers.Database
 {
-    public class MsSqlServer2014 : MsSqlServer2005
+    public class MsSqlServer2014 : MsSqlServer2012
     {
         public override bool IsInstalled()
         {
             return CheckVersion("12.");
-        }
-
-        public override void TruncateDatabase(string databaseName)
-        {
-            SqlDatabase database = GetDatabase(databaseName);
-            ExecuteNonQuery(String.Format(@"USE [{0}];DBCC SHRINKFILE ('{1}', 1);",
-                databaseName,  database.LogName));
         }
     }
 }

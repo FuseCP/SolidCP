@@ -43,6 +43,7 @@ using System.Web;
 using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.Statistics;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

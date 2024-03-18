@@ -54,7 +54,7 @@
     <form id="AspForm" runat="server">
 		<div class="Content">
 			<div>
-				<asp:Image ID="imgLogo" runat="server" />
+				<asp:Image ID="imgLogo" runat="server" ImageUrl="~/wwwroot/img/logo.png" />
 			</div>
 		
 			<h1>Server</h1>
@@ -69,6 +69,10 @@
 					<td><asp:Literal id="litVersion" runat="server"></asp:Literal></td>
 				</tr>
 				<tr>
+					<td class="FieldName">OS:</td>
+					<td><asp:Literal id="litOS" runat="server"/></td>
+				</tr>
+				<tr>
 					<td class="FieldName">URL:</td>
 					<td><asp:Literal id="litUrl" runat="server"/></td>
 				</tr>
@@ -77,7 +81,8 @@
 					<td><asp:Literal id="litAspNetMode" runat="server"/></td>
 				</tr>
 			</table>
-            <br /><br />
+            <br />
+			<asp:HyperLink runat="server" id="lnkDocs" NavigateUrl="~/api-docs">API Documentation</asp:HyperLink> <br />
             <a href="https://solidcp.com">SolidCP</a> &COPY; Copyright <%=DateTime.Now.Year%> All Rights Reserved.
 		</div>
     </form>

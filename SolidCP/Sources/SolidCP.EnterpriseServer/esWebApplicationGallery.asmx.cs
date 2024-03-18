@@ -32,8 +32,7 @@
 
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
-using System.Web.Services;
+using SolidCP.Web.Services;
 using SolidCP.Providers.WebAppGallery;
 using SolidCP.Providers.ResultObjects;
 
@@ -45,7 +44,8 @@ namespace SolidCP.EnterpriseServer
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-    public class esWebApplicationGallery : System.Web.Services.WebService
+    [Policy("EnterpriseServerPolicy")]
+    public class esWebApplicationGallery
     {
         [WebMethod]
         public void InitFeeds(int packageId)

@@ -1678,7 +1678,7 @@ Public Class MailEnable
         ' calculate bandwidth for mail enable
         ' parse mail logs
         Dim parser As New LogParser("Mail", "mailenable_pop", Path.Combine(logsPath, "pop"), "account")
-        parser.ParseLogs(Of LogReader)()
+        parser.ParseLogs(Of Utils.LogParser.LogReader)()
 
         parser = New LogParser("Mail", "mailenable_smtp", Path.Combine(logsPath, "smtp"), "account")
         parser.ParseLogs(Of MELogReader)()

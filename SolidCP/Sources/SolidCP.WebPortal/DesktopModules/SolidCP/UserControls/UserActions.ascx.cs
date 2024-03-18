@@ -43,7 +43,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
-using Microsoft.Web.Services3.Referral;
 using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Base.HostedSolution;
 using SolidCP.Portal.UserControls;

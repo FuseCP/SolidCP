@@ -35,7 +35,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using SolidCP.EnterpriseServer.Code.SharePoint;
-using SolidCP.Providers.CRM;
+using SolidCP.Server.Client;
+//using SolidCP.Providers.CRM;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.SharePoint;
@@ -64,7 +65,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                         item.TotalMailboxesSize += current.TotalSize;
                     }
 
-                    Providers.Exchange.ExchangeServer exchange;
+                    ExchangeServer exchange;
                     if (!string.IsNullOrEmpty(org.GlobalAddressList))
                     {
                         try
@@ -561,7 +562,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                 return;
 
             List<ExchangeAccount> mailboxes;
-            Providers.Exchange.ExchangeServer exchange;
+            ExchangeServer exchange;
             try
             {
                 mailboxes = ExchangeServerController.GetExchangeMailboxes(org.Id);

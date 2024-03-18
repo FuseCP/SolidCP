@@ -35,11 +35,8 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using System.ComponentModel;
-
-using Microsoft.Web.Services3;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -50,7 +47,7 @@ namespace SolidCP.EnterpriseServer
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [Policy("CommonPolicy")]
     [ToolboxItem(false)]
-    public class esAuthentication : System.Web.Services.WebService
+    public class esAuthentication
     {
         [WebMethod]
         public int AuthenticateUser(string username, string password, string ip)

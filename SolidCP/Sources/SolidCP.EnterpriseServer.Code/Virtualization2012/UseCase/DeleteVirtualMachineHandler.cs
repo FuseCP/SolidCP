@@ -2,7 +2,8 @@
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.Virtualization2012;
+using SolidCP.Server.Client;
+//using SolidCP.Providers.Virtualization2012;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

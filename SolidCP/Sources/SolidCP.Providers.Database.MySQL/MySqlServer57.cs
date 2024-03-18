@@ -39,39 +39,15 @@ using Microsoft.Win32;
 //using MySql.Data.MySqlClient;
 using System.IO;
 
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
-namespace SolidCP.Providers.Database {
-    public class MySqlServer57 : MySqlServer {
+namespace SolidCP.Providers.Database
+{
+	public class MySqlServer57 : MySqlServer56
+	{
+		public MySqlServer57(): base() { }
 
-        public MySqlServer57() {
-
-        }
-
-        public override bool IsInstalled() {
-            string versionNumber = null;
-
-            RegistryKey HKLM = Registry.LocalMachine;
-
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.7");
-
-            if(key != null) {
-                versionNumber = (string)key.GetValue("Version");
-            } else {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.7");
-                if(key != null) {
-                    versionNumber = (string)key.GetValue("Version");
-                } else {
-                    return false;
-                }
-            }
-
-            string[] split = versionNumber.Split(new char[] { '.' });
-
-            return split[0].Equals("5") & split[1].Equals("7");
-        }
-    }
+		public override bool IsInstalled() => IsInstalled("5.7");
+	}
 }

@@ -33,440 +33,447 @@
 using System;
 using System.Data;
 using System.Web;
+using System.Web.UI;
+using System.Threading;
+using System.Threading.Tasks;
 using SolidCP.EnterpriseServer;
 using SCP = SolidCP.EnterpriseServer;
- 
+
 
 
 namespace SolidCP.Portal
 {
-    public partial class Login : SolidCPModuleBase
-    {
-        string ipAddress;
-        //private IMessageBoxControl messageBox;     --- compile warning - never used
-         
-        private bool IsLocalUrl(string url)
-        {
-            if (string.IsNullOrEmpty(url))
-            {
-                return false;
-            }
+	public partial class Login : SolidCPModuleBase
+	{
+		string ipAddress;
+		//private IMessageBoxControl messageBox;     --- compile warning - never used
 
-            Uri absoluteUri;
-            if (Uri.TryCreate(url, UriKind.Absolute, out absoluteUri))
-            {
-                return String.Equals(this.Request.Url.Host, absoluteUri.Host, StringComparison.OrdinalIgnoreCase);
-            }
-            else
-            {
-                bool isLocal = !url.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
-                    && !url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
-                    && Uri.IsWellFormedUriString(url, UriKind.Relative);
-                return isLocal;
-            }
-        }
+		private bool IsLocalUrl(string url)
+		{
+			if (string.IsNullOrEmpty(url))
+			{
+				return false;
+			}
 
-        private string RedirectUrl
-        {
-            get
-            {
-                string redirectUrl = "";
-                if (Request["returnurl"] != null)
-                {
-                    // return to the url passed to signin
-                    redirectUrl = HttpUtility.UrlDecode(Request["returnurl"]);
-                    if (!IsLocalUrl(redirectUrl))
-                    {
-                        redirectUrl = PortalUtils.LoginRedirectUrl;
-                    }
-                }
-                else
-                {
-                    redirectUrl = PortalUtils.LoginRedirectUrl;
-                }
-                return redirectUrl;
-            }
-        }
+			Uri absoluteUri;
+			if (Uri.TryCreate(url, UriKind.Absolute, out absoluteUri))
+			{
+				return String.Equals(this.Request.Url.Host, absoluteUri.Host, StringComparison.OrdinalIgnoreCase);
+			}
+			else
+			{
+				bool isLocal = !url.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
+					 && !url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
+					 && Uri.IsWellFormedUriString(url, UriKind.Relative);
+				return isLocal;
+			}
+		}
 
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
-                EnsureSCPA();
-                //
-                BindControls();
-            }
+		private string RedirectUrl
+		{
+			get
+			{
+				string redirectUrl = "";
+				if (Request["returnurl"] != null)
+				{
+					// return to the url passed to signin
+					redirectUrl = HttpUtility.UrlDecode(Request["returnurl"]);
+					if (!IsLocalUrl(redirectUrl))
+					{
+						redirectUrl = PortalUtils.LoginRedirectUrl;
+					}
+				}
+				else
+				{
+					redirectUrl = PortalUtils.LoginRedirectUrl;
+				}
+				return redirectUrl;
+			}
+		}
 
-            // capture Enter key
-            //DotNetNuke.UI.Utilities.ClientAPI.RegisterKeyCapture(this.Parent, btnLogin, 13);
+		protected void Page_Load(object sender, EventArgs e)
+		{
+			if (!IsPostBack)
+			{
+				Page.RegisterAsyncTask(new PageAsyncTask(() => Task.WhenAll(
+					EnsureSCPAAsync(),
+					BindThemesAsync())));
 
-            // get user IP
-            if (Request.UserHostAddress != null)
-                ipAddress = Request.UserHostAddress;
+				BindControls();
+			}
 
-            // update password control
-            txtPassword.Attributes["value"] = txtPassword.Text;
+			// capture Enter key
+			//DotNetNuke.UI.Utilities.ClientAPI.RegisterKeyCapture(this.Parent, btnLogin, 13);
 
-            // autologin
-            string usr = Request["u"];
-            if (String.IsNullOrEmpty(usr))
-                usr = Request["user"];
+			// get user IP
+			if (Request.UserHostAddress != null)
+				ipAddress = Request.UserHostAddress;
 
-            string psw = Request["p"];
-            if (String.IsNullOrEmpty(psw))
-                psw = Request["pwd"];
-            if (String.IsNullOrEmpty(psw))
-                psw = Request["password"];
+			// update password control
+			txtPassword.Attributes["value"] = txtPassword.Text;
 
-            if (!String.IsNullOrEmpty(usr) && !String.IsNullOrEmpty(psw))
-            {
-                // perform login
-                LoginUser(usr, psw, chkRemember.Checked, String.Empty, String.Empty);
-            }
-        }
+			// autologin
+			string usr = Request["u"];
+			if (String.IsNullOrEmpty(usr))
+				usr = Request["user"];
 
-        private void EnsureSCPA()
-        {
-            var enabledScpa = ES.Services.Authentication.GetSystemSetupMode();
-            //
-            if (enabledScpa == false)
-            {
-                return;
-            }
-            //
-            Response.Redirect(EditUrl("scpa"), true);
-        }
+			string psw = Request["p"];
+			if (String.IsNullOrEmpty(psw))
+				psw = Request["pwd"];
+			if (String.IsNullOrEmpty(psw))
+				psw = Request["password"];
 
-        private void BindControls()
-        {
-            // load languages
-            PortalUtils.LoadCultureDropDownList(ddlLanguage);
+			if (!String.IsNullOrEmpty(usr) && !String.IsNullOrEmpty(psw))
+			{
+				// perform login
+				LoginUser(usr, psw, chkRemember.Checked, String.Empty, String.Empty);
+			}
+		}
 
-            // load themes
-            BindThemes();
-
-            // try to get the last login name from cookie
-            HttpCookie cookie = Request.Cookies["SolidCPLogin"];
-            if (cookie != null)
-            {
-                txtUsername.Text = cookie.Value;
-                txtPassword.Focus();
-            }
-            else
-            {
-                // set focus on username field
-                txtUsername.Focus();
-            }
-
-            if (PortalUtils.GetHideThemeAndLocale())
-            {
-                ddlLanguage.Visible = false;
-                lblLanguage.Visible = false;
-                ddlTheme.Visible = false;
-                lblTheme.Visible = false;
-            }
-        }
-
-        private void BindThemes()
-        {
-            ddlTheme.DataSource = ES.Services.Authentication.GetLoginThemes();
-            ddlTheme.DataBind();
-            Utils.SelectListItem(ddlTheme, PortalUtils.CurrentTheme);
-        }
-
-        protected void cmdForgotPassword_Click(object sender, EventArgs e)
-        {
-           Response.Redirect(EditUrl("forgot_password"), true);
-        }
-
-        protected void btnLogin_Click(object sender, EventArgs e)
-        {
-            // validate input
-            if (!Page.IsValid)
-                return;
-
-            // perform login
-            LoginUser(txtUsername.Text.Trim(), txtPassword.Text, chkRemember.Checked,
-                ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
-        }
-
-        protected void btnVerifyPin_Click(object sender, EventArgs e)
-        {
-            // validate input
-            if (!Page.IsValid)
-                return;
-
-            var isValid = PortalUtils.ValidatePin(txtUsername.Text, txtPin.Text);
-
-            if (!isValid)
-            {
-                ShowErrorMessage("WrongPin");
-                return;
-            }
-
-            var encryptedTicket = tokenDiv.Attributes["value"];
-            PortalUtils.SetTicketAndCompleteLogin(encryptedTicket, txtUsername.Text.Trim(), chkRemember.Checked, ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
-            tokenDiv.Attributes["value"] = null;
-            CompleteLogin(0);
-        }
+		private async Task EnsureSCPAAsync()
+		{
+			var enabledScpa = await ES.Services.Authentication.GetSystemSetupModeAsync().ConfigureAwait(false);
+			//
+			if (enabledScpa == false)
+			{
+				return;
+			}
+			//
+			Response.Redirect(EditUrl("scpa"), true);
+		}
 
 
-        private void LoginUser(string username, string password, bool rememberLogin,
-            string preferredLocale, string theme)
-        {
-            // status
-            int loginStatus = PortalUtils.AuthenticateUser(username, password, ipAddress);
-            
-            if (loginStatus < 0)
-            {
-                ShowWarningMessage("WrongLogin");
-                return;
-            }
+		private void BindControls()
+		{
+			// load languages
+			PortalUtils.LoadCultureDropDownList(ddlLanguage);
 
-            string encryptedTicket = PortalUtils.CreateEncyptedAuthenticationTicket(username, password, ipAddress, rememberLogin, preferredLocale, theme);
+			// select current theme
+			Utils.SelectListItem(ddlTheme, PortalUtils.CurrentTheme);
 
-            if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE)
-            {
-                int mfaMode = PortalUtils.GetUserMfaMode(username, password, ipAddress);
-                btnResendPin.Visible = mfaMode != 2;
-                userPwdDiv.Visible = false;
-                tokenDiv.Visible = true;
-                tokenDiv.Attributes["value"] = encryptedTicket;
-                txtPin.Focus();
-                return;
-            }
+			// try to get the last login name from cookie
+			HttpCookie cookie = Request.Cookies["SolidCPLogin"];
+			if (cookie != null)
+			{
+				txtUsername.Text = cookie.Value;
+				txtPassword.Focus();
+			}
+			else
+			{
+				// set focus on username field
+				txtUsername.Focus();
+			}
 
-            PortalUtils.SetTicketAndCompleteLogin(encryptedTicket, txtUsername.Text.Trim(), chkRemember.Checked, ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
-            CompleteLogin(loginStatus);
-        }
+			if (PortalUtils.GetHideThemeAndLocale())
+			{
+				ddlLanguage.Visible = false;
+				lblLanguage.Visible = false;
+				ddlTheme.Visible = false;
+				lblTheme.Visible = false;
+			}
+		}
 
-        private void CompleteLogin(int loginStatus)
-        {
-            // Access IP Settings
-            SCP.SystemSettings settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.ACCESS_IP_SETTINGS);
-            String AccessIps = String.Empty;
-            String[] arAccessIps = null;
-            if (settings != null)
-            {
-                AccessIps = settings.GetValueOrDefault(SCP.SystemSettings.ACCESS_IPs, string.Empty);
-                arAccessIps = AccessIps.Split(',');
-            }
-           
-            if (!String.IsNullOrEmpty(AccessIps))
-            {
-                String RequestIP = Request.ServerVariables["REMOTE_ADDR"];
-               // String l_stSubnet = Knom.Helpers.Net.SubnetMask.ReturnSubnetmask(AccessIps);
-                Boolean l_Mach = false;
+		private async Task BindThemesAsync()
+		{
+			ddlTheme.DataSource = await ES.Services.Authentication.GetLoginThemesAsync().ConfigureAwait(false);
+			ddlTheme.DataBind();
+		}
 
-                try {
-                    foreach(String l_AccessIP in arAccessIps)
-                    {
-                        l_Mach = Knom.Helpers.Net.SubnetMask.IsInRange(RequestIP, l_AccessIP.Trim());
-                        if (l_Mach)
-                            break; // Once it passed then don't need to check for other access;
-                    }
-                } catch (Exception)
-                { }
-                if (!l_Mach)
-                {
-                    PortalUtils.UserSignOutOnly();
-                    // messageBox.RenderMessage(MessageBoxType.Warning, "Unauthorized IP", "Unauthorized IP", null);
-                    ShowWarningMessage("IPAccessProhibited");
-                    return;
-                }
+		protected void cmdForgotPassword_Click(object sender, EventArgs e)
+		{
+			Response.Redirect(EditUrl("forgot_password"), true);
+		}
 
-            }
+		protected void btnLogin_Click(object sender, EventArgs e)
+		{
+			// validate input
+			if (!Page.IsValid)
+				return;
 
-            if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD)
-            {
-                // One time password should be changed after login
-                Response.Redirect("Default.aspx?mid=1&ctl=change_onetimepassword&onetimepassword=true&UserID=" + PanelSecurity.LoggedUserId.ToString());
-            }
-            else
-            {
-                //Make Theme Cookies
-                DataSet UserThemeSettingsData = ES.Services.Users.GetUserThemeSettings(PanelSecurity.LoggedUserId);
-                if (UserThemeSettingsData.Tables.Count > 0)
-                {
-                    foreach (DataRow row in UserThemeSettingsData.Tables[0].Rows)
-                    {
-                        string RowPropertyName = row.Field<String>("PropertyName");
-                        string RowPropertyValue = row.Field<String>("PropertyValue");
+			// perform login
+			LoginUser(txtUsername.Text.Trim(), txtPassword.Text, chkRemember.Checked,
+				 ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
+		}
 
-                        if (RowPropertyName == "Style")
-                        {
-                            string UserThemeStyle = RowPropertyValue;
+		protected void btnVerifyPin_Click(object sender, EventArgs e)
+		{
+			// validate input
+			if (!Page.IsValid)
+				return;
 
-                            HttpCookie UserThemeStyleCrumb = new HttpCookie("UserThemeStyle", UserThemeStyle);
-                            UserThemeStyleCrumb.Expires = DateTime.Now.AddMonths(2);
-                            HttpContext.Current.Response.Cookies.Add(UserThemeStyleCrumb);
+			var isValid = PortalUtils.ValidatePin(txtUsername.Text, txtPin.Text);
 
-                        }
+			if (!isValid)
+			{
+				ShowErrorMessage("WrongPin");
+				return;
+			}
 
-                        if (RowPropertyName == "colorHeader")
-                        {
-                            string UserThemecolorHeader = RowPropertyValue;
-
-                            HttpCookie UserThemecolorHeaderCrumb = new HttpCookie("UserThemecolorHeader", UserThemecolorHeader);
-                            UserThemecolorHeaderCrumb.Expires = DateTime.Now.AddMonths(2);
-                            HttpContext.Current.Response.Cookies.Add(UserThemecolorHeaderCrumb);
-
-                        }
-
-                        if (RowPropertyName == "colorSidebar")
-                        {
-                            string UserThemecolorSidebar = RowPropertyValue;
-
-                            HttpCookie UserThemecolorSidebarCrumb = new HttpCookie("UserThemecolorSidebar", UserThemecolorSidebar);
-                            UserThemecolorSidebarCrumb.Expires = DateTime.Now.AddMonths(2);
-                            HttpContext.Current.Response.Cookies.Add(UserThemecolorSidebarCrumb);
-
-                        }
-                    }
-                }
-
-                // redirect by shortcut
-                ShortcutRedirect();
-
-                // standard redirect
-                Response.Redirect(RedirectUrl, true);
-            }
-        }
-
-        private void ShortcutRedirect()
-        {
-            if (PanelSecurity.EffectiveUser.Role == UserRole.Administrator)
-                return; // not for administrators
-
-            string shortcut = Request["shortcut"];
-            if ("vps".Equals(shortcut, StringComparison.InvariantCultureIgnoreCase))
-            {
-                // load hosting spaces
-                PackageInfo[] packages = ES.Services.Packages.GetMyPackages(PanelSecurity.EffectiveUserId);
-                if (packages.Length == 0)
-                    return; // no spaces - exit
-
-                // check if some package has VPS resource enabled
-                foreach (PackageInfo package in packages)
-                {
-                    int packageId = package.PackageId;
-                    PackageContext cntx = PackagesHelper.GetCachedPackageContext(packageId);
-                    if (cntx.Groups.ContainsKey(ResourceGroups.VPS))
-                    {
-                        // VPS resource found
-                        // check created VPS
-                        VirtualMachineMetaItemsPaged vms = ES.Services.VPS.GetVirtualMachines(packageId, "", "", "", 0, Int32.MaxValue, false);
-                        if (vms.Items.Length == 1)
-                        {
-                            // one VPS - redirect to its properties screen
-                            Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS", "SpaceID", packageId.ToString(),
-                                "ItemID=" + vms.Items[0].ItemID.ToString(), "ctl=vps_general", "moduleDefId=VPS"));
-                        }
-                        else
-                        {
-                            // several VPS - redirect to VPS list page
-                            Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS", "SpaceID", packageId.ToString(),
-                                "ctl=", "moduleDefId=VPS"));
-                        }
-                    }
-
-                    
-                    if (cntx.Groups.ContainsKey(ResourceGroups.VPS2012))
-                    {
-                        // VPS resource found
-                        // check created VPS
-                        VirtualMachineMetaItemsPaged vms = ES.Services.VPS2012.GetVirtualMachines(packageId, "", "", "", 0, Int32.MaxValue, false);
-                        if (vms.Items.Length == 1)
-                        {
-                            // one VPS - redirect to its properties screen
-                            Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS2012", "SpaceID", packageId.ToString(),
-                                "ItemID=" + vms.Items[0].ItemID.ToString(), "ctl=vps_general", "moduleDefId=VPS2012"));
-                        }
-                        else
-                        {
-                            // several VPS - redirect to VPS list page
-                            Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS2012", "SpaceID", packageId.ToString(),
-                                "ctl=", "moduleDefId=VPS2012"));
-                        }
-                    }
+			var encryptedTicket = tokenDiv.Attributes["value"];
+			PortalUtils.SetTicketAndCompleteLogin(encryptedTicket, txtUsername.Text.Trim(), chkRemember.Checked, ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
+			tokenDiv.Attributes["value"] = null;
+			CompleteLogin(0);
+		}
 
 
-                    if (cntx.Groups.ContainsKey(ResourceGroups.VPSForPC))
-                    {
-                        // VPS resource found
-                        // check created VPS
-                        VirtualMachineMetaItemsPaged vms = ES.Services.VPSPC.GetVirtualMachines(packageId, "", "", "", 0, Int32.MaxValue, false);
-                        if (vms.Items.Length == 1)
-                        {
-                            // one VPS - redirect to its properties screen
-                            Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPSForPC", "SpaceID", packageId.ToString(),
-                                "ItemID=" + vms.Items[0].ItemID.ToString(), "ctl=vps_general", "moduleDefId=VPSForPC"));
-                        }
-                        else
-                        {
-                            // several VPS - redirect to VPS list page
-                            Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPSForPC", "SpaceID", packageId.ToString(),
-                                "ctl=", "moduleDefId=VPSForPC"));
-                        }
-                    }
+		private void LoginUser(string username, string password, bool rememberLogin,
+			 string preferredLocale, string theme)
+		{
+			// status
+			int loginStatus = PortalUtils.AuthenticateUser(username, password, ipAddress);
 
-                }
+			if (loginStatus < 0)
+			{
+				ShowWarningMessage("WrongLogin");
+				return;
+			}
 
-                // no VPS resources found
-                // redirect to space home
-                if (packages.Length == 1)
-                    Response.Redirect(PortalUtils.GetSpaceHomePageUrl(packages[0].PackageId));
-            }
-        }
+			string encryptedTicket = PortalUtils.CreateEncryptedAuthenticationTicket(username, password, ipAddress, rememberLogin, preferredLocale, theme);
 
-        private void SetCurrentLanguage()
-        {
-            PortalUtils.SetCurrentLanguage(ddlLanguage.SelectedValue);
-        }
+			if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_MFA_ACTIVE)
+			{
+				int mfaMode = PortalUtils.GetUserMfaMode(username, password, ipAddress);
+				btnResendPin.Visible = mfaMode != 2;
+				userPwdDiv.Visible = false;
+				tokenDiv.Visible = true;
+				tokenDiv.Attributes["value"] = encryptedTicket;
+				txtPin.Focus();
+				return;
+			}
 
-        private void SetCurrentTheme()
-        {
-            string selectedTheme = ddlTheme.SelectedValue;
+			PortalUtils.SetTicketAndCompleteLogin(encryptedTicket, txtUsername.Text.Trim(), chkRemember.Checked, ddlLanguage.SelectedValue, ddlTheme.SelectedValue);
+			CompleteLogin(loginStatus);
+		}
 
-            HttpCookie UserRTLCrub = Request.Cookies["UserRTL"];
-            if (UserRTLCrub != null)
-            {
-                if (HttpContext.Current.Response.Cookies["UserRTL"].Value == "1")
-                {
-                    DataSet themeData = ES.Services.Authentication.GetLoginThemes();
-                    selectedTheme = themeData.Tables[0].Rows[ddlTheme.SelectedIndex]["RTLName"].ToString();
-                }
-            }
+		private void CompleteLogin(int loginStatus)
+		{
+			// Access IP Settings
+			SCP.SystemSettings settings = ES.Services.System.GetSystemSettings(SCP.SystemSettings.ACCESS_IP_SETTINGS);
+			String AccessIps = String.Empty;
+			String[] arAccessIps = null;
+			if (settings != null)
+			{
+				AccessIps = settings.GetValueOrDefault(SCP.SystemSettings.ACCESS_IPs, string.Empty);
+				arAccessIps = AccessIps.Split(',');
+			}
 
-            PortalUtils.SetCurrentTheme(selectedTheme);
-        }
+			if (!String.IsNullOrEmpty(AccessIps))
+			{
+				String RequestIP = Request.ServerVariables["REMOTE_ADDR"];
+				// String l_stSubnet = Knom.Helpers.Net.SubnetMask.ReturnSubnetmask(AccessIps);
+				Boolean l_Mach = false;
 
-        protected void ddlLanguage_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetCurrentLanguage();
+				try
+				{
+					foreach (String l_AccessIP in arAccessIps)
+					{
+						l_Mach = Knom.Helpers.Net.SubnetMask.IsInRange(RequestIP, l_AccessIP.Trim());
+						if (l_Mach)
+							break; // Once it passed then don't need to check for other access;
+					}
+				}
+				catch (Exception)
+				{ }
+				if (!l_Mach)
+				{
+					PortalUtils.UserSignOutOnly();
+					// messageBox.RenderMessage(MessageBoxType.Warning, "Unauthorized IP", "Unauthorized IP", null);
+					ShowWarningMessage("IPAccessProhibited");
+					return;
+				}
 
-            if (!string.IsNullOrEmpty(HttpContext.Current.Response.Cookies["UserTheme"].Value))
-            {
-                SetCurrentTheme();
-            }
-            
-            Response.Redirect(Request.Url.ToString());
-        }
+			}
 
-        protected void ddlTheme_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetCurrentTheme();
-            Response.Redirect(Request.Url.ToString());
-        }
+			if (loginStatus == BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD)
+			{
+				// One time password should be changed after login
+				Response.Redirect("Default.aspx?mid=1&ctl=change_onetimepassword&onetimepassword=true&UserID=" + PanelSecurity.LoggedUserId.ToString());
+			}
+			else
+			{
+				//Make Theme Cookies
+				DataSet UserThemeSettingsData = ES.Services.Users.GetUserThemeSettings(PanelSecurity.LoggedUserId);
+				if (UserThemeSettingsData.Tables.Count > 0)
+				{
+					foreach (DataRow row in UserThemeSettingsData.Tables[0].Rows)
+					{
+						string RowPropertyName = row.Field<String>("PropertyName");
+						string RowPropertyValue = row.Field<String>("PropertyValue");
 
-        protected void btnResendPin_Click(object sender, EventArgs e)
-        {
-            int sendPinResult = PortalUtils.SendPin(txtUsername.Text.Trim());
-            
-            if(sendPinResult == 0)
-                ShowSuccessMessage("PinSend");
-            else
-                ShowErrorMessage("PinSendError");
-        }
-    }
+						if (RowPropertyName == "Style")
+						{
+							string UserThemeStyle = RowPropertyValue;
+
+							HttpCookie UserThemeStyleCrumb = new HttpCookie("UserThemeStyle", UserThemeStyle);
+							UserThemeStyleCrumb.Expires = DateTime.Now.AddMonths(2);
+							HttpContext.Current.Response.Cookies.Add(UserThemeStyleCrumb);
+
+						}
+
+						if (RowPropertyName == "colorHeader")
+						{
+							string UserThemecolorHeader = RowPropertyValue;
+
+							HttpCookie UserThemecolorHeaderCrumb = new HttpCookie("UserThemecolorHeader", UserThemecolorHeader);
+							UserThemecolorHeaderCrumb.Expires = DateTime.Now.AddMonths(2);
+							HttpContext.Current.Response.Cookies.Add(UserThemecolorHeaderCrumb);
+
+						}
+
+						if (RowPropertyName == "colorSidebar")
+						{
+							string UserThemecolorSidebar = RowPropertyValue;
+
+							HttpCookie UserThemecolorSidebarCrumb = new HttpCookie("UserThemecolorSidebar", UserThemecolorSidebar);
+							UserThemecolorSidebarCrumb.Expires = DateTime.Now.AddMonths(2);
+							HttpContext.Current.Response.Cookies.Add(UserThemecolorSidebarCrumb);
+
+						}
+					}
+				}
+
+				// redirect by shortcut
+				ShortcutRedirect();
+
+				// standard redirect
+				Response.Redirect(RedirectUrl, true);
+			}
+		}
+
+		private void ShortcutRedirect()
+		{
+			if (PanelSecurity.EffectiveUser.Role == UserRole.Administrator)
+				return; // not for administrators
+
+			string shortcut = Request["shortcut"];
+			if ("vps".Equals(shortcut, StringComparison.InvariantCultureIgnoreCase))
+			{
+				// load hosting spaces
+				PackageInfo[] packages = ES.Services.Packages.GetMyPackages(PanelSecurity.EffectiveUserId);
+				if (packages.Length == 0)
+					return; // no spaces - exit
+
+				// check if some package has VPS resource enabled
+				foreach (PackageInfo package in packages)
+				{
+					int packageId = package.PackageId;
+					PackageContext cntx = PackagesHelper.GetCachedPackageContext(packageId);
+					if (cntx.Groups.ContainsKey(ResourceGroups.VPS))
+					{
+						// VPS resource found
+						// check created VPS
+						VirtualMachineMetaItemsPaged vms = ES.Services.VPS.GetVirtualMachines(packageId, "", "", "", 0, Int32.MaxValue, false);
+						if (vms.Items.Length == 1)
+						{
+							// one VPS - redirect to its properties screen
+							Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS", "SpaceID", packageId.ToString(),
+								 "ItemID=" + vms.Items[0].ItemID.ToString(), "ctl=vps_general", "moduleDefId=VPS"));
+						}
+						else
+						{
+							// several VPS - redirect to VPS list page
+							Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS", "SpaceID", packageId.ToString(),
+								 "ctl=", "moduleDefId=VPS"));
+						}
+					}
+
+
+					if (cntx.Groups.ContainsKey(ResourceGroups.VPS2012))
+					{
+						// VPS resource found
+						// check created VPS
+						VirtualMachineMetaItemsPaged vms = ES.Services.VPS2012.GetVirtualMachines(packageId, "", "", "", 0, Int32.MaxValue, false);
+						if (vms.Items.Length == 1)
+						{
+							// one VPS - redirect to its properties screen
+							Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS2012", "SpaceID", packageId.ToString(),
+								 "ItemID=" + vms.Items[0].ItemID.ToString(), "ctl=vps_general", "moduleDefId=VPS2012"));
+						}
+						else
+						{
+							// several VPS - redirect to VPS list page
+							Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPS2012", "SpaceID", packageId.ToString(),
+								 "ctl=", "moduleDefId=VPS2012"));
+						}
+					}
+
+
+					if (cntx.Groups.ContainsKey(ResourceGroups.VPSForPC))
+					{
+						// VPS resource found
+						// check created VPS
+						VirtualMachineMetaItemsPaged vms = ES.Services.VPSPC.GetVirtualMachines(packageId, "", "", "", 0, Int32.MaxValue, false);
+						if (vms.Items.Length == 1)
+						{
+							// one VPS - redirect to its properties screen
+							Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPSForPC", "SpaceID", packageId.ToString(),
+								 "ItemID=" + vms.Items[0].ItemID.ToString(), "ctl=vps_general", "moduleDefId=VPSForPC"));
+						}
+						else
+						{
+							// several VPS - redirect to VPS list page
+							Response.Redirect(PortalUtils.NavigatePageURL("SpaceVPSForPC", "SpaceID", packageId.ToString(),
+								 "ctl=", "moduleDefId=VPSForPC"));
+						}
+					}
+
+				}
+
+				// no VPS resources found
+				// redirect to space home
+				if (packages.Length == 1)
+					Response.Redirect(PortalUtils.GetSpaceHomePageUrl(packages[0].PackageId));
+			}
+		}
+
+		private void SetCurrentLanguage()
+		{
+			PortalUtils.SetCurrentLanguage(ddlLanguage.SelectedValue);
+		}
+
+		private void SetCurrentTheme()
+		{
+			string selectedTheme = ddlTheme.SelectedValue;
+
+			HttpCookie UserRTLCrub = Request.Cookies["UserRTL"];
+			if (UserRTLCrub != null)
+			{
+				if (HttpContext.Current.Response.Cookies["UserRTL"].Value == "1")
+				{
+					DataSet themeData = ES.Services.Authentication.GetLoginThemes();
+					selectedTheme = themeData.Tables[0].Rows[ddlTheme.SelectedIndex]["RTLName"].ToString();
+				}
+			}
+
+			PortalUtils.SetCurrentTheme(selectedTheme);
+		}
+
+		protected void ddlLanguage_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SetCurrentLanguage();
+
+			if (!string.IsNullOrEmpty(HttpContext.Current.Response.Cookies["UserTheme"].Value))
+			{
+				SetCurrentTheme();
+			}
+
+			Response.Redirect(Request.Url.ToString());
+		}
+
+		protected void ddlTheme_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			SetCurrentTheme();
+			Response.Redirect(Request.Url.ToString());
+		}
+
+		protected void btnResendPin_Click(object sender, EventArgs e)
+		{
+			int sendPinResult = PortalUtils.SendPin(txtUsername.Text.Trim());
+
+			if (sendPinResult == 0)
+				ShowSuccessMessage("PinSend");
+			else
+				ShowErrorMessage("PinSendError");
+		}
+	}
 }

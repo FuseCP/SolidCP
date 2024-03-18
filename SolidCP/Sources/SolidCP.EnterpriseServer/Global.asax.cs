@@ -30,6 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#if NETFRAMEWORK
 using System;
 using System.Data;
 using System.Configuration;
@@ -39,22 +40,40 @@ using System.Web.Security;
 using System.Web.SessionState;
 using System.Net;
 using System.Timers;
+using System.Diagnostics;
+using System.Threading;
+using System.Linq;
+using SolidCP.Web.Clients;
 
 namespace SolidCP.EnterpriseServer
 {
-    public class Global : System.Web.HttpApplication
-    {
-        private int keepAliveMinutes = 10;
-        private static string keepAliveUrl = "";
-        private static Timer timer = null;
+	public class Global : System.Web.HttpApplication
+	{
+		private int keepAliveMinutes = 10;
+		private static string keepAliveUrl = "";
+		private static System.Timers.Timer timer = null;
 
-        protected void Application_Start(object sender, EventArgs e)
-        {
-        }
+		protected void Application_Start(object sender, EventArgs e)
+		{
+			//if (!Debugger.IsAttached) Debugger.Launch();
+			UsernamePasswordValidator.Init();
+			Web.Clients.CertificateValidator.Init();
+			ThreadPool.QueueUserWorkItem(state =>
+			{
+				var sshServers = ServerController.GetServers()
+					.Select(server => server.ServerUrl)
+					.Where(serverUrl => serverUrl.StartsWith("ssh://"));
+				ClientBase.StartAllSshTunnels(sshServers);
+			});
+			Web.Services.StartupNetFX.Start();
+			Web.Clients.AssemblyLoader.Init(null, null, false);
+		}
 
-        protected void Application_End(object sender, EventArgs e)
-        {
-        }
+		protected void Application_End(object sender, EventArgs e)
+		{
+			ClientBase.DisposeAllSshTunnels();
+			Web.Clients.AssemblyLoader.Dispose();
+		}
 
 		protected void Application_BeginRequest(object sender, EventArgs e)
 		{
@@ -65,21 +84,27 @@ namespace SolidCP.EnterpriseServer
 				keepAliveUrl = HttpContext.Current.Request.Url.ToString();
 				if (this.keepAliveMinutes > 0)
 				{
-					timer = new Timer(60000 * this.keepAliveMinutes);
+					timer = new System.Timers.Timer(60000 * this.keepAliveMinutes);
 					timer.Elapsed += new ElapsedEventHandler(KeepAlive);
+					timer.AutoReset = true;
 					timer.Start();
 				}
 			}
 		}
 
-        public override void Init()
-        {
-            
-        }
+		public override void Init()
+		{
 
-        private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
-        {
-            using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
-        } 
-    }
+		}
+
+		private void KeepAlive(Object sender, System.Timers.ElapsedEventArgs e)
+		{
+			try
+			{
+				using (HttpWebRequest.Create(keepAliveUrl).GetResponse()) { }
+			}
+			catch { }
+		}
+	}
 }
+#endif

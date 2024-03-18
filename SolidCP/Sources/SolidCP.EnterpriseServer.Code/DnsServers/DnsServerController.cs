@@ -40,6 +40,7 @@ using System.Text;
 using System.Xml.Serialization;
 using SolidCP.Providers;
 using SolidCP.Providers.DNS;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

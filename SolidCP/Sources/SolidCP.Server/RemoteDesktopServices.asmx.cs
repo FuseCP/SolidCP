@@ -37,11 +37,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Web;
 using System.Collections;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using System.ComponentModel;
-using Microsoft.Web.Services3;
-
 using SolidCP.Providers;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.RemoteDesktopServices;
@@ -722,8 +719,9 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetExistingCollection", ProviderSettings.ProviderName);
-                return RDSProvider.GetExistingCollection(collectionName);
+                var result = RDSProvider.GetExistingCollection(collectionName);
                 Log.WriteEnd("'{0}' GetExistingCollection", ProviderSettings.ProviderName);
+                return result;
             }
             catch (Exception ex)
             {

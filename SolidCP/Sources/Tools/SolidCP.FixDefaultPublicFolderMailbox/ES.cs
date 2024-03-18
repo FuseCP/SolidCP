@@ -31,9 +31,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
-using SolidCP.EnterpriseServer.HostedSolution;
+using SolidCP.EnterpriseServer.Client;
 
 
 namespace SolidCP.FixDefaultPublicFolderMailbox
@@ -192,7 +191,7 @@ namespace SolidCP.FixDefaultPublicFolderMailbox
             string key = t.FullName + ".ServiceProxy";
             T proxy = (T)Activator.CreateInstance(t);
 
-            object p = proxy;
+            Web.Clients.ClientBase p = proxy as Web.Clients.ClientBase;
 
             // configure proxy
             EnterpriseServerProxyConfigurator cnfg = new EnterpriseServerProxyConfigurator();
@@ -203,7 +202,7 @@ namespace SolidCP.FixDefaultPublicFolderMailbox
                 cnfg.Password = serverContext.Password;
             }
 
-            cnfg.Configure((WebServicesClientProtocol)p);
+            cnfg.Configure(p);
 
             return proxy;
         }

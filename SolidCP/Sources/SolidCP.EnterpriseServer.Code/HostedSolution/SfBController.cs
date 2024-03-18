@@ -39,7 +39,9 @@ using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers.SfB;
+using SolidCP.Server.Client;
+
+//using SolidCP.Providers.SfB;
 
 namespace SolidCP.EnterpriseServer.Code.HostedSolution
 {
@@ -53,7 +55,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             ServiceProviderProxy.Init(ws, sfbServiceId);
 
-            string[] sfbSettings = ws.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] sfbSettings = ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings;
 
             List<string> resSettings = new List<string>(sfbSettings);
 
@@ -62,7 +64,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
                 ExtendSfBSettings(resSettings, "primarydomaincontroller", GetProviderProperty(organizationServiceId, "primarydomaincontroller"));
                 ExtendSfBSettings(resSettings, "rootou", GetProviderProperty(organizationServiceId, "rootou"));
             }
-            ws.ServiceProviderSettingsSoapHeaderValue.Settings = resSettings.ToArray();
+            ((ServiceProviderSettingsSoapHeader)ws.SoapHeader).Settings = resSettings.ToArray();
             return ws;
         }
 
@@ -73,7 +75,7 @@ namespace SolidCP.EnterpriseServer.Code.HostedSolution
 
             ServiceProviderProxy.Init(orgProxy, organizationServiceId);
 
-            string[] organizationSettings = orgProxy.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] organizationSettings = orgProxy.Header<ServiceProviderSettingsSoapHeader>().Settings;
 
             string value = string.Empty;
             foreach (string str in organizationSettings)

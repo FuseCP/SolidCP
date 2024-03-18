@@ -38,6 +38,8 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Text;
 using SolidCP.Setup.Actions;
+using SolidCP.Providers.OS;
+using System.Diagnostics;
 
 namespace SolidCP.Setup
 {
@@ -48,109 +50,143 @@ namespace SolidCP.Setup
 			return InstallBase(obj, "1.0.1");
 		}
 
-        internal static object InstallBase(object obj, string minimalInstallerVersion)
-        {
-            Hashtable args = Utils.GetSetupParameters(obj);
+		static bool IsWindows => OSInfo.IsWindows;
 
-            //check CS version
-            string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
-            var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
-            Version version = new Version(shellVersion);
-            //
-            var setupVariables = new SetupVariables
-            {
-                SetupAction = SetupActions.Install,
-                IISVersion = Global.IISVersion
-            };
-            //
-            InitInstall(args, setupVariables);
-            //Unattended setup
-            LoadSetupVariablesFromSetupXml(setupVariables.SetupXml, setupVariables);
-            //
-            var sam = new ServerActionManager(setupVariables);
-            // Prepare installation defaults
-            sam.PrepareDistributiveDefaults();
-            // Silent Installer Mode
-            if (shellMode.Equals(Global.SilentInstallerShell, StringComparison.OrdinalIgnoreCase))
-            {
-                if (version < new Version(minimalInstallerVersion))
-                {
-                    Utils.ShowConsoleErrorMessage(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion);
-                    //
-                    return false;
-                }
+		internal static object InstallBase(object obj, string minimalInstallerVersion)
+		{
+			ResourceAssemblyLoader.Init();
+			return InstallBaseRaw(obj, minimalInstallerVersion);
+		}
+		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
+		{
+			Hashtable args = Utils.GetSetupParameters(obj);
 
-                try
-                {
-                    var success = true;
-                    //
-                    setupVariables.ServerPassword = Utils.GetStringSetupParameter(args, Global.Parameters.ServerPassword);
-                    //
-                    sam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
-                    {
-                        Utils.ShowConsoleErrorMessage(e.ErrorMessage);
-                        //
-                        Log.WriteError(e.ErrorMessage);
-                        //
-                        success = false;
-                    });
-                    //
-                    sam.Start();
-                    //
-                    return success;
-                }
-                catch (Exception ex)
-                {
-                    Log.WriteError("Failed to install the component", ex);
-                    //
-                    return false;
-                }
-            }
-            else
-            {
-                if (version < new Version(minimalInstallerVersion))
-                {
-                    MessageBox.Show(String.Format(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion), "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    //
-                    return DialogResult.Cancel;
-                }
+			//check CS version
+			string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
+			var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
+			Version version = new Version(shellVersion);
+			//
+			var setupVariables = new SetupVariables
+			{
+				SetupAction = SetupActions.Install,
+				IISVersion = Global.IISVersion
+			};
+			//
+			InitInstall(args, setupVariables);
+			//Unattended setup
+			LoadSetupVariablesFromSetupXml(setupVariables.SetupXml, setupVariables);
+			//
+			BaseActionManager sam = null;
+			
+			if (IsWindows) sam =	new ServerActionManager(setupVariables);
+			else sam = new ServerUnixActionManager(setupVariables);
 
-                var form = new InstallerForm();
-                var wizard = form.Wizard;
-                wizard.SetupVariables = setupVariables;
-                //
-                wizard.ActionManager = sam;
+			// Prepare installation defaults
+			sam.PrepareDistributiveDefaults();
+			// Silent Installer Mode
+			if (shellMode.Equals(Global.SilentInstallerShell, StringComparison.OrdinalIgnoreCase))
+			{
+				if (version < new Version(minimalInstallerVersion))
+				{
+					Utils.ShowConsoleErrorMessage(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion);
+					//
+					return false;
+				}
 
-                //create wizard pages
-                var introPage = new IntroductionPage();
-                var licPage = new LicenseAgreementPage();
-                //
-                var page1 = new ConfigurationCheckPage();
-                page1.Checks.AddRange(new ConfigurationCheck[]
-				{ 
-					new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement"){ SetupVariables = setupVariables }, 
-					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables }, 
+				try
+				{
+					var success = true;
+					//
+					setupVariables.ServerPassword = Utils.GetStringSetupParameter(args, Global.Parameters.ServerPassword);
+					//
+					sam.ActionError += new EventHandler<ActionErrorEventArgs>((object sender, ActionErrorEventArgs e) =>
+					{
+						Utils.ShowConsoleErrorMessage(e.ErrorMessage);
+						//
+						Log.WriteError(e.ErrorMessage);
+						//
+						success = false;
+					});
+					//
+					sam.Start();
+					//
+					return success;
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError("Failed to install the component", ex);
+					//
+					return false;
+				}
+			}
+			else
+			{
+				if (version < new Version(minimalInstallerVersion))
+				{
+					MessageBox.Show(String.Format(Global.Messages.InstallerVersionIsObsolete, minimalInstallerVersion), "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					//
+					return DialogResult.Cancel;
+				}
+
+				var form = new InstallerForm();
+				var wizard = form.Wizard;
+				wizard.SetupVariables = setupVariables;
+				//
+				wizard.ActionManager = sam;
+
+				//create wizard pages
+				var introPage = new IntroductionPage();
+				var licPage = new LicenseAgreementPage();
+				//
+				var page1 = new ConfigurationCheckPage();
+				if (OSInfo.IsWindows)
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables },
 					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
-				});
-                //
-                var page2 = new InstallFolderPage();
-                var page3 = new WebPage();
-                var page4 = new UserAccountPage();
-                var page5 = new ServerPasswordPage();
-                var page6 = new ExpressInstallPage2();
-                var page7 = new FinishPage();
-                //
-                wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7 });
-                wizard.LinkPages();
-                wizard.SelectedPage = introPage;
+					});
+				} else
+				{
+					page1.Checks.AddRange(new ConfigurationCheck[]
+					{
+					new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"){ SetupVariables = setupVariables },
+					new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement"){ SetupVariables = setupVariables },
+					});
+				}
+				
+				var page2 = new InstallFolderPage();
+				var page3 = new WebPage();
+				var page4 = new InsecureHttpWarningPage();
+				var page5 = new CertificatePage();
+				UserAccountPage page6 = null;
+				if (OSInfo.IsWindows) page6 = new UserAccountPage();
+				var page7 = new ServerPasswordPage();
+				var page8 = new ExpressInstallPage2();
+				var page9 = new FinishPage();
+				
+				if (OSInfo.IsWindows)
+					wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page6, page7, page8, page9 });
+				else
+					wizard.Controls.AddRange(new Control[] { introPage, licPage, page1, page2, page3, page4, page5, page7, page8, page9 });
 
-                //show wizard
-                IWin32Window owner = args["ParentForm"] as IWin32Window;
-                return form.ShowModal(owner);
-            }
-        }
+				wizard.LinkPages();
+				wizard.SelectedPage = introPage;
+
+				//show wizard
+				IWin32Window owner = args["ParentForm"] as IWin32Window;
+				return form.ShowModal(owner);
+			}
+		}
 
 		public static object Uninstall(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return UninstallRaw(obj);
+		}
+		static object UninstallRaw(object obj)
 		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 			//
@@ -187,6 +223,11 @@ namespace SolidCP.Setup
 
 		public static object Setup(object obj)
 		{
+			ResourceAssemblyLoader.Init();
+			return SetupRaw(obj);
+		}
+		static object SetupRaw(object obj)
+		{
 			var args = Utils.GetSetupParameters(obj);
 			var shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
 			//
@@ -208,23 +249,29 @@ namespace SolidCP.Setup
 			AppConfig.LoadComponentSettings(wizard.SetupVariables);
 
 			WebPage page1 = new WebPage();
-			ServerPasswordPage page2 = new ServerPasswordPage();
-			ExpressInstallPage page3 = new ExpressInstallPage();
+			var page2 = new InsecureHttpWarningPage();
+			var page3 = new CertificatePage();
+			ServerPasswordPage page4 = new ServerPasswordPage();
+			ExpressInstallPage page5 = new ExpressInstallPage();
 			//create install actions
 			InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
 			action.Description = "Updating web site...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configuring Let's Encrypt...";
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateServerPassword);
 			action.Description = "Updating server password...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateConfig);
 			action.Description = "Updating system configuration...";
-			page3.Actions.Add(action);
+			page5.Actions.Add(action);
 
-			FinishPage page4 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
+			FinishPage page6 = new FinishPage();
+			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4, page5, page6 });
 			wizard.LinkPages();
 			wizard.SelectedPage = page1;
 
@@ -234,6 +281,11 @@ namespace SolidCP.Setup
 		}
 
 		public static object Update(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return UpdateRaw(obj);
+		}
+		static object UpdateRaw(object obj)
 		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 
@@ -260,27 +312,38 @@ namespace SolidCP.Setup
 
 			IntroductionPage introPage = new IntroductionPage();
 			LicenseAgreementPage licPage = new LicenseAgreementPage();
-			ExpressInstallPage page2 = new ExpressInstallPage();
+			WebPage page1 = new WebPage();
+			var page2 = new InsecureHttpWarningPage();
+			var page3 = new CertificatePage();
+			ExpressInstallPage page4 = new ExpressInstallPage();
 			//create install currentScenario
 			InstallAction action = new InstallAction(ActionTypes.Backup);
 			action.Description = "Backing up...";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.DeleteFiles);
 			action.Description = "Deleting files...";
 			action.Path = "setup\\delete.txt";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.CopyFiles);
 			action.Description = "Copying files...";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.UpdateWebSite);
+			action.Description = "Updating web site...";
+			page4.Actions.Add(action);
+
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configuring Let's Encrypt...";
+			page4.Actions.Add(action);
 
 			action = new InstallAction(ActionTypes.UpdateConfig);
 			action.Description = "Updating system configuration...";
-			page2.Actions.Add(action);
+			page4.Actions.Add(action);
 
-			FinishPage page3 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3 });
+			FinishPage page5 = new FinishPage();
+			wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5 });
 			wizard.LinkPages();
 			wizard.SelectedPage = introPage;
 

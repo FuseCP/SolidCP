@@ -48,9 +48,15 @@ namespace SolidCP.Setup
 			return InstallBase(obj, "1.0.1");
 		}
 
-        internal static object InstallBase(object obj, string minimalInstallerVersion)
-        {
-            Hashtable args = Utils.GetSetupParameters(obj);
+		internal static object InstallBase(object obj, string minimalInstallerVersion)
+		{
+			ResourceAssemblyLoader.Init();
+			return InstallBaseRaw(obj, minimalInstallerVersion);
+		}
+
+		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
+		{
+			Hashtable args = Utils.GetSetupParameters(obj);
 
             //check CS version
             string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
@@ -128,7 +134,7 @@ namespace SolidCP.Setup
                 var page1 = new ConfigurationCheckPage();
                 page1.Checks.AddRange(new ConfigurationCheck[]
 				{ 
-					new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement"){ SetupVariables = setupVariables }, 
+					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = setupVariables }, 
 					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = setupVariables }, 
 					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = setupVariables }
 				});
@@ -151,6 +157,11 @@ namespace SolidCP.Setup
         }
 
 		public static object Uninstall(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return UninstallRaw(obj);
+		}
+		static object UninstallRaw(object obj)
 		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 			//
@@ -186,6 +197,11 @@ namespace SolidCP.Setup
 		}
 
 		public static object Setup(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return SetupRaw(obj);
+		}
+		static object SetupRaw(object obj)
 		{
 			var args = Utils.GetSetupParameters(obj);
 			var shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
@@ -234,6 +250,11 @@ namespace SolidCP.Setup
 		}
 
 		public static object Update(object obj)
+		{
+			ResourceAssemblyLoader.Init();
+			return UpdateRaw(obj);
+		}
+		static object UpdateRaw(object obj)
 		{
 			Hashtable args = Utils.GetSetupParameters(obj);
 

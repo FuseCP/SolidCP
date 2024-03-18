@@ -46,6 +46,7 @@ using SolidCP.Providers.Web;
 using SolidCP.Providers.Database;
 using SolidCP.Providers.SharePoint;
 using OS = SolidCP.Providers.OS;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

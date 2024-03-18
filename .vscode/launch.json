@@ -1,0 +1,37 @@
+{
+    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "SolidCP.Server net8",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server/bin_dotnet/SolidCP.Server.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server"
+            }
+        },
+        {
+            "name": "SolidCP.Server.Test",
+            "type": "coreclr",
+            "request": "launch",         
+            "program": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server.Test/bin/Debug/net7.0/Test.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/SolidCP/Sources/SolidCP.Server.Test",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

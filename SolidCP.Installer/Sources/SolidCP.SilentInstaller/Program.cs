@@ -40,6 +40,9 @@ using System.Threading;
 using SolidCP.Installer.Configuration;
 using System.IO;
 using System.Collections;
+using System.Configuration;
+using SolidCP.Providers.OS;
+
 
 namespace SolidCP.SilentInstaller
 {
@@ -93,6 +96,7 @@ namespace SolidCP.SilentInstaller
 		[STAThread]
 		static int Main(string[] args)
 		{
+			ResourceAssemblyLoader.Init();
 			//
 			Utils.FixConfigurationSectionDefinition();
 			//
@@ -141,8 +145,8 @@ namespace SolidCP.SilentInstaller
 				//
 				Log.WriteApplicationStart();
 
-				//check OS version
-				Log.WriteInfo("{0} detected", Global.OSVersion);
+				//check OS versiongG
+				Log.WriteInfo("{0} detected", Global.OSVersionWindows != Providers.OS.WindowsVersion.NonWindows ? Global.OSVersionWindows.ToString() : OSInfo.OSFlavor.ToString());
 
 				//check IIS version
 				if (Global.IISVersion.Major == 0)
@@ -239,7 +243,7 @@ namespace SolidCP.SilentInstaller
 					output: new Hashtable
 						{
 							{ Global.Parameters.WebSiteIP, Global.EntServer.DefaultIP },
-							{ Global.Parameters.WebSiteDomain, String.Empty },
+							{ Global.Parameters.WebSiteDomain, Global.EntServer.DefaultDomain },
 							{ Global.Parameters.WebSitePort, Global.EntServer.DefaultPort },
 							{ Global.Parameters.UserAccount, Global.EntServer.ServiceAccount },
 							{ Global.Parameters.UserDomain, String.Empty },

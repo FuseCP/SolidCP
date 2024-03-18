@@ -73,6 +73,16 @@ namespace SolidCP.Setup.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Icons_MenuFileOpenIcon {
+            get {
+                object obj = ResourceManager.GetObject("Icons.MenuFileOpenIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap MarginImage {
             get {
                 object obj = ResourceManager.GetObject("MarginImage", resourceCulture);

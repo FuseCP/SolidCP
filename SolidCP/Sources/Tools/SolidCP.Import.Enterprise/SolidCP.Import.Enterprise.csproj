@@ -37,7 +37,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -273,21 +273,21 @@
       <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
       <Name>SolidCP.EnterpriseServer.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SolidCP.EnterpriseServer.Client\SolidCP.EnterpriseServer.Client.csproj">
-      <Project>{4b344644-a570-477e-adcc-f2b267d6c038}</Project>
-      <Name>SolidCP.EnterpriseServer.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj">
       <Project>{60e39314-659c-4fad-ab91-d0d08e223578}</Project>
       <Name>SolidCP.EnterpriseServer.Code</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SolidCP.EnterpriseServer\SolidCP.EnterpriseServer.csproj">
-      <Project>{59c7623a-5181-48a5-880a-c9b82b48f589}</Project>
-      <Name>SolidCP.EnterpriseServer</Name>
+    <ProjectReference Include="..\..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
+      <Project>{b55d2cad-8829-4f60-b09f-1210fcb593b9}</Project>
+      <Name>SolidCP.EnterpriseServer.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
       <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
       <Name>SolidCP.Providers.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
+      <Project>{2a1cc6c9-4350-48f7-9621-9339c631bd44}</Project>
+      <Name>SolidCP.Web.Clients</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -34,7 +34,7 @@ using System;
 
 namespace SolidCP.Providers
 {
-    public abstract class HostingServiceProviderWebService : System.Web.Services.WebService
+    public abstract class HostingServiceProviderWebService
     {
         public ServiceProviderSettingsSoapHeader settings = new ServiceProviderSettingsSoapHeader();
 
@@ -42,7 +42,7 @@ namespace SolidCP.Providers
         private ServiceProviderSettings providerSettings;
 
         private IHostingServiceProvider provider;
-        protected IHostingServiceProvider Provider
+        protected virtual IHostingServiceProvider Provider
         {
             get
             {

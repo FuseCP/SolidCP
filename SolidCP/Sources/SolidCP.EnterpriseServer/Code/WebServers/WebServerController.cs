@@ -43,6 +43,7 @@ using SolidCP.Providers.DNS;
 using OS = SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
+using SolidCP.Server.Client;
 using System.Resources;
 using System.Threading;
 using System.Reflection;
@@ -3765,7 +3766,7 @@ namespace SolidCP.EnterpriseServer
             if (osServiceId == 0)
                 return;
 			//
-            OS.OperatingSystem os = new OS.OperatingSystem();
+            Server.Client.OperatingSystem os = new Server.Client.OperatingSystem();
             ServiceProviderProxy.Init(os, osServiceId);
 
             // get site info

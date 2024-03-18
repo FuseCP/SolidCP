@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.VirtualizationProxmox;
+using SolidCP.Server.Client;
+// SolidCP.Providers.VirtualizationProxmox;
 
 namespace SolidCP.EnterpriseServer.Code.VirtualizationProxmox
 {

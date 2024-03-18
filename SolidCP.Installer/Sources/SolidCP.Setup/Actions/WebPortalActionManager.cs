@@ -305,6 +305,7 @@ namespace SolidCP.Setup.Actions
 			new SetNtfsPermissionsAction(),
 			new CreateWebApplicationPoolAction(),
 			new CreateWebSiteAction(),
+			new InstallLetsEncryptCertificateAction(),
 			new SwitchAppPoolAspNetVersion(),
 			new UpdateEnterpriseServerUrlAction(),
             new GenerateSessionValidationKeyAction(),

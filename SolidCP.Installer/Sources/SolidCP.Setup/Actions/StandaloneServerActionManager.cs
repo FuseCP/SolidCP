@@ -684,7 +684,7 @@ namespace SolidCP.Setup.Actions
 				user.LastName = lastName;
 				user.Email = email;
 
-				int userId = ES.Services.Users.AddUser(user, false, password);
+				int userId = ES.Services.Users.AddUser(user, false, password, new string[0]);
 				if (userId > 0)
 				{
 					Log.WriteEnd("Added user account");

@@ -2,7 +2,7 @@
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
-// Copyright (c) 2015, Outercurve Foundation.
+// Copyright (c) 2015, Outercurve Foundation
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
@@ -555,10 +555,15 @@ namespace SolidCP.Providers.Web
 		{
 			// anonymous user groups
 			List<string> webGroups = new List<string>();
-			webGroups.Add(WebGroupName);
+			if (!string.IsNullOrEmpty(WebGroupName)) webGroups.Add(WebGroupName);
+
+			SystemUser user = new SystemUser();
+			if (string.IsNullOrEmpty(site.AnonymousUsername))
+			{
+				site.AnonymousUsername = "";
+			}
 
 			// create web site anonymous account
-			SystemUser user = new SystemUser();
 			user.Name = GetNonQualifiedAccountName(site.AnonymousUsername);
 			user.FullName = GetNonQualifiedAccountName(site.AnonymousUsername);
 
@@ -1680,12 +1685,12 @@ namespace SolidCP.Providers.Web
 		}
 
         // AppPool
-        public void ChangeAppPoolState(string siteId, AppPoolState state)
+        public override void ChangeAppPoolState(string siteId, AppPoolState state)
         {
             webObjectsSvc.ChangeAppPoolState(siteId, state);
         }
 
-        public AppPoolState GetAppPoolState(string siteId)
+        public override AppPoolState GetAppPoolState(string siteId)
         {
             using (ServerManager srvman = webObjectsSvc.GetServerManager())
             {
@@ -1693,7 +1698,7 @@ namespace SolidCP.Providers.Web
             }
         }
 
-        public AppPoolState GetAppPoolState(ServerManager srvman, string siteId)
+        public virtual AppPoolState GetAppPoolState(ServerManager srvman, string siteId)
         {
             return webObjectsSvc.GetAppPoolState(srvman, siteId);
         }
@@ -3636,6 +3641,7 @@ namespace SolidCP.Providers.Web
 
 			WebAppVirtualDirectory[] dirs = GetAppVirtualDirectories(srvman, siteId);
 
+			// TODO check if there is no bug here
 			foreach (WebAppVirtualDirectory dir in dirs)
 			{
 			if (IsColdFusion10Installed() || IsColdFusion11Installed() || IsColdFusion2016Installed())
@@ -4180,7 +4186,7 @@ namespace SolidCP.Providers.Web
 
 		public override bool IsInstalled()
 		{
-			return IsIISInstalled();
+			return OSInfo.IsWindows && IsIISInstalled();
 		}
 
 		#region Remote Management Access
@@ -4748,7 +4754,7 @@ namespace SolidCP.Providers.Web
 		#endregion
 
 		#region SSL
-		public override SSLCertificate generateCSR(SSLCertificate certificate)
+		public override SSLCertificate GenerateCSR(SSLCertificate certificate)
 		{
 			var sslObjectService = new SSLModuleService();
 			//
@@ -4758,7 +4764,7 @@ namespace SolidCP.Providers.Web
 
 		}
 
-		public override SSLCertificate installCertificate(SSLCertificate certificate, WebSite website)
+		public override SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
 		{
 			var sslObjectService = new SSLModuleService();
             //
@@ -4766,28 +4772,28 @@ namespace SolidCP.Providers.Web
 			return sslObjectService.InstallCertificate(certificate, website);
 		}
 
-        public override String LEinstallCertificate(WebSite website, string email)
+        public override String LEInstallCertificate(WebSite website, string email)
         {
             var sslObjectService = new SSLModuleService();
             //
             return sslObjectService.LEInstallCertificate(website, email);
         }
 
-        public override List<SSLCertificate> getServerCertificates()
+        public override List<SSLCertificate> GetServerCertificates()
 		{
 			var sslObjectService = new SSLModuleService();
 			//
 			return sslObjectService.GetServerCertificates();
 		}
 
-        public override SSLCertificate installPFX(byte[] certificate, string password, WebSite website)
+        public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
         {
             var sslObjectService = new SSLModuleService();
             //
             return sslObjectService.InstallPfx(certificate, password, website);
         }
 
-        public override byte[] exportCertificate(string serialNumber, string password)
+        public override byte[] ExportCertificate(string serialNumber, string password)
 		{
 			var sslObjectService = new SSLModuleService();
 			//

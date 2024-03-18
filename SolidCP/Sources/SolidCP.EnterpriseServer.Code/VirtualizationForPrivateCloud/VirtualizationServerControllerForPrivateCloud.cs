@@ -44,6 +44,7 @@ using SolidCP.Providers;
 using System.Text;
 using System.Collections;
 using System.Net.Mail;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

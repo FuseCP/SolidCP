@@ -37,11 +37,11 @@ namespace SolidCP.Providers.StorageSpaces
 
         public override bool IsInstalled()
         {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2012R2 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2016 ||
-                   version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2019;
+            var version = OSInfo.WindowsVersion;
+            return version == WindowsVersion.WindowsServer2012 ||
+                   version == WindowsVersion.WindowsServer2012R2 ||
+                   version == WindowsVersion.WindowsServer2016 ||
+                   version == WindowsVersion.WindowsServer2019;
         }
 
         #region HostingServiceProvider methods

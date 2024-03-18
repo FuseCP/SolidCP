@@ -39,49 +39,16 @@ using Microsoft.Win32;
 //using MySql.Data.MySqlClient;
 using System.IO;
 
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
 namespace SolidCP.Providers.Database
 {
-    public class MySqlServer56 : MySqlServer
-    {
+	public class MySqlServer56 : MySqlServer55
+	{
 
-        public MySqlServer56()
-        {
+		public MySqlServer56(): base() { }
 
-        }
-
-        public override bool IsInstalled()
-        {
-            string versionNumber = null;
-
-            RegistryKey HKLM = Registry.LocalMachine;
-
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.6");
-
-            if (key != null)
-            {
-                versionNumber = (string)key.GetValue("Version");
-            }
-            else
-            {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.6");
-                if (key != null)
-                {
-                    versionNumber = (string)key.GetValue("Version");
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            string[] split = versionNumber.Split(new char[] { '.' });
-
-            return split[0].Equals("5") & split[1].Equals("6");
-        }
-    }
+		public override bool IsInstalled() => IsInstalled("5.6");
+	}
 }

@@ -37,51 +37,15 @@ using System.Text.RegularExpressions;
 using System.Data;
 using Microsoft.Win32;
 //using MySql.Data.MySqlClient;
-using System.IO;
-
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
 namespace SolidCP.Providers.Database
 {
-    public class MySqlServer55 : MySqlServer
-    {
-
-        public MySqlServer55()
-        {
-
-        }
-
-        public override bool IsInstalled()
-        {
-            string versionNumber = null;
-
-            RegistryKey HKLM = Registry.LocalMachine;
-
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.5");
-
-            if (key != null)
-            {
-                versionNumber = (string)key.GetValue("Version");
-            }
-            else
-            {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.5");
-                if (key != null)
-                {
-                    versionNumber = (string)key.GetValue("Version");
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            string[] split = versionNumber.Split(new char[] { '.' });
-
-            return split[0].Equals("5") & split[1].Equals("5");
-        }
-    }
+    public class MySqlServer55 : MySqlServer51
+	{
+		public MySqlServer55(): base() { }
+		
+		public override bool IsInstalled() => IsInstalled("5.5");
+	}
 }

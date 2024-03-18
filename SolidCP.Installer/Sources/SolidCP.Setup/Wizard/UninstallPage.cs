@@ -42,6 +42,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -121,7 +122,7 @@ namespace SolidCP.Setup
 						switch (action.ActionType)
 						{
 							case ActionTypes.DeleteRegistryKey:
-								DeleteRegistryKey(action.Key, action.Empty);
+								if (OSInfo.IsWindows) DeleteRegistryKey(action.Key, action.Empty);
 								break;
 							case ActionTypes.DeleteDirectory:
 								DeleteDirectory(action.Path);
@@ -142,7 +143,10 @@ namespace SolidCP.Setup
 									action.UserName);
 								break;
 							case ActionTypes.DeleteWebSite:
-								if (iis7)
+								if (!OSInfo.IsWindows)
+								{
+									DeleteUnixWebSite(action.Port);
+								} else if (iis7)
 									DeleteIIS7WebSite(action.SiteId);
 								else
 									DeleteWebSite(action.SiteId);
@@ -159,10 +163,13 @@ namespace SolidCP.Setup
 								DeleteUserAccount(action.Domain, action.Name);
 								break;
 							case ActionTypes.DeleteApplicationPool:
-								if (iis7)
-									DeleteIIS7ApplicationPool(action.Name);
-								else
-									DeleteApplicationPool(action.Name);
+								if (OSInfo.IsWindows)
+								{
+									if (iis7)
+										DeleteIIS7ApplicationPool(action.Name);
+									else
+										DeleteApplicationPool(action.Name);
+								}
 								break;
 							case ActionTypes.UpdateConfig:
 								UpdateSystemConfiguration(action.Key);
@@ -200,6 +207,8 @@ namespace SolidCP.Setup
 
 		private void UnregisterWindowsService(string path, string serviceName)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart(string.Format("Removing \"{0}\" Windows service", serviceName));
@@ -242,6 +251,8 @@ namespace SolidCP.Setup
 
 		private void DeleteShortcuts(string fileName)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Deleting menu shortcut");
@@ -280,80 +291,85 @@ namespace SolidCP.Setup
 			var list = new List<InstallAction>();
 			InstallAction action = null;
 
-			//windows service
-			string serviceName = AppConfig.GetComponentSettingStringValue(componentId, "ServiceName");
-			string serviceFile = AppConfig.GetComponentSettingStringValue(componentId, "ServiceFile");
-			string installFolder = AppConfig.GetComponentSettingStringValue(componentId, "InstallFolder");
-			if (!string.IsNullOrEmpty(serviceName) && !string.IsNullOrEmpty(serviceFile))
+			if (OSInfo.IsWindows)
 			{
-				action = new InstallAction(ActionTypes.UnregisterWindowsService);
-				action.Path = Path.Combine(installFolder, serviceFile);
-				action.Name = serviceName;
-				action.Description = "Removing Windows service...";
-				action.Log = string.Format("- Remove {0} Windows service", serviceName);
-				list.Add(action);
+
+				//windows service
+				string serviceName = AppConfig.GetComponentSettingStringValue(componentId, "ServiceName");
+				string serviceFile = AppConfig.GetComponentSettingStringValue(componentId, "ServiceFile");
+				string installFolder = AppConfig.GetComponentSettingStringValue(componentId, "InstallFolder");
+				if (!string.IsNullOrEmpty(serviceName) && !string.IsNullOrEmpty(serviceFile))
+				{
+					action = new InstallAction(ActionTypes.UnregisterWindowsService);
+					action.Path = Path.Combine(installFolder, serviceFile);
+					action.Name = serviceName;
+					action.Description = "Removing Windows service...";
+					action.Log = string.Format("- Remove {0} Windows service", serviceName);
+					list.Add(action);
+				}
+
+				if (System.ServiceProcess.ServiceController.GetServices().Any(s => s.DisplayName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
+				{
+					action = new InstallAction(ActionTypes.UnregisterWindowsService) { Path = Path.Combine(installFolder, "bin", Global.Parameters.SchedulerServiceFileName), Name = Global.Parameters.SchedulerServiceName, Description = "Removing Windows service..." };
+					action.Log = string.Format("- Remove {0} Windows service", action.Name);
+					list.Add(action);
+				}
+
+				//database
+				bool deleteDatabase = AppConfig.GetComponentSettingBooleanValue(componentId, "NewDatabase");
+				if (deleteDatabase)
+				{
+					string connectionString = AppConfig.GetComponentSettingStringValue(componentId, "InstallConnectionString");
+					string database = AppConfig.GetComponentSettingStringValue(componentId, "Database");
+					action = new InstallAction(ActionTypes.DeleteDatabase);
+					action.ConnectionString = connectionString;
+					action.Name = database;
+					action.Description = "Deleting database...";
+					action.Log = string.Format("- Delete {0} database", database);
+					list.Add(action);
+				}
+				//database user
+				bool deleteDatabaseUser = AppConfig.GetComponentSettingBooleanValue(componentId, "NewDatabaseUser");
+				if (deleteDatabaseUser)
+				{
+					string connectionString = AppConfig.GetComponentSettingStringValue(componentId, "InstallConnectionString");
+					string username = AppConfig.GetComponentSettingStringValue(componentId, "DatabaseUser");
+					action = new InstallAction(ActionTypes.DeleteDatabaseUser);
+					action.ConnectionString = connectionString;
+					action.UserName = username;
+					action.Description = "Deleting database user...";
+					action.Log = string.Format("- Delete {0} database user", username);
+					list.Add(action);
+				}
+				//database login (from standalone setup)
+				string loginName = AppConfig.GetComponentSettingStringValue(componentId, "DatabaseLogin");
+				if (!string.IsNullOrEmpty(loginName))
+				{
+					string connectionString = AppConfig.GetComponentSettingStringValue(componentId, "InstallConnectionString");
+					action = new InstallAction(ActionTypes.DeleteDatabaseLogin);
+					action.ConnectionString = connectionString;
+					action.UserName = loginName;
+					action.Description = "Deleting database login...";
+					action.Log = string.Format("- Delete {0} database login", loginName);
+					list.Add(action);
+				}
 			}
 
-            if (ServiceController.GetServices().Any(s => s.DisplayName.Equals(Global.Parameters.SchedulerServiceName, StringComparison.CurrentCultureIgnoreCase)))
-            {
-                action = new InstallAction(ActionTypes.UnregisterWindowsService) { Path = Path.Combine(installFolder, "bin", Global.Parameters.SchedulerServiceFileName), Name = Global.Parameters.SchedulerServiceName, Description = "Removing Windows service..." };
-                action.Log = string.Format("- Remove {0} Windows service", action.Name);
-                list.Add(action);
-            }
-
-			//database
-			bool deleteDatabase = AppConfig.GetComponentSettingBooleanValue(componentId, "NewDatabase");
-			if (deleteDatabase)
+			if (OSInfo.IsWindows)
 			{
-				string connectionString = AppConfig.GetComponentSettingStringValue(componentId, "InstallConnectionString");
-				string database = AppConfig.GetComponentSettingStringValue(componentId, "Database");
-				action = new InstallAction(ActionTypes.DeleteDatabase);
-				action.ConnectionString = connectionString;
-				action.Name = database;
-				action.Description = "Deleting database...";
-				action.Log = string.Format("- Delete {0} database", database);
-				list.Add(action);
-			}
-			//database user
-			bool deleteDatabaseUser = AppConfig.GetComponentSettingBooleanValue(componentId, "NewDatabaseUser");
-			if (deleteDatabaseUser)
-			{
-				string connectionString = AppConfig.GetComponentSettingStringValue(componentId, "InstallConnectionString");
-				string username = AppConfig.GetComponentSettingStringValue(componentId, "DatabaseUser");
-				action = new InstallAction(ActionTypes.DeleteDatabaseUser);
-				action.ConnectionString = connectionString;
-				action.UserName = username;
-				action.Description = "Deleting database user...";
-				action.Log = string.Format("- Delete {0} database user", username);
-				list.Add(action);
-			}
-			//database login (from standalone setup)
-			string loginName = AppConfig.GetComponentSettingStringValue(componentId, "DatabaseLogin");
-			if (!string.IsNullOrEmpty(loginName))
-			{
-				string connectionString = AppConfig.GetComponentSettingStringValue(componentId, "InstallConnectionString");
-				action = new InstallAction(ActionTypes.DeleteDatabaseLogin);
-				action.ConnectionString = connectionString;
-				action.UserName = loginName;
-				action.Description = "Deleting database login...";
-				action.Log = string.Format("- Delete {0} database login", loginName);
-				list.Add(action);
-			}
-
-
-
-			//virtual directory
-			bool deleteVirtualDirectory = AppConfig.GetComponentSettingBooleanValue(componentId, "NewVirtualDirectory");
-			if (deleteVirtualDirectory)
-			{
-				string virtualDirectory = AppConfig.GetComponentSettingStringValue(componentId, "VirtualDirectory");
-				string virtualDirectorySiteId = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteId");
-				action = new InstallAction(ActionTypes.DeleteVirtualDirectory);
-				action.SiteId = virtualDirectorySiteId;
-				action.Name = virtualDirectory;
-				action.Description = "Deleting virtual directory...";
-				action.Log = string.Format("- Delete {0} virtual directory...", virtualDirectory);
-				list.Add(action);
+				//virtual directory
+				bool deleteVirtualDirectory = AppConfig.GetComponentSettingBooleanValue(componentId, "NewVirtualDirectory");
+				if (deleteVirtualDirectory)
+				{
+					string virtualDirectory = AppConfig.GetComponentSettingStringValue(componentId, "VirtualDirectory");
+					string virtualDirectorySiteId = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteId");
+					action = new InstallAction(ActionTypes.DeleteVirtualDirectory);
+					action.SiteId = virtualDirectorySiteId;
+					action.Name = virtualDirectory;
+					action.Description = "Deleting virtual directory...";
+					action.Log = string.Format("- Delete {0} virtual directory...", virtualDirectory);
+					list.Add(action);
+				}
 			}
 
 			//web site
@@ -361,51 +377,60 @@ namespace SolidCP.Setup
 			if (deleteWebSite)
 			{
 				string siteId = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteId");
+				string port = AppConfig.GetComponentSettingStringValue(componentId, "WebSitePort");
+
 				action = new InstallAction(ActionTypes.DeleteWebSite);
+				action.Port = port;
 				action.SiteId = siteId;
 				action.Description = "Deleting web site...";
-				action.Log = string.Format("- Delete {0} web site", siteId);
+				action.Log = OSInfo.IsWindows ? $"- Delete {siteId} web site." : $"- Delete {siteId} web site.{Environment.NewLine}- Remove firewall rule for port {port}.";
 				list.Add(action);
 			}
 
-			//application pool
-			bool deleteAppPool = AppConfig.GetComponentSettingBooleanValue(componentId, "NewApplicationPool");
-			if (deleteAppPool)
+			if (OSInfo.IsWindows)
 			{
-				string appPoolName = AppConfig.GetComponentSettingStringValue(componentId, "ApplicationPool");
-				if (string.IsNullOrEmpty(appPoolName))
-					appPoolName = WebUtils.SolidCP_ADMIN_POOL;
-				action = new InstallAction(ActionTypes.DeleteApplicationPool);
-				action.Name = appPoolName;
-				action.Description = "Deleting application pool...";
-				action.Log = string.Format("- Delete {0} application pool", appPoolName);
-				list.Add(action);
-			}
-
-			//user account
-			bool deleteUserAccount = AppConfig.GetComponentSettingBooleanValue(componentId, "NewUserAccount");
-			if (deleteUserAccount)
-			{
-				string username = AppConfig.GetComponentSettingStringValue(componentId, "UserAccount");
-				string domain = AppConfig.GetComponentSettingStringValue(componentId, "Domain");
-				//membership
-				if (Wizard.SetupVariables.UserMembership != null && Wizard.SetupVariables.UserMembership.Length > 0)
+				//application pool
+				bool deleteAppPool = AppConfig.GetComponentSettingBooleanValue(componentId, "NewApplicationPool");
+				if (deleteAppPool)
 				{
-					action = new InstallAction(ActionTypes.DeleteUserMembership);
-					action.Name = username;
-					action.Domain = domain;
-					action.Membership = Wizard.SetupVariables.UserMembership;
-					action.Description = "Removing user account membership...";
-					action.Log = string.Format("- Remove {0} user account membership", username);
+					string appPoolName = AppConfig.GetComponentSettingStringValue(componentId, "ApplicationPool");
+					if (string.IsNullOrEmpty(appPoolName))
+						appPoolName = WebUtils.SolidCP_ADMIN_POOL;
+					action = new InstallAction(ActionTypes.DeleteApplicationPool);
+					action.Name = appPoolName;
+					action.Description = "Deleting application pool...";
+					action.Log = string.Format("- Delete {0} application pool", appPoolName);
 					list.Add(action);
 				}
+			}
 
-				action = new InstallAction(ActionTypes.DeleteUserAccount);
-				action.Name = username;
-				action.Domain = domain;
-				action.Description = "Deleting user account...";
-				action.Log = string.Format("- Delete {0} user account", username);
-				list.Add(action);
+			if (OSInfo.IsWindows)
+			{
+				//user account
+				bool deleteUserAccount = AppConfig.GetComponentSettingBooleanValue(componentId, "NewUserAccount");
+				if (deleteUserAccount)
+				{
+					string username = AppConfig.GetComponentSettingStringValue(componentId, "UserAccount");
+					string domain = AppConfig.GetComponentSettingStringValue(componentId, "Domain");
+					//membership
+					if (Wizard.SetupVariables.UserMembership != null && Wizard.SetupVariables.UserMembership.Length > 0)
+					{
+						action = new InstallAction(ActionTypes.DeleteUserMembership);
+						action.Name = username;
+						action.Domain = domain;
+						action.Membership = Wizard.SetupVariables.UserMembership;
+						action.Description = "Removing user account membership...";
+						action.Log = string.Format("- Remove {0} user account membership", username);
+						list.Add(action);
+					}
+
+					action = new InstallAction(ActionTypes.DeleteUserAccount);
+					action.Name = username;
+					action.Domain = domain;
+					action.Description = "Deleting user account...";
+					action.Log = string.Format("- Delete {0} user account", username);
+					list.Add(action);
+				}
 			}
 
 			//directory
@@ -454,6 +479,7 @@ namespace SolidCP.Setup
 
 		private void DeleteRegistryKey(string subkey, bool deleteEmptyOnly)
 		{
+			if (!OSInfo.IsWindows) return;
 			try
 			{
 				Log.WriteStart("Deleting registry key");
@@ -584,6 +610,8 @@ namespace SolidCP.Setup
 
 		private void DeleteUserMembership(string domain, string username, string[] membership)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Removing user membership");
@@ -606,6 +634,7 @@ namespace SolidCP.Setup
 
 		private void DeleteUserAccount(string domain, string username)
 		{
+			if (!OSInfo.IsWindows) return;
 			try
 			{
 				Log.WriteStart("Deleting user account");
@@ -740,9 +769,37 @@ namespace SolidCP.Setup
 				throw;
 			}
 		}
+		private void DeleteUnixWebSite(string port)
+		{
+			Log.WriteStart("Deleting web site");
+			var serviceId = (UniversalInstaller.Installer.Current as UniversalInstaller.UnixInstaller)?.UnixServiceId ?? "solidcp-server";
+
+			try
+			{
+				Log.WriteInfo($"Deleting \"{serviceId}\" system service");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.RemoveServer();
+				Log.WriteEnd("Deleted web site");
+				InstallLog.AppendLine($"- Deleted \"{serviceId}\" system service");
+				InstallLog.AppendLine($"- Removed firewall rules for port {port}");
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				Log.WriteError("Web site delete error", ex);
+				InstallLog.AppendLine($"- Failed to delete \"{serviceId}\" system service");
+
+				throw;
+
+			}
+		}
 
 		private void DeleteVirtualDirectory(string siteId, string name)
 		{
+			if (!OSInfo.IsWindows) return;
+
 			try
 			{
 				Log.WriteStart("Deleting virtual directory");

@@ -44,6 +44,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using SolidCP.Setup.Web;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Setup
 {
@@ -137,6 +138,8 @@ namespace SolidCP.Setup
 			UpdateApplicationAddress();
 		}
 
+		bool iis7 => SetupVariables.IISVersion.Major >= 7;
+
 		private void UpdateApplicationAddress()
 		{
 			/*if (SetupVariables.NewVirtualDirectory)
@@ -144,22 +147,25 @@ namespace SolidCP.Setup
 				this.txtAddress.StatusMessage = string.Empty;
 				return;
 			}*/
-			string address = "http://";
+			//se changed address from http to https.
+			string address = "https://";
 			string server = string.Empty;
+			string domain = txtWebSiteDomain.Text.Trim();
 			string port = string.Empty;
+			string ip = cbWebSiteIP.Text.Trim();
 			string virtualDir = string.Empty;
 			//server 
-			if (txtWebSiteDomain.Text.Trim().Length > 0)
+			if (domain.Length > 0)
 			{
 				//domain 
-				server = txtWebSiteDomain.Text.Trim();
+				server = domain;
 			}
 			else
 			{
 				//ip
-				if (cbWebSiteIP.Text.Trim().Length > 0)
+				if (ip.Length > 0)
 				{
-					server = cbWebSiteIP.Text.Trim();
+					server = ip;
 				}
 			}
 			//port
@@ -177,13 +183,15 @@ namespace SolidCP.Setup
 				virtualDir = "/" + SetupVariables.VirtualDirectory;
 			}
 			//address string
-			address += server + port + virtualDir;
+			address = (((iis7 || !OSInfo.IsWindows) && Utils.IsHttpsAndNotWindows(ip, domain)) ? "https://" : "http://") + server + port + virtualDir;
 			txtAddress.Text = address;
 
 		}
 
 		private bool CheckWebExtensions()
 		{
+			if (!OSInfo.IsWindows) return true;
+
 			bool ret = true;
 			try
 			{
@@ -262,7 +270,7 @@ namespace SolidCP.Setup
 
 			if (domain.Trim().Length > 0)
 			{
-				if (!Regex.IsMatch(domain, @"^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"))
+				if (domain != "localhost" && !Regex.IsMatch(domain, @"^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$"))
 				{
 					ShowWarning("Please enter valid domain name (for example, mydomain.com)");
 					return false;
@@ -303,6 +311,8 @@ namespace SolidCP.Setup
 
 		private bool CheckServerBindings()
 		{
+
+			if (!OSInfo.IsWindows) return true;
 
 			try
 			{

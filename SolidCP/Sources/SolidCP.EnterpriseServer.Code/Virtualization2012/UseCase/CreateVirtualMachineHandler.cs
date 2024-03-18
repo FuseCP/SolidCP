@@ -3,7 +3,8 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
 using SolidCP.Providers;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.Virtualization2012;
+//using SolidCP.Providers.Virtualization2012;
+using SolidCP.Server.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -325,7 +326,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                     {
                         try
                         {
-                            Server.Memory memory = OperatingSystemController.GetMemoryPackageId(packageId);
+                            Providers.OS.Memory memory = OperatingSystemController.GetMemoryPackageId(packageId);
 
                             long freePhysicalMemoryMB = (long)(memory.FreePhysicalMemoryKB / 1024);
                             long futureFreeMemoryMB = freePhysicalMemoryMB - (long)vm.RamSize; //futureFreeMemoryMB can be negative

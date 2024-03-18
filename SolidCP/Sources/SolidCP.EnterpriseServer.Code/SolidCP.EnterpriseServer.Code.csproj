@@ -1,303 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{60E39314-659C-4FAD-AB91-D0D08E223578}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SolidCP.EnterpriseServer.Code</RootNamespace>
-    <AssemblyName>SolidCP.EnterpriseServer.Code</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net48</TargetFramework>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
+    <OutputPath>..\SolidCP.EnterpriseServer\bin\Code</OutputPath>
+    <Nullable>disable</Nullable>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\SolidCP.EnterpriseServer\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\SolidCP.EnterpriseServer\bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Google.Authenticator, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\GoogleAuthenticator.3.0.0\lib\net462\Google.Authenticator.dll</HintPath>
-    </Reference>
-    <Reference Include="Ionic.Zip.Reduced">
-      <HintPath>..\..\Lib\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
-    <Reference Include="IPAddressRange">
-      <HintPath>..\..\Lib\References\Whois.NET\IPAddressRange.dll</HintPath>
-    </Reference>
-    <Reference Include="JWT, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\JWT.1.3.4\lib\3.5\JWT.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.2\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.1.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.Services3">
-      <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="QRCoder, Version=1.4.3.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
-      <HintPath>..\packages\QRCoder.1.4.3\lib\net40\QRCoder.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=108.0.3.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.108.0.3\lib\netstandard2.0\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.EnterpriseServer.Base, Version=1.4.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\SolidCP.EnterpriseServer.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json, Version=7.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.7.0.1\lib\net462\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="SolidCP.Providers.Base">
-      <HintPath>..\..\Bin\SolidCP.Providers.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="SolidCP.Server.Client">
-      <HintPath>..\..\Bin\SolidCP.Server.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Twilio, Version=6.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Twilio.6.6.1\lib\net451\Twilio.dll</HintPath>
-    </Reference>
-    <Reference Include="WhoisClient">
-      <HintPath>..\..\Lib\References\Whois.NET\WhoisClient.dll</HintPath>
-    </Reference>
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Comments\CommentsController.cs" />
-    <Compile Include="Common\ConfigSettings.cs" />
-    <Compile Include="Common\CryptoUtils.cs" />
-    <Compile Include="Common\EnterpriseServerIdentity.cs" />
-    <Compile Include="Common\EnterpriseServerPrincipal.cs" />
-    <Compile Include="Common\Extensions\LogExtension.cs" />
-    <Compile Include="Common\Extensions\UriExtensions.cs" />
-    <Compile Include="Common\FileUtils.cs" />
-    <Compile Include="Common\Int128.cs" />
-    <Compile Include="Common\IPAddress.cs" />
-    <Compile Include="Common\MailHelper.cs" />
-    <Compile Include="Common\MailTemplates\TemplateHashtable.cs" />
-    <Compile Include="Common\ObjectUtils.cs" />
-    <Compile Include="Common\RestrictedTraceAssertion.cs" />
-    <Compile Include="Common\SecurityContext.cs" />
-    <Compile Include="Common\ServiceProviderProxy.cs" />
-    <Compile Include="Common\ServiceUsernameTokenManager.cs" />
-    <Compile Include="Common\UsernameAssertion.cs" />
-    <Compile Include="Common\Utils.cs" />
-    <Compile Include="DatabaseServers\DatabaseServerController.cs" />
-    <Compile Include="Data\DataProvider.cs" />
-    <Compile Include="Data\SQLHelper.cs" />
-    <Compile Include="DnsServers\DnsServerController.cs" />
-    <Compile Include="EnterpriseStorage\EnterpriseStorageController.cs" />
-    <Compile Include="EventLog\EventLogTraceListener.cs" />
-    <Compile Include="ExchangeServer\ExchangeServerController.cs" />
-    <Compile Include="Files\FilesController.cs" />
-    <Compile Include="FtpServers\FtpServerController.cs" />
-    <Compile Include="HeliconZoo\HeliconZooController.cs" />
-    <Compile Include="HostedSolution\BlackBerryController.cs" />
-    <Compile Include="HostedSolution\CRMController.cs" />
-    <Compile Include="HostedSolution\SfBControllerAsync.cs" />
-    <Compile Include="HostedSolution\SfBController.cs" />
-    <Compile Include="HostedSolution\LyncController.cs" />
-    <Compile Include="HostedSolution\LyncControllerAsync.cs" />
-    <Compile Include="HostedSolution\Managers\OrganizationFoldersManager.cs" />
-    <Compile Include="HostedSolution\OCSController.cs" />
-    <Compile Include="HostedSolution\OrganizationController.cs" />
-    <Compile Include="HostedSolution\ReportController.cs" />
-    <Compile Include="Log\AuditLog.cs" />
-    <Compile Include="MailCleaner\APIMailCleanerHelper.cs" />
-    <Compile Include="MailServers\MailServerController.cs" />
-    <Compile Include="MailServers\QuotaLimit.cs" />
-    <Compile Include="OperatingSystems\OperatingSystemController.cs" />
-    <Compile Include="Packages\PackageAsyncWorker.cs" />
-    <Compile Include="Packages\PackageController.cs" />
-    <Compile Include="Packages\ServiceItemsPaged.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Provisioning\BackupAsyncWorker.cs" />
-    <Compile Include="Provisioning\BackupController.cs" />
-    <Compile Include="Provisioning\IBackupController.cs" />
-    <Compile Include="Provisioning\IImportController.cs" />
-    <Compile Include="Provisioning\ImportAsyncWorker.cs" />
-    <Compile Include="Provisioning\ImportController.cs" />
-    <Compile Include="RemoteDesktopServices\RemoteDesktopServicesHelpers.cs" />
-    <Compile Include="RemoteDesktopServices\RemoteDesktopServicesController.cs" />
-    <Compile Include="SchedulerTasks\AuditLogReportTask.cs" />
-    <Compile Include="SchedulerTasks\BackupDatabaseTask.cs" />
-    <Compile Include="SchedulerTasks\BackupTask.cs" />
-    <Compile Include="SchedulerTasks\DeleteExchangeAccountsTask.cs" />
-    <Compile Include="SchedulerTasks\CalculateExchangeDiskspaceTask.cs" />
-    <Compile Include="SchedulerTasks\CalculatePackagesBandwidthTask.cs" />
-    <Compile Include="SchedulerTasks\CalculatePackagesDiskspaceTask.cs" />
-    <Compile Include="SchedulerTasks\CheckWebSiteTask.cs" />
-    <Compile Include="SchedulerTasks\DomainExpirationTask.cs" />
-    <Compile Include="SchedulerTasks\FTPFilesTask.cs" />
-    <Compile Include="SchedulerTasks\HostedSolutionReport.cs" />
-    <Compile Include="SchedulerTasks\DomainLookupViewTask.cs" />
-    <Compile Include="SchedulerTasks\NotifyOverusedDatabasesTask.cs" />
-    <Compile Include="SchedulerTasks\RunSystemCommandTask.cs" />
-    <Compile Include="SchedulerTasks\SendMailNotificationTask.cs" />
-    <Compile Include="SchedulerTasks\SuspendOverusedPackagesTask.cs" />
-    <Compile Include="SchedulerTasks\UserPasswordExpirationNotificationTask.cs" />
-    <Compile Include="SchedulerTasks\ZipFilesTask.cs" />
-    <Compile Include="Scheduling\Scheduler.cs" />
-    <Compile Include="Scheduling\SchedulerController.cs" />
-    <Compile Include="Scheduling\SchedulerJob.cs" />
-    <Compile Include="Servers\ServerController.cs" />
-    <Compile Include="SharePoint\HostedSharePointServerEntController.cs" />
-    <Compile Include="SharePoint\HostedSharePointServerController.cs" />
-    <Compile Include="SharePoint\SharePointServerController.cs" />
-    <Compile Include="SpamExperts\SpamExpertsController.cs" />
-    <Compile Include="StatisticsServers\StatisticsServerController.cs" />
-    <Compile Include="StorageSpaces\StorageSpaceSelectors\DefaultStorageSpaceSelector.cs" />
-    <Compile Include="StorageSpaces\StorageSpaceSelectors\EnterpriseStorageSpaceSelector.cs" />
-    <Compile Include="StorageSpaces\StorageSpaceSelectors\IStorageSpaceSelector.cs" />
-    <Compile Include="StorageSpaces\StorageSpacesController.cs" />
-    <Compile Include="System\SystemController.cs" />
-    <Compile Include="Tasks\SendEmailNotification.cs" />
-    <Compile Include="Tasks\TaskController.cs" />
-    <Compile Include="Tasks\TaskEventHandler.cs" />
-    <Compile Include="Tasks\TaskManager.cs" />
-    <Compile Include="Users\Helpers\OneTimePasswordHelper.cs" />
-    <Compile Include="Users\Helpers\UserHelper.cs" />
-    <Compile Include="Users\UserAsyncWorker.cs" />
-    <Compile Include="Users\UserController.cs" />
-    <Compile Include="Virtualization2012\CreateServerAsyncWorker2012.cs" />
-    <Compile Include="Virtualization2012\Helpers\guacadata.cs" />
-    <Compile Include="Virtualization2012\Helpers\Encryption.cs" />
-    <Compile Include="Virtualization2012\Helpers\GuacaHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\JobHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\LogHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\PS\PowerShellScript.cs" />
-    <Compile Include="Virtualization2012\Helpers\PS\PsScriptPoint.cs" />
-    <Compile Include="Virtualization2012\Helpers\QuotaHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\ReplicationHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VirtualizationHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VirtualizationUtils.cs" />
-    <Compile Include="Virtualization2012\Helpers\VirtualMachineHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VM\IpAddressExternalHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VM\KvpExchangeHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VM\NetworkAdapterDetailsHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VM\NetworkHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VM\NetworkVLANHelper.cs" />
-    <Compile Include="Virtualization2012\Helpers\VM\IpAddressPrivateHelper.cs" />
-    <Compile Include="Virtualization2012\Tasks\ReinstallVirtualMachineTask.cs" />
-    <Compile Include="Virtualization2012\UseCase\ChangeVirtualMachineAdministratorPasswordHandler.cs" />
-    <Compile Include="Virtualization2012\UseCase\ChangeVirtualMachineStateHandler.cs" />
-    <Compile Include="Virtualization2012\UseCase\CreateVirtualMachineHandler.cs" />
-    <Compile Include="Virtualization2012\Tasks\CreateVirtualMachineTask.cs" />
-    <Compile Include="Virtualization2012\UseCase\DeleteVirtualMachineHandler.cs" />
-    <Compile Include="Virtualization2012\Tasks\DeleteVirtualMachineTask.cs" />
-    <Compile Include="Virtualization2012\UseCase\ImportVirtualMachineHandler.cs" />
-    <Compile Include="Virtualization2012\UseCase\ReinstallVirtualMachineHandler.cs" />
-    <Compile Include="Virtualization2012\UseCase\UpdateVirtualMachineHostNameHandler.cs" />
-    <Compile Include="Virtualization2012\UseCase\UpdateVirtualMachineResourceHandler.cs" />
-    <Compile Include="Virtualization2012\VirtualizationAsyncWorker2012.cs" />
-    <Compile Include="Virtualization2012\VirtualizationServerController2012.cs" />
-    <Compile Include="VirtualizationForPrivateCloud\CreateAsyncVMfromVM.cs" />
-    <Compile Include="VirtualizationForPrivateCloud\CreateServerAsyncWorkerForPrivateCloud.cs" />
-    <Compile Include="VirtualizationForPrivateCloud\VirtualizationServerControllerForPrivateCloud.cs" />
-    <Compile Include="VirtualizationProxmox\CreateServerAsyncWorkerProxmox.cs" />
-    <Compile Include="VirtualizationProxmox\Helpers\QuotaHelper.cs" />
-    <Compile Include="VirtualizationProxmox\Helpers\ReplicationHelper.cs" />
-    <Compile Include="VirtualizationProxmox\Helpers\VirtualizationHelper.cs" />
-    <Compile Include="VirtualizationProxmox\VirtualizationServerControllerProxmox.cs" />
-    <Compile Include="Virtualization\CreateServerAsyncWorker.cs" />
-    <Compile Include="Virtualization\VirtualizationServerController.cs" />
-    <Compile Include="WebAppGallery\WebAppGalleryController.cs" />
-    <Compile Include="WebServers\WebServerController.cs" />
-    <Compile Include="Wizards\UserCreationWizard.cs" />
-    <Compile Include="Wizards\WebApplicationsInstaller.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Common.Utils\SolidCP.Common.Utils.csproj">
-      <Project>{53D22D35-4013-415F-BA09-F67A0DBBB0C1}</Project>
-      <Name>SolidCP.Common.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Templates\SolidCP.Templates.csproj">
-      <Project>{387FA0EF-3927-45FF-8F8F-BCCD735540C6}</Project>
-      <Name>SolidCP.Templates</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -305,11 +23,55 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
+    <PackageReference Include="GoogleAuthenticator" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="QRCoder" Version="1.4.3" />
+    <PackageReference Include="RestSharp" Version="108.0.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.7.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Twilio" Version="6.15.1" />
+    <PackageReference Include="WhoisClient.NET" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="JWT, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.1.3.4\lib\3.5\JWT.dll</HintPath>
+    </Reference>
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web" />
+    <Reference Include="WhoisClient">
+      <HintPath>..\..\Lib\References\Whois.NET\WhoisClient.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+    <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
+    <ProjectReference Include="..\SolidCP.Templates\SolidCP.Templates.csproj" />
+    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Common\RestrictedTraceAssertion.cs" />
+    <Compile Remove="Common\ServiceUsernameTokenManager.cs" />
+    <Compile Remove="Common\UsernameAssertion.cs" />
+    <None Include="Common\RestrictedTraceAssertion.cs" />
+    <None Include="Common\ServiceUsernameTokenManager.cs" />
+    <None Include="Common\UsernameAssertion.cs" />
+  </ItemGroup>
 </Project>

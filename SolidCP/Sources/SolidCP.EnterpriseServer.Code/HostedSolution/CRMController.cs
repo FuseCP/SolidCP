@@ -34,12 +34,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
+using SolidCP.Providers;
 using SolidCP.Providers.Common;
-using SolidCP.Providers.CRM;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using System.Text.RegularExpressions;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -223,7 +224,7 @@ namespace SolidCP.EnterpriseServer
 
             ServiceProviderProxy.Init(orgProxy, organizationServiceId);
 
-            string[] organizationSettings = orgProxy.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] organizationSettings = orgProxy.Header<ServiceProviderSettingsSoapHeader>().Settings;
 
             string value = string.Empty;
             foreach (string str in organizationSettings)

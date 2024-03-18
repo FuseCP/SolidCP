@@ -46,7 +46,7 @@ using SolidCP.Providers.Web;
 using SolidCP.Providers.FTP;
 using SolidCP.Providers.Mail;
 using SolidCP.Providers.OS;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
 using Reports = SolidCP.EnterpriseServer.Base.Reports;
 using System.Diagnostics;
 using SolidCP.Templates;

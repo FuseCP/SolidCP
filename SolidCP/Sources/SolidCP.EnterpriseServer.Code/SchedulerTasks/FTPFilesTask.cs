@@ -35,7 +35,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-using SolidCP.Server;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -129,7 +129,7 @@ namespace SolidCP.EnterpriseServer
             if (service == null)
                 return;
 
-            WindowsServer winServer = new WindowsServer();
+            Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(winServer, service.ServerId);
             TaskManager.Write(winServer.ExecuteSystemCommand("ftp.exe", "-s:" + fullCmdPath));
 

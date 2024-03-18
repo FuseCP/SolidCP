@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<PublishUrl>publish\</PublishUrl>
+		<WarningsAsErrors>618</WarningsAsErrors>
+		<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+		<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<LangVersion>11</LangVersion>
+		<Nullable>disable</Nullable>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+	</ItemGroup>
+</Project>

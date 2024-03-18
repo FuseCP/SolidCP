@@ -47,7 +47,7 @@ namespace SolidCP.Setup
 		public static readonly SetupVariables Empty = new SetupVariables();
 		public bool EnableScpaMode { get; set; }
 		public string PeerAdminPassword { get; set; }
-        public string DatabaseUser { get; set; }
+		public string DatabaseUser { get; set; }
 		public string DatabaseUserPassword { get; set; }
 		public bool NewDatabaseUser { get; set; }
 		/// <summary>
@@ -187,6 +187,14 @@ namespace SolidCP.Setup
 		/// </summary>
 		public string WebSiteDomain { get; set; }
 
+		public string LetsEncryptEmail { get; set; }
+		public string CertificateStoreLocation { get; set; }
+		public string CertificateStore { get; set; }
+		public string CertificateFindType { get; set; }
+		public string CertificateFindValue { get; set; }
+		public string CertificateFile { get; set; }
+		public string CertificatePassword { get; set; }
+
 		/// <summary>
 		/// User account
 		/// </summary>
@@ -206,9 +214,9 @@ namespace SolidCP.Setup
 			{
 				if (ComponentCode.Equals(Global.Server.ComponentCode, StringComparison.OrdinalIgnoreCase))
 				{
-					return Global.Server.ServiceUserMembership; 
+					return Global.Server.ServiceUserMembership;
 				}
-				else if(ComponentCode.Equals(Global.EntServer.ComponentCode, StringComparison.OrdinalIgnoreCase))
+				else if (ComponentCode.Equals(Global.EntServer.ComponentCode, StringComparison.OrdinalIgnoreCase))
 				{
 					return Global.EntServer.ServiceUserMembership;
 				}
@@ -216,13 +224,13 @@ namespace SolidCP.Setup
 				{
 					return Global.WebPortal.ServiceUserMembership;
 				}
-                else if (ComponentCode.Equals(Global.WebDavPortal.ComponentCode, StringComparison.OrdinalIgnoreCase))
-                {
-                    return Global.WebDavPortal.ServiceUserMembership;
-                }
-                else
+				else if (ComponentCode.Equals(Global.WebDavPortal.ComponentCode, StringComparison.OrdinalIgnoreCase))
 				{
-					return new string[] {};
+					return Global.WebDavPortal.ServiceUserMembership;
+				}
+				else
+				{
+					return new string[] { };
 				}
 			}
 		}
@@ -257,12 +265,12 @@ namespace SolidCP.Setup
 
 		public string BaseDirectory { get; set; }
 
-        public string SpecialBaseDirectory { get; set; }
-        public IDictionary<string, string> FileNameMap { get; set; }
-        public IDictionary<string, string> SessionVariables { get; set; }
-        public IDictionary<string, string[]> XmlData { get; set; } // XPath, Value.
-        public string[] SysFields; // Fields that saved in sys config.
-        public bool ComponentExists { get; set; }
+		public string SpecialBaseDirectory { get; set; }
+		public IDictionary<string, string> FileNameMap { get; set; }
+		public IDictionary<string, string> SessionVariables { get; set; }
+		public IDictionary<string, string[]> XmlData { get; set; } // XPath, Value.
+		public string[] SysFields; // Fields that saved in sys config.
+		public bool ComponentExists { get; set; }
 
 		public string UpdateVersion { get; set; }
 
@@ -293,8 +301,8 @@ namespace SolidCP.Setup
 		public string ServiceName { get; set; }
 
 		public string ConfigurationFile { get; set; }
-        private bool m_UseUserCredentials = true;
-        public bool UseUserCredentials { get { return m_UseUserCredentials; } set { m_UseUserCredentials = value; } }
+		private bool m_UseUserCredentials = true;
+		public bool UseUserCredentials { get { return m_UseUserCredentials; } set { m_UseUserCredentials = value; } }
 		public string ServiceFile { get; set; }
 
 		public string LicenseKey { get; set; }
@@ -305,11 +313,11 @@ namespace SolidCP.Setup
 		{
 			get
 			{
-				string address = "http://";
+				string address = "https://";
 				string server = String.Empty;
 				string ipPort = String.Empty;
 				//server 
-				if (String.IsNullOrEmpty(WebSiteDomain) == false 
+				if (String.IsNullOrEmpty(WebSiteDomain) == false
 					&& WebSiteDomain.Trim().Length > 0)
 				{
 					//domain 
@@ -318,7 +326,7 @@ namespace SolidCP.Setup
 				else
 				{
 					//ip
-					if (String.IsNullOrEmpty(WebSiteIP) == false 
+					if (String.IsNullOrEmpty(WebSiteIP) == false
 						&& WebSiteIP.Trim().Length > 0)
 					{
 						server = WebSiteIP.Trim();
@@ -352,5 +360,8 @@ namespace SolidCP.Setup
 			return (SetupVariables)this.MemberwiseClone();
 		}
 
+		public string InstallerExe { get; set; }
+
+		public bool InstallNet8Runtime { get; set; }
 	}
 }

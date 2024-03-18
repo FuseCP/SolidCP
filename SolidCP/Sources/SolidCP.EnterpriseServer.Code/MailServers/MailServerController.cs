@@ -35,7 +35,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.IO;
-using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 using SolidCP.EnterpriseServer;
@@ -43,6 +42,7 @@ using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Code.MailServers;
 using SolidCP.Providers;
 using SolidCP.Providers.Mail;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

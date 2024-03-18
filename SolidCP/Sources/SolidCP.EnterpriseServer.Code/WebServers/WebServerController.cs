@@ -45,7 +45,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.HeliconZoo;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.DNS;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using System.Resources;
@@ -55,6 +55,7 @@ using SolidCP.Templates;
 using SolidCP.Providers.Database;
 using SolidCP.Providers.FTP;
 using System.Collections;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -2229,7 +2230,7 @@ namespace SolidCP.EnterpriseServer
 
             // get folders
             WebServer web = GetWebServer(siteItem.ServiceId);
-            return web.GetFolders(siteItem.SiteId);
+            return web.GetFolders(siteItem.SiteId).ToArray();
         }
 
         public static WebFolder GetFolder(int siteItemId, string folderPath)
@@ -2317,7 +2318,7 @@ namespace SolidCP.EnterpriseServer
 
             // get users
             WebServer web = GetWebServer(siteItem.ServiceId);
-            return web.GetUsers(siteItem.SiteId);
+            return web.GetUsers(siteItem.SiteId).ToArray();
         }
 
         public static WebUser GetUser(int siteItemId, string userName)
@@ -4517,7 +4518,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
 
 
                 certificate.FriendlyName = String.Format("{0}_{1}", certificate.Hostname, ticks.ToString());
-                certificate = server.generateCSR(certificate);
+                certificate = server.GenerateCSR(certificate);
                 certificate.id = DataProvider.AddSSLRequest(SecurityContext.User.UserId, item.PackageId,
                     certificate.SiteID, certificate.UserID, certificate.FriendlyName, certificate.Hostname,
                     certificate.CSR, certificate.CSRLength, certificate.DistinguishedName, certificate.IsRenewal,
@@ -4558,7 +4559,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                     //item.SiteIPAddress = !String.IsNullOrEmpty(ip.InternalIP) ? ip.InternalIP : ip.ExternalIP;
                     item.SiteIPAddress = ip.ExternalIP;
 
-                certificate = server.installCertificate(certificate, item);
+                certificate = server.InstallCertificate(certificate, item);
                 if (certificate.SerialNumber == null)
                 {
                     result.AddError("Error_Installing_certificate", null);
@@ -4609,7 +4610,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 // get state
                 WebServer web = new WebServer();
                 ServiceProviderProxy.Init(web, item.ServiceId);
-                string ret = web.LEinstallCertificate(item, email);
+                string ret = web.LEInstallCertificate(item, email);
 
                 if (ret.Contains("Error ") || ret.Contains("failed:")) result.AddError("ERROR_LEInstallCertificate", new Exception(ret));
             }
@@ -4649,7 +4650,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
                 // Get certificateinfo to delete from metabase later, SCP expects only one active certificate for each site
                 var certificatesToDeleteFromMetaBase = GetCertificatesForSite(item.Id).Where(c => c.Installed).ToList();
 
-                SSLCertificate certificate = server.installPFX(pfx, password, item);
+                SSLCertificate certificate = server.InstallPFX(pfx, password, item);
                 if (certificate.SerialNumber == null)
                 {
                     result.AddError("Error_Installing_certificate", null);
@@ -4726,7 +4727,7 @@ Please ensure the space has been allocated {0} IP address as a dedicated one and
             WebSite item = GetWebSite(siteId) as WebSite;
 
             WebServer server = GetWebServer(item.ServiceId);
-            return server.exportCertificate(serialNumber, password);
+            return server.ExportCertificate(serialNumber, password);
         }
 
         public static ResultObject DeleteCertificate(int siteId, SSLCertificate certificate)

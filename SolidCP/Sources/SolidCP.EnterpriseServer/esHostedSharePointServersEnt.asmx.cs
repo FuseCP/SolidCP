@@ -33,10 +33,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Web.Services;
+using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.Providers.SharePoint;
-using Microsoft.Web.Services3;
+using SolidCP.EnterpriseServer.Base.HostedSolution;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -45,7 +45,7 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	[WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
 	[WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-	[Policy("ServerPolicy")]
+	[Policy("EnterpriseServerPolicy")]
 	[ToolboxItem(false)]
 	public class esHostedSharePointServersEnt : WebService
 	{
@@ -225,10 +225,14 @@ namespace SolidCP.EnterpriseServer
 		}
 
         [WebMethod]
-        public SharePointSiteDiskSpace[] Enterprise_CalculateSharePointSitesDiskSpace(int itemId, out int errorCode)
+        public CalculateSharePointSitesDiskSpaceResult Enterprise_CalculateSharePointSitesDiskSpace(int itemId)
         {
-            return HostedSharePointServerEntController.CalculateSharePointSitesDiskSpace(itemId, out  errorCode);
-        }
+			var result = new CalculateSharePointSitesDiskSpaceResult();
+			int errorCode;
+            result.Result = HostedSharePointServerEntController.CalculateSharePointSitesDiskSpace(itemId, out errorCode);
+			result.ErrorCode = errorCode;
+			return result;
+		}
 
 
         [WebMethod]

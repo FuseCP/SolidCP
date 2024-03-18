@@ -36,41 +36,8 @@ namespace SolidCP.Providers.Database
 {
     public class MariaDB102 : MariaDB101
     {
+        public MariaDB102(): base() { }
 
-        public MariaDB102()
-        {
-
-        }
-
-        public override bool IsInstalled()
-        {
-            string versionNumber = null;
-
-            RegistryKey HKLM = Registry.LocalMachine;
-
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\Monty Program AB\MariaDB 10.2 (x64)");
-
-            if (key != null)
-            {
-                versionNumber = key.Name.Split(' ')[1];
-            }
-            else
-            {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\Monty Program AB\MariaDB 10.2");
-                if (key != null)
-                {
-                    versionNumber = key.Name.Split(' ')[1];
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            string[] split = versionNumber.Split(new char[] { '.' });
-
-            return split[0].Equals("10") & split[1].Equals("2");
-        }
-
+        public override bool IsInstalled() => IsInstalled("10.2");
     }
 }

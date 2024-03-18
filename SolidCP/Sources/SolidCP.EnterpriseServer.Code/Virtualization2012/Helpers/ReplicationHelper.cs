@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.Virtualization;
-using SolidCP.Providers.Virtualization2012;
+using SolidCP.Server.Client;
+//using SolidCP.Providers.Virtualization2012;
 
 namespace SolidCP.EnterpriseServer.Code.Virtualization2012
 {

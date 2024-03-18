@@ -54,7 +54,7 @@ namespace SolidCP.Providers.OS
             this.Path = path;
             this.LabelAs = labelAs;
             this.DriveLetter = driveLetter;
-            SystemFile folder = null;
+            //SystemFile folder = null;
         }
 
         public string Path

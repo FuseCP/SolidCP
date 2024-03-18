@@ -906,7 +906,7 @@ namespace Microsoft.ApplicationBlocks.Data
 				connection.Open();
 
                 // Call the private overload that takes an internally owned connection in place of the connection string
-                return ExecuteReader(connection, null, commandType, commandText, commandParameters,SqlConnectionOwnership.Internal);
+                return ExecuteReader(connection, null, commandType, commandText, commandParameters, SqlConnectionOwnership.Internal);
             }
             catch
             {

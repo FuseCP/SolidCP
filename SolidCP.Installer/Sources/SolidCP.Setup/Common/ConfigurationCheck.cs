@@ -39,14 +39,18 @@ namespace SolidCP.Setup
 	public enum CheckTypes
 	{
 		None,
-		OperationSystem,
+		OperatingSystem,
+		WindowsOperatingSystem,
 		IISVersion,
+		Systemd,
+		ApacheVersion,
+		Net8Runtime,
 		ASPNET,
 		SCPServer,
 		SCPEnterpriseServer,
 		SCPPortal,
-        SCPWebDavPortal,
-        ASPNET32
+		SCPWebDavPortal,
+		ASPNET32
 	}
 
 	public enum CheckStatuses
@@ -55,7 +59,7 @@ namespace SolidCP.Setup
 		Warning,
 		Error
 	}
-	
+
 	public class ConfigurationCheck
 	{
 		public ConfigurationCheck(CheckTypes checkType, string action)
@@ -64,9 +68,9 @@ namespace SolidCP.Setup
 			this.Action = action;
 		}
 
-		public CheckTypes CheckType {get;set;}
+		public CheckTypes CheckType { get; set; }
 		public string Action { get; set; }
-		public CheckStatuses Status {get;set;}
+		public CheckStatuses Status { get; set; }
 		public string Details { get; set; }
 		public SetupVariables SetupVariables { get; set; }
 	}

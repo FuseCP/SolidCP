@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -88,7 +89,7 @@ namespace SolidCP.EnterpriseServer
             set { this.scheduleName = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public ScheduleType ScheduleType
         {
             get { return (ScheduleType)Enum.Parse(typeof(ScheduleType), scheduleTypeId, true); }
@@ -143,7 +144,7 @@ namespace SolidCP.EnterpriseServer
             set { this.statusId = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public ScheduleStatus Status
         {
             get { return (ScheduleStatus)Enum.Parse(typeof(ScheduleStatus), statusId, true); }
@@ -168,7 +169,7 @@ namespace SolidCP.EnterpriseServer
             set { this.priorityId = value; }
         }
 
-        [XmlIgnore]
+        [XmlIgnore, IgnoreDataMember]
         public SchedulePriority Priority
         {
             get { return (SchedulePriority)Enum.Parse(typeof(SchedulePriority), priorityId, true); }

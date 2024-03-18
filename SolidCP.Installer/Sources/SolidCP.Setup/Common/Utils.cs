@@ -45,6 +45,8 @@ using System.DirectoryServices;
 using System.Linq;
 using SolidCP.Setup.Web;
 using Microsoft.Win32;
+using SolidCP.Providers.OS;
+using System.Net;
 
 namespace SolidCP.Setup
 {
@@ -492,7 +494,7 @@ namespace SolidCP.Setup
 
 		public static void StartService(string serviceName)
 		{
-			ServiceController sc = new ServiceController(serviceName);
+			var sc = new System.ServiceProcess.ServiceController(serviceName);
 			// Start the service if the current status is stopped.
 			if (sc.Status == ServiceControllerStatus.Stopped)
 			{
@@ -504,7 +506,7 @@ namespace SolidCP.Setup
 
 		public static void StopService(string serviceName)
 		{
-			ServiceController sc = new ServiceController(serviceName);
+			var sc = new System.ServiceProcess.ServiceController(serviceName);
 			// Stop the service if the current status is not stopped.
 			if (sc.Status != ServiceControllerStatus.Stopped &&
 				sc.Status != ServiceControllerStatus.StopPending)
@@ -799,6 +801,63 @@ namespace SolidCP.Setup
 				}
 			}
 		}
+
+		public static void SaveResource(string resName, string fileName)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var resources = assembly.GetManifestResourceNames();
+			var resourceName = resources.FirstOrDefault(name => name.EndsWith(resName));
+			if (resourceName != null)
+			{
+				using (var resStream = assembly.GetManifestResourceStream(resourceName))
+				using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+				{
+					resStream.CopyTo(file);
+				}
+			}
+		}
+
+		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
+
+		public static bool IsLocalAddress(string adr)
+		{
+			var isHostIP = Regex.IsMatch(adr, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(adr, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
+			return isHostIP && Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline);
+		}
+
+		public static bool IsHostLocal(string host)
+		{
+			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
+			if (host == "localhost" || host == "127.0.0.1" || host == "::1" ||
+				isHostIP && IsLocalAddress(host)) return true;
+
+			if (!isHostIP)
+			{
+				IPAddress[] ips;
+				lock (ResolvedHosts)
+				{
+					if (!ResolvedHosts.TryGetValue(host, out ips))
+					{
+						try
+						{
+							ips = Dns.GetHostEntry(host).AddressList;
+							ResolvedHosts.Add(host, ips);
+						} catch
+						{
+							return false;
+						}
+					}
+				}
+				return ips
+					.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+					.All(ip => IsLocalAddress(ip.ToString()));
+			}
+			return false;
+		}
+
+		public static bool IsGlobalDomain(string domain) => domain != "localhost" && !string.IsNullOrEmpty(domain) && domain.Contains('.');
+		public static bool IsHttps(string ip, string domain) => !IsLocalAddress(ip) && IsGlobalDomain(domain) && !IsHostLocal(domain);
+		public static bool IsHttpsAndNotWindows(string ip, string domain) => !OSInfo.IsWindows && IsHttps(ip, domain);
 
 		public static string[] GetApplicationUrls(string ip, string domain, string port, string virtualDir)
 		{

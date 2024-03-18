@@ -30,17 +30,37 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using System;
+
 namespace SolidCP.Providers.OS
 {
     public class Windows2008 : Windows2003
     {
         public override bool IsInstalled()
+        {            
+            var version = OSInfo.WindowsVersion;
+            return version == WindowsVersion.WindowsServer2008
+                || version == WindowsVersion.WindowsServer2008R2
+                || version == WindowsVersion.Vista
+                || version == WindowsVersion.Windows7;
+        }
+
+        public override Web.IWebServer WebServer
         {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2008
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2008R2
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Vista
-                || version == SolidCP.Server.Utils.OS.WindowsVersion.Windows7;
+            get
+            {
+                if (webServer != null) return webServer;
+
+                var ver = OSInfo.WindowsVersion;
+                if (ver == WindowsVersion.WindowsServer2008 ||
+                    ver == WindowsVersion.Vista)
+                {
+                    return webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs70, SolidCP.Providers.Web.IIs70"));
+                } else
+                {
+                    return webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs80, SolidCP.Providers.Web.IIs80"));
+                }
+            }
         }
     }
 }

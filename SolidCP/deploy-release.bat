@@ -2,6 +2,8 @@
 RMDIR /S /Q "Bin"
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%%G"
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%%G"
+FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin_dotnet') DO RMDIR /S /Q "%%G"
+
 
 IF EXIST "%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
@@ -71,4 +73,4 @@ IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
  )
 
 :Build
-%SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Release /p:Version="1.4.5" /p:FileVersion="1.4.9" /p:VersionLabel="1.4.9" /v:n /fileLogger /m /p:VisualStudioVersion=%SCPVSVer%
+%SCPMSBuild% build.xml /target:Deploy /p:BuildConfiguration=Release /p:Version="1.4.5" /p:FileVersion="1.4.9" /p:VersionLabel="1.4.9" /v:n /fileLogger /flp:verbosity=normal /m /p:VisualStudioVersion=%SCPVSVer%

@@ -1,70 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B438BF34-B741-4F37-A7BE-FD9C9D49AE26}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SolidCP.Providers.DNS.MsDNS2016</RootNamespace>
-    <AssemblyName>SolidCP.Providers.DNS.MsDNS2016</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\SolidCP.Server\bin\Dns2012\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\SolidCP.Server\bin\Dns2012\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Management.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Microsoft.Management.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DnsCommands.cs" />
-    <Compile Include="MsDNS.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecordConverter.cs" />
-    <Compile Include="RecordTypes.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
-      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
-      <Name>SolidCP.Providers.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Providers.DNS.MsDNS2012\SolidCP.Providers.DNS.MsDNS2012.csproj">
-      <Project>{fa0fb0ba-5a39-4f4e-8ec2-b806b58b74d4}</Project>
-      <Name>SolidCP.Providers.DNS.MsDNS2012</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj">
-      <Project>{e91e52f3-9555-4d00-b577-2b1dbdd87ca7}</Project>
-      <Name>SolidCP.Server.Utils</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<LangVersion>11</LangVersion>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugType>full</DebugType>
+		<OutputPath>..\SolidCP.Server\bin\DNS</OutputPath>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+		<OutputPath>..\SolidCP.Server\bin\Dns2012\</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="Microsoft.Management.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\Microsoft.Management.Infrastructure.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+		<Reference Include="System.Management" />
+		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+			<HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
+			<SpecificVersion>False</SpecificVersion>
+		</Reference>
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+		<ProjectReference Include="..\SolidCP.Providers.DNS.MsDNS2012\SolidCP.Providers.DNS.MsDNS2012.csproj" />
+		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+	</ItemGroup>
 </Project>

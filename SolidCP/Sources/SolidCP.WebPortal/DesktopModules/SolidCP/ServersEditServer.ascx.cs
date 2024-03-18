@@ -40,302 +40,329 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using System.Threading;
+using System.Threading.Tasks;
 
 using SolidCP.EnterpriseServer;
-using SolidCP.Server;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Portal
 {
-    public partial class ServersEditServer : SolidCPModuleBase
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
-            if (!IsPostBack)
-            {
-                try
-                {
-                    BindTools();
-                    BindServer();
-                    BindServerMemory();
-                    BindServerVersion();
-                    BindServerFilepath();
-                }
-                catch (Exception ex)
-                {
-                    ShowErrorMessage("SERVER_GET_SERVER", ex);
-                    return;
-                }
+	public partial class ServersEditServer : SolidCPModuleBase
+	{
+		int ServerId;
+		Task<ServerInfo> serverInfo = null;
+		async Task<ServerInfo> ServerInfo()
+		{
+			try
+			{
+				lock (this)
+				{
+					if (serverInfo == null)
+					{
+						serverInfo = ES.Services.Servers.GetServerByIdAsync(ServerId);
+					}
+				}
+				return await serverInfo;
+			}
+			catch (Exception ex)
+			{
+				throw;
 
-                IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
-            }
-        }
-        //protected void rbUsersCreationMode_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (this.rbUsersCreationMode.SelectedValue == "1")
-        //    {
-        //        this.trAuthType.Visible = true;
-        //    }
+			}
+		}
 
-        //    else
-        //    {
-        //        this.trAuthType.Visible = false;
-        //    }
-        //}
-        //protected void ddlAdAuthType_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-        //    if (this.ddlAdAuthType.SelectedValue == "Secure")
-        //    {
-        //        this.trAddDomain.Visible = true;
-        //        this.trAdUserName.Visible = true;
-        //        this.trAdPassword.Visible = true;
-        //        this.trAdButton.Visible = true;
-        //    }
-        //    if (this.ddlAdAuthType.SelectedValue == "Delegation")
-        //    {
-        //        this.trAddDomain.Visible = true;
-        //        this.trAdUserName.Visible = true;
-        //        this.trAdPassword.Visible = true;
-        //        this.trAdButton.Visible = true;
-        //    }
-        //    else
-        //    {
-        //        this.trAddDomain.Visible = false;
-        //        this.trAdUserName.Visible = false;
-        //        this.trAdPassword.Visible = false;
-        //        this.trAdButton.Visible = false;
-        //    }
-        //}
-        private void BindTools()
-        {
-            lnkTerminalSessions.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_termservices");
-            lnkWindowsServices.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_winservices");
-            lnkWindowsProcesses.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_processes");
-            lnkEventViewer.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_eventviewer");
-            lnkPlatformInstaller.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_platforminstaller");
-            lnkServerReboot.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "edit_reboot");
+		protected void Page_Init(object sender, EventArgs e)
+		{
+			Page.Load += PageLoadAsync;
+		}
+		protected async void PageLoadAsync(object sender, EventArgs e)
+		{
+			if (!IsPostBack)
+			{
+				try
+				{
+					ServerId = PanelRequest.ServerId;
+					await Task.WhenAll(
+						BindTools(),
+						BindServer(),
+						BindServerMemory(),
+						BindServerVersion(),
+						BindServerFilepath());
+				}
+				catch (Exception ex)
+				{
+					ShowErrorMessage("SERVER_GET_SERVER", ex);
+					return;
+				}
 
-            lnkBackup.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "backup");
-            lnkRestore.NavigateUrl = EditUrl("ServerID", PanelRequest.ServerId.ToString(), "restore");
+				IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
+			}
+		}
+		//protected void rbUsersCreationMode_SelectedIndexChanged(object sender, EventArgs e)
+		//{
+		//    if (this.rbUsersCreationMode.SelectedValue == "1")
+		//    {
+		//        this.trAuthType.Visible = true;
+		//    }
 
-            lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
-        }
+		//    else
+		//    {
+		//        this.trAuthType.Visible = false;
+		//    }
+		//}
+		//protected void ddlAdAuthType_SelectedIndexChanged(object sender, EventArgs e)
+		//{
+		//    if (this.ddlAdAuthType.SelectedValue == "Secure")
+		//    {
+		//        this.trAddDomain.Visible = true;
+		//        this.trAdUserName.Visible = true;
+		//        this.trAdPassword.Visible = true;
+		//        this.trAdButton.Visible = true;
+		//    }
+		//    if (this.ddlAdAuthType.SelectedValue == "Delegation")
+		//    {
+		//        this.trAddDomain.Visible = true;
+		//        this.trAdUserName.Visible = true;
+		//        this.trAdPassword.Visible = true;
+		//        this.trAdButton.Visible = true;
+		//    }
+		//    else
+		//    {
+		//        this.trAddDomain.Visible = false;
+		//        this.trAdUserName.Visible = false;
+		//        this.trAdPassword.Visible = false;
+		//        this.trAdButton.Visible = false;
+		//    }
+		//}
+		private async Task BindTools()
+		{
+			try
+			{
+				lnkTerminalSessions.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_termservices");
 
-        private void BindServer()
-        {
-            ServerInfo server = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
+				lnkWindowsServices.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_winservices");
+				lnkUnixServices.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_winservices");
+				lnkWindowsProcesses.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_processes");
+				lnkEventViewer.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_eventviewer");
+				lnkPlatformInstaller.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_platforminstaller");
+				lnkServerReboot.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "edit_reboot");
+
+				lnkBackup.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "backup");
+				lnkRestore.NavigateUrl = EditUrl("ServerID", ServerId.ToString(), "restore");
+
+				lnkBackup.Visible = lnkRestore.Visible = PortalUtils.PageExists("Backup");
+
+				var serverInfo = await ServerInfo();
+				pnPlatformPanel.Visible = pnTerminalPanel.Visible = pnWindowsServices.Visible = serverInfo.OSPlatform == OSPlatform.Windows;
+				pnUnixServices.Visible = serverInfo.OSPlatform != OSPlatform.Windows;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
+		private async Task BindServer()
+		{
+			ServerInfo server = await ServerInfo();
 
 			if (server == null)
 				RedirectToBrowsePage();
 
-            // header
-            txtName.Text = PortalAntiXSS.DecodeOld(server.ServerName);
-            txtComments.Text = PortalAntiXSS.DecodeOld(server.Comments);
+			// header
+			txtName.Text = PortalAntiXSS.DecodeOld(server.ServerName);
+			txtComments.Text = PortalAntiXSS.DecodeOld(server.Comments);
 
-            
-            // connection
-            txtUrl.Text = server.ServerUrl;
+
+			// connection
+			txtUrl.Text = server.ServerUrl;
 
 			// AD
-            rbUsersCreationMode.SelectedIndex = server.ADEnabled ? 1 : 0;
-            Utils.SelectListItem(ddlAdAuthType, server.ADAuthenticationType);
-            txtDomainName.Text = server.ADRootDomain;
-            txtAdUsername.Text = server.ADUsername;
-            txtAdParentDomain.Text = server.ADParentDomain;
-            txtAdParentDomainController.Text = server.ADParentDomainController;
+			rbUsersCreationMode.SelectedIndex = server.ADEnabled ? 1 : 0;
+			Utils.SelectListItem(ddlAdAuthType, server.ADAuthenticationType);
+			txtDomainName.Text = server.ADRootDomain;
+			txtAdUsername.Text = server.ADUsername;
+			txtAdParentDomain.Text = server.ADParentDomain;
+			txtAdParentDomainController.Text = server.ADParentDomainController;
 
-            chkUseAdParentDomain.Checked = !string.IsNullOrEmpty(server.ADParentDomain);
+			chkUseAdParentDomain.Checked = !string.IsNullOrEmpty(server.ADParentDomain);
 
-            chkUseAdParentDomain_StateChanged(null, null);
+			chkUseAdParentDomain_StateChanged(null, null);
 
-            // Preview Domain
-            txtPreviewDomain.Text = server.InstantDomainAlias;
-        }
+			// Preview Domain
+			txtPreviewDomain.Text = server.InstantDomainAlias;
+		}
 
-		private void BindServerVersion()
+		private async Task BindServerVersion()
+		{
+			scpVersion.Text = await ES.Services.Servers.GetServerVersionAsync(ServerId);
+		}
+
+		private async Task BindServerMemory()
 		{
 			try
 			{
-				scpVersion.Text = ES.Services.Servers.GetServerVersion(PanelRequest.ServerId);
+				Memory memory = await ES.Services.Servers.GetMemoryAsync(ServerId);
+				freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
+				totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
+				ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
+				ramGauge.Progress = (int)((memory.TotalVisibleMemorySizeKB / 1024) - (memory.FreePhysicalMemoryKB / 1024));
 			}
-			catch
+			catch (Exception ex)
 			{
-				ShowErrorMessage("SERVER_GET_SERVER");
+				freeMemory.Text = "N/A";
+				totalMemory.Text = "N/A";
 			}
 		}
 
-        private void BindServerMemory()
-        {
-            try
-            {
-                Memory memory = ES.Services.Servers.GetMemory(PanelRequest.ServerId);
-                freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
-                totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
-                ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
-                ramGauge.Progress = (int)((memory.TotalVisibleMemorySizeKB / 1024) - (memory.FreePhysicalMemoryKB / 1024));
-            }
-            catch
-            {
-                freeMemory.Text = "N/A";
-                totalMemory.Text = "N/A";
-            }
-        }
+		private async Task BindServerFilepath()
+		{
+			scpFilepath.Text = await ES.Services.Servers.GetServerFilePathAsync(ServerId);
+		}
 
-        private void BindServerFilepath() {
-            try {
-                // scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
+		private void UpdateServer()
+		{
+			if (!Page.IsValid)
+				return;
 
-                scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
-            } catch {
-                ShowErrorMessage("SERVER_GET_SERVER");
-            }
-        }
+			ServerInfo server = new ServerInfo();
 
-        private void UpdateServer()
-        {
-            if (!Page.IsValid)
-                return;
+			// header
+			server.ServerId = PanelRequest.ServerId;
+			server.ServerName = txtName.Text;
+			server.Comments = txtComments.Text;
 
-            ServerInfo server = new ServerInfo();
+			// connection
+			server.ServerUrl = txtUrl.Text;
 
-            // header
-            server.ServerId = PanelRequest.ServerId;
-            server.ServerName = txtName.Text;
-            server.Comments = txtComments.Text;
+			// AD
+			server.ADEnabled = (rbUsersCreationMode.SelectedIndex == 1);
+			server.ADAuthenticationType = ddlAdAuthType.SelectedValue;
+			server.ADRootDomain = txtDomainName.Text;
+			server.ADUsername = txtAdUsername.Text;
+			server.ADParentDomain = txtAdParentDomain.Text;
 
-            // connection
-            server.ServerUrl = txtUrl.Text;
+			// Preview Domain
+			server.InstantDomainAlias = txtPreviewDomain.Text;
 
-            // AD
-            server.ADEnabled = (rbUsersCreationMode.SelectedIndex == 1);
-            server.ADAuthenticationType = ddlAdAuthType.SelectedValue;
-            server.ADRootDomain = txtDomainName.Text;
-            server.ADUsername = txtAdUsername.Text;
-            server.ADParentDomain = txtAdParentDomain.Text;
+			try
+			{
+				int result = ES.Services.Servers.UpdateServer(server);
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_UPDATE_SERVER", ex);
+				return;
+			}
 
-            // Preview Domain
-            server.InstantDomainAlias = txtPreviewDomain.Text;
+			// return to browse page
+			RedirectToBrowsePage();
+		}
 
-            try
-            {
-                int result = ES.Services.Servers.UpdateServer(server);
-                if (result < 0)
-                {
-                    ShowResultMessage(result);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("SERVER_UPDATE_SERVER", ex);
-                return;
-            }
+		private void DeleteServer()
+		{
+			try
+			{
+				int result = ES.Services.Servers.DeleteServer(PanelRequest.ServerId);
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_DELETE_SERVER", ex);
+				return;
+			}
 
-            // return to browse page
-            RedirectToBrowsePage();
-        }
+			RedirectToBrowsePage();
+		}
 
-        private void DeleteServer()
-        {
-            try
-            {
-                int result = ES.Services.Servers.DeleteServer(PanelRequest.ServerId);
-                if (result < 0)
-                {
-                    ShowResultMessage(result);
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("SERVER_DELETE_SERVER", ex);
-                return;
-            }
+		protected void btnDelete_Click(object sender, EventArgs e)
+		{
+			DeleteServer();
+		}
 
-            RedirectToBrowsePage();
-        }
+		protected void btnUpdate_Click(object sender, EventArgs e)
+		{
+			UpdateServer();
+		}
 
-        protected void btnDelete_Click(object sender, EventArgs e)
-        {
-            DeleteServer();
-        }
+		protected void btnCancel_Click(object sender, EventArgs e)
+		{
+			RedirectToBrowsePage();
+		}
 
-        protected void btnUpdate_Click(object sender, EventArgs e)
-        {
-            UpdateServer();
-        }
-        protected void btnUpdate_Click1(object sender, EventArgs e)
-        {
-            UpdateServer();
-        }
+		protected void btnChangeServerPassword_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				int result = ES.Services.Servers.UpdateServerConnectionPassword(
+					 PanelRequest.ServerId, serverPassword.Password);
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				}
 
-        protected void btnCancel_Click(object sender, EventArgs e)
-        {
-            RedirectToBrowsePage();
-        }
+				ShowSuccessMessage("SERVER_UPDATE_SERVER_PSW");
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_UPDATE_SERVER_PSW", ex);
+				return;
+			}
+		}
 
-        protected void btnChangeServerPassword_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int result = ES.Services.Servers.UpdateServerConnectionPassword(
-                    PanelRequest.ServerId, serverPassword.Password);
-                if (result < 0)
-                {
-                    ShowResultMessage(result);
-                    return;
-                }
+		protected void btnChangeADPassword_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				int result = ES.Services.Servers.UpdateServerADPassword(
+					 PanelRequest.ServerId, adPassword.Password);
+				if (result < 0)
+				{
+					ShowResultMessage(result);
+					return;
+				}
 
-                ShowSuccessMessage("SERVER_UPDATE_SERVER_PSW");
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("SERVER_UPDATE_SERVER_PSW", ex);
-                return;
-            }
-        }
+				ShowSuccessMessage("SERVER_UPDATE_AD_PSW");
+			}
+			catch (Exception ex)
+			{
+				ShowErrorMessage("SERVER_UPDATE_AD_PSW", ex);
+				return;
+			}
+		}
 
-        protected void btnChangeADPassword_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                int result = ES.Services.Servers.UpdateServerADPassword(
-                    PanelRequest.ServerId, adPassword.Password);
-                if (result < 0)
-                {
-                    ShowResultMessage(result);
-                    return;
-                }
+		protected bool IsIpAddressesCollapsed
+		{
+			get
+			{
+				return PanelRequest.GetBool("IpAddressesCollapsed", true);
+			}
+		}
 
-                ShowSuccessMessage("SERVER_UPDATE_AD_PSW");
-            }
-            catch (Exception ex)
-            {
-                ShowErrorMessage("SERVER_UPDATE_AD_PSW", ex);
-                return;
-            }
-        }
+		protected void chkUseAdParentDomain_StateChanged(object sender, EventArgs e)
+		{
+			//divParentDomain.Visible = chkUseAdParentDomain.Checked;
+			//trParentDomainController.Visible = chkUseAdParentDomain.Checked;
+			lblAdParentDomain.Visible = chkUseAdParentDomain.Checked;
+			lblAdParentDomainController.Visible = chkUseAdParentDomain.Checked;
+			txtAdParentDomain.Visible = chkUseAdParentDomain.Checked;
+			txtAdParentDomainController.Visible = chkUseAdParentDomain.Checked;
 
-        protected bool IsIpAddressesCollapsed
-        {
-            get
-            {
-                return PanelRequest.GetBool("IpAddressesCollapsed", true);
-            }
-        }
-
-        protected void chkUseAdParentDomain_StateChanged(object sender, EventArgs e)
-        {
-            //divParentDomain.Visible = chkUseAdParentDomain.Checked;
-            //trParentDomainController.Visible = chkUseAdParentDomain.Checked;
-            lblAdParentDomain.Visible = chkUseAdParentDomain.Checked;
-            lblAdParentDomainController.Visible = chkUseAdParentDomain.Checked;
-            txtAdParentDomain.Visible = chkUseAdParentDomain.Checked;
-            txtAdParentDomainController.Visible = chkUseAdParentDomain.Checked;
-
-            if (!chkUseAdParentDomain.Checked)
-            {
-                txtAdParentDomain.Text = null;
-            }
-        }
-    }
+			if (!chkUseAdParentDomain.Checked)
+			{
+				txtAdParentDomain.Text = null;
+			}
+		}
+	}
 }

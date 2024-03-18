@@ -35,12 +35,10 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using System.ComponentModel;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
-using Microsoft.Web.Services3;
 using SolidCP.Providers;
 using SolidCP.Providers.Virtualization;
 
@@ -51,9 +49,9 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("ServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esVirtualizationServer2012 : System.Web.Services.WebService
+    public class esVirtualizationServer2012
     {
         #region Virtual Machines
         [WebMethod]

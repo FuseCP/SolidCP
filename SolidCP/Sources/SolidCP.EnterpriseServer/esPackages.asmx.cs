@@ -34,8 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Web.Services;
-using Microsoft.Web.Services3;
+using SolidCP.Web.Services;
 
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
@@ -48,9 +47,9 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("ServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
-    public class esPackages : System.Web.Services.WebService
+    public class esPackages
     {
         #region Hosting Plans
         [WebMethod]

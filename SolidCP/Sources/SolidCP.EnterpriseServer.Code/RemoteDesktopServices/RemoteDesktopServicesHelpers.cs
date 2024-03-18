@@ -10,6 +10,7 @@ using System.Xml;
 using SolidCP.EnterpriseServer.Base.RDS;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.RemoteDesktopServices;
+using SolidCP.Server.Client;
 using System.Data;
 
 namespace SolidCP.EnterpriseServer

@@ -39,10 +39,11 @@ using System.Text;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
+using System.Threading.Tasks;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
-using SolidCP.Server;
+using SolidCP.Providers.OS;
 using SolidCP.Providers;
 using System.Reflection;
 
@@ -350,15 +351,10 @@ namespace SolidCP.Portal
             ShowProductsGrid();
         }
 
-        private IAsyncResult WPIInstallationResult;
+        private Task WPIInstallationResult;
         protected void btnAccept_Click(object sender, EventArgs e)
         {
-            WPIInstallationResult = ES.Services.Servers.BeginInstallWPIProducts(
-                PanelRequest.ServerId, 
-                (string[])GetProductsToInstallList().ToArray(typeof(string)), 
-                null,
-                null
-                );
+            WPIInstallationResult = ES.Services.Servers.InstallWPIProductsAsync(PanelRequest.ServerId, (string[])GetProductsToInstallList().ToArray(typeof(string)));
             ShowProgressPanel();
             UpdateProgress();
         }

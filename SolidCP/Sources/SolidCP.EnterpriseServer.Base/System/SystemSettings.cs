@@ -37,12 +37,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Collections;
 
 namespace SolidCP.EnterpriseServer
 {
-	[Serializable]
+	[DataContract]
 	public class SystemSettings
 	{
+
 		public const string SMTP_SETTINGS = "SmtpSettings";
 		public const string BACKUP_SETTINGS = "BackupSettings";
 		public const string SETUP_SETTINGS = "SetupSettings";
@@ -83,10 +86,11 @@ namespace SolidCP.EnterpriseServer
 
         public static readonly SystemSettings Empty = new SystemSettings { SettingsArray = new string[][] {} };
 
-		private NameValueCollection settingsHash = null;
+		NameValueCollection settingsHash = null;
+
+		[DataMember]
 		public string[][] SettingsArray;
 
-		[XmlIgnore]
 		NameValueCollection Settings
 		{
 			get
@@ -107,7 +111,7 @@ namespace SolidCP.EnterpriseServer
 			}
 		}
 
-		[XmlIgnore]
+
 		public string this[string settingName]
 		{
 			get

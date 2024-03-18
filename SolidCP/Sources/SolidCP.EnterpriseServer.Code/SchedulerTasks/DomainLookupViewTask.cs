@@ -41,6 +41,7 @@ using System.Threading;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Server;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -103,7 +104,7 @@ namespace SolidCP.EnterpriseServer
                 return;
             }
 
-            WindowsServer winServer = new WindowsServer();
+            Server.Client.OperatingSystem winServer = new Server.Client.OperatingSystem();
             ServiceProviderProxy.ServerInit(winServer, server.ServerId);
 
             var user = UserController.GetUser(topTask.UserId);
@@ -350,7 +351,7 @@ namespace SolidCP.EnterpriseServer
             MailHelper.SendMessage(from, mailTo, bcc, subject, body, priority, isHtml);
         }
 
-        public List<DnsRecordInfo> GetDomainDnsRecords(WindowsServer winServer, string domain, string dnsServer, DnsRecordType recordType, int pause)
+        public List<DnsRecordInfo> GetDomainDnsRecords(Server.Client.OperatingSystem winServer, string domain, string dnsServer, DnsRecordType recordType, int pause)
         {
             Thread.Sleep(pause);
 

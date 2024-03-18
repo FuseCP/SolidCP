@@ -37,15 +37,33 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Remoting.Lifetime;
+using System.IO;
+using SolidCP.Providers.OS;
+using System.ServiceModel.Configuration;
 
 namespace SolidCP.Installer.Common
 {
 	[Serializable]
 	public class AssemblyLoader : MarshalByRefObject
 	{
+
+		const bool UseLocalSetupDllForDebugging = true;
+		public bool UseLocalSetupDll = false;
+
 		public object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
 		{
-			Assembly assembly = Assembly.LoadFrom(fileName);
+			Assembly assembly = null;
+#if DEBUG
+			if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) && 
+				(Debugger.IsAttached || UseLocalSetupDll))
+			{
+				var exe = Assembly.GetExecutingAssembly();
+				var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");
+				assembly = Assembly.LoadFrom(path);
+			} else assembly = Assembly.LoadFrom(fileName);
+#else
+			assembly = Assembly.LoadFrom(fileName);
+#endif
 			Type type = assembly.GetType(typeName);
 			MethodInfo method = type.GetMethod(methodName);
 			return method.Invoke(Activator.CreateInstance(type), parameters);
@@ -55,10 +73,10 @@ namespace SolidCP.Installer.Common
 		{
 			Trace.Listeners.Add(traceListener);
 		}
-
 		public static object Execute(string fileName, string typeName, string methodName, object[] parameters)
 		{
 			AppDomain domain = null;
+		
 			try
 			{
 				Evidence securityInfo = AppDomain.CurrentDomain.Evidence;
@@ -68,20 +86,30 @@ namespace SolidCP.Installer.Common
 				domain = AppDomain.CreateDomain("Remote Domain", securityInfo, info);
 				domain.InitializeLifetimeService();
 				domain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
-				AssemblyLoader loader = (AssemblyLoader)domain.CreateInstanceAndUnwrap(
-					typeof(AssemblyLoader).Assembly.FullName,
-					typeof(AssemblyLoader).FullName);
 
-				foreach (TraceListener listener in Trace.Listeners)
+				AssemblyLoader loader;
+
+				if (!Debugger.IsAttached)
 				{
-					loader.AddTraceListener(listener);
+					loader = (AssemblyLoader)domain.CreateInstanceAndUnwrap(
+						typeof(AssemblyLoader).Assembly.FullName,
+						typeof(AssemblyLoader).FullName);
+
+					foreach (TraceListener listener in Trace.Listeners)
+					{
+						loader.AddTraceListener(listener);
+					}
+				}
+				else  // don't call in separate AppDomain when debugging
+				{
+					loader = new AssemblyLoader();
 				}
 
 				object ret = loader.RemoteRun(fileName, typeName, methodName, parameters);
 				AppDomain.Unload(domain);
 				return ret;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				if (domain != null)
 				{

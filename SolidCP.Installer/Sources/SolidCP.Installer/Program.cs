@@ -48,6 +48,7 @@ using System.Runtime.Remoting.Lifetime;
 using System.Security.Principal;
 using SolidCP.Installer.Core;
 using SolidCP.Installer.Configuration;
+using SolidCP.Providers.OS;
 using System.Reflection;
 
 namespace SolidCP.Installer
@@ -65,20 +66,29 @@ namespace SolidCP.Installer
 		[STAThread]
 		static void Main()
 		{
+			ResourceAssemblyLoader.Init();
+			Start();
+		}
+
+		static void Start() {
+
+			ResourceUtils.CreateDefaultAppConfig();
 			//
 			Utils.FixConfigurationSectionDefinition();
 
 			//check security permissions
 			if (!Utils.CheckSecurity())
 			{
-				ShowSecurityError();
+				//ShowSecurityError();
+				UniversalInstaller.Installer.Current.RestartAsAdmin();
 				return;
 			}
 
 			//check administrator permissions
 			if (!Utils.IsAdministrator())
 			{
-				ShowSecurityError(); 
+				//ShowSecurityError();
+				UniversalInstaller.Installer.Current.RestartAsAdmin();
 				return;
 			}
 
@@ -97,7 +107,7 @@ namespace SolidCP.Installer
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			//check OS version
-			Log.WriteInfo("{0} detected", Global.OSVersion);
+			Log.WriteInfo("{0} detected", Global.OSVersionWindows != WindowsVersion.NonWindows ? Global.OSVersionWindows.ToString() : Global.OSFlavor.ToString());
 
 			//check IIS version
 			if (Global.IISVersion.Major == 0)
@@ -114,6 +124,11 @@ namespace SolidCP.Installer
 				{
 					return;
 				}
+			}
+
+			if (CheckCommandLineArgument("/uselocalsetupdll"))
+			{
+
 			}
 			// Load setup parameters from an XML file
 			LoadSetupXmlFile();

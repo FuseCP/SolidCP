@@ -31,9 +31,11 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ﻿using System;
-using System.Configuration;
+using System.IO;
+//using System.Configuration;
 using SolidCP.Providers;
 using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
 using SolidCP.Server.Utils;
 using System.Reflection;
 
@@ -52,7 +54,7 @@ namespace SolidCP.Server.Code
             {
                 bool disableAutoDiscovery;
 
-                if (!bool.TryParse(ConfigurationManager.AppSettings[DisableAutoDiscovery], out disableAutoDiscovery))
+                if (!bool.TryParse(System.Configuration.ConfigurationManager.AppSettings[DisableAutoDiscovery], out disableAutoDiscovery))
                     disableAutoDiscovery = false;
                 
                 if (disableAutoDiscovery)
@@ -65,7 +67,7 @@ namespace SolidCP.Server.Code
                     if (string.IsNullOrEmpty(name))
                     {
                         res.IsSuccess = false;
-                        res.ErrorCodes.Add(ErrorCodes.PROVIDER_NANE_IS_NOT_SPECIFIED);
+                        res.ErrorCodes.Add(ErrorCodes.PROVIDER_NAME_IS_NOT_SPECIFIED);
                         return res;
                     }
 
@@ -89,7 +91,11 @@ namespace SolidCP.Server.Code
         }
 
         public static string GetServerFilePath() {
+#if NETFRAMEWORK
             return System.Web.HttpContext.Current.Server.MapPath("~/");
+#else
+            return new DirectoryInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..")).FullName;
+#endif
         }
 
         public static string GetServerVersion()
@@ -100,6 +106,7 @@ namespace SolidCP.Server.Code
             else
 			    return typeof(AutoDiscoveryHelper).Assembly.GetName().Version.ToString(3);
         }
-
-    }
+        public static string OS => OSInfo.IsWindows ? "Windows" :
+				(OSInfo.IsMac ? "Mac" : "Unix");
+	}
 }

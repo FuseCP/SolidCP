@@ -88,8 +88,8 @@ namespace SolidCP.Portal
         public void LoadProviderControl(int packageId, string groupName, PlaceHolder container, string controlName)
         {
             string ctrlPath = null;
-           //
-			ProviderInfo provider = ES.Services.Servers.GetPackageServiceProvider(packageId, groupName);
+            //
+            ProviderInfo provider = ES.Services.Servers.GetPackageServiceProvider(packageId, groupName);
 
             // try to locate suitable control
             string currPath = this.AppRelativeVirtualPath;
@@ -132,73 +132,76 @@ namespace SolidCP.Portal
 
         }
 
-		public virtual void ShowResultMessage(int resultCode)
-		{
-			ShowResultMessage(Utils.ModuleName, resultCode, false);
-		}
+        public virtual void ShowResultMessage(int resultCode)
+        {
+            ShowResultMessage(Utils.ModuleName, resultCode, false);
+        }
 
-		public virtual void ShowResultMessageWithContactForm(int resultCode)
-		{
-			ShowResultMessage(Utils.ModuleName, resultCode, true);
-		}
+        public virtual void ShowResultMessageWithContactForm(int resultCode)
+        {
+            ShowResultMessage(Utils.ModuleName, resultCode, true);
+        }
 
-		public void ShowResultMessage(string moduleName, int resultCode, params object[] formatArgs)
-		{
-			ShowResultMessage(moduleName, resultCode, false, formatArgs);
-		}
+        public void ShowResultMessage(string moduleName, int resultCode, params object[] formatArgs)
+        {
+            ShowResultMessage(moduleName, resultCode, false, formatArgs);
+        }
 
         public void ShowResultMessage(string moduleName, int resultCode, bool showcf, params object[] formatArgs)
         {
-            MessageBoxType messageType = MessageBoxType.Warning;
-
-            // try to get warning
-            string sCode = Convert.ToString(resultCode * -1);
-            string localizedMessage = GetSharedLocalizedString(moduleName, "Warning." + sCode);
-			string localizedDescription = GetSharedLocalizedString(moduleName, "WarningDescription." + sCode);
-
-            if (localizedMessage == null)
+            lock (this)
             {
-                messageType = MessageBoxType.Error;
+                MessageBoxType messageType = MessageBoxType.Warning;
 
-                // try to get error
-				localizedMessage = GetSharedLocalizedString(moduleName, "Error." + sCode);
-				localizedDescription = GetSharedLocalizedString(moduleName, "ErrorDescription." + sCode);
+                // try to get warning
+                string sCode = Convert.ToString(resultCode * -1);
+                string localizedMessage = GetSharedLocalizedString(moduleName, "Warning." + sCode);
+                string localizedDescription = GetSharedLocalizedString(moduleName, "WarningDescription." + sCode);
 
                 if (localizedMessage == null)
                 {
-					localizedMessage = GetSharedLocalizedString(moduleName, "Message.Generic") + " " + resultCode.ToString();
-                }
-				else
-				{
-					if (formatArgs != null && formatArgs.Length > 0)
-						localizedMessage = String.Format(localizedMessage, formatArgs);
-				}
-            }
+                    messageType = MessageBoxType.Error;
 
-            // check if this is a "demo" message and it is overriden
-            if (resultCode == BusinessErrorCodes.ERROR_USER_ACCOUNT_DEMO)
-            {
-                UserSettings scpSettings = UsersHelper.GetCachedUserSettings(
-                    PanelSecurity.EffectiveUserId, UserSettings.SolidCP_POLICY);
-                if (!String.IsNullOrEmpty(scpSettings["DemoMessage"]))
+                    // try to get error
+                    localizedMessage = GetSharedLocalizedString(moduleName, "Error." + sCode);
+                    localizedDescription = GetSharedLocalizedString(moduleName, "ErrorDescription." + sCode);
+
+                    if (localizedMessage == null)
+                    {
+                        localizedMessage = GetSharedLocalizedString(moduleName, "Message.Generic") + " " + resultCode.ToString();
+                    }
+                    else
+                    {
+                        if (formatArgs != null && formatArgs.Length > 0)
+                            localizedMessage = String.Format(localizedMessage, formatArgs);
+                    }
+                }
+
+                // check if this is a "demo" message and it is overriden
+                if (resultCode == BusinessErrorCodes.ERROR_USER_ACCOUNT_DEMO)
                 {
-                    localizedDescription = scpSettings["DemoMessage"];
+                    UserSettings scpSettings = UsersHelper.GetCachedUserSettings(
+                        PanelSecurity.EffectiveUserId, UserSettings.SolidCP_POLICY);
+                    if (!String.IsNullOrEmpty(scpSettings["DemoMessage"]))
+                    {
+                        localizedDescription = scpSettings["DemoMessage"];
+                    }
                 }
-            }
 
-            // render message
-			Exception fake_ex = null;
-			// Contact form is requested to be shown
-			if (showcf)
-				fake_ex = new Exception();
-			//
-            messageBox.RenderMessage(messageType, localizedMessage, localizedDescription, fake_ex);
+                // render message
+                Exception fake_ex = null;
+                // Contact form is requested to be shown
+                if (showcf)
+                    fake_ex = new Exception();
+                //
+                messageBox.RenderMessage(messageType, localizedMessage, localizedDescription, fake_ex);
+            }
         }
 
-		public virtual void ShowSuccessMessage(string messageKey)
-		{
-			ShowSuccessMessage(Utils.ModuleName, messageKey, null);
-		}
+        public virtual void ShowSuccessMessage(string messageKey)
+        {
+            ShowSuccessMessage(Utils.ModuleName, messageKey, null);
+        }
 
         public void ShowSuccessMessage(string moduleName, string messageKey)
         {
@@ -207,38 +210,44 @@ namespace SolidCP.Portal
 
         public virtual void ShowSuccessMessage(string moduleName, string messageKey, params string[] formatArgs)
         {
-            string localizedMessage = GetSharedLocalizedString(moduleName, "Success." + messageKey);
-            string localizedDescription = GetSharedLocalizedString(moduleName, "SuccessDescription." + messageKey);
-            if (localizedMessage == null)
+            lock (this)
             {
-                localizedMessage = messageKey;
-            }
-            else
-            {
-                //Format message string with args
-                if (formatArgs != null && formatArgs.Length > 0)
+                string localizedMessage = GetSharedLocalizedString(moduleName, "Success." + messageKey);
+                string localizedDescription = GetSharedLocalizedString(moduleName, "SuccessDescription." + messageKey);
+                if (localizedMessage == null)
                 {
-                    localizedMessage = String.Format(localizedMessage, formatArgs);
+                    localizedMessage = messageKey;
                 }
+                else
+                {
+                    //Format message string with args
+                    if (formatArgs != null && formatArgs.Length > 0)
+                    {
+                        localizedMessage = String.Format(localizedMessage, formatArgs);
+                    }
+                }
+                // render message
+                messageBox.RenderMessage(MessageBoxType.Information, localizedMessage, localizedDescription, null);
             }
-            // render message
-            messageBox.RenderMessage(MessageBoxType.Information, localizedMessage, localizedDescription, null);
         }
 
-		public virtual void ShowWarningMessage(string messageKey)
-		{
-			ShowWarningMessage(Utils.ModuleName, messageKey);
-		}
+        public virtual void ShowWarningMessage(string messageKey)
+        {
+            ShowWarningMessage(Utils.ModuleName, messageKey);
+        }
 
         public void ShowWarningMessage(string moduleName, string messageKey)
         {
-			string localizedMessage = GetSharedLocalizedString(moduleName, "Warning." + messageKey);
-			string localizedDescription = GetSharedLocalizedString(moduleName, "WarningDescription." + messageKey);
-            if (localizedMessage == null)
-                localizedMessage = messageKey;
+            lock (this)
+            {
+                string localizedMessage = GetSharedLocalizedString(moduleName, "Warning." + messageKey);
+                string localizedDescription = GetSharedLocalizedString(moduleName, "WarningDescription." + messageKey);
+                if (localizedMessage == null)
+                    localizedMessage = messageKey;
 
-            // render message
-            messageBox.RenderMessage(MessageBoxType.Warning, localizedMessage, localizedDescription, null);
+                // render message
+                messageBox.RenderMessage(MessageBoxType.Warning, localizedMessage, localizedDescription, null);
+            }
         }
 
         public void ShowErrorMessage(string messageKey, params string[] additionalParameters)
@@ -246,47 +255,50 @@ namespace SolidCP.Portal
             ShowErrorMessage(messageKey, null, additionalParameters);
         }
 
-		public virtual void ShowErrorMessage(string messageKey, Exception ex, params string[] additionalParameters)
-		{
-			ShowErrorMessage(Utils.ModuleName, messageKey, ex, additionalParameters);
-		}
+        public virtual void ShowErrorMessage(string messageKey, Exception ex, params string[] additionalParameters)
+        {
+            ShowErrorMessage(Utils.ModuleName, messageKey, ex, additionalParameters);
+        }
 
         public void ShowErrorMessage(string moduleName, string messageKey, Exception ex, params string[] additionalParameters)
         {
-            string exceptionKey = null;
-			//
-            if (ex != null)
+            lock (this)
             {
-				if (!String.IsNullOrEmpty(ex.Message) && ex.Message.Contains("SolidCP_ERROR"))
-				{
-					string[] messageParts = ex.Message.Split(new char[] { '@' });
-					if (messageParts.Length > 1)
-					{
-						exceptionKey = messageParts[1].TrimStart(new char[] { ' ' });
-					}
-				}
-            }
-            string localizedMessage = GetSharedLocalizedString(moduleName, "Error." + exceptionKey);
-			string localizedDescription = GetSharedLocalizedString(moduleName, "ErrorDescription." + exceptionKey);
+                string exceptionKey = null;
+                //
+                if (ex != null)
+                {
+                    if (!String.IsNullOrEmpty(ex.Message) && ex.Message.Contains("SolidCP_ERROR"))
+                    {
+                        string[] messageParts = ex.Message.Split(new char[] { '@' });
+                        if (messageParts.Length > 1)
+                        {
+                            exceptionKey = messageParts[1].TrimStart(new char[] { ' ' });
+                        }
+                    }
+                }
+                string localizedMessage = GetSharedLocalizedString(moduleName, "Error." + exceptionKey);
+                string localizedDescription = GetSharedLocalizedString(moduleName, "ErrorDescription." + exceptionKey);
 
-            if (localizedMessage == null)
-            {
-                localizedMessage = GetSharedLocalizedString(moduleName, "Error." + messageKey);
-                localizedDescription = GetSharedLocalizedString(moduleName, messageKey);
                 if (localizedMessage == null)
-                    localizedMessage = messageKey;
-            }
-            else
-            {
-                //render localized exception message without stack trace
-                messageBox.RenderMessage(MessageBoxType.Error, localizedMessage, localizedDescription, null);
-                return;
-            }
+                {
+                    localizedMessage = GetSharedLocalizedString(moduleName, "Error." + messageKey);
+                    localizedDescription = GetSharedLocalizedString(moduleName, messageKey);
+                    if (localizedMessage == null)
+                        localizedMessage = messageKey;
+                }
+                else
+                {
+                    //render localized exception message without stack trace
+                    messageBox.RenderMessage(MessageBoxType.Error, localizedMessage, localizedDescription, null);
+                    return;
+                }
 
-            // render message
-            messageBox.RenderMessage(MessageBoxType.Error, localizedMessage, localizedDescription, ex);
+                // render message
+                messageBox.RenderMessage(MessageBoxType.Error, localizedMessage, localizedDescription, ex);
+            }
         }
 
-       #endregion
+        #endregion
     }
 }

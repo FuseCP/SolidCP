@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
-using Microsoft.Web.Services3.Design;
 using SolidCP.WebDav.Core.Config;
 using SolidCP.WebDav.Core.Interfaces.Storages;
 

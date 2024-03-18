@@ -45,7 +45,7 @@ namespace SolidCP.Server
     public class ServerConfiguration : IConfigurationSectionHandler
     {
         #region Public Properties
-        private static SecuritySettings security = null;
+        private static SecuritySettings security = new SecuritySettings();
 
         public static SecuritySettings Security
         {
@@ -67,7 +67,7 @@ namespace SolidCP.Server
 
         private static void LoadConfiguration()
         {
-            ConfigurationManager.GetSection("SolidCP.server");
+            System.Configuration.ConfigurationManager.GetSection("SolidCP.server");
         }
 
         public object Create(object parent, object configContext, System.Xml.XmlNode section)

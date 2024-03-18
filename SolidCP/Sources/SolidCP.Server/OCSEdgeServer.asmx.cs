@@ -32,12 +32,10 @@
 
 using System;
 using System.ComponentModel;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Server.Utils;
-using Microsoft.Web.Services3;
 
 namespace SolidCP.Server
 {

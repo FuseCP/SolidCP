@@ -18747,6 +18747,11 @@
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
+    <Key>lnkUnixServices.Text</Key>
+    <DefaultValue>System Services</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
     <Key>rbUsersCreationModeItem.ADAccounts</Key>
     <DefaultValue>Use Active Directory Accounts</DefaultValue>
   </Resource>
@@ -18924,6 +18929,16 @@
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
     <Key>gvProcesses.Empty</Key>
     <DefaultValue>No active system processes found.</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
+    <Key>gvProcessesArguments.Header</Key>
+    <DefaultValue>Arguments</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
+    <Key>gvProcessesCpuUsage.Header</Key>
+    <DefaultValue>CPU Usage</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditSystemProcesses.ascx.resx</File>
@@ -33789,7 +33804,7 @@ After creating your virtual directory go to FP administrator and create a subweb
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
     <Key>secContactInfo.Text</Key>
-    <DefaultValue />
+    <DefaultValue>Contact Information</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ExchangeServer\App_LocalResources\OrganizationUserGeneralSettings.ascx.resx</File>
@@ -36992,6 +37007,21 @@ After creating your virtual directory go to FP administrator and create a subweb
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\AbilityMailServer_Settings.ascx.resx</File>
     <Key>lblPublicIP.Text</Key>
     <DefaultValue>Public IP Address:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
+    <Key>lblBinPath.Text</Key>
+    <DefaultValue>Apache Bin Folder:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
+    <Key>lblConfigFile.Text</Key>
+    <DefaultValue>Apache Configuration File:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
+    <Key>lblConfigPath.Text</Key>
+    <DefaultValue>Apache Configuration Path:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\ArgoMail_EditAccount.ascx.resx</File>
@@ -47024,6 +47054,21 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\StorageSpaceServices_Settings.ascx.resx</File>
     <Key>lblWebDavSiteAppPoolIdentity.Text</Key>
     <DefaultValue>Webdav site application pool identity:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Unix_Settings.ascx.resx</File>
+    <Key>lblLogDir.Text</Key>
+    <DefaultValue>Log Directory:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Unix_Settings.ascx.resx</File>
+    <Key>lblUsersHome.Text</Key>
+    <DefaultValue>Users Home Directory:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_Settings.ascx.resx</File>
+    <Key>lblConfigFile.Text</Key>
+    <DefaultValue>vsftpd Configuration File:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Windows2003_Settings.ascx.resx</File>

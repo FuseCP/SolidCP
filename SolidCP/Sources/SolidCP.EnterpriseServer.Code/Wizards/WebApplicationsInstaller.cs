@@ -41,16 +41,16 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using System.Xml;
 using System.Net.Mail;
-using System.Web;
-using System.Web.Caching;
 using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.FTP;
 using SolidCP.Providers.Mail;
 using SolidCP.Providers.Database;
 using SolidCP.Providers.OS;
-using OS = SolidCP.Providers.OS;
-
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
+using System.Web;
+using System.Web.Caching;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -363,7 +363,7 @@ namespace SolidCP.EnterpriseServer
         private string GetFullPathToInstallFolder(int userId)
         {
             string userhomeFolder = String.Empty;
-            string[] osSesstings = os.ServiceProviderSettingsSoapHeaderValue.Settings;
+            string[] osSesstings = os.Header<ServiceProviderSettingsSoapHeader>().Settings;
             foreach (string s in osSesstings)
             {
                 if (s.Contains("usershome"))
@@ -635,9 +635,11 @@ namespace SolidCP.EnterpriseServer
 
             string key = "WebApplicationCategories";
 
+#if NETFRAMEWORK
             // look up in the cache
             if (HttpContext.Current != null)
                 categories = (List<ApplicationCategory>)HttpContext.Current.Cache[key];
+#endif
 
             if (categories == null)
             {
@@ -667,9 +669,11 @@ namespace SolidCP.EnterpriseServer
                     }
                 }
 
+#if NETFRAMEWORK
                 // place to the cache
                 if (HttpContext.Current != null)
                     HttpContext.Current.Cache.Insert(key, categories, new CacheDependency(catsPath));
+#endif
             }
 
             return categories;
@@ -686,10 +690,11 @@ namespace SolidCP.EnterpriseServer
 
             Dictionary<string, ApplicationInfo> apps = null;
 
+#if NETFRAMEWORK
             // look up in the cache
             if(HttpContext.Current != null)
                 apps = (Dictionary<string, ApplicationInfo>)HttpContext.Current.Cache[key];
-
+#endif
             if (apps == null)
             {
                 // create apps list
@@ -719,13 +724,15 @@ namespace SolidCP.EnterpriseServer
                     apps.Add(app.Id, app);
                 }
 
+#if NETFRAMEWORK
                 // place to the cache
                 if (HttpContext.Current != null)
                     HttpContext.Current.Cache.Insert(key, apps, new CacheDependency(appsRoot));
+#endif
             }
 
-            // filter applications based on category
-            List<ApplicationInfo> categoryApps = new List<ApplicationInfo>();
+                // filter applications based on category
+                List<ApplicationInfo> categoryApps = new List<ApplicationInfo>();
 
             // check if the application fits requirements
             PackageContext cntx = PackageController.GetPackageContext(packageId);

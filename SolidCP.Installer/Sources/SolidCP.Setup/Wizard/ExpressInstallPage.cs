@@ -51,7 +51,7 @@ using System.Data.SqlClient;
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
-
+using SolidCP.Providers.OS;
 using System.Reflection;
 using System.Collections.Specialized;
 using SolidCP.Setup.Actions;
@@ -138,6 +138,7 @@ namespace SolidCP.Setup
 
 			string component = Wizard.SetupVariables.ComponentFullName;
 			string componentName = Wizard.SetupVariables.ComponentName;
+			bool isUnattended = !string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml);
 
 			try
 			{
@@ -166,7 +167,15 @@ namespace SolidCP.Setup
 								Wizard.SetupVariables.InstallationFolder);
 							break;
 						case ActionTypes.CreateWebSite:
-							CreateWebSite();
+							if (OSInfo.IsWindows) CreateWebSite();
+							else
+							{
+								var a = (IInstallAction)new InstallServerUnixAction();
+								a.Run(Wizard.SetupVariables);
+							}
+							break;
+						case ActionTypes.ConfigureLetsEncrypt:
+							if (!ConfigureLetsEncrypt(isUnattended)) action.Log = "Failed to install Let's Encrypt certificate. Check the error log for details.";
 							break;
 						case ActionTypes.CryptoKey:
 							SetCryptoKey();
@@ -1177,7 +1186,7 @@ namespace SolidCP.Setup
 				user.LastName = lastName;
 				user.Email = email;
 
-				int userId = ES.Services.Users.AddUser(user, false, password);
+				int userId = ES.Services.Users.AddUser(user, false, password, new string[0]);
 				if (userId > 0)
 				{
 					Log.WriteEnd("Added user account");
@@ -1824,6 +1833,10 @@ namespace SolidCP.Setup
 			}
 		}
 
+		public void InstallInstaller()
+		{
+
+		}
 		private void CreateShortcuts()
 		{
 			try
@@ -1835,7 +1848,7 @@ namespace SolidCP.Setup
 				string[] urls = GetApplicationUrls(ip, domain, port, null);
 				string url = null;
 				if (urls.Length > 0)
-					url = "http://" + urls[0];
+					url = Utils.IsHttps(ip, domain) ? "https://" + url[0] : "http://" + url[0];
 				else
 				{
 					Log.WriteInfo("Application url not found");
@@ -2360,7 +2373,9 @@ namespace SolidCP.Setup
 
 		private void UpdateWebSiteBindings()
 		{
+			string componentId = Wizard.SetupVariables.ComponentId;
 			string component = Wizard.SetupVariables.ComponentFullName;
+			string componenCode = Wizard.SetupVariables.ComponentCode;
 			string siteId = Wizard.SetupVariables.WebSiteId;
 			string ip = Wizard.SetupVariables.WebSiteIP;
 			string port = Wizard.SetupVariables.WebSitePort;
@@ -2378,30 +2393,40 @@ namespace SolidCP.Setup
 				Log.WriteStart("Updating web site");
 				Log.WriteInfo(string.Format("Updating web site \"{0}\" ( IP: {1}, Port: {2}, Domain: {3} )", siteId, ip, port, domain));
 
-				//check for existing site
-				var oldSiteId = iis7 ? WebUtils.GetIIS7SiteIdByBinding(ip, port, domain) : WebUtils.GetSiteIdByBinding(ip, port, domain);
-				// We found out that other web site has this combination of {IP:Port:Host Header} already assigned
-				if (oldSiteId != null && !oldSiteId.Equals(Wizard.SetupVariables.WebSiteId))
+				if (OSInfo.IsWindows)
 				{
-					// get site name
-					string oldSiteName = iis7 ? oldSiteId : WebUtils.GetSite(oldSiteId).Name;
-					throw new Exception(
-						String.Format("'{0}' web site already has server binding ( IP: {1}, Port: {2}, Domain: {3} )",
-						oldSiteName, ip, port, domain));
-				}
+					//check for existing site
+					var oldSiteId = iis7 ? WebUtils.GetIIS7SiteIdByBinding(ip, port, domain) : WebUtils.GetSiteIdByBinding(ip, port, domain);
+					// We found out that other web site has this combination of {IP:Port:Host Header} already assigned
+					if (oldSiteId != null && !oldSiteId.Equals(Wizard.SetupVariables.WebSiteId))
+					{
+						// get site name
+						string oldSiteName = iis7 ? oldSiteId : WebUtils.GetSite(oldSiteId).Name;
+						throw new Exception(
+							String.Format("'{0}' web site already has server binding ( IP: {1}, Port: {2}, Domain: {3} )",
+							oldSiteName, ip, port, domain));
+					}
 
-				// Assign the binding only if is not defined
-				if (String.IsNullOrEmpty(oldSiteId))
+					// Assign the binding only if is not defined
+					if (String.IsNullOrEmpty(oldSiteId))
+					{
+						ServerBinding newBinding = new ServerBinding(ip, port, domain, null, componentId);
+						if (iis7)
+							WebUtils.UpdateIIS7SiteBindings(siteId, new ServerBinding[] { newBinding });
+						else
+							WebUtils.UpdateSiteBindings(siteId, new ServerBinding[] { newBinding });
+					}
+				} else if (componenCode == Global.Server.ComponentCode)
 				{
-					ServerBinding newBinding = new ServerBinding(ip, port, domain);
-					if (iis7)
-						WebUtils.UpdateIIS7SiteBindings(siteId, new ServerBinding[] { newBinding });
-					else
-						WebUtils.UpdateSiteBindings(siteId, new ServerBinding[] { newBinding });
+					var installer = UniversalInstaller.Installer.Current;
+					var isHttps = Utils.IsHttps(ip, domain);
+					port = (isHttps && port == "443" || !isHttps && port == "80") ? "" : $":{port}";
+					installer.ReadServerConfiguration();
+					installer.ServerSettings.Urls = $"{(isHttps ? "https" : "http")}://{(!string.IsNullOrWhiteSpace(domain) ? domain : "localhost")}{port}";
+					installer.ConfigureServer();
 				}
 
 				// update config setings
-				string componentId = Wizard.SetupVariables.ComponentId;
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSiteIP", ip);
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSitePort", port);
 				AppConfig.SetComponentSettingStringValue(componentId, "WebSiteDomain", domain);
@@ -2416,7 +2441,7 @@ namespace SolidCP.Setup
 				//
 				foreach (string url in urls)
 				{
-					InstallLog.AppendLine("  http://" + url);
+					InstallLog.AppendLine(Utils.IsHttpsAndNotWindows(ip, domain) ? "  https://" + url : "  http://" + url);
 				}
 			}
 			catch (Exception ex)
@@ -2598,6 +2623,12 @@ namespace SolidCP.Setup
 
 		private void SetServerPassword()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				SetServerPasswordUnix();
+				return;
+			}
+
 			try
 			{
 				Log.WriteStart("Updating configuration file (server password)");
@@ -2636,8 +2667,36 @@ namespace SolidCP.Setup
 			}
 		}
 
+		private void SetServerPasswordUnix()
+		{
+			try
+			{
+				Log.WriteStart("Updating configuration file (server password)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.ServerPasswordSHA1 = Wizard.SetupVariables.ServerPassword;
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Configuration file update error", ex);
+				throw;
+			}
+		}
+
 		private void UpdateServerPassword()
 		{
+			if (!OSInfo.IsWindows)
+			{
+				UpdateServerPasswordUnix();
+				return;
+			}
+
 			try
 			{
 				if (!Wizard.SetupVariables.UpdateServerPassword)
@@ -2671,6 +2730,28 @@ namespace SolidCP.Setup
 				//string component = Wizard.SetupVariables.ComponentFullName;
 				//InstallLog.AppendLine(string.Format("- Updated {0} web.config file", component));
 
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+				Log.WriteError("Configuration file update error", ex);
+				throw;
+			}
+		}
+
+		private void UpdateServerPasswordUnix()
+		{
+			try
+			{
+				Log.WriteStart("Updating configuration file (server password)");
+				var installer = UniversalInstaller.Installer.Current;
+				installer.InstallWebRootPath = Wizard.SetupVariables.InstallationFolder;
+				installer.ReadServerConfiguration();
+				installer.ServerSettings.ServerPassword = Wizard.SetupVariables.ServerPassword;
+				installer.ConfigureServer();
+				Log.WriteEnd("Updated configuration file");
+				InstallLog.AppendLine("- Updated password in the configuration file");
 			}
 			catch (Exception ex)
 			{
@@ -2885,7 +2966,32 @@ namespace SolidCP.Setup
 			}
 
 		}
+		private bool ConfigureLetsEncrypt(bool isUnattended)
+		{
+			string ip = Wizard.SetupVariables.WebSiteIP;
+			string siteId = Wizard.SetupVariables.WebSiteId;
+			string domain = Wizard.SetupVariables.WebSiteDomain;
+			string email = Wizard.SetupVariables.LetsEncryptEmail;
+			var componentId = Wizard.SetupVariables.ComponentId;
+			bool updateWCF = componentId == "enterpriseserver" || componentId == "server";
+			var iisVersion = Wizard.SetupVariables.IISVersion;
+			var iis7 = (iisVersion.Major >= 7);
+			bool success = true;
 
+			if ((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(ip, domain) && !string.IsNullOrEmpty(email))
+			{
+				if (OSInfo.IsWindows)
+				{
+					success = WebUtils.LEInstallCertificate(siteId, domain, email, updateWCF);
+				}
+			}
+			if (!success)
+			{
+				Log.WriteError("Error creating Let's Encrypt certificate. Check the error log for details.");
+				if (!isUnattended) MessageBox.Show("Error creating Let's Encrypt certificate. Check the error log for details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			return success;
+		}
 		private void ConfigureFolderPermissions()
 		{
 			try
@@ -2971,6 +3077,7 @@ namespace SolidCP.Setup
 			Log.WriteStart("Creating web site");
 			Log.WriteInfo(string.Format("Creating web site \"{0}\" ( IP: {1}, Port: {2}, Domain: {3} )", siteName, ip, port, domain));
 			Version iisVersion = Wizard.SetupVariables.IISVersion;
+			var componentId = Wizard.SetupVariables.ComponentId;
             bool iis7 = (iisVersion.Major >= 7);
 
 			//check for existing site
@@ -2993,7 +3100,7 @@ namespace SolidCP.Setup
 			//site.LogFileDirectory = logsPath;
 
 			//set bindings
-			ServerBinding binding = new ServerBinding(ip, port, domain);
+			ServerBinding binding = new ServerBinding(ip, port, domain, null, componentId);
 			site.Bindings = new ServerBinding[] { binding };
 
 			// set other properties
@@ -3026,7 +3133,6 @@ namespace SolidCP.Setup
 			
 			
 			// update config setings
-			string componentId = Wizard.SetupVariables.ComponentId;
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSiteId", newSiteId);
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSiteIP", ip);
 			AppConfig.SetComponentSettingStringValue(componentId, "WebSitePort", port);
@@ -3047,7 +3153,7 @@ namespace SolidCP.Setup
 			string[] urls = GetApplicationUrls(ip, domain, port, null);
 			foreach (string url in urls)
 			{
-				InstallLog.AppendLine("  http://" + url);
+				InstallLog.AppendLine(Utils.IsHttps(ip, domain) ? "  https://" + url : "  http://" + url);
 			}
 		}
 

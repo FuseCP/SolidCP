@@ -45,13 +45,13 @@ using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Code.HostedSolution;
 using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.EnterpriseServer.Extensions;
+using SolidCP.Server.Client;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.SharePoint;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.DNS;
-using SolidCP.Providers.OCS;
 using System.Linq;
 
 using System.IO;
@@ -4781,13 +4781,13 @@ namespace SolidCP.EnterpriseServer
 
         #region OS
 
-        private static SolidCP.Providers.OS.OperatingSystem GetOS(int packageId)
+        private static SolidCP.Server.Client.OperatingSystem GetOS(int packageId)
         {
             int sid = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
             if (sid <= 0)
                 return null;
 
-            var os = new SolidCP.Providers.OS.OperatingSystem();
+            var os = new SolidCP.Server.Client.OperatingSystem();
             ServiceProviderProxy.Init(os, sid);
 
             return os;

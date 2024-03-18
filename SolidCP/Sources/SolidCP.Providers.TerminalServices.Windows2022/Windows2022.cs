@@ -62,13 +62,13 @@ using System.Security.AccessControl;
 
 namespace SolidCP.Providers.RemoteDesktopServices
 {
-    public class Windows2022 : Windows2012
-    {
-        public override bool IsInstalled()
-        {
-            Server.Utils.OS.WindowsVersion version = SolidCP.Server.Utils.OS.GetVersion();
-            return version == SolidCP.Server.Utils.OS.WindowsVersion.WindowsServer2019;
-        }
-    }
+	public class Windows2022 : Windows2012
+	{
+		public override bool IsInstalled()
+		{
+			var version = OSInfo.WindowsVersion;
+			return version == WindowsVersion.WindowsServer2019;
+		}
+	}
 }
 

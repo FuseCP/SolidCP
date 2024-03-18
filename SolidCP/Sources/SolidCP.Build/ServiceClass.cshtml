@@ -1,0 +1,33 @@
+﻿// wcf service
+@using Microsoft.CodeAnalysis
+@using Microsoft.CodeAnalysis.CSharp
+@using Microsoft.CodeAnalysis.CSharp.Syntax
+@using System.Collections.Generic;
+@using System.Linq;
+@using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory
+
+@namespace SolidCP.Build
+@inherits RazorBlade.PlainTextTemplate
+
+[System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
+#if NETFRAMEWORK
+[System.ServiceModel.Activation.AspNetCompatibilityRequirements(RequirementsMode = System.ServiceModel.Activation.AspNetCompatibilityRequirementsMode.Allowed)]
+#endif
+public class @(Class.Identifier): @(OldNamespace).@Class.Identifier, I@(Class.Identifier) {
+
+	@*
+	@foreach (var m in WebMethods) {
+		@:public new @m.ReturnType @(m.Identifier)@m.ParameterList {
+			@((m.ReturnType is PredefinedTypeSyntax && ((PredefinedTypeSyntax)m.ReturnType).Keyword.IsKind(SyntaxKind.VoidKeyword)) ? "base." : "return base.")@(m.Identifier)@(ArgumentList(
+				SeparatedList<ArgumentSyntax>(m.ParameterList.Parameters
+					.Select(par => Argument(IdentifierName(par.Identifier))))))<text>;</text>
+		<text>}</text>
+	} *@
+}
+
+@functions
+{
+	public string OldNamespace { get; set; }
+	public ClassDeclarationSyntax Class { get; set; }
+	public IEnumerable<MethodDeclarationSyntax> WebMethods { get; set; }
+}

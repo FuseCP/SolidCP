@@ -377,6 +377,9 @@ namespace SolidCP.Setup
 					if (!args.Cancel)
 					{
 						WizardPageBase prevPage = selectedPage.PreviousPage;
+
+						while (prevPage != null && prevPage.Hidden) prevPage = prevPage.PreviousPage;
+
 						this.SelectedPage = prevPage;
 						if (prevPage != null)
 						{
@@ -422,6 +425,9 @@ namespace SolidCP.Setup
 							else
 							{
 								WizardPageBase nextPage = selectedPage.NextPage;
+                                
+                                while (nextPage != null && nextPage.Hidden) nextPage = nextPage.NextPage;
+
 								if (nextPage != null)
 								{
 									nextPage.OnBeforeDisplay(EventArgs.Empty);

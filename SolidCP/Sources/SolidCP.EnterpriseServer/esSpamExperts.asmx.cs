@@ -35,8 +35,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web;
-using System.Web.Services;
-using Microsoft.Web.Services3;
+using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Base;
 using SolidCP.Providers.Filters;
 
@@ -47,7 +46,7 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("ServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     [ToolboxItem(false)]
     public class esSpamExperts : WebService
     {

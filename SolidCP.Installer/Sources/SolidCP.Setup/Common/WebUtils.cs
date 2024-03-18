@@ -40,6 +40,11 @@ using Microsoft.Web.Management;
 using Microsoft.Web.Administration;
 using System.DirectoryServices;
 using System.Text.RegularExpressions;
+using System.Linq;
+using SolidCP.Providers.OS;
+using System.Diagnostics;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace SolidCP.Setup
 {
@@ -222,7 +227,8 @@ namespace SolidCP.Setup
 					site.Bindings[i] = new ServerBinding(
 						(string)objBindings[i].Properties["IP"].Value,
 						(string)objBindings[i].Properties["Port"].Value,
-						(string)objBindings[i].Properties["Hostname"].Value);
+						(string)objBindings[i].Properties["Hostname"].Value,
+						Uri.UriSchemeHttp);
 
 				}
 			}
@@ -318,16 +324,19 @@ namespace SolidCP.Setup
             	
 			ManagementBaseObject methodParams = objService.GetMethodParameters("CreateNewSite");
 
+			var httpBindings = site.Bindings.Where(b => b.Scheme == Uri.UriSchemeHttp).ToArray();
+			var httpsBindings = site.Bindings.Where(b => b.Scheme == Uri.UriSchemeHttps).ToArray();
+
 			// create server bindings
 			ManagementClass clsBinding = wmi.GetClass("ServerBinding");
-			ManagementObject[] objBindings = new ManagementObject[site.Bindings.Length];
+			ManagementObject[] objBindings = new ManagementObject[httpBindings.Length];
 	
 			for(int i = 0; i < objBindings.Length; i++)
 			{
 				objBindings[i] = clsBinding.CreateInstance();
-				objBindings[i]["Hostname"] = site.Bindings[i].Host;
-				objBindings[i]["IP"] = site.Bindings[i].IP;
-				objBindings[i]["Port"] = site.Bindings[i].Port;
+				objBindings[i]["Hostname"] = httpBindings[i].Host;
+				objBindings[i]["IP"] = httpBindings[i].IP;
+				objBindings[i]["Port"] = httpBindings[i].Port;
 			}
 	
 			methodParams["ServerBindings"] = objBindings;
@@ -388,8 +397,7 @@ namespace SolidCP.Setup
 			foreach (ServerBinding binding in site.Bindings)
 			{
 				//
-				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host,
-					Uri.UriSchemeHttp);
+				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host, binding.Scheme);
 			}
 			//
 			webSite.Applications[0].ApplicationPoolName = site.ApplicationPool;
@@ -747,7 +755,7 @@ namespace SolidCP.Setup
 			{
 				foreach (Binding binding in webSite.Bindings)
 				{
-                    if (binding.Protocol != Uri.UriSchemeHttp)
+                    if (binding.Protocol != Uri.UriSchemeHttp || binding.Protocol != Uri.UriSchemeHttps || binding.Protocol != Uri.UriSchemeNetTcp)
                         continue;
 
                     string bi = binding.BindingInformation;
@@ -1075,8 +1083,7 @@ namespace SolidCP.Setup
 			foreach (ServerBinding binding in bindings)
 			{
 				//
-				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host,
-					Uri.UriSchemeHttp);
+				webSite.Bindings.Add(binding.IP + ":" + binding.Port + ":" + binding.Host, binding.Scheme);
 			}
 			//
 			serverManager.CommitChanges();
@@ -1103,6 +1110,18 @@ namespace SolidCP.Setup
 		}
 		
 		internal static string[] GetIPv4Addresses()
+		{
+			if (OSInfo.IsWindows) return GetIPv4AddressesWindows();
+			else
+			{
+				var ipout = Shell.Default.Exec("ip addr").Output().Result;
+				return Regex.Matches(ipout, @"^\s*inet\s+(?<ip>[0-9]{1,3}(?:\.[0-9]{1,3}){3})", RegexOptions.Multiline)
+					.OfType<Match>()
+					.Select(m => m.Groups["ip"].Value)
+					.ToArray();
+			}
+		}
+		internal static string[] GetIPv4AddressesWindows()
 		{
 			List<string> list = new List<string>();
 			WmiHelper wmi = new WmiHelper("root\\cimv2");
@@ -1158,6 +1177,100 @@ namespace SolidCP.Setup
 				}
 			}
 			return status;
+		}
+		private static string GetSiteID(string website)
+		{
+			using (ServerManager srvman = new ServerManager())
+			{
+				//var iis = new ServerManager();
+				var site = srvman.Sites[website];
+				string siteid = site.Id.ToString();
+
+				return siteid;
+			}
+		}
+
+#if DEBUG
+		const bool Debug = true;
+#else
+		const bool Debug = false;
+#endif
+
+		public static bool LEInstallCertificate(string site, string domain, string email, bool updateWCF = true, bool updateIIS = true)
+		{
+
+			if (string.IsNullOrEmpty(email)) return false;
+
+			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
+
+			Log.WriteStart("Let's Encrypt InstallCertificate");
+
+			try
+			{
+				Log.Write($"Website: {site}\n");
+
+				string siteId = null, webpath = null, port80path = null;
+				bool hasPort80site = false;
+				Site port80site = null;
+				// Get the WebsiteID
+				using (var sm = new ServerManager())
+				{
+					var s = sm.Sites[site];
+					siteId = s.Id.ToString();
+					webpath = s.Applications["/"].VirtualDirectories["/"].PhysicalPath;
+
+					port80site = sm.Sites.FirstOrDefault(st => st.Bindings.Any(b => b.EndPoint != null && b.EndPoint.Port == 80 && b.Host == domain));
+					hasPort80site = port80site != null;
+					if (hasPort80site)
+					{
+						port80path = port80site.Applications["/"].VirtualDirectories["/"].PhysicalPath;
+						Log.Write($"Warning: A site for host {domain} on port 80 already exists.\n");
+					}
+				}
+
+				Log.Write($"Found Website ID: SiteName {site}  ID: {siteId}\n");
+
+				// extract wacs.exe and wcfcert.exe from embedded resource and save it in the website's bin folder
+				var installerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "SolidCP Installer");
+				var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyVersionAttribute>().Version;
+				var leFolder = Path.Combine(installerPath, "bin", "LetsEncrypt", version);
+				var command = Path.Combine(leFolder, "wacs.exe");
+				var script = Path.Combine(leFolder, "wcfcert.exe");
+				if (!Directory.Exists(leFolder)) Directory.CreateDirectory(leFolder);
+
+				if (!File.Exists(command)) Utils.SaveResource("wacs.exe", command);
+				if (updateWCF && !File.Exists(script)) Utils.SaveResource("wcfcert.exe", script);
+			
+				command = $"\"{command}\" --source {(!hasPort80site ? $"manual --host {domain}" : $"iis --siteid {port80site.Id} --validation filesystem --webroot \"{port80path}\" --manualtargetisiis")}" +
+					$" {(updateWCF && updateIIS ? $"--installation iis,script" : (updateWCF ? "--installation script" : (updateIIS ? "--installation iis" : "")))} " +
+					$"{(updateIIS ? $"iis --installationsiteid {siteId}" : "")} " +
+					$"--emailaddress {email} --accepttos --usedefaulttaskuser --store certificatestore --certificatestore My " +
+					$"{(updateWCF ? $"--script \"{script}\" --scriptparameters \"'{webpath}' {{StorePath}} {{CertThumbprint}}\"" : "")} " +
+					$"{(Debug || Debugger.IsAttached ? "--test --closeonfinish" : "")}";
+
+				Log.WriteInfo($"LE Command String: {command}\n");
+
+				Action<string> logger = (msg) => Log.Write(msg);
+
+				Shell.Default.Log += logger;
+				var results = Shell.Default.Exec(command);
+				Shell.Default.Log -= logger;
+				var output = results.OutputAndError().Result;
+				var res = !output.Contains("Create certificate failed");
+				
+				if (!res)
+				{
+					Log.WriteError($"There was an error creating the certificate.");
+				}
+				
+				Log.WriteEnd("Let's Encrypt InstallCertificate");
+			
+				return res;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
 		}
 	}
 }

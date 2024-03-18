@@ -125,7 +125,9 @@ namespace SolidCP.Portal.RDS.UserControls
 
         protected void BindPopupServers()
 		{
-            RdsServer[] servers = ES.Services.RDS.GetOrganizationFreeRdsServersPaged(PanelRequest.ItemID, "FqdName", txtSearchValue.Text, null, 0, 1000).Servers;
+            //TODO supply correct value for parameter rdsControllerServiceID.
+            throw new NotImplementedException("This feture has to be corrected.");
+			RdsServer[] servers = ES.Services.RDS.GetOrganizationFreeRdsServersPaged(PanelRequest.ItemID, "FqdName", txtSearchValue.Text, null, 0, 1000, "").Servers;
 
             servers = servers.Where(x => !GetServers().Select(p => p.Id).Contains(x.Id)).ToArray();
             Array.Sort(servers, CompareAccount);
@@ -232,7 +234,9 @@ namespace SolidCP.Portal.RDS.UserControls
 
         protected void BindOrganizationServers()
         {
-            RdsServer[] servers = ES.Services.RDS.GetOrganizationRdsServersPaged(PanelRequest.ItemID, PanelRequest.CollectionID, "FqdName", txtSearchValue.Text, null, 0, 1000).Servers;
+            //TODO supply correct value for parameter rdsControllerServiceID.
+            throw new NotImplementedException("This feture has to be corrected.");
+			RdsServer[] servers = ES.Services.RDS.GetOrganizationRdsServersPaged(PanelRequest.ItemID, PanelRequest.CollectionID, "FqdName", txtSearchValue.Text, null, 0, 1000, "").Servers;
 
             foreach(var rdsServer in servers)
             {

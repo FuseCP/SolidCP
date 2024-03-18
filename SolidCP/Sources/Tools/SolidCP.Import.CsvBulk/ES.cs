@@ -30,10 +30,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
-using SolidCP.EnterpriseServer.HostedSolution;
-
+using SolidCP.EnterpriseServer.Client;
+using SolidCP.Web.Clients;
 
 namespace SolidCP.Import.CsvBulk
 {
@@ -170,6 +169,13 @@ namespace SolidCP.Import.CsvBulk
 				return GetCachedProxy<esOrganizations>();
 			}
 		}
+		public esTest Test
+		{
+			get
+			{
+				return GetCachedProxy<esTest>();
+			}
+		}
 
 		protected ES()
 		{
@@ -191,7 +197,7 @@ namespace SolidCP.Import.CsvBulk
 			string key = t.FullName + ".ServiceProxy";
 			T proxy = (T)Activator.CreateInstance(t);
 
-			object p = proxy;
+			ClientBase p = proxy as ClientBase;
 
 			// configure proxy
 			EnterpriseServerProxyConfigurator cnfg = new EnterpriseServerProxyConfigurator();
@@ -202,7 +208,7 @@ namespace SolidCP.Import.CsvBulk
 				cnfg.Password = serverContext.Password;
 			}
 
-			cnfg.Configure((WebServicesClientProtocol)p);
+			cnfg.Configure(p);
 
 			return proxy;
 		}

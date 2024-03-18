@@ -143,12 +143,12 @@ namespace SolidCP.Providers.Mail
 
             try
             {
-                svcDomainAdmin domains = new svcDomainAdmin();
+                SM5.svcDomainAdmin domains = new SM5.svcDomainAdmin();
                 PrepareProxy(domains);
 
-                DomainSettingsResult defaultDomainSettings = domains.GetDomainDefaults(AdminUsername, AdminPassword);
+                SM5.DomainSettingsResult defaultDomainSettings = domains.GetDomainDefaults(AdminUsername, AdminPassword);
 
-                SettingsRequestResult defaultRequestedSettings =
+                SM5.SettingsRequestResult defaultRequestedSettings =
                     domains.GetRequestedDomainDefaults(AdminUsername, AdminPassword, new string[] { 
                         "defaultaltsmtpport",
                         "defaultaltsmtpportenabled",
@@ -190,7 +190,7 @@ namespace SolidCP.Providers.Mail
 
 				//domain Path is taken from SolidCP Service settings
 
-                GenericResult result = null;
+                SM5.GenericResult result = null;
 
                 if (!InheritDomainDefaultLimits)
                 {
@@ -384,10 +384,10 @@ namespace SolidCP.Providers.Mail
                 // load original domain
                 MailDomain origDomain = GetDomain(domain.Name);
 
-                svcDomainAdmin domains = new svcDomainAdmin();
+                SM5.svcDomainAdmin domains = new SM5.svcDomainAdmin();
                 PrepareProxy(domains);
 
-                GenericResult result = domains.UpdateDomain(AdminUsername, AdminPassword,
+                SM5.GenericResult result = domains.UpdateDomain(AdminUsername, AdminPassword,
                     domain.Name,
                     origDomain.ServerIP,
                     domain.ImapPort,
@@ -516,10 +516,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcDomainAdmin domains = new svcDomainAdmin();
+                SM5.svcDomainAdmin domains = new SM5.svcDomainAdmin();
                 PrepareProxy(domains);
 
-                GenericResult result = domains.DeleteDomain(AdminUsername, AdminPassword,
+                SM5.GenericResult result = domains.DeleteDomain(AdminUsername, AdminPassword,
                     domainName,
                     true // delete files
                     );
@@ -541,10 +541,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcUserAdmin users = new svcUserAdmin();
+				SM5.svcUserAdmin users = new SM5.svcUserAdmin();
                 PrepareProxy(users);
 
-                GenericResult result = users.AddUser(AdminUsername, AdminPassword,
+				SM5.GenericResult result = users.AddUser(AdminUsername, AdminPassword,
                     mailbox.Name,
                     mailbox.Password,
                     GetDomainName(mailbox.Name),
@@ -738,10 +738,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                //get original account
-                MailAccount account = GetAccount(mailbox.Name);
+				//get original account
+				MailAccount account = GetAccount(mailbox.Name);
 
-                svcUserAdmin users = new svcUserAdmin();
+				SM5.svcUserAdmin users = new SM5.svcUserAdmin();
                 PrepareProxy(users);
 
                 string strPassword = mailbox.Password;
@@ -752,7 +752,7 @@ namespace SolidCP.Providers.Mail
                     strPassword = account.Password;
                 }
 
-                GenericResult result = users.UpdateUser(AdminUsername, AdminPassword,
+				SM5.GenericResult result = users.UpdateUser(AdminUsername, AdminPassword,
                                                              mailbox.Name,
                                                              strPassword,
                                                              mailbox.FirstName,
@@ -808,10 +808,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcUserAdmin users = new svcUserAdmin();
+                SM5.svcUserAdmin users = new SM5.svcUserAdmin();
                 PrepareProxy(users);
 
-                GenericResult result = users.DeleteUser(AdminUsername, AdminPassword,
+                SM5.GenericResult result = users.DeleteUser(AdminUsername, AdminPassword,
                     mailboxName, GetDomainName(mailboxName));
 
                 if (!result.Result)
@@ -831,10 +831,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin aliases = new svcAliasAdmin();
+                SM5.svcAliasAdmin aliases = new SM5.svcAliasAdmin();
                 PrepareProxy(aliases);
 
-                AliasInfoResult result = aliases.GetAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName), mailAliasName);
+                SM5.AliasInfoResult result = aliases.GetAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName), mailAliasName);
 
                 if ((result.AliasInfo.Name.Equals("Empty")) && (result.AliasInfo.Addresses.Length == 0))
                     return false;
@@ -852,10 +852,10 @@ namespace SolidCP.Providers.Mail
             try
             {
 
-                svcAliasAdmin aliases = new svcAliasAdmin();
+                SM5.svcAliasAdmin aliases = new SM5.svcAliasAdmin();
                 PrepareProxy(aliases);
 
-                AliasInfoListResult result = aliases.GetAliases(AdminUsername, AdminPassword, domainName);
+                SM5.AliasInfoListResult result = aliases.GetAliases(AdminUsername, AdminPassword, domainName);
 
                 if (!result.Result)
                     throw new Exception(result.Message);
@@ -863,7 +863,7 @@ namespace SolidCP.Providers.Mail
                 List<MailAlias> aliasesList = new List<MailAlias>();
 
 
-                foreach (AliasInfo alias in result.AliasInfos)
+                foreach (SM5.AliasInfo alias in result.AliasInfos)
                 {
                     if (alias.Addresses.Length == 1)
                     {
@@ -883,7 +883,7 @@ namespace SolidCP.Providers.Mail
 
         public MailAlias GetMailAlias(string mailAliasName)
         {
-            svcAliasAdmin aliases = new svcAliasAdmin();
+            SM5.svcAliasAdmin aliases = new SM5.svcAliasAdmin();
             PrepareProxy(aliases);
 
 
@@ -901,7 +901,7 @@ namespace SolidCP.Providers.Mail
                 return newAlias;
             }
 
-            AliasInfoResult result = aliases.GetAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName), mailAliasName);
+            SM5.AliasInfoResult result = aliases.GetAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName), mailAliasName);
             alias.Name = result.AliasInfo.Name;
             alias.ForwardTo = result.AliasInfo.Addresses[0];
             return alias;
@@ -911,10 +911,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin aliases = new svcAliasAdmin();
+                SM5.svcAliasAdmin aliases = new SM5.svcAliasAdmin();
                 PrepareProxy(aliases);
 
-                GenericResult result = aliases.AddAlias(AdminUsername, AdminPassword,
+                SM5.GenericResult result = aliases.AddAlias(AdminUsername, AdminPassword,
                                                         GetDomainName(mailAlias.Name), mailAlias.Name,
                                                         new string[] { mailAlias.ForwardTo });
 
@@ -940,10 +940,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin aliases = new svcAliasAdmin();
+                SM5.svcAliasAdmin aliases = new SM5.svcAliasAdmin();
                 PrepareProxy(aliases);
 
-                GenericResult result = aliases.UpdateAlias(AdminUsername, AdminPassword, GetDomainName(mailAlias.Name),
+                SM5.GenericResult result = aliases.UpdateAlias(AdminUsername, AdminPassword, GetDomainName(mailAlias.Name),
                                                              mailAlias.Name,
                                                              new string[] { mailAlias.ForwardTo });
 
@@ -962,10 +962,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin aliases = new svcAliasAdmin();
+				SM5.svcAliasAdmin aliases = new SM5.svcAliasAdmin();
                 PrepareProxy(aliases);
 
-                GenericResult result = aliases.DeleteAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName),
+				SM5.GenericResult result = aliases.DeleteAlias(AdminUsername, AdminPassword, GetDomainName(mailAliasName),
                     mailAliasName);
 
                 if (!result.Result)
@@ -989,10 +989,10 @@ namespace SolidCP.Providers.Mail
                 string domain = GetDomainName(listName);
                 string account = GetAccountName(listName);
 
-                svcMailListAdmin lists = new svcMailListAdmin();
+				SM5.svcMailListAdmin lists = new SM5.svcMailListAdmin();
                 PrepareProxy(lists);
 
-                MailingListResult result = lists.GetMailingListsByDomain(AdminUsername, AdminPassword, domain);
+				SM5.MailingListResult result = lists.GetMailingListsByDomain(AdminUsername, AdminPassword, domain);
 
                 if (result.Result)
                 {
@@ -1018,10 +1018,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcMailListAdmin svcLists = new svcMailListAdmin();
+				SM5.svcMailListAdmin svcLists = new SM5.svcMailListAdmin();
                 PrepareProxy(svcLists);
 
-                MailingListResult mResult = svcLists.GetMailingListsByDomain(
+				SM5.MailingListResult mResult = svcLists.GetMailingListsByDomain(
                     AdminUsername,
                     AdminPassword,
                     domainName
@@ -1033,7 +1033,7 @@ namespace SolidCP.Providers.Mail
                 List<MailList> mailLists = new List<MailList>();
                 foreach (string listName in mResult.listNames)
                 {
-                    SettingsRequestResult sResult = svcLists.GetRequestedListSettings(
+					SM5.SettingsRequestResult sResult = svcLists.GetRequestedListSettings(
                         AdminUsername,
                         AdminPassword,
                         domainName,
@@ -1076,10 +1076,10 @@ namespace SolidCP.Providers.Mail
                 string domain = GetDomainName(listName);
                 string account = GetAccountName(listName);
 
-                svcMailListAdmin svcLists = new svcMailListAdmin();
+				SM5.svcMailListAdmin svcLists = new SM5.svcMailListAdmin();
                 PrepareProxy(svcLists);
 
-                SettingsRequestResult sResult = svcLists.GetRequestedListSettings(
+				SM5.SettingsRequestResult sResult = svcLists.GetRequestedListSettings(
                     AdminUsername,
                     AdminPassword,
                     domain,
@@ -1121,10 +1121,10 @@ namespace SolidCP.Providers.Mail
                 string domain = GetDomainName(list.Name);
                 string account = GetAccountName(list.Name);
 
-                svcMailListAdmin lists = new svcMailListAdmin();
+				SM5.svcMailListAdmin lists = new SM5.svcMailListAdmin();
                 PrepareProxy(lists);
 
-                GenericResult result = lists.AddList(AdminUsername, AdminPassword,
+				SM5.GenericResult result = lists.AddList(AdminUsername, AdminPassword,
                     domain,
                     account,
                     list.ModeratorAddress,
@@ -1200,7 +1200,7 @@ namespace SolidCP.Providers.Mail
                 string domain = GetDomainName(list.Name);
                 string account = GetAccountName(list.Name);
 
-                svcMailListAdmin lists = new svcMailListAdmin();
+				SM5.svcMailListAdmin lists = new SM5.svcMailListAdmin();
                 PrepareProxy(lists);
 
                 List<string> settings = new List<string>();
@@ -1238,7 +1238,7 @@ namespace SolidCP.Providers.Mail
                         break;
                 }
 
-                GenericResult result = lists.SetRequestedListSettings(AdminUsername, AdminPassword,
+				SM5.GenericResult result = lists.SetRequestedListSettings(AdminUsername, AdminPassword,
                     domain,
                     account,
                     settings.ToArray()
@@ -1273,13 +1273,13 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcMailListAdmin svcLists = new svcMailListAdmin();
+				SM5.svcMailListAdmin svcLists = new SM5.svcMailListAdmin();
                 PrepareProxy(svcLists);
 
                 string account = GetAccountName(listName);
                 string domain = GetDomainName(listName);
 
-                GenericResult Result = svcLists.DeleteList(
+				SM5.GenericResult Result = svcLists.DeleteList(
                     AdminUsername,
                     AdminPassword,
                     domain,
@@ -1322,10 +1322,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcDomainAliasAdmin aliases = new svcDomainAliasAdmin();
+				SM5.svcDomainAliasAdmin aliases = new SM5.svcDomainAliasAdmin();
                 PrepareProxy(aliases);
 
-                GenericResult result = aliases.AddDomainAliasWithoutMxCheck(AdminUsername, AdminPassword,
+				SM5.GenericResult result = aliases.AddDomainAliasWithoutMxCheck(AdminUsername, AdminPassword,
                     domainName, aliasName);
 
                 if (!result.Result)
@@ -1341,10 +1341,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcDomainAliasAdmin aliases = new svcDomainAliasAdmin();
+				SM5.svcDomainAliasAdmin aliases = new SM5.svcDomainAliasAdmin();
                 PrepareProxy(aliases);
 
-                GenericResult result = aliases.DeleteDomainAlias(AdminUsername, AdminPassword,
+				SM5.GenericResult result = aliases.DeleteDomainAlias(AdminUsername, AdminPassword,
                     domainName, aliasName);
 
                 if (!result.Result)
@@ -1365,10 +1365,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcDomainAliasAdmin aliases = new svcDomainAliasAdmin();
+				SM5.svcDomainAliasAdmin aliases = new SM5.svcDomainAliasAdmin();
                 PrepareProxy(aliases);
 
-                DomainAliasInfoListResult result = aliases.GetAliases(AdminUsername, AdminPassword, domainName);
+				SM5.DomainAliasInfoListResult result = aliases.GetAliases(AdminUsername, AdminPassword, domainName);
 
                 if (!result.Result)
                     throw new Exception(result.Message);
@@ -1389,10 +1389,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin svcGroups = new svcAliasAdmin();
+				SM5.svcAliasAdmin svcGroups = new SM5.svcAliasAdmin();
                 PrepareProxy(svcGroups);
 
-                AliasInfoResult result = svcGroups.GetAlias(AdminUsername, AdminPassword,
+				SM5.AliasInfoResult result = svcGroups.GetAlias(AdminUsername, AdminPassword,
                     GetDomainName(groupName), groupName);
 
                 return (result.Result
@@ -1463,10 +1463,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin svcGroups = new svcAliasAdmin();
+				SM5.svcAliasAdmin svcGroups = new SM5.svcAliasAdmin();
                 PrepareProxy(svcGroups);
 
-                GenericResult result = svcGroups.AddAlias(AdminUsername, AdminPassword,
+				SM5.GenericResult result = svcGroups.AddAlias(AdminUsername, AdminPassword,
                     GetDomainName(group.Name), group.Name, group.Members);
 
                 if (!result.Result)
@@ -1482,10 +1482,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin svcGroups = new svcAliasAdmin();
+				SM5.svcAliasAdmin svcGroups = new SM5.svcAliasAdmin();
                 PrepareProxy(svcGroups);
 
-                GenericResult result = svcGroups.UpdateAlias(AdminUsername, AdminPassword,
+				SM5.GenericResult result = svcGroups.UpdateAlias(AdminUsername, AdminPassword,
                     GetDomainName(group.Name), group.Name, group.Members);
 
                 if (!result.Result)
@@ -1501,10 +1501,10 @@ namespace SolidCP.Providers.Mail
         {
             try
             {
-                svcAliasAdmin svcGroups = new svcAliasAdmin();
+				SM5.svcAliasAdmin svcGroups = new SM5.svcAliasAdmin();
                 PrepareProxy(svcGroups);
 
-                GenericResult result = svcGroups.DeleteAlias(AdminUsername, AdminPassword,
+				SM5.GenericResult result = svcGroups.DeleteAlias(AdminUsername, AdminPassword,
                     GetDomainName(groupName), groupName);
 
                 if (!result.Result)

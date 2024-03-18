@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Xml.Serialization;
 using SolidCP.Providers.Common;
+using System.Runtime.Serialization;
 
 namespace SolidCP.Providers
 {
@@ -42,6 +43,7 @@ namespace SolidCP.Providers
 	/// Summary description for ServiceProviderItem.
 	/// </summary>
 	[Serializable]
+    [DataContract]
 	public abstract class ServiceProviderItem 
 	{
 		private int id;
@@ -58,48 +60,56 @@ namespace SolidCP.Providers
 		{
 		}
 
+        [DataMember]
 		public int Id
 		{
 			get { return id; }
 			set { id = value; }
 		}
 
+        [DataMember]
         public int TypeId
         {
             get { return typeId; }
             set { typeId = value; }
         }
 
+        [DataMember]
 		public int PackageId
 		{
 			get { return packageId; }
 			set { packageId = value; }
 		}
 
+        [DataMember]
 		public int ServiceId
 		{
 			get { return serviceId; }
 			set { serviceId = value; }
 		}
 
+        [DataMember]
 		public virtual string Name
 		{
 			get { return name; }
 			set { name = value; }
 		}
 
+        [DataMember]
         public string GroupName
         {
             get { return this.groupName; }
             set { this.groupName = value; }
         }
 
+        [DataMember]
         public DateTime CreatedDate
         {
             get;
             set;
         }
-        
+
+        [DataMember]
         public string[] Properties
         {
             get

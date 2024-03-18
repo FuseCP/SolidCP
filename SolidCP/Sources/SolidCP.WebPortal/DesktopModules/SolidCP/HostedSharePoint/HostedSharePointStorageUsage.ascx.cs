@@ -53,10 +53,9 @@ namespace SolidCP.Portal
             int errorCode;
             try
             {
-                SharePointSiteDiskSpace[] sharePointSiteDiskSpace =
-                    ES.Services.HostedSharePointServers.CalculateSharePointSitesDiskSpace(PanelRequest.ItemID,
-                                                                                          out errorCode);
-
+                var result = ES.Services.HostedSharePointServers.CalculateSharePointSitesDiskSpace(PanelRequest.ItemID);
+                SharePointSiteDiskSpace[] sharePointSiteDiskSpace = result.Result;
+                errorCode = result.ErrorCode;
 
                 if (errorCode < 0)
                 {

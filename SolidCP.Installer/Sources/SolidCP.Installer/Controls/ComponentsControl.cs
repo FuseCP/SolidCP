@@ -46,6 +46,7 @@ using SolidCP.Installer.Common;
 using SolidCP.Installer.Services;
 using SolidCP.Installer.Core;
 using SolidCP.Installer.Configuration;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Installer.Controls
 {
@@ -96,8 +97,8 @@ namespace SolidCP.Installer.Controls
             string componentDescription = Utils.GetDbString(row[Global.Parameters.ComponentDescription]);
             string component = Utils.GetDbString(row[Global.Parameters.Component]);
             string version = Utils.GetDbString(row[Global.Parameters.Version]);
-            string fileName = row[Global.Parameters.FullFilePath].ToString();
-            string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]);
+            string fileName = row[Global.Parameters.FullFilePath].ToString().Replace('\\', Path.DirectorySeparatorChar);
+            string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]).Replace('\\', Path.DirectorySeparatorChar);
             string installerType = Utils.GetDbString(row[Global.Parameters.InstallerType]);
 
             if (CheckForInstalledComponent(componentCode))
@@ -218,6 +219,26 @@ namespace SolidCP.Installer.Controls
             ThreadPool.QueueUserWorkItem(o => LoadComponents());
         }
 
+        private void CheckIsAvailableOnUnix(DataRow row)
+        {
+			string applicationName = Utils.GetDbString(row[Global.Parameters.ApplicationName]);
+			string componentName = Utils.GetDbString(row[Global.Parameters.ComponentName]);
+			string componentCode = Utils.GetDbString(row[Global.Parameters.ComponentCode]);
+			string componentDescription = Utils.GetDbString(row[Global.Parameters.ComponentDescription]);
+			string component = Utils.GetDbString(row[Global.Parameters.Component]);
+			string version = Utils.GetDbString(row[Global.Parameters.Version]);
+			string fileName = row[Global.Parameters.FullFilePath].ToString().Replace('\\', Path.DirectorySeparatorChar);
+			string installerPath = Utils.GetDbString(row[Global.Parameters.InstallerPath]).Replace('\\', Path.DirectorySeparatorChar);
+			string installerType = Utils.GetDbString(row[Global.Parameters.InstallerType]);
+
+            if (componentCode != "server" || componentName != "Server asp.net v4.5") row.Delete();
+            else
+            {
+                row[Global.Parameters.ComponentName] = "Server";
+                row[Global.Parameters.Component] = "SolidCP Server";
+            }
+        }
+
         /// <summary>
         /// Loads list of available components via web service
         /// </summary>
@@ -230,6 +251,7 @@ namespace SolidCP.Installer.Controls
                 //load components via web service
                 var webService = ServiceProviderProxy.GetInstallerWebService();
                 DataSet dsComponents = webService.GetAvailableComponents();
+
                 //remove already installed components
                 foreach (DataRow row in dsComponents.Tables[0].Rows)
                 {
@@ -237,9 +259,16 @@ namespace SolidCP.Installer.Controls
                     if (CheckForInstalledComponent(componentCode))
                     {
                         row.Delete();
-                    }
-                }
-                dsComponents.AcceptChanges();
+                    } else if (!OSInfo.IsWindows)
+                    {
+                        CheckIsAvailableOnUnix(row);
+					}
+				}
+
+				this.grdComponents.ClearSelection();
+				this.grdComponents.SelectionChanged += (sender, args) => this.grdComponents.ClearSelection();
+
+				dsComponents.AcceptChanges();
                 Log.WriteEnd("Available components loaded");
                 SetGridDataSource(dsComponents, dsComponents.Tables[0].TableName);
                 AppContext.AppForm.FinishProgress();

@@ -39,7 +39,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.Portal;
 using SolidCP.Providers.HeliconZoo;
-using SolidCP.Server;
+using SolidCP.Providers.OS;
 
 
 public partial class HeliconZoo_Settings : SolidCPControlBase, IHostingServiceProviderSettings

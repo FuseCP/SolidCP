@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace SolidCP.Providers.FTP
@@ -85,7 +86,7 @@ namespace SolidCP.Providers.FTP
 			set { this.enabled = value; }
 		}
 
-		[XmlIgnore]
+		[XmlIgnore, IgnoreDataMember]
 		public string VirtualPath
 		{
 			get

@@ -1,5 +1,7 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F919DE53-A948-4C78-969D-922DBA281B37}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\..\LICENSE.txt = ..\..\..\LICENSE.txt
@@ -8,6 +10,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Import.Enterprise", "SolidCP.Import.Enterprise\SolidCP.Import.Enterprise.csproj", "{3CC79CB9-C8B9-4658-A3C6-AE023445D091}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Client", "..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj", "{B55D2CAD-8829-4F60-B09F-1210FCB593B9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Base", "..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj", "{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Providers.Base", "..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj", "{684C932A-6C75-46AC-A327-F3689D89EB42}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.Web.Clients", "..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj", "{2A1CC6C9-4350-48F7-9621-9339C631BD44}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SolidCP.EnterpriseServer.Code", "..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj", "{60E39314-659C-4FAD-AB91-D0D08E223578}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +31,31 @@ Global
 		{3CC79CB9-C8B9-4658-A3C6-AE023445D091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CC79CB9-C8B9-4658-A3C6-AE023445D091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CC79CB9-C8B9-4658-A3C6-AE023445D091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B55D2CAD-8829-4F60-B09F-1210FCB593B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B55D2CAD-8829-4F60-B09F-1210FCB593B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B55D2CAD-8829-4F60-B09F-1210FCB593B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B55D2CAD-8829-4F60-B09F-1210FCB593B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C09CE910-F16B-48A1-B2CC-C99B8C1CF775}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684C932A-6C75-46AC-A327-F3689D89EB42}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A1CC6C9-4350-48F7-9621-9339C631BD44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A1CC6C9-4350-48F7-9621-9339C631BD44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A1CC6C9-4350-48F7-9621-9339C631BD44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A1CC6C9-4350-48F7-9621-9339C631BD44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E39314-659C-4FAD-AB91-D0D08E223578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E39314-659C-4FAD-AB91-D0D08E223578}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E39314-659C-4FAD-AB91-D0D08E223578}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E39314-659C-4FAD-AB91-D0D08E223578}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {526A030C-DCD6-433F-86C6-1026A35DE155}
 	EndGlobalSection
 EndGlobal

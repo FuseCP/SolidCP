@@ -38,14 +38,16 @@ namespace SolidCP.EnterpriseServer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litVersion;
-        
-        /// <summary>
-        /// litUrl control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litUrl;
-    }
+
+		/// <summary>
+		/// litUrl control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Literal litUrl;
+
+		protected global::System.Web.UI.WebControls.HyperLink lnkDocs;
+	}
 }

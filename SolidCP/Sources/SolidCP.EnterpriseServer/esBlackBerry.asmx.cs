@@ -30,11 +30,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System.Web.Services;
+﻿using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Code.HostedSolution;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
-using Microsoft.Web.Services3;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -43,7 +42,7 @@ namespace SolidCP.EnterpriseServer
     /// </summary>
     [WebService(Namespace = "http://smbsaas/solidcp/enterpriseserver")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
-    [Policy("ServerPolicy")]
+    [Policy("EnterpriseServerPolicy")]
     public class esBlackBerry : WebService
     {
 

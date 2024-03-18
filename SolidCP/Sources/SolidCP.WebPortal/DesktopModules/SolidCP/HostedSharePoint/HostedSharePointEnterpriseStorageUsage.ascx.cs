@@ -53,10 +53,9 @@ namespace SolidCP.Portal
             int errorCode;
             try
             {
-                SharePointEnterpriseSiteDiskSpace[] sharePointEnterpriseSiteDiskSpace =
-                    ES.Services.HostedSharePointServersEnt.Enterprise_CalculateSharePointSitesDiskSpace(PanelRequest.ItemID,
-                                                                                          out errorCode);
-
+                var result = ES.Services.HostedSharePointServersEnt.Enterprise_CalculateSharePointSitesDiskSpace(PanelRequest.ItemID);
+                SharePointSiteDiskSpace[] sharePointEnterpriseSiteDiskSpace = result.Result;
+                errorCode = result.ErrorCode;
 
                 if (errorCode < 0)
                 {
@@ -81,7 +80,7 @@ namespace SolidCP.Portal
                     lblTotalItems.Text = sharePointEnterpriseSiteDiskSpace.Length.ToString();
 
                     long total = 0;
-                    foreach (SharePointEnterpriseSiteDiskSpace current in sharePointEnterpriseSiteDiskSpace)
+                    foreach (SharePointSiteDiskSpace current in sharePointEnterpriseSiteDiskSpace)
                     {
                         total += current.DiskSpace;
                     }

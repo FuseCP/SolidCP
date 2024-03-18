@@ -26,7 +26,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System.Web.Services;
+﻿using SolidCP.Web.Services;
 using SolidCP.EnterpriseServer.Code.HostedSolution;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.HostedSolution;
@@ -41,6 +41,7 @@ namespace SolidCP.EnterpriseServer
     [WebService(Namespace = "http://tempuri.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
+    [Policy("EnterpriseServerPolicy")]
     public class esSfB : WebService
     {
 

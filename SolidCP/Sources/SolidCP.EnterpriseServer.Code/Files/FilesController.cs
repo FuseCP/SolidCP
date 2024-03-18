@@ -41,7 +41,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 
 using SolidCP.Providers;
-using OS = SolidCP.Providers.OS;
+using OS = SolidCP.Server.Client;
+using SolidCP.Server.Client;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Web;
 

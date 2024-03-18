@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using SolidCP.Providers.Virtualization;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json.Serialization;
 using SolidCP.EnterpriseServer;
 using System.IO;
+using Newtonsoft.Json;
 using System.Collections.Specialized;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.guacamole;
 
@@ -64,8 +64,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 
             cookiedata.preconnectionblob = vm.VirtualMachineId;
             if (cookiedata.hostname == "" || cookiedata.domain == "" || cookiedata.password == "" || cookiedata.preconnectionblob == "") return "";
-            var serializer = new JavaScriptSerializer();
-            string cookie = serializer.Serialize(cookiedata);
+            string cookie = JsonConvert.SerializeObject(cookiedata);
             try
             {
                 //Encryption.GenerateIV(out iv); // Random IV

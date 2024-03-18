@@ -41,6 +41,7 @@ using SolidCP.Providers.WebAppGallery;
 using System.Collections.Specialized;
 using SolidCP.Providers.Common;
 using System.Diagnostics;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

@@ -37,6 +37,7 @@ using System.Text;
 using System.Globalization;
 
 using SolidCP.Providers;
+using SolidCP.Server.Client;
 
 namespace SolidCP.EnterpriseServer
 {

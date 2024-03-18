@@ -52,6 +52,13 @@ namespace SolidCP.Setup
 
 		internal static object InstallBase(object obj, string minimalInstallerVersion)
 		{
+			ResourceAssemblyLoader.Init();
+			return InstallBaseRaw(obj, minimalInstallerVersion);
+		}
+		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
+		{
+			ResourceAssemblyLoader.Init();
+
 			Hashtable args = Utils.GetSetupParameters(obj);
 
 			//check CS version
@@ -254,7 +261,7 @@ namespace SolidCP.Setup
 				var page2 = new ConfigurationCheckPage();			
 				// Setup prerequisites validation
 				page2.Checks.AddRange(new ConfigurationCheck[] { 
-					new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement"){ SetupVariables = serverSetup }, 
+					new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement"){ SetupVariables = serverSetup }, 
 					new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement"){ SetupVariables = serverSetup }, 
 					new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement"){ SetupVariables = serverSetup }, 
 					// Validate Server installation prerequisites
@@ -266,20 +273,22 @@ namespace SolidCP.Setup
 				});
 				// Assign WebPortal setup variables set to acquire corresponding settings
 				var page3 = new WebPage { SetupVariables = portalSetup };
+				var page4 = new InsecureHttpWarningPage() { SetupVariables = portalSetup };
+				var page5 = new CertificatePage { SetupVariables = portalSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
-				var page4 = new DatabasePage { SetupVariables = esServerSetup };
+				var page6 = new DatabasePage { SetupVariables = esServerSetup };
 				// Assign EnterpriseServer setup variables set to acquire corresponding settings
-				var page5 = new ServerAdminPasswordPage
+				var page7 = new ServerAdminPasswordPage
 				{
 					SetupVariables = esServerSetup,
 					NoteText = "Note: Both serveradmin and admin accounts will use this password. You can always change password for serveradmin or admin accounts through control panel."
 				};
 				//
-				var page6 = new ExpressInstallPage2();
+				var page8 = new ExpressInstallPage2();
 				// Assign WebPortal setup variables set to acquire corresponding settings
-				var page7 = new SetupCompletePage { SetupVariables = portalSetup };
+				var page9 = new SetupCompletePage { SetupVariables = portalSetup };
 				//
-				wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5, page6, page7 });
+				wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3, page4, page5, page6, page7, page8, page9 });
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 				// Run wizard
@@ -290,18 +299,21 @@ namespace SolidCP.Setup
 
 		public static DialogResult Uninstall(object obj)
 		{
+			ResourceAssemblyLoader.Init();
 			MessageBox.Show("Functionality is not supported.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return DialogResult.Cancel;
 		}
 
 		public static DialogResult Setup(object obj)
 		{
+			ResourceAssemblyLoader.Init();
 			MessageBox.Show("Functionality is not supported.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return DialogResult.Cancel;
 		}
 
 		public static DialogResult Update(object obj)
 		{
+			ResourceAssemblyLoader.Init();
 			MessageBox.Show("Functionality is not supported.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			return DialogResult.Cancel;
 		}
@@ -334,9 +346,10 @@ namespace SolidCP.Setup
 			}
 		}
 
-		private static string GetUrl(string domain, string ip, string port)
+		/*private static string GetUrl(string domain, string ip, string port)
 		{
-			string address = "http://";
+			// TODO https or http?
+			string address = "https://";
 			string server = string.Empty;
 			string ipPort = string.Empty;
 			//server 
@@ -364,7 +377,7 @@ namespace SolidCP.Setup
 			//address string
 			address += server + ipPort;
 			return address;
-		}
+		}*/
 
 		
 

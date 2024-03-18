@@ -30,47 +30,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Database
 {
-    public class MySqlServer50 : MySqlServer
-    {
+	public class MySqlServer50 : MySqlServer
+	{
+		public MySqlServer50(): base() { }
 
-        public MySqlServer50()
-        {
-            
-        }
-
-        public override bool IsInstalled()
-        {
-            string versionNumber = null;
-
-            RegistryKey HKLM = Registry.LocalMachine;
-
-            RegistryKey key = HKLM.OpenSubKey(@"SOFTWARE\MySQL AB\MySQL Server 5.0");
-
-            if (key != null)
-            {
-                versionNumber = (string)key.GetValue("Version");
-            }
-            else
-            {
-                key = HKLM.OpenSubKey(@"SOFTWARE\Wow6432Node\MySQL AB\MySQL Server 5.0");
-                if (key != null)   
-                {
-                    versionNumber = (string)key.GetValue("Version");
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            string[] split = versionNumber.Split(new char[] { '.' });
-
-            return split[0].Equals("5") & split[1].Equals("0");
-        }
-
-    }
+		public override bool IsInstalled() => IsInstalled("5.0");
+	}
 }

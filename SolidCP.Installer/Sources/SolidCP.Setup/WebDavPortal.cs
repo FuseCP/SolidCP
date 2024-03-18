@@ -47,10 +47,14 @@ namespace SolidCP.Setup
         {
             return InstallBase(obj, "1.0.1");
         }
-
-        internal static object InstallBase(object obj, string minimalInstallerVersion)
+		internal static object InstallBase(object obj, string minimalInstallerVersion)
         {
-            Hashtable args = Utils.GetSetupParameters(obj);
+			ResourceAssemblyLoader.Init();
+            return InstallBaseRaw(obj, minimalInstallerVersion);
+        }
+		static object InstallBaseRaw(object obj, string minimalInstallerVersion)
+		{
+			Hashtable args = Utils.GetSetupParameters(obj);
             //check CS version
             var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
             var version = new Version(Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion));
@@ -135,7 +139,7 @@ namespace SolidCP.Setup
                 var introPage = new IntroductionPage();
                 var licPage = new LicenseAgreementPage();
                 var page1 = new ConfigurationCheckPage();
-                ConfigurationCheck check1 = new ConfigurationCheck(CheckTypes.OperationSystem, "Operating System Requirement") { SetupVariables = setupVariables };
+                ConfigurationCheck check1 = new ConfigurationCheck(CheckTypes.WindowsOperatingSystem, "Operating System Requirement") { SetupVariables = setupVariables };
                 ConfigurationCheck check2 = new ConfigurationCheck(CheckTypes.IISVersion, "IIS Requirement") { SetupVariables = setupVariables };
                 ConfigurationCheck check3 = new ConfigurationCheck(CheckTypes.ASPNET, "ASP.NET Requirement") { SetupVariables = setupVariables };
                 page1.Checks.AddRange(new ConfigurationCheck[] { check1, check2, check3 });
@@ -155,9 +159,15 @@ namespace SolidCP.Setup
             }
         }
 
-        public static DialogResult Uninstall(object obj)
+		public static DialogResult Uninstall(object obj)
         {
-            Hashtable args = Utils.GetSetupParameters(obj);
+            ResourceAssemblyLoader.Init();
+            return UninstallRaw(obj);
+        }
+
+		static DialogResult UninstallRaw(object obj)
+		{
+			Hashtable args = Utils.GetSetupParameters(obj);
             string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
             //
             var setupVariables = new SetupVariables
@@ -196,9 +206,15 @@ namespace SolidCP.Setup
             return form.ShowModal(owner);
         }
 
-        public static DialogResult Setup(object obj)
+		public static DialogResult Setup(object obj)
         {
-            Hashtable args = Utils.GetSetupParameters(obj);
+            ResourceAssemblyLoader.Init();
+            return SetupRaw(obj);
+        }
+
+	    static DialogResult SetupRaw(object obj)
+		{
+			Hashtable args = Utils.GetSetupParameters(obj);
             string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
             //
             var setupVariables = new SetupVariables
@@ -217,23 +233,29 @@ namespace SolidCP.Setup
             AppConfig.LoadComponentSettings(wizard.SetupVariables);
 
             WebPage page1 = new WebPage();
-            UrlPage page2 = new UrlPage();
-            ExpressInstallPage page3 = new ExpressInstallPage();
+            var page2 = new InsecureHttpWarningPage();
+            CertificatePage page3 = new CertificatePage();
+            UrlPage page4 = new UrlPage();
+            ExpressInstallPage page5 = new ExpressInstallPage();
             //create install currentScenario
             InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
             action.Description = "Updating web site...";
-            page3.Actions.Add(action);
+            page5.Actions.Add(action);
 
+			action = new InstallAction(ActionTypes.ConfigureLetsEncrypt);
+			action.Description = "Configuring Let's Encrypt...";
+			page5.Actions.Add(action);
+			
             action = new InstallAction(ActionTypes.UpdateEnterpriseServerUrl);
             action.Description = "Updating site settings...";
-            page3.Actions.Add(action);
+            page5.Actions.Add(action);
 
             action = new InstallAction(ActionTypes.UpdateConfig);
             action.Description = "Updating system configuration...";
-            page3.Actions.Add(action);
+            page5.Actions.Add(action);
 
-            FinishPage page4 = new FinishPage();
-            wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
+            FinishPage page6 = new FinishPage();
+            wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4, page5, page6 });
             wizard.LinkPages();
             wizard.SelectedPage = page1;
 
@@ -242,9 +264,14 @@ namespace SolidCP.Setup
             return form.ShowModal(owner);
         }
 
-        public static DialogResult Update(object obj)
+		public static DialogResult Update(object obj)
         {
-            Hashtable args = Utils.GetSetupParameters(obj);
+            ResourceAssemblyLoader.Init();
+            return UpdateRaw(obj);
+        }
+		static DialogResult UpdateRaw(object obj)
+        {
+			Hashtable args = Utils.GetSetupParameters(obj);
 
             var setupVariables = new SetupVariables
             {
