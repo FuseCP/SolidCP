@@ -64,7 +64,7 @@ namespace SolidCP.Portal.VPSForPC
         {
             if (e.Exception != null)
             {
-                messageBox.ShowErrorMessage("EXCHANGE_GET_MAILBOXES", e.Exception);
+                messageBox.ShowErrorMessage("VPS_ERROR_GET_PRIVATE_NETWORK", e.Exception);
                 e.ExceptionHandled = true;
             }
         }

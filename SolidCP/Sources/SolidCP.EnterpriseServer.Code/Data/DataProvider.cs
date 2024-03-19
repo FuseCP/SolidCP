@@ -700,7 +700,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        #region Private Network VLANs
+        #region Private / DMZ Network VLANs
         public static int AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
         {
             SqlParameter prmAddresId = new SqlParameter("@VlanID", SqlDbType.Int);
@@ -787,15 +787,27 @@ namespace SolidCP.EnterpriseServer
                                         new SqlParameter("@ServiceId", serviceId));
         }
 
-        public static void AllocatePackageVLANs(int packageId, string xml)
+        public static void AllocatePackageVLANs(int packageId, bool isDmz, string xml)
         {
             SqlParameter[] param = new[]
                                        {
                                            new SqlParameter("@PackageID", packageId),
+                                           new SqlParameter("@IsDmz", isDmz),
                                            new SqlParameter("@xml", xml)
                                        };
 
             ExecuteLongNonQuery("AllocatePackageVLANs", param);
+        }
+
+        public static IDataReader GetPackageDmzNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+        {
+            IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                     "GetPackageDmzNetworkVLANs",
+                                        new SqlParameter("@PackageID", packageId),
+                                        new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+                                        new SqlParameter("@startRow", startRow),
+                                        new SqlParameter("@maximumRows", maximumRows));
+            return reader;
         }
         #endregion
 
@@ -3998,6 +4010,74 @@ namespace SolidCP.EnterpriseServer
                                      "GetPackagePrivateIPAddresses",
                                         new SqlParameter("@PackageID", packageId));
             return reader;
+        }
+        #endregion
+
+        #region VPS - DMZ Network
+
+        public static IDataReader GetPackageDmzIPAddressesPaged(int packageId, string filterColumn, string filterValue,
+            string sortColumn, int startRow, int maximumRows)
+        {
+            IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                     "GetPackageDmzIPAddressesPaged",
+                                        new SqlParameter("@PackageID", packageId),
+                                        new SqlParameter("@FilterColumn", VerifyColumnName(filterColumn)),
+                                        new SqlParameter("@FilterValue", VerifyColumnValue(filterValue)),
+                                        new SqlParameter("@SortColumn", VerifyColumnName(sortColumn)),
+                                        new SqlParameter("@startRow", startRow),
+                                        new SqlParameter("@maximumRows", maximumRows));
+            return reader;
+        }
+
+        public static IDataReader GetPackageDmzIPAddresses(int packageId)
+        {
+            IDataReader reader = SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                     "GetPackageDmzIPAddresses",
+                                        new SqlParameter("@PackageID", packageId));
+            return reader;
+        }
+
+        public static int AddItemDmzIPAddress(int actorId, int itemId, string ipAddress)
+        {
+            return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                                "AddItemDmzIPAddress",
+                                new SqlParameter("@ActorID", actorId),
+                                new SqlParameter("@ItemID", itemId),
+                                new SqlParameter("@IPAddress", ipAddress));
+        }
+
+        public static int SetItemDmzPrimaryIPAddress(int actorId, int itemId, int dmzAddressId)
+        {
+            return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                                "SetItemDmzPrimaryIPAddress",
+                                new SqlParameter("@ActorID", actorId),
+                                new SqlParameter("@ItemID", itemId),
+                                new SqlParameter("@DmzAddressID", dmzAddressId));
+        }
+
+        public static int DeleteItemDmzIPAddress(int actorId, int itemId, int dmzAddressId)
+        {
+            return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                                "DeleteItemDmzIPAddress",
+                                new SqlParameter("@ActorID", actorId),
+                                new SqlParameter("@ItemID", itemId),
+                                new SqlParameter("@DmzAddressID", dmzAddressId));
+        }
+
+        public static IDataReader GetItemDmzIPAddresses(int actorId, int itemId)
+        {
+            return SqlHelper.ExecuteReader(ConnectionString, CommandType.StoredProcedure,
+                                "GetItemDmzIPAddresses",
+                                new SqlParameter("@ActorID", actorId),
+                                new SqlParameter("@ItemID", itemId));
+        }
+
+        public static int DeleteItemDmzIPAddresses(int actorId, int itemId)
+        {
+            return SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
+                                "DeleteItemDmzIPAddresses",
+                                new SqlParameter("@ActorID", actorId),
+                                new SqlParameter("@ItemID", itemId));
         }
         #endregion
 

@@ -215,5 +215,42 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             }
         }
 
+        public static string EnsureDmzVirtualSwitch(ServiceProviderItem item)
+        {
+            // try locate switch in the package
+            List<ServiceProviderItem> items = PackageController.GetPackageItemsByType(item.PackageId, typeof(VirtualSwitch));
+
+            // exists - return ID
+            if (items.Count > 0)
+                return ((VirtualSwitch)items[0]).SwitchId;
+
+            // switch name
+            string name = VirtualizationUtils.EvaluateItemVariables("[username] - [space_name]", item);
+
+            // log
+            TaskManager.Write("VPS_CREATE_DMZ_VIRTUAL_SWITCH", name);
+
+            try
+            {
+                // create switch
+                // load proxy
+                VirtualizationServer2012 vs = GetVirtualizationProxy(item.ServiceId);
+
+                // create switch
+                VirtualSwitch sw = vs.CreateSwitch(name);
+                sw.ServiceId = item.ServiceId;
+                sw.PackageId = item.PackageId;
+
+                // save item
+                PackageController.AddPackageItem(sw);
+
+                return sw.SwitchId;
+            }
+            catch (Exception ex)
+            {
+                TaskManager.WriteError(ex, "VPS_CREATE_DMZ_VIRTUAL_SWITCH_ERROR");
+                return null;
+            }
+        }
     }
 }

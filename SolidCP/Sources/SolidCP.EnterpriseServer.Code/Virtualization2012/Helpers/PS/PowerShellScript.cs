@@ -47,6 +47,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
                 PrepareNetworkVariables(script, ref vars, vm, "ext");
                 PrepareNetworkVariables(script, ref vars, vm, "priv");
                 PrepareNetworkVariables(script, ref vars, vm, "mng");
+                PrepareNetworkVariables(script, ref vars, vm, "dmz");
             }
             catch (Exception) { }
             return vars + script;
@@ -71,6 +72,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
                     NetworkAdapterDetails nic = null;
                     if (networkPrefix.Equals("ext")) nic = NetworkAdapterDetailsHelper.GetExternalNetworkAdapterDetails(vm.Id);
                     if (networkPrefix.Equals("priv")) nic = NetworkAdapterDetailsHelper.GetPrivateNetworkAdapterDetails(vm.Id);
+                    if (networkPrefix.Equals("dmz")) nic = NetworkAdapterDetailsHelper.GetDmzNetworkAdapterDetails(vm.Id);
                     if (networkPrefix.Equals("mng")) nic = NetworkAdapterDetailsHelper.GetManagementNetworkAdapterDetails(vm.Id);
                     if (nic != null)
                     {
@@ -100,6 +102,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS
                                 if (networkPrefix.Equals("priv") && !String.IsNullOrEmpty(vm.CustomPrivateGateway))
                                 {
                                     gateway = "\"" + vm.CustomPrivateGateway + "\"";
+                                }
+                                else if (networkPrefix.Equals("dmz") && !String.IsNullOrEmpty(vm.CustomDmzGateway))
+                                {
+                                    gateway = "\"" + vm.CustomDmzGateway + "\"";
                                 }
                                 else
                                 {

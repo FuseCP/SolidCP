@@ -154,6 +154,7 @@ namespace SolidCP.Portal.VPS2012
 
                 chkExternalNetworkEnabled.Checked = vm.ExternalNetworkEnabled;
                 chkPrivateNetworkEnabled.Checked = vm.PrivateNetworkEnabled;
+                chkDmzNetworkEnabled.Checked = vm.DmzNetworkEnabled;
 
                 chkIgnoreHddWarning.Visible = (PanelSecurity.EffectiveUser.Role != UserRole.User);
 
@@ -178,6 +179,7 @@ namespace SolidCP.Portal.VPS2012
                     }
                 }
                 BindCheckboxOption(chkPrivateNetworkEnabled, Quotas.VPS2012_PRIVATE_NETWORK_ENABLED);
+                BindCheckboxOption(chkDmzNetworkEnabled, Quotas.VPS2012_DMZ_NETWORK_ENABLED);
 
                 this.BindSettingsControls(vm);
             }
@@ -284,14 +286,17 @@ namespace SolidCP.Portal.VPS2012
                 virtualMachine.ReinstallAllowed = chkReinstall.Checked;
                 virtualMachine.ExternalNetworkEnabled = chkExternalNetworkEnabled.Checked;
                 virtualMachine.PrivateNetworkEnabled = chkPrivateNetworkEnabled.Checked;
+                virtualMachine.DmzNetworkEnabled = chkDmzNetworkEnabled.Checked;
                 virtualMachine.NeedReboot = chkForceReboot.Checked;
                 virtualMachine.defaultaccessvlan = vm.defaultaccessvlan;
                 virtualMachine.PrivateNetworkVlan = vm.PrivateNetworkVlan;
 
                 bool setupExternalNetwork = !vm.ExternalNetworkEnabled && chkExternalNetworkEnabled.Checked;
                 bool setupPrivateNetwork = !vm.PrivateNetworkEnabled && chkPrivateNetworkEnabled.Checked;
+                bool setupDmzNetwork = !vm.DmzNetworkEnabled && chkDmzNetworkEnabled.Checked;
                 int[] ipId = new int[1];
                 int privAdrCount = 0;
+                int dmzAdrCount = 0;
 
                 if (setupExternalNetwork)
                 {
@@ -320,23 +325,24 @@ namespace SolidCP.Portal.VPS2012
                     }
                 }
 
+                if (setupDmzNetwork)
+                {
+                    PackageVLANsPaged vlans = ES.Services.Servers.GetPackageDmzNetworkVLANs(PanelSecurity.PackageId, "", 0, Int32.MaxValue);
+                    if (vlans.Count > 0)
+                    {
+                        virtualMachine.DmzNetworkVlan = vlans.Items[0].Vlan;
+                    }
+
+                    PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
+
+                    if (cntx.Quotas.ContainsKey(Quotas.VPS2012_DMZ_IP_ADDRESSES_NUMBER))
+                    {
+                        QuotaValueInfo dmzQuota = cntx.Quotas[Quotas.VPS2012_DMZ_IP_ADDRESSES_NUMBER];
+                        if (dmzQuota.QuotaAllocatedValue > 0 || dmzQuota.QuotaAllocatedValue == -1) dmzAdrCount = 1;
+                    }
+                }
+
                 ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineResource(PanelRequest.ItemID, virtualMachine);
-                //ResultObject res = ES.Services.VPS2012.UpdateVirtualMachineConfiguration(PanelRequest.ItemID,
-                //    Utils.ParseInt(ddlCpu.SelectedValue),
-                //    Utils.ParseInt(txtRam.Text.Trim()),
-                //    Utils.ParseInt(txtHdd.Text.Trim()),                    
-                //    Utils.ParseInt(txtSnapshots.Text.Trim()),
-                //    chkDvdInstalled.Checked,
-                //    chkBootFromCd.Checked,
-                //    chkNumLock.Checked,
-                //    chkStartShutdown.Checked,
-                //    chkPauseResume.Checked,
-                //    chkReboot.Checked,
-                //    chkReset.Checked,
-                //    chkReinstall.Checked,
-                //    chkExternalNetworkEnabled.Checked,
-                //    chkPrivateNetworkEnabled.Checked,
-                //    virtualMachine);
 
                 if (res.IsSuccess)
                 {
@@ -348,6 +354,11 @@ namespace SolidCP.Portal.VPS2012
                     if (setupPrivateNetwork && privAdrCount > 0)
                     {
                         ES.Services.VPS2012.AddVirtualMachinePrivateIPAddresses(PanelRequest.ItemID, true, privAdrCount, new string[0], false, null, null, null, null);
+                    }
+
+                    if (setupDmzNetwork && dmzAdrCount > 0)
+                    {
+                        ES.Services.VPS2012.AddVirtualMachineDmzIPAddresses(PanelRequest.ItemID, true, dmzAdrCount, new string[0], false, null, null, null, null);
                     }
 
                     // redirect back

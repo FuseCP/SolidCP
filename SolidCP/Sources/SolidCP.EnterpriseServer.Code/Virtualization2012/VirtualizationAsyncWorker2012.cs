@@ -27,6 +27,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
         #region VPS Reinstall Properties
         public string AdminPassword { get; set; }
         public string[] PrivIps { get; set; }
+        public string[] DmzIps { get; set; }
         public LibraryItem OsTemplate { get; set; }
         #endregion
 
@@ -66,7 +67,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012
             if (ThreadUserId != -1)
                 SecurityContext.SetThreadPrincipal(ThreadUserId);
 
-            ReinstallVirtualMachineTask.ReinstallVirtualMachineNewTask(ItemId, Vm, OsTemplate, AdminPassword, PrivIps, SaveFiles, ExportVps, ExportPath);
+            ReinstallVirtualMachineTask.ReinstallVirtualMachineNewTask(ItemId, Vm, OsTemplate, AdminPassword, PrivIps, DmzIps, SaveFiles, ExportVps, ExportPath);
         }
         #endregion
     }

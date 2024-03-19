@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.VPS2012 {
-    
-    
-    public partial class VdcPrivateNetwork {
-        
+namespace SolidCP.Portal.VPS2012
+{
+
+
+    public partial class VdcPrivateNetwork
+    {
+
         /// <summary>
         /// messageBox control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.SimpleMessageBox messageBox;
-        
+
         /// <summary>
         /// searchBox control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.SearchBox searchBox;
-        
+
         /// <summary>
         /// gvAddresses control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvAddresses;
-        
+
         /// <summary>
         /// odsPrivateAddressesPaged control.
         /// </summary>
@@ -47,7 +49,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ObjectDataSource odsPrivateAddressesPaged;
-        
+
         /// <summary>
         /// secVLAN control.
         /// </summary>
@@ -56,7 +58,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secVLAN;
-        
+
         /// <summary>
         /// VLANPanel control.
         /// </summary>
@@ -65,7 +67,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel VLANPanel;
-        
+
         /// <summary>
         /// packageVLANs control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.UserControls.PackageVLANs packageVLANs;
-        
+
         /// <summary>
         /// secQuotas control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.CollapsiblePanel secQuotas;
-        
+
         /// <summary>
         /// QuotasPanel control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Panel QuotasPanel;
-        
+
         /// <summary>
         /// locVpsAddressesQuota control.
         /// </summary>
@@ -101,7 +103,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locVpsAddressesQuota;
-        
+
         /// <summary>
         /// addressesPerVps control.
         /// </summary>
@@ -110,7 +112,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::SolidCP.Portal.Quota addressesPerVps;
-        
+
         /// <summary>
         /// locVLANsQuota control.
         /// </summary>
@@ -119,7 +121,7 @@ namespace SolidCP.Portal.VPS2012 {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locVLANsQuota;
-        
+
         /// <summary>
         /// vlansQuota control.
         /// </summary>

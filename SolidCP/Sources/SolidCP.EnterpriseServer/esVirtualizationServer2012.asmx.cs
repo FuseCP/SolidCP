@@ -116,6 +116,28 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region DMZ Network
+        [WebMethod]
+        public DmzIPAddressesPaged GetPackageDmzIPAddressesPaged(int packageId,
+            string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
+        {
+            return VirtualizationServerController2012.GetPackageDmzIPAddressesPaged(packageId,
+                filterColumn, filterValue, sortColumn, startRow, maximumRows);
+        }
+
+        [WebMethod]
+        public List<DmzIPAddress> GetPackageDmzIPAddresses(int packageId)
+        {
+            return VirtualizationServerController2012.GetPackageDmzIPAddresses(packageId);
+        }
+
+        [WebMethod]
+        public NetworkAdapterDetails GetDmzNetworkDetails(int packageId)
+        {
+            return VirtualizationServerController2012.GetDmzNetworkDetails(packageId);
+        }
+        #endregion
+
         #region User Permissions
         [WebMethod]
         public List<VirtualMachinePermission> GetSpaceUserPermissions(int packageId)
@@ -195,11 +217,13 @@ namespace SolidCP.EnterpriseServer
         [WebMethod]
         public IntResult CreateNewVirtualMachine(VirtualMachine VMSettings, string osTemplateFile, string password, string summaryLetterEmail,
             int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
-            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses)
+            int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+            int dmzAddressesNumber, bool randomDmzAddresses, string[] dmzAddresses)
         {
             return VirtualizationServerController2012.CreateNewVirtualMachine(VMSettings, osTemplateFile, password, summaryLetterEmail,
             externalAddressesNumber, randomExternalAddresses, externalAddresses,
-            privateAddressesNumber, randomPrivateAddresses, privateAddresses);
+            privateAddressesNumber, randomPrivateAddresses, privateAddresses,
+            dmzAddressesNumber, randomDmzAddresses, dmzAddresses);
         }
 
         [WebMethod]
@@ -208,14 +232,16 @@ namespace SolidCP.EnterpriseServer
                 int cpuCores, int ramMB, int hddGB, int snapshots, bool dvdInstalled, bool bootFromCD, bool numLock,
                 bool startShutdownAllowed, bool pauseResumeAllowed, bool rebootAllowed, bool resetAllowed, bool reinstallAllowed,
                 bool externalNetworkEnabled, int externalAddressesNumber, bool randomExternalAddresses, int[] externalAddresses,
-                bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses, VirtualMachine otherSettings)
+                bool privateNetworkEnabled, int privateAddressesNumber, bool randomPrivateAddresses, string[] privateAddresses,
+                bool dmzNetworkEnabled, int dmzAddressesNumber, bool randomDmzAddresses, string[] dmzAddresses, VirtualMachine otherSettings)
         {
             return VirtualizationServerController2012.CreateVirtualMachine(packageId,
                 hostname, osTemplateFile, password, summaryLetterEmail,
                 cpuCores, ramMB, hddGB, snapshots, dvdInstalled, bootFromCD, numLock,
                 startShutdownAllowed, pauseResumeAllowed, rebootAllowed, resetAllowed, reinstallAllowed,
                 externalNetworkEnabled, externalAddressesNumber, randomExternalAddresses, externalAddresses,
-                privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses,  otherSettings);
+                privateNetworkEnabled, privateAddressesNumber, randomPrivateAddresses, privateAddresses,
+                dmzNetworkEnabled, dmzAddressesNumber, randomDmzAddresses, dmzAddresses, otherSettings);
         }
         #endregion
 
@@ -520,6 +546,54 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
+        #region VPS – DMZ Network
+        [WebMethod]
+        public NetworkAdapterDetails GetDmzNetworkAdapterDetails(int itemId)
+        {
+            return VirtualizationServerController2012.GetDmzNetworkAdapterDetails(itemId);
+        }
+
+        [WebMethod]
+        public ResultObject AddVirtualMachineDmzIPAddresses(int itemId, bool selectRandom,
+            int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        {
+            return VirtualizationServerController2012.AddVirtualMachineDmzIPAddresses(itemId, selectRandom,
+                addressesNumber, addresses, true, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
+        }
+
+        [WebMethod]
+        public ResultObject AddVirtualMachineDmzIPAddressesByInject(int itemId, bool selectRandom,
+            int addressesNumber, string[] addresses, bool customGatewayAndDns, string gateway, string dns1, string dns2, string subnetMask)
+        {
+            return VirtualizationServerController2012.AddVirtualMachineDmzIPAddressesByInject(itemId, selectRandom,
+                addressesNumber, addresses, customGatewayAndDns, gateway, dns1, dns2, subnetMask);
+        }
+
+        [WebMethod]
+        public ResultObject DeleteVirtualMachineDmzIPAddressesByInject(int itemId, int[] addressId)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachineDmzIPAddressesByInject(itemId, addressId);
+        }
+
+        [WebMethod]
+        public ResultObject DeleteVirtualMachineDmzIPAddresses(int itemId, int[] addressId)
+        {
+            return VirtualizationServerController2012.DeleteVirtualMachineDmzIPAddresses(itemId, addressId, true);
+        }
+
+        [WebMethod]
+        public ResultObject RestoreVirtualMachineDmzIPAddressesByInjection(int itemId)
+        {
+            return VirtualizationServerController2012.RestoreVirtualMachineDmzIPAddressesByInjection(itemId);
+        }
+
+        [WebMethod]
+        public ResultObject SetVirtualMachinePrimaryDmzIPAddress(int itemId, int addressId)
+        {
+            return VirtualizationServerController2012.SetVirtualMachinePrimaryDmzIPAddress(itemId, addressId, true);
+        }
+        #endregion
+
         #region Virtual Machine Permissions
         [WebMethod]
         public List<VirtualMachinePermission> GetVirtualMachinePermissions(int itemId)
@@ -584,10 +658,10 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+        public IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, string[] dmzIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
-            return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, VMSettings, adminPassword, privIps,
+            return VirtualizationServerController2012.ReinstallVirtualMachine(itemId, VMSettings, adminPassword, privIps, dmzIps,
             saveVirtualDisk, exportVps, exportPath);
         }
         #endregion

@@ -802,8 +802,12 @@ namespace SolidCP.EnterpriseServer
                 StringDictionary vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                 if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
+
+                // VLANs
                 if (Utils.ParseBool(vps2012Settings["AutoAssignVLAN"], true))
-                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012);
+                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012, false);
+                if (Utils.ParseBool(vps2012Settings["DmzAutoAssignVLAN"], true))
+                    ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012, true);
 
                 // allocate "VPSForPC" IP addresses
                 int vpsfcpServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPSForPC);

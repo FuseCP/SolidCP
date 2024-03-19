@@ -261,4 +261,7 @@
   <data name="valHddSize.ErrorMessage" xml:space="preserve">
     <value>Enter a numeric value</value>
   </data>
+  <data name="chkDmzNetworkEnabled.Text" xml:space="preserve">
+    <value>DMZ network enabled</value>
+  </data>
 </root>

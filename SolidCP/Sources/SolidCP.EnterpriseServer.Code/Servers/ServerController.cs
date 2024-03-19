@@ -1029,7 +1029,7 @@ namespace SolidCP.EnterpriseServer
 
         #endregion
 
-        #region Private Network VLANs
+        #region Private / DMZ Network VLANs
         public static VLANsPaged GetPrivateNetworVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {
             VLANsPaged result = new VLANsPaged();
@@ -1048,7 +1048,7 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
+		public static IntResult AddPrivateNetworkVLAN(int serverId, int vlan, string comments)
         {
             IntResult res = new IntResult();
 
@@ -1223,7 +1223,25 @@ namespace SolidCP.EnterpriseServer
             return result;
         }
 
-        public static ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
+		public static PackageVLANsPaged GetPackageDmzNetworkVLANs(int packageId, string sortColumn, int startRow, int maximumRows)
+		{
+			PackageVLANsPaged result = new PackageVLANsPaged();
+
+			// get reader
+			IDataReader reader = DataProvider.GetPackageDmzNetworkVLANs(packageId, sortColumn, startRow, maximumRows);
+
+			// number of items = first data reader
+			reader.Read();
+			result.Count = (int)reader[0];
+
+			// items = second data reader
+			reader.NextResult();
+			result.Items = ObjectUtils.CreateListFromDataReader<PackageVLAN>(reader).ToArray();
+
+			return result;
+		}
+
+		public static ResultObject DeallocatePackageVLANs(int packageId, int[] packageVlanId)
         {
             #region Check account and space statuses
             // create result object
@@ -1271,17 +1289,17 @@ namespace SolidCP.EnterpriseServer
                 DataProvider.GetUnallottedVLANs(packageId, serviceId));
         }
 
-		public static void AllocatePackageVLANs(int packageId, int[] vlanIds)
+		public static void AllocatePackageVLANs(int packageId, int[] vlanIds, bool isDmz)
 		{
 			if (vlanIds == null || vlanIds.Length == 0) return;
 			// prepare XML document
 			string xml = PrepareXML(vlanIds);
 
 			// save to database
-			DataProvider.AllocatePackageVLANs(packageId, xml);
+			DataProvider.AllocatePackageVLANs(packageId, isDmz, xml);
 		}
 
-		public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId)
+		public static ResultObject AllocatePackageVLANs(int packageId, string groupName, bool allocateRandom, int vlansNumber, int[] vlanId, bool isDmz)
         {
             #region Check account and space statuses
             // create result object
@@ -1306,7 +1324,15 @@ namespace SolidCP.EnterpriseServer
                 return res; // just exit
             }
 
-            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			string quotaName;
+			if (isDmz)
+            {
+				quotaName = Quotas.VPS2012_DMZ_VLANS_NUMBER;
+			}
+            else
+            {
+				quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			}
 
             // get maximum server IPs
             List<VLANInfo> vlans = ServerController.GetUnallottedVLANs(packageId, groupName);
@@ -1357,7 +1383,7 @@ namespace SolidCP.EnterpriseServer
                 // save to database
                 try
                 {
-                    DataProvider.AllocatePackageVLANs(packageId, xml);
+                    DataProvider.AllocatePackageVLANs(packageId, isDmz, xml);
                 }
                 catch (Exception ex)
                 {
@@ -1867,17 +1893,26 @@ namespace SolidCP.EnterpriseServer
 				true, number, new int[0]);
 		}
 
-        public static ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName)
+        public static ResultObject AllocateMaximumPackageVLANs(int packageId, string groupName, bool isDmz)
         {
-            // get maximum server VLANs
-            int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
+			// get maximum server VLANs
+			int maxAvailableVLANs = GetUnallottedVLANs(packageId, groupName).Count;
 
             // get hosting plan VLANs
             int number = 0;
 
-            PackageContext cntx = PackageController.GetPackageContext(packageId);
-            string quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
-            if (cntx.Quotas.ContainsKey(quotaName))
+            string quotaName;
+			if (isDmz)
+            {
+				quotaName = Quotas.VPS2012_DMZ_VLANS_NUMBER;
+			}
+            else
+            {
+				quotaName = Quotas.VPS2012_PRIVATE_VLANS_NUMBER;
+			}
+
+			PackageContext cntx = PackageController.GetPackageContext(packageId);
+			if (cntx.Quotas.ContainsKey(quotaName))
             {
                 if (cntx.Quotas[quotaName].QuotaAllocatedValue == -1)
                 {
@@ -1897,7 +1932,7 @@ namespace SolidCP.EnterpriseServer
             }
 
             // allocate
-            return AllocatePackageVLANs(packageId, groupName, true, number, new int[0]);
+            return AllocatePackageVLANs(packageId, groupName, true, number, new int[0], isDmz);
         }
 
         public static ResultObject DeallocatePackageIPAddresses(int packageId, int[] addressId)

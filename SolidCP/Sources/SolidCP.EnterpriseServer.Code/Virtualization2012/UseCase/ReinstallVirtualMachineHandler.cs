@@ -13,7 +13,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
 {
     public static class ReinstallVirtualMachineHandler
     {
-        public static IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps,
+        public static IntResult ReinstallVirtualMachine(int itemId, VirtualMachine VMSettings, string adminPassword, string[] privIps, string[] dmzIps,
             bool saveVirtualDisk, bool exportVps, string exportPath)
         {
             IntResult res = new IntResult();
@@ -137,6 +137,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                         ItemId = itemId,
                         AdminPassword = adminPassword,
                         PrivIps = privIps,
+                        DmzIps = dmzIps,
                         SaveFiles = saveVirtualDisk,
                         ExportVps = exportVps,
                         ExportPath = exportPath,

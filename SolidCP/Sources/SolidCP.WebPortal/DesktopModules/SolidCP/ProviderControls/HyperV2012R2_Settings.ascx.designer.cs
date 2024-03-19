@@ -1302,6 +1302,186 @@ namespace SolidCP.Portal.ProviderControls
         protected global::System.Web.UI.WebControls.CheckBox chkAssignVLANAutomatically;
 
         /// <summary>
+        /// DmzUpdatePanel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel DmzUpdatePanel;
+
+        /// <summary>
+        /// locDmzNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzNetwork;
+
+        /// <summary>
+        /// locIPFormatDmz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locIPFormatDmz;
+
+        /// <summary>
+        /// ddlDmzNetworkFormat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDmzNetworkFormat;
+
+        /// <summary>
+        /// DmzCustomFormatRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow DmzCustomFormatRow;
+
+        /// <summary>
+        /// locDmzCustomFormat control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzCustomFormat;
+
+        /// <summary>
+        /// dmzIPAddress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.UserControls.EditIPAddressControl dmzIPAddress;
+
+        /// <summary>
+        /// dmzSubnetMask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox dmzSubnetMask;
+
+        /// <summary>
+        /// dmzSubnetMaskValidator control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator dmzSubnetMaskValidator;
+
+        /// <summary>
+        /// locDmzDefaultGateway control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzDefaultGateway;
+
+        /// <summary>
+        /// dmzDefaultGateway control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.UserControls.EditIPAddressControl dmzDefaultGateway;
+
+        /// <summary>
+        /// locDmzPreferredNameServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzPreferredNameServer;
+
+        /// <summary>
+        /// dmzPreferredNameServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.UserControls.EditIPAddressControl dmzPreferredNameServer;
+
+        /// <summary>
+        /// locDmzAlternateNameServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzAlternateNameServer;
+
+        /// <summary>
+        /// dmzAlternateNameServer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.UserControls.EditIPAddressControl dmzAlternateNameServer;
+
+        /// <summary>
+        /// locDmzSwitchType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzSwitchType;
+
+        /// <summary>
+        /// radioSwitchTypeDmzNetwork control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList radioSwitchTypeDmzNetwork;
+
+        /// <summary>
+        /// locDmzExternalNetworkName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locDmzExternalNetworkName;
+
+        /// <summary>
+        /// ddlExternalNetworksDmz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlExternalNetworksDmz;
+
+        /// <summary>
+        /// chkDmzAssignVLANAutomatically control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkDmzAssignVLANAutomatically;
+
+        /// <summary>
         /// locHostname control.
         /// </summary>
         /// <remarks>

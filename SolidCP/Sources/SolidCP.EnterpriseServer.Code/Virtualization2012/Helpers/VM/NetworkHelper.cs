@@ -42,6 +42,16 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                 if (!String.IsNullOrEmpty(vm.CustomPrivateMask)) nic.SubnetMask = vm.CustomPrivateMask;
                 PowerShellScript.CheckCustomPsScript(PsScriptPoint.private_network_configuration, vm);
             }
+            else if (String.Compare(adapterName, "dmz", true) == 0)
+            {
+                // dmz
+                nic = NetworkAdapterDetailsHelper.GetDmzNetworkAdapterDetails(itemId);
+                if (!String.IsNullOrEmpty(vm.CustomDmzGateway)) nic.DefaultGateway = vm.CustomDmzGateway;
+                if (!String.IsNullOrEmpty(vm.CustomDmzDNS1)) nic.PreferredNameServer = vm.CustomDmzDNS1;
+                if (!String.IsNullOrEmpty(vm.CustomDmzDNS2)) nic.AlternateNameServer = vm.CustomDmzDNS2;
+                if (!String.IsNullOrEmpty(vm.CustomDmzMask)) nic.SubnetMask = vm.CustomDmzMask;
+                PowerShellScript.CheckCustomPsScript(PsScriptPoint.dmz_network_configuration, vm);
+            }
             else
             {
                 // management
@@ -69,6 +79,10 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM
                             if (String.Compare(adapterName, "private", true) == 0 && !String.IsNullOrEmpty(vm.CustomPrivateGateway))
                             {
                                 guestNetworkAdapterConfiguration.DefaultGateways = new string[] { vm.CustomPrivateGateway };
+                            }
+                            else if (String.Compare(adapterName, "dmz", true) == 0 && !String.IsNullOrEmpty(vm.CustomDmzGateway))
+                            {
+                                guestNetworkAdapterConfiguration.DefaultGateways = new string[] { vm.CustomDmzGateway };
                             }
                             else
                             {

@@ -108,6 +108,26 @@ namespace SolidCP.Providers.Virtualization
                     HostedSolution.HostedSolutionLog.LogError("NetworkAdapterHelperSetVLAN", ex);
                 }
             }
+
+            // DMZ NIC
+            if (!vm.DmzNetworkEnabled && !String.IsNullOrEmpty(vm.DmzNicMacAddress))
+            {
+                Delete(powerShell, vm.Name, vm.DmzNicMacAddress);
+                vm.DmzNicMacAddress = null; // reset MAC
+            }
+            else if (vm.DmzNetworkEnabled && !String.IsNullOrEmpty(vm.DmzNicMacAddress)
+                 && Get(powerShell, vm.Name, vm.DmzNicMacAddress) == null)
+            {
+                Add(powerShell, vm.Name, vm.DmzSwitchId, vm.DmzNicMacAddress, Constants.DMZ_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
+                try
+                {
+                    SetVLAN(powerShell, vm.Name, Constants.DMZ_NETWORK_ADAPTER_NAME, vm.DmzNetworkVlan);
+                }
+                catch (Exception ex)
+                {
+                    HostedSolution.HostedSolutionLog.LogError("NetworkAdapterHelperSetVLAN", ex);
+                }
+            }
         }
 
         public static void Add(PowerShellManager powerShell, string vmName, string switchId, string macAddress, string adapterName, bool legacyAdapter)

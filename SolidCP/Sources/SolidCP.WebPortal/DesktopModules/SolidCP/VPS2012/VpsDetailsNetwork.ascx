@@ -34,6 +34,8 @@
                         Text="Restore External IPs" CssClass="btn btn-primary" OnClick="btnRestoreExternalAddress_Click" />
                     <asp:Button ID="btnRestorePrivateAddress" runat="server" meta:resourcekey="btnRestorePrivateAddress"
                         Text="Restore Private IPs" CssClass="btn btn-primary" OnClick="btnRestorePrivateByInject_Click" />
+                    <asp:Button ID="btnRestoreDmzAddress" runat="server" meta:resourcekey="btnRestoreDmzAddress"
+                        Text="Restore DMZ IPs" CssClass="btn btn-primary" OnClick="btnRestorePrivateByInject_Click" />
                 </div>
                 <asp:Repeater ID="repVMNetwork" runat="server">
                     <ItemTemplate>
@@ -261,6 +263,100 @@
                     <asp:Localize ID="locTotalPrivate" runat="server"
                         meta:resourcekey="locTotalPrivate" Text="IP addresses:"></asp:Localize>
                     <asp:Label ID="lblTotalPrivate" runat="server" CssClass="NormalBold">0</asp:Label>
+                </asp:Panel>
+
+                <br />
+            </asp:Panel>
+
+
+            <scp:CollapsiblePanel ID="secDmzNetwork" runat="server"
+                TargetControlID="DmzNetworkPanel" meta:ResourceKey="secDmzNetwork" Text="DMZ Network"></scp:CollapsiblePanel>
+            <asp:Panel ID="DmzNetworkPanel" runat="server" Height="0" Style="overflow: hidden;">
+
+                <table style="border-collapse: separate; border-spacing: 3px 1px;">
+                    <tr>
+                        <td>
+                            <asp:Localize ID="locDmzAddress" runat="server"
+                                meta:resourcekey="locDmzAddress" Text="Server address:" /></td>
+                        <td class="NormalBold">
+                            <asp:Literal ID="litDmzAddress" runat="server" Text="" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Localize ID="locDmzSubnet" runat="server"
+                                meta:resourcekey="locDmzSubnet" Text="Subnet mask:" /></td>
+                        <td class="NormalBold">
+                            <asp:Literal ID="litDmzSubnet" runat="server" Text="" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Localize ID="locDmzGateway" runat="server"
+                                meta:resourcekey="locDmzGateway" Text="Default gateway:" /></td>
+                        <td class="NormalBold">
+                            <asp:Literal ID="litDmzGateway" runat="server" Text="" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Localize ID="locDmzVLAN" runat="server"
+                                meta:resourcekey="locVLAN" Text="VLAN:" /></td>
+                        <td class="NormalBold">
+                            <asp:Literal ID="litDmzVLAN" runat="server" Text="" /></td>
+                    </tr>
+                </table>
+
+                <asp:Panel ID="DmzAddressesPanel" runat="server">
+
+                    <div style="width: 400px;">
+                        <asp:GridView ID="gvDmzAddresses" runat="server" AutoGenerateColumns="False"
+                            EmptyDataText="gvDmzAddresses" CssSelectorClass="NormalGridView"
+                            DataKeyNames="AddressID">
+                            <Columns>
+                                <asp:TemplateField>
+                                    <HeaderTemplate>
+                                        <asp:CheckBox ID="chkSelectAll" runat="server" onclick="javascript:SelectAllCheckboxes(this);" />
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="chkSelect" runat="server" Enabled='<%# !(bool)Eval("IsPrimary") %>' />
+                                    </ItemTemplate>
+                                    <ItemStyle Width="10px" />
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="gvIpAddress" meta:resourcekey="gvIpAddress">
+                                    <ItemTemplate>
+                                        <%# Eval("IPAddress")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:BoundField DataField="SubnetMask" HeaderText="gvSubnetMask" meta:resourcekey="gvSubnetMask" />
+                                <asp:BoundField DataField="DefaultGateway" HeaderText="gvDefaultGateway" meta:resourcekey="gvDefaultGateway" />
+                                <asp:TemplateField HeaderText="gvPrimary" meta:resourcekey="gvPrimary" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <div style="text-align: center">
+                                            &nbsp;
+								                    <asp:Image ID="Image2" runat="server" SkinID="Checkbox16" Visible='<%# Eval("IsPrimary") %>' />
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+
+                    <div style="margin-top: 4px;">
+                        <asp:Button ID="btnAddDmzAddress" runat="server" meta:resourcekey="btnAddDmzAddress"
+                            Text="Add" CssClass="btn btn-primary" OnClick="btnAddDmzAddress_Click" />
+                        <asp:Button ID="btnSetPrimaryDmz" runat="server" Text="Set As Primary"
+                            meta:resourcekey="btnSetPrimaryDmz" CssClass="btn btn-success"
+                            CausesValidation="false" OnClick="btnSetPrimaryDmz_Click"></asp:Button>
+                        <asp:Button ID="btnDeleteDmz" runat="server" Text="Delete Selected"
+                            meta:resourcekey="btnDeleteDmz" CssClass="btn btn-danger" CausesValidation="false"
+                            OnClick="btnDeleteDmz_Click"></asp:Button>
+                        <asp:Button ID="btnDeleteDmzByInject" runat="server" Text="Delete Selected By Inject"
+                            meta:resourcekey="btnDeleteDmzByInject" CssClass="btn btn-danger" CausesValidation="false"
+                            OnClick="btnDeleteDmzByInject_Click"></asp:Button>
+                    </div>
+
+                    <br />
+                    <asp:Localize ID="locTotalDmz" runat="server"
+                        meta:resourcekey="locTotalDmz" Text="IP addresses:"></asp:Localize>
+                    <asp:Label ID="lblTotalDmz" runat="server" CssClass="NormalBold">0</asp:Label>
                 </asp:Panel>
 
                 <br />
