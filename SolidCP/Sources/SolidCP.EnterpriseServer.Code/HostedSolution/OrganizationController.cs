@@ -45,13 +45,13 @@ using SolidCP.EnterpriseServer.Base;
 using SolidCP.EnterpriseServer.Code.HostedSolution;
 using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.EnterpriseServer.Extensions;
+using SolidCP.Server.Client;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.SharePoint;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.DNS;
-using OS = SolidCP.Server.Client;
 using System.Linq;
 
 using System.IO;
@@ -2474,9 +2474,9 @@ namespace SolidCP.EnterpriseServer
             return ObjectUtils.Deserialize<T>(entity.Xml);
         }
 
-        private static bool EmailAddressExists(string emailAddress)
+        private static bool EmailAddressExists(string emailAddress, bool checkContacts)
         {
-            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress);
+            return DataProvider.ExchangeAccountEmailAddressExists(emailAddress, checkContacts);
         }
 
 
@@ -2533,7 +2533,7 @@ namespace SolidCP.EnterpriseServer
                 // e-mail
                 string email = name + "@" + domain;
 
-                if (EmailAddressExists(email))
+                if (EmailAddressExists(email, false))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -2679,7 +2679,7 @@ namespace SolidCP.EnterpriseServer
                 // e-mail
                 string email = name + "@" + domain;
 
-                if (EmailAddressExists(email))
+                if (EmailAddressExists(email, false))
                     return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
 
                 // load organization
@@ -3551,7 +3551,7 @@ namespace SolidCP.EnterpriseServer
 
                     if (!userPrincipalNameOwned)
                     {
-                        if (EmailAddressExists(userPrincipalName))
+                        if (EmailAddressExists(userPrincipalName, false))
                             return BusinessErrorCodes.ERROR_EXCHANGE_EMAIL_EXISTS;
                     }
                 }
@@ -4781,13 +4781,13 @@ namespace SolidCP.EnterpriseServer
 
         #region OS
 
-        private static OS.OperatingSystem GetOS(int packageId)
+        private static SolidCP.Server.Client.OperatingSystem GetOS(int packageId)
         {
             int sid = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
             if (sid <= 0)
                 return null;
 
-            var os = new OS.OperatingSystem();
+            var os = new SolidCP.Server.Client.OperatingSystem();
             ServiceProviderProxy.Init(os, sid);
 
             return os;

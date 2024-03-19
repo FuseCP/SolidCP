@@ -159,15 +159,6 @@ namespace SolidCP.Portal.HostedSolution
         protected global::System.Web.UI.WebControls.TextBox txtDisplayName;
 
         /// <summary>
-        /// valRequireCorrectDisplayName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator valRequireCorrectDisplayName;
-
-        /// <summary>
         /// valRequireDisplayName control.
         /// </summary>
         /// <remarks>

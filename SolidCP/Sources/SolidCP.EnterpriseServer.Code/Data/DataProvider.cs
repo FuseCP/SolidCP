@@ -584,7 +584,7 @@ namespace SolidCP.EnterpriseServer
         public static void UpdateServer(int serverId, string serverName, string serverUrl,
             string password, string comments, string instantDomainAlias,
             int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-            string adAuthenticationType, string adParentDomain, string adParentDomainController,
+            string adAuthenticationType, string adParentDomain, String adParentDomainController,
             OSPlatform osPlatform, bool? isCore)
         {
             SqlHelper.ExecuteNonQuery(ConnectionString, CommandType.StoredProcedure,
@@ -2849,7 +2849,7 @@ namespace SolidCP.EnterpriseServer
             );
         }
 
-        public static bool ExchangeAccountEmailAddressExists(string emailAddress)
+        public static bool ExchangeAccountEmailAddressExists(string emailAddress, bool checkContacts)
         {
             SqlParameter outParam = new SqlParameter("@Exists", SqlDbType.Bit);
             outParam.Direction = ParameterDirection.Output;
@@ -2859,6 +2859,7 @@ namespace SolidCP.EnterpriseServer
                 CommandType.StoredProcedure,
                 "ExchangeAccountEmailAddressExists",
                 new SqlParameter("@EmailAddress", emailAddress),
+                new SqlParameter("@checkContacts", checkContacts),
                 outParam
             );
 
