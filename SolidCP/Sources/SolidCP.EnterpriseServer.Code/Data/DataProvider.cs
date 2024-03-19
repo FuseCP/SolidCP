@@ -1549,7 +1549,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@forAutodiscover", forAutodiscover));
         }
 
-        public static int GetPackageServiceId(int actorId, int packageId, string groupName)
+        public static int GetPackageServiceId(int actorId, int packageId, string groupName, bool updatePackage)
         {
             SqlParameter prmServiceId = new SqlParameter("@ServiceID", SqlDbType.Int);
             prmServiceId.Direction = ParameterDirection.Output;
@@ -1559,6 +1559,7 @@ namespace SolidCP.EnterpriseServer
                 new SqlParameter("@actorId", actorId),
                 new SqlParameter("@PackageID", packageId),
                 new SqlParameter("@groupName", groupName),
+                new SqlParameter("@UpdatePackage", updatePackage),
                 prmServiceId);
 
             return Convert.ToInt32(prmServiceId.Value);

@@ -20195,3 +20195,77 @@ exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int',
 
 END
 GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetPackageServiceID')
+DROP PROCEDURE GetPackageServiceID
+GO
+CREATE PROCEDURE GetPackageServiceID
+(
+	@ActorID int,
+	@PackageID int,
+	@GroupName nvarchar(100),
+	@UpdatePackage bit,
+	@ServiceID int OUTPUT
+)
+AS
+BEGIN
+
+-- check rights
+IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+RAISERROR('You are not allowed to access this package', 16, 1)
+
+SET @ServiceID = 0
+
+-- optimized run when we don't need any changes
+IF @UpdatePackage = 0
+BEGIN
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+INNER JOIN ResourceGroups AS RG ON RG.GroupID = P.GroupID
+WHERE PS.PackageID = @PackageID AND RG.GroupName = @GroupName
+RETURN
+END
+
+-- load group info
+DECLARE @GroupID int
+SELECT @GroupID = GroupID FROM ResourceGroups
+WHERE GroupName = @GroupName
+
+-- check if user has this resource enabled
+IF dbo.GetPackageAllocatedResource(@PackageID, @GroupID, NULL) = 0
+BEGIN
+	-- remove all resource services from the space
+	DELETE FROM PackageServices FROM PackageServices AS PS
+	INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+	INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+	WHERE P.GroupID = @GroupID AND PS.PackageID = @PackageID
+	RETURN
+END
+
+-- check if the service is already distributed
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+IF @ServiceID <> 0
+RETURN
+
+-- distribute services
+EXEC DistributePackageServices @ActorID, @PackageID
+
+-- get distributed service again
+SELECT
+	@ServiceID = PS.ServiceID
+FROM PackageServices AS PS
+INNER JOIN Services AS S ON PS.ServiceID = S.ServiceID
+INNER JOIN Providers AS P ON S.ProviderID = P.ProviderID
+WHERE PS.PackageID = @PackageID AND P.GroupID = @GroupID
+
+END
+GO
