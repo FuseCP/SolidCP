@@ -11,6 +11,7 @@ using SolidCP.Providers.HostedSolution;
 //using Newtonsoft.Json;
 //using Newtonsoft.Json.Linq;
 using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -65,11 +66,13 @@ namespace SolidCP.Providers.Virtualization
 		}
 
 
-		public RestResponse<VMStatusInfo> Status(string vmId)
+		public dynamic Status(string vmId)
 		{
 			var client = new RestClient(baseUrl);
 			var request = PrepareGetRequest(string.Format("nodes/{0}/qemu/{1}/status/current", nodeid(vmId).node, nodeid(vmId).id));
-			return client.Execute<VMStatusInfo>(request);
+			var response = client.Execute<VMStatusInfo>(request);
+			dynamic json = JObject.Parse(response.Content);
+			return json;
 		}
 
 		public RestResponse<Upid> Start(string vmId)

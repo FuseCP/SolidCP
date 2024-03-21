@@ -253,22 +253,22 @@ namespace SolidCP.Providers.Virtualization
 			try
 			{
 				ApiClientSetup();
-				var result = client.Status(vmId);
+				dynamic result = client.Status(vmId);
 				HostedSolutionLog.DebugInfo("GetVirtualMachine - Virtual Machine: {0}", vmId);
 				var vmconfig = client.VMConfig(vmId);
-				if (result.Data != null)
+				if (result.data != null)
 				{
-					HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - vm.Name: {0}, State: {1}, Uptime: {2}", result.Data.name, result.Data.qmpstatus, result.Data.uptime);
-					vm.Name = result.Data.name;
-					vm.Uptime = result.Data.uptime;
-					string qmpstatus = result.Data.qmpstatus;
+					HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - vm.Name: {0}, State: {1}, Uptime: {2}", result.data.name, result.data.qmpstatus, result.data.uptime);
+					vm.Name = result.data.name;
+					vm.Uptime = result.data.uptime;
+					string qmpstatus = result.data.qmpstatus;
 					vm.State = getvmstate(qmpstatus);
-					vm.CpuUsage = ConvertNullableToInt32(result.Data.cpu * 100);
-					vm.ProcessorCount = result.Data.cpus;
+					vm.CpuUsage = ConvertNullableToInt32(result.data.cpu * 100);
+					vm.ProcessorCount = result.data.cpus;
 					vm.CreatedDate = DateTime.Now;
-					Int64 mem = result.Data.mem;
+					Int64 mem = result.data.mem;
 					vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(mem / Constants.Size1M));
-					Int64 maxmem = result.Data.maxmem;
+					Int64 maxmem = result.data.maxmem;
 					vm.RamSize = Convert.ToInt32(ConvertNullableToInt64(maxmem / Constants.Size1M));
 
 					// Proxmox Generation = 0
@@ -281,9 +281,9 @@ namespace SolidCP.Providers.Virtualization
 
 					if (extendedInfo)
 					{
-						HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - extended - CpuCores, {0} maxdisk: {1}", result.Data.cpus, result.Data.maxdisk);
-						vm.CpuCores = result.Data.cpus;
-						Int64 maxdisk = result.Data.maxdisk;
+						HostedSolutionLog.DebugInfo("GetVirtualMachineInternal - extended - CpuCores, {0} maxdisk: {1}", result.data.cpus, result.data.maxdisk);
+						vm.CpuCores = result.data.cpus;
+						Int64 maxdisk = result.data.maxdisk;
 						vm.HddSize = new[] { Convert.ToInt32(maxdisk / Constants.Size1G) };
 
 						//vmconfig
