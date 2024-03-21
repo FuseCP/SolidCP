@@ -37,8 +37,6 @@ Server Urls: [?Urls http://localhost:9003                                       
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
-Enterprise Server Crypto Key: [?CryptoKey                                                             ]
-
 [    Ok    ]
 ")
 				.Load(ServerSettings)
@@ -56,8 +54,6 @@ Server Urls: [?Urls http://localhost:9003                                       
 
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
-
-Enterprise Server Crypto Key: [?CryptoKey                                                             ]
 
 Passwords don't match!
 
@@ -96,7 +92,6 @@ Urls:              [?Urls http://localhost:9002                                 
 Database Server:   [?DatabaseServer localhost                                                           ]
 Database User:     [?DatabaseUser sa                                                                  ]
 Database Password: [!DatabasePassword                                                                     ]
-CryptoKey:      [?CryptoKey                                                                              ]
 
 [    Ok    ]
 ")
