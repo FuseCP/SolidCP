@@ -320,7 +320,7 @@
 		</ProjectReference>
 	</ItemGroup>
 	<Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' ">
-		<Copy SourceFiles="..\SolidCP.Setup\bin\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" />
+		<Copy SourceFiles="..\..\Build\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" />
 	</Target>
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
