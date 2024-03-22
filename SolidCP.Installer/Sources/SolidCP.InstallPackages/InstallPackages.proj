@@ -20,7 +20,7 @@
 
 		<ZipCmd>"$(RootFolder)\tools\7-Zip\7z.exe"</ZipCmd>
 		<GZipCmd>"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
-        <WpkgCmd>"$(RootFolder)\tools\wpkg\wpkg.exe"</WpkgCmd>
+        <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\Release\wpkg.exe"</WpkgCmd>
     </PropertyGroup>
 
     <Target Name="Debian">
@@ -31,7 +31,7 @@
             <DocFiles Include="$(PackagesFolder)\src\doc\*.*" />
         </ItemGroup>
 
-		<Copy SourceFiles="$(DeployFolder)\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
 		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Debian\usr\share\pixmaps\SolidCP.png" />
 		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Debian\usr\share\applications" />
@@ -57,7 +57,7 @@
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
         </Exec>
         <Message Text="$(OutputOfWpkg)" />
-        <Move SourceFiles="$(PackagesFolder)\Debian\solidcp.deb" DestinationFiles="$(PackagesFolder)\bin\solidcp_$(Version)-1_any.deb" />
+        <Move SourceFiles="$(PackagesFolder)\Debian\solidcp.deb" DestinationFiles="$(PackagesFolder)\bin\solidcp_$(Version)-1_all.deb" />
 
     </Target>
 
