@@ -1,0 +1,171 @@
+UNCOMPRESS(P)              POSIX Programmer's Manual             UNCOMPRESS(P)
+
+
+
+NAME
+       uncompress - expand compressed data
+
+SYNOPSIS
+       uncompress [-cfv][file...]
+
+DESCRIPTION
+       The  uncompress  utility  shall  restore  files to their
+       original state after they have been compressed using the
+       compress  utility.  If no files are specified, the stan-
+       dard input shall be uncompressed to the standard output.
+       If  the invoking process has appropriate privileges, the
+       ownership, modes, access time, and modification time  of
+       the original file shall be preserved.
+
+       This  utility  shall  support  the  uncompressing of any
+       files produced by  the  compress  utility  on  the  same
+       implementation.  For files produced by compress on other
+       systems, uncompress supports  9  to  14-bit  compression
+       (see   compress  ,  -b);  it  is  implementation-defined
+       whether values of -b greater than 14 are supported.
+
+OPTIONS
+       The uncompress utility shall conform to the Base Defini-
+       tions  volume  of  IEEE Std 1003.1-2001,  Section  12.2,
+       Utility Syntax Guidelines.
+
+       The following options shall be supported:
+
+       -c     Write to standard output; no files are changed.
+
+       -f     Do not prompt for overwriting files. Except  when
+              run  in  the  background,  if -f is not given the
+              user shall be prompted as to whether an  existing
+              file should be overwritten. If the standard input
+              is not a terminal and -f is not given, uncompress
+              shall  write  a  diagnostic  message  to standard
+              error and exit with a status greater than zero.
+
+       -v     Write messages to standard error  concerning  the
+              expansion of each file.
+
+
+OPERANDS
+       The following operand shall be supported:
+
+       file   A  pathname of a file. If file already has the .Z
+              suffix specified, it shall be used as  the  input
+              file and the output file shall be named file with
+              the .Z suffix removed.  Otherwise, file shall  be
+              used as the name of the output file and file with
+              the .Z suffix appended shall be used as the input
+              file.
+
+
+STDIN
+       The  standard  input  shall  be  used  only  if  no file
+       operands are specified, or if a file operand is '-' .
+
+INPUT FILES
+       Input files shall be in the format produced by the  com-
+       press utility.
+
+ENVIRONMENT VARIABLES
+       The  following  environment  variables  shall affect the
+       execution of uncompress:
+
+       LANG   Provide a default value for the internationaliza-
+              tion  variables  that are unset or null. (See the
+              Base Definitions volume of  IEEE Std 1003.1-2001,
+              Section  8.2,  Internationalization Variables for
+              the precedence of internationalization  variables
+              used  to  determine  the  values  of locale cate-
+              gories.)
+
+       LC_ALL If set to a non-empty string value, override  the
+              values  of  all  the  other  internationalization
+              variables.
+
+       LC_CTYPE
+              Determine the locale for  the  interpretation  of
+              sequences  of  bytes  of  text data as characters
+              (for example, single-byte as  opposed  to  multi-
+              byte characters in arguments).
+
+       LC_MESSAGES
+              Determine  the  locale  that  should  be  used to
+              affect the format and contents of diagnostic mes-
+              sages written to standard error.
+
+       NLSPATH
+              Determine  the  location  of message catalogs for
+              the processing of LC_MESSAGES .
+
+
+ASYNCHRONOUS EVENTS
+       Default.
+
+STDOUT
+       When there are no file operands  or  the  -c  option  is
+       specified,  the  uncompressed output is written to stan-
+       dard output.
+
+STDERR
+       Prompts shall be written to the  standard  error  output
+       under  the  conditions  specified in the DESCRIPTION and
+       OPTIONS sections.  The prompts shall  contain  the  file
+       pathname,  but  their  format  is otherwise unspecified.
+       Otherwise, the standard error output shall be used  only
+       for diagnostic messages.
+
+OUTPUT FILES
+       Output  files are the same as the respective input files
+       to compress.
+
+EXTENDED DESCRIPTION
+       None.
+
+EXIT STATUS
+       The following exit values shall be returned:
+
+        0     Successful completion.
+
+       >0     An error occurred.
+
+
+CONSEQUENCES OF ERRORS
+       The input file remains unmodified.
+
+       The following sections are informative.
+
+APPLICATION USAGE
+       The limit of 14 on the compress -b bits argument  is  to
+       achieve  portability to all systems (within the restric-
+       tions imposed by the lack of an explicit published  file
+       format).    Some   implementations   based   on   16-bit
+       architectures cannot support 15 or 16-bit uncompression.
+
+EXAMPLES
+       None.
+
+RATIONALE
+       None.
+
+FUTURE DIRECTIONS
+       None.
+
+SEE ALSO
+       compress , zcat
+
+COPYRIGHT
+       Portions  of  this  text are reprinted and reproduced in
+       electronic form from  IEEE  Std  1003.1,  2003  Edition,
+       Standard  for Information Technology -- Portable Operat-
+       ing System Interface (POSIX), The Open Group Base Speci-
+       fications Issue 6, Copyright (C) 2001-2003 by the Insti-
+       tute of Electrical and Electronics  Engineers,  Inc  and
+       The  Open Group. In the event of any discrepancy between
+       this version and the original IEEE and  The  Open  Group
+       Standard,  the original IEEE and The Open Group Standard
+       is the referee document. The original  Standard  can  be
+       obtained        online        at        http://www.open-
+       group.org/unix/online.html .
+
+
+
+IEEE/The Open Group                  2003                        UNCOMPRESS(P)

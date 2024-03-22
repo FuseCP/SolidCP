@@ -1,0 +1,67 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+	<PropertyGroup>
+		<Version Condition=" '$(Version)' == '' ">1.5.0</Version>
+		<FileVersion>$(BUILD_NUMBER)</FileVersion>
+		<VersionLabel>$(BUILD_NUMBER)</VersionLabel>
+		<ReleaseDate>2023-01-31</ReleaseDate>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <BuildConfiguration>$(Configuration)</BuildConfiguration>
+		<RootFolder>..\..\..</RootFolder>
+		<TrunkFolder>$(RootFolder)\SolidCP</TrunkFolder>
+
+		<SetupTrunkFolder>$(RootFolder)\SolidCP.Installer</SetupTrunkFolder>
+		<SetupBuildFolder>$(SetupTrunkFolder)\Build\$(BuildConfiguration)</SetupBuildFolder>
+		<MSBuildCommunityTasksPath>$(RootFolder)\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+
+		<BuildFolder>$(TrunkFolder)\Build\$(BuildConfiguration)</BuildFolder>
+		<DeployFolder>$(TrunkFolder)\Deploy\$(BuildConfiguration)</DeployFolder>
+        <PackagesFolder>$(SetupTrunkFolder)\Sources\SolidCP.InstallPackages</PackagesFolder>
+
+		<ZipCmd>"$(RootFolder)\tools\7-Zip\7z.exe"</ZipCmd>
+		<GZipCmd>"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
+        <WpkgCmd>"$(RootFolder)\tools\wpkg\wpkg.exe"</WpkgCmd>
+    </PropertyGroup>
+
+    <Target Name="Debian">
+        
+        <Message Text="Preparing Files"/>
+
+        <ItemGroup>
+            <DocFiles Include="$(PackagesFolder)\src\doc\*.*" />
+        </ItemGroup>
+
+		<Copy SourceFiles="$(DeployFolder)\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1" />
+		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Debian\usr\share\pixmaps\SolidCP.png" />
+		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Debian\usr\share\applications" />
+		<Copy SourceFiles="@(DocFiles)" DestinationFolder="$(PackagesFolder)\Debian\usr\share\doc\solidcp" />
+
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
+        </Exec>
+        <Message Text="$(OutputOfZip)" />
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller" />
+
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian&quot;">
+             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfGZip" />
+        </Exec>
+        <Message Text="$(OutputOfGZip)" />
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian" />
+
+        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\SetInstalled-Size.ps1 }&quot;" />
+
+        <Exec Command="$(WpkgCmd) -b &quot;$(PackagesFolder)\Debian&quot;">
+            <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
+        </Exec>
+        <Message Text="$(OutputOfWpkg)" />
+        <Move SourceFiles="$(PackagesFolder)\Debian\solidcp.deb" DestinationFiles="$(PackagesFolder)\bin\solidcp_$(Version)-1_any.deb" />
+
+    </Target>
+
+    <Target Name="Build" DependsOnTargets="Debian" />
+
+</Project>
+

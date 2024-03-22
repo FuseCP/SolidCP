@@ -1,0 +1,56 @@
+ZLESS(1)                                                              ZLESS(1)
+
+
+
+NAME
+       zless  -  file  perusal  filter  for crt viewing of com-
+       pressed text
+
+SYNOPSIS
+       zless [ name ...  ]
+
+DESCRIPTION
+       Zless is a filter which allows examination of compressed
+       or  plain  text files one screenful at a time on a soft-
+       copy terminal.  It is  the  equivalent  of  setting  the
+       environment  variable  LESSOPEN  to "|gzip -cdfq -- %s",
+       and then running less.  However, enough people  seem  to
+       think  that having the command zless available is impor-
+       tant to be worth providing it.
+
+       Note that zless does not work with files piped to it  on
+       stdin,  it only works with files specified as arguments.
+       If you really want to use less in a pipe,  then  do  the
+       uncompress explicitly and pipe to less instead of zless.
+
+SEE ALSO
+       zmore(1), less(1)
+
+BUGS
+       Zless does not work with compressed data that  is  piped
+       to  it  via standard input; it requires that input files
+       be specified as arguments.
+
+COPYRIGHT NOTICE
+       Copyright (C) 2006 Free Software Foundation, Inc.
+       Copyright (C) 1992, 1993 Jean-loup Gailly
+
+       Permission is granted to make  and  distribute  verbatim
+       copies  of this manual provided the copyright notice and
+       this permission notice are preserved on all copies.
+
+       Permission is granted to copy  and  distribute  modified
+       versions  of this manual under the conditions for verba-
+       tim copying, provided that the entire resulting  derived
+       work  is  distributed  under  the  terms of a permission
+       notice identical to this one.
+
+       Permission is granted to copy  and  distribute  transla-
+       tions  of  this  manual into another language, under the
+       above conditions for modified versions, except that this
+       permission   notice  may  be  stated  in  a  translation
+       approved by the Foundation.
+
+
+
+                                                                      ZLESS(1)
