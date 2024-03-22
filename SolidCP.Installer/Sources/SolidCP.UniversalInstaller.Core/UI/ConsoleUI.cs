@@ -157,9 +157,10 @@ Components to Install
 [x] Install Enterprise Server
 [x] Install Web Portal   
 
-[    Ok    ]
+[    Ok    ] [    Cancel    ]
 ")
 					.ShowDialog();
+				if (form[4].Clicked) Environment.Exit(0);
 				if (form[0].Checked) packages |= Packages.Server;
 				if (form[1].Checked) packages |= Packages.EnterpriseServer;
 				if (form[2].Checked) packages |= Packages.WebPortal;

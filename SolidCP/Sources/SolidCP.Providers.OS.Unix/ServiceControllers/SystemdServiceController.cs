@@ -99,8 +99,7 @@ namespace SolidCP.Providers.OS
 
 		public override void Install(ServiceDescription description)
 		{
-			var srvcFile = @"
-[Unit]
+			var srvcFile = @"[Unit]
 Description=@description
 @dependsOn
 @StartLimitIntervalSec
@@ -118,6 +117,7 @@ WorkingDirectory=@workdir
 [Install]
 WantedBy=multi-user.target
 ";
+
 			var env = string.Join(Environment.NewLine, description.EnvironmentVariables.Keys
 				.OfType<string>()
 				.Select(key => $"Environment=\"{key}={description.EnvironmentVariables[key]}\"")
@@ -162,7 +162,8 @@ WantedBy=multi-user.target
 				}
 			}
 
-			srvcFile = srvcFile.Replace("@description", description.Description)
+			srvcFile = srvcFile
+				.Replace("@description", description.Description)
 				.Replace("@dependsOn", deps)
 				.Replace("@exec", exe)
 				.Replace("@workdir", description.Directory)
@@ -172,7 +173,8 @@ WantedBy=multi-user.target
 				.Replace("@StartLimitIntervalSec", !string.IsNullOrEmpty(description.StartLimitIntervalSec) ? $"StartLimitIntervalSec={description.StartLimitIntervalSec}" : "")
 				.Replace("@StartLimitBurst", !string.IsNullOrEmpty(description.StartLimitBurst) ? $"StartLimitBurst={description.StartLimitBurst}" : "")
 				.Replace("@Syslog", !string.IsNullOrEmpty(description.SyslogIdentifier) ?
-					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={description.SyslogIdentifier}" : "");
+					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={description.SyslogIdentifier}" : "")
+				.Replace("\r\n", "\n");
 			srvcFile = Regex.Replace(srvcFile, @"^\s*$(?!^\[.*?\])", "", RegexOptions.Multiline); // remove empty lines
 
 			File.WriteAllText(Path.Combine(ServicesDirectory, $"{description.ServiceId}.service"), srvcFile);

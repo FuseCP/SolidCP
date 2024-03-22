@@ -46,7 +46,7 @@ namespace SolidCP.UniversalInstaller {
         {
             var assembly = Assembly.GetExecutingAssembly();
             var version = assembly.GetName().Version;
-            Installer.Log($"SolidCP Installer {version}");
+            Installer.Log($"SolidCP UniversalInstaller {version}");
         }
 
     }

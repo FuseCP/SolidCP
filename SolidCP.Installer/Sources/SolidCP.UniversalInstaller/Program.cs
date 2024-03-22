@@ -13,6 +13,13 @@ namespace SolidCP.UniversalInstaller
 			{
 				//if (!Debugger.IsAttached && !OSInfo.IsMono) Debugger.Launch();
 				ResourceAssemblyLoader.Init();
+				SetupCore();
+			} catch { }
+		}
+
+		public static void SetupCore() {
+			try
+			{
 				Installer.Current.UI.PrintInstallerVersion();
 				Installer.Current.InstallAll();
 			} catch (Exception ex) { }
