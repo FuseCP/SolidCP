@@ -353,6 +353,8 @@ You have successfully installed the following components:
 			template = template.Replace("@", pckgStr.ToString());
 			var form = new ConsoleForm(template)
 				.ShowDialog();
+
+			Console.Clear();
 		}
 	}
 }

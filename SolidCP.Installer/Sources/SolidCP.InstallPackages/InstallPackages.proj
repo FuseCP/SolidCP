@@ -20,10 +20,16 @@
 
 		<ZipCmd>"$(RootFolder)\tools\7-Zip\7z.exe"</ZipCmd>
 		<GZipCmd>"$(RootFolder)\tools\gzip\bin\gzip.exe"</GZipCmd>
-        <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\Release\wpkg.exe"</WpkgCmd>
+        <WpkgCmd>"$(RootFolder)\tools\wpkg\bin\$(Configuration)\wpkg.exe"</WpkgCmd>
     </PropertyGroup>
 
-    <Target Name="Debian">
+    <Target Name="BuildWpkg">
+	    <Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(RootFolder)\tools\wpkg\wpkg.sln" />
+
+        <MSBuild Projects="$(RootFolder)\tools\wpkg\wpkg.sln" Properties="Configuration=$(Configuration)" />
+    </Target>
+
+    <Target Name="Debian" DependsOnTargets="BuildWpkg">
         
         <Message Text="Preparing Files"/>
 
@@ -51,7 +57,7 @@
         <Message Text="$(OutputOfGZip)" />
         <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian" />
 
-        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\SetInstalled-Size.ps1 }&quot;" />
+        <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\SetInstalled-Size.ps1 }&quot;" />
 
         <Exec Command="$(WpkgCmd) -b &quot;$(PackagesFolder)\Debian&quot;">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />

@@ -140,7 +140,7 @@
 		<EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
 		<EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
 		<EmbeddedResource Include="Resources\Renci.SshNet.dll" />
-
+		<EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Server.zip" Link="Resources\SolidCP-Server.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-EnterpriseServer.zip" Link="Resources\SolidCP-EnterpriseServer.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Portal.zip" Link="Resources\SolidCP-Portal.zip" />
@@ -181,8 +181,10 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Web.PlatformInstaller.dll" />-->
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Win32.Registry.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\DotNetZip.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\Mono.Posix.NETStandard.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SyslogNet.Client.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Newtonsoft.Json.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Lib\Mono.Posix.NETStandard.dll" />
 			<FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
 			<FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />
