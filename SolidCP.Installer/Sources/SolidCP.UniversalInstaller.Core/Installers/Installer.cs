@@ -330,6 +330,7 @@ namespace SolidCP.UniversalInstaller
 						case OSFlavor.Debian: current = new DebianInstaller(); break;
 						case OSFlavor.Ubuntu: current = new UbuntuInstaller(); break;
 						case OSFlavor.Mint: current = new MintInstaller(); break;
+						case OSFlavor.Kali: current = new KaliInstaller(); break;
 						case OSFlavor.Fedora: current = new FedoraInstaller(); break;
 						case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 						case OSFlavor.CentOS: current = new CentOSInstaller(); break;

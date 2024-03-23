@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 {
 
 	public enum OSPlatform { Unknown = 0, Windows, Mac, Linux, Unix, Other };
-	public enum OSFlavor { Unknown = 0, Windows, Mac, Debian, Mint, Ubuntu, Fedora, RedHat, Oracle, CentOS, SUSE, Alpine, Arch, FreeBSD, NetBSD, Other }
+	public enum OSFlavor { Unknown = 0, Min = 0, Windows, Mac, Debian, Mint, Kali, Ubuntu, Fedora, RedHat, Oracle, CentOS, SUSE, Alpine, Arch, FreeBSD, NetBSD, Other, Max = Other }
 
 	public class OSInfo
 	{
@@ -84,6 +84,17 @@ namespace SolidCP.Providers.OS
 					OSFlavor f;
 					if (name == null) flavor = OSFlavor.Other;
 					else if (Enum.TryParse<OSFlavor>(name, out f)) flavor = f;
+					else
+					{
+						for (var os = OSFlavor.Min; os <= OSFlavor.Max;  os++)
+						{
+							if (Regex.IsMatch(name, Regex.Escape(Enum.GetName(typeof(OSFlavor), os)), RegexOptions.IgnoreCase))
+							{
+								flavor = os;
+								break;
+							}
+						}
+					}
 				}
 				return flavor == OSFlavor.Unknown ? OSFlavor.Other : flavor;
 			}

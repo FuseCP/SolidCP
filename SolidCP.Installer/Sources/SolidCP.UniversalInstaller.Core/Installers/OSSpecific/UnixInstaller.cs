@@ -51,7 +51,7 @@ namespace SolidCP.UniversalInstaller
 			ServiceController.Install(service);
 			ServiceController.Enable(service.ServiceId);
 			var status = ServiceController.Info(service.ServiceId);
-			if (status.Status == OSServiceStatus.Running) ServiceController.Stop(service.ServiceId);
+			if (status != null && status.Status == OSServiceStatus.Running) ServiceController.Stop(service.ServiceId);
 			ServiceController.Start(service.ServiceId);
 
 			OpenFirewall(ServerSettings.Urls);

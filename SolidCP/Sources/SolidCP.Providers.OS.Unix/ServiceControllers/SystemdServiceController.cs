@@ -41,28 +41,27 @@ namespace SolidCP.Providers.OS
 			var output = Shell.Exec($"systemctl status {serviceId}.service --no-pager --full").Output().Result;
 			if (output == null) return null;
 
-			var match = Regex.Match(output, $@"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$^\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+)\)", RegexOptions.Multiline);
+			var match = Regex.Match(output, $@"^\s*Loaded:\s*(?<loaded>[^\s$]+).*?$(^.*$)*^\s*Active:\s*(?<active>[^\s$]+)\s+\((?<status>[^\)]+)\)", RegexOptions.Multiline);
 
+			string loaded, active, status = null;
 			if (match.Success)
 			{
-				var loaded = match.Groups["loaded"].Value;
-				var active = match.Groups["active"].Value;
-				var status = match.Groups["status"].Value;
-				return new OSService()
-				{
-					Id = serviceId,
-					Name = serviceId,
-					Description = "",
-					Status = status == "dead" || status == "exited" ? OSServiceStatus.Stopped :
-							status == "running" ? OSServiceStatus.Running : OSServiceStatus.Stopped
-				};
+				loaded = match.Groups["loaded"].Value;
+				active = match.Groups["active"].Value;
+				status = match.Groups["status"].Value;
 			}
-			return null;
+			return new OSService()
+			{
+				Id = serviceId,
+				Name = serviceId,
+				Description = "",
+				Status = status == "running" ? OSServiceStatus.Running : OSServiceStatus.Stopped
+			};
 		}
 		public override void ChangeStatus(string serviceId, OSServiceStatus status)
 		{
 			var state = Info(serviceId);
-				
+
 			if (state == null) return;
 
 			if (state.Status == OSServiceStatus.Running)
@@ -134,7 +133,7 @@ WantedBy=multi-user.target
 				var indexOfQuote = exe.IndexOf('"', 1);
 				if (indexOfQuote > 0)
 				{
-					cmd = exe.Substring(1, indexOfQuote-1);
+					cmd = exe.Substring(1, indexOfQuote - 1);
 					if (!cmd.Contains(Path.DirectorySeparatorChar))
 					{
 						cmd = Shell.Find(cmd);
@@ -145,18 +144,20 @@ WantedBy=multi-user.target
 						}
 					}
 				}
-			} else
+			}
+			else
 			{
 				var indexOfSpace = exe.IndexOf(' ');
-				if (indexOfSpace > 0) {
+				if (indexOfSpace > 0)
+				{
 					cmd = exe.Substring(0, indexOfSpace);
 					if (!cmd.Contains(Path.DirectorySeparatorChar))
 					{
 						cmd = Shell.Find(cmd);
 						if (cmd != null)
 						{
-							if (cmd.Contains(' ')) exe = $@"""{cmd}"" {exe.Substring(indexOfSpace+1)}";
-							else exe = $@"{cmd} {exe.Substring(indexOfSpace+1)}";
+							if (cmd.Contains(' ')) exe = $@"""{cmd}"" {exe.Substring(indexOfSpace + 1)}";
+							else exe = $@"{cmd} {exe.Substring(indexOfSpace + 1)}";
 						}
 					}
 				}

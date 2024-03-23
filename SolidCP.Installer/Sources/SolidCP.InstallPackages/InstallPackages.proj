@@ -29,7 +29,15 @@
         <MSBuild Projects="$(RootFolder)\tools\wpkg\wpkg.sln" Properties="Configuration=$(Configuration)" />
     </Target>
 
-    <Target Name="Debian" DependsOnTargets="BuildWpkg">
+    <Target Name="CleanOutput" DependsOnTargets="BuildWpkg">
+        <ItemGroup>
+            <OutputPackageFiles Include="$(PackagesFolder)\bin\*.*" /> 
+        </ItemGroup>
+
+        <Delete Files="@(OutputPackageFiles)" />
+    </Target>
+
+    <Target Name="Debian" DependsOnTargets="CleanOutput">
         
         <Message Text="Preparing Debian Files"/>
 
@@ -74,10 +82,11 @@
 
         <ItemGroup>
             <DocFilesFedoraExclude Include="$(PackagesFolder)\src\doc\changelog.Debian" />
-            <DocFilesFedora Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesFedoraExclude)" />    
+            <DocFilesFedora Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesFedoraExclude)" /> 
+            <UniversalInstallerDlls Include="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" />
         </ItemGroup>
 
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Fedora\data\usr\share\solidcp" />
+		<Copy SourceFiles="@(UniversalInstallerDlls)" DestinationFolder="$(PackagesFolder)\Fedora\data\usr\share\solidcp" />
 		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Fedora\data\usr\share\man\man1\solidcp-universalinstaller.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Fedora\data\usr\share\pixmaps\SolidCP.png" />
 		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Fedora\data\usr\share\applications" />
@@ -96,7 +105,15 @@
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfWpkg" />
         </Exec>
         <Message Text="$(OutputOfWpkg)" />
-        <Move SourceFiles="$(PackagesFolder)\Fedora\rpmbuild\RPMS\noarch\*.rpm" DestinationFolder="$(PackagesFolder)\bin" />
+
+        <ItemGroup>
+            <RpmFiles Include="$(PackagesFolder)\Fedora\rpmbuild\RPMS\noarch\*.rpm" />
+            <SourceTarFiles Include="$(PackagesFolder)\Fedora\rpmbuild\SOURCES\*.*" />
+        </ItemGroup>
+
+        <Delete Files="@(SourceTarFiles)" />
+
+        <Move SourceFiles="@(RpmFiles)" DestinationFolder="$(PackagesFolder)\bin" />
 
     </Target>
 
