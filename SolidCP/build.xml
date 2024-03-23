@@ -425,7 +425,7 @@
 		<!-- build MSI package -->
 	</Target>
 
-	<Target Name="CreateInstallPackages" DependsOnTargets="CreateUniversalSetupBuild">
+	<Target Name="CreateInstallPackages">
 
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
