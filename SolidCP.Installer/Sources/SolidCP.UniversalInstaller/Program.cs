@@ -23,7 +23,8 @@ namespace SolidCP.UniversalInstaller
 				Installer.Current.UI.Init();
 				Installer.Current.UI.PrintInstallerVersion();
 				Installer.Current.InstallAll();
-			} catch (Exception ex) { }
+			} catch (Exception ex) {
+			}
 		}
 	}
 }

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec mono /usr/share/solidcp/SolidCP.UniversalInstaller.exe
+exec mono --debug /usr/share/solidcp/SolidCP.UniversalInstaller.exe
