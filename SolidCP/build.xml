@@ -425,6 +425,28 @@
 		<!-- build MSI package -->
 	</Target>
 
+	<Target Name="CreateInstallPackages" DependsOnTargets="CreateUniversalSetupBuild">
+
+		<PropertyGroup>
+			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
+			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
+			<DeployPackagesDir>$(DeployFolder)\Packages</DeployPackagesDir>
+			<PackagesBinDir>$(InstallerProjectRoot)SolidCP.InstallPackages\bin</PackagesBinDir>
+		</PropertyGroup>
+
+		<!-- build install packages -->
+		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.InstallPackages\InstallPackages.proj" Properties="BuildConfiguration=$(BuildConfiguration);Configuration=$(BuildConfiguration);Version=$(Version);FileVersion=$(FileVersion);VersionLabel=$(VersionLabel);ReleaseDate=$(ReleaseDate)" />
+
+		<MakeDir Directories="$(DeployPackagesDir)" />
+
+		<ItemGroup>
+			<PackageFiles Include="$(PackagesBinDir)\*.*" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(DeployPackagesDir)" />
+
+	</Target>
+
   <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
     <ItemGroup>
       <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition="'$(BuildConfiguration)' == 'Release'" />
@@ -922,7 +944,7 @@
 
   </Target>
 
-  <Target Name="Deploy" DependsOnTargets="CreateUniversalSetupBuild" />
+  <Target Name="Deploy" DependsOnTargets="CreateInstallPackages" />
 	
   <Target Name="uploadwebpi" DependsOnTargets="BuildWebPlatformInstallerFeed">
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPFeed-$(Version).xml" LocalFile="$(DeployFolder)\SolidCPFeed.xml" />

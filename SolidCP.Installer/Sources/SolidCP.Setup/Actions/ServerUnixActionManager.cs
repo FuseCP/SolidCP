@@ -217,7 +217,6 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 				settings.Urls = string.Join(";", urls.ToArray());
 				settings.LetsEncryptCertificateDomains = domain;
 				settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
-				settings.CryptoKey = vars.CryptoKey;
 				if (vars.UpdateServerPassword)
 				{
 					if (vars.SetupAction == SetupActions.Setup)
