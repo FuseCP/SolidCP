@@ -1791,5 +1791,7 @@ namespace SolidCP.Server
 		}
 
 		#endregion
+
+		public Version Version => WebProvider.Version;
 	}
 }

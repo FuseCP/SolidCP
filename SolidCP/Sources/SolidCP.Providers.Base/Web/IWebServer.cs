@@ -183,5 +183,6 @@ namespace SolidCP.Providers.Web
 		//Directory Browseing
 		bool GetDirectoryBrowseEnabled(string siteId);
 		void SetDirectoryBrowseEnabled(string siteId, bool enabled);
+		Version Version { get; }
 	}
 }

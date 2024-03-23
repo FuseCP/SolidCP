@@ -4447,5 +4447,6 @@ namespace SolidCP.Providers.Web
 		}
 		#endregion
 
+		public virtual Version Version => new Version(6, 0);
 	}
 }

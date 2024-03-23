@@ -1,3 +1,6 @@
 [submodule "SolidCP/Lib/swaggerwcf"]
 	path = SolidCP/Lib/swaggerwcf
 	url = https://github.com/simonegli8/swaggerwcf
+[submodule "tools/wpkg"]
+	path = tools/wpkg
+	url = https://github.com/simonegli8/wpkg

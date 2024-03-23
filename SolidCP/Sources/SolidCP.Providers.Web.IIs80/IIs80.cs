@@ -40,171 +40,173 @@ using SolidCP.Providers.ResultObjects;
 
 namespace SolidCP.Providers.Web
 {
-    public class IIs80 : IIs70
-    {
-        private SslFlags SSLFlags
-        {
-            get
-            {
-                return (UseSni ? SslFlags.Sni : SslFlags.None) | (UseCcs ? SslFlags.CentralCertStore : SslFlags.None);
-            }
-        }
+	public class IIs80 : IIs70
+	{
+		private SslFlags SSLFlags
+		{
+			get
+			{
+				return (UseSni ? SslFlags.Sni : SslFlags.None) | (UseCcs ? SslFlags.CentralCertStore : SslFlags.None);
+			}
+		}
 
-        public string CCSUncPath
-        {
-            get { return ProviderSettings["SSLCCSUNCPath"]; }
-        }
+		public string CCSUncPath
+		{
+			get { return ProviderSettings["SSLCCSUNCPath"]; }
+		}
 
-        public string CCSCommonPassword
-        {
-            get { return ProviderSettings["SSLCCSCommonPassword"]; }
-        }
+		public string CCSCommonPassword
+		{
+			get { return ProviderSettings["SSLCCSCommonPassword"]; }
+		}
 
-        public bool UseSni
-        {
-            get
-            {
-                try
-                {
-                    return Convert.ToBoolean(ProviderSettings["SSLUseSNI"]);
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-        }
+		public bool UseSni
+		{
+			get
+			{
+				try
+				{
+					return Convert.ToBoolean(ProviderSettings["SSLUseSNI"]);
+				}
+				catch
+				{
+					return false;
+				}
+			}
+		}
 
-        public bool UseCcs
-        {
-            get
-            {
-                try
-                {
-                    return Convert.ToBoolean(ProviderSettings["SSLUseCCS"]);
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-        }
+		public bool UseCcs
+		{
+			get
+			{
+				try
+				{
+					return Convert.ToBoolean(ProviderSettings["SSLUseCCS"]);
+				}
+				catch
+				{
+					return false;
+				}
+			}
+		}
 
-        public override SettingPair[] GetProviderDefaultSettings()
-        {
-            var allSettings = new List<SettingPair>();
-            allSettings.AddRange(base.GetProviderDefaultSettings());
+		public override SettingPair[] GetProviderDefaultSettings()
+		{
+			var allSettings = new List<SettingPair>();
+			allSettings.AddRange(base.GetProviderDefaultSettings());
 
-            // Add these to get som default values in. These are also used a marker in the IIS70_Settings.ascx.cs to know that it is the IIS80 provider that is used
-            allSettings.Add(new SettingPair("SSLUseCCS", false.ToString()));
-            allSettings.Add(new SettingPair("SSLUseSNI", false.ToString()));
-            allSettings.Add(new SettingPair("SSLCCSUNCPath", ""));
-            allSettings.Add(new SettingPair("SSLCCSCommonPassword", ""));
+			// Add these to get som default values in. These are also used a marker in the IIS70_Settings.ascx.cs to know that it is the IIS80 provider that is used
+			allSettings.Add(new SettingPair("SSLUseCCS", false.ToString()));
+			allSettings.Add(new SettingPair("SSLUseSNI", false.ToString()));
+			allSettings.Add(new SettingPair("SSLCCSUNCPath", ""));
+			allSettings.Add(new SettingPair("SSLCCSCommonPassword", ""));
 
-            return allSettings.ToArray();
-        }
+			return allSettings.ToArray();
+		}
 
 
-        public override string[] Install()
-        {
-            var messages = new List<string>();
+		public override string[] Install()
+		{
+			var messages = new List<string>();
 
-            messages.AddRange(base.Install());
+			messages.AddRange(base.Install());
 
-            // TODO: Setup ccs
+			// TODO: Setup ccs
 
-            return messages.ToArray();
-        }
+			return messages.ToArray();
+		}
 
-        public override bool IsIISInstalled()
-        {
-            int value = 0;
-            RegistryKey root = Registry.LocalMachine;
-            RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
-            if (rk != null)
-            {
-                value = (int)rk.GetValue("MajorVersion", null);
-                rk.Close();
-            }
+		public override bool IsIISInstalled()
+		{
+			int value = 0;
+			RegistryKey root = Registry.LocalMachine;
+			RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
+			if (rk != null)
+			{
+				value = (int)rk.GetValue("MajorVersion", null);
+				rk.Close();
+			}
 
-            return value == 8;
-        }
+			return value == 8;
+		}
 
-        public override bool IsInstalled()
-        {
-            return OS.OSInfo.IsWindows && IsIISInstalled();
-        }
+		public override bool IsInstalled()
+		{
+			return OS.OSInfo.IsWindows && IsIISInstalled();
+		}
 
-        public override bool CheckCertificate(WebSite webSite)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override bool CheckCertificate(WebSite webSite)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.CheckCertificate(webSite);
-        }
+			return sslObjectService.CheckCertificate(webSite);
+		}
 
-        public override ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override ResultObject DeleteCertificate(SSLCertificate certificate, WebSite website)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.DeleteCertificate(certificate, website);
-        }
+			return sslObjectService.DeleteCertificate(certificate, website);
+		}
 
-        public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override SSLCertificate InstallPFX(byte[] certificate, string password, WebSite website)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.InstallPfx(certificate, password, website);
-        }
+			return sslObjectService.InstallPfx(certificate, password, website);
+		}
 
-        public override SSLCertificate ImportCertificate(WebSite website)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override SSLCertificate ImportCertificate(WebSite website)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.ImportCertificate(website);
-        }
+			return sslObjectService.ImportCertificate(website);
+		}
 
-        public override byte[] ExportCertificate(string serialNumber, string password)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override byte[] ExportCertificate(string serialNumber, string password)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.ExportPfx(serialNumber, password);
-        }
+			return sslObjectService.ExportPfx(serialNumber, password);
+		}
 
-        public override SSLCertificate GenerateCSR(SSLCertificate certificate)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override SSLCertificate GenerateCSR(SSLCertificate certificate)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            sslObjectService.GenerateCsr(certificate);
+			sslObjectService.GenerateCsr(certificate);
 
-            return certificate;
-        }
+			return certificate;
+		}
 
-        public override List<SSLCertificate> GetServerCertificates()
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override List<SSLCertificate> GetServerCertificates()
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.GetServerCertificates();
-        }
+			return sslObjectService.GetServerCertificates();
+		}
 
-        public override SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override SSLCertificate InstallCertificate(SSLCertificate certificate, WebSite website)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.InstallCertificate(certificate, website);
-        }
+			return sslObjectService.InstallCertificate(certificate, website);
+		}
 
-        public override String LEInstallCertificate(WebSite website, string email)
-        {
-            var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
+		public override String LEInstallCertificate(WebSite website, string email)
+		{
+			var sslObjectService = new SSLModuleService80(SSLFlags, CCSUncPath, CCSCommonPassword);
 
-            return sslObjectService.LEInstallCertificate(website, email);
-        }
+			return sslObjectService.LEInstallCertificate(website, email);
+		}
 
-        public override WebSite GetSite(string siteId)
-        {
-            var site = base.GetSite(siteId);
-            site.SniEnabled = UseSni;
-            return site;
-        }
-    }
+		public override WebSite GetSite(string siteId)
+		{
+			var site = base.GetSite(siteId);
+			site.SniEnabled = UseSni;
+			return site;
+		}
+
+		public override Version DefaultVersion => new Version(8,0);
+	}
 }

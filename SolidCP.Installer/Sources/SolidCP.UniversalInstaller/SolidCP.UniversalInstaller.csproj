@@ -20,9 +20,9 @@
 		<DebugType>portable</DebugType>
 		<Optimize>false</Optimize>
 	</PropertyGroup>
-
 	
 	<ItemGroup>
+		<None Remove="Resources\DotNetZip.dll" />
 		<None Remove="Resources\Microsoft.Web.Administration.dll" />
 		<None Remove="Resources\Microsoft.Web.Delegation.dll" />
 		<None Remove="Resources\Microsoft.Web.Deployment.dll" />
@@ -31,6 +31,8 @@
 		<None Remove="Resources\Microsoft.Win32.Registry.dll" />
 		<None Remove="Resources\Newtonsoft.Json.dll" />
 		<None Remove="Resources\Newtonsoft.Json.xml" />
+		<None Remove="Resources\SolidCP.Providers.Base.pdb" />
+		<None Remove="Resources\SolidCP.Providers.OS.Unix.pdb" />
 		<None Remove="Resources\SolidCP.Providers.OS.Windows2003.dll" />
 		<None Remove="Resources\SolidCP.Providers.OS.Windows2003.pdb" />
 		<None Remove="Resources\SolidCP.Providers.OS.Windows2008.dll" />
@@ -53,6 +55,14 @@
 		<None Remove="Resources\SolidCP.Providers.Web.IIs80.pdb" />
 		<None Remove="Resources\SolidCP.Server.Utils.dll" />
 		<None Remove="Resources\SolidCP.Server.Utils.pdb" />
+		<None Remove="Resources\SolidCP.UniversalInstaller.Core.pdb" />
+		<None Remove="Resources\SolidCP.Web.Clients.pdb" />
+		<None Remove="Resources\SyslogNet.Client.dll" />
+		<None Remove="Resources\System.Diagnostics.EventLog.dll" />
+		<None Remove="Resources\System.IO.FileSystem.AccessControl.dll" />
+		<None Remove="Resources\System.Security.AccessControl.dll" />
+		<None Remove="Resources\System.Security.Principal.Windows.dll" />
+		<None Remove="Resources\System.Text.Encoding.CodePages.dll" />
 		<None Remove="Resources\WpiServiceContract.dll" />
 		<None Remove="Resources\WpiServiceContract.pdb" />
 	</ItemGroup>
@@ -121,6 +131,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Resources\DotNetZip.dll" />
 		<EmbeddedResource Include="Resources\Microsoft.Web.Administration.dll" />
 		<!--<EmbeddedResource Include="Resources\Microsoft.Web.Delegation.dll" />
 		<EmbeddedResource Include="Resources\Microsoft.Web.Deployment.dll" />
@@ -129,14 +140,24 @@
 		<EmbeddedResource Include="Resources\Microsoft.Win32.Registry.dll" />
 		<EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
 		<EmbeddedResource Include="Resources\Renci.SshNet.dll" />
-
+		<EmbeddedResource Include="Resources\Mono.Posix.NETStandard.dll" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Server.zip" Link="Resources\SolidCP-Server.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-EnterpriseServer.zip" Link="Resources\SolidCP-EnterpriseServer.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Portal.zip" Link="Resources\SolidCP-Portal.zip" />
 		<EmbeddedResource Include="..\..\..\SolidCP\Deploy\$(Configuration)\SolidCP-Web-Dav-Portal.zip" Link="Resources\SolidCP-Web-Dav-Portal.zip" />
+		<EmbeddedResource Include="Resources\SyslogNet.Client.dll" />
+		<EmbeddedResource Include="Resources\System.Diagnostics.EventLog.dll" />
+		<EmbeddedResource Include="Resources\System.IO.FileSystem.AccessControl.dll" />
+		<EmbeddedResource Include="Resources\System.Security.AccessControl.dll" />
+		<EmbeddedResource Include="Resources\System.Security.Principal.Windows.dll" />
+		<EmbeddedResource Include="Resources\System.Text.Encoding.CodePages.dll" />
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+		<EmbeddedResource Include="Resources\SolidCP.Web.Clients.pdb" />
+		<EmbeddedResource Include="Resources\SolidCP.Providers.Base.pdb" />
+		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Unix.pdb" />
+		<EmbeddedResource Include="Resources\SolidCP.UniversalInstaller.Core.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2012.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2016.pdb" />
 		<EmbeddedResource Include="Resources\SolidCP.Providers.OS.Windows2019.pdb" />
@@ -160,8 +181,10 @@
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Web.PlatformInstaller.dll" />-->
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Microsoft.Win32.Registry.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\DotNetZip.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\Mono.Posix.NETStandard.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\netstandard\SyslogNet.Client.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Sources\SolidCP.Server\bin\Providers\Newtonsoft.Json.dll" />
+			<FilesToCopy Include="..\..\..\SolidCP\Lib\Mono.Posix.NETStandard.dll" />
 			<FilesToCopy Include="..\packages\System.Text.Encoding.CodePages.4.3.0\lib\net46\System.Text.Encoding.CodePages.dll" />
 			<FilesToCopy Include="..\packages\System.Diagnostics.EventLog.4.7.0\lib\net461\System.Diagnostics.EventLog.dll" />
 			<FilesToCopy Include="..\..\..\SolidCP\Bin\net48\System.Security.Principal.Windows.dll" />

@@ -37,8 +37,6 @@ Server Urls: [?Urls http://localhost:9003                                       
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
 
-Enterprise Server Crypto Key: [?CryptoKey                                                             ]
-
 [    Ok    ]
 ")
 				.Load(ServerSettings)
@@ -56,8 +54,6 @@ Server Urls: [?Urls http://localhost:9003                                       
 
 Server Password: [!ServerPassword                                         ]
 Repeat Password: [!RepeatPassword                                         ]
-
-Enterprise Server Crypto Key: [?CryptoKey                                                             ]
 
 Passwords don't match!
 
@@ -96,7 +92,6 @@ Urls:              [?Urls http://localhost:9002                                 
 Database Server:   [?DatabaseServer localhost                                                           ]
 Database User:     [?DatabaseUser sa                                                                  ]
 Database Password: [!DatabasePassword                                                                     ]
-CryptoKey:      [?CryptoKey                                                                              ]
 
 [    Ok    ]
 ")
@@ -162,9 +157,10 @@ Components to Install
 [x] Install Enterprise Server
 [x] Install Web Portal   
 
-[    Ok    ]
+[    Ok    ] [    Cancel    ]
 ")
 					.ShowDialog();
+				if (form[4].Clicked) Environment.Exit(0);
 				if (form[0].Checked) packages |= Packages.Server;
 				if (form[1].Checked) packages |= Packages.EnterpriseServer;
 				if (form[2].Checked) packages |= Packages.WebPortal;
@@ -357,6 +353,128 @@ You have successfully installed the following components:
 			template = template.Replace("@", pckgStr.ToString());
 			var form = new ConsoleForm(template)
 				.ShowDialog();
+
+			Exit();
+		}
+
+		public override void Init()
+		{
+			AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
+			{
+				Exit();
+			};
+		}
+		public override void Exit()
+		{
+			Console.Clear();
+			Console.CursorVisible = true;
+		}
+
+		public override void CheckPrerequisites()
+		{
+			bool ok = true;
+			if (OSInfo.IsWindows)
+			{
+				var form = new ConsoleForm(@"
+Checking System Requirements
+============================
+
+  [x] Operating System:  [?OS                                  ]
+  [x] NET Framework:     [?NET                                  ]
+  [x] IIS:               [?IIS                                  ]
+
+  [    OK    ]
+");
+				form.SetFocus(form["OK"]);
+				form.Show();
+				if (Installer.CheckOSSupported()) form[0].Text = "x";
+				else
+				{
+					form[0].Text = "!";
+					ok = false;
+				}
+				form["OS"].Text = " "+Regex.Replace(OSInfo.Description, @"(?<=[0-9]+)\.[0-9.]*", "");
+				form.Show();
+				if (Installer.CheckNetVersionSupported()) form[2].Text = "x";
+				else {
+					form[2].Text = "!";
+					ok = false;
+				}
+				form["NET"].Text = " "+OSInfo.NetDescription;
+				form.Show();
+				if (Installer.CheckIISVersionSupported()) form[4].Text = "x";
+				else {
+					form[4].Text = "!";
+					ok = false;
+				}
+				form["IIS"].Text = $" IIS {OSInfo.Current.WebServer.Version}";
+				form.Show();
+			} else
+			{
+				var form = new ConsoleForm(@"
+Checking System Requirements
+============================
+
+  [x] Operating System:  [?OS                                ]
+  [x] .NET 8 Runtime:    [?NET                                ]
+  [x] SystemD:           [?SysD                                ]
+
+  [    OK    ]
+");
+				form["OK"].HasFocus = true;
+				form.Show();
+				if (Installer.CheckOSSupported()) form[0].Text = "x";
+				else
+				{
+					form[0].Text = "!";
+					ok = false;
+				}
+				form["OS"].Text = " "+OSInfo.Description;
+				form.Show();
+				if (Installer.CheckNet8RuntimeInstalled())
+				{
+					form[2].Text = "x";
+					form["NET"].Text = " Installed";
+				}
+				else
+				{
+					form[2].Text = "!";
+					form["NET"].Text = " Not Installed";
+				}
+				form.Show();
+				if (Installer.CheckSystemdSupported())
+				{
+					form[4].Text = "x";
+					form["SysD"].Text = " SystemD Supported";
+				}
+				else
+				{
+					form[4].Text = "!";
+					form["SysD"].Text = " SystemD not Supported";
+					ok = false;
+				}
+
+				form.Show();
+			}
+			ConsoleKeyInfo key;
+			do {
+				key = Console.ReadKey();
+			} while (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Spacebar);
+
+			if (!ok)
+			{
+				var form = new ConsoleForm(@"
+Prerequisite Check Failed
+=========================
+
+SolidCP cannot be installed on this System.
+
+[    Exit    ]
+");
+				form.ShowDialog();
+				Exit();
+				Environment.Exit(0);
+			}
 		}
 	}
 }

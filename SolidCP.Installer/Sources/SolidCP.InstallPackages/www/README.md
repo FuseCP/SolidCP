@@ -1,0 +1,1 @@
+In this folder is the website that is needed to serve the deb and rpm packages for the Linux installers like apt, dnf, etc.

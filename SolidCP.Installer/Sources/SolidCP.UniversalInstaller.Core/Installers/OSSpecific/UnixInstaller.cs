@@ -8,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SolidCP.EnterpriseServer;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -50,6 +51,8 @@ namespace SolidCP.UniversalInstaller
 
 			ServiceController.Install(service);
 			ServiceController.Enable(service.ServiceId);
+			var status = ServiceController.Info(service.ServiceId);
+			if (status != null && status.Status == OSServiceStatus.Running) ServiceController.Stop(service.ServiceId);
 			ServiceController.Start(service.ServiceId);
 
 			OpenFirewall(ServerSettings.Urls);
@@ -193,6 +196,14 @@ namespace SolidCP.UniversalInstaller
 			return euid == 0;
 		}
 
+		public override bool CheckOSSupported() => CheckSystemdSupported();
+
+		public override bool CheckIISVersionSupported() => false;
+
+		public override bool CheckSystemdSupported() => new SystemdServiceController().IsInstalled;
+
+		public override bool CheckNetVersionSupported() => OSInfo.IsMono || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
+
 		public override void RestartAsAdmin()
 		{
 			var password = UI.GetRootPassword();
@@ -201,7 +212,7 @@ namespace SolidCP.UniversalInstaller
 			arguments = Environment.CommandLine;
 			Shell shell = null;
 			arguments = string.IsNullOrEmpty(arguments) ? assembly : arguments;
-			if (OSInfo.IsMono) shell = Shell.ExecScript($"echo {password} | sudo -S mono {arguments}");
+			if (OSInfo.IsMono) shell = Shell.ExecScript($"echo {password} | sudo -S mono --debug {arguments}");
 			else if (OSInfo.IsCore) shell = Shell.ExecScript($"echo {password} | sudo -S dotnet {arguments}");
 			else throw new NotSupportedException();
 			Environment.Exit(shell.ExitCode().Result -1);

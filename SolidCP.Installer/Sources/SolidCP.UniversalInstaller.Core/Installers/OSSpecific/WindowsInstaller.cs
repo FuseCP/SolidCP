@@ -267,6 +267,11 @@ namespace SolidCP.UniversalInstaller
 			serviceCredentials.Add(cert);
 
 			// CryptoKey
+			if (string.IsNullOrEmpty(settings.CryptoKey))
+			{
+				// generate random crypto key
+				settings.CryptoKey = Utils.GetRandomString(20);
+			}
 			var appSettings = configuration.Element("appSettings");
 			var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
 			if (cryptoKey == null)
@@ -321,6 +326,14 @@ namespace SolidCP.UniversalInstaller
 		{
 			return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 		}
+
+		public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.WindowsServer2003;
+
+		public override bool CheckIISVersionSupported() => CheckOSSupported();
+
+		public override bool CheckSystemdSupported() => false;
+
+		public override bool CheckNetVersionSupported() => OSInfo.IsNet48 || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
 
 		public override void RestartAsAdmin()
 		{

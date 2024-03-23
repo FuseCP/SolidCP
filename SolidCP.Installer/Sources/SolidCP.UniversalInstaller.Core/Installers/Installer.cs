@@ -244,6 +244,8 @@ namespace SolidCP.UniversalInstaller
 
 			if (!IsRunningAsAdmin()) RestartAsAdmin();
 
+			UI.CheckPrerequisites();
+
 			var packages = UI.GetPackagesToInstall();
 
 			bool installServer = false, installEnterpriseServer = false, installPortal = false;
@@ -315,6 +317,11 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
+		public abstract bool CheckOSSupported();
+		public abstract bool CheckSystemdSupported();
+		public abstract bool CheckIISVersionSupported();
+		public abstract bool CheckNetVersionSupported();
+
 		static Installer current;
 		public static Installer Current
 		{
@@ -330,6 +337,7 @@ namespace SolidCP.UniversalInstaller
 						case OSFlavor.Debian: current = new DebianInstaller(); break;
 						case OSFlavor.Ubuntu: current = new UbuntuInstaller(); break;
 						case OSFlavor.Mint: current = new MintInstaller(); break;
+						case OSFlavor.Kali: current = new KaliInstaller(); break;
 						case OSFlavor.Fedora: current = new FedoraInstaller(); break;
 						case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 						case OSFlavor.CentOS: current = new CentOSInstaller(); break;

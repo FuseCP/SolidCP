@@ -88,7 +88,7 @@ namespace SolidCP.Setup.Actions
 					File.Copy(AppConfig.ConfigurationPath + ".config", exePath + ".config", true);
 				}
 				var sh = Shell.Default.Find("sh");
-				File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nmono {exePath}");
+				File.WriteAllText("/usr/bin/solidcp", $"#!{sh}\nexec mono --debug {exePath}");
 
 				OSInfo.Unix.GrantUnixPermissions("/usr/bin/solidcp", UnixFileMode.UserExecute | UnixFileMode.UserRead | UnixFileMode.UserWrite |
 					UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
@@ -217,7 +217,6 @@ Caregories=Network".Replace("\r\n", Environment.NewLine));
 				settings.Urls = string.Join(";", urls.ToArray());
 				settings.LetsEncryptCertificateDomains = domain;
 				settings.LetsEncryptCertificateEmail = vars.LetsEncryptEmail;
-				settings.CryptoKey = vars.CryptoKey;
 				if (vars.UpdateServerPassword)
 				{
 					if (vars.SetupAction == SetupActions.Setup)

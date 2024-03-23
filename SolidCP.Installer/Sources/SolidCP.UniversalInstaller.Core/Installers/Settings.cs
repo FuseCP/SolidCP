@@ -23,7 +23,6 @@ namespace SolidCP.UniversalInstaller
 	{
 		public string ServerPassword { get; set; }
 		public string ServerPasswordSHA1 { get; set; }
-		public string CryptoKey { get; set; }
 	}
 
 	public class EnterpriseServerSettings: CommonSettings

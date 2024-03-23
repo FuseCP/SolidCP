@@ -60,6 +60,19 @@ namespace SolidCP.UniversalInstaller {
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void Init()
+		{
+		}
+		public override void Exit()
+		{
+		}
+
+		public override void CheckPrerequisites()
+		{
+			UI.Current = new ConsoleUI();
+			UI.Current.CheckPrerequisites();			
+		}
 	}
 }
 

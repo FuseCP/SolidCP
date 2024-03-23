@@ -868,7 +868,7 @@ namespace SolidCP.Providers.Web
 			return conf.Descendants.OfType<Location>().Any(loc => loc.Url == url);
 		}
 
-		protected bool IsInstalled(string version)
+		protected string GetVersion()
 		{
 			var processes = Process.GetProcessesByName("httpd")
 				.Concat(Process.GetProcessesByName("apache2"))
@@ -886,16 +886,26 @@ namespace SolidCP.Providers.Web
 						var match = Regex.Match(output, @"^Server [Vv]ersion:\s*[A-Za-z]*/(?<version>[0-9][0-9.]+)", RegexOptions.Multiline);
 						if (match.Success)
 						{
-							var ver = match.Groups["version"].Value;
-							if (ver.StartsWith(version)) return true;
+							var ver = match.Groups["version"].Value.Trim('.');
 						}
 					}
 					catch { }
 				}
 			}
-			return false;
+			return "";
 		}
 
+		protected bool IsInstalled(string version) => GetVersion().StartsWith(version);
 		public override bool IsInstalled() => IsInstalled("2.4");
+
+		public virtual Version Version
+		{
+			get
+			{
+				var version = GetVersion();
+				if (!string.IsNullOrEmpty(version)) return new Version(version);
+				return null;
+			}
+		}
 	}
 }
