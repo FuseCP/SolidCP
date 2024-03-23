@@ -203,7 +203,7 @@ namespace SolidCP.UniversalInstaller
 			arguments = Environment.CommandLine;
 			Shell shell = null;
 			arguments = string.IsNullOrEmpty(arguments) ? assembly : arguments;
-			if (OSInfo.IsMono) shell = Shell.ExecScript($"echo {password} | sudo -S mono {arguments}");
+			if (OSInfo.IsMono) shell = Shell.ExecScript($"echo {password} | sudo -S mono --debug {arguments}");
 			else if (OSInfo.IsCore) shell = Shell.ExecScript($"echo {password} | sudo -S dotnet {arguments}");
 			else throw new NotSupportedException();
 			Environment.Exit(shell.ExitCode().Result -1);
