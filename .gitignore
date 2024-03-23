@@ -76,3 +76,7 @@ bin/Release
 /SolidCP/CleanRelease_marc.ps1
 /SolidCP/CleanRelease2.ps1
 /SolidCP/CleanDebug.ps1
+
+www/debian/pool/main/
+www/fedora/pool/main/
+SolidCP.Installer/Sources/VersionInfo.cs

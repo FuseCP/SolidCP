@@ -425,7 +425,7 @@
 		<!-- build MSI package -->
 	</Target>
 
-	<Target Name="CreateInstallPackages">
+	<Target Name="CreateInstallPackages" DependsOnTargets="CreateUniversalSetupBuild">
 
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
@@ -444,6 +444,14 @@
 		</ItemGroup>
 
 		<Copy SourceFiles="@(PackageFiles)" DestinationFolder="$(DeployPackagesDir)" />
+
+		<ItemGroup>
+			<DebPackages Include="$(DeployPackagesDir)\*.deb" />
+			<RPMPackages Include="$(DeployPackagesDir)\*.rpm" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(DebPackages)" DestinationFolder="$(InstallerProjectRoot)SolidCP.InstallPackages\www\debian\pool\main" />
+		<Copy SourceFiles="@(RPMPackages)" DestinationFolder="$(InstallerProjectRoot)SolidCP.InstallPackages\www\fedora\pool\main" />
 
 	</Target>
 
