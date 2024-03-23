@@ -60,6 +60,10 @@ namespace SolidCP.UniversalInstaller {
 		{
 			throw new NotImplementedException();
 		}
+
+		public override void Init()
+		{
+		}
 	}
 }
 

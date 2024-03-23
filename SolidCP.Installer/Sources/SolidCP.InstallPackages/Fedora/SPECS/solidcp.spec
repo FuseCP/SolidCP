@@ -30,7 +30,8 @@ cp -rp usr/share/* $RPM_BUILD_ROOT/usr/share
 %post
 if [ $1 -ge 1 ];then
     sed -i 's|/usr/bin/solidcp-universalinstaller|%{_bindir}/solidcp-universalinstaller|g' /usr/share/applications/solidcp-universalinstaller.desktop
-   %{_bindir}/solidcp-universalinstaller
+#  %{_bindir}/solidcp-universalinstaller
+    echo "Please type 'sudo solidcp-universalinstaller' to install SolidCP"
 fi
 
 %clean
@@ -49,10 +50,3 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Mar 22 2024 Simon Egli <simon.jakob.egli@gmail.com> - 1.5.0
 - First version being packaged
-
-
-
-
-
-
-

@@ -355,6 +355,16 @@ You have successfully installed the following components:
 				.ShowDialog();
 
 			Console.Clear();
+			Console.CursorVisible = true;
+		}
+
+		public override void Init()
+		{
+			AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
+			{
+				Console.Clear();
+				Console.CursorVisible = true;
+			};
 		}
 	}
 }

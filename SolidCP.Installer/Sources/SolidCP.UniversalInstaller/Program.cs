@@ -20,6 +20,7 @@ namespace SolidCP.UniversalInstaller
 		public static void SetupCore() {
 			try
 			{
+				Installer.Current.UI.Init();
 				Installer.Current.UI.PrintInstallerVersion();
 				Installer.Current.InstallAll();
 			} catch (Exception ex) { }
