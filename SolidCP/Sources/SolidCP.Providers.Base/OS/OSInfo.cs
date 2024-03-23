@@ -88,7 +88,7 @@ namespace SolidCP.Providers.OS
 					{
 						for (var os = OSFlavor.Min; os <= OSFlavor.Max;  os++)
 						{
-							if (Regex.IsMatch(name, Regex.Escape(Enum.GetName(typeof(OSFlavor), os)), RegexOptions.IgnoreCase))
+							if (Regex.IsMatch(name, $"(?<=^|\\s){Regex.Escape(Enum.GetName(typeof(OSFlavor), os))}(?=\\s|$)", RegexOptions.IgnoreCase))
 							{
 								flavor = os;
 								break;
